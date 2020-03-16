@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.VEBlocks;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
+import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -25,6 +26,8 @@ public class VoluminousEnergy
 {
     public static final IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
+    public static VESetup setup = new VESetup();
+
     public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy() {
@@ -32,7 +35,8 @@ public class VoluminousEnergy
         MinecraftForge.EVENT_BUS.register(this);
     }
     private void setup(final FMLCommonSetupEvent event) {
-
+        setup.init();
+        //proxy.init();
     }
 
     @SubscribeEvent
