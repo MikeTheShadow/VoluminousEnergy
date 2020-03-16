@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceBlock;
 import com.veteam.voluminousenergy.blocks.VEBlocks;
+import com.veteam.voluminousenergy.items.PetCoke;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
@@ -62,6 +64,7 @@ public class VoluminousEnergy
             Item.Properties properties = new Item.Properties();
             properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
+            itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
         }
     }
 }
