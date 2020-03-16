@@ -52,7 +52,7 @@ public class VoluminousEnergy
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
             LOGGER.info("Hello from item registry!");
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,new Item.Properties()).setRegistryName("primitiveblastfurnaceblock"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,new Item.Properties()).setRegistryName("primitiveblastfurnace"));
         }
     }
 }

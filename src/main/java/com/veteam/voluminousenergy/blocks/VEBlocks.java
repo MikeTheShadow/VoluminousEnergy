@@ -4,6 +4,6 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class VEBlocks {
 
-    @ObjectHolder("voluminousenergy:primitiveblastfurnaceblock")
+    @ObjectHolder("voluminousenergy:primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;
 }

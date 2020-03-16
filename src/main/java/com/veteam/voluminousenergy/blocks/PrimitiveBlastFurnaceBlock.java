@@ -13,6 +13,6 @@ public class PrimitiveBlastFurnaceBlock extends Block {
                     .hardnessAndResistance(2.0f)
                     .lightValue(0)
             );
-        setRegistryName("primitiveblastfurnaceblock");
+        setRegistryName("primitiveblastfurnace");
     }
 }
