@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 @Mod("voluminousenergy")
 public class VoluminousEnergy
 {
-    public static final IProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
+    public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
 
@@ -36,7 +37,7 @@ public class VoluminousEnergy
     }
     private void setup(final FMLCommonSetupEvent event) {
         setup.init();
-        //proxy.init();
+        proxy.init();
     }
 
     @SubscribeEvent
@@ -56,7 +57,9 @@ public class VoluminousEnergy
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
             LOGGER.info("Hello from item registry!");
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,new Item.Properties()).setRegistryName("primitiveblastfurnace"));
+            Item.Properties properties = new Item.Properties();
+            properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
         }
     }
 }

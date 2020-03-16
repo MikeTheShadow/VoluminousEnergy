@@ -12,6 +12,7 @@ public class PrimitiveBlastFurnaceBlock extends Block {
                     .sound(SoundType.STONE)
                     .hardnessAndResistance(2.0f)
                     .lightValue(0)
+                    .harvestLevel(1)
             );
         setRegistryName("primitiveblastfurnace");
     }
