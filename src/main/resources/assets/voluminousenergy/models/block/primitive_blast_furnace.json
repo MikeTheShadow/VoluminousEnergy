@@ -1,8 +1,0 @@
-{
-    "parent": "block/orientable",
-    "textures": {
-        "top": "voluminousenergy:block/primitive_blast_furnace_top",
-        "front": "voluminousenergy:block/primitive_blast_furnace_front",
-        "side": "voluminousenergy:block/primitive_blast_furnace_side"
-    }
-}
