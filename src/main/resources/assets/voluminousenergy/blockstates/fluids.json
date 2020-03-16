@@ -1,0 +1,17 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "crude_oil": {
+            "model": "forge:fluid",
+            "custom": {
+                "fluid": "crude_oil"
+            }
+        },
+        "naphtha": {
+            "model": "forge:fluid",
+            "custom": {
+                "fluid": "naphtha"
+            }
+        },
+    }
+}
