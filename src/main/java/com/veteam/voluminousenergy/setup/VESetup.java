@@ -10,7 +10,7 @@ public class VESetup {
     public static ItemGroup itemGroup = new ItemGroup("voluminousenergy"){
         @Override
         public ItemStack createIcon(){
-            return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK); //TODO: Make a proper icon for the Voluminous Energy item group
+            return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
         }
     };
 
