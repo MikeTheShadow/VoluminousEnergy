@@ -22,9 +22,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-@Mod("voluminousenergy")
+@Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy
 {
+    public static final String MODID = "voluminousenergy";
+
     public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
