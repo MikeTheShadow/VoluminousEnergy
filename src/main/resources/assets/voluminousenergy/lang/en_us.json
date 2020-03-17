@@ -1,6 +1,7 @@
 {
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
+    "block.voluminousenergy.saltpeterore": "Saltpeter Ore",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
