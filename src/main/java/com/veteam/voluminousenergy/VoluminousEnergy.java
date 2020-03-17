@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceBlock;
 import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceTile;
+import com.veteam.voluminousenergy.blocks.SaltpeterOre;
 import com.veteam.voluminousenergy.blocks.VEBlocks;
 import com.veteam.voluminousenergy.items.PetCoke;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -58,14 +59,20 @@ public class VoluminousEnergy
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
             LOGGER.info("Hello from block registry!");
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
+            blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
             LOGGER.info("Hello from item registry!");
             Item.Properties properties = new Item.Properties();
+            Item.Properties shovelProperties = new Item.Properties();
             properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
+            shovelProperties.addToolType(ToolType.SHOVEL,1).group(VESetup.itemGroup);
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
+
+            //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERCHUNK);

@@ -13,4 +13,6 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static TileEntityType<PrimitiveBlastFurnaceTile> PRIMITIVE_BLAST_FURNACE_TILE;
 
+    @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
+    public static SaltpeterOre SALTPETER_ORE;
 }
