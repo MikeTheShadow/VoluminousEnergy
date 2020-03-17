@@ -68,6 +68,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
+            itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERCHUNK);
 
             //Dusts
             itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);
@@ -75,6 +76,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.LAPISDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SULFURDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBONDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERDUST);
         }
 
         @SubscribeEvent

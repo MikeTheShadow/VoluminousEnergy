@@ -12,5 +12,7 @@
     "item.voluminousenergy.cokedust": "Coke Dust",
     "item.voluminousenergy.lapisdust": "Lapis Dust",
     "item.voluminousenergy.sulfurdust": "Sulfur Dust",
-    "item.voluminousenergy.carbondust": "Carbon Dust"
+    "item.voluminousenergy.carbondust": "Carbon Dust",
+    "item.voluminousenergy.saltpeterdust": "Saltpeter Dust",
+    "item.voluminousenergy.saltpeterchunk": "Saltpeter Chunk"
 }
