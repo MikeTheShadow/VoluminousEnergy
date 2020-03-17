@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceBlock;
+import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.VEBlocks;
 import com.veteam.voluminousenergy.items.PetCoke;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -11,6 +12,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
@@ -65,6 +67,11 @@ public class VoluminousEnergy
             properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
+        }
+
+        @SubscribeEvent
+        public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
+            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
         }
     }
 }
