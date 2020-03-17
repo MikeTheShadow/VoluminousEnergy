@@ -65,6 +65,14 @@ public class VoluminousEnergy
             properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
+            itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
+
+            //Dusts
+            itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.COKEDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.LAPISDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SULFURDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.CARBONDUST);
         }
     }
 }

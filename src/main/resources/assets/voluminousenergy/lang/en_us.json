@@ -1,6 +1,16 @@
 {
+    "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
 
     "_comment": "Creative Tabs",
-    "itemGroup.voluminousenergy": "Voluminous Energy" 
+    "itemGroup.voluminousenergy": "Voluminous Energy" ,
+
+    "_comment": "Items",
+    "item.voluminousenergy.petcoke": "Petcoke",
+    "item.voluminousenergy.coalcoke": "Coal Coke",
+    "item.voluminousenergy.coaldust": "Coal Dust",
+    "item.voluminousenergy.cokedust": "Coke Dust",
+    "item.voluminousenergy.lapisdust": "Lapis Dust",
+    "item.voluminousenergy.sulfurdust": "Sulfur Dust",
+    "item.voluminousenergy.carbondust": "Carbon Dust"
 }
