@@ -1,8 +1,12 @@
 {
-    "parent": "block/orientable",
+    "parent": "block/cube",
     "textures": {
-        "top": "voluminousenergy:block/primitiveblastfurnace_top",
-        "front": "voluminousenergy:block/primitiveblastfurnace_front",
-        "side": "voluminousenergy:block/primitiveblastfurnace_side"
+        "particle": "voluminousenergy:block/primitiveblastfurnace",
+        "down": "voluminousenergy:block/primitiveblastfurnace_top",
+        "up": "voluminousenergy:block/primitiveblastfurnace_top",
+        "east": "voluminousenergy:block/primitiveblastfurnace_side",
+        "west": "voluminousenergy:block/primitiveblastfurnace_side",
+        "north": "voluminousenergy:block/primitiveblastfurnace_front",
+        "south": "voluminousenergy:block/primitiveblastfurnace_side"
     }
 }
