@@ -15,5 +15,8 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
         setRegistryName("primitiveblastfurnace");
     }
 
-
+    @Override
+    public boolean hasTileEntity() {
+        return true;
+    }
 }
