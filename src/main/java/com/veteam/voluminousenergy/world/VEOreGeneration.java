@@ -26,7 +26,9 @@ public class VEOreGeneration {
 
     public static void OreGeneration(){
         //Setup CountRangeConfigs here for each ore
-        CountRangeConfig saltpeterOreConf = new CountRangeConfig(175, 55, 0, 256);//"Weight", Minimum Height, topOffset (Adjusts from max value), Maximum height
+        CountRangeConfig saltpeterOreConf = new CountRangeConfig(4, 55, 0, 256);//"Weight", Minimum Height, topOffset (Adjusts from max value), Maximum height
+
+        //Lists for blocks to generate ores in
         List<Block> sandList = new ArrayList<>();
         sandList.add(Blocks.SAND);
         sandList.add(Blocks.RED_SAND);
