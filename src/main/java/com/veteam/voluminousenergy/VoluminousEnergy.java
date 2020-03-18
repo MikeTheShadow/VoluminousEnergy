@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.world.VEOreGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -43,6 +44,7 @@ public class VoluminousEnergy
         MinecraftForge.EVENT_BUS.register(this);
     }
     private void setup(final FMLCommonSetupEvent event) {
+        VEOreGeneration.OreGeneration(); //Setup custom ore generation
         setup.init();
         proxy.init();
     }
