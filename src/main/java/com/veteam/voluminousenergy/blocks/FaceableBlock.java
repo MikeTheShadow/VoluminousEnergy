@@ -3,8 +3,12 @@ package com.veteam.voluminousenergy.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DirectionalBlock;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -14,7 +18,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class FaceableBlock extends Block
+public class FaceableBlock extends DirectionalBlock
 {
 
     public FaceableBlock(Properties properties)
@@ -34,14 +38,12 @@ public class FaceableBlock extends Block
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
-    {
-        if(entity != null) {
-            world.setBlockState(pos,state.with(BlockStateProperties.FACING, getFacingFromEntity(pos, entity)),2);
-        }
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
+        state.add(FACING);
     }
 
-    public static Direction getFacingFromEntity(BlockPos clickedBlock, LivingEntity entity) {
-        return Direction.getFacingFromVector((float) (entity.posX - clickedBlock.getX()),(float) (entity.posY - clickedBlock.getY()),(float) (entity.posZ - clickedBlock.getZ()));
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
+        return this.getDefaultState().with(FACING, p_196258_1_.getPlacementHorizontalFacing().getOpposite());
     }
 }

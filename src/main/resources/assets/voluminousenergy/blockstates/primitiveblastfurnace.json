@@ -1,10 +1,9 @@
+
 {
   "variants": {
-    "facing=north": { "model": "voluminousenergy:block/primitiveblastfurnace"},
+    "facing=north": { "model": "voluminousenergy:block/primitiveblastfurnace" },
     "facing=south": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 180 },
     "facing=west": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 270 },
-    "facing=east": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 90 },
-    "facing=up": { "model": "voluminousenergy:block/primitiveblastfurnace" },
-    "facing=down": { "model": "voluminousenergy:block/primitiveblastfurnace" }
+    "facing=east": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 90 }
   }
-} 
+}
