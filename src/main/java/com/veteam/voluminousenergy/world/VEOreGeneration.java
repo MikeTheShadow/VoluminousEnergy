@@ -10,6 +10,8 @@ import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import static net.minecraft.world.biome.Biome.LOGGER;
+
 public class VEOreGeneration {
 
     public static void OreGeneration(){
@@ -21,7 +23,7 @@ public class VEOreGeneration {
 
             //If category is Desert. Desert, Desert Lakes, and Desert Hills included to ENSURE this will work (may be unecessary)
             if (biome.getCategory() == Biome.Category.DESERT || biome == Biomes.DESERT || biome == Biomes.DESERT_LAKES || biome == Biomes.DESERT_HILLS){
-                //Generate Saltpeter ore in the sand
+                //Generate Saltpeter ore in the sand LOGGER.info("Saltpeter ore has been registered!");
                 //TODO: Make Saltpeter generate in sand, not stone
                 biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, VEBlocks.SALTPETER_ORE.getDefaultState(),33), Placement.COUNT_RANGE,saltpeterOreConf));
             }
