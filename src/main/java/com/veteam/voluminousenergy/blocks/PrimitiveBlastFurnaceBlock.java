@@ -1,10 +1,18 @@
 package com.veteam.voluminousenergy.blocks;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 
-public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
+import javax.annotation.Nullable;
+
+public class PrimitiveBlastFurnaceBlock extends FaceableBlock
+{
 
     public PrimitiveBlastFurnaceBlock() {
         super(Properties.create(Material.ROCK)
@@ -18,7 +26,18 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
     }
 
     @Override
-    public boolean hasTileEntity() {
+    public boolean hasTileEntity(BlockState state) {
         return true;
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
+        state.add(FACING);
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new PrimitiveBlastFurnaceTile();
     }
 }

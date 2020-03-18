@@ -3,21 +3,17 @@ package com.veteam.voluminousenergy.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 
-public class FaceableBlock extends DirectionalBlock
+public class FaceableBlock extends Block
 {
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     public FaceableBlock(Properties properties)
     {
         super(properties);
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
-        state.add(FACING);
     }
 
     @Override

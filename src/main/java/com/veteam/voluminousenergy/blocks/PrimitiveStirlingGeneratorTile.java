@@ -23,7 +23,6 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     @Override
     public void tick() {
-        VoluminousEnergy.LOGGER.info("Primitive Stirling WORKING!!!!");
     }
 
     @Override

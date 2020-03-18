@@ -23,7 +23,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() {
-            VoluminousEnergy.LOGGER.info("Primitive Blast WORKING!!!!");
+
     }
 
     @Override
