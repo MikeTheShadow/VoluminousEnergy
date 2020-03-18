@@ -1,7 +1,7 @@
 {
     "parent": "block/cube",
     "textures": {
-        "particle": "voluminousenergy:block/primitiveblastfurnace",
+        "particle": "minecraft:block/iron_block",
         "down": "voluminousenergy:block/primitiveblastfurnace_top",
         "up": "voluminousenergy:block/primitiveblastfurnace_top",
         "east": "voluminousenergy:block/primitiveblastfurnace_side",

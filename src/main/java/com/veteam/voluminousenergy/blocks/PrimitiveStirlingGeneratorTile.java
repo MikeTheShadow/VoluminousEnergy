@@ -13,17 +13,17 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTileEntity {
+public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity {
 
     private ItemStackHandler handler;
 
-    public PrimitiveBlastFurnaceTile() {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
+    public PrimitiveStirlingGeneratorTile() {
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
     }
 
     @Override
     public void tick() {
-            VoluminousEnergy.LOGGER.info("Primitive Blast WORKING!!!!");
+        VoluminousEnergy.LOGGER.info("Primitive Stirling WORKING!!!!");
     }
 
     @Override

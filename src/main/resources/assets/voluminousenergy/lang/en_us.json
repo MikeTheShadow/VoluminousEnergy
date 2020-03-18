@@ -2,6 +2,7 @@
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
     "block.voluminousenergy.saltpeterore": "Saltpeter Ore",
+    "block.voluminousenergy.primitivestirlinggenerator": "Primitive Stirling Generator",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

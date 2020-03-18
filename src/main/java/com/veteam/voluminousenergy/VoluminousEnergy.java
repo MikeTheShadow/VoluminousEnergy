@@ -1,9 +1,6 @@
 package com.veteam.voluminousenergy;
 
-import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceBlock;
-import com.veteam.voluminousenergy.blocks.PrimitiveBlastFurnaceTile;
-import com.veteam.voluminousenergy.blocks.SaltpeterOre;
-import com.veteam.voluminousenergy.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.*;
 import com.veteam.voluminousenergy.items.PetCoke;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
@@ -62,17 +59,23 @@ public class VoluminousEnergy
             LOGGER.info("Hello from block registry!");
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
+            blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
             LOGGER.info("Hello from item registry!");
+
+            //Item Properties
             Item.Properties properties = new Item.Properties();
             Item.Properties shovelProperties = new Item.Properties();
             properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
             shovelProperties.addToolType(ToolType.SHOVEL,1).group(VESetup.itemGroup);
+
+            //Block Items
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK,properties).setRegistryName("primitivestirlinggenerator"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
@@ -86,12 +89,15 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.SULFURDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBONDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERDUST);
+
+            //Ingots
         }
 
         @SubscribeEvent
         public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
             LOGGER.info("Hello from tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
+            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
         }
     }
 }
