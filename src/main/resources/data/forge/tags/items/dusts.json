@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:dusts/lapis",
+    "#forge:dusts/niter",
+    "#forge:dusts/sulfur",
+    "#forge:dusts/carbon",
+    "#forge:dusts/coal",
+    "#forge:dusts/coke"
+  ]
+}

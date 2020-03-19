@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy;
 
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.veteam.voluminousenergy.blocks.*;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -18,6 +21,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -36,12 +40,29 @@ public class VoluminousEnergy
 
     public VoluminousEnergy() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupWhenLoadingComplete);
         MinecraftForge.EVENT_BUS.register(this);
     }
     private void setup(final FMLCommonSetupEvent event) {
         VEOreGeneration.OreGeneration(); //Setup custom ore generation
         setup.init();
         proxy.init();
+    }
+
+    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
+        //Dusts
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter/saltpeter"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/carbon"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coal"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coke"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lapis"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sulfur"));
+
+        //Gears
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/stone"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
     }
 
     @SubscribeEvent
@@ -94,6 +115,8 @@ public class VoluminousEnergy
             //Gears
             itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.IRON_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.CARBON_GEAR);
+
         }
 
         @SubscribeEvent

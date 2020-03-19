@@ -23,4 +23,5 @@ public class VEItems
     //Gears
     public static StoneGear STONE_GEAR = new StoneGear();
     public static IronGear IRON_GEAR = new IronGear();
+    public static CarbonGear CARBON_GEAR = new CarbonGear();
 }

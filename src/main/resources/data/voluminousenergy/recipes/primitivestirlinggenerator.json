@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cobblestone"
+      "item": "minecraft:iron_ingot"
     },
     "*": {
       "item": "minecraft:furnace"
     },
     "1": {
-      "item": "forge:gears/stone"
+      "tag": "forge:gears/iron"
     }
   },
   "result": {
