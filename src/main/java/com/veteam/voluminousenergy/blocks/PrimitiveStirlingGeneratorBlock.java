@@ -39,6 +39,6 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock{
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new PrimitiveBlastFurnaceTile();
+        return new PrimitiveStirlingGeneratorTile();
     }
 }

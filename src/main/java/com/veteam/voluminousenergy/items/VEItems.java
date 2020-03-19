@@ -5,9 +5,9 @@ import net.minecraft.item.Item;
 
 public class VEItems
 {
-    public static PetCoke PETCOKE = new PetCoke(new Item.Properties().group(VESetup.itemGroup));
-    public static CoalCoke COALCOKE = new CoalCoke(new Item.Properties().group(VESetup.itemGroup));
-    public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk(new Item.Properties().group(VESetup.itemGroup));
+    public static PetCoke PETCOKE = new PetCoke();
+    public static CoalCoke COALCOKE = new CoalCoke();
+    public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
 
     //Dusts
     public static CoalDust COALDUST = new CoalDust(new Item.Properties().group(VESetup.itemGroup));

@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 
 public class PetCoke extends Item
 {
-    public PetCoke(Properties properties)
+    public PetCoke()
     {
         super(new Item.Properties()
         .maxStackSize(64)
