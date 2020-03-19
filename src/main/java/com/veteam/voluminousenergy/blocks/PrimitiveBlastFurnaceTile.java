@@ -9,6 +9,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+
 
 public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTileEntity {
 
@@ -44,8 +46,9 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         return handler;
     }
 
+    @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return LazyOptional.of(()-> (T) getHandler());
         }

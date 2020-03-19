@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks;
 
-import com.sun.istack.internal.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -9,6 +9,8 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
+
+import javax.annotation.Nullable;
 
 public class PrimitiveBlastFurnaceBlock extends FaceableBlock
 {

@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.veteam.voluminousenergy.blocks.*;
-import com.veteam.voluminousenergy.items.PetCoke;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -20,9 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy
