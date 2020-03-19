@@ -20,8 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy
@@ -32,7 +32,7 @@ public class VoluminousEnergy
 
     public static VESetup setup = new VESetup();
 
-    public static final Logger LOGGER = LogManager.getLogManager().getLogger("Debugger");
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
