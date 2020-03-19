@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.Item;
 
 public class CarbonDust extends Item {
-    public CarbonDust (Properties properties){
+    public CarbonDust (){
         super(new Item.Properties()
                 .maxStackSize(64)
                 .group(VESetup.itemGroup)

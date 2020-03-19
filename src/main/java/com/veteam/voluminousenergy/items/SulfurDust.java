@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.Item;
 
 public class SulfurDust extends Item {
-    public SulfurDust (Properties properties){
+    public SulfurDust (){
         super(new Item.Properties()
                 .maxStackSize(64)
                 .group(VESetup.itemGroup));

@@ -10,10 +10,10 @@ public class VEItems
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
 
     //Dusts
-    public static CoalDust COALDUST = new CoalDust(new Item.Properties().group(VESetup.itemGroup));
-    public static CokeDust COKEDUST = new CokeDust(new Item.Properties().group(VESetup.itemGroup));
-    public static LapisDust LAPISDUST = new LapisDust(new Item.Properties().group(VESetup.itemGroup));
-    public static SulfurDust SULFURDUST = new SulfurDust(new Item.Properties().group(VESetup.itemGroup));
-    public static CarbonDust CARBONDUST = new CarbonDust(new Item.Properties().group(VESetup.itemGroup));
-    public static SaltpeterDust SALTPETERDUST = new SaltpeterDust(new Item.Properties().group(VESetup.itemGroup));
+    public static CoalDust COALDUST = new CoalDust();
+    public static CokeDust COKEDUST = new CokeDust();
+    public static LapisDust LAPISDUST = new LapisDust();
+    public static SulfurDust SULFURDUST = new SulfurDust();
+    public static CarbonDust CARBONDUST = new CarbonDust();
+    public static SaltpeterDust SALTPETERDUST = new SaltpeterDust();
 }
