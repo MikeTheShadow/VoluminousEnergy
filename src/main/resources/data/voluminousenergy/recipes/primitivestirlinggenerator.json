@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "###",
-    "#*#",
+    "1*1",
     "###"
   ],
   "key": {
@@ -11,6 +11,9 @@
     },
     "*": {
       "item": "minecraft:furnace"
+    },
+    "1": {
+      "item": "forge:gear/stone"
     }
   },
   "result": {

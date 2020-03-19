@@ -88,7 +88,12 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.CARBONDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERDUST);
 
-            //Ingots
+            //Ingots and bricks
+            itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
+
+            //Gears
+            itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.IRON_GEAR);
         }
 
         @SubscribeEvent

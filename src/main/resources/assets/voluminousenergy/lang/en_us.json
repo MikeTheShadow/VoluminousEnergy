@@ -16,5 +16,8 @@
     "item.voluminousenergy.sulfurdust": "Sulfur Dust",
     "item.voluminousenergy.carbondust": "Carbon Dust",
     "item.voluminousenergy.saltpeterdust": "Saltpeter Dust",
-    "item.voluminousenergy.saltpeterchunk": "Saltpeter Chunk"
+    "item.voluminousenergy.saltpeterchunk": "Saltpeter Chunk",
+    "item.voluminousenergy.carbonbrick": "Carbon Brick",
+    "item.voluminousenergy.stonegear": "Stone Gear",
+    "item.voluminousenergy.irongear": "Iron Gear"
 }

@@ -16,4 +16,11 @@ public class VEItems
     public static SulfurDust SULFURDUST = new SulfurDust();
     public static CarbonDust CARBONDUST = new CarbonDust();
     public static SaltpeterDust SALTPETERDUST = new SaltpeterDust();
+
+    //Ingots and Bricks
+    public static CarbonBrick CARBON_BRICK = new CarbonBrick();
+
+    //Gears
+    public static StoneGear STONE_GEAR = new StoneGear();
+    public static IronGear IRON_GEAR = new IronGear();
 }
