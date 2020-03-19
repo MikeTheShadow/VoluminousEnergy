@@ -3,7 +3,7 @@ import net.minecraft.item.Item;
 import com.veteam.voluminousenergy.setup.VESetup;
 
 public class SaltpeterChunk extends Item {
-    public SaltpeterChunk (Properties properties){
+    public SaltpeterChunk (){
         super(new Item.Properties()
                 .maxStackSize(64)
                 .group(VESetup.itemGroup)
