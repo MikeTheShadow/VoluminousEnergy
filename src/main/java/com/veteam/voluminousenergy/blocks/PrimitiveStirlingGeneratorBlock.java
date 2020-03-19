@@ -1,7 +1,13 @@
 package com.veteam.voluminousenergy.blocks;
 
+import com.sun.istack.internal.Nullable;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 
 public class PrimitiveStirlingGeneratorBlock extends FaceableBlock{
@@ -17,5 +23,21 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock{
         );
 
         setRegistryName("primitivestirlinggenerator");
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
+        state.add(FACING);
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new PrimitiveBlastFurnaceTile();
     }
 }

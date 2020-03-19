@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
+
+import com.sun.istack.internal.Nullable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -10,10 +11,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity {
+public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity
+{
 
     private ItemStackHandler handler;
 
@@ -46,9 +45,9 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         return handler;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nullable Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return LazyOptional.of(()-> (T) getHandler());
         }
