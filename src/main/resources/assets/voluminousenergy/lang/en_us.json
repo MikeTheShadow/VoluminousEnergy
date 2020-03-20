@@ -3,6 +3,9 @@
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
     "block.voluminousenergy.saltpeterore": "Saltpeter Ore",
     "block.voluminousenergy.primitivestirlinggenerator": "Primitive Stirling Generator",
+    "block.voluminousenergy.bauxiteore": "Bauxite Ore",
+    "block.voluminousenergy.cinnabarore": "Cinnabar Ore",
+    "block.voluminousenergy.rutileore": "Rutile Ore",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

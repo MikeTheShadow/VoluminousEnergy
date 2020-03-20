@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/bauxiteore",
+    "down": "voluminousenergy:block/bauxiteore",
+    "up": "voluminousenergy:block/bauxiteore",
+    "east": "voluminousenergy:block/bauxiteore",
+    "west": "voluminousenergy:block/bauxiteore",
+    "north": "voluminousenergy:block/bauxiteore",
+    "south": "voluminousenergy:block/bauxiteore"
+  }
+}
+

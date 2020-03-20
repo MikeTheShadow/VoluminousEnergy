@@ -76,9 +76,15 @@ public class VoluminousEnergy
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
             LOGGER.info("Hello from block registry!");
+            //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
-            blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
+
+            //Ores
+            blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
+            blockRegisteryEvent.getRegistry().register(new BauxiteOre());
+            blockRegisteryEvent.getRegistry().register(new CinnabarOre());
+            blockRegisteryEvent.getRegistry().register(new RutileOre());
         }
 
         @SubscribeEvent
@@ -92,9 +98,15 @@ public class VoluminousEnergy
             shovelProperties.addToolType(ToolType.SHOVEL,1).group(VESetup.itemGroup);
 
             //Block Items
+            //Tile Entities
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK,properties).setRegistryName("primitivestirlinggenerator"));
+
+            //Ores
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);

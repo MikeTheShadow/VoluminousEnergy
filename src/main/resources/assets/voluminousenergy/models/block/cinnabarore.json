@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/cinnabarore",
+    "down": "voluminousenergy:block/cinnabarore",
+    "up": "voluminousenergy:block/cinnabarore",
+    "east": "voluminousenergy:block/cinnabarore",
+    "west": "voluminousenergy:block/cinnabarore",
+    "north": "voluminousenergy:block/cinnabarore",
+    "south": "voluminousenergy:block/cinnabarore"
+  }
+}
+

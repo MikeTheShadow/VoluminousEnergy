@@ -23,4 +23,13 @@ public class VEBlocks {
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID  + ":bauxiteore")
+    public static BauxiteOre BAUXITE_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":cinnabarore")
+    public static CinnabarOre CINNABAR_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":rutileore")
+    public static RutileOre RUTILE_ORE;
 }
