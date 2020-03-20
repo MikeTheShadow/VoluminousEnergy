@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
 import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
 import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,6 +33,9 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":primitivestirlinggenerator")
     public static TileEntityType<PrimitiveStirlingGeneratorTile> PRIMITIVE_STIRLING_GENERATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":primitivestirlinggenerator")
+    public static ContainerType<PrimitiveStirlingGeneratorContainer> PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

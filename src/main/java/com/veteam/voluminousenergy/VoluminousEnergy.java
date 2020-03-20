@@ -4,10 +4,15 @@ import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
 import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
 import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.veteam.voluminousenergy.blocks.*;
@@ -142,6 +147,20 @@ public class VoluminousEnergy
             LOGGER.info("Hello from tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
+        }
+
+        @SubscribeEvent
+        public static void onContainerRegistry(final RegistryEvent.Register<ContainerType<?>> event){
+            /*
+            event.getRegistry().register(IForgeContainerType.create(((windowId, inv, data) -> {
+
+                return new PrimitiveBlastFurnaceContainer(windowId);
+            }).setRegistryName("primitiveblastfurnace")));
+             */
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveStirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitivestirlinggenerator"));
         }
     }
 }
