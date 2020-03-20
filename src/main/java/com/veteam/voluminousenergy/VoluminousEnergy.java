@@ -1,5 +1,11 @@
 package com.veteam.voluminousenergy;
 
+import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
+import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
+import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;

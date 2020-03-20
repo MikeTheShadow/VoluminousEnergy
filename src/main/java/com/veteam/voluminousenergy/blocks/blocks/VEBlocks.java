@@ -1,6 +1,16 @@
-package com.veteam.voluminousenergy.blocks;
+package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.BauxiteOre;
+import com.veteam.voluminousenergy.blocks.CinnabarOre;
+import com.veteam.voluminousenergy.blocks.RutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
+import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
+import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -12,6 +22,9 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static TileEntityType<PrimitiveBlastFurnaceTile> PRIMITIVE_BLAST_FURNACE_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID  + ":primitiveblastfurnace")
+    public static ContainerType<PrimitiveBlastFurnaceContainer> PRIMITIVE_BLAST_FURNACE_CONTAINER;
 
     //Primitive Stirling
     @ObjectHolder(VoluminousEnergy.MODID + ":primitivestirlinggenerator")
@@ -32,4 +45,5 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":rutileore")
     public static RutileOre RUTILE_ORE;
+
 }

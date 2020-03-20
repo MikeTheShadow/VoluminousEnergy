@@ -1,10 +1,10 @@
-package com.veteam.voluminousenergy.blocks;
+package com.veteam.voluminousenergy.blocks.tiles;
 
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;

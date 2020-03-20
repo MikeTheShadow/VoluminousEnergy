@@ -1,11 +1,9 @@
 package com.veteam.voluminousenergy.world;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockMatcher;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
@@ -13,14 +11,9 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.common.IExtensibleEnum;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.sql.rowset.Predicate;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static net.minecraft.world.biome.Biome.LOGGER;
 
 public class VEOreGeneration {
 

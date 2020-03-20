@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks;
+package com.veteam.voluminousenergy.blocks.blocks;
 
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.SoundType;

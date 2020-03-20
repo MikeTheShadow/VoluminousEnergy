@@ -1,5 +1,6 @@
-package com.veteam.voluminousenergy.blocks;
+package com.veteam.voluminousenergy.blocks.blocks;
 
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
