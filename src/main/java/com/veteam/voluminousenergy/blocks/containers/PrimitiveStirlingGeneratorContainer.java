@@ -28,7 +28,7 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
 
     public PrimitiveStirlingGeneratorContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        tileEntity = world.getTileEntity(pos);
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
