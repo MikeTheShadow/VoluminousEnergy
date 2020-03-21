@@ -20,6 +20,9 @@ public class VEOreGeneration {
     public static void OreGeneration(){
         //Setup CountRangeConfigs here for each ore
         CountRangeConfig saltpeterOreConf = new CountRangeConfig(4, 55, 0, 256);//"Weight", Minimum Height, topOffset (Adjusts from max value), Maximum height
+        CountRangeConfig bauxiteOreConf = new CountRangeConfig(16,10,0,60); //Cluster 2, MinY 10, MaxY 60
+        CountRangeConfig cinnabarOreConf = new CountRangeConfig(9,1,0,256);//Cinnabar can be found at every level
+        CountRangeConfig rutileOreConf = new CountRangeConfig(3,1,0,10);//From Y1 to Y10
 
         //Lists for blocks to generate ores in
         List<Block> sandList = new ArrayList<>();
@@ -38,6 +41,12 @@ public class VEOreGeneration {
 
         //Run through every single biome registered with Forge
         for (Biome biome : ForgeRegistries.BIOMES){
+            //Places ores here that can spawn in ANY forge registered biome
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.BAUXITE_ORE.getDefaultState(),12),Placement.COUNT_RANGE,bauxiteOreConf));
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.CINNABAR_ORE.getDefaultState(),12),Placement.COUNT_RANGE,cinnabarOreConf));
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.RUTILE_ORE.getDefaultState(),12),Placement.COUNT_RANGE,rutileOreConf));
+
+
             //If category is Desert. Desert, Desert Lakes, and Desert Hills included to ENSURE this will work (may be unecessary)
             if (biome.getCategory() == Biome.Category.DESERT || biome == Biomes.DESERT || biome == Biomes.DESERT_LAKES || biome == Biomes.DESERT_HILLS){
                 //Generate Saltpeter ore in the sand LOGGER.info("Saltpeter ore has been registered!");

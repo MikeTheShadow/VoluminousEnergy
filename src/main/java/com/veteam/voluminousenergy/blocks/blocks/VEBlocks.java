@@ -1,12 +1,10 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.BauxiteOre;
-import com.veteam.voluminousenergy.blocks.CinnabarOre;
-import com.veteam.voluminousenergy.blocks.RutileOre;
-import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
-import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
-import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;

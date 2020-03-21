@@ -1,9 +1,10 @@
 package com.veteam.voluminousenergy;
 
-import com.veteam.voluminousenergy.blocks.blocks.PrimitiveBlastFurnaceBlock;
-import com.veteam.voluminousenergy.blocks.blocks.PrimitiveStirlingGeneratorBlock;
-import com.veteam.voluminousenergy.blocks.blocks.SaltpeterOre;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.blocks.*;
+import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
@@ -13,9 +14,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import com.veteam.voluminousenergy.blocks.*;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;

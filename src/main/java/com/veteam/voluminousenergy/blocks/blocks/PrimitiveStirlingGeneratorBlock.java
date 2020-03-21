@@ -21,7 +21,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 
-//TODO: Tutorial 4, 15:30
 public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
