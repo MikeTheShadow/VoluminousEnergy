@@ -1,10 +1,20 @@
 package com.veteam.voluminousenergy;
 
+import com.veteam.voluminousenergy.blocks.blocks.*;
+import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import com.veteam.voluminousenergy.blocks.*;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -136,6 +146,20 @@ public class VoluminousEnergy
             LOGGER.info("Hello from tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
+        }
+
+        @SubscribeEvent
+        public static void onContainerRegistry(final RegistryEvent.Register<ContainerType<?>> event){
+
+            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveBlastFurnaceContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitiveblastfurnace"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveStirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitivestirlinggenerator"));
         }
     }
 }

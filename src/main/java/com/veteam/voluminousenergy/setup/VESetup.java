@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.setup;
 
-import com.veteam.voluminousenergy.blocks.VEBlocks;
-import javafx.scene.paint.Material;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
