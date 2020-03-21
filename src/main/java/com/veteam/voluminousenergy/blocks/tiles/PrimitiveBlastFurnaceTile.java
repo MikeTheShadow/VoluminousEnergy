@@ -30,7 +30,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
 
     public PrimitiveBlastFurnaceTile() {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
     }
 
     @Override

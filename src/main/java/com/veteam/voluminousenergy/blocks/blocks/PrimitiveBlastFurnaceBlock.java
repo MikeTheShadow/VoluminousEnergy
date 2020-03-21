@@ -21,8 +21,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class PrimitiveBlastFurnaceBlock extends FaceableBlock
-{
+public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
 
     public PrimitiveBlastFurnaceBlock() {
         super(Properties.create(Material.ROCK)
@@ -52,14 +51,17 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if(!worldIn.isRemote) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)tileEntity,tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+            } else {
+                throw new IllegalStateException("Primitive Stirling named container provider is missing!");
             }
+            return true;
         }
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+        return super.onBlockActivated(state, world, pos, player, handIn, hit);
     }
 }

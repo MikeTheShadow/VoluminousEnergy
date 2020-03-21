@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 
 //TODO: Tutorial 4, 15:30
-public class PrimitiveStirlingGeneratorBlock extends FaceableBlock{
+public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
 
@@ -49,11 +49,14 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock{
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        if (world.isRemote){
+        if (!world.isRemote){
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof INamedContainerProvider){
                 NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+            } else {
+                throw new IllegalStateException("Primitive Stirling named container provider is missing!");
             }
+            return true;
         }
         return super.onBlockActivated(state, world, pos, player, hand, result);
     }

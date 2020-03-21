@@ -16,8 +16,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import javax.annotation.Nullable;
-
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
 
 public class PrimitiveStirlingGeneratorContainer extends Container {
@@ -28,8 +26,8 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
 
     public PrimitiveStirlingGeneratorContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
-        tileEntity = world.getTileEntity(pos);
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        this.tileEntity = world.getTileEntity(pos);
+        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 

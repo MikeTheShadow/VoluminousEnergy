@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER;
 
@@ -22,10 +23,11 @@ public class PrimitiveBlastFurnaceContainer extends Container {
 
     public PrimitiveBlastFurnaceContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player) {
         super(PRIMITIVE_BLAST_FURNACE_CONTAINER, id);
-        TileEntity entity = world.getTileEntity(pos);
-        entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        this.tileEntity = entity;
+        this.tileEntity = world.getTileEntity(pos);
+        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
+        this.playerInventory = new InvWrapper(inventory);
+
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new SlotItemHandler(h, 0, 64, 24));
         });

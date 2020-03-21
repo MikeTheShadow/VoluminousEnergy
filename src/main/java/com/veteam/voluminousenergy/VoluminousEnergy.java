@@ -151,12 +151,12 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onContainerRegistry(final RegistryEvent.Register<ContainerType<?>> event){
-            /*
-            event.getRegistry().register(IForgeContainerType.create(((windowId, inv, data) -> {
 
-                return new PrimitiveBlastFurnaceContainer(windowId);
-            }).setRegistryName("primitiveblastfurnace")));
-             */
+            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveBlastFurnaceContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitiveblastfurnace"));
+
             event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new PrimitiveStirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
