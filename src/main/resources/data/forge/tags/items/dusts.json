@@ -6,6 +6,14 @@
     "#forge:dusts/sulfur",
     "#forge:dusts/carbon",
     "#forge:dusts/coal",
-    "#forge:dusts/coke"
+    "#forge:dusts/coke",
+    "#forge:dusts/aluminum",
+    "#forge:dusts/bauxite",
+    "#forge:dusts/cinnabar",
+    "#forge:dusts/iron",
+    "#forge:dusts/quartz",
+    "#forge:dusts/sand",
+    "#forge:dusts/soulsand",
+    "#forge:dusts/titanium"
   ]
 }

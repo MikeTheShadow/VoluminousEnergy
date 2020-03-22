@@ -60,6 +60,9 @@ public class VoluminousEnergy
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
+        //True Items
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","silicon"));
+
         //Dusts
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter/saltpeter"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter"));
@@ -68,11 +71,21 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coke"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lapis"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sulfur"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/aluminum"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/bauxite"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/cinnabar"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/iron"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/quartz"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sand"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/soulsand"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/titanium"));
 
         //Gears
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/stone"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/aluminum"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/titanium"));
     }
 
     @SubscribeEvent
@@ -122,6 +135,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERCHUNK);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILICON);
 
             //Dusts
             itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);
@@ -130,14 +144,26 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.SULFURDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBONDUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERDUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.BAUXITE_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.CINNABAR_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.IRON_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.QUARTZ_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SAND_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOULSAND_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
+            itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_INGOT);
 
             //Gears
             itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.IRON_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_GEAR);
 
         }
 

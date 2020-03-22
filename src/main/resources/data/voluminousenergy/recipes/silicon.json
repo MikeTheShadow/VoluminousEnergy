@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "forge:dusts/sand"
+  },
+  "result": "voluminousenergy:silicon",
+  "experience": 0.1,
+  "cookingtime": 200
+}

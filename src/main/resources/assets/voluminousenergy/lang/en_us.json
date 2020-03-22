@@ -23,5 +23,17 @@
     "item.voluminousenergy.carbonbrick": "Carbon Brick",
     "item.voluminousenergy.stonegear": "Stone Gear",
     "item.voluminousenergy.irongear": "Iron Gear",
-    "item.voluminousenergy.carbongear": "Carbon Gear"
+    "item.voluminousenergy.carbongear": "Carbon Gear",
+    "item.voluminousenergy.aluminum_dust": "Aluminum Dust",
+    "item.voluminousenergy.bauxite_dust": "Bauxite Dust",
+    "item.voluminousenergy.cinnabar_dust": "Cinnabar Dust",
+    "item.voluminousenergy.iron_dust": "Iron Dust",
+    "item.voluminousenergy.quartz_dust": "Quartz Dust",
+    "item.voluminousenergy.sand_dust": "Sand Dust",
+    "item.voluminousenergy.soulsand_dust": "Soulsand Dust",
+    "item.voluminousenergy.titanium_dust": "Titanium Dust",
+    "item.voluminousenergy.aluminum_ingot": "Aluminum Ingot",
+    "item.voluminousenergy.titanium_ingot": "Titanium Ingot",
+    "item.voluminousenergy.aluminum_gear": "Aluminum Gear",
+    "item.voluminousenergy.titanium_gear": "Titanium Gear"
 }
