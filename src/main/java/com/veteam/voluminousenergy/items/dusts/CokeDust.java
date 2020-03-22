@@ -1,14 +1,14 @@
-package com.veteam.voluminousenergy.items;
+package com.veteam.voluminousenergy.items.dusts;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.Item;
 
-public class CarbonBrick extends Item {
-    public CarbonBrick (){
+public class CokeDust extends Item {
+    public CokeDust (){
         super(new Item.Properties()
             .maxStackSize(64)
             .group(VESetup.itemGroup)
         );
-        setRegistryName("carbonbrick");
+        setRegistryName("cokedust");
     }
 }

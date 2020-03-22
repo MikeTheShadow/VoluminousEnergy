@@ -3,6 +3,8 @@
   "values": [
     "#forge:gears/stone",
     "#forge:gears/iron",
-    "#forge:gears/carbon"
+    "#forge:gears/carbon",
+    "#forge:gears/aluminum",
+    "#forge:gears/titanium"
   ]
 }

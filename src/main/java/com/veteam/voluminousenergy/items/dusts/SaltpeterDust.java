@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.items;
+package com.veteam.voluminousenergy.items.dusts;
 import net.minecraft.item.Item;
 import com.veteam.voluminousenergy.setup.VESetup;
 

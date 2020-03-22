@@ -1,13 +1,13 @@
-package com.veteam.voluminousenergy.items;
+package com.veteam.voluminousenergy.items.dusts;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.Item;
 
-public class SulfurDust extends Item {
-    public SulfurDust (){
+public class QuartzDust extends Item {
+    public QuartzDust (){
         super(new Item.Properties()
                 .maxStackSize(64)
                 .group(VESetup.itemGroup));
-        setRegistryName("sulfurdust");
+        setRegistryName("quartz_dust");
     }
 }
