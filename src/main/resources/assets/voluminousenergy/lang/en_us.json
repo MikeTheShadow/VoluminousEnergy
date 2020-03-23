@@ -35,5 +35,7 @@
     "item.voluminousenergy.aluminum_ingot": "Aluminum Ingot",
     "item.voluminousenergy.titanium_ingot": "Titanium Ingot",
     "item.voluminousenergy.aluminum_gear": "Aluminum Gear",
-    "item.voluminousenergy.titanium_gear": "Titanium Gear"
+    "item.voluminousenergy.titanium_gear": "Titanium Gear",
+    "item.voluminousenergy.silicon": "Silicon",
+    "item.voluminousenergy.gold_microchip": "Golden Microchip"
 }

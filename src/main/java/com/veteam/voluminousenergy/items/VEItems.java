@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.AluminumIngot;
 import com.veteam.voluminousenergy.items.ingots.CarbonBrick;
 import com.veteam.voluminousenergy.items.ingots.TitaniumIngot;
+import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
 
 public class VEItems
 {
@@ -40,4 +41,7 @@ public class VEItems
     public static CarbonGear CARBON_GEAR = new CarbonGear();
     public static AluminumGear ALUMINUM_GEAR = new AluminumGear();
     public static TitaniumGear TITANIUM_GEAR = new TitaniumGear();
+
+    //Microchips
+    public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
 }

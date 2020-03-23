@@ -165,6 +165,8 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_GEAR);
 
+            //Microchips
+            itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
         }
 
         @SubscribeEvent
