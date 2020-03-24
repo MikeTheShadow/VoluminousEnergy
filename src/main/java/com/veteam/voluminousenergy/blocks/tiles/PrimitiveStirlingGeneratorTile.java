@@ -28,7 +28,6 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     private LazyOptional handler = LazyOptional.of(this::createHandler).cast();
 
-
     public PrimitiveStirlingGeneratorTile() {
         super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
     }
@@ -39,9 +38,9 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     @Override
     public void read(CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
+        CompoundNBT invTag = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
+        //CompoundNBT energyTag = tag.getCompound("energy");
         super.read(tag);
     }
 
