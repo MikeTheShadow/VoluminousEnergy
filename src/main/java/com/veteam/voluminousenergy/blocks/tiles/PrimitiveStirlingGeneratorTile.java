@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -17,8 +18,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -26,7 +32,10 @@ import javax.annotation.Nullable;
 
 public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
-    private LazyOptional handler = LazyOptional.of(this::createHandler).cast();
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+
+    private int counter;
 
     public PrimitiveStirlingGeneratorTile() {
         super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
@@ -34,13 +43,28 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     @Override
     public void tick() {
+        if (counter > 0){
+            counter--;
+            if (counter <= 0){
+                energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(1000)); //Amount of energy to add per tick
+            }
+        } else {
+            handler.ifPresent(h -> {
+                ItemStack stack = h.getStackInSlot(0);
+                if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipies (tags) instead of static
+                    h.extractItem(0, 1, false);
+                    counter = 20;
+                }
+            });
+        }
     }
 
     @Override
     public void read(CompoundNBT tag) {
         CompoundNBT invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
-        //CompoundNBT energyTag = tag.getCompound("energy");
+        CompoundNBT energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((VEEnergyStorage)h).setEnergy(invTag.getInt("energy")));
         super.read(tag);
     }
 
@@ -50,6 +74,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
         });
+        energy.ifPresent(h -> tag.putInt("energy", h.getEnergyStored()));
         return super.write(tag);
     }
 
@@ -72,11 +97,19 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             };
     }
 
+    private IEnergyStorage createEnergy(){
+        return new VEEnergyStorage(100000,0);
+
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY){
+            return energy.cast();
         }
         return super.getCapability(cap, side);
     }
