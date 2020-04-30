@@ -64,7 +64,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         CompoundNBT invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
         CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((VEEnergyStorage)h).setEnergy(invTag.getInt("energy")));
+        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         super.read(tag);
     }
 
@@ -73,6 +73,10 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
+        });
+        energy.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            tag.put("energy",compound);
         });
         energy.ifPresent(h -> tag.putInt("energy", h.getEnergyStored()));
         return super.write(tag);
