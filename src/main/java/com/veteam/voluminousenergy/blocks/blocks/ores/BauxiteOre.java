@@ -10,6 +10,7 @@ public class BauxiteOre extends Block {
         super(Properties.create(Material.ROCK)
             .sound(SoundType.STONE)
             .hardnessAndResistance(2.0f)
+            .harvestLevel(1)
             .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("bauxiteore");

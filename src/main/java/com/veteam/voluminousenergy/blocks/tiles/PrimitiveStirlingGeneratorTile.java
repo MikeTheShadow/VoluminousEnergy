@@ -51,7 +51,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipies (tags) instead of static
+                if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
                     counter = 20;
                 }

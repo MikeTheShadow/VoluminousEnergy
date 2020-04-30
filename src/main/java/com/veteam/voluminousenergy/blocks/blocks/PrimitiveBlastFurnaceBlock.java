@@ -25,7 +25,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
 
     public PrimitiveBlastFurnaceBlock() {
         super(Properties.create(Material.ROCK)
-                    .sound(SoundType.STONE)
+                    .sound(SoundType.METAL)
                     .hardnessAndResistance(2.0f)
                     .lightValue(0)
                     .harvestLevel(1)

@@ -10,6 +10,7 @@ public class SaltpeterOre extends FallingBlock {
         super(Properties.create(Material.SAND)
             .sound(SoundType.SAND)
             .hardnessAndResistance(0.6f)
+            .harvestLevel(0)
             .harvestTool(ToolType.SHOVEL)
         );
         setRegistryName("saltpeterore");

@@ -10,6 +10,7 @@ public class RutileOre extends Block {
         super(Properties.create(Material.ROCK)
             .sound(SoundType.STONE)
             .hardnessAndResistance(2.0f)
+            .harvestLevel(3)
             .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("rutileore");
