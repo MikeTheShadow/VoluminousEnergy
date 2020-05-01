@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -47,7 +48,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         if (counter > 0){
             counter--;
             if (counter <= 0){
-                energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(1000)); //Amount of energy to add per tick
+                energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
             markDirty();
         } else {
@@ -55,7 +56,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                 ItemStack stack = h.getStackInSlot(0);
                 if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
-                    counter = 20;
+                    counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
                     markDirty();
                 }
             });
@@ -73,7 +74,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                     if (te != null){
                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
                            if (handler.canReceive()){
-                               int recieved = handler.receiveEnergy(Math.min(capacity.get(),100),false);
+                               int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get()),false);
                                capacity.addAndGet(-recieved);
                                ((VEEnergyStorage) energy).consumeEnergy(recieved);
                                markDirty();
@@ -140,7 +141,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(100000,0);
+        return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),0);
 
     }
 
