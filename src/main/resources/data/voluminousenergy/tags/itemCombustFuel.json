@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#voluminousenergy:itemCombustFuel/coal",
+    "#voluminousenergy:itemCombustFuel/coalcoke",
+    "#voluminousenergy:itemCombustFuel/petcoke"
+  ]
+}

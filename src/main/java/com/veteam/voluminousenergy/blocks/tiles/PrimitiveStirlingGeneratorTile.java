@@ -29,6 +29,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
@@ -48,15 +49,47 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             if (counter <= 0){
                 energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(1000)); //Amount of energy to add per tick
             }
+            markDirty();
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
                 if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
                     counter = 20;
+                    markDirty();
                 }
             });
         }
+
+        sendOutPower();
+    }
+
+    private void sendOutPower() {
+        energy.ifPresent(energy -> {
+            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
+            if (capacity.get() > 0){ //If we don't have energy we can't send any out
+                for (Direction direction : Direction.values()){
+                    TileEntity te = world.getTileEntity(pos.offset(direction));
+                    if (te != null){
+                       boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
+                           if (handler.canReceive()){
+                               int recieved = handler.receiveEnergy(Math.min(capacity.get(),100),false);
+                               capacity.addAndGet(-recieved);
+                               ((VEEnergyStorage) energy).consumeEnergy(recieved);
+                               markDirty();
+                               return capacity.get() > 0;
+                           } else {
+                               return true;
+                           }
+                       }
+                       ).orElse(true);
+                       if (!doContinue){
+                           return;
+                       }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -84,6 +117,11 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     private ItemStackHandler createHandler() {
             return new ItemStackHandler(1) {
+                @Override
+                protected void onContentsChanged(int slot){
+                    markDirty();
+                }
+
                 @Override
                 public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                     return stack.getItem() == Items.DIAMOND;
