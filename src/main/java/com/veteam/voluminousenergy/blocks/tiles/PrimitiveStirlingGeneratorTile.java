@@ -49,7 +49,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     public void tick() {
         if (counter > 0){
             counter--;
-            if (counter >= 0){
+            if (counter >= 0 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
                 energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
             markDirty();
@@ -123,7 +123,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
-        energy.ifPresent(h -> tag.putInt("energy", h.getEnergyStored()));
+        //energy.ifPresent(h -> tag.putInt("energy", h.getEnergyStored()));
         return super.write(tag);
     }
 
@@ -149,8 +149,9 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             {
                 if(stack.getItem() != Items.COAL || stack.getItem() != Items.COAL_BLOCK || stack.getItem() != VEItems.COALCOKE || stack.getItem() != VEItems.PETCOKE) {
                     return stack;
+                } else {
+                    return super.insertItem(slot, stack, simulate);
                 }
-                return super.insertItem(slot, stack, simulate);
             }
         };
     }
