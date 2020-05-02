@@ -136,14 +136,18 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == Items.COAL;
+                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE){
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
             {
-                if(stack.getItem() != Items.COAL) {
+                if(stack.getItem() != Items.COAL || stack.getItem() != Items.COAL_BLOCK || stack.getItem() != VEItems.COALCOKE || stack.getItem() != VEItems.PETCOKE) {
                     return stack;
                 }
                 return super.insertItem(slot, stack, simulate);
