@@ -3,12 +3,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,16 +49,25 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     public void tick() {
         if (counter > 0){
             counter--;
-            if (counter <= 0){
+            if (counter >= 0){
                 energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
             markDirty();
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.DIAMOND) { //TODO: Change it to allow JSON recipes (tags) instead of static
+                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
-                    counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
+                    //counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
+                    if (stack.getItem() == Items.COAL){
+                        counter = 1600;
+                    } else if (stack.getItem() == Items.COAL_BLOCK){
+                        counter = 16000;
+                    } else if (stack.getItem() == VEItems.COALCOKE){
+                        counter = 3200;
+                    } else if (stack.getItem() == VEItems.PETCOKE){
+                        counter = 4000;
+                    }
                     markDirty();
                 }
             });
@@ -72,21 +83,21 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                 for (Direction direction : Direction.values()){
                     TileEntity te = world.getTileEntity(pos.offset(direction));
                     if (te != null){
-                       boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
-                           if (handler.canReceive()){
-                               int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get()),false);
-                               capacity.addAndGet(-recieved);
-                               ((VEEnergyStorage) energy).consumeEnergy(recieved);
-                               markDirty();
-                               return capacity.get() > 0;
-                           } else {
-                               return true;
-                           }
-                       }
-                       ).orElse(true);
-                       if (!doContinue){
-                           return;
-                       }
+                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
+                                    if (handler.canReceive()){
+                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get()),false);
+                                        capacity.addAndGet(-recieved);
+                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
+                                        markDirty();
+                                        return capacity.get() > 0;
+                                    } else {
+                                        return true;
+                                    }
+                                }
+                        ).orElse(true);
+                        if (!doContinue){
+                            return;
+                        }
                     }
                 }
             }
@@ -117,27 +128,27 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     }
 
     private ItemStackHandler createHandler() {
-            return new ItemStackHandler(1) {
-                @Override
-                protected void onContentsChanged(int slot){
-                    markDirty();
-                }
+        return new ItemStackHandler(1) {
+            @Override
+            protected void onContentsChanged(int slot){
+                markDirty();
+            }
 
-                @Override
-                public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                    return stack.getItem() == Items.DIAMOND;
-                }
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return stack.getItem() == Items.COAL;
+            }
 
-                @Nonnull
-                @Override
-                public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-                {
-                    if(stack.getItem() != Items.DIAMOND) {
-                        return stack;
-                    }
-                    return super.insertItem(slot, stack, simulate);
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+            {
+                if(stack.getItem() != Items.COAL) {
+                    return stack;
                 }
-            };
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
     }
 
     private IEnergyStorage createEnergy(){

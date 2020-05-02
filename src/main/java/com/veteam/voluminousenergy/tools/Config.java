@@ -46,11 +46,11 @@ public class Config {
         PRIMITIVE_STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum power for the Primitive Stirling Generator")
                 .defineInRange("maxPower",100000, 0, Integer.MAX_VALUE);
         PRIMITIVE_STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Power generation per item")
-                .defineInRange("generate",1000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Power generation to send per tick")
+                .defineInRange("generate",40, 0, Integer.MAX_VALUE);
+        PRIMITIVE_STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Power generation to send per tick")
                 .defineInRange("send",1000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Ticks needed per item")
-                .defineInRange("ticks",1000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_STIRLING_GENERATOR_TICKS = COMMON_BUILDER.comment("Ticks needed per item")
+                .defineInRange("ticks",1600, 0, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
     }
 
