@@ -1,11 +1,8 @@
 package com.veteam.voluminousenergy.items;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class PetCoke extends Item
 {
@@ -15,5 +12,10 @@ public class PetCoke extends Item
         .maxStackSize(64)
         .group(VESetup.itemGroup));
         setRegistryName("petcoke");
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack) {
+        return 4000;
     }
 }

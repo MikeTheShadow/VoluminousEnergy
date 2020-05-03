@@ -59,7 +59,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                 if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
                     //counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
-                    if (stack.getItem() == Items.COAL){
+                    if (stack.getItem() == Items.COAL || stack.getItem() == Items.CHARCOAL){
                         counter = 1600;
                     } else if (stack.getItem() == Items.COAL_BLOCK){
                         counter = 16000;
@@ -136,7 +136,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE){
+                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == Items.CHARCOAL || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE){
                     return true;
                 } else {
                     return false;
@@ -147,10 +147,33 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
             {
+                /*
+                Original not working solution:
                 if(stack.getItem() != Items.COAL || stack.getItem() != Items.COAL_BLOCK || stack.getItem() != VEItems.COALCOKE || stack.getItem() != VEItems.PETCOKE) {
-                    return stack;
+                    return stack; //Returns the original stack to the player's inventory
                 } else {
+                    return super.insertItem(slot, stack, simulate); //Inserts the stack into the machine's inventory
+                }
+
+                Inverted not working solution:
+                if(stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) {
+                    return super.insertItem(slot, stack, simulate); //Inserts the stack into the machine's inventory
+                } else {
+                    return stack; //Returns the original stack to the player's inventory
+                }
+                 */
+                if (stack.getItem() == Items.COAL){
                     return super.insertItem(slot, stack, simulate);
+                } else if (stack.getItem() == Items.COAL_BLOCK){
+                    return super.insertItem(slot, stack, simulate);
+                } else if (stack.getItem() == VEItems.COALCOKE){
+                    return super.insertItem(slot, stack, simulate);
+                } else if (stack.getItem() == VEItems.PETCOKE){
+                    return super.insertItem(slot, stack, simulate);
+                } else if (stack.getItem() == Items.CHARCOAL){
+                    return super.insertItem(slot, stack, simulate);
+                } else {
+                    return stack;
                 }
             }
         };

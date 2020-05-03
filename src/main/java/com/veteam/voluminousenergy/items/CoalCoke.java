@@ -15,7 +15,7 @@ public class CoalCoke extends Item {
 
     @Override
     public int getBurnTime(ItemStack itemStack) {
-        return 30;
+        return 3200;
     }
 
 
