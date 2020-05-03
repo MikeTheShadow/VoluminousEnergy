@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,23 +56,24 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(1) {
+        return new ItemStackHandler(2) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == Items.DIAMOND;
+                return stack.getItem() == Items.COAL;
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
             {
-                if(stack.getItem() != Items.DIAMOND) {
+                if(stack.getItem() != Items.COAL) {
                     return stack;
                 }
                 return super.insertItem(slot, stack, simulate);
             }
         };
     }
+
 
     @Nonnull
     @Override
@@ -83,9 +85,8 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     @Override
-    public ITextComponent getDisplayName()
-    {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("voluminousenergy:primitiveblastfurnace");
     }
 
     @Nullable

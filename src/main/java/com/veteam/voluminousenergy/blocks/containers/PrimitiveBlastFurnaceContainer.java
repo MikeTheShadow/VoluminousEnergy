@@ -1,9 +1,15 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceInsertSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
@@ -12,6 +18,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+
+import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER;
 
@@ -29,7 +37,8 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 0, 64, 24));
+            addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 64, 24));
+            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 0,96,24));
         });
         layoutPlayerInventorySlots(10, 70);
     }
@@ -63,5 +72,77 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         // Hotbar
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+    }
+
+    /*
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack stack = slot.getStack();
+            itemstack = stack.copy();
+            if (index == 0) {
+                if (!this.mergeItemStack(stack, 1, 37, true)) {
+                    return ItemStack.EMPTY;
+                }
+                slot.onSlotChange(stack, itemstack);
+            } else {
+                if (stack.getItem() == Items.DIAMOND) {
+                    if (!this.mergeItemStack(stack, 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (index < 28) {
+                    if (!this.mergeItemStack(stack, 28, 37, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (index < 37 && !this.mergeItemStack(stack, 1, 28, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if (stack.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+
+            if (stack.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(playerIn, stack);
+        }
+
+        return itemstack;
+    }
+     */
+    @Nonnull
+    @Override
+    public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
+        ItemStack returnStack = ItemStack.EMPTY;
+        final Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            final ItemStack slotStack = slot.getStack();
+            returnStack = slotStack.copy();
+
+            final int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
+            if (index < containerSlots) {
+                if (!mergeItemStack(slotStack, containerSlots, this.inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!mergeItemStack(slotStack, 0, containerSlots, false)) {
+                return ItemStack.EMPTY;
+            }
+            if (slotStack.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+            if (slotStack.getCount() == returnStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+            slot.onTake(player, slotStack);
+        }
+        return returnStack;
     }
 }
