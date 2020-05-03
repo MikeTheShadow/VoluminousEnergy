@@ -56,7 +56,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) { //TODO: Change it to allow JSON recipes (tags) instead of static
+                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE || stack.getItem() == Items.CHARCOAL) { //TODO: Change it to allow JSON recipes (tags) instead of static
                     h.extractItem(0, 1, false);
                     //counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
                     if (stack.getItem() == Items.COAL || stack.getItem() == Items.CHARCOAL){
