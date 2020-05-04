@@ -34,16 +34,6 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
         setRegistryName("primitiveblastfurnace");
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
-        state.add(FACING);
-    }
-
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
