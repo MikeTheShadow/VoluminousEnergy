@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,74 +47,28 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() {
-        /*
-        if (counter == 1){
-            counter--;
-            handler.ifPresent(h -> {
-                ItemStack output = new ItemStack(VEItems.COALCOKE);
-                h.extractItem(0, 1, false);
-                h.insertItem(1,output,false);
-                LOGGER.debug("Item Extraction complete! counter: " + counter);
-            });
-            markDirty();
-        } else if (counter > 0){
-            counter--;
-            LOGGER.debug("Counting down! counter: " + counter);
-            markDirty();
-        } else {
-            handler.ifPresent(h -> {
-                ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.COAL) { //TODO: Change it to allow JSON recipes (tags) instead of static
-                    //h.extractItem(0, 1, false);
-                    counter = 200;
-                    LOGGER.debug("COAL INSERTED! counter: " + counter);
-                    markDirty();
-                }
-            });
-        }
-         */
-        handler.ifPresent(h -> {
 
+        handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0);
             ItemStack output = h.getStackInSlot(1);
-            /*
-            if (output.getCount() < 64 && input.getCount() > 0){
-                if (counter == 1) {
-                    ItemStack newOut = new ItemStack(VEItems.COALCOKE);
-                    newOut.setCount(output.getCount()+1);
-                    h.extractItem(0,1,false);
-                    h.insertItem(1,input,false);
-                    counter--;
-                    LOGGER.debug("Item Extraction complete! counter: " + counter + ", input: " + input.getCount() + ", output: " + output.getCount());
-                    markDirty();
-                } else if (counter > 0 && counter != 1){
-                    counter--;
-                    LOGGER.debug("Counting down! counter: " + counter);
-                    markDirty();
-                } else {
-                    if (input.getItem() == Items.COAL){
-                        counter = 200;
-                        LOGGER.debug("COAL INSERTED! counter: " + counter);
-                        markDirty();
-                    }
-                }
-            }
-             */
+
+            LOGGER.debug(input.getCount() + " " + input.getItem());
+            LOGGER.debug(output.getCount() + " " + output.getItem());
+
             if(output.getCount() < 64 && input.getCount() > 0){
-                h.extractItem(0,1,false);
-                if(output.isEmpty() == true){
+                //h.extractItem(0,1,false);
+                if(output.isEmpty()){
                     output = new ItemStack(VEItems.COALCOKE);
-                    output.setCount(1);
                 } else {
-                    int outCount = output.getCount();
-                    outCount++;
-                    output.setCount(outCount);
+                    int newOutputCount = output.getCount() + 1;
+                    output.setCount(newOutputCount);
                 }
                 LOGGER.debug(output.getCount() + " " + output.getItem());
-                h.insertItem(1,output,false);
-                markDirty();
+                h.insertItem(1, output,false);
+                this.markDirty();
             }
         });
+
     }
 
     @Override
@@ -136,18 +91,27 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(2) {
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == Items.COAL;
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                if (slot == 0){
+                    return stack.getItem() == Items.COAL;
+                } else if (slot == 1){
+                    return stack.getItem() == VEItems.COALCOKE;
+                }
+                return false;
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             {
-                if(stack.getItem() != Items.COAL) {
-                    return stack;
+                if(stack.getItem() == Items.COAL && slot == 0) {
+                    LOGGER.debug("Inserting Coal to Slot 0.");
+                    return super.insertItem(slot, stack, simulate);
+                } else if (stack.getItem() == VEItems.COALCOKE && slot == 1){
+                    LOGGER.debug("Inserting Coal Coke to Slot 1.");
+                    return super.insertItem(slot, stack, simulate);
                 }
-                return super.insertItem(slot, stack, simulate);
+                return stack;
             }
         };
     }
