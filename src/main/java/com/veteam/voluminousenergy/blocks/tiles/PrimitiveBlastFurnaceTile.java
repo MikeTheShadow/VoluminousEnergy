@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContai
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -46,29 +47,32 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     @Override
-    public void tick() {
+    public void tick() { //Tick method to run every tick
 
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0);
             ItemStack output = h.getStackInSlot(1);
 
-            LOGGER.debug(input.getCount() + " " + input.getItem());
-            LOGGER.debug(output.getCount() + " " + output.getItem());
-
             if(output.getCount() < 64 && input.getCount() > 0){
-                //h.extractItem(0,1,false);
-                if(output.isEmpty()){
-                    output = new ItemStack(VEItems.COALCOKE);
+                if(counter == 1){ // To remove inserted item and create output item
+                    h.extractItem(0,1,false); // Extracts the input item from the insert slot
+                    int newOutputCount = output.getCount(); // Get amount of items currently in the output slot
+                    ItemStack nOut = new ItemStack(VEItems.COALCOKE); // Create a new ItemStack that will replace the one in the output slot
+                    nOut.setCount(++newOutputCount); //Set the amount of items that should now be in the output slot
+                    h.extractItem(1,64,false);// Extract the current ItemStack in the output slot
+                    h.insertItem(1, nOut,false); // Insert the new ItemStack into the output slot
+                    --counter;
+                    markDirty();
+                } else if (counter > 0 && counter != 1){
+                    --counter;
+                    LOGGER.debug(counter);
                 } else {
-                    int newOutputCount = output.getCount() + 1;
-                    output.setCount(newOutputCount);
+                    if (!input.isEmpty()){
+                        counter = 200;
+                    }
                 }
-                LOGGER.debug(output.getCount() + " " + output.getItem());
-                h.insertItem(1, output,false);
-                this.markDirty();
             }
         });
-
     }
 
     @Override
@@ -116,7 +120,6 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         };
     }
 
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -137,4 +140,9 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     {
         return new PrimitiveBlastFurnaceContainer(i,world,pos,playerInventory,playerEntity);
     }
+
+    public int getProgress(){
+        return counter/200;
+    }
+
 }
