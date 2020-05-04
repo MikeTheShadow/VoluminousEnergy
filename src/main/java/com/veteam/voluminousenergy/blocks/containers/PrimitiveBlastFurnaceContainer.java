@@ -38,7 +38,7 @@ public class PrimitiveBlastFurnaceContainer extends Container {
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 64, 24));
-            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 0,96,24));
+            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,96,24));
         });
         layoutPlayerInventorySlots(10, 70);
     }

@@ -41,9 +41,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
 
     private int counter;
 
-    public PrimitiveStirlingGeneratorTile() {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
-    }
+    public PrimitiveStirlingGeneratorTile() { super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE); }
 
     @Override
     public void tick() {
