@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +26,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST
 
 public class PrimitiveBlastFurnaceContainer extends Container {
 
-    private TileEntity tileEntity;
+    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
 
@@ -38,7 +39,7 @@ public class PrimitiveBlastFurnaceContainer extends Container {
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 64, 24));
-            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,96,24));
+            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,120,24));
         });
         layoutPlayerInventorySlots(10, 70);
     }
@@ -74,48 +75,6 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
-    /*
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
-            itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.mergeItemStack(stack, 1, 37, true)) {
-                    return ItemStack.EMPTY;
-                }
-                slot.onSlotChange(stack, itemstack);
-            } else {
-                if (stack.getItem() == Items.DIAMOND) {
-                    if (!this.mergeItemStack(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    if (!this.mergeItemStack(stack, 28, 37, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 37 && !this.mergeItemStack(stack, 1, 28, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            if (stack.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
-
-            if (stack.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(playerIn, stack);
-        }
-
-        return itemstack;
-    }
-     */
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
@@ -145,4 +104,5 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         }
         return returnStack;
     }
+
 }

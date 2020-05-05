@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,6 +34,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static java.lang.Math.abs;
 
 
 public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -65,12 +68,14 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
                     markDirty();
                 } else if (counter > 0 && counter != 1){
                     --counter;
-                    LOGGER.debug(counter);
+                    LOGGER.debug(counter + " %: " + progressCounter() + " px: " + progressCounterPX(23));
                 } else {
                     if (!input.isEmpty()){
                         counter = 200;
                     }
                 }
+            } else if (input.getCount() == 0) {
+                counter = 0;
             }
         });
     }
@@ -141,8 +146,20 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         return new PrimitiveBlastFurnaceContainer(i,world,pos,playerInventory,playerEntity);
     }
 
-    public int getProgress(){
-        return counter/200;
+    public int counter(){
+        return counter;
     }
 
+    public int progressCounter(){
+        //return MathHelper.intFloorDiv(counter*100,200);
+        return 100-((counter*100)/200);
+    }
+
+    public int progressCounterPX(int px){
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(100-((counter*100)/200)))/100;
+        }
+    }
 }

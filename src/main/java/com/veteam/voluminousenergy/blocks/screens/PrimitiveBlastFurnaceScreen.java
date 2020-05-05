@@ -7,6 +7,9 @@ import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -15,11 +18,13 @@ import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
 
 public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastFurnaceContainer>
 {
-
+    PrimitiveBlastFurnaceTile tileEntity;
+    Container container;
     public ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
+        tileEntity = (PrimitiveBlastFurnaceTile) screenContainer.tileEntity;
     }
 
     @Override
@@ -31,11 +36,9 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        //this.font.drawString(this.title.getFormattedText(), 8.0F, 6.0F, 4210752);
-        //this.font.drawString(new TranslationTextComponent("voluminousenergy:primtiveblastfurnace",new Object[0]).getFormattedText(),8.0F,6.0F,4210752);
-        //this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 - 12), 4210752);
         drawString(Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 - 12), 4210752);
+        drawString(Minecraft.getInstance().fontRenderer,"Ticks:" + tileEntity.counter(),8,36,0xffffff);
     }
 
     @Override
@@ -45,6 +48,20 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        if(tileEntity != null){
+            int progress = tileEntity.progressCounterPX(24);
+            /*Note for this.blit below:
+                p_blit_1_ = starting x for blit on screen
+                p_blit_2_ = starting y for blit on screen
+                p_blit_3_ = starting x for blit to be stitched from in the file
+                p_blit_4_ = starting y for blit to be stitched from in the file
+                p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
+                p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
+             */
+            this.blit(i+84, j+24, 180, 0, progress, 16);
+            //this.blit(i,j,180,1,progress,15);
+        }
+
     }
 
 }
