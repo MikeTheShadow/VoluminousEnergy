@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:primitive_blast_furnacing",
+  "ingredient": {
+    "item": "minecraft:coal",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:coalcoke",
+    "count": 1
+  }
+}

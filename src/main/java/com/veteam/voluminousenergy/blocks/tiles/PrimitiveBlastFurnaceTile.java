@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -103,10 +104,16 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         return new ItemStackHandler(2) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
                 if (slot == 0){
-                    return stack.getItem() == Items.COAL;
+                    try{
+                        recipe.ingredient.test(stack);
+                        return true;
+                    } catch (Exception e){
+                        return false;
+                    }
                 } else if (slot == 1){
-                    return stack.getItem() == VEItems.COALCOKE;
+                    return true;
                 }
                 return false;
             }
@@ -115,11 +122,17 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             {
-                if(stack.getItem() == Items.COAL && slot == 0) {
-                    LOGGER.debug("Inserting Coal to Slot 0.");
-                    return super.insertItem(slot, stack, simulate);
-                } else if (stack.getItem() == VEItems.COALCOKE && slot == 1){
-                    LOGGER.debug("Inserting Coal Coke to Slot 1.");
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
+                if(slot == 0) {
+                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                        if(stack.getItem() == testStack.getItem()){
+                            return super.insertItem(slot, stack, simulate);
+                        }
+                    }
+                    LOGGER.debug("Inserting to Slot 0.");
+
+                } else if (slot == 1){
+                    LOGGER.debug("Inserting to Slot 1.");
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

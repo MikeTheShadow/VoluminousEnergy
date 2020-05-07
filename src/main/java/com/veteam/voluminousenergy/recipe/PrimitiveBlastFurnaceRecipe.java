@@ -66,7 +66,7 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
 
     @Override
     public ItemStack getRecipeOutput(){
-        return ItemStack.EMPTY;
+        return result;
     }
 
     @Override
