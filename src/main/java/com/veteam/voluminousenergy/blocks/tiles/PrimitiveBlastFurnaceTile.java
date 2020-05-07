@@ -3,11 +3,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
@@ -51,11 +54,42 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() { //Tick method to run every tick
+        if (world == null || world.isRemote()){
+            return;
+        }
 
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0);
             ItemStack output = h.getStackInSlot(1);
 
+            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
+
+
+            LOGGER.debug(recipe.ingredient + " " + recipe.getResult());
+            if(output.getCount() < 64 && input.getCount() > 0){
+                if(counter == 1){ // To remove inserted item and create output item
+                    h.extractItem(0,1,false); // Extracts the input item from the insert slot
+                    int newOutputCount = output.getCount();// Get amount of items currently in the output slot
+                    ItemStack nOut = recipe.getResult();// Creates a new ItemStack based on the expected result that will replace the one in the output slot
+                    nOut.setCount(++newOutputCount);//Set the amount of items that should now be in the output slot
+                    h.extractItem(1,64,false);// Extract the current ItemStack in the output slot
+                    h.insertItem(1, nOut,false); // Insert the new ItemStack into the output slot
+                    --counter;
+                    markDirty();
+                } else if (counter > 0){
+                    --counter;
+                    LOGGER.debug(counter + " %: " + progressCounter() + " px: " + progressCounterPX(23));
+                } else {
+                    if (!input.isEmpty()){
+                        counter = 200;
+                        //counter = recipe.getProcessTime();//Gets the processing time from the recipe -> NULL_POINTER_EXCEPTION
+                    }
+                }
+            } else if (input.getCount() == 0) {
+                counter = 0;
+            }
+
+            /*
             if(output.getCount() < 64 && input.getCount() > 0){
                 if(counter == 1){ // To remove inserted item and create output item
                     h.extractItem(0,1,false); // Extracts the input item from the insert slot
@@ -77,6 +111,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             } else if (input.getCount() == 0) {
                 counter = 0;
             }
+             */
         });
     }
 
@@ -162,4 +197,15 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             return (px*(100-((counter*100)/200)))/100;
         }
     }
+
+    /*
+    private PrimitiveBlastFurnaceRecipe getRecipe(final ItemStack input){
+        return getRecipe(new Inventory(input));
+    }
+
+    private PrimitiveBlastFurnaceRecipe getRecipe(final IInventory inventory){
+        return world == null ? null: world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType,inventory,world).orElse(null);
+    }
+
+     */
 }
