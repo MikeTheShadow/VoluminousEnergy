@@ -9,12 +9,14 @@ import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContai
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.ClientProxy;
@@ -59,6 +61,9 @@ public class VoluminousEnergy
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupWhenLoadingComplete);
         MinecraftForge.EVENT_BUS.register(this);
+
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        VERecipes.VE_RECIPES.register(modEventBus);
 
         Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
