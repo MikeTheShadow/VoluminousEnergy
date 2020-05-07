@@ -32,6 +32,7 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
     public int ingredientCount;
     public ItemStack result;
     private int processTime;
+    private int outputAmount;
 
     public PrimitiveBlastFurnaceRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
@@ -84,6 +85,10 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
         return recipeType;
     }
 
+    public int getOutputAmount(){
+        return outputAmount;
+    }
+
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<PrimitiveBlastFurnaceRecipe>{
 
         public static ArrayList<Item> ingredientList = new ArrayList<>();
@@ -109,6 +114,7 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
             //recipe.result = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation),fluidAmount);
             //recipe.result = new ItemStack(VEItems.COALCOKE);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
+            recipe.outputAmount = itemAmount;
             Result = recipe.result;
 
 
@@ -123,6 +129,8 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItemStack();
+            recipe.processTime = buffer.readInt();
+            recipe.outputAmount = buffer.readInt();
             return recipe;
         }
 
@@ -131,6 +139,8 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItemStack(recipe.getResult());
+            buffer.writeInt(recipe.processTime);
+            buffer.writeInt(recipe.outputAmount);
         }
     }
 

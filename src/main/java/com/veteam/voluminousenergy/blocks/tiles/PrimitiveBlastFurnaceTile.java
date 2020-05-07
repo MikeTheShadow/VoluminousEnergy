@@ -37,6 +37,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
 
     private int counter;
+    private int length;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public PrimitiveBlastFurnaceTile() {
@@ -57,29 +58,30 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
             PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
 
-
-            if(output.getCount() < 64 && input.getCount() > 0){
-                if(counter == 1){ // To remove inserted item and create output item
-                    h.extractItem(0,1,false); // Extracts the input item from the insert slot
-                    int newOutputCount = output.getCount();// Get amount of items currently in the output slot
-                    ItemStack nOut = recipe.getResult();// Creates a new ItemStack based on the expected result that will replace the one in the output slot
-                    nOut.setCount(++newOutputCount);//Set the amount of items that should now be in the output slot
-                    h.extractItem(1,64,false);// Extract the current ItemStack in the output slot
-                    h.insertItem(1, nOut,false); // Insert the new ItemStack into the output slot
-                    --counter;
-                    markDirty();
-                } else if (counter > 0){
-                    --counter;
-                    //LOGGER.debug(counter + " %: " + progressCounter() + " px: " + progressCounterPX(23));
-                } else {
-                    if (!input.isEmpty()){
+            if(!input.isEmpty()) {
+                if (output.getCount() + recipe.getOutputAmount() < 64) {
+                    if (counter == 1) { // To remove inserted item and create output item
+                        h.extractItem(0, 1, false); // Extracts the input item from the insert slot
+                        int newOutputCount = output.getCount();// Get amount of items currently in the output slot
+                        ItemStack nOut = recipe.getResult();// Creates a new ItemStack based on the expected result that will replace the one in the output slot
+                        nOut.setCount(newOutputCount + recipe.getOutputAmount());//Set the amount of items that should now be in the output slot
+                        h.extractItem(1, 64, false);// Extract the current ItemStack in the output slot
+                        h.insertItem(1, nOut, false); // Insert the new ItemStack into the output slot
+                        --counter;
+                        markDirty();
+                    } else if (counter > 0) {
+                        --counter;
+                        //LOGGER.debug(counter + " %: " + progressCounter() + " px: " + progressCounterPX(24));
+                    } else {
                         //counter = 200;
                         counter = recipe.getProcessTime();//Gets the processing time from the recipe
+                        length = counter;
                     }
                 }
-            } else if (input.getCount() == 0) {
-                counter = 0;
+            } else {
+                    counter = 0;
             }
+
         });
     }
 
@@ -129,10 +131,10 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
                             return super.insertItem(slot, stack, simulate);
                         }
                     }
-                    LOGGER.debug("Inserting to Slot 0.");
+                    //LOGGER.debug("Inserting to Slot 0.");
 
                 } else if (slot == 1){
-                    LOGGER.debug("Inserting to Slot 1.");
+                    //LOGGER.debug("Inserting to Slot 1.");
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
@@ -166,15 +168,16 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     public int progressCounter(){
-        //return MathHelper.intFloorDiv(counter*100,200);
-        return 100-((counter*100)/200);
+        //return 100-((counter*100)/200);
+        return 100-((counter*100)/length);
     }
 
     public int progressCounterPX(int px){
         if (counter == 0){
             return 0;
         } else {
-            return (px*(100-((counter*100)/200)))/100;
+            //return (px*(100-((counter*100)/200)))/100;
+            return (px*(100-((counter*100)/length)))/100;
         }
     }
 
