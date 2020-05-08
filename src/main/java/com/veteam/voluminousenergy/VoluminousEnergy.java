@@ -5,8 +5,10 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import com.veteam.voluminousenergy.recipe.VERecipes;
@@ -117,6 +119,7 @@ public class VoluminousEnergy
             //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
+            blockRegisteryEvent.getRegistry().register(new CrusherBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -139,6 +142,7 @@ public class VoluminousEnergy
             //Tile Entities
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK,properties).setRegistryName("primitivestirlinggenerator"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CRUSHER_BLOCK,properties).setRegistryName("crusher"));
 
             //Ores
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
@@ -189,6 +193,7 @@ public class VoluminousEnergy
             LOGGER.info("Hello from tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
+            event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
         }
 
         @SubscribeEvent
@@ -203,6 +208,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new PrimitiveStirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("primitivestirlinggenerator"));
+
+            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CrusherContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("crusher"));
         }
     }
 }

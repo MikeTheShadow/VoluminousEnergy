@@ -5,8 +5,10 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import net.minecraft.inventory.container.ContainerType;
@@ -34,6 +36,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":primitivestirlinggenerator")
     public static ContainerType<PrimitiveStirlingGeneratorContainer> PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
+
+    //Crusher
+    @ObjectHolder(VoluminousEnergy.MODID + ":crusher")
+    public static CrusherBlock CRUSHER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":crusher")
+    public static TileEntityType<CrusherTile> CRUSHER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":crusher")
+    public static ContainerType<CrusherContainer> CRUSHER_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

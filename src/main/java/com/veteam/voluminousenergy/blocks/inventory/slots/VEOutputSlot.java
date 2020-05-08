@@ -16,7 +16,6 @@ public class VEOutputSlot extends SlotItemHandler {
     We override this and return false since no item can
     be valid in an output slot. This is to prevent
     users from putting anything in the output slot
-
      */
 
     @Override

@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks.inventory.slots;
+package com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots;
 
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import net.minecraft.inventory.Inventory;

@@ -1,5 +1,6 @@
-package com.veteam.voluminousenergy.blocks.inventory.slots;
+package com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots;
 
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import net.minecraftforge.items.IItemHandler;
 
 public class PrimitiveBlastFurnaceOutputSlot extends VEOutputSlot {

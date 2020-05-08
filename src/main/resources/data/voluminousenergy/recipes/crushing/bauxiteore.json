@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "voluminousenergy:bauxiteore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:bauxitedust",
+    "count": 1
+  },
+  "rng": {
+    "item": "voluminousenergy:titanium_ingot",
+    "count": 1,
+    "chance": 0.5
+  }
+}

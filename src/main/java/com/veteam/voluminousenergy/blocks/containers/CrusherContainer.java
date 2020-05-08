@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceInsertSlot;
-import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.CrusherSlots.CrusherInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,32 +19,32 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
-import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER;
+import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAINER;
 
-public class PrimitiveBlastFurnaceContainer extends Container {
+public class CrusherContainer extends Container {
 
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
 
-    public PrimitiveBlastFurnaceContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player) {
-        super(PRIMITIVE_BLAST_FURNACE_CONTAINER, id);
+    public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
+        super(CRUSHER_CONTAINER,id);
         this.tileEntity = world.getTileEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 64, 24, world));
-            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,120,24));
-            //addSlot(new VEOutputSlot(h, 1,120,24));
+            addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
+            addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
+            addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
         });
-        layoutPlayerInventorySlots(10, 70);
+        layoutPlayerInventorySlots(8, 84);
     }
 
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(),tileEntity.getPos()),playerEntity, VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
+        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(),tileEntity.getPos()),playerEntity, VEBlocks.CRUSHER_BLOCK);
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
@@ -103,5 +102,4 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         }
         return returnStack;
     }
-
 }
