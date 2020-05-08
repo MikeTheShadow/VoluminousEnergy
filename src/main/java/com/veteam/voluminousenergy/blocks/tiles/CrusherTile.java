@@ -52,7 +52,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
 
             if(!input.isEmpty()){
-                if(output.getCount() + recipe.getOutputAmount() > 64 && rng.getCount() + recipe.getOutputRngAmount() > 64){
+                if(output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64){
                     if(counter == 1){
                         h.extractItem(0,1,false);
                         //Determine if random item is generated
