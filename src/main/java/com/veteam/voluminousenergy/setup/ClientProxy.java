@@ -15,12 +15,6 @@ public class ClientProxy implements IProxy {
     @Override
     public void init() {
         ScreenManager.registerFactory(VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER, PrimitiveBlastFurnaceScreen::new);
-        /*
-        ScreenManager.registerFactory(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER, ((container, playerInventory, title) -> {
-            return new PrimitiveStirlingGeneratorScreen(container, playerInventory, title);
-        }) );
-
-         */
         ScreenManager.registerFactory(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER, PrimitiveStirlingGeneratorScreen::new);
         ScreenManager.registerFactory(VEBlocks.CRUSHER_CONTAINER, CrusherScreen::new);
     }

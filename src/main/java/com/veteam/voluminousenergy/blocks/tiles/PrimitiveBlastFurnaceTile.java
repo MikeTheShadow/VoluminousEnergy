@@ -64,6 +64,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
                         h.extractItem(0, 1, false); // Extracts the input item from the insert slot
                         int newOutputCount = output.getCount();// Get amount of items currently in the output slot
                         ItemStack nOut = recipe.getResult();// Creates a new ItemStack based on the expected result that will replace the one in the output slot
+                        LOGGER.debug("OUTPUT SLOT New Output: " + nOut + " To replace: " + output + " newOutputCount: " + newOutputCount + " recipeCount: " + recipe.getOutputAmount());
                         nOut.setCount(newOutputCount + recipe.getOutputAmount());//Set the amount of items that should now be in the output slot
                         h.extractItem(1, 64, false);// Extract the current ItemStack in the output slot
                         h.insertItem(1, nOut, false); // Insert the new ItemStack into the output slot

@@ -82,6 +82,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             } else {
                 counter = 0;
             }
+
         });
     }
 
