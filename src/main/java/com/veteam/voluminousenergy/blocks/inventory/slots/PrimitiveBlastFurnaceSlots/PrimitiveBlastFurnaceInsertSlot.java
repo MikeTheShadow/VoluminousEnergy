@@ -17,15 +17,19 @@ public class PrimitiveBlastFurnaceInsertSlot extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack){
-        PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
-        for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-            try{
-                if(stack.getItem() == testStack.getItem()){
-                    return true;
+        try{
+            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
+            for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                try{
+                    if(stack.getItem() == testStack.getItem()){
+                        return true;
+                    }
+                } catch (Exception e){
+                    return false;
                 }
-            } catch (Exception e){
-                return false;
             }
+        } catch (Exception e){
+            return false;
         }
         return false;
     }
