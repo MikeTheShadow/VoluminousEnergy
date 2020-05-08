@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -101,6 +103,31 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             tag.put("inv",compound);
         });
         return super.write(tag);
+    }
+
+
+    /*
+        Sync on block update
+     */
+
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket(){
+        CompoundNBT tag = new CompoundNBT();
+        //Write data into the tag
+        handler.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            tag.put("inv", compound);
+        });
+        return new SUpdateTileEntityPacket(getPos(), -1, tag);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
+        CompoundNBT tag = pkt.getNbtCompound();
+        //Handle Data from tag
+        CompoundNBT inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+        createHandler().deserializeNBT(inv);
     }
 
     private ItemStackHandler createHandler() {

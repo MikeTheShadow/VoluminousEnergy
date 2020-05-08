@@ -12,6 +12,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -29,6 +31,8 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+
+import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -58,7 +62,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                         //Determine if random item is generated
                         Random r = new Random();
                         float random = 0 + r.nextFloat() * (0 - 1);
-                        if(random <= recipe.getChance()){
+                        if(abs(random) <= recipe.getChance()){
                             int currentRngCount = rng.getCount();
                             ItemStack newRngStack = recipe.getRngItem();
                             newRngStack.setCount(currentRngCount + recipe.getOutputRngAmount());
@@ -86,6 +90,10 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         });
     }
 
+    /*
+        Read and Write on World save
+     */
+
     @Override
     public void read(CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
@@ -101,6 +109,30 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             tag.put("inv", compound);
         });
         return super.write(tag);
+    }
+
+    /*
+        Sync on block update
+     */
+
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket(){
+        CompoundNBT tag = new CompoundNBT();
+        //Write data into the tag
+        handler.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            tag.put("inv", compound);
+        });
+        return new SUpdateTileEntityPacket(getPos(), -1, tag);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
+        CompoundNBT tag = pkt.getNbtCompound();
+        //Handle Data from tag
+        CompoundNBT inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+        createHandler().deserializeNBT(inv);
     }
 
     private ItemStackHandler createHandler() {
