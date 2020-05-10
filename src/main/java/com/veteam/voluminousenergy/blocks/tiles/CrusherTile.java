@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -64,8 +65,13 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                         // Get output stack and RNG stack from the recipe
                         ItemStack newOutputStack = recipe.getResult();
 
+                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+
                         // Manipulating the Output slot
-                        if (output.getItem() != newOutputStack.getItem()) {
+                        if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
+                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
+                                output.setCount(1);
+                            }
                             newOutputStack.setCount(recipe.getOutputAmount());
                             h.insertItem(1,newOutputStack,false); // CRASH the game if this is not empty!
                         } else { // Assuming the recipe output item is already in the output slot
@@ -86,6 +92,9 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                             if(random <= recipe.getChance()){
 
                                 if (rng.getItem() != recipe.getRngItem().getItem()){
+                                    if (rng.getItem() == Items.AIR){
+                                        rng.setCount(1);
+                                    }
                                     newRngStack.setCount(recipe.getOutputRngAmount());
                                     h.insertItem(2, newRngStack,false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
@@ -113,40 +122,6 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             } else { // this is if the input slot is empty
                 counter = 0;
             }
-
-            /*
-            if(!input.isEmpty()){
-                if(output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64){
-                    if(counter == 1){
-                        h.extractItem(0,1,false);
-                        //Determine if random item is generated
-                        Random r = new Random();
-                        float random = 0 + r.nextFloat() * (0 - 1);
-                        if(abs(random) <= recipe.getChance()){
-                            int currentRngCount = rng.getCount();
-                            ItemStack newRngStack = recipe.getRngItem();
-                            newRngStack.setCount(currentRngCount + recipe.getOutputRngAmount());
-                            h.extractItem(2,64, false);
-                            h.insertItem(2,newRngStack,false);
-                        }
-                        int newOutputCount = output.getCount();
-                        ItemStack newOutput = recipe.getResult();
-                        newOutput.setCount(newOutputCount + recipe.getOutputAmount());
-                        h.extractItem(1,64,false);
-                        h.insertItem(1,newOutput,false);
-                        --counter;
-                        markDirty();
-                    } else if (counter > 0){
-                        --counter;
-                    } else {
-                        counter = recipe.getProcessTime();
-                        length = counter;
-                    }
-                }
-            } else {
-                counter = 0;
-            }
-            */
         });
     }
 
@@ -173,7 +148,6 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
     /*
         Sync on block update
-     */
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket(){
@@ -195,6 +169,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         createHandler().deserializeNBT(inv);
     }
 
+     */
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(3) {
             @Override

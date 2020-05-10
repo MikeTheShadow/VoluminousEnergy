@@ -71,6 +71,9 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem()) {
+                            if (output.getItem() == Items.AIR){
+                                output.setCount(1);
+                            }
                             newOutputStack.setCount(recipe.getOutputAmount());
                             h.insertItem(1,newOutputStack,false); // CRASH the game if this is not empty!
                         } else { // Assuming the recipe output item is already in the output slot
