@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/crusher_bottom",
+    "up": "voluminousenergy:block/crusher_top",
+    "east": "voluminousenergy:block/crusher_side",
+    "west": "voluminousenergy:block/crusher_side",
+    "north": "voluminousenergy:block/crusher_front",
+    "south": "voluminousenergy:block/crusher_side"
+  }
+}
