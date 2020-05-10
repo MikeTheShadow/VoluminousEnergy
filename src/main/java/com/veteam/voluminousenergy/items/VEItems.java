@@ -30,6 +30,7 @@ public class VEItems
     public static SoulsandDust SOULSAND_DUST = new SoulsandDust();
     public static TitaniumDust TITANIUM_DUST = new TitaniumDust();
     public static RutileDust RUTILE_DUST = new RutileDust();
+    public static GalenaDust GALENA_DUST = new GalenaDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();

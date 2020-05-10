@@ -23,6 +23,7 @@ public class VEOreGeneration {
         CountRangeConfig bauxiteOreConf = new CountRangeConfig(16,10,0,60); //Cluster 2, MinY 10, MaxY 60
         CountRangeConfig cinnabarOreConf = new CountRangeConfig(9,1,0,256);//Cinnabar can be found at every level
         CountRangeConfig rutileOreConf = new CountRangeConfig(3,1,0,10);//From Y1 to Y10
+        CountRangeConfig galenaOreConf = new CountRangeConfig(3,12,0,32);//From Y12 to Y32
 
         //Lists for blocks to generate ores in
         List<Block> sandList = new ArrayList<>();
@@ -45,7 +46,7 @@ public class VEOreGeneration {
             biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.BAUXITE_ORE.getDefaultState(),12),Placement.COUNT_RANGE,bauxiteOreConf));
             biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.CINNABAR_ORE.getDefaultState(),12),Placement.COUNT_RANGE,cinnabarOreConf));
             biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.RUTILE_ORE.getDefaultState(),12),Placement.COUNT_RANGE,rutileOreConf));
-
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE, new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.GALENA_ORE.getDefaultState(),12),Placement.COUNT_RANGE,galenaOreConf));
 
             //If category is Desert. Desert, Desert Lakes, and Desert Hills included to ENSURE this will work (may be unecessary)
             if (biome.getCategory() == Biome.Category.DESERT || biome == Biomes.DESERT || biome == Biomes.DESERT_LAKES || biome == Biomes.DESERT_HILLS){

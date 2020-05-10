@@ -1,10 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
@@ -59,5 +56,8 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":rutileore")
     public static RutileOre RUTILE_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":galena_ore")
+    public static GalenaOre GALENA_ORE;
 
 }

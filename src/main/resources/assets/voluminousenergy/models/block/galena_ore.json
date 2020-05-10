@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/galena_ore",
+    "down": "voluminousenergy:block/galena_ore",
+    "up": "voluminousenergy:block/galena_ore",
+    "east": "voluminousenergy:block/galena_ore",
+    "west": "voluminousenergy:block/galena_ore",
+    "north": "voluminousenergy:block/galena_ore",
+    "south": "voluminousenergy:block/galena_ore"
+  }
+}
+

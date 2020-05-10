@@ -1,10 +1,7 @@
 package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.*;
-import com.veteam.voluminousenergy.blocks.blocks.ores.BauxiteOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.CinnabarOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.RutileOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.SaltpeterOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
@@ -126,6 +123,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new BauxiteOre());
             blockRegisteryEvent.getRegistry().register(new CinnabarOre());
             blockRegisteryEvent.getRegistry().register(new RutileOre());
+            blockRegisteryEvent.getRegistry().register(new GalenaOre());
         }
 
         @SubscribeEvent
@@ -149,6 +147,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GALENA_ORE,properties).setRegistryName("galena_ore"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
@@ -172,6 +171,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.SOULSAND_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.RUTILE_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.GALENA_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);

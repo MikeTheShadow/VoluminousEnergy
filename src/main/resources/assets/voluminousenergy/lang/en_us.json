@@ -6,6 +6,8 @@
     "block.voluminousenergy.bauxiteore": "Bauxite Ore",
     "block.voluminousenergy.cinnabarore": "Cinnabar Ore",
     "block.voluminousenergy.rutileore": "Rutile Ore",
+    "block.voluminousenergy.crusher": "Crusher",
+    "block.voluminousenergy.galena_ore": "Galena Ore",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -37,5 +39,7 @@
     "item.voluminousenergy.aluminum_gear": "Aluminum Gear",
     "item.voluminousenergy.titanium_gear": "Titanium Gear",
     "item.voluminousenergy.silicon": "Silicon",
-    "item.voluminousenergy.gold_microchip": "Golden Microchip"
+    "item.voluminousenergy.gold_microchip": "Golden Microchip",
+    "item.voluminousenergy.rutile_dust": "Rutile Dust",
+    "item.voluminousenergy.galena_dust": "Galena Dust"
 }
