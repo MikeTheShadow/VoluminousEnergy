@@ -178,8 +178,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),0);
-
+        return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get());
     }
 
     @Nonnull

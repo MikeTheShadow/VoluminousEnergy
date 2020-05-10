@@ -4,6 +4,8 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -23,6 +25,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -37,6 +41,7 @@ import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     private int counter;
     private int length;
@@ -212,11 +217,18 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         };
     }
 
+    private IEnergyStorage createEnergy(){
+        return new VEEnergyStorage(10000,1000); // Max Power Storage, Max transfer
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY){
+            return energy.cast();
         }
         return super.getCapability(cap, side);
     }
