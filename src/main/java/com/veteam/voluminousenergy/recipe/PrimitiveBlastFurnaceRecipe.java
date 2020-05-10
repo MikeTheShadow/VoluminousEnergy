@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import javax.xml.transform.Result;
 import java.util.ArrayList;
 
-public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
+public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     public static final IRecipeType<PrimitiveBlastFurnaceRecipe> recipeType = IRecipeType.register("primitive_blast_furnacing");
     public static final Serializer serializer = new Serializer();
@@ -36,6 +36,8 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
 
     public PrimitiveBlastFurnaceRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
+
+    @Override
     public Ingredient getIngredient() {
         return ingredient;
     }
@@ -44,6 +46,7 @@ public class PrimitiveBlastFurnaceRecipe implements IRecipe<IInventory> {
         return ingredientCount;
     }
 
+    @Override
     public ItemStack getResult() { return result; }
 
     public int getProcessTime() { return processTime; }

@@ -18,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class CrusherRecipe implements IRecipe<IInventory> {
+public class CrusherRecipe extends VERecipe {
 
     public static final IRecipeType<CrusherRecipe> recipeType = IRecipeType.register("crushing");
     public static final Serializer serializer = new Serializer();
