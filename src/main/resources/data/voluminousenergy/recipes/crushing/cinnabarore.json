@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "voluminousenergy:cinnabarore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:cinnabar_dust",
+    "count": 5
+  },
+  "rng": {
+    "item": "minecraft:redstone",
+    "count": 2,
+    "chance": 0.25
+  }
+}

@@ -171,6 +171,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.SAND_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SOULSAND_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.RUTILE_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);

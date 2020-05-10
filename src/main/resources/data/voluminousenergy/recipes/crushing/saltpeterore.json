@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "voluminousenergy:saltpeterore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:saltpeterchunk",
+    "count": 6
+  },
+  "rng": {
+    "item": "voluminousenergy:sand_dust",
+    "count": 4,
+    "chance": 1
+  }
+}

@@ -1,12 +1,12 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "voluminousenergy:bauxiteore",
+    "item": "voluminousenergy:rutileore",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:bauxite_dust",
+    "item": "voluminousenergy:rutile_dust",
     "count": 2
   },
   "rng": {

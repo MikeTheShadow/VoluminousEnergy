@@ -30,3 +30,11 @@
 	* Source of:
 	 	*	Titanium (Primary)
 	 	*	Oxygen (Primary, Planned)
+*	Galena
+	* Spawns in Stone
+	* Any Forge registered biome
+	* From Y12 to Y32
+	* Source of:
+		*	Lead (Primary)
+		*	Silver (Primary)
+		*	Sulfur

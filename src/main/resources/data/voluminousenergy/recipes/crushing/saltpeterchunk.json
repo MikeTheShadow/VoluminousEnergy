@@ -1,13 +1,13 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "voluminousenergy:bauxiteore",
+    "item": "voluminousenergy:saltpeterchunk",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:bauxite_dust",
-    "count": 2
+    "item": "voluminousenergy:saltpeterdust",
+    "count": 1
   },
   "rng": {
     "item": "minecraft:air",
