@@ -60,6 +60,45 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
             PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
 
+            if (!input.isEmpty()){
+                if (output.getCount() + recipe.getOutputAmount() < 64) {
+                    if (counter == 1){ //The processing is about to be complete
+                        // Extract the inputted item
+                        h.extractItem(0,1,false);
+
+                        // Get output stack and RNG stack from the recipe
+                        ItemStack newOutputStack = recipe.getResult();
+
+                        // Manipulating the Output slot
+                        if (output.getItem() != newOutputStack.getItem()) {
+                            newOutputStack.setCount(recipe.getOutputAmount());
+                            h.insertItem(1,newOutputStack,false); // CRASH the game if this is not empty!
+                        } else { // Assuming the recipe output item is already in the output slot
+                            int newOutputCount = output.getCount();
+                            newOutputCount = newOutputCount + recipe.getOutputAmount();
+                            output.setCount(newOutputCount);
+                        }
+
+                        counter--;
+                        markDirty();
+                    } else if (counter > 0){ //In progress
+                        counter--;
+                    } else { // Check if we should start processing
+                        if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
+                            counter = recipe.getProcessTime();
+                            length = counter;
+                        } else {
+                            counter = 0;
+                        }
+                    }
+                } else { // This is if we reach the maximum in the slots
+                    counter = 0;
+                }
+            } else { // This is if the input slot is empty
+                counter = 0;
+            }
+
+            /*
             if(!input.isEmpty()) {
                 if (output.getCount() + recipe.getOutputAmount() < 64) {
                     if (counter == 1) { // To remove inserted item and create output item
@@ -84,7 +123,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             } else {
                     counter = 0;
             }
-
+            */
         });
     }
 

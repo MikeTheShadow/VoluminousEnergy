@@ -102,8 +102,8 @@ public class CrusherRecipe implements IRecipe<IInventory> {
             recipe.outputAmount = itemAmount;
 
             ResourceLocation rngResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount = JSONUtils.getInt(json.get("rng").getAsJsonObject(),"count",1);
-            float rngChance = JSONUtils.getFloat(json.get("rng").getAsJsonObject(),"chance",1); //Enter % as DECIMAL. Ie 50% = 0.5
+            int rngAmount = JSONUtils.getInt(json.get("rng").getAsJsonObject(),"count",0);
+            float rngChance = JSONUtils.getFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation));
             recipe.outputRngAmount = rngAmount;
