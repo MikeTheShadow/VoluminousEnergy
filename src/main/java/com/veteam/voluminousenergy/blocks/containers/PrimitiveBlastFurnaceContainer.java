@@ -80,50 +80,27 @@ public class PrimitiveBlastFurnaceContainer extends Container {
     public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            final ItemStack slotStack = slot.getStack();
+            returnStack = slotStack.copy();
 
-        if (slot != null && slot.getHasStack()){
-            World world = tileEntity.getWorld();
-            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(slot.getStack()), world).orElse(null);
-
-            ItemStack stack = slot.getStack();
-            returnStack = stack.copy();
-
-            if (index == 0 ){ // Input slot
-                if (!this.mergeItemStack(stack,1,37,true)){
+            final int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
+            if (index < containerSlots) {
+                if (!mergeItemStack(slotStack, containerSlots, this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onSlotChange(stack, returnStack);
-            } else {
-                try {
-                    for (ItemStack ingredientStack : recipe.ingredient.getMatchingStacks()){
-                        if (stack.getItem() == ingredientStack.getItem() ){
-                            if (!this.mergeItemStack(stack, 0, 1, false)){
-                                return ItemStack.EMPTY;
-                            }
-                        } else if (index < 28) {
-                            if (!this.mergeItemStack(stack, 28, 37, false)) {
-                                return ItemStack.EMPTY;
-                            }
-                        } else if (index < 37 && !this.mergeItemStack(stack, 1, 28, false)) {
-                            return ItemStack.EMPTY;
-                        }
-                    }
-                } catch (Exception e){
-                    return ItemStack.EMPTY;
-                }
-
+            } else if (!mergeItemStack(slotStack, 0, containerSlots, false)) {
+                return ItemStack.EMPTY;
             }
-
-            if (stack.isEmpty()){
+            if (slotStack.getCount() == 0) {
                 slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
-
-            if (stack.getCount() == returnStack.getCount()){
+            if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
+            slot.onTake(player, slotStack);
         }
         return returnStack;
     }
