@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:lapis_lazuli",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:lapisdust",
+    "count": 1
+  },
+  "rng": {
+    "item": "voluminousenergy:sulfurdust",
+    "count": 1,
+    "chance": 0.5
+  }
+}

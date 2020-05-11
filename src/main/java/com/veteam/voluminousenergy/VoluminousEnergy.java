@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
@@ -95,6 +96,10 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sand"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/soulsand"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/titanium"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/rutile"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
 
         //Gears
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
@@ -102,6 +107,11 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/aluminum"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/titanium"));
+
+        //Ingots
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
     }
 
     @SubscribeEvent
@@ -176,11 +186,15 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.RUTILE_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.GALENA_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_INGOT);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILVER_INGOT);
 
             //Gears
             itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
