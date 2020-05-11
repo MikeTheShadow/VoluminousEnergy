@@ -48,85 +48,52 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() { //Tick method to run every tick
-        /* Note that this causes issues with screen output if uncommented, may be removed in a future commit
-        if (world == null || world.isRemote()){
-            return;
-        }
-         */
 
         handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0);
-            ItemStack output = h.getStackInSlot(1);
+            ItemStack input = h.getStackInSlot(0).copy();
+            ItemStack output = h.getStackInSlot(1).copy();
 
             PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
 
             if (!input.isEmpty()){
                 if (output.getCount() + recipe.getOutputAmount() < 64) {
-                    if (counter == 1){ //The processing is about to be complete
+                    if (this.counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
                         h.extractItem(0,1,false);
 
                         // Get output stack and RNG stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult();
+                        ItemStack newOutputStack = recipe.getResult().copy();
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem()) {
-                            if (output.getItem() == Items.AIR){
+                            if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                                 output.setCount(1);
                             }
                             newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(1,newOutputStack,false); // CRASH the game if this is not empty!
+                            h.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                         } else { // Assuming the recipe output item is already in the output slot
-                            int newOutputCount = output.getCount();
-                            newOutputCount = newOutputCount + recipe.getOutputAmount();
-                            output.setCount(newOutputCount);
+                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                            h.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                         }
 
-                        counter--;
+                        this.counter--;
                         markDirty();
-                    } else if (counter > 0){ //In progress
-                        counter--;
+                    } else if (this.counter > 0){ //In progress
+                        this.counter--;
                     } else { // Check if we should start processing
                         if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
-                            counter = recipe.getProcessTime();
-                            length = counter;
+                            this.counter = recipe.getProcessTime();
+                            this.length = this.counter;
                         } else {
-                            counter = 0;
+                            this.counter = 0;
                         }
                     }
                 } else { // This is if we reach the maximum in the slots
-                    counter = 0;
+                    this.counter = 0;
                 }
             } else { // This is if the input slot is empty
-                counter = 0;
+                this.counter = 0;
             }
-
-            /*
-            if(!input.isEmpty()) {
-                if (output.getCount() + recipe.getOutputAmount() < 64) {
-                    if (counter == 1) { // To remove inserted item and create output item
-                        h.extractItem(0, 1, false); // Extracts the input item from the insert slot
-                        int newOutputCount = output.getCount();// Get amount of items currently in the output slot
-                        ItemStack nOut = recipe.getResult();// Creates a new ItemStack based on the expected result that will replace the one in the output slot
-                        LOGGER.debug("OUTPUT SLOT New Output: " + nOut + " To replace: " + output + " newOutputCount: " + newOutputCount + " recipeCount: " + recipe.getOutputAmount());
-                        nOut.setCount(newOutputCount + recipe.getOutputAmount());//Set the amount of items that should now be in the output slot
-                        h.extractItem(1, 64, false);// Extract the current ItemStack in the output slot
-                        h.insertItem(1, nOut, false); // Insert the new ItemStack into the output slot
-                        --counter;
-                        markDirty();
-                    } else if (counter > 0) {
-                        --counter;
-                        //LOGGER.debug(counter + " %: " + progressCounter() + " px: " + progressCounterPX(24));
-                    } else {
-                        //counter = 200;
-                        counter = recipe.getProcessTime();//Gets the processing time from the recipe
-                        length = counter;
-                    }
-                }
-            } else {
-                    counter = 0;
-            }
-            */
         });
     }
 

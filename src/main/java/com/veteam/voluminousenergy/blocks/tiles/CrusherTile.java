@@ -32,6 +32,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.openal.LOKIWAVEFormat;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,22 +56,22 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     public void tick(){
         handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0);
-            ItemStack output = h.getStackInSlot(1);
-            ItemStack rng = h.getStackInSlot(2);
+            ItemStack input = h.getStackInSlot(0).copy();
+            ItemStack output = h.getStackInSlot(1).copy();
+            ItemStack rng = h.getStackInSlot(2).copy();
 
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
 
             if (!input.isEmpty()){
-                if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64) {
+                if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
                         h.extractItem(0,1,false);
 
-                        // Get output stack and RNG stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult();
+                        // Get output stack from the recipe
+                        ItemStack newOutputStack = recipe.getResult().copy();
 
-                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+                        LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
@@ -78,41 +79,41 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                                 output.setCount(1);
                             }
                             newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(1,newOutputStack,false); // CRASH the game if this is not empty!
+                            h.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                         } else { // Assuming the recipe output item is already in the output slot
-                            int newOutputCount = output.getCount();
-                            newOutputCount = newOutputCount + recipe.getOutputAmount();
-                            output.setCount(newOutputCount);
+                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                            h.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                         }
 
                         // Manipulating the RNG slot
                         if (recipe.getChance() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItem();
+                            ItemStack newRngStack = recipe.getRngItem().copy();
 
                             // Generate Random floats
                             Random r = new Random();
                             float random = abs(0 + r.nextFloat() * (0 - 1));
-
+                            LOGGER.debug("Random: " + random);
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance()){
-
+                                LOGGER.debug("Chance HIT!");
                                 if (rng.getItem() != recipe.getRngItem().getItem()){
                                     if (rng.getItem() == Items.AIR){
                                         rng.setCount(1);
                                     }
                                     newRngStack.setCount(recipe.getOutputRngAmount());
-                                    h.insertItem(2, newRngStack,false); // CRASH the game if this is not empty!
+                                    h.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    int newRngCount = rng.getCount();
-                                    newRngCount = newRngCount + recipe.getOutputRngAmount();
-                                    rng.setCount(newRngCount);
+                                    rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
+                                    h.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
                                 }
                             }
                         }
                         counter--;
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
                         markDirty();
                     } else if (counter > 0){ //In progress
                         counter--;
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
                     } else { // Check if we should start processing
                         if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
                             counter = recipe.getProcessTime();
@@ -218,7 +219,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(10000,1000); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(5000,1000); // Max Power Storage, Max transfer
     }
 
     @Nonnull

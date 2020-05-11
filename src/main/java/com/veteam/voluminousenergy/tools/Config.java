@@ -15,6 +15,7 @@ public class Config {
     public static final String CATEGORY_GENERAL = "general";
     public static final String CATEGORY_POWER = "power";
     public static final String SUBCATEGORY_PRIMITIVE_STIRLING_GENERATOR = "primitiveStirlingGenerator";
+    public static final String SUBCATEGORY_CRUSHER = "crusher";
 
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -27,13 +28,20 @@ public class Config {
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_TICKS;
 
+    public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
+    public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         COMMON_BUILDER.pop();
 
 
-        COMMON_BUILDER.comment("Power Settings").push(CATEGORY_POWER);
+        COMMON_BUILDER.comment("Primitive Stirling Generator Settings").push(CATEGORY_POWER);
         setupPrimitiveStirlingGeneratorConfig();
+        COMMON_BUILDER.pop();
+
+        COMMON_BUILDER.comment("Crusher Settings").push(CATEGORY_POWER);
+        setupCrusher();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -52,6 +60,15 @@ public class Config {
         PRIMITIVE_STIRLING_GENERATOR_TICKS = COMMON_BUILDER.comment("Ticks needed per item")
                 .defineInRange("ticks",1600, 0, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
+    }
+
+    private static void setupCrusher(){
+        COMMON_BUILDER.comment("Crusher settings").push(SUBCATEGORY_CRUSHER);
+
+        CRUSHER_MAX_POWER = COMMON_BUILDER.comment("Maximum power storage for the Crusher")
+                .defineInRange("maxPower",5000,0,Integer.MAX_VALUE);
+        CRUSHER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Crusher")
+                .defineInRange("usage",40,0,Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){
