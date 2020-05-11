@@ -20,6 +20,11 @@
                   "source": "inv",
                   "target": "BlockEntityTag.inv",
                   "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "BlockEntityTag.energy",
+                  "op": "replace"
                 }
               ]
             },

@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:coal",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:coaldust",
+    "count": 1
+  },
+  "rng": {
+    "item": "voluminousenergy:carbondust",
+    "count": 1,
+    "chance": 0.25
+  }
+}

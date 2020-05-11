@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "voluminousenergy:coalcoke",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:cokedust",
+    "count": 1
+  },
+  "rng": {
+    "item": "voluminousenergy:carbondust",
+    "count": 1,
+    "chance": 0.25
+  }
+}

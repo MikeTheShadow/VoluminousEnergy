@@ -145,21 +145,6 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
             {
-                /*
-                Original not working solution:
-                if(stack.getItem() != Items.COAL || stack.getItem() != Items.COAL_BLOCK || stack.getItem() != VEItems.COALCOKE || stack.getItem() != VEItems.PETCOKE) {
-                    return stack; //Returns the original stack to the player's inventory
-                } else {
-                    return super.insertItem(slot, stack, simulate); //Inserts the stack into the machine's inventory
-                }
-
-                Inverted not working solution:
-                if(stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) {
-                    return super.insertItem(slot, stack, simulate); //Inserts the stack into the machine's inventory
-                } else {
-                    return stack; //Returns the original stack to the player's inventory
-                }
-                 */
                 if (stack.getItem() == Items.COAL){
                     return super.insertItem(slot, stack, simulate);
                 } else if (stack.getItem() == Items.COAL_BLOCK){

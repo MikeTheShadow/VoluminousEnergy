@@ -71,7 +71,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                         // Get output stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();
 
-                        LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
@@ -92,10 +92,10 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                             // Generate Random floats
                             Random r = new Random();
                             float random = abs(0 + r.nextFloat() * (0 - 1));
-                            LOGGER.debug("Random: " + random);
+                            //LOGGER.debug("Random: " + random);
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance()){
-                                LOGGER.debug("Chance HIT!");
+                                //LOGGER.debug("Chance HIT!");
                                 if (rng.getItem() != recipe.getRngItem().getItem()){
                                     if (rng.getItem() == Items.AIR){
                                         rng.setCount(1);
@@ -140,6 +140,8 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
+        CompoundNBT energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         super.read(tag);
     }
 
@@ -149,33 +151,13 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
         });
+        energy.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            tag.put("energy",compound);
+        });
         return super.write(tag);
     }
 
-    /*
-        Sync on block update
-
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket(){
-        CompoundNBT tag = new CompoundNBT();
-        //Write data into the tag
-        handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        return new SUpdateTileEntityPacket(getPos(), -1, tag);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
-        CompoundNBT tag = pkt.getNbtCompound();
-        //Handle Data from tag
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-    }
-
-     */
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(3) {
             @Override
