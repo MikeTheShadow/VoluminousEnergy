@@ -168,13 +168,9 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
-                if (slot == 0){
-                    try{
-                        recipe.ingredient.test(stack);
-                        return true;
-                    } catch (Exception e){
-                        return false;
-                    }
+                if (slot == 0 && recipe != null){
+                    recipe.ingredient.test(stack);
+                    return true;
                 } else if (slot == 1 || slot == 2){
                     return true;
                 }
@@ -201,7 +197,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(5000,1000); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
