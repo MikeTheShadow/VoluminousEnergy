@@ -1,9 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
@@ -28,6 +26,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,6 +42,8 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
     private int counter;
     private int length;
+    private static final Logger LOGGER = LogManager.getLogger();
+
 
     public ElectrolyzerTile(){
         super(VEBlocks.ELECTROLYZER_TILE);
@@ -72,7 +74,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                         // Get output stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();
 
-                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+                        LOGGER.debug("output: " + output + " rngOne: " + rngOne + " rngTwo: " + rngTwo + " rngThree: " + rngThree + " newOutputStack: "  + newOutputStack);
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
@@ -80,7 +82,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                                 output.setCount(1);
                             }
                             newOutputStack.setCount(recipe.getOutputAmount());
+                            LOGGER.debug(" Stack to output: " + newOutputStack.copy());
                             h.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                            LOGGER.debug(" in output slot: " + h.getStackInSlot(2).copy());
                         } else { // Assuming the recipe output item is already in the output slot
                             output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
                             h.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
@@ -221,14 +225,15 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
         boolean matchesRecipe = true;
         for (ItemStack x : outputList){
             if (!x.isEmpty()){
+                LOGGER.debug("Not Empty Slot!");
                 isEmpty = false;
-                if (one.getItem() != recipe.getResult().getItem() || one.getItem() == Items.AIR){
+                if (one.getItem() != recipe.getResult().getItem() && one.getItem() != Items.AIR){
                     return false;
-                } else if (two.getItem() != recipe.getRngItemSlot0().getItem() || two.getItem() == Items.AIR){
+                } else if (two.getItem() != recipe.getRngItemSlot0().getItem() && two.getItem() != Items.AIR){
                     return false;
-                } else if (three.getItem() != recipe.getRngItemSlot1().getItem() || three.getItem() == Items.AIR){
+                } else if (three.getItem() != recipe.getRngItemSlot1().getItem() && three.getItem() != Items.AIR){
                     return false;
-                } else if (four.getItem() != recipe.getRngItemSlot2().getItem() || four.getItem() == Items.AIR){
+                } else if (four.getItem() != recipe.getRngItemSlot2().getItem() && four.getItem() != Items.AIR){
                     return false;
                 } else {
                     return true;
@@ -278,7 +283,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                 if (slot == 0 && recipe != null){
                     recipe.ingredient.test(stack);
                     return true;
-                } else if (slot == 1 || slot == 2){
+                } else if (slot == 1 && stack.getItem() == Items.BUCKET){
+                    return true;
+                } else if (slot >= 2 && slot <= 5){
                     return true;
                 }
                 return false;
@@ -286,8 +293,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-            {
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(stack), world).orElse(null);
                 if(slot == 0) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
@@ -295,7 +301,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                             return super.insertItem(slot, stack, simulate);
                         }
                     }
-                } else if (slot == 1 || slot == 2){
+                } else if ( slot == 1 && stack.getItem() == Items.BUCKET) {
+                    return super.insertItem(slot, stack, simulate);
+                } else if (slot >= 2 && slot <= 5){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
