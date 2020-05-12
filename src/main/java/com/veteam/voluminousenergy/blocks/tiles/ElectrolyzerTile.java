@@ -13,6 +13,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -30,6 +31,10 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Random;
+
+import static net.minecraft.util.math.MathHelper.abs;
 
 public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -44,7 +49,193 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
     @Override
     public void tick(){
+        handler.ifPresent(h -> {
+            ItemStack input = h.getStackInSlot(0).copy();
+            ItemStack bucket = h.getStackInSlot(1).copy();
+            ItemStack output = h.getStackInSlot(2).copy();
+            ItemStack rngOne = h.getStackInSlot(3).copy();
+            ItemStack rngTwo = h.getStackInSlot(4).copy();
+            ItemStack rngThree = h.getStackInSlot(5).copy();
 
+            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(input), world).orElse(null);
+
+            if (usesBucket(recipe,bucket.copy())){
+                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                    if (counter == 1){ //The processing is about to be complete
+                        // Extract the inputted item
+                        h.extractItem(0,1,false);
+                        // Extract bucket if it uses a bucket
+                        if (recipe.isUsesBucket()){
+                            h.extractItem(1,1,false);
+                        }
+
+                        // Get output stack from the recipe
+                        ItemStack newOutputStack = recipe.getResult().copy();
+
+                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+
+                        // Manipulating the Output slot
+                        if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
+                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
+                                output.setCount(1);
+                            }
+                            newOutputStack.setCount(recipe.getOutputAmount());
+                            h.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                        } else { // Assuming the recipe output item is already in the output slot
+                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                            h.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
+                        }
+
+                        // Manipulating the RNG 0 slot
+                        if (recipe.getChance0() != 0){ // If the chance is ZERO, this functionality won't be used
+                            ItemStack newRngStack = recipe.getRngItemSlot0().copy();
+
+                            // Generate Random floats
+                            Random r = new Random();
+                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            //LOGGER.debug("Random: " + random);
+                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
+                            if(random <= recipe.getChance0()){
+                                //LOGGER.debug("Chance HIT!");
+                                if (rngOne.getItem() != recipe.getRngItemSlot0().getItem()){
+                                    if (rngOne.getItem() == Items.AIR){
+                                        rngOne.setCount(1);
+                                    }
+                                    newRngStack.setCount(recipe.getOutputRngAmount0());
+                                    h.insertItem(3, newRngStack.copy(),false); // CRASH the game if this is not empty!
+                                } else { // Assuming the recipe output item is already in the output slot
+                                    rngOne.setCount(recipe.getOutputRngAmount0()); // Simply change the stack to equal the output amount
+                                    h.insertItem(3,rngOne.copy(),false); // Place the new output stack on top of the old one
+                                }
+                            }
+                        }
+
+                        // Manipulating the RNG 1 slot
+                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
+                            ItemStack newRngStack = recipe.getRngItemSlot1().copy();
+
+                            // Generate Random floats
+                            Random r = new Random();
+                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            //LOGGER.debug("Random: " + random);
+                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
+                            if(random <= recipe.getChance1()){
+                                //LOGGER.debug("Chance HIT!");
+                                if (rngTwo.getItem() != recipe.getRngItemSlot1().getItem()){
+                                    if (rngTwo.getItem() == Items.AIR){
+                                        rngTwo.setCount(1);
+                                    }
+                                    newRngStack.setCount(recipe.getOutputRngAmount1());
+                                    h.insertItem(4, newRngStack.copy(),false); // CRASH the game if this is not empty!
+                                } else { // Assuming the recipe output item is already in the output slot
+                                    rngTwo.setCount(recipe.getOutputRngAmount1()); // Simply change the stack to equal the output amount
+                                    h.insertItem(4,rngTwo.copy(),false); // Place the new output stack on top of the old one
+                                }
+                            }
+                        }
+
+                        // Manipulating the RNG 2 slot
+                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
+                            ItemStack newRngStack = recipe.getRngItemSlot2().copy();
+
+                            // Generate Random floats
+                            Random r = new Random();
+                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            //LOGGER.debug("Random: " + random);
+                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
+                            if(random <= recipe.getChance2()){
+                                //LOGGER.debug("Chance HIT!");
+                                if (rngThree.getItem() != recipe.getRngItemSlot2().getItem()){
+                                    if (rngThree.getItem() == Items.AIR){
+                                        rngThree.setCount(1);
+                                    }
+                                    newRngStack.setCount(recipe.getOutputRngAmount2());
+                                    h.insertItem(5, newRngStack.copy(),false); // CRASH the game if this is not empty!
+                                } else { // Assuming the recipe output item is already in the output slot
+                                    rngThree.setCount(recipe.getOutputRngAmount2()); // Simply change the stack to equal the output amount
+                                    h.insertItem(5,rngThree.copy(),false); // Place the new output stack on top of the old one
+                                }
+                            }
+                        }
+
+                        counter--;
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                        markDirty();
+                    } else if (counter > 0){ //In progress
+                        counter--;
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    } else { // Check if we should start processing
+                        if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
+                            counter = recipe.getProcessTime();
+                            length = counter;
+                        } else {
+                            counter = 0;
+                        }
+                    }
+                } else { // This is if we reach the maximum in the slots
+                    counter = 0;
+                }
+            } else { // this is if the input slot is empty
+                counter = 0;
+            }
+        });
+    }
+
+    private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
+
+        if (one.getCount() + recipe.getOutputAmount() > 64){ // Main output slot
+            return true;
+        } else if (two.getCount() + recipe.getOutputRngAmount0() > 64){ // Rng Slot 0
+            return true;
+        } else if (three.getCount() + recipe.getOutputRngAmount1() > 64){ // Rng Slot 1
+            return true;
+        } else if (four.getCount() + recipe.getOutputRngAmount2() > 64){ // Rng Slot 2
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean usesBucket(ElectrolyzerRecipe recipe,ItemStack bucket){
+        if (recipe != null){ // If the recipe is null, don't bother processing
+            if (recipe.isUsesBucket()){ // If it doesn't use a bucket, we know that it must have a valid recipe, return true
+                if (!bucket.isEmpty() && bucket.getItem() == Items.BUCKET){
+                    return true; // Needs a bucket, has a bucket. Return true.
+                } else {
+                    return false; // Needs a bucket, doesn't have a bucket. Return false.
+                }
+            } else {
+                return true; // Doesn't need a bucket, likely valid recipe. Return true.
+            }
+        }
+        return false; // Likely empty slot, don't bother
+    }
+
+    private boolean areSlotsEmptyOrHaveCurrentItems(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
+        ArrayList<ItemStack> outputList = new ArrayList<>();
+        outputList.add(one.copy());
+        outputList.add(two.copy());
+        outputList.add(three.copy());
+        outputList.add(four.copy());
+        boolean isEmpty = true;
+        boolean matchesRecipe = true;
+        for (ItemStack x : outputList){
+            if (!x.isEmpty()){
+                isEmpty = false;
+                if (one.getItem() != recipe.getResult().getItem() || one.getItem() == Items.AIR){
+                    return false;
+                } else if (two.getItem() != recipe.getRngItemSlot0().getItem() || two.getItem() == Items.AIR){
+                    return false;
+                } else if (three.getItem() != recipe.getRngItemSlot1().getItem() || three.getItem() == Items.AIR){
+                    return false;
+                } else if (four.getItem() != recipe.getRngItemSlot2().getItem() || four.getItem() == Items.AIR){
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return isEmpty;
     }
 
     /*

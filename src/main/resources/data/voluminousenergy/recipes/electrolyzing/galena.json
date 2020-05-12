@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:electrolyzing",
+  "ingredient": {
+    "item": "voluminousenergy:galena_dust",
+    "count": 1,
+    "consumes_bucket": true
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:lead_dust",
+    "count": 1
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:silver_dust",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "voluminousenergy:sulfurdust",
+    "count": 1,
+    "chance": 0.5
+  },
+  "rng_slot_2": {
+    "item": "minecraft:bucket",
+    "count": 1,
+    "chance": 1
+  }
+}

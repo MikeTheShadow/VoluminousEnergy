@@ -37,6 +37,7 @@ public class ElectrolyzerRecipe extends VERecipe {
     private float chance0;
     private float chance1;
     private float chance2;
+    private boolean usesBucket;
 
     public ElectrolyzerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -95,6 +96,8 @@ public class ElectrolyzerRecipe extends VERecipe {
 
     public int getProcessTime() { return processTime; }
 
+    public boolean isUsesBucket() {return usesBucket;}
+
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ElectrolyzerRecipe>{
 
         public static ArrayList<Item> ingredientList = new ArrayList<>();
@@ -116,8 +119,10 @@ public class ElectrolyzerRecipe extends VERecipe {
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
             int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"count",1);
+            boolean bucketNeeded = JSONUtils.getBoolean(json.get("result").getAsJsonObject(),"consumes_bucket",false);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
+            recipe.usesBucket = bucketNeeded;
 
             // First RNG Slot, RNG 0
             ResourceLocation rngResourceLocation0 = ResourceLocation.create(JSONUtils.getString(json.get("rng_slot_0").getAsJsonObject(),"item","minecraft:air"),':');
@@ -158,6 +163,7 @@ public class ElectrolyzerRecipe extends VERecipe {
             recipe.result = buffer.readItemStack();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
+            recipe.usesBucket = buffer.readBoolean();
             //RNG 0
             recipe.rngResult0 = buffer.readItemStack();
             recipe.outputRngAmount0 = buffer.readInt();
@@ -180,6 +186,7 @@ public class ElectrolyzerRecipe extends VERecipe {
             buffer.writeItemStack(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
+            buffer.writeBoolean(recipe.usesBucket);
             //RNG 0
             buffer.writeItemStack(recipe.rngResult0);
             buffer.writeInt(recipe.outputRngAmount0);

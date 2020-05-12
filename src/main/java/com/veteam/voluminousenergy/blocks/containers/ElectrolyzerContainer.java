@@ -41,12 +41,12 @@ public class ElectrolyzerContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new ElectrolyzerInputSlot(h, 0, 80, 13, world));
-            addSlot(new VEInsertSlot(h,1,70,13)); // Empty Bucket slot
-            addSlot(new VEOutputSlot(h, 2,71,58)); //Main Output
-            addSlot(new VEOutputSlot(h, 3, 89,58)); //RNG #1 Slot
-            addSlot(new VEOutputSlot(h,4, 92, 58)); //RNG #2 Slot
-            addSlot(new VEOutputSlot(h,5,96,58)); //RNG #3 Slot
+            addSlot(new ElectrolyzerInputSlot(h, 0, 71, 13, world));
+            addSlot(new VEInsertSlot(h,1,89,13)); // Empty Bucket slot
+            addSlot(new VEOutputSlot(h, 2,53,58)); //Main Output
+            addSlot(new VEOutputSlot(h, 3, 71,58)); //RNG #1 Slot
+            addSlot(new VEOutputSlot(h,4, 89, 58)); //RNG #2 Slot
+            addSlot(new VEOutputSlot(h,5,107,58)); //RNG #3 Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

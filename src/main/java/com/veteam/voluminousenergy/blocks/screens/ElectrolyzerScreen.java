@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
     private ElectrolyzerTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electrolyzer_gui.png");
 
     public ElectrolyzerScreen(ElectrolyzerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
