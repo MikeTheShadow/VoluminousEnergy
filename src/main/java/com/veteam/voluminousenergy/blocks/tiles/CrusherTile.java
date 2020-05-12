@@ -66,7 +66,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                 if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,1,false);
+                        h.extractItem(0,recipe.ingredientCount,false);
 
                         // Get output stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();

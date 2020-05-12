@@ -59,7 +59,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
                 if (output.getCount() + recipe.getOutputAmount() < 64) {
                     if (this.counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,1,false);
+                        h.extractItem(0,recipe.ingredientCount,false);
 
                         // Get output stack and RNG stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();

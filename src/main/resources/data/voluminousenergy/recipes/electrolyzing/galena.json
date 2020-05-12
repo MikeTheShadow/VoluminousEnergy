@@ -2,17 +2,17 @@
   "type": "voluminousenergy:electrolyzing",
   "ingredient": {
     "item": "voluminousenergy:galena_dust",
-    "count": 1
+    "count": 5
   },
   "processTime": 200,
   "result": {
     "item": "voluminousenergy:lead_dust",
-    "count": 1,
+    "count": 2,
     "consumes_bucket": true
   },
   "rng_slot_0": {
     "item": "voluminousenergy:silver_dust",
-    "count": 1,
+    "count": 2,
     "chance": 1
   },
   "rng_slot_1": {

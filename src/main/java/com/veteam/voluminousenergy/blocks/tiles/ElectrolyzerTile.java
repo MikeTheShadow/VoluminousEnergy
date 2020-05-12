@@ -65,7 +65,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                 if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,1,false);
+                        h.extractItem(0,recipe.ingredientCount,false);
                         // Extract bucket if it uses a bucket
                         if (recipe.isUsesBucket()){
                             h.extractItem(1,1,false);
@@ -187,13 +187,13 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
-        if (one.getCount() + recipe.getOutputAmount() > 64){ // Main output slot
+        if (one.getCount() + recipe.getOutputAmount() > one.getItem().getItemStackLimit(one.copy())){ // Main output slot
             return true;
-        } else if (two.getCount() + recipe.getOutputRngAmount0() > 64){ // Rng Slot 0
+        } else if (two.getCount() + recipe.getOutputRngAmount0() > two.getItem().getItemStackLimit(two.copy())){ // Rng Slot 0
             return true;
-        } else if (three.getCount() + recipe.getOutputRngAmount1() > 64){ // Rng Slot 1
+        } else if (three.getCount() + recipe.getOutputRngAmount1() > three.getItem().getItemStackLimit(three.copy())){ // Rng Slot 1
             return true;
-        } else if (four.getCount() + recipe.getOutputRngAmount2() > 64){ // Rng Slot 2
+        } else if (four.getCount() + recipe.getOutputRngAmount2() > four.getItem().getItemStackLimit(four.copy())){ // Rng Slot 2
             return true;
         } else {
             return false;
