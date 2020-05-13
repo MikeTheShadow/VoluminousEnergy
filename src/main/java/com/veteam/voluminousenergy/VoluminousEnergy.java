@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.inventory.container.ContainerType;
@@ -33,6 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -44,6 +46,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.rmi.registry.Registry;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy
@@ -65,7 +69,14 @@ public class VoluminousEnergy
         MinecraftForge.EVENT_BUS.register(this);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // Register recipes (differed)
         VERecipes.VE_RECIPES.register(modEventBus);
+
+        // Register fluids and respective items/blocks (differed)
+        VEFluids.VE_FLUIDS.register(modEventBus);
+        VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
+        VEFluids.VE_FLUID_ITEMS.register(modEventBus);
 
         Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
