@@ -44,5 +44,7 @@
     "item.voluminousenergy.rutile_dust": "Rutile Dust",
     "item.voluminousenergy.galena_dust": "Galena Dust",
     "item.voluminousenergy.lead_dust": "Lead Dust",
-    "item.voluminousenergy.silver_dust": "Silver Dust"
+    "item.voluminousenergy.silver_dust": "Silver Dust",
+    "item.voluminousenergy.crude_oil_bucket": "Crude Oil Bucket",
+    "item.voluminousenergy.oxygen_bucket": "Oxygen Bucket"
 }
