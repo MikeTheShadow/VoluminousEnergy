@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.setup;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.blocks.screens.ElectrolyzerScreen;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveBlastFurnaceScreen;
