@@ -3,9 +3,11 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import net.minecraft.inventory.container.ContainerType;
@@ -43,6 +45,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":crusher")
     public static ContainerType<CrusherContainer> CRUSHER_CONTAINER;
+
+    //Electrolyzer
+    @ObjectHolder(VoluminousEnergy.MODID + ":electrolyzer")
+    public static ElectrolyzerBlock ELECTROLYZER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electrolyzer")
+    public static TileEntityType<ElectrolyzerTile> ELECTROLYZER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electrolyzer")
+    public static ContainerType<ElectrolyzerContainer> ELECTROLYZER_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

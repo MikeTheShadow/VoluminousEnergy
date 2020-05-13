@@ -2,9 +2,7 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
-import com.veteam.voluminousenergy.items.ingots.AluminumIngot;
-import com.veteam.voluminousenergy.items.ingots.CarbonBrick;
-import com.veteam.voluminousenergy.items.ingots.TitaniumIngot;
+import com.veteam.voluminousenergy.items.ingots.*;
 import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
 
 public class VEItems
@@ -31,11 +29,16 @@ public class VEItems
     public static TitaniumDust TITANIUM_DUST = new TitaniumDust();
     public static RutileDust RUTILE_DUST = new RutileDust();
     public static GalenaDust GALENA_DUST = new GalenaDust();
+    public static LeadDust LEAD_DUST = new LeadDust();
+    public static SilverDust SILVER_DUST = new SilverDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
     public static AluminumIngot ALUMINUM_INGOT = new AluminumIngot();
     public static TitaniumIngot TITANIUM_INGOT = new TitaniumIngot();
+    public static LeadIngot LEAD_INGOT = new LeadIngot();
+    public static SilverIngot SILVER_INGOT = new SilverIngot();
+
 
     //Gears
     public static StoneGear STONE_GEAR = new StoneGear();

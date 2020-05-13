@@ -8,6 +8,7 @@
     "block.voluminousenergy.rutileore": "Rutile Ore",
     "block.voluminousenergy.crusher": "Crusher",
     "block.voluminousenergy.galena_ore": "Galena Ore",
+    "block.voluminousenergy.electrolyzer": "Electrolyzer",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -41,5 +42,7 @@
     "item.voluminousenergy.silicon": "Silicon",
     "item.voluminousenergy.gold_microchip": "Golden Microchip",
     "item.voluminousenergy.rutile_dust": "Rutile Dust",
-    "item.voluminousenergy.galena_dust": "Galena Dust"
+    "item.voluminousenergy.galena_dust": "Galena Dust",
+    "item.voluminousenergy.lead_dust": "Lead Dust",
+    "item.voluminousenergy.silver_dust": "Silver Dust"
 }

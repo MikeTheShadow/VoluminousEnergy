@@ -1,17 +1,15 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.inventory.slots.CrusherSlots.CrusherInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.ElectrolyzerInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
@@ -28,26 +26,27 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
-import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAINER;
-
-public class CrusherContainer extends Container {
+public class ElectrolyzerContainer extends Container {
 
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
-        super(CRUSHER_CONTAINER,id);
+    public ElectrolyzerContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
+        super(VEBlocks.ELECTROLYZER_CONTAINER,id);
         this.tileEntity = world.getTileEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
-            addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
-            addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
+            addSlot(new ElectrolyzerInputSlot(h, 0, 71, 13, world));
+            addSlot(new VEInsertSlot(h,1,89,13)); // Empty Bucket slot
+            addSlot(new VEOutputSlot(h, 2,53,57)); //Main Output
+            addSlot(new VEOutputSlot(h, 3, 71,57)); //RNG #1 Slot
+            addSlot(new VEOutputSlot(h,4, 89, 57)); //RNG #2 Slot
+            addSlot(new VEOutputSlot(h,5,107,57)); //RNG #3 Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -77,7 +76,7 @@ public class CrusherContainer extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(),tileEntity.getPos()),playerEntity, VEBlocks.CRUSHER_BLOCK);
+        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(),tileEntity.getPos()),playerEntity, VEBlocks.ELECTROLYZER_BLOCK);
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
@@ -135,4 +134,5 @@ public class CrusherContainer extends Container {
         }
         return returnStack;
     }
+
 }

@@ -30,6 +30,7 @@ public class Config {
 
     public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
     public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue CRUSHER_TRANSFER;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -69,6 +70,8 @@ public class Config {
                 .defineInRange("maxPower",5000,0,Integer.MAX_VALUE);
         CRUSHER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Crusher")
                 .defineInRange("usage",40,0,Integer.MAX_VALUE);
+        CRUSHER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Crusher")
+                .defineInRange("maxTransfer",1000,0,Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){

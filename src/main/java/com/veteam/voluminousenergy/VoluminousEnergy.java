@@ -3,9 +3,12 @@ package com.veteam.voluminousenergy;
 import com.veteam.voluminousenergy.blocks.blocks.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import com.veteam.voluminousenergy.recipe.VERecipes;
@@ -93,6 +96,10 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sand"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/soulsand"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/titanium"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/rutile"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
 
         //Gears
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
@@ -100,6 +107,11 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/aluminum"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/titanium"));
+
+        //Ingots
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
     }
 
     @SubscribeEvent
@@ -117,6 +129,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
             blockRegisteryEvent.getRegistry().register(new CrusherBlock());
+            blockRegisteryEvent.getRegistry().register(new ElectrolyzerBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -141,6 +154,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK,properties).setRegistryName("primitiveblastfurnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK,properties).setRegistryName("primitivestirlinggenerator"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CRUSHER_BLOCK,properties).setRegistryName("crusher"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTROLYZER_BLOCK,properties).setRegistryName("electrolyzer"));
 
             //Ores
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
@@ -172,11 +186,15 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.RUTILE_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.GALENA_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_INGOT);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILVER_INGOT);
 
             //Gears
             itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
@@ -195,6 +213,7 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
             event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
+            event.getRegistry().register(TileEntityType.Builder.create(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
         }
 
         @SubscribeEvent
@@ -214,6 +233,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new CrusherContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("crusher"));
+
+            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new ElectrolyzerContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("electrolyzer"));
         }
     }
 }
