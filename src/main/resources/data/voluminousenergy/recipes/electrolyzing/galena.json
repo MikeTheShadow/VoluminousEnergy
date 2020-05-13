@@ -8,7 +8,7 @@
   "result": {
     "item": "voluminousenergy:lead_dust",
     "count": 2,
-    "consumes_bucket": true
+    "consumes_bucket": false
   },
   "rng_slot_0": {
     "item": "voluminousenergy:silver_dust",
@@ -22,7 +22,7 @@
   },
   "rng_slot_2": {
     "item": "minecraft:bucket",
-    "count": 1,
-    "chance": 1
+    "count": 0,
+    "chance": 0
   }
 }

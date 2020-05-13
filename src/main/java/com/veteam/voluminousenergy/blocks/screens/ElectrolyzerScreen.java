@@ -33,7 +33,7 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Electrolyzer",8,6,0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        drawString(Minecraft.getInstance().fontRenderer, "Energy: " + container.getEnergy(), 10, 22, 0xffffff);
+        drawString(Minecraft.getInstance().fontRenderer, (float)container.getEnergy()/1000 + " kFE", 27, 27, 0xffffff);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(24);
+            int power = container.powerScreen(49);
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
                 p_blit_2_ = starting y for blit on screen
@@ -53,7 +54,8 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+79, j+31, 176, 0, 17, progress);            //this.blit(i,j,180,1,progress,15);
+            this.blit(i+79, j+31, 176, 0, 17, progress);
+            this.blit(i+11, j+16, 176,24, 12, power);
         }
 
     }

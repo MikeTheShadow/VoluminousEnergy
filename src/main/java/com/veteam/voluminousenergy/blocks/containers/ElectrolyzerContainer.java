@@ -43,10 +43,10 @@ public class ElectrolyzerContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new ElectrolyzerInputSlot(h, 0, 71, 13, world));
             addSlot(new VEInsertSlot(h,1,89,13)); // Empty Bucket slot
-            addSlot(new VEOutputSlot(h, 2,53,58)); //Main Output
-            addSlot(new VEOutputSlot(h, 3, 71,58)); //RNG #1 Slot
-            addSlot(new VEOutputSlot(h,4, 89, 58)); //RNG #2 Slot
-            addSlot(new VEOutputSlot(h,5,107,58)); //RNG #3 Slot
+            addSlot(new VEOutputSlot(h, 2,53,57)); //Main Output
+            addSlot(new VEOutputSlot(h, 3, 71,57)); //RNG #1 Slot
+            addSlot(new VEOutputSlot(h,4, 89, 57)); //RNG #2 Slot
+            addSlot(new VEOutputSlot(h,5,107,57)); //RNG #3 Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -65,6 +65,13 @@ public class ElectrolyzerContainer extends Container {
 
     public int getEnergy(){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+    }
+
+    public int powerScreen(int px){
+        int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        int ret = (((stored*100/max*100)/100)*px)/100;
+        return ret;
     }
 
     @Override

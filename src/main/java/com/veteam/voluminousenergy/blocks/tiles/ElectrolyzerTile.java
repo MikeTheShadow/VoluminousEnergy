@@ -74,7 +74,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                         // Get output stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();
 
-                        LOGGER.debug("output: " + output + " rngOne: " + rngOne + " rngTwo: " + rngTwo + " rngThree: " + rngThree + " newOutputStack: "  + newOutputStack);
+                        //LOGGER.debug("output: " + output + " rngOne: " + rngOne + " rngTwo: " + rngTwo + " rngThree: " + rngThree + " newOutputStack: "  + newOutputStack);
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
@@ -82,9 +82,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                                 output.setCount(1);
                             }
                             newOutputStack.setCount(recipe.getOutputAmount());
-                            LOGGER.debug(" Stack to output: " + newOutputStack.copy());
+                            //LOGGER.debug(" Stack to output: " + newOutputStack.copy());
                             h.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                            LOGGER.debug(" in output slot: " + h.getStackInSlot(2).copy());
+                            //LOGGER.debug(" in output slot: " + h.getStackInSlot(2).copy());
                         } else { // Assuming the recipe output item is already in the output slot
                             output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
                             h.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
@@ -225,7 +225,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
         boolean matchesRecipe = true;
         for (ItemStack x : outputList){
             if (!x.isEmpty()){
-                LOGGER.debug("Not Empty Slot!");
+                //LOGGER.debug("Not Empty Slot!");
                 isEmpty = false;
                 if (one.getItem() != recipe.getResult().getItem() && one.getItem() != Items.AIR){
                     return false;
