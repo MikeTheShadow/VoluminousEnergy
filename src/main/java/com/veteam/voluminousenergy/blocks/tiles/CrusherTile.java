@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
@@ -41,6 +42,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
     private int counter;
     private int length;
+    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private static final Logger LOGGER = LogManager.getLogger();
 
 
@@ -56,6 +58,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             ItemStack rng = h.getStackInSlot(2).copy();
 
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
+            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (!input.isEmpty()){
                 if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
@@ -163,28 +166,38 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
+                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
                 if (slot == 0 && recipe != null){
-                    recipe.ingredient.test(stack);
-                    return true;
-                } else if (slot == 1 || slot == 2){
-                    return true;
+                    return recipe.ingredient.test(stack);
+                } else if (slot == 1 && recipe1 != null){
+                    return stack.getItem() == recipe1.result.getItem();
+                } else if (slot == 2 && recipe1 != null){
+                    return stack.getItem() == recipe1.getRngItem().getItem();
                 }
                 return false;
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-            {
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
+                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
                     }
-                } else if (slot == 1 || slot == 2){
-                    return super.insertItem(slot, stack, simulate);
+                } else if (slot == 1 && recipe1 != null){
+                    if (stack.getItem() == recipe1.result.getItem()){
+                        return super.insertItem(slot, stack, simulate);
+                    }
+                } else if (slot == 2 && recipe1 != null){
+                    if (stack.getItem() == recipe1.getRngItem().getItem()){
+                        return super.insertItem(slot, stack, simulate);
+                    }
                 }
                 return stack;
             }
