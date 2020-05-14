@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:electrolyzing",
+  "ingredient": {
+    "item": "voluminousenergy:cinnabar_dust",
+    "count": 2
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:sulfur_dust",
+    "count": 1,
+    "consumes_bucket": true
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:mercury_bucket",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}
