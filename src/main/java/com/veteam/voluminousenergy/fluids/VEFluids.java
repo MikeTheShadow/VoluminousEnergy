@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.RFNA.FlowingRedFumingNitricAcid;
+import com.veteam.voluminousenergy.fluids.RFNA.StillRedFumingNitricAcid;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -10,11 +12,14 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import net.minecraft.util.registry.Registry;
 
 public class VEFluids {
     public static DeferredRegister<Fluid> VE_FLUIDS = new DeferredRegister<>(ForgeRegistries.FLUIDS, VoluminousEnergy.MODID);
@@ -55,6 +60,7 @@ public class VEFluids {
             () -> new BucketItem(NAPHTHA, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
 
     // Red Fuming Nitric Acid
+    /*
     public static RegistryObject<FlowingFluid> RED_FUMING_NITRIC_ACID = VE_FLUIDS.register("red_fuming_nitric_acid",
             () -> new ForgeFlowingFluid.Source(RedFumingNitricAcid.properties));
     public static RegistryObject<FlowingFluid> FLOWING_RED_FUMING_NITRIC_ACID = VE_FLUIDS.register("flowing_red_fuming_nitric_acid",
@@ -63,6 +69,20 @@ public class VEFluids {
             () -> new FlowingFluidBlock(RED_FUMING_NITRIC_ACID, Block.Properties.create(Material.LAVA).tickRandomly().doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
     public static RegistryObject<Item> RED_FUMING_NITRIC_ACID_BUCKET = VE_FLUID_ITEMS.register("red_fuming_nitric_acid_bucket",
             () -> new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
+
+     */
+    public static FlowingRedFumingNitricAcid FLOWING_RED_FUMING_NITRIC_ACID = new FlowingRedFumingNitricAcid();
+    public static StillRedFumingNitricAcid RED_FUMING_NITRIC_ACID = new StillRedFumingNitricAcid();
+    public static Item RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID,new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+
+    public static RegistryObject<FlowingFluid> RED_FUMING_NITRIC_ACID_REG = VE_FLUIDS.register("red_fuming_nitric_acid",
+            () -> RED_FUMING_NITRIC_ACID);
+    public static RegistryObject<FlowingFluid> FLOWING_RED_FUMING_NITRIC_ACID_REG = VE_FLUIDS.register("flowing_red_fuming_nitric_acid",
+            () -> FLOWING_RED_FUMING_NITRIC_ACID);
+    public static RegistryObject<FlowingFluidBlock> RED_FUMING_NITRIC_ACID_BLOCK = VE_FLUID_BLOCKS.register("red_fuming_nitric_acid_block",
+            () -> new FlowingFluidBlock(RED_FUMING_NITRIC_ACID_REG, Block.Properties.create(Material.LAVA).tickRandomly().doesNotBlockMovement().hardnessAndResistance(100F).noDrops()));
+    public static RegistryObject<Item> RED_FUMING_NITRIC_ACID_BUCKET_REG = VE_FLUID_ITEMS.register("red_fuming_nitric_acid_bucket",
+            () -> new BucketItem(RED_FUMING_NITRIC_ACID_REG, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
 
     // White Fuming Nitric Acid
     public static RegistryObject<FlowingFluid> WHITE_FUMING_NITRIC_ACID = VE_FLUIDS.register("white_fuming_nitric_acid",
@@ -83,4 +103,7 @@ public class VEFluids {
             () -> new FlowingFluidBlock(MERCURY, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
     public static RegistryObject<Item> MERCURY_BUCKET = VE_FLUID_ITEMS.register("mercury_bucket",
             () -> new BucketItem(MERCURY, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
+
+
 }
+
