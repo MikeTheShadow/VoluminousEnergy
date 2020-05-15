@@ -21,7 +21,7 @@
     "chance": 0.5
   },
   "rng_slot_2": {
-    "item": "minecraft:bucket",
+    "item": "minecraft:air",
     "count": 0,
     "chance": 0
   }

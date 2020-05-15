@@ -286,7 +286,11 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                 ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
+                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                        if(stack.getItem() == testStack.getItem()){
+                            return true;
+                        }
+                    }
                 } else if (slot == 1 && stack.getItem() == Items.BUCKET){
                     return true;
                 } else if (slot == 2 && recipe1 != null){ // Output slot
