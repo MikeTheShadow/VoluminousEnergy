@@ -35,14 +35,14 @@ public class VEFluids {
             () -> new BucketItem(OXYGEN, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
 
     // Crude Oil
-    public static RegistryObject<FlowingFluid> CRUDE_OIL = VE_FLUIDS.register("crude_oil",
-            () -> new ForgeFlowingFluid.Source(CrudeOil.properties));
-    public static RegistryObject<FlowingFluid> FLOWING_CRUDE_OIL = VE_FLUIDS.register("flowing_crude_oil",
-            () -> new ForgeFlowingFluid.Flowing(CrudeOil.properties));
-    public static RegistryObject<FlowingFluidBlock> CRUDE_OIL_BLOCK = VE_FLUID_BLOCKS.register("crude_oil_block",
-            () -> new FlowingFluidBlock(CRUDE_OIL, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
-    public static RegistryObject<Item> CRUDE_OIL_BUCKET = VE_FLUID_ITEMS.register("crude_oil_bucket",
-            () -> new BucketItem(CRUDE_OIL, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
+    public static RegistryObject<FlowingFluid> CRUDE_OIL_REG = VE_FLUIDS.register("crude_oil",
+            () -> CrudeOil.CrudeOilFluid());
+    public static RegistryObject<FlowingFluid> FLOWING_CRUDE_OIL_REG = VE_FLUIDS.register("flowing_crude_oil",
+            () -> CrudeOil.FlowingCrudeOilFluid());
+    public static RegistryObject<FlowingFluidBlock> FLOWING_CRUDE_OIL_BLOCK_REG = VE_FLUID_BLOCKS.register("crude_oil_block",
+            () -> CrudeOil.FlowingCrudeOilBlock());
+    public static RegistryObject<Item> CRUDE_OIL_BUCKET_REG = VE_FLUID_ITEMS.register("crude_oil_bucket",
+            () -> CrudeOil.CrudeOilBucket());
 
     // Naptha
     public static RegistryObject<FlowingFluid> NAPHTHA = VE_FLUIDS.register("naphtha",
@@ -83,4 +83,14 @@ public class VEFluids {
             () -> new FlowingFluidBlock(MERCURY, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
     public static RegistryObject<Item> MERCURY_BUCKET = VE_FLUID_ITEMS.register("mercury_bucket",
             () -> new BucketItem(MERCURY, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
+
+    // Sulfuric Acid
+    public static RegistryObject<FlowingFluid> SULFURIC_ACID = VE_FLUIDS.register("sulfuric_acid",
+            () -> new ForgeFlowingFluid.Source(SulfuricAcid.properties));
+    public static RegistryObject<FlowingFluid> FLOWING_SULFURIC_ACID = VE_FLUIDS.register("flowing_sulfuric_acid",
+            () -> new ForgeFlowingFluid.Flowing(SulfuricAcid.properties));
+    public static RegistryObject<FlowingFluidBlock> SULFURIC_ACID_BLOCK = VE_FLUID_BLOCKS.register("sulfuric_acid_block",
+            () -> new FlowingFluidBlock(SULFURIC_ACID, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
+    public static RegistryObject<Item> SULFURIC_ACID_BUCKET = VE_FLUID_ITEMS.register("sulfuric_acid_bucket",
+            () -> new BucketItem(SULFURIC_ACID, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup)));
 }

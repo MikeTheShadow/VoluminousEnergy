@@ -50,5 +50,8 @@
     "item.voluminousenergy.naphtha_bucket": "Naphtha Bucket",
     "item.voluminousenergy.red_fuming_nitric_acid_bucket": "Red Fuming Nitric Acid Bucket",
     "item.voluminousenergy.white_fuming_nitric_acid_bucket": "White Fuming Nitric Acid Bucket",
-    "item.voluminousenergy.mercury_bucket": "Mercury Bucket"
+    "item.voluminousenergy.mercury_bucket": "Mercury Bucket",
+    "item.voluminousenergy.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
+    "item.voluminousenergy.silver_ingot": "Silver Ingot",
+    "item.voluminousenergy.lead_ingot": "Lead Ingot"
 }

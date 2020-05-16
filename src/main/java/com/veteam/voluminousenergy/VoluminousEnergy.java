@@ -18,6 +18,7 @@ import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.VEOreGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
@@ -78,7 +79,8 @@ public class VoluminousEnergy
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
     private void setup(final FMLCommonSetupEvent event) {
-        VEOreGeneration.OreGeneration(); //Setup custom ore generation
+        VEOreGeneration.OreGeneration(); // Setup custom ore generation
+        VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
     }
