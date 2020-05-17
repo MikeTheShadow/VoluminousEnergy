@@ -31,6 +31,7 @@ public class VEItems
     public static GalenaDust GALENA_DUST = new GalenaDust();
     public static LeadDust LEAD_DUST = new LeadDust();
     public static SilverDust SILVER_DUST = new SilverDust();
+    public static GoldDust GOLD_DUST = new GoldDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();

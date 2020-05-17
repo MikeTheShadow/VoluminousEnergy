@@ -2,13 +2,13 @@
   "type": "voluminousenergy:electrolyzing",
   "ingredient": {
     "item": "voluminousenergy:bauxite_dust",
-    "count": 12,
-    "consumes_bucket": false
+    "count": 12
   },
   "processTime": 200,
   "result": {
     "item": "voluminousenergy:aluminum_dust",
-    "count": 8
+    "count": 8,
+    "consumes_bucket": false
   },
   "rng_slot_0": {
     "item": "voluminousenergy:iron_dust",

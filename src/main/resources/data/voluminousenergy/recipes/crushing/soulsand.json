@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:soul_sand",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:soulsand_dust",
+    "count": 4
+  },
+  "rng": {
+    "item": "voluminousenergy:saltpeterdust",
+    "count": 1,
+    "chance": 0.25
+  }
+}

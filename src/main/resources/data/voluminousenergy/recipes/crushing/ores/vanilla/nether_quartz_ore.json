@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:nether_quartz_ore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "minecraft:quartz",
+    "count": 2
+  },
+  "rng": {
+    "item": "voluminousenergy:sulfurdust",
+    "count": 1,
+    "chance": 0.50
+  }
+}

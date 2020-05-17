@@ -6,33 +6,34 @@ import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
-import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
-import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.VEOreGeneration;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -57,7 +58,7 @@ public class VoluminousEnergy
     public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -65,13 +66,22 @@ public class VoluminousEnergy
         MinecraftForge.EVENT_BUS.register(this);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // Register recipes (differed)
         VERecipes.VE_RECIPES.register(modEventBus);
 
-        Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
+        // Register fluids and respective items/blocks (differed)
+        VEFluids.VE_FLUIDS.register(modEventBus);
+        VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
+        VEFluids.VE_FLUID_ITEMS.register(modEventBus);
+
+        // Config Files to load
+        //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
     private void setup(final FMLCommonSetupEvent event) {
-        VEOreGeneration.OreGeneration(); //Setup custom ore generation
+        VEOreGeneration.OreGeneration(); // Setup custom ore generation
+        VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
     }
@@ -100,6 +110,7 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/gold"));
 
         //Gears
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
@@ -112,6 +123,10 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
+
+
     }
 
     @SubscribeEvent
@@ -188,6 +203,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.GALENA_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.GOLD_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);

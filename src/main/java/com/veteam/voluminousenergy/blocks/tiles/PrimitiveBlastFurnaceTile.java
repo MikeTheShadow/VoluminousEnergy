@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -11,7 +10,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -31,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -40,6 +38,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     private int counter;
     private int length;
+    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private static final Logger LOGGER = LogManager.getLogger();
 
     public PrimitiveBlastFurnaceTile() {
@@ -48,12 +47,12 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() { //Tick method to run every tick
-
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack output = h.getStackInSlot(1).copy();
 
             PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
+            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (!input.isEmpty()){
                 if (output.getCount() + recipe.getOutputAmount() < 64) {
@@ -143,26 +142,24 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         return new ItemStackHandler(2) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
-                if (slot == 0){
-                    try{
-                        recipe.ingredient.test(stack);
-                        return true;
-                    } catch (Exception e){
-                        return false;
-                    }
-                } else if (slot == 1){
-                    return true;
+                PrimitiveBlastFurnaceRecipe recipeOutput = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(inputItemStack.get().copy()), world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack.copy()),world).orElse(null);
+
+                if (slot == 0 && recipe != null){
+                    return recipe.ingredient.test(stack);
+                } else if (slot == 1 && recipeOutput != null){
+                    return stack.getItem() == recipeOutput.result.getItem();
                 }
                 return false;
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-            {
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack), world).orElse(null);
-                if(slot == 0) {
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+                PrimitiveBlastFurnaceRecipe recipeOut = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(inputItemStack.get().copy()), world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(stack.copy()),world).orElse(null);
+
+                if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
@@ -170,9 +167,11 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
                     }
                     //LOGGER.debug("Inserting to Slot 0.");
 
-                } else if (slot == 1){
+                } else if (slot == 1 && recipeOut != null){
                     //LOGGER.debug("Inserting to Slot 1.");
-                    return super.insertItem(slot, stack, simulate);
+                    if (stack.getItem() == recipeOut.result.getItem()){
+                        return super.insertItem(slot, stack, simulate);
+                    }
                 }
                 return stack;
             }

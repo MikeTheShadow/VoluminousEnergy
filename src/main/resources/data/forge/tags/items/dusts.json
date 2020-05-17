@@ -18,6 +18,7 @@
     "#forge:dusts/rutile",
     "#forge:dusts/galena",
     "#forge:dusts/lead",
-    "#forge:dusts/silver"
+    "#forge:dusts/silver",
+    "#forge:dusts/gold"
   ]
 }

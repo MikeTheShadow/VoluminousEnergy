@@ -44,5 +44,15 @@
     "item.voluminousenergy.rutile_dust": "Rutile Dust",
     "item.voluminousenergy.galena_dust": "Galena Dust",
     "item.voluminousenergy.lead_dust": "Lead Dust",
-    "item.voluminousenergy.silver_dust": "Silver Dust"
+    "item.voluminousenergy.silver_dust": "Silver Dust",
+    "item.voluminousenergy.crude_oil_bucket": "Crude Oil Bucket",
+    "item.voluminousenergy.oxygen_bucket": "Oxygen Bucket",
+    "item.voluminousenergy.naphtha_bucket": "Naphtha Bucket",
+    "item.voluminousenergy.red_fuming_nitric_acid_bucket": "Red Fuming Nitric Acid Bucket",
+    "item.voluminousenergy.white_fuming_nitric_acid_bucket": "White Fuming Nitric Acid Bucket",
+    "item.voluminousenergy.mercury_bucket": "Mercury Bucket",
+    "item.voluminousenergy.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
+    "item.voluminousenergy.silver_ingot": "Silver Ingot",
+    "item.voluminousenergy.lead_ingot": "Lead Ingot",
+    "item.voluminousenergy.gold_dust": "Gold Dust"
 }
