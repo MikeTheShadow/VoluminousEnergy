@@ -166,11 +166,11 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
                         }
 
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
                         markDirty();
                     } else if (counter > 0){ //In progress
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
                     } else { // Check if we should start processing
                         if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
                             counter = recipe.getProcessTime();
@@ -342,7 +342,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
