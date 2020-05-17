@@ -75,6 +75,7 @@ public class VoluminousEnergy
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
 
+        // Config Files to load
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
@@ -109,6 +110,7 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/gold"));
 
         //Gears
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
@@ -121,6 +123,10 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
+
+
     }
 
     @SubscribeEvent
@@ -197,6 +203,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.GALENA_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.GOLD_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);

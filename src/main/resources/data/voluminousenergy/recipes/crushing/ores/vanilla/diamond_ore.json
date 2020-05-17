@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:diamond_ore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "minecraft:diamond",
+    "count": 1
+  },
+  "rng": {
+    "item": "voluminousenergy:carbon_dust",
+    "count": 2,
+    "chance": 1
+  }
+}

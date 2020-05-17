@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:redstone_ore",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "minecraft:redstone",
+    "count": 6
+  },
+  "rng": {
+    "item": "minecraft:glowstone_dust",
+    "count": 1,
+    "chance": 0.5
+  }
+}
