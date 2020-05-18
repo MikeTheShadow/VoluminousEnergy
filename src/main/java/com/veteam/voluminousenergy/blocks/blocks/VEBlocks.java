@@ -2,14 +2,8 @@ package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
-import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.ObjectHolder;
@@ -55,6 +49,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":electrolyzer")
     public static ContainerType<ElectrolyzerContainer> ELECTROLYZER_CONTAINER;
+
+    // Centrifugal Agitator
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_agitator")
+    public static CentrifugalAgitatorBlock CENTRIFUGAL_AGITATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_agitator")
+    public static TileEntityType<CentrifugalAgitatorTile> CENTRIFUGAL_AGITATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_agitator")
+    public static ContainerType<CentrifugalAgitatorContainer> CENTRIFUGAL_AGITATOR_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
