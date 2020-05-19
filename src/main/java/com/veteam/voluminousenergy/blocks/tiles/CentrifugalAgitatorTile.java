@@ -97,7 +97,42 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                     CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
                     if (recipe != null) {
                         if (outputTank0 != null && outputTank1 != null) {
-                            LOGGER.debug("SUCCESS!");
+                            //LOGGER.debug("SUCCESS!");
+                            // Tank fluid amount check + tank cap checks
+                            if (inputTank.getFluidAmount() >= recipe.inputAmount && outputTank0.getFluidAmount() + recipe.outputAmount <= tankCapacity && outputTank1.getFluidAmount() + recipe.secondAmount <= tankCapacity){
+                                // Check for power
+                                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+                                    if (counter == 1){
+                                        //TODO: Actually process fluids
+
+                                        // Drain Input
+                                        inputTank.drain(recipe.inputAmount, IFluidHandler.FluidAction.EXECUTE);
+
+                                        // First Output Tank
+                                        if (outputTank0.getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
+                                            outputTank0.setFluid(recipe.getOutputFluid());
+                                        } else {
+                                            outputTank0.fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                        }
+
+                                        // Second Output Tank
+                                        if (outputTank1.getFluid().getRawFluid() != recipe.getSecondFluid().getRawFluid()){
+                                            outputTank1.setFluid(recipe.getSecondFluid());
+                                        } else {
+                                            outputTank1.fill(recipe.getSecondFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                        }
+
+                                        counter--;
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
+                                    } else if (counter > 0){
+                                        counter--;
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
+                                    } else { //TODO: Make sure output tanks are either empty or have the SAME fluid!
+                                        counter = recipe.getProcessTime();
+                                        length = counter;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -107,6 +142,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                 }
 
                 if (outputTank0 != null) {
+                    LOGGER.debug("Should get tank1 info");
                     tank1.set(outputTank0.getFluid().copy());
                 }
 
