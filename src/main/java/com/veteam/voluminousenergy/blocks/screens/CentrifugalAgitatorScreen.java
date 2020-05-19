@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
+import com.veteam.voluminousenergy.tools.VERender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -55,6 +56,10 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
              */
             this.blit(i+79, j+31, 176, 0, 17, progress);
             this.blit(i+11, j+16, 176,24, 12, power);
+
+            VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 29, j + 18, 0, 12, 50);
+            //VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 45, j + 18, 0, 12, 50);
+            //VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
         }
 

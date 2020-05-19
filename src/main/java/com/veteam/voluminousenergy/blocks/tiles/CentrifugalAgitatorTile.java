@@ -2,16 +2,13 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
-import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.api.IFluidInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
@@ -23,7 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,8 +27,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -42,12 +36,9 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static net.minecraft.util.math.MathHelper.abs;
-
-public class CentrifugalAgitatorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class CentrifugalAgitatorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider, IFluidInventory {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
@@ -61,7 +52,12 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private AtomicReference<FluidStack> inputFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
+    private AtomicReference<FluidStack> updateInputFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
+
+    public AtomicReference<FluidStack> tank0 = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
+    public AtomicReference<FluidStack> tank1 = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
+    public AtomicReference<FluidStack> tank2 = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
+
     private static final Logger LOGGER = LogManager.getLogger();
 
 
@@ -88,14 +84,32 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                         Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
                         //FluidStack fluidStack = new FluidStack(fluid, 1000);
                         if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity){
-                            inputFluidStack.set(new FluidStack(fluid, 1000));
+                            updateInputFluidStack.set(new FluidStack(fluid, 1000));
                             inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                             h.extractItem(0,1,false);
                             h.insertItem(0,new ItemStack(Items.BUCKET, 1),false);
                         }
                     }
                 }
-                LOGGER.debug("Fluid: " + inputTank.getFluid());
+
+                if (inputTank != null || !inputTank.isEmpty()){
+                    //CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, , world).orElse(null);
+                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, this, world).orElse(null);
+                }
+
+                if (inputTank != null){
+                    tank0.set(inputTank.getFluid());
+                }
+
+                if (outputTank0 != null){
+                    tank1.set(outputTank0.getFluid());
+                }
+
+                if (outputTank1 != null){
+                    tank2.set(outputTank1.getFluid());
+                }
+
+                //LOGGER.debug("Fluid: " + inputTank.getFluid().toString() + " amount: " + inputTank.getFluid().toString());
                 // End of Fluid Handler
             });
 
@@ -276,4 +290,97 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         }
     }
 
+    // Hmmmm
+    @Override
+    public int getSizeInventory() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index) {
+        return null;
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        return null;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        return null;
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack) {
+
+    }
+
+    @Override
+    public boolean isUsableByPlayer(PlayerEntity player) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public int getTanks() {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        return null;
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return 0;
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        return false;
+    }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        return null;
+    }
+
+    public FluidStack getFluidStackFromTank(int num){
+        if (num == 0){
+            return inputTank.getFluid();
+        } else if (num == 1){
+            return outputTank0.getFluid();
+        } else if (num == 2){
+            return outputTank1.getFluid();
+        }
+        return FluidStack.EMPTY;
+    }
+
+    public int getTankCapacity(){
+        return tankCapacity;
+    }
 }
