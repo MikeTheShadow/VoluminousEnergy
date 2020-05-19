@@ -4,14 +4,17 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,6 +31,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.ItemFluidContainer;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -47,13 +52,16 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
-    private FluidTank inputTank;
-    private FluidTank outputTank0;
-    private FluidTank outputTank1;
+    private int tankCapacity = 4000;
+
+    private FluidTank inputTank = new FluidTank(tankCapacity);
+    private FluidTank outputTank0 = new FluidTank(tankCapacity);
+    private FluidTank outputTank1 = new FluidTank(tankCapacity);
 
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private AtomicReference<FluidStack> inputFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
     private static final Logger LOGGER = LogManager.getLogger();
 
 
@@ -68,82 +76,30 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             ItemStack output0 = h.getStackInSlot(1).copy(); // TODO: Refactor to make this to extract fluid to bucket
             ItemStack output1 = h.getStackInSlot(2).copy(); // TODO: Same as line above
 
+
+            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
             fluid.ifPresent(f -> {
                 //LOGGER.debug(" FLUID HANDLER PRESENT!");
                 //TODO: Fluid manipulation should go here
-            });
 
-            /* //TODO: Wipe this code and rewrite for Centrifugal Agitator
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
-            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
-
-            if (!input.isEmpty()){
-                if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
-                    if (counter == 1){ //The processing is about to be complete
-                        // Extract the inputted item
-                        h.extractItem(0,recipe.ingredientCount,false);
-
-                        // Get output stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult().copy();
-
-                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
-
-                        // Manipulating the Output slot
-                        if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
-                                output.setCount(1);
-                            }
-                            newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                        } else { // Assuming the recipe output item is already in the output slot
-                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            h.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
-                        }
-
-                        // Manipulating the RNG slot
-                        if (recipe.getChance() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItem().copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
-                            //LOGGER.debug("Random: " + random);
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rng.getItem() != recipe.getRngItem().getItem()){
-                                    if (rng.getItem() == Items.AIR){
-                                        rng.setCount(1);
-                                    }
-                                    newRngStack.setCount(recipe.getOutputRngAmount());
-                                    h.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
-                                    h.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
-                                }
-                            }
-                        }
-                        counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
-                        markDirty();
-                    } else if (counter > 0){ //In progress
-                        counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
-                    } else { // Check if we should start processing
-                        if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
-                            counter = recipe.getProcessTime();
-                            length = counter;
-                        } else {
-                            counter = 0;
+                // Input fluid into the input fluid tank
+                if (input.copy() != null || input.copy() != ItemStack.EMPTY){
+                    if (input.copy().getItem() instanceof BucketItem){
+                        Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
+                        //FluidStack fluidStack = new FluidStack(fluid, 1000);
+                        if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity){
+                            inputFluidStack.set(new FluidStack(fluid, 1000));
+                            inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                            h.extractItem(0,1,false);
+                            h.insertItem(0,new ItemStack(Items.BUCKET, 1),false);
                         }
                     }
-                } else { // This is if we reach the maximum in the slots
-                    counter = 0;
                 }
-            } else { // this is if the input slot is empty
-                counter = 0;
-            }
-            */
+                LOGGER.debug("Fluid: " + inputTank.getFluid());
+                // End of Fluid Handler
+            });
+
+            // End of item handler
         });
     }
 
@@ -178,7 +134,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         return new IFluidHandler() {
             @Override
             public int getTanks() {
-                return 2; // TODO: Implement secondary tank
+                return 3; // TODO: Implement secondary tank
             }
 
             @Nonnull
@@ -271,41 +227,15 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
-                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
-                if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
-                } else if (slot == 1 && recipe1 != null){
-                    return stack.getItem() == recipe1.result.getItem();
-                } else if (slot == 2 && recipe1 != null){
-                    return stack.getItem() == recipe1.getRngItem().getItem();
-                }
-                return false;
+                return true;
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
-                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
-                if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    }
-                } else if (slot == 1 && recipe1 != null){
-                    if (stack.getItem() == recipe1.result.getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 2 && recipe1 != null){
-                    if (stack.getItem() == recipe1.getRngItem().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                }
-                return stack;
+                return super.insertItem(slot, stack, simulate);
             }
         };
     }

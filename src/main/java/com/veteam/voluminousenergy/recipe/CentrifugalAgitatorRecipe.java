@@ -27,9 +27,11 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public final ResourceLocation recipeId;
     public FluidStack inputFluid;
     public FluidStack result;
+    public FluidStack secondResult;
     public int inputAmount;
     private int processTime;
     private int outputAmount;
+    public int secondAmount;
 
     public CentrifugalAgitatorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
@@ -102,10 +104,15 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             recipe.inputFluid = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidInputResourceLocation), inputFluidAmount);
             recipe.inputAmount = inputFluidAmount;
 
-            ResourceLocation fluidOutputResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(), "fluid", "minecraft:empty"),':');
-            int outputFluidAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(), "amount", 0);
+            ResourceLocation fluidOutputResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(), "fluid", "minecraft:empty"),':');
+            int outputFluidAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(), "amount", 0);
             recipe.result = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidOutputResourceLocation),outputFluidAmount);
             recipe.outputAmount = outputFluidAmount;
+
+            ResourceLocation secondFluidOutputResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(), "fluid", "minecraft:empty"),':');
+            int secondOutputFluidAmount = JSONUtils.getInt(json.get("second_result").getAsJsonObject(), "amount", 0);
+            recipe.secondResult = new FluidStack(ForgeRegistries.FLUIDS.getValue(secondFluidOutputResourceLocation),secondOutputFluidAmount);
+            recipe.secondAmount = secondOutputFluidAmount;
 
             return recipe;
         }
@@ -114,21 +121,27 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
         @Override
         public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
+            recipe.processTime = buffer.readInt();
             recipe.inputFluid = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
             recipe.result = buffer.readFluidStack();
-            recipe.processTime = buffer.readInt();
+            //Process time old position
             recipe.outputAmount = buffer.readInt();
+            recipe.secondResult = buffer.readFluidStack();
+            recipe.secondAmount = buffer.readInt();
             return recipe;
         }
 
         @Override
         public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
+            buffer.writeInt(recipe.processTime);
             buffer.writeFluidStack(recipe.inputFluid);
             buffer.writeInt(recipe.inputAmount);
             buffer.writeFluidStack(recipe.result);
-            buffer.writeInt(recipe.processTime);
+            // process time old position
             buffer.writeInt(recipe.outputAmount);
+            buffer.writeFluidStack(recipe.secondResult);
+            buffer.writeInt(recipe.secondAmount);
         }
     }
 

@@ -30,8 +30,8 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
-        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        drawString(Minecraft.getInstance().fontRenderer, (float)container.getEnergy()/1000 + " kFE", 27, 27, 0xffffff);
+        //this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        drawString(Minecraft.getInstance().fontRenderer, (float)container.getEnergy()/1000 + " kFE", 8, (this.ySize - 96 + 2), 0xffffff);
     }
 
     @Override
