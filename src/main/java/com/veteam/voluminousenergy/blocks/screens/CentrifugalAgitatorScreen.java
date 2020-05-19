@@ -58,8 +58,18 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
             this.blit(i+11, j+16, 176,24, 12, power);
 
             VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 29, j + 18, 0, 12, 50);
-            //VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 45, j + 18, 0, 12, 50);
-            //VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+
+            try{
+                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 45, j + 18, 0, 12, 50);
+            } catch (Exception e){
+
+            }
+
+            try{
+                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            } catch (Exception e){
+
+            }
 
         }
 

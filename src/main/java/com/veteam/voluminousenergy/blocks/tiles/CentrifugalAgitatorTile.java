@@ -5,10 +5,10 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContaine
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.api.IFluidInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
@@ -38,7 +38,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CentrifugalAgitatorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider, IFluidInventory {
+public class CentrifugalAgitatorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
@@ -51,7 +51,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
     private int counter;
     private int length;
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
     private AtomicReference<FluidStack> updateInputFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
 
     public AtomicReference<FluidStack> tank0 = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
@@ -61,12 +61,12 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     private static final Logger LOGGER = LogManager.getLogger();
 
 
-    public CentrifugalAgitatorTile(){
+    public CentrifugalAgitatorTile() {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE);
     }
 
     @Override
-    public void tick(){
+    public void tick() {
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy(); // TODO: Refactor to make this truly bucket input
             ItemStack output0 = h.getStackInSlot(1).copy(); // TODO: Refactor to make this to extract fluid to bucket
@@ -79,34 +79,39 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                 //TODO: Fluid manipulation should go here
 
                 // Input fluid into the input fluid tank
-                if (input.copy() != null || input.copy() != ItemStack.EMPTY){
-                    if (input.copy().getItem() instanceof BucketItem){
+                if (input.copy() != null || input.copy() != ItemStack.EMPTY) {
+                    if (input.copy().getItem() instanceof BucketItem) {
                         Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
                         //FluidStack fluidStack = new FluidStack(fluid, 1000);
-                        if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity){
+                        if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity) {
                             updateInputFluidStack.set(new FluidStack(fluid, 1000));
                             inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
-                            h.extractItem(0,1,false);
-                            h.insertItem(0,new ItemStack(Items.BUCKET, 1),false);
+                            h.extractItem(0, 1, false);
+                            h.insertItem(0, new ItemStack(Items.BUCKET, 1), false);
                         }
                     }
                 }
 
-                if (inputTank != null || !inputTank.isEmpty()){
-                    //CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, , world).orElse(null);
-                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, this, world).orElse(null);
+                if (inputTank != null || !inputTank.isEmpty()) {
+                    ItemStack inputFluidStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(),1);
+                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
+                    if (recipe != null) {
+                        if (outputTank0 != null && outputTank1 != null) {
+                            LOGGER.debug("SUCCESS!");
+                        }
+                    }
                 }
 
-                if (inputTank != null){
-                    tank0.set(inputTank.getFluid());
+                if (inputTank != null) {
+                    tank0.set(inputTank.getFluid().copy());
                 }
 
-                if (outputTank0 != null){
-                    tank1.set(outputTank0.getFluid());
+                if (outputTank0 != null) {
+                    tank1.set(outputTank0.getFluid().copy());
                 }
 
-                if (outputTank1 != null){
-                    tank2.set(outputTank1.getFluid());
+                if (outputTank1 != null) {
+                    tank2.set(outputTank1.getFluid().copy());
                 }
 
                 //LOGGER.debug("Fluid: " + inputTank.getFluid().toString() + " amount: " + inputTank.getFluid().toString());
@@ -122,12 +127,12 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
      */
 
     @Override
-    public void read(CompoundNBT tag){ // TODO: Make these tags actually work (JSON), add fluid
+    public void read(CompoundNBT tag) { // TODO: Make these tags actually work (JSON), add fluid
         CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
         super.read(tag);
     }
 
@@ -138,13 +143,13 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            tag.put("energy", compound);
         });
         return super.write(tag);
     }
 
-    private IFluidHandler createFluid(){
+    private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -154,11 +159,11 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             @Nonnull
             @Override
             public FluidStack getFluidInTank(int tank) {
-                if (tank == 0){
+                if (tank == 0) {
                     return inputTank == null ? FluidStack.EMPTY : inputTank.getFluid();
-                } else if (tank == 1){
+                } else if (tank == 1) {
                     return outputTank0 == null ? FluidStack.EMPTY : outputTank0.getFluid();
-                } else if (tank == 2){
+                } else if (tank == 2) {
                     return outputTank1 == null ? FluidStack.EMPTY : outputTank1.getFluid();
                 }
                 return FluidStack.EMPTY;
@@ -166,11 +171,11 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
             @Override
             public int getTankCapacity(int tank) {
-                if (tank == 0){
+                if (tank == 0) {
                     return inputTank == null ? 0 : inputTank.getCapacity();
-                } else if (tank == 1){
+                } else if (tank == 1) {
                     return outputTank0 == null ? 0 : outputTank0.getCapacity();
-                } else if (tank == 2){
+                } else if (tank == 2) {
                     return outputTank1 == null ? 0 : outputTank1.getCapacity();
                 }
                 return 0;
@@ -178,11 +183,11 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (tank == 0){
+                if (tank == 0) {
                     return inputTank != null && inputTank.isFluidValid(stack);
-                } else if (tank == 1){
+                } else if (tank == 1) {
                     return outputTank0 != null && outputTank0.isFluidValid(stack);
-                } else if (tank == 2){
+                } else if (tank == 2) {
                     return outputTank1 != null && outputTank1.isFluidValid(stack);
                 }
                 return false;
@@ -190,11 +195,11 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
             @Override
             public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && inputTank.isEmpty() || resource.isFluidEqual(inputTank.getFluid())){
+                if (isFluidValid(0, resource) && inputTank.isEmpty() || resource.isFluidEqual(inputTank.getFluid())) {
                     return inputTank.fill(resource, action);
-                } else if (isFluidValid(1, resource) && outputTank0.isEmpty() || resource.isFluidEqual(outputTank0.getFluid())){
+                } else if (isFluidValid(1, resource) && outputTank0.isEmpty() || resource.isFluidEqual(outputTank0.getFluid())) {
                     return outputTank0.fill(resource, action);
-                } else if (isFluidValid(2, resource) && outputTank1.isEmpty() || resource.isFluidEqual(outputTank1.getFluid())){
+                } else if (isFluidValid(2, resource) && outputTank1.isEmpty() || resource.isFluidEqual(outputTank1.getFluid())) {
                     return outputTank1.fill(resource, action);
                 }
                 return 0;
@@ -203,14 +208,14 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             @Nonnull
             @Override
             public FluidStack drain(FluidStack resource, FluidAction action) {
-                if(resource.isEmpty()){
+                if (resource.isEmpty()) {
                     return FluidStack.EMPTY;
                 }
-                if (resource.isFluidEqual(inputTank.getFluid())){
+                if (resource.isFluidEqual(inputTank.getFluid())) {
                     return inputTank.drain(resource, action);
-                } else if (resource.isFluidEqual(outputTank0.getFluid())){
+                } else if (resource.isFluidEqual(outputTank0.getFluid())) {
                     return outputTank0.drain(resource, action);
-                } else if (resource.isFluidEqual(outputTank1.getFluid())){
+                } else if (resource.isFluidEqual(outputTank1.getFluid())) {
                     return outputTank1.drain(resource, action);
                 }
                 return FluidStack.EMPTY;
@@ -219,11 +224,11 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             @Nonnull
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
-                if (inputTank.getFluidAmount() > 0){
+                if (inputTank.getFluidAmount() > 0) {
                     inputTank.drain(maxDrain, action);
-                } else if (outputTank0.getFluidAmount() > 0){
+                } else if (outputTank0.getFluidAmount() > 0) {
                     outputTank0.drain(maxDrain, action);
-                } else if (outputTank1.getFluidAmount() > 0){
+                } else if (outputTank1.getFluidAmount() > 0) {
                     outputTank1.drain(maxDrain, action);
                 }
                 return FluidStack.EMPTY;
@@ -241,134 +246,54 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-
                 return true;
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
 
                 return super.insertItem(slot, stack, simulate);
             }
         };
     }
 
-    private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+    private IEnergyStorage createEnergy() {
+        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(), Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
         }
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
         return super.getCapability(cap, side);
     }
 
     @Override
-    public ITextComponent getDisplayName(){
+    public ITextComponent getDisplayName() {
         return new StringTextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
-    {
-        return new CentrifugalAgitatorContainer(i,world,pos,playerInventory,playerEntity);
+    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+        return new CentrifugalAgitatorContainer(i, world, pos, playerInventory, playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
+    public int progressCounterPX(int px) {
+        if (counter == 0) {
             return 0;
         } else {
-            return (px*(100-((counter*100)/length)))/100;
+            return (px * (100 - ((counter * 100) / length))) / 100;
         }
     }
 
-    // Hmmmm
-    @Override
-    public int getSizeInventory() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-
-    }
-
-    @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public int getTanks() {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        return null;
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return 0;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        return false;
-    }
-
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return null;
-    }
-
+    @Deprecated
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return inputTank.getFluid();

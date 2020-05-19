@@ -1,17 +1,16 @@
 {
   "type": "voluminousenergy:centrifugal_agitating",
   "processTime": 200,
-  "ingredients": [
-    { "fluid": "minecraft:water",
-      "amount": 250
-    }
-  ],
+  "ingredient": {
+    "item": "minecraft:water_bucket",
+    "amount": 250
+  },
   "first_result": {
-    "fluid": "voluminousenergy:red_fuming_nitric_acid",
+    "item": "voluminousenergy:red_fuming_nitric_acid_bucket",
     "amount": 125
   },
   "second_result": {
-    "fluid": "voluminousenergy:white_fuming_nitric_acid",
+    "item": "voluminousenergy:white_fuming_nitric_acid_bucket",
     "amount": 125
   }
 }

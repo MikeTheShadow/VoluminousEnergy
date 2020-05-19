@@ -1,12 +1,15 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.api.FluidIngredient;
-import com.veteam.voluminousenergy.tools.api.IFluidInventory;
-import com.veteam.voluminousenergy.tools.api.IFluidRecipe;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
@@ -17,20 +20,22 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalAgitatorRecipe implements IFluidRecipe<IFluidInventory> {
+public class CentrifugalAgitatorRecipe extends VERecipe {
     public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = IRecipeType.register("centrifugal_agitating");
     public static final Serializer SERIALIZER = new Serializer();
+
+    public static ArrayList<Item> ingredientList = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int processTime;
     private final List<FluidIngredient> ingredients = NonNullList.create();
 
-    public FluidStack inputFluid;
-    public FluidStack result;
-    public FluidStack secondResult;
+    public ItemStack inputFluid;
+    public ItemStack result;
+    public ItemStack secondResult;
     public int inputAmount;
     public int outputAmount;
     public int secondAmount;
@@ -39,90 +44,118 @@ public class CentrifugalAgitatorRecipe implements IFluidRecipe<IFluidInventory> 
         this.recipeId = recipeId;
     }
 
-    public int getProcessTime(){
-        return processTime;
+    public Ingredient getIngredient(){ return ingredient;}
+
+    public int getIngredientCount(){ return ingredientCount;}
+
+    public ItemStack getResult() {return result;}
+
+    public ItemStack getSecondResult(){return secondResult;}
+
+    public FluidStack getSecondFluid(){
+        if (secondResult.getItem() instanceof BucketItem){
+            return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), secondAmount);
+        }
+        return FluidStack.EMPTY;
+    }
+
+    public FluidStack getOutputFluid(){
+        if (result.getItem() instanceof BucketItem){
+            return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), outputAmount);
+        }
+        return FluidStack.EMPTY;
+    }
+
+    public FluidStack getInputFluid(){
+        if (result.getItem() instanceof BucketItem){
+            return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
+        }
+        return FluidStack.EMPTY;
     }
 
     @Override
-    public List<FluidStack> getFluidResults(IFluidInventory inv) {
-        return getFluidOutputs();
+    public boolean matches(IInventory inv, World worldIn){
+        ItemStack stack = inv.getStackInSlot(0);
+        int count = stack.getCount();
+        return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public List<FluidStack> getFluidOutputs() {
-        return Collections.singletonList(result.copy());
-    }
+    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public List<FluidIngredient> getFluidIngredients() {
-        return Collections.unmodifiableList(ingredients);
-    }
+    public boolean canFit(int width, int height){return true;}
 
     @Override
-    public boolean matches(IFluidInventory inv, World worldIn) {
-        return false;
-    }
+    public ItemStack getRecipeOutput(){return result;}
 
     @Override
-    public ResourceLocation getId() {
-        return recipeId;
-    }
+    public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
-    }
+    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType() {
-        return RECIPE_TYPE;
-    }
+    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+
+    public int getOutputAmount() {return outputAmount;}
+
+    public int getSecondAmount(){return secondAmount;}
+
+    public int getProcessTime() { return processTime; }
+
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipe> {
         @Override
         public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, JsonObject json) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
 
-            recipe.processTime = JSONUtils.getInt(json, "processTime");
+            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = JSONUtils.getInt(json,"processTime",200);
 
+            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+                if(!ingredientList.contains(stack.getItem())){
+                    ingredientList.add(stack.getItem());
+                }
+            }
 
-            JSONUtils.getJsonArray(json, "ingredients").forEach(e ->
-                    recipe.ingredients.add(FluidIngredient.deserialize(e.getAsJsonObject())));
+            ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(),"item","minecraft:empty"),':');
+            int itemAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"count",0);
+            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(bucketResourceLocation));
+            recipe.outputAmount = itemAmount;
 
-            ResourceLocation fluidOutputResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(), "fluid", "minecraft:empty"),':');
-            int outputFluidAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(), "amount", 0);
-            recipe.result = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidOutputResourceLocation),outputFluidAmount);
-            recipe.outputAmount = outputFluidAmount;
-
-            ResourceLocation secondFluidOutputResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(), "fluid", "minecraft:empty"),':');
-            int secondOutputFluidAmount = JSONUtils.getInt(json.get("second_result").getAsJsonObject(), "amount", 0);
-            recipe.secondResult = new FluidStack(ForgeRegistries.FLUIDS.getValue(secondFluidOutputResourceLocation),secondOutputFluidAmount);
-            recipe.secondAmount = secondOutputFluidAmount;
-
-            //recipe.result = IFluidRecipe.deserializeFluid(JSONUtils.getJsonObject(json, "result"));
+            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(),"item","minecraft:empty"),':');
+            int secondFluidAmount = JSONUtils.getInt(json.get("second_result").getAsJsonObject(),"amount",0);
+            recipe.secondResult = new ItemStack(ForgeRegistries.ITEMS.getValue(secondBucketResourceLocation));
+            recipe.secondAmount = secondFluidAmount;
 
             return recipe;
         }
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
-            recipe.processTime = buffer.readVarInt();
-            int ingredientCount = buffer.readByte();
-            for (int i = 0; i < ingredientCount; ++i) {
-                recipe.ingredients.add(FluidIngredient.read(buffer));
-            }
-            recipe.result = IFluidRecipe.readFluid(buffer);
+        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
+            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredientCount = buffer.readByte();
+            recipe.result = buffer.readItemStack();
+            recipe.processTime = buffer.readInt();
+            recipe.outputAmount = buffer.readInt();
+            recipe.secondResult = buffer.readItemStack();
+            recipe.secondAmount = buffer.readInt();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe) {
-            buffer.writeVarInt(recipe.processTime);
-            buffer.writeByte(recipe.ingredients.size());
-            recipe.ingredients.forEach(ingredient -> ingredient.write(buffer));
-            IFluidRecipe.writeFluid(buffer, recipe.result);
+        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
+            recipe.ingredient.write(buffer);
+            buffer.writeByte(recipe.getIngredientCount());
+            buffer.writeItemStack(recipe.getResult());
+            buffer.writeInt(recipe.processTime);
+            buffer.writeInt(recipe.outputAmount);
+            buffer.writeItemStack(recipe.secondResult);
+            buffer.writeInt(recipe.secondAmount);
         }
     }
 }
