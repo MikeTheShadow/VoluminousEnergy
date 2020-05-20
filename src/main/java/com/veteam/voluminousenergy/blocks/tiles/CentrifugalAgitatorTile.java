@@ -142,7 +142,6 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                 }
 
                 if (outputTank0 != null) {
-                    LOGGER.debug("Should get tank1 info");
                     tank1.set(outputTank0.getFluid().copy());
                 }
 
@@ -202,6 +201,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                 } else if (tank == 2) {
                     return outputTank1 == null ? FluidStack.EMPTY : outputTank1.getFluid();
                 }
+                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getFluidInTank");
                 return FluidStack.EMPTY;
             }
 
@@ -214,6 +214,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                 } else if (tank == 2) {
                     return outputTank1 == null ? 0 : outputTank1.getCapacity();
                 }
+                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getTankCapacity");
                 return 0;
             }
 

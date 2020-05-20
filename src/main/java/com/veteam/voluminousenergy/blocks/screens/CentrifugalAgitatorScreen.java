@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitatorContainer> {
     private CentrifugalAgitatorTile tileEntity;
@@ -60,16 +59,12 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
             VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 29, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 45, j + 18, 0, 12, 50);
-            } catch (Exception e){
-
-            }
+                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
-            } catch (Exception e){
-
-            }
+                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+            } catch (Exception e){ }
 
         }
 

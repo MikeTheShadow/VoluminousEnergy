@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.tools.api.FluidIngredient;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -61,13 +60,13 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     public FluidStack getOutputFluid(){
         if (result.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), outputAmount);
+            return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
         }
         return FluidStack.EMPTY;
     }
 
     public FluidStack getInputFluid(){
-        if (result.getItem() instanceof BucketItem){
+        if (inputFluid.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
         }
         return FluidStack.EMPTY;
@@ -121,7 +120,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             }
 
             ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(),"item","minecraft:empty"),':');
-            int itemAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"count",0);
+            int itemAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"amount",0);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(bucketResourceLocation));
             recipe.outputAmount = itemAmount;
 

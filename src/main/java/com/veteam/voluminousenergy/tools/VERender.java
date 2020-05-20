@@ -28,7 +28,7 @@ public class VERender {
     }
 
     public static void renderGuiTank(FluidStack stack, int tankCapacity, double x, double y, double zLevel, double width, double height) {
-        // Adapted from Ender IO by Silent's Mechanisms
+        // Originally Adapted from Ender IO by Silent's Mechanisms
         int amount;
         try{
             if (stack.getFluid() == null) {
