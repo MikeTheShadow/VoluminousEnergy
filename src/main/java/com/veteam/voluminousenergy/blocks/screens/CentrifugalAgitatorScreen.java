@@ -13,7 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitatorContainer> {
     private CentrifugalAgitatorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png"); //TODO: Make new gui
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png"); //TODO: Make new gui
 
     public CentrifugalAgitatorScreen(CentrifugalAgitatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -42,7 +42,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
         int j = (this.height - this.ySize) / 2;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(24);
+            int progress = tileEntity.progressCounterPX(9);
             int power = container.powerScreen(49);
 
             /*Note for this.blit below:
@@ -53,17 +53,17 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+79, j+31, 176, 0, 17, progress);
+            this.blit(i+81, j+31, 176, 0, progress, 17);
             this.blit(i+11, j+16, 176,24, 12, power);
 
-            VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 29, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
         }

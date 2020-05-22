@@ -68,19 +68,17 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     @Override
     public void tick() {
         handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0).copy(); // TODO: Refactor to make this truly bucket input
-            ItemStack output0 = h.getStackInSlot(1).copy(); // TODO: Refactor to make this to extract fluid to bucket
-            ItemStack output1 = h.getStackInSlot(2).copy(); // TODO: Same as line above
+            ItemStack input = h.getStackInSlot(0).copy();
+            ItemStack input1 = h.getStackInSlot(1).copy();
+            ItemStack output0 = h.getStackInSlot(2).copy();
+            ItemStack output1 = h.getStackInSlot(3).copy();
 
 
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
             fluid.ifPresent(f -> {
-                //LOGGER.debug(" FLUID HANDLER PRESENT!");
-                //TODO: Fluid manipulation should go here
-
                 // Input fluid into the input fluid tank
                 if (input.copy() != null || input.copy() != ItemStack.EMPTY) {
-                    if (input.copy().getItem() instanceof BucketItem) {
+                    if (input.copy().getItem() instanceof BucketItem && input.getCount() == 1) {
                         Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
                         //FluidStack fluidStack = new FluidStack(fluid, 1000);
                         if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity) {
@@ -92,18 +90,49 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                     }
                 }
 
+                // Extract fluid from the input tank
+                if (input1.copy().getItem() != null || input1.copy() != ItemStack.EMPTY){
+                    if (input1.getItem() == Items.BUCKET && inputTank.getFluidAmount() >= 1000 && input1.getCount() == 1){
+                        ItemStack bucketStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(),1);
+                        inputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        h.extractItem(1,1,false);
+                        h.insertItem(1, bucketStack, false);
+
+                    }
+                }
+
+                // Extract fluid from the first output tank
+                if (output0.copy().getItem() != null || output0.copy() != ItemStack.EMPTY){
+                    if (output0.getItem() == Items.BUCKET && outputTank0.getFluidAmount() >= 1000 && output0.getCount() == 1){
+                        ItemStack bucketStack = new ItemStack(outputTank0.getFluid().getRawFluid().getFilledBucket(), 1);
+                        outputTank0.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        h.extractItem(2,1,false);
+                        h.insertItem(2, bucketStack, false);
+                    }
+                }
+
+                // Extract fluid from the second output tank
+                if (output1.copy().getItem() != null || output1.copy() != ItemStack.EMPTY){
+                    if (output1.getItem() == Items.BUCKET && outputTank1.getFluidAmount() >= 1000 && output1.getCount() == 1){
+                        ItemStack bucketStack = new ItemStack(outputTank1.getFluid().getRawFluid().getFilledBucket(), 1);
+                        outputTank1.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                        h.extractItem(3,1,false);
+                        h.insertItem(3, bucketStack, false);
+                    }
+                }
+
+                // Main Fluid Processing occurs here:
                 if (inputTank != null || !inputTank.isEmpty()) {
                     ItemStack inputFluidStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(),1);
                     CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
                     if (recipe != null) {
                         if (outputTank0 != null && outputTank1 != null) {
-                            //LOGGER.debug("SUCCESS!");
+
                             // Tank fluid amount check + tank cap checks
                             if (inputTank.getFluidAmount() >= recipe.inputAmount && outputTank0.getFluidAmount() + recipe.outputAmount <= tankCapacity && outputTank1.getFluidAmount() + recipe.secondAmount <= tankCapacity){
                                 // Check for power
                                 if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                                     if (counter == 1){
-                                        //TODO: Actually process fluids
 
                                         // Drain Input
                                         inputTank.drain(recipe.inputAmount, IFluidHandler.FluidAction.EXECUTE);
@@ -275,7 +304,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(3) {
+        return new ItemStackHandler(4) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();

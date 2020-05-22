@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.tools.api.FluidIngredient;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -11,7 +10,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,7 +18,6 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CentrifugalAgitatorRecipe extends VERecipe {
     public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = IRecipeType.register("centrifugal_agitating");
@@ -30,7 +27,6 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     private final ResourceLocation recipeId;
     private int processTime;
-    private final List<FluidIngredient> ingredients = NonNullList.create();
 
     public ItemStack inputFluid;
     public ItemStack result;
@@ -111,6 +107,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.inputAmount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
             recipe.processTime = JSONUtils.getInt(json,"processTime",200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
@@ -139,6 +136,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItemStack();
+            recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.secondResult = buffer.readItemStack();
@@ -151,6 +149,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItemStack(recipe.getResult());
+            buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeItemStack(recipe.secondResult);

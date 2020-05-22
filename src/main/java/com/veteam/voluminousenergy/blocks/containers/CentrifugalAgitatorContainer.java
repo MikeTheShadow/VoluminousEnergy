@@ -42,9 +42,10 @@ public class CentrifugalAgitatorContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 80, 13));
-            addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
-            addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
+            addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
+            addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from input
+            addSlot(new VEInsertSlot(h, 2, 96,49)); // Extract fluid from first output
+            addSlot(new VEInsertSlot(h, 3, 137,49)); // Extract fluid from second output
         });
         layoutPlayerInventorySlots(8, 84);
 
