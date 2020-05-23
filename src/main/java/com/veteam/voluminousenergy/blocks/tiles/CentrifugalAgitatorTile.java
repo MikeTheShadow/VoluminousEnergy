@@ -15,6 +15,8 @@ import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -153,6 +155,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
 
                                         counter--;
                                         energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
+                                        this.markDirty();
                                     } else if (counter > 0){
                                         counter--;
                                         energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
@@ -197,6 +200,26 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+
+        // Tanks
+        int inputAmount = tag.getInt("inputAmount");
+        CompoundNBT inputBucket = tag.getCompound("inputTank").copy();
+        LOGGER.debug("Input " + ItemStack.read(inputBucket).copy() + " amount: " + inputAmount);
+        inputTank.fill(readFluidStackFromNBT(inputAmount, inputBucket.copy()), IFluidHandler.FluidAction.EXECUTE);
+
+        int output0Amount = tag.getInt("output0Amount");
+        CompoundNBT output0Bucket = tag.getCompound("output0Tank").copy();
+        outputTank0.fill(readFluidStackFromNBT(output0Amount, output0Bucket.copy()), IFluidHandler.FluidAction.EXECUTE);
+
+        int output1Amount = tag.getInt("output1Amount");
+        CompoundNBT output1Bucket = tag.getCompound("output1Tank").copy();
+        outputTank1.fill(readFluidStackFromNBT(output1Amount, output1Bucket.copy()), IFluidHandler.FluidAction.EXECUTE);
+
+        /* Read Tanks
+        inputTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("inputTank")));
+        outputTank0.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("outputTank0")));
+        outputTank1.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("outputTank1")));
+        */
         super.read(tag);
     }
 
@@ -210,14 +233,71 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("energy", compound);
         });
+
+        // Tanks
+        // Input Tank
+        int inputAmount = inputTank.getFluidAmount();
+        LOGGER.debug("InputAmount: " + inputAmount);
+        tag.put("inputTank", tankToNBT(inputTank).copy());
+        tag.putInt("inputAmount", inputAmount);
+
+        // Output 0 Tank
+        int output0Amount = outputTank0.getFluidAmount();
+        tag.put("output0Tank", tankToNBT(outputTank0).copy());
+        tag.putInt("output0Amount", output0Amount);
+
+        // Output 1 Tank
+        int output1Amount = outputTank1.getFluidAmount();
+        tag.put("output1Tank", tankToNBT(outputTank1).copy());
+        tag.putInt("output1Amount", output1Amount);
+
+        /* Tanks
+        tag.put("inputTank", inputTank.writeToNBT(new CompoundNBT()));
+        tag.put("outputTank0", outputTank0.writeToNBT(new CompoundNBT()));
+        tag.put("outputTank1", outputTank1.writeToNBT(new CompoundNBT()));
+        */
         return super.write(tag);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.read(pkt.getNbtCompound());
+    }
+
+    private CompoundNBT tankToNBT(FluidTank tank){
+        CompoundNBT nbt;
+        ItemStack itemStack = new ItemStack(tank.getFluid().getRawFluid().getFilledBucket(), 1);
+        nbt = itemStack.serializeNBT();
+        return nbt;
+    }
+
+    private FluidStack readFluidStackFromNBT(int amount, CompoundNBT itemStackNBT){
+        ItemStack itemStack = ItemStack.read(itemStackNBT);
+        if (itemStack == null || itemStack == ItemStack.EMPTY){
+            LOGGER.debug("ITEMSTACK FROM NBT EMPTY!");
+        }
+        if (itemStack.getItem() instanceof BucketItem){
+            return new FluidStack(((BucketItem) itemStack.getItem()).getFluid(), amount);
+        }
+        return FluidStack.EMPTY;
     }
 
     private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
-                return 3; // TODO: Implement secondary tank
+                return 3;
             }
 
             @Nonnull
