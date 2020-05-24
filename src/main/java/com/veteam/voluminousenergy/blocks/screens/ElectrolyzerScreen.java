@@ -39,6 +39,7 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(container.getEnergy() + " FE" + " / " + Config.ELECTROLYZER_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
+        super.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
