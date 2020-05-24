@@ -154,16 +154,18 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                                         }
 
                                         counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
                                         this.markDirty();
                                     } else if (counter > 0){
                                         counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Centrifugal Agitator power usage
-                                    } else { //TODO: Make sure output tanks are either empty or have the SAME fluid!
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                    } else {
                                         counter = recipe.getProcessTime();
                                         length = counter;
                                     }
-                                }
+                                } // Energy Check
+                            } else { // If fluid tank empty set counter to zero
+                                counter = 0;
                             }
                         }
                     }
@@ -194,7 +196,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
      */
 
     @Override
-    public void read(CompoundNBT tag) { // TODO: Make these tags actually work (JSON), add fluid
+    public void read(CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -224,7 +226,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) { // TODO: Make these tags actually work (JSON), add fluid
+    public CompoundNBT write(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -251,11 +253,6 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         tag.put("output1Tank", tankToNBT(outputTank1).copy());
         tag.putInt("output1Amount", output1Amount);
 
-        /* Tanks
-        tag.put("inputTank", inputTank.writeToNBT(new CompoundNBT()));
-        tag.put("outputTank0", outputTank0.writeToNBT(new CompoundNBT()));
-        tag.put("outputTank1", outputTank1.writeToNBT(new CompoundNBT()));
-        */
         return super.write(tag);
     }
 
@@ -405,7 +402,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(), Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull

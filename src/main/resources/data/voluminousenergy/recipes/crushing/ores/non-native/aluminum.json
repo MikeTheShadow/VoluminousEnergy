@@ -1,17 +1,17 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:ores/galena",
+    "tag": "forge:ores/aluminum",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:galena_dust",
+    "item": "voluminousenergy:aluminum_dust",
     "count": 2
   },
   "rng": {
-    "item": "voluminousenergy:sulfurdust",
+    "item": "voluminousenergy:bauxite_dust",
     "count": 1,
-    "chance": 0.5
+    "chance": 0.25
   }
 }

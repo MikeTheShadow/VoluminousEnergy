@@ -13,7 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitatorContainer> {
     private CentrifugalAgitatorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png"); //TODO: Make new gui
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
 
     public CentrifugalAgitatorScreen(CentrifugalAgitatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);

@@ -120,12 +120,19 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
 
+        //Ores
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/saltpeter"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/bauxite"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/cinnabar"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/rutile"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/galena"));
+
 
     }
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        LOGGER.info("Hello from server start!");
+        LOGGER.info("Hello from Voluminous Energy on server start!");
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -133,7 +140,7 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
-            LOGGER.info("Hello from block registry!");
+            LOGGER.info("Hello from Voluminous Energy's block registry!");
             //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
@@ -151,7 +158,7 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
-            LOGGER.info("Hello from item registry!");
+            LOGGER.info("Hello from Voluminous Energy's item registry!");
 
             //Item Properties
             Item.Properties properties = new Item.Properties();
@@ -221,7 +228,7 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-            LOGGER.info("Hello from tile entity registry!");
+            LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
             event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));

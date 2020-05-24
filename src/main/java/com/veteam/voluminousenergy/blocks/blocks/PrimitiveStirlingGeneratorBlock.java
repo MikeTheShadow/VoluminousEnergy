@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -29,7 +30,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
                 .sound(SoundType.STONE)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(1)
+                .harvestLevel(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
 

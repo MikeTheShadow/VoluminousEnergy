@@ -1,17 +1,17 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:ores/cinnabar",
+    "tag": "forge:ores/silver",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:cinnabar_dust",
-    "count": 5
+    "item": "voluminousenergy:silver_dust",
+    "count": 2
   },
   "rng": {
-    "item": "minecraft:redstone",
-    "count": 2,
+    "item": "voluminousenergy:galena_dust",
+    "count": 1,
     "chance": 0.25
   }
 }

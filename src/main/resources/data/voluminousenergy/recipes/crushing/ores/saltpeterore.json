@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "voluminousenergy:saltpeterore",
+    "tag": "forge:ores/saltpeter",
     "count": 1
   },
   "processTime": 200,

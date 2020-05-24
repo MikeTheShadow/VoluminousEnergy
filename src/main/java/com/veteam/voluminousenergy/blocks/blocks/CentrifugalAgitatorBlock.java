@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -27,7 +27,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(1)
+                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("centrifugal_agitator");

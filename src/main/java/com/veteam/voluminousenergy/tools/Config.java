@@ -16,6 +16,7 @@ public class Config {
     public static final String CATEGORY_PRIMITIVE_STIRLING_GENERATOR = "Primitive Stirling Generator";
     public static final String CATEGORY_CRUSHER = "Crusher";
     public static final String CATEGORY_ELECTROLYZER = "Electrolyzer";
+    public static final String CATEGORY_CENTRIFUGAL_AGITATOR = "Centrifugal Agitator";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -41,6 +42,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue SALTPETER_HEIGHT_OFFSET;
     public static ForgeConfigSpec.IntValue SALTPETER_MAXIMUM_HEIGHT;
     public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
+    public static ForgeConfigSpec.IntValue SALTPETER_HARVEST_LEVEL;
     // BAUXITE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
     public static ForgeConfigSpec.IntValue BAUXITE_COUNT;
@@ -48,6 +50,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue BAUXITE_HEIGHT_OFFSET;
     public static ForgeConfigSpec.IntValue BAUXITE_MAXIMUM_HEIGHT;
     public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
+    public static ForgeConfigSpec.IntValue BAUXITE_HARVEST_LEVEL;
     // CINNABAR ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
     public static ForgeConfigSpec.IntValue CINNABAR_COUNT;
@@ -55,6 +58,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue CINNABAR_HEIGHT_OFFSET;
     public static ForgeConfigSpec.IntValue CINNABAR_MAXIMUM_HEIGHT;
     public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
+    public static ForgeConfigSpec.IntValue CINNABAR_HARVEST_LEVEL;
     // RUTILE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
     public static ForgeConfigSpec.IntValue RUTILE_COUNT;
@@ -62,6 +66,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue RUTILE_HEIGHT_OFFSET;
     public static ForgeConfigSpec.IntValue RUTILE_MAXIMUM_HEIGHT;
     public static ForgeConfigSpec.IntValue RUTILE_SIZE;
+    public static ForgeConfigSpec.IntValue RUTILE_HARVEST_LEVEL;
     // GALENA ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
     public static ForgeConfigSpec.IntValue GALENA_COUNT;
@@ -69,22 +74,32 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_HEIGHT_OFFSET;
     public static ForgeConfigSpec.IntValue GALENA_MAXIMUM_HEIGHT;
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
+    public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
 
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL;
 
     // Crusher Variables
     public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
     public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CRUSHER_TRANSFER;
+    public static ForgeConfigSpec.IntValue CRUSHER_HARVEST_LEVEL;
 
     // Electrolyzer Variables
     public static ForgeConfigSpec.IntValue ELECTROLYZER_MAX_POWER;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_TRANSFER;
+    public static ForgeConfigSpec.IntValue ELECTROLYZER_HARVEST_LEVEL;
+
+    // Centrifugal Agitator Variables
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_HARVEST_LEVEL;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -108,6 +123,11 @@ public class Config {
         // Electrolyzer
         COMMON_BUILDER.comment("Electrolyzer Settings").push(CATEGORY_ELECTROLYZER);
         setupElectrolyzer();
+        COMMON_BUILDER.pop();
+
+        // Centrifugal Agitator
+        COMMON_BUILDER.comment("Centrifugal Agitator Settings").push(CATEGORY_CENTRIFUGAL_AGITATOR);
+        setupCentrifugalAgitator();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -134,6 +154,7 @@ public class Config {
             SALTPETER_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Height Offset", 0, 0, 256);
             SALTPETER_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Saltpeter Maximum Height", 256, 0, 256);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
+            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
@@ -145,6 +166,7 @@ public class Config {
             BAUXITE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Bauxite Height Offset", 0, 0, 256);
             BAUXITE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Bauxite Maximum Height", 60, 0, 256);
             BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
+            BAUXITE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Cinnabar
@@ -156,6 +178,7 @@ public class Config {
             CINNABAR_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Cinnabar Height Offset", 0, 0, 256);
             CINNABAR_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Cinnabar Maximum Height", 256, 0, 256);
             CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
+            CINNABAR_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Rutile
@@ -167,6 +190,7 @@ public class Config {
             RUTILE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Rutile Height Offset", 0, 0, 256);
             RUTILE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 10, 0, 256);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
+            RUTILE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Galena
@@ -178,6 +202,7 @@ public class Config {
             GALENA_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Galena Height Offset", 0, 0, 256);
             GALENA_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Galena Maximum Height", 32, 0, 256);
             GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
+            GALENA_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
         COMMON_BUILDER.pop();
@@ -190,6 +215,8 @@ public class Config {
                 .defineInRange("Generation (Per Tick)",40, 0, Integer.MAX_VALUE);
         PRIMITIVE_STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Power generation to send per tick")
                 .defineInRange("Output Rate",1000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCrusher(){
@@ -199,6 +226,8 @@ public class Config {
                 .defineInRange("Power Consumption",40,0,Integer.MAX_VALUE);
         CRUSHER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Crusher")
                 .defineInRange("Maximum Transfer",1000,0,Integer.MAX_VALUE);
+        CRUSHER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupElectrolyzer(){
@@ -208,6 +237,19 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         ELECTROLYZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electrolyzer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        ELECTROLYZER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupCentrifugalAgitator(){
+        CENTRIFUGAL_AGITATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Electrolyzer to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_AGITATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Electrolyzer")
+                .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_AGITATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electrolyzer")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_AGITATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){
