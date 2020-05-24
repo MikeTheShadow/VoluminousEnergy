@@ -90,4 +90,15 @@ public class VEFluids {
             SulfuricAcid::FlowingSulfuricAcidBlock);
     public static RegistryObject<Item> SULFURIC_ACID_BUCKET_REG = VE_FLUID_ITEMS.register("sulfuric_acid_bucket",
             SulfuricAcid::SulfuricAcidBucket);
+
+    // Dinitrogen Tetroxide
+    public static RegistryObject<FlowingFluid> DINITROGEN_TETROXIDE_REG = VE_FLUIDS.register("dinitrogen_tetroxide",
+            DinitrogenTetroxide::DinitrogenTetroxideFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_DINITROGEN_TETROXIDE_REG = VE_FLUIDS.register("flowing_dinitrogen_tetroxide",
+            DinitrogenTetroxide::FlowingDinitrogenTetroxideFluid);
+    public static RegistryObject<FlowingFluidBlock> FLOWING_DINITROGEN_TETROXIDE_BLOCK_REG = VE_FLUID_BLOCKS.register("dinitrogen_tetroxide_block",
+            DinitrogenTetroxide::FlowingDinitrogenTetroxideBlock);
+    public static RegistryObject<Item> DINITROGEN_TETROXIDE_BUCKET_REG = VE_FLUID_ITEMS.register("dinitrogen_tetroxide_bucket",
+            DinitrogenTetroxide::DinitrogenTetroxideBucket);
+
 }

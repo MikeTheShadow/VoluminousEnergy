@@ -154,6 +154,9 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new CinnabarOre());
             blockRegisteryEvent.getRegistry().register(new RutileOre());
             blockRegisteryEvent.getRegistry().register(new GalenaOre());
+
+            //Shells
+            blockRegisteryEvent.getRegistry().register(new AluminumShell());
         }
 
         @SubscribeEvent
@@ -174,12 +177,16 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTROLYZER_BLOCK,properties).setRegistryName("electrolyzer"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK,properties).setRegistryName("centrifugal_agitator"));
 
+            //True Blocks
             //Ores
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GALENA_ORE,properties).setRegistryName("galena_ore"));
+
+            //Shells
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);

@@ -10,6 +10,10 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class VEBlocks {
 
+    // Shells
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_shell")
+    public static AluminumShell ALUMINUM_SHELL;
+
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;
