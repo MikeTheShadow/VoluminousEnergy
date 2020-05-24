@@ -4,12 +4,14 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitatorContainer> {
     private CentrifugalAgitatorTile tileEntity;
@@ -30,8 +32,31 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
-        //this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        drawString(Minecraft.getInstance().fontRenderer, (float)container.getEnergy()/1000 + " kFE", 8, (this.ySize - 96 + 2), 0xffffff);
+        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    }
+
+    @Override
+    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+        }
+
+        if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+            int amount = tileEntity.tank0.get().getAmount();
+            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+        }
+
+        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+            int amount = tileEntity.tank1.get().getAmount();
+            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+        }
+
+        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
+            int amount = tileEntity.tank2.get().getAmount();
+            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+        }
+
+        super.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override

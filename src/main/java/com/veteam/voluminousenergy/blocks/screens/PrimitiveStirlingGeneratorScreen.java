@@ -17,14 +17,6 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
         super(container, inv, name);
     }
 
-    /*
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        renderBackground();
-    }
-
-     */
-
     @Override
     public void render(int mouseX, int mouseY, float partialTicks){
         this.renderBackground();

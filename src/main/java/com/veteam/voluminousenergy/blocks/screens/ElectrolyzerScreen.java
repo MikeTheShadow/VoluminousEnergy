@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,7 +32,13 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Electrolyzer",8,6,0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        drawString(Minecraft.getInstance().fontRenderer, (float)container.getEnergy()/1000 + " kFE", 27, 27, 0xffffff);
+    }
+
+    @Override
+    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.ELECTROLYZER_MAX_POWER.get() + " FE", mouseX, mouseY);
+        }
     }
 
     @Override
