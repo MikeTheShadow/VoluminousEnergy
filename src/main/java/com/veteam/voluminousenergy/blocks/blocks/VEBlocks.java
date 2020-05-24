@@ -12,7 +12,7 @@ public class VEBlocks {
 
     // Shells
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_shell")
-    public static AluminumShell ALUMINUM_SHELL;
+    public static AluminumShellBlock ALUMINUM_SHELL;
 
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
@@ -63,6 +63,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_agitator")
     public static ContainerType<CentrifugalAgitatorContainer> CENTRIFUGAL_AGITATOR_CONTAINER;
+
+    // Compressor
+    @ObjectHolder(VoluminousEnergy.MODID + ":compressor")
+    public static CompressorBlock COMPRESSOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":compressor")
+    public static TileEntityType<CompressorTile> COMPRESSOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":compressor")
+    public static ContainerType<CompressorContainer> COMPRESSOR_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

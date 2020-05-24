@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks.inventory.slots.CrusherSlots;
+package com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots;
 
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;

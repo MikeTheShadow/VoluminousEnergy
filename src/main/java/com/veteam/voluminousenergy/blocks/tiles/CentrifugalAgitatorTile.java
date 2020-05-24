@@ -206,7 +206,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         // Tanks
         int inputAmount = tag.getInt("inputAmount");
         CompoundNBT inputBucket = tag.getCompound("inputTank").copy();
-        LOGGER.debug("Input " + ItemStack.read(inputBucket).copy() + " amount: " + inputAmount);
+        //LOGGER.debug("Input " + ItemStack.read(inputBucket).copy() + " amount: " + inputAmount);
         inputTank.fill(readFluidStackFromNBT(inputAmount, inputBucket.copy()), IFluidHandler.FluidAction.EXECUTE);
 
         int output0Amount = tag.getInt("output0Amount");
@@ -239,7 +239,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         // Tanks
         // Input Tank
         int inputAmount = inputTank.getFluidAmount();
-        LOGGER.debug("InputAmount: " + inputAmount);
+        //LOGGER.debug("InputAmount: " + inputAmount);
         tag.put("inputTank", tankToNBT(inputTank).copy());
         tag.putInt("inputAmount", inputAmount);
 

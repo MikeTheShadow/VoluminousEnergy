@@ -11,6 +11,7 @@
     "block.voluminousenergy.electrolyzer": "Electrolyzer",
     "block.voluminousenergy.centrifugal_agitator": "Centrifugal Agitator",
     "block.voluminousenergy.aluminum_shell": "Aluminum Shell",
+    "block.voluminousenergy.compressor": "Compressor",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -57,5 +58,7 @@
     "item.voluminousenergy.silver_ingot": "Silver Ingot",
     "item.voluminousenergy.lead_ingot": "Lead Ingot",
     "item.voluminousenergy.gold_dust": "Gold Dust",
-    "item.voluminousenergy.dinitrogen_tetroxide_bucket": "Dinitrogen Tetroxide Bucket"
+    "item.voluminousenergy.dinitrogen_tetroxide_bucket": "Dinitrogen Tetroxide Bucket",
+    "item.voluminousenergy.aluminum_plate": "Aluminum Plate",
+    "item.voluminousenergy.carbon_plate": "Carbon Plate"
 }
