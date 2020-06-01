@@ -16,7 +16,9 @@ public class CompressorInputSlot extends VEInsertSlot {
 
     @Override
     public boolean isItemValid(ItemStack stack){
-        CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(stack), world).orElse(null);
-        return checkRecipe(recipe,stack);
+        ItemStack referenceStack = stack.copy();
+        referenceStack.setCount(64);
+        CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+        return checkRecipe(recipe,referenceStack);
     }
 }
