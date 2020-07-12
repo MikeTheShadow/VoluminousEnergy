@@ -152,6 +152,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new ElectrolyzerBlock());
             blockRegisteryEvent.getRegistry().register(new CentrifugalAgitatorBlock());
             blockRegisteryEvent.getRegistry().register(new CompressorBlock());
+            blockRegisteryEvent.getRegistry().register(new StirlingGeneratorBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -182,6 +183,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTROLYZER_BLOCK,properties).setRegistryName("electrolyzer"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK,properties).setRegistryName("centrifugal_agitator"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.COMPRESSOR_BLOCK,properties).setRegistryName("compressor"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.STIRLING_GENERATOR_BLOCK,properties).setRegistryName("stirling_generator"));
 
             //True Blocks
             //Ores
@@ -252,6 +254,7 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
             event.getRegistry().register(TileEntityType.Builder.create(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
             event.getRegistry().register(TileEntityType.Builder.create(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
+            event.getRegistry().register(TileEntityType.Builder.create(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
         }
 
         @SubscribeEvent
@@ -286,6 +289,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new CompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("compressor"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new StirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("stirling_generator"));
         }
     }
 }

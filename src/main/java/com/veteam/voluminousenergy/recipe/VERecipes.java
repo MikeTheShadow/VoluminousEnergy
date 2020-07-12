@@ -14,4 +14,5 @@ public class VERecipes {
     public static final RegistryObject<IRecipeSerializer<?>> ELECTROLYZER_RECIPE = VE_RECIPES.register("electrolyzing", () -> ElectrolyzerRecipe.serializer);
     public static final RegistryObject<IRecipeSerializer<?>> CENTRIFUGAL_AGITATOR_RECIPE = VE_RECIPES.register("centrifugal_agitating", () -> CentrifugalAgitatorRecipe.SERIALIZER);
     public static final RegistryObject<IRecipeSerializer<?>> COMPRESSOR_RECIPE = VE_RECIPES.register("compressing", () -> CompressorRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> STIRLING_GENERATOR_RECIPE = VE_RECIPES.register("stirling", () -> StirlingGeneratorRecipe.SERIALIZER);
 }
