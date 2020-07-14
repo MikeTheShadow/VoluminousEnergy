@@ -101,4 +101,24 @@ public class VEFluids {
     public static RegistryObject<Item> DINITROGEN_TETROXIDE_BUCKET_REG = VE_FLUID_ITEMS.register("dinitrogen_tetroxide_bucket",
             DinitrogenTetroxide::DinitrogenTetroxideBucket);
 
+    // Compressed Air
+    public static RegistryObject<FlowingFluid> COMPRESSED_AIR_REG = VE_FLUIDS.register("compressed_air",
+            CompressedAir::CompressedAirFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_COMPRESSED_AIR_REG = VE_FLUIDS.register("flowing_compressed_air",
+            CompressedAir::FlowingCompressedAirFluid);
+    public static RegistryObject<FlowingFluidBlock> FLOWING_COMPRESSED_AIR_BLOCK_REG = VE_FLUID_BLOCKS.register("compressed_air_block",
+            CompressedAir::FlowingCompressedAirBlock);
+    public static RegistryObject<Item> COMPRESSED_AIR_BUCKET_REG = VE_FLUID_ITEMS.register("compressed_air_bucket",
+            CompressedAir::CompressedAirBucket);
+
+    // Nitrogen
+    public static RegistryObject<FlowingFluid> NITROGEN_REG = VE_FLUIDS.register("nitrogen",
+            Nitrogen::NitrogenFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_NITROGEN_REG = VE_FLUIDS.register("flowing_nitrogen",
+            Nitrogen::FlowingNitrogenFluid);
+    public static RegistryObject<FlowingFluidBlock> FLOWING_NITROGEN_BLOCK_REG = VE_FLUID_BLOCKS.register("nitrogen_block",
+            Nitrogen::FlowingNitrogenBlock);
+    public static RegistryObject<Item> NITROGEN_BUCKET_REG = VE_FLUID_ITEMS.register("nitrogen_bucket",
+            Nitrogen::NitrogenBucket);
+
 }
