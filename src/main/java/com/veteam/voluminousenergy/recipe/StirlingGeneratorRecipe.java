@@ -24,8 +24,8 @@ public class StirlingGeneratorRecipe extends VERecipe {
     public Ingredient ingredient;
     public int ingredientCount;
     public ItemStack result;
+    private int energyPerTick;
     private int processTime;
-    private int outputAmount;
 
     public StirlingGeneratorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
@@ -81,9 +81,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         return recipeType;
     }
 
-    public int getOutputAmount(){
-        return outputAmount;
-    }
+    public int getEnergyPerTick(){ return energyPerTick;};
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<StirlingGeneratorRecipe>{
 
@@ -97,6 +95,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = JSONUtils.getInt(json, "processTime", 200);
+            recipe.energyPerTick  = JSONUtils.getInt(json, "energyPerTick",128);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if (!ingredientList.contains(stack.getItem())){
@@ -114,6 +113,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();
+            recipe.energyPerTick = buffer.readInt();
             return recipe;
         }
 
@@ -122,6 +122,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.processTime);
+            buffer.writeInt(recipe.energyPerTick);
         }
     }
 }

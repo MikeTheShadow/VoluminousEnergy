@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
+import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
@@ -39,6 +41,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     private int counter;
     private int length;
+    private int energyRate;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -48,7 +51,30 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     @Override
     public void tick(){
+        handler.ifPresent(h -> {
+            ItemStack input = h.getStackInSlot(0).copy();
 
+            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(input), world).orElse(null);
+            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+
+            if (counter > 0){
+                // TODO: Add power based on last inputted item from ItemStack
+                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){ //TODO: Config for Stirling Generator
+                    counter--;
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
+                }
+                markDirty();
+            } else if (!input.isEmpty()) {
+                if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
+                    //TODO: Consume item and set energyRate, counter
+                    h.extractItem(0,recipe.ingredientCount,false);
+                    this.counter = recipe.getProcessTime();
+                    this.energyRate = recipe.getEnergyPerTick();
+                    markDirty();
+                }
+            }
+            // TODO: Method to send out power
+        });
     }
 
     @Override
@@ -142,7 +168,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         return new StirlingGeneratorContainer(i,world,pos,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
+    public int progressCounterPX(int px){ // TODO: Implement similar system for flames
         if (counter == 0){
             return 0;
         } else {

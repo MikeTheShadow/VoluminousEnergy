@@ -41,7 +41,7 @@ public class StirlingGeneratorContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new StirlingGeneratorInputSlot(h, 0, 80, 13, world));
+            addSlot(new StirlingGeneratorInputSlot(h, 0, 80, 35, world));
         });
         layoutPlayerInventorySlots(8, 84);
 

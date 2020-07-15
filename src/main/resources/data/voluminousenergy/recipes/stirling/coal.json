@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "item": "minecraft:coal",
+    "count": 1
+  },
+  "processTime": 800,
+  "energyPerTick": 128
+}

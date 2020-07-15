@@ -14,7 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorContainer> {
     private StirlingGeneratorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/stirling_generator.png");
 
     public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
