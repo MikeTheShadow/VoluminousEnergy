@@ -37,7 +37,9 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE", mouseX, mouseY);//TODO: Replace Crusher max power
+            renderTooltip(container.getEnergy() + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+        } else if (isPointInRegion(79, 53, 18, 18, mouseX, mouseY)){
+            renderTooltip("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
         }
         super.renderHoveredToolTip(mouseX, mouseY);
     }
@@ -50,7 +52,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
         int j = (this.height - this.ySize) / 2;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
         if (tileEntity != null) {
-            int progress = tileEntity.progressCounterPX(24);
+            int progress = tileEntity.progressCounterPX(14);
             int power = container.powerScreen(49);
 
             /*Note for this.blit below:
@@ -61,7 +63,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i + 79, j + 31, 176, 0, 17, progress);
+            this.blit(i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
             this.blit(i + 11, j + 16, 176, 24, 12, power);
 
         }

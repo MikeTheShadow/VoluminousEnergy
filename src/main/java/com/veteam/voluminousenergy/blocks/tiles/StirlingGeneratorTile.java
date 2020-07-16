@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -59,21 +60,53 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
             if (counter > 0){
                 // TODO: Add power based on last inputted item from ItemStack
-                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){ //TODO: Config for Stirling Generator
+                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){ //TODO: Config for Stirling Generator
                     counter--;
                     energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                 }
                 markDirty();
             } else if (!input.isEmpty()) {
-                if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
+                if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     //TODO: Consume item and set energyRate, counter
                     h.extractItem(0,recipe.ingredientCount,false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();
+                    this.length = this.counter;
                     markDirty();
                 }
             }
-            // TODO: Method to send out power
+            if (counter == 0){
+                energyRate = 0;
+            }
+            sendOutPower();
+        });
+    }
+
+    private void sendOutPower() {
+        energy.ifPresent(energy -> {
+            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
+            if (capacity.get() > 0){ //If we don't have energy we can't send any out
+                for (Direction direction : Direction.values()){
+                    TileEntity te = world.getTileEntity(pos.offset(direction));
+                    if (te != null){
+                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
+                                    if (handler.canReceive()){
+                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.STIRLING_GENERATOR_SEND.get()),false);
+                                        capacity.addAndGet(-recieved);
+                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
+                                        markDirty();
+                                        return capacity.get() > 0;
+                                    } else {
+                                        return true;
+                                    }
+                                }
+                        ).orElse(true);
+                        if (!doContinue){
+                            return;
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -172,7 +205,23 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         if (counter == 0){
             return 0;
         } else {
-            return (px*(100-((counter*100)/length)))/100;
+            return (px*(((counter*100)/length)))/100;
         }
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+
+    public int getEnergyRate(){
+        return energyRate;
     }
 }

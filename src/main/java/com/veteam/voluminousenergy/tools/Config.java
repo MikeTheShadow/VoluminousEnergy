@@ -17,6 +17,8 @@ public class Config {
     public static final String CATEGORY_CRUSHER = "Crusher";
     public static final String CATEGORY_ELECTROLYZER = "Electrolyzer";
     public static final String CATEGORY_CENTRIFUGAL_AGITATOR = "Centrifugal Agitator";
+    public static final String CATEGORY_COMPRESSOR = "Compressor";
+    public static final String CATEGORY_STIRLING_GENERATOR = "Stirling Generator";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -101,6 +103,15 @@ public class Config {
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_HARVEST_LEVEL;
 
+    // Compressor Variables
+    // TODO: Compressor config
+
+    // Stirling Generator Variables
+    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
+    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_SEND;
+    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_HARVEST_LEVEL; // TODO: Implementation
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         COMMON_BUILDER.pop();
@@ -128,6 +139,13 @@ public class Config {
         // Centrifugal Agitator
         COMMON_BUILDER.comment("Centrifugal Agitator Settings").push(CATEGORY_CENTRIFUGAL_AGITATOR);
         setupCentrifugalAgitator();
+        COMMON_BUILDER.pop();
+
+        // Compressor
+
+        // Stirling Generator
+        COMMON_BUILDER.comment("Stirling Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
+        setupStirlingGenerator();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -249,6 +267,22 @@ public class Config {
         CENTRIFUGAL_AGITATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electrolyzer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         CENTRIFUGAL_AGITATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupCompressor(){
+        //TODO: Setup compressor
+    }
+
+    private static void setupStirlingGenerator(){
+        //TODO: Setup Stirling Generator
+        STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Stirling Generator to store")
+                .defineInRange("Maximum Power", 500000, 0, Integer.MAX_VALUE);
+        STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Fallback value for power generation for the Stirling Generator")
+                .defineInRange("Fallback Generation Rate", 128, 0, Integer.MAX_VALUE);
+        STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")
+                .defineInRange("Maximum Transfer", 100000, 0, Integer.MAX_VALUE);
+        STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to recieve the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

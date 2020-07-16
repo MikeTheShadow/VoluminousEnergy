@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -95,7 +96,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = JSONUtils.getInt(json, "processTime", 200);
-            recipe.energyPerTick  = JSONUtils.getInt(json, "energyPerTick",128);
+            recipe.energyPerTick  = JSONUtils.getInt(json, "energyPerTick", Config.STIRLING_GENERATOR_GENERATE.get());
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if (!ingredientList.contains(stack.getItem())){

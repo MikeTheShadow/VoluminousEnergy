@@ -65,8 +65,8 @@ public class StirlingGeneratorContainer extends Container {
     public int powerScreen(int px){
         int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
+        float ret = px*(float)(stored/max)/100;
+        return (int)ret;
     }
 
     @Override
