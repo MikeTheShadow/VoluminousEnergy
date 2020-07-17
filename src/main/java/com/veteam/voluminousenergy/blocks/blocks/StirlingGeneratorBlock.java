@@ -26,7 +26,7 @@ public class StirlingGeneratorBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.CRUSHER_HARVEST_LEVEL.get()) // TODO: Config
+                .harvestLevel(Config.STIRLING_GENERATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("stirling_generator");

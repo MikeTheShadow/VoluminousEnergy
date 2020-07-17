@@ -78,11 +78,11 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
                         }
 
                         this.counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get()));
                         markDirty();
                     } else if (this.counter > 0){ //In progress
                         this.counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get()));
                     } else { // Check if we should start processing
                         if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                             this.counter = recipe.getProcessTime();
@@ -169,9 +169,8 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
         };
     }
 
-    // TODO: Config for Compressor
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(), Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.COMPRESSOR_MAX_POWER.get(), Config.COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
