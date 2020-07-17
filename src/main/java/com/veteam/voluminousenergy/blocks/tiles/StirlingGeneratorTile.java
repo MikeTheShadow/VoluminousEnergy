@@ -2,8 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
-import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
-import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;

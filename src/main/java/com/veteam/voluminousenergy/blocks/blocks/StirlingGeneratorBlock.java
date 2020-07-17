@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.CompressorTile;
 import com.veteam.voluminousenergy.blocks.tiles.StirlingGeneratorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;

@@ -64,7 +64,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             this.blit(i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
-            this.blit(i + 11, j + 16, 176, 24, 12, power);
+            this.blit(i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
 
         }
     }

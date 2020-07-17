@@ -79,7 +79,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             this.blit(i+81, j+31, 176, 0, progress, 17);
-            this.blit(i+11, j+16, 176,24, 12, power);
+            this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 

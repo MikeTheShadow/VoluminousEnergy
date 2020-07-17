@@ -62,7 +62,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             this.blit(i+79, j+31, 176, 0, 17, progress);
-            this.blit(i+11, j+16, 176,24, 12, power);
+            this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
         }
 
