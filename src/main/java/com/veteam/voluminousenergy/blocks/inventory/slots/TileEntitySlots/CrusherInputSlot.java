@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks.inventory.slots.CrusherSlots;
+package com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots;
 
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
@@ -16,7 +16,9 @@ public class CrusherInputSlot extends VEInsertSlot {
 
     @Override
     public boolean isItemValid(ItemStack stack){
-        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(stack), world).orElse(null);
-        return checkRecipe(recipe,stack);
+        ItemStack referenceStack = stack.copy();
+        referenceStack.setCount(64);
+        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+        return checkRecipe(recipe,referenceStack);
     }
 }

@@ -2,14 +2,8 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
-import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.VERecipes;
@@ -126,12 +120,23 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
 
+        //Plates
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/aluminum"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/carbon"));
+
+        //Ores
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/saltpeter"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/bauxite"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/cinnabar"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/rutile"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/galena"));
+
 
     }
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        LOGGER.info("Hello from server start!");
+        LOGGER.info("Hello from Voluminous Energy on server start!");
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -139,12 +144,15 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
-            LOGGER.info("Hello from block registry!");
+            LOGGER.info("Hello from Voluminous Energy's block registry!");
             //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
             blockRegisteryEvent.getRegistry().register(new CrusherBlock());
             blockRegisteryEvent.getRegistry().register(new ElectrolyzerBlock());
+            blockRegisteryEvent.getRegistry().register(new CentrifugalAgitatorBlock());
+            blockRegisteryEvent.getRegistry().register(new CompressorBlock());
+            blockRegisteryEvent.getRegistry().register(new StirlingGeneratorBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -152,11 +160,14 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new CinnabarOre());
             blockRegisteryEvent.getRegistry().register(new RutileOre());
             blockRegisteryEvent.getRegistry().register(new GalenaOre());
+
+            //Shells
+            blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
         }
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
-            LOGGER.info("Hello from item registry!");
+            LOGGER.info("Hello from Voluminous Energy's item registry!");
 
             //Item Properties
             Item.Properties properties = new Item.Properties();
@@ -170,13 +181,20 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK,properties).setRegistryName("primitivestirlinggenerator"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CRUSHER_BLOCK,properties).setRegistryName("crusher"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTROLYZER_BLOCK,properties).setRegistryName("electrolyzer"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK,properties).setRegistryName("centrifugal_agitator"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.COMPRESSOR_BLOCK,properties).setRegistryName("compressor"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.STIRLING_GENERATOR_BLOCK,properties).setRegistryName("stirling_generator"));
 
+            //True Blocks
             //Ores
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GALENA_ORE,properties).setRegistryName("galena_ore"));
+
+            //Shells
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
@@ -219,17 +237,24 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_GEAR);
 
+            //Plates
+            itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_PLATE);
+            itemRegisteryEvent.getRegistry().register(VEItems.CARBON_PLATE);
+
             //Microchips
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
         }
 
         @SubscribeEvent
         public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-            LOGGER.info("Hello from tile entity registry!");
+            LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
             event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
             event.getRegistry().register(TileEntityType.Builder.create(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
+            event.getRegistry().register(TileEntityType.Builder.create(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
+            event.getRegistry().register(TileEntityType.Builder.create(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
+            event.getRegistry().register(TileEntityType.Builder.create(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
         }
 
         @SubscribeEvent
@@ -254,6 +279,21 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new ElectrolyzerContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("electrolyzer"));
+
+            event.getRegistry().register(IForgeContainerType.create((id, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new CentrifugalAgitatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("centrifugal_agitator"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new CompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("compressor"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new StirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("stirling_generator"));
         }
     }
 }

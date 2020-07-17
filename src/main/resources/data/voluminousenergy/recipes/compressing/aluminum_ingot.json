@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:compressing",
+  "ingredient": {
+    "tag": "forge:ingots/aluminum",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:aluminum_plate",
+    "count": 1
+  }
+}

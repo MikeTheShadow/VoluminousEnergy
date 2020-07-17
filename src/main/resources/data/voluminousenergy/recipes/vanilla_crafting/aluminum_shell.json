@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "# #",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:aluminum_shell"
+  }
+}

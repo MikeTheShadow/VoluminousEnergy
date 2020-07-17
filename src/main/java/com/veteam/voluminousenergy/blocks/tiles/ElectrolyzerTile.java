@@ -282,7 +282,11 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(stack), world).orElse(null);
+                ItemStack referenceStack = stack.copy();
+                referenceStack.setCount(64);
+                //ItemStack referenceStack1 = inputItemStack.get().copy();
+                //referenceStack1.setCount(64);
+                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
                 ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
@@ -308,7 +312,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(stack), world).orElse(null);
+                ItemStack referenceStack = stack.copy();
+                referenceStack.setCount(64);
+                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack.copy()), world).orElse(null);
                 ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {

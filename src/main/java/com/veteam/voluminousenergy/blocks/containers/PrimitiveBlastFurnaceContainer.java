@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceInsertSlot;
-import com.veteam.voluminousenergy.blocks.inventory.slots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceInsertSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

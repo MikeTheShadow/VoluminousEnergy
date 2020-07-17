@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/centrifugal_agitator_top",
+    "up": "voluminousenergy:block/centrifugal_agitator_top",
+    "east": "voluminousenergy:block/centrifugal_agitator_side",
+    "west": "voluminousenergy:block/centrifugal_agitator_side",
+    "north": "voluminousenergy:block/centrifugal_agitator_front",
+    "south": "voluminousenergy:block/centrifugal_agitator_side"
+  }
+}

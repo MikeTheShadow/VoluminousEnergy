@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "item": "voluminousenergy:petcoke",
+    "count": 1
+  },
+  "processTime": 4000,
+  "energyPerTick": 128
+}

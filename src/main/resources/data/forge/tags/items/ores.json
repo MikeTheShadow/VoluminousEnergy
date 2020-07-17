@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:ores/saltpeter",
+    "#forge:ores/bauxite",
+    "#forge:ores/cinnabar",
+    "#forge:ores/rutile",
+    "#forge:ores/galena"
+  ]
+}

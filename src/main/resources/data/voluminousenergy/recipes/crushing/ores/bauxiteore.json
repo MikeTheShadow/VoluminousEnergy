@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "voluminousenergy:bauxiteore",
+    "tag": "forge:ores/bauxite",
     "count": 1
   },
   "processTime": 200,

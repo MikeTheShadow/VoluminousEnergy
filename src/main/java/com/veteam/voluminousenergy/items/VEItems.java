@@ -4,6 +4,8 @@ import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
 import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
+import com.veteam.voluminousenergy.items.plates.AluminumPlate;
+import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 
 public class VEItems
 {
@@ -40,13 +42,16 @@ public class VEItems
     public static LeadIngot LEAD_INGOT = new LeadIngot();
     public static SilverIngot SILVER_INGOT = new SilverIngot();
 
-
     //Gears
     public static StoneGear STONE_GEAR = new StoneGear();
     public static IronGear IRON_GEAR = new IronGear();
     public static CarbonGear CARBON_GEAR = new CarbonGear();
     public static AluminumGear ALUMINUM_GEAR = new AluminumGear();
     public static TitaniumGear TITANIUM_GEAR = new TitaniumGear();
+
+    //Plates
+    public static AluminumPlate ALUMINUM_PLATE = new AluminumPlate();
+    public static CarbonPlate CARBON_PLATE = new CarbonPlate();
 
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();

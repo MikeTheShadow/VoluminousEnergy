@@ -9,6 +9,10 @@
     "block.voluminousenergy.crusher": "Crusher",
     "block.voluminousenergy.galena_ore": "Galena Ore",
     "block.voluminousenergy.electrolyzer": "Electrolyzer",
+    "block.voluminousenergy.centrifugal_agitator": "Centrifugal Agitator",
+    "block.voluminousenergy.aluminum_shell": "Aluminum Shell",
+    "block.voluminousenergy.compressor": "Compressor",
+    "block.voluminousenergy.stirling_generator": "Stirling Generator",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -54,5 +58,10 @@
     "item.voluminousenergy.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
     "item.voluminousenergy.silver_ingot": "Silver Ingot",
     "item.voluminousenergy.lead_ingot": "Lead Ingot",
-    "item.voluminousenergy.gold_dust": "Gold Dust"
+    "item.voluminousenergy.gold_dust": "Gold Dust",
+    "item.voluminousenergy.dinitrogen_tetroxide_bucket": "Dinitrogen Tetroxide Bucket",
+    "item.voluminousenergy.aluminum_plate": "Aluminum Plate",
+    "item.voluminousenergy.carbon_plate": "Carbon Plate",
+    "item.voluminousenergy.compressed_air_bucket": "Compressed Air Bucket",
+    "item.voluminousenergy.nitrogen_bucket": "Nitrogen Bucket"
 }

@@ -1,5 +1,6 @@
-package com.veteam.voluminousenergy.blocks.inventory.slots;
+package com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots;
 
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,9 @@ public class ElectrolyzerInputSlot extends VEInsertSlot {
 
     @Override
     public boolean isItemValid(ItemStack stack){
-        ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(stack), world).orElse(null);
-        return checkRecipe(recipe,stack);
+        ItemStack referenceStack = stack.copy();
+        referenceStack.setCount(64);
+        ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+        return checkRecipe(recipe,referenceStack);
     }
 }

@@ -12,7 +12,7 @@ public class GalenaOre extends Block {
                 .sound(SoundType.STONE)
                 .lightValue(Config.GALENA_GLOW.get())
                 .hardnessAndResistance(2.0f)
-                .harvestLevel(2)
+                .harvestLevel(Config.GALENA_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("galena_ore");

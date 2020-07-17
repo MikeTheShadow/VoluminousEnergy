@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/centrifugal_agitator" },
+    "facing=south": { "model": "voluminousenergy:block/centrifugal_agitator", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/centrifugal_agitator", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/centrifugal_agitator", "y": 90 }
+  }
+}

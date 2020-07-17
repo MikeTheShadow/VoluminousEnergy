@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:centrifugal_agitating",
+  "processTime": 200,
+  "ingredient": {
+    "item": "voluminousenergy:red_fuming_nitric_acid_bucket",
+    "amount": 250
+  },
+  "first_result": {
+    "item": "voluminousenergy:dinitrogen_tetroxide_bucket",
+    "amount": 25
+  },
+  "second_result": {
+    "item": "voluminousenergy:white_fuming_nitric_acid_bucket",
+    "amount": 225
+  }
+}
