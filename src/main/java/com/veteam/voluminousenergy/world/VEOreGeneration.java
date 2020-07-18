@@ -45,20 +45,18 @@ public class VEOreGeneration {
 
         //Run through every single biome registered with Forge
         for (Biome biome : ForgeRegistries.BIOMES){
-            //Places ores here that can spawn in ANY forge registered biome
-            if (Config.ENABLE_BAUXITE_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.BAUXITE_ORE.getDefaultState(),Config.BAUXITE_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(bauxiteOreConf)));
-            if (Config.ENABLE_CINNABAR_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.CINNABAR_ORE.getDefaultState(),Config.CINNABAR_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(cinnabarOreConf)));
-            if (Config.ENABLE_RUTILE_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.RUTILE_ORE.getDefaultState(),Config.RUTILE_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(rutileOreConf)));
-            if (Config.ENABLE_GALENA_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.GALENA_ORE.getDefaultState(),Config.GALENA_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(galenaOreConf)));
-
             //If category is Desert. Desert, Desert Lakes, and Desert Hills included to ENSURE this will work (may be unnecessary)
             if (biome.getCategory() == Biome.Category.DESERT || biome == Biomes.DESERT || biome == Biomes.DESERT_LAKES || biome == Biomes.DESERT_HILLS){
                 //Generate Saltpeter ore in the sand LOGGER.info("Saltpeter ore has been registered!");
                 if (Config.ENABLE_SALTPETER_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(configBuilder("SAND_BLOCK","SAND",sandList,Config.SALTPETER_SIZE.get(),VEBlocks.SALTPETER_ORE.getDefaultState())).withPlacement(Placement.COUNT_RANGE.configure(saltpeterOreConf)));
+            } else if (biome.getCategory() != Biome.Category.NETHER || biome.getCategory() != Biome.Category.THEEND){
+                //Places ores here that can spawn in ANY forge registered biome that is in the overworld
+                if (Config.ENABLE_BAUXITE_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.BAUXITE_ORE.getDefaultState(),Config.BAUXITE_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(bauxiteOreConf)));
+                if (Config.ENABLE_CINNABAR_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.CINNABAR_ORE.getDefaultState(),Config.CINNABAR_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(cinnabarOreConf)));
+                if (Config.ENABLE_RUTILE_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.RUTILE_ORE.getDefaultState(),Config.RUTILE_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(rutileOreConf)));
+                if (Config.ENABLE_GALENA_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,VEBlocks.GALENA_ORE.getDefaultState(),Config.GALENA_SIZE.get())).withPlacement(Placement.COUNT_RANGE.configure(galenaOreConf)));
             }
-
         }
-
     }
     private static OreFeatureConfig configBuilder(String name,String sName,List<Block> blockType,int size,BlockState state) {
         return new OreFeatureConfig(OreFeatureConfig.FillerBlockType.create(name,sName,(BlockState) -> {
@@ -70,5 +68,4 @@ public class VEOreGeneration {
             }
         }), state,size);
     }
-
 }
