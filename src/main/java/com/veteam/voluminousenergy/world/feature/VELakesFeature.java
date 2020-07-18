@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -13,15 +12,15 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.LakesConfig;
 import net.minecraft.world.gen.feature.LakesFeature;
 
 import java.util.Random;
 import java.util.function.Function;
 
 public class VELakesFeature extends LakesFeature {
-    public VELakesFeature(Function<Dynamic<?>, ? extends LakesConfig> p_i51485_1_) {
+    public VELakesFeature(Function<Dynamic<?>, ? extends BlockStateFeatureConfig> p_i51485_1_) {
         super(p_i51485_1_);
     }
 
@@ -29,7 +28,7 @@ public class VELakesFeature extends LakesFeature {
 
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, LakesConfig config){
+    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, BlockStateFeatureConfig config){
         while(pos.getY() > 5 && worldIn.isAirBlock(pos)) {
             pos = pos.down();
         }
@@ -101,7 +100,7 @@ public class VELakesFeature extends LakesFeature {
                         for(int j4 = 4; j4 < 8; ++j4) {
                             if (aboolean[(i2 * 16 + j3) * 8 + j4]) {
                                 BlockPos blockpos = pos.add(i2, j4 - 1, j3);
-                                if (Block.isDirt(worldIn.getBlockState(blockpos).getBlock()) && worldIn.getLightFor(LightType.SKY, pos.add(i2, j4, j3)) > 0) {
+                                if (isDirt(worldIn.getBlockState(blockpos).getBlock()) && worldIn.getLightFor(LightType.SKY, pos.add(i2, j4, j3)) > 0) {
                                     Biome biome = worldIn.getBiome(blockpos);
                                     if (biome.getSurfaceBuilderConfig().getTop().getBlock() == Blocks.MYCELIUM) {
                                         worldIn.setBlockState(blockpos, Blocks.MYCELIUM.getDefaultState(), 2);

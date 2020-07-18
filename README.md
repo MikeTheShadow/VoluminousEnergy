@@ -1,5 +1,5 @@
 # Voluminous Energy
-<big> An energy focused tech mod for Minecraft 1.14.4 </big>
+<big> An energy focused tech mod for Minecraft 1.15.2 </big>
 
 ## Ores
 *	Saltpeter

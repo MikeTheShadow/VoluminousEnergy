@@ -5,20 +5,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.feature.LakesConfig;
+import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
 
 import java.util.Random;
 import java.util.function.Function;
 
 public class CrudeOilFeature extends VELakesFeature {
-    public static CrudeOilFeature INSTANCE = new CrudeOilFeature(LakesConfig::deserialize);
+    public static CrudeOilFeature INSTANCE = new CrudeOilFeature(BlockStateFeatureConfig::deserialize);
 
-    public CrudeOilFeature(Function<Dynamic<?>, ? extends LakesConfig> p_i51485_1_) {
+    public CrudeOilFeature(Function<Dynamic<?>, ? extends BlockStateFeatureConfig> p_i51485_1_) {
         super(p_i51485_1_);
     }
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, LakesConfig conf){
+    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf){
 
         int r = rand.nextInt(rand.nextInt(generator.getMaxHeight() - 8) + 8);
         if(r >= 12){

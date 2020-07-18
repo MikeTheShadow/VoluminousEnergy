@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,11 +9,15 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
 
 public class VERender {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -46,9 +51,10 @@ public class VERender {
 
         }
 
-
-        ResourceLocation stillTexture = stack.getFluid().getAttributes().getStillTexture();
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureMap().getSprite(stillTexture);
+        TextureAtlasSprite icon = getFluidTexture(stack);
+        if (icon == null) {
+            return;
+        }
 
         int renderAmount = (int) Math.max(Math.min(height, amount * height / tankCapacity), 1);
         int posY = (int) (y + height - renderAmount);
@@ -58,9 +64,9 @@ public class VERender {
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;
-        GlStateManager.color3f(r, g, b);
+        RenderSystem.color3f(r, g, b);
 
-        GlStateManager.enableBlend();
+        RenderSystem.enableBlend();
         for (int i = 0; i < width; i += 16) {
             for (int j = 0; j < renderAmount; j += 16) {
                 int drawWidth = (int) Math.min(width - i, 16);
@@ -69,10 +75,10 @@ public class VERender {
                 int drawX = (int) (x + i);
                 int drawY = posY + j;
 
-                double minU = icon.getMinU();
-                double maxU = icon.getMaxU();
-                double minV = icon.getMinV();
-                double maxV = icon.getMaxV();
+                float minU = icon.getMinU();
+                float maxU = icon.getMaxU();
+                float minV = icon.getMinV();
+                float maxV = icon.getMaxV();
 
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder tes = tessellator.getBuffer();
@@ -84,7 +90,13 @@ public class VERender {
                 tessellator.draw();
             }
         }
-        GlStateManager.disableBlend();
-        GlStateManager.color3f(1, 1, 1);
+        RenderSystem.disableBlend();
+        RenderSystem.color3f(1, 1, 1);
+    }
+
+    @Nullable
+    public static TextureAtlasSprite getFluidTexture(FluidStack stack) {
+        TextureAtlasSprite[] sprites = ForgeHooksClient.getFluidSprites(Minecraft.getInstance().world, BlockPos.ZERO, stack.getFluid().getDefaultState());
+        return sprites.length > 0 ? sprites[0] : null;
     }
 }

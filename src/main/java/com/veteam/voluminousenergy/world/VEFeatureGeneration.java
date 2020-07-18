@@ -5,8 +5,8 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.feature.CrudeOilFeature;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.LakesConfig;
-import net.minecraft.world.gen.placement.LakeChanceConfig;
+import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
+import net.minecraft.world.gen.placement.ChanceConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -22,12 +22,10 @@ public class VEFeatureGeneration {
         if (Config.GENERATE_OIL_LAKES.get()){
             final int chance = Config.OIL_LAKE_CHANCE.get();
             for (Biome biome : ForgeRegistries.BIOMES) {
-                biome.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, Biome.createDecoratedFeature(
-                        CrudeOilFeature.INSTANCE,
-                        new LakesConfig(CrudeOil.CRUDE_OIL.getDefaultState().getBlockState()),
-                        Placement.LAVA_LAKE,
-                        new LakeChanceConfig(chance)
-                ));
+                biome.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, CrudeOilFeature.INSTANCE
+                        .withConfiguration(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.getDefaultState().getBlockState()))
+                        .withPlacement(Placement.LAVA_LAKE.configure(new ChanceConfig(chance)))
+                );
             }
         }
 

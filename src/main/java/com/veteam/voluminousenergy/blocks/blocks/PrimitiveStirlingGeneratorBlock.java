@@ -11,6 +11,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -48,7 +49,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (!world.isRemote){
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof INamedContainerProvider){
@@ -56,7 +57,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
             } else {
                 throw new IllegalStateException("Primitive Stirling named container provider is missing!");
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.onBlockActivated(state, world, pos, player, hand, result);
     }
