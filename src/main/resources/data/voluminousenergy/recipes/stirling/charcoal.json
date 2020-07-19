@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "item": "minecraft:charcoal",
+    "count": 1
+  },
+  "processTime": 1600,
+  "energyPerTick": 128
+}

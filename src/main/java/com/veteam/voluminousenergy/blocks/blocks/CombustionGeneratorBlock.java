@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
+import com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -20,22 +20,21 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class CentrifugalAgitatorBlock extends FaceableBlock {
-
-    public CentrifugalAgitatorBlock(){
+public class CombustionGeneratorBlock extends FaceableBlock {
+    public CombustionGeneratorBlock(){
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get())
+                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get()) // TODO: Config for Combustion Generator
                 .harvestTool(ToolType.PICKAXE)
         );
-        setRegistryName("centrifugal_agitator");
+        setRegistryName("combustion_generator");
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new CentrifugalAgitatorTile();}
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new CombustionGeneratorTile();}
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
@@ -44,7 +43,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock {
             if(tileEntity instanceof INamedContainerProvider) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
             } else {
-                throw new IllegalStateException("Centrifugal Agitator named container provider is missing!");
+                throw new IllegalStateException("Combustion Generator named container provider is missing!");
             }
             return ActionResultType.SUCCESS;
         }

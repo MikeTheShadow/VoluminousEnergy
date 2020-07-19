@@ -84,6 +84,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":stirling_generator")
     public static ContainerType<StirlingGeneratorContainer> STIRLING_GENERATOR_CONTAINER;
 
+    // Combustion Generator
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static CombustionGeneratorBlock COMBUSTION_GENERATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static TileEntityType<CombustionGeneratorTile> COMBUSTION_GENERATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static ContainerType<CombustionGeneratorContainer> COMBUSTION_GENERATOR_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;
