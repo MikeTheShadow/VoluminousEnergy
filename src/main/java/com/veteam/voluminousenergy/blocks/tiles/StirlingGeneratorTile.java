@@ -57,15 +57,13 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (counter > 0){
-                // TODO: Add power based on last inputted item from ItemStack
-                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){ //TODO: Config for Stirling Generator
+                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     counter--;
                     energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                 }
                 markDirty();
             } else if (!input.isEmpty()) {
                 if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
-                    //TODO: Consume item and set energyRate, counter
                     h.extractItem(0,recipe.ingredientCount,false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();

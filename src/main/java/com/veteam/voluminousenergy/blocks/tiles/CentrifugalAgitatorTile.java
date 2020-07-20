@@ -183,7 +183,7 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
                     tank2.set(outputTank1.getFluid().copy());
                 }
 
-                //LOGGER.debug("Fluid: " + inputTank.getFluid().toString() + " amount: " + inputTank.getFluid().toString());
+                //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
                 // End of Fluid Handler
             });
 

@@ -2,14 +2,19 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CombustionGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -50,6 +56,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
 
     private int counter;
     private int length;
+    private int energyRate;
     private AtomicReference<ItemStack> oxidizerItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
     private AtomicReference<FluidStack> updateOxidizerFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
 
@@ -92,11 +99,11 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 }
 
                 // Extract fluid from the oxidizer tank
-                if (oxidizerOutput.copy().getItem() != null || oxidizerOutput.copy() != ItemStack.EMPTY){
-                    if (oxidizerOutput.getItem() == Items.BUCKET && oxidizerTank.getFluidAmount() >= 1000 && oxidizerOutput.getCount() == 1){
-                        ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(),1);
+                if (oxidizerOutput.copy().getItem() != null || oxidizerOutput.copy() != ItemStack.EMPTY) {
+                    if (oxidizerOutput.getItem() == Items.BUCKET && oxidizerTank.getFluidAmount() >= 1000 && oxidizerOutput.getCount() == 1) {
+                        ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(), 1);
                         oxidizerTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                        h.extractItem(1,1,false);
+                        h.extractItem(1, 1, false);
                         h.insertItem(1, bucketStack, false);
 
                     }
@@ -117,64 +124,39 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 }
 
                 // Extract fluid from the fuel tank
-                if (fuelOutput.copy().getItem() != null || fuelOutput.copy() != ItemStack.EMPTY){
-                    if (fuelOutput.getItem() == Items.BUCKET && fuelTank.getFluidAmount() >= 1000 && fuelOutput.getCount() == 1){
-                        ItemStack bucketStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
+                if (fuelOutput.copy().getItem() != null || fuelOutput.copy() != ItemStack.EMPTY) {
+                    if (fuelOutput.getItem() == Items.BUCKET && fuelTank.getFluidAmount() >= 1000 && fuelOutput.getCount() == 1) {
+                        ItemStack bucketStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(), 1);
                         fuelTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                        h.extractItem(3,1,false);
+                        h.extractItem(3, 1, false);
                         h.insertItem(3, bucketStack, false);
                     }
                 }
 
 
                 // TODO: Main Fluid Processing occurs here:
-                /*
-                if (inputTank0 != null || !inputTank0.isEmpty()) {
-                    ItemStack inputFluidStack = new ItemStack(inputTank0.getFluid().getRawFluid().getFilledBucket(),1);
-                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
-                    if (recipe != null) {
-                        if (outputTank0 != null && inputTank1 != null) {
+                ItemStack oxidizerStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(),1);
+                ItemStack fuelStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
 
-                            // Tank fluid amount check + tank cap checks
-                            if (inputTank0.getFluidAmount() >= recipe.inputAmount && outputTank0.getFluidAmount() + recipe.outputAmount <= tankCapacity && inputTank1.getFluidAmount() + recipe.secondAmount <= tankCapacity){
-                                // Check for power
-                                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
-                                    if (counter == 1){
+                CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
+                CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
 
-                                        // Drain Input
-                                        inputTank0.drain(recipe.inputAmount, IFluidHandler.FluidAction.EXECUTE);
-
-                                        // First Output Tank
-                                        if (outputTank0.getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
-                                            outputTank0.setFluid(recipe.getOutputFluid());
-                                        } else {
-                                            outputTank0.fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
-                                        }
-
-                                        // Second Output Tank
-                                        if (inputTank1.getFluid().getRawFluid() != recipe.getSecondFluid().getRawFluid()){
-                                            inputTank1.setFluid(recipe.getSecondFluid());
-                                        } else {
-                                            inputTank1.fill(recipe.getSecondFluid(), IFluidHandler.FluidAction.EXECUTE);
-                                        }
-
-                                        counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
-                                        this.markDirty();
-                                    } else if (counter > 0){
-                                        counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
-                                    } else {
-                                        counter = recipe.getProcessTime();
-                                        length = counter;
-                                    }
-                                } // Energy Check
-                            } else { // If fluid tank empty set counter to zero
-                                counter = 0;
-                            }
-                        }
+                if (counter > 0) {
+                    if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){ // TODO: Config for Combustion Generator
+                        counter--;
+                        energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                     }
-                }*/
+                    markDirty();
+                } else if (oxidizerRecipe != null && fuelRecipe != null && (oxidizerTank != null || !oxidizerTank.isEmpty()) && (fuelTank != null || !fuelTank.isEmpty())){
+                    int amount = 250;
+                    if (oxidizerTank.getFluidAmount() >= amount && fuelTank.getFluidAmount() >= amount){
+                        oxidizerTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                        fuelTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                        counter = (oxidizerRecipe.getProcessTime())/4;
+                        length = counter;
+                        energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+                    }
+                }
 
                 if (oxidizerTank != null) {
                     tankOxidizer.set(oxidizerTank.getFluid().copy());
@@ -184,11 +166,38 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                     tankFuel.set(fuelTank.getFluid().copy());
                 }
 
-                //LOGGER.debug("Fluid: " + inputTank.getFluid().toString() + " amount: " + inputTank.getFluid().toString());
                 // End of Fluid Handler
             });
-
+            sendOutPower();
             // End of item handler
+        });
+    }
+
+    private void sendOutPower() {
+        energy.ifPresent(energy -> {
+            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
+            if (capacity.get() > 0){ //If we don't have energy we can't send any out
+                for (Direction direction : Direction.values()){
+                    TileEntity te = world.getTileEntity(pos.offset(direction));
+                    if (te != null){
+                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
+                                    if (handler.canReceive()){
+                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.STIRLING_GENERATOR_SEND.get()),false); // TODO: Config for combustion generator
+                                        capacity.addAndGet(-recieved);
+                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
+                                        markDirty();
+                                        return capacity.get() > 0;
+                                    } else {
+                                        return true;
+                                    }
+                                }
+                        ).orElse(true);
+                        if (!doContinue){
+                            return;
+                        }
+                    }
+                }
+            }
         });
     }
 
