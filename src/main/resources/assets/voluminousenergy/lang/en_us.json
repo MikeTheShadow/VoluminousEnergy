@@ -13,6 +13,7 @@
     "block.voluminousenergy.aluminum_shell": "Aluminum Shell",
     "block.voluminousenergy.compressor": "Compressor",
     "block.voluminousenergy.stirling_generator": "Stirling Generator",
+    "block.voluminousenergy.combustion_generator": "Combustion Generator",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -14,7 +13,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -417,7 +415,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         if (counter == 0) {
             return 0;
         } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
+            return (px*(((counter*100)/length)))/100;
         }
     }
 
@@ -433,5 +431,21 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
 
     public int getTankCapacity(){
         return tankCapacity;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+
+    public int getEnergyRate(){
+        return energyRate;
     }
 }

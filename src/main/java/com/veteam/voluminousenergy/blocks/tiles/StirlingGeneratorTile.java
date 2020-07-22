@@ -169,9 +169,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         };
     }
 
-    // TODO: Config for Stirling Generator
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(), Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.STIRLING_GENERATOR_MAX_POWER.get(), Config.STIRLING_GENERATOR_SEND.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
@@ -197,7 +196,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         return new StirlingGeneratorContainer(i,world,pos,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){ // TODO: Implement similar system for flames
+    public int progressCounterPX(int px){
         if (counter == 0){
             return 0;
         } else {

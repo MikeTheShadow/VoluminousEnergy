@@ -43,8 +43,8 @@ public class CombustionGeneratorContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 38, 18)); // Oxidizer input slot
             addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from oxidizer slot
-            addSlot(new VEInsertSlot(h, 2, 96,49)); // Fuel input slot
-            addSlot(new VEInsertSlot(h, 3, 137,49)); // Extract fluid from fuel output
+            addSlot(new VEInsertSlot(h, 2, 138,18)); // Fuel input slot
+            addSlot(new VEInsertSlot(h, 3, 138,49)); // Extract fluid from fuel output
         });
         layoutPlayerInventorySlots(8, 84);
 

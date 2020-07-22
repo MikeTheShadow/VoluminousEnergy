@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class CombustionGeneratorScreen extends ContainerScreen<CombustionGeneratorContainer> {
     private CombustionGeneratorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/combustion_generator_gui.png");
 
     public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -51,6 +51,10 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
+        if (isPointInRegion(87, 34, 17, 18, mouseX, mouseY)){ // First Output Tank
+            renderTooltip("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
+        }
+
         super.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -62,7 +66,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
         int j = (this.height - this.ySize) / 2;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(9);
+            int progress = tileEntity.progressCounterPX(14);
             int power = container.powerScreen(49);
 
             /*Note for this.blit below:
@@ -73,7 +77,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+81, j+31, 176, 0, progress, 17);
+            this.blit(i + 89, j + (36 + (14-progress)), 176, (14-progress), 14, progress);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             try{
