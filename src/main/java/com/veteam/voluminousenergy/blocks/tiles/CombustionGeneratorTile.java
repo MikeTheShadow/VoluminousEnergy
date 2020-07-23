@@ -132,7 +132,6 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 }
 
 
-                // TODO: Main Fluid Processing occurs here:
                 ItemStack oxidizerStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(),1);
                 ItemStack fuelStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
 
@@ -140,7 +139,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
 
                 if (counter > 0) {
-                    if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){ // TODO: Config for Combustion Generator
+                    if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()){
                         counter--;
                         energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                     }
@@ -385,7 +384,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // TODO: Max Power Storage, Max transfer configs
+        return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get());
     }
 
     @Nonnull

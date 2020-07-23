@@ -64,5 +64,12 @@
     "item.voluminousenergy.aluminum_plate": "Aluminum Plate",
     "item.voluminousenergy.carbon_plate": "Carbon Plate",
     "item.voluminousenergy.compressed_air_bucket": "Compressed Air Bucket",
-    "item.voluminousenergy.nitrogen_bucket": "Nitrogen Bucket"
+    "item.voluminousenergy.nitrogen_bucket": "Nitrogen Bucket",
+    "item.voluminousenergy.biofuel_bucket": "Biofuel Bucket",
+    "item.voluminousenergy.diesel_bucket": "Diesel Bucket",
+    "item.voluminousenergy.gasoline_bucket": "Gasoline Bucket",
+    "item.voluminousenergy.hydrazine_bucket": "Hydrazine Bucket",
+    "item.voluminousenergy.light_fuel_bucket": "Light Fuels Bucket",
+    "item.voluminousenergy.liquefied_coal_bucket": "Liquefied Coal Bucket",
+    "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket"
 }

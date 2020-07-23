@@ -19,6 +19,7 @@ public class Config {
     public static final String CATEGORY_CENTRIFUGAL_AGITATOR = "Centrifugal Agitator";
     public static final String CATEGORY_COMPRESSOR = "Compressor";
     public static final String CATEGORY_STIRLING_GENERATOR = "Stirling Generator";
+    public static final String CATEGORY_COMBUSTION_GENERATOR = "Combustion Generator";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -113,7 +114,13 @@ public class Config {
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_SEND;
-    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_HARVEST_LEVEL; // TODO: Implementation
+    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_HARVEST_LEVEL;
+
+    // Combustion Generator Variables
+    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_GENERATE;
+    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
+    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -152,6 +159,11 @@ public class Config {
         // Stirling Generator
         COMMON_BUILDER.comment("Stirling Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
         setupStirlingGenerator();
+        COMMON_BUILDER.pop();
+
+        // Combustion Generator
+        COMMON_BUILDER.comment("Combustion Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
+        setupCombustionGenerator();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -289,12 +301,21 @@ public class Config {
 
     private static void setupStirlingGenerator(){
         STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Stirling Generator to store")
-                .defineInRange("Maximum Power", 512000, 0, Integer.MAX_VALUE);
+                .defineInRange("Maximum Power", 1024000, 0, Integer.MAX_VALUE);
         STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Fallback value for power generation for the Stirling Generator")
                 .defineInRange("Fallback Generation Rate", 128, 0, Integer.MAX_VALUE);
         STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")
                 .defineInRange("Maximum Transfer", 128000, 0, Integer.MAX_VALUE);
-        STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to recieve the block as an item when mined")
+        STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupCombustionGenerator(){
+        COMBUSTION_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Combustion Generator to store")
+                .defineInRange("Maximum Power", 5120000, 0, Integer.MAX_VALUE);
+        COMBUSTION_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Combustion Generator")
+                .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
+        COMBUSTION_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

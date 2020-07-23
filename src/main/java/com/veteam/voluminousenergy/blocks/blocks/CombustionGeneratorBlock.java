@@ -26,7 +26,7 @@ public class CombustionGeneratorBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get()) // TODO: Config for Combustion Generator
+                .harvestLevel(Config.COMBUSTION_GENERATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("combustion_generator");
