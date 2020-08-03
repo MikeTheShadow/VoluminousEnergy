@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -18,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class StirlingGeneratorRecipe extends VERecipe {
+
     public static final IRecipeType<StirlingGeneratorRecipe> recipeType = IRecipeType.register("stirling");
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -104,6 +106,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
                 }
             }
 
+            recipe.result = new ItemStack(Items.AIR); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
         }
 

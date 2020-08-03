@@ -109,13 +109,9 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
             ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
             int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(), "count", 1);
-            //recipe.result = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation),fluidAmount);
-            //recipe.result = new ItemStack(VEItems.COALCOKE);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
             Result = recipe.result;
-
-
 
             return recipe;
         }
