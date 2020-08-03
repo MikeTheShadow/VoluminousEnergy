@@ -1,17 +1,17 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:ores/aluminum",
+    "item": "minecraft:golden_apple",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:aluminum_dust",
+    "item": "voluminousenergy:shredded_biomass",
     "count": 2
   },
   "rng": {
-    "item": "voluminousenergy:bauxite_dust",
+    "item": "minecraft:gold_nugget",
     "count": 1,
-    "chance": 0.25
+    "chance": 1
   }
 }

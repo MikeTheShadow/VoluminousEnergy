@@ -203,6 +203,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERCHUNK);
             itemRegisteryEvent.getRegistry().register(VEItems.SILICON);
+            itemRegisteryEvent.getRegistry().register(VEItems.SHREDDED_BIOMASS);
 
             //Dusts
             itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);

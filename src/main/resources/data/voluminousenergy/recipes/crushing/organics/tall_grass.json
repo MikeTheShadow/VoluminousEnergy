@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:tall_grass",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:shredded_biomass",
+    "count": 2
+  },
+  "rng": {
+    "item": "minecraft:grass",
+    "count": 1,
+    "chance": 0.75
+  }
+}

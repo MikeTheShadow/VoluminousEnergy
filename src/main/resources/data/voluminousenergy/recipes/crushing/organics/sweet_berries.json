@@ -1,17 +1,17 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:ores/silver",
+    "item": "minecraft:sweet_berries",
     "count": 1
   },
   "processTime": 200,
   "result": {
-    "item": "voluminousenergy:silver_dust",
+    "item": "voluminousenergy:shredded_biomass",
     "count": 2
   },
   "rng": {
-    "item": "voluminousenergy:galena_dust",
+    "item": "minecraft:sugar",
     "count": 1,
-    "chance": 0.25
+    "chance": 1
   }
 }

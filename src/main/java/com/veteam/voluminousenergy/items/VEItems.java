@@ -13,6 +13,7 @@ public class VEItems
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
+    public static ShreddedBiomass SHREDDED_BIOMASS = new ShreddedBiomass();
 
     //Dusts
     public static CoalDust COALDUST = new CoalDust();

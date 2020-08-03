@@ -71,5 +71,6 @@
     "item.voluminousenergy.hydrazine_bucket": "Hydrazine Bucket",
     "item.voluminousenergy.light_fuel_bucket": "Light Fuels Bucket",
     "item.voluminousenergy.liquefied_coal_bucket": "Liquefied Coal Bucket",
-    "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket"
+    "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket",
+    "item.voluminousenergy.shredded_biomass": "Shredded Biomass"
 }
