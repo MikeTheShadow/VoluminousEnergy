@@ -14,7 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public CrusherScreen(CrusherContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -68,4 +68,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
     }
 
+    public static ResourceLocation getGUI() {
+        return GUI;
+    }
 }

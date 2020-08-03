@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -16,6 +17,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
@@ -31,6 +34,9 @@ public class CrusherRecipe extends VERecipe {
     private int outputAmount;
     private int outputRngAmount;
     private float chance;
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
+
 
     public CrusherRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -76,6 +82,10 @@ public class CrusherRecipe extends VERecipe {
     public int getOutputRngAmount(){return outputRngAmount;}
 
     public int getProcessTime() { return processTime; }
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CrusherRecipe>{
 
