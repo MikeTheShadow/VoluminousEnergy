@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.sun.org.apache.regexp.internal.recompile;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
@@ -11,6 +12,8 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -34,8 +37,8 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     private IDrawable arrow;
 
     public CrushingCategory(IGuiHelper guiHelper){
-        // 60 -> 115 x, 10 -> 80 y
-        background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 65).build();
+        // 68, 12 | 40, 65 -> 10 px added for chance
+        background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CRUSHER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);
@@ -66,10 +69,22 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
         return icon;
     }
 
-    // Override draw here if needed
     @Override
     public void draw(CrusherRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(92 - 16, 35 - 30);
+        arrow.draw(10, 19);
+
+
+        if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Check RNG if it's not air
+            int chance = (int)(recipe.getChance()*100);
+            int xPos = 20;
+            if (chance < 100 && chance >= 10){
+                xPos += 3;
+            } else if (chance < 10){
+                xPos += 5;
+            }
+            Minecraft.getInstance().fontRenderer.drawString(chance + "%",xPos,65,0x606060);
+        }
+
     }
 
     @Override
@@ -77,8 +92,24 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
                 .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
                 .collect(Collectors.toList()));
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
 
+        // STACK needs to be 64 for recipes that require more than 1 of the input item
+        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
+        // to save CPU cycles... but this works.
+        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
+            testStack.setCount(64);
+            ingredients.setInput(VanillaTypes.ITEM, testStack);
+        }
+
+        // OUTPUT
+        List<ItemStack> outputStacks = new ArrayList<>();
+        outputStacks.add(recipe.getRecipeOutput()); // Normal output
+
+        if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Check RNG if it's not air
+            outputStacks.add(recipe.getRngItem());
+        }
+
+        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
     }
 
     @Override
