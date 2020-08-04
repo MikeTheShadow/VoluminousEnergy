@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "tag": "forge:ores/lead",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "voluminousenergy:lead_dust",
+    "count": 2
+  },
+  "rng": {
+    "item": "voluminousenergy:galena_dust",
+    "count": 1,
+    "chance": 0.95
+  }
+}

@@ -19,4 +19,5 @@ public class VERecipes {
     public static final RegistryObject<IRecipeSerializer<?>> STIRLING_GENERATOR_RECIPE = VE_RECIPES.register("stirling", () -> StirlingGeneratorRecipe.SERIALIZER);
     public static final RegistryObject<IRecipeSerializer<?>> COMBUSTION_GENERATOR_OXIDIZER_RECIPE = VE_RECIPES.register("oxidizer_combustion", () -> CombustionGeneratorOxidizerRecipe.SERIALIZER);
     public static final RegistryObject<IRecipeSerializer<?>> COMBUSTION_GENERATOR_FUEL_RECIPE = VE_RECIPES.register("fuel_combustion", () -> CombustionGeneratorFuelRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> AQUEOULIZER_RECIPE = VE_RECIPES.register("aqueoulizing", () -> AqueoulizerRecipe.SERIALIZER);
 }

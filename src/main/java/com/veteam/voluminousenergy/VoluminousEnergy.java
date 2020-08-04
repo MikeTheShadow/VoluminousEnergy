@@ -154,6 +154,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new CompressorBlock());
             blockRegisteryEvent.getRegistry().register(new StirlingGeneratorBlock());
             blockRegisteryEvent.getRegistry().register(new CombustionGeneratorBlock());
+            blockRegisteryEvent.getRegistry().register(new AqueoulizerBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -186,6 +187,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.COMPRESSOR_BLOCK,properties).setRegistryName("compressor"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.STIRLING_GENERATOR_BLOCK,properties).setRegistryName("stirling_generator"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.COMBUSTION_GENERATOR_BLOCK,properties).setRegistryName("combustion_generator"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.AQUEOULIZER_BLOCK,properties).setRegistryName("aqueoulizer"));
 
             //True Blocks
             //Ores
@@ -259,6 +261,7 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
             event.getRegistry().register(TileEntityType.Builder.create(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
             event.getRegistry().register(TileEntityType.Builder.create(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null).setRegistryName("combustion_generator"));
+            event.getRegistry().register(TileEntityType.Builder.create(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
         }
 
         @SubscribeEvent
@@ -303,6 +306,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new CombustionGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("combustion_generator"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new AqueoulizerContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("aqueoulizer"));
         }
     }
 }

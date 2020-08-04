@@ -94,6 +94,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
     public static ContainerType<CombustionGeneratorContainer> COMBUSTION_GENERATOR_CONTAINER;
 
+    // Aqueoulizer
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static AqueoulizerBlock AQUEOULIZER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static TileEntityType<AqueoulizerTile> AQUEOULIZER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static ContainerType<AqueoulizerContainer> AQUEOULIZER_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:aqueoulizing",
+  "processTime": 200,
+  "ingredient": {
+    "tag": "forge:dusts/niter",
+    "count": 1
+  },
+  "input_fluid": {
+    "item": "voluminousenergy:sulfuric_acid_bucket",
+    "amount": 250
+  },
+  "result": {
+    "item": "voluminousenergy:red_fuming_nitric_acid_bucket",
+    "amount": 250
+  }
+}
