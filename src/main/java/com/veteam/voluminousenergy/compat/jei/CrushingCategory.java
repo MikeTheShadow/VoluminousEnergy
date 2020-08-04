@@ -7,21 +7,26 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.ingredients.Ingredients;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final IDrawable background;
     private IDrawable icon;
@@ -29,10 +34,11 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     private IDrawable arrow;
 
     public CrushingCategory(IGuiHelper guiHelper){
-        background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 37, 17, 102, 50).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CRUSHER_BLOCK.getBlock()));
+        // 60 -> 115 x, 10 -> 80 y
+        background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 65).build();
+        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CRUSHER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
-        arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
+        arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);
     }
 
     @Override
@@ -61,6 +67,10 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     // Override draw here if needed
+    @Override
+    public void draw(CrusherRecipe recipe, double mouseX, double mouseY) {
+        arrow.draw(92 - 16, 35 - 30);
+    }
 
     @Override
     public void setIngredients(CrusherRecipe recipe, IIngredients ingredients) {
@@ -74,20 +84,31 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 24, 5);
-        itemStacks.init(1, true, 24, 28);
+        itemStacks.init(0, false, 11, 0);
+        itemStacks.init(1, false, 2, 45);
 
-        int i = 0;
-        for (Map.Entry<Ingredient, Integer> entry : recipe.getIngredientMap().entrySet()){
-            Ingredient ingredient = entry.getKey();
-            Integer count = entry.getValue();
-            itemStacks.set(i++, Arrays.stream(ingredient.getMatchingStacks())
-                .map(stack -> {
-                    ItemStack itemStack = stack.copy();
-                    itemStack.setCount(count);
-                    return itemStack;
-                }).collect(Collectors.toList())
-            );
+        // Should only be one ingredient...
+        List<ItemStack> inputs = new ArrayList<>();
+        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
+            ItemStack stack = s.copy();
+            stack.setCount(recipe.getIngredientCount());
+            return stack;
+        }).forEach(inputs::add);
+        itemStacks.set(0, inputs);
+
+        // Calculate output
+        ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
+        Item outputItem = tempStack.getItem();
+        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
+        itemStacks.set(1, jeiStack);
+
+        // Calculate RNG stack, only if RNG stack exists
+        if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
+            itemStacks.init(2, true, 20, 45);
+            tempStack = recipe.getRngItem();
+            Item rngItem = tempStack.getItem();
+            ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount());
+            itemStacks.set(2, rngStack);
         }
     }
 

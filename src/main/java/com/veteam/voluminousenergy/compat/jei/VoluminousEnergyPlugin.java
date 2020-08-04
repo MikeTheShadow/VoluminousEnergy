@@ -51,12 +51,12 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(CrusherScreen.class, 85, 33, 29, 20, CRUSHING_UID);
+        registration.addRecipeClickArea(CrusherScreen.class, 78, 32, 28, 23, CRUSHING_UID);
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 2, 5, 36);
+        registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 1, 3, 36);
     }
 
 
