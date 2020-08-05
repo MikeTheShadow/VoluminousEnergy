@@ -170,28 +170,23 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         });
     }
 
+    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
     private void sendOutPower() {
         energy.ifPresent(energy -> {
-            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
-            if (capacity.get() > 0){ //If we don't have energy we can't send any out
-                for (Direction direction : Direction.values()){
-                    TileEntity te = world.getTileEntity(pos.offset(direction));
-                    if (te != null){
-                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
-                                    if (handler.canReceive()){
-                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.STIRLING_GENERATOR_SEND.get()),false); // TODO: Config for combustion generator
-                                        capacity.addAndGet(-recieved);
-                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
-                                        markDirty();
-                                        return capacity.get() > 0;
-                                    } else {
-                                        return true;
-                                    }
-                                }
-                        ).orElse(true);
-                        if (!doContinue){
-                            return;
-                        }
+            for (Direction dir : Direction.values()){
+                TileEntity tileEntity = world.getTileEntity(pos.offset(dir));
+                Direction opposite = dir.getOpposite();
+                if(tileEntity != null){
+                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                    int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
+                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    if (energy.getEnergyStored() <=0){
+                        break;
                     }
                 }
             }
