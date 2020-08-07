@@ -248,6 +248,7 @@ public class VoluminousEnergy
 
             //Microchips
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
+            itemRegisteryEvent.getRegistry().register(VEItems.SILVER_MICROCHIP);
         }
 
         @SubscribeEvent

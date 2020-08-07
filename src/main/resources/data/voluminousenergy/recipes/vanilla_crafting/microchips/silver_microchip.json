@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0#0",
+    "#*#",
+    "0#0"
+  ],
+  "key": {
+    "*": {
+      "tag": "forge:ingots/silver"
+    },
+    "#": {
+      "tag": "forge:silicon"
+    },
+    "0": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:silver_microchip"
+  }
+}

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -16,6 +17,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ElectrolyzerRecipe extends VERecipe {
 
@@ -38,6 +41,8 @@ public class ElectrolyzerRecipe extends VERecipe {
     private float chance1;
     private float chance2;
     private boolean usesBucket;
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
     public ElectrolyzerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -97,6 +102,10 @@ public class ElectrolyzerRecipe extends VERecipe {
     public int getProcessTime() { return processTime; }
 
     public boolean isUsesBucket() {return usesBucket;}
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ElectrolyzerRecipe>{
 

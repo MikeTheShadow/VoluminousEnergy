@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:dead_bush",
+    "count": 1
+  },
+  "processTime": 200,
+  "result": {
+    "item": "minecraft:stick",
+    "count": 2
+  },
+  "rng": {
+    "item": "minecraft:stick",
+    "count": 1,
+    "chance": 0.5
+  }
+}

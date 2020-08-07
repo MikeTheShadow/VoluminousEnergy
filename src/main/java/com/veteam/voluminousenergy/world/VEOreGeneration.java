@@ -46,8 +46,8 @@ public class VEOreGeneration {
         //Run through every single biome registered with Forge
         for (Biome biome : ForgeRegistries.BIOMES){
             if (biome.getCategory() != Biome.Category.NETHER || biome.getCategory() != Biome.Category.THEEND){
-                //If category is Desert. Desert, Desert Lakes, and Desert Hills included to ENSURE this will work (may be unnecessary)
-                if (biome.getCategory() == Biome.Category.DESERT){
+                //If category is Desert or biome is Badlands or Eroded Badlands
+                if (biome.getCategory() == Biome.Category.DESERT || biome == Biomes.BADLANDS || biome == Biomes.ERODED_BADLANDS){
                     //Generate Saltpeter ore in the sand LOGGER.info("Saltpeter ore has been registered!");
                     if (Config.ENABLE_SALTPETER_ORE.get()) biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(configBuilder("SAND_BLOCK","SAND",sandList,Config.SALTPETER_SIZE.get(),VEBlocks.SALTPETER_ORE.getDefaultState())).withPlacement(Placement.COUNT_RANGE.configure(saltpeterOreConf)));
                 }

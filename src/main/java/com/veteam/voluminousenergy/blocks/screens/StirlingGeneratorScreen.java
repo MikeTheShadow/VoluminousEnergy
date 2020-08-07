@@ -31,6 +31,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
+        drawString(Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 

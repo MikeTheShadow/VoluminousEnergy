@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:melon",
+    "item": "minecraft:melon_slice",
     "count": 1
   },
   "processTime": 200,

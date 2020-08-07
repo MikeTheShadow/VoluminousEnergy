@@ -14,9 +14,29 @@
     "block.voluminousenergy.compressor": "Compressor",
     "block.voluminousenergy.stirling_generator": "Stirling Generator",
     "block.voluminousenergy.combustion_generator": "Combustion Generator",
+    "block.voluminousenergy.aqueoulizer": "Aqueoulizer",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
+
+    "_comment": "Fluids",
+    "fluid.voluminousenergy.crude_oil": "Crude Oil",
+    "fluid.voluminousenergy.biofuel": "Biofuel",
+    "fluid.voluminousenergy.compressed_air": "Compressed Air",
+    "fluid.voluminousenergy.diesel": "Diesel",
+    "fluid.voluminousenergy.dinitrogen_tetroxide": "Dinitrogen Tetroxide",
+    "fluid.voluminousenergy.gasoline": "Gasoline",
+    "fluid.voluminousenergy.hydrazine": "Hydrazine",
+    "fluid.voluminousenergy.light_fuel": "Light Fuels",
+    "fluid.voluminousenergy.liquefied_coal": "Liquefied Coal",
+    "fluid.voluminousenergy.liquefieid_coke": "Liquefied Coke",
+    "fluid.voluminousenergy.mercury": "Mercury",
+    "fluid.voluminousenergy.naphtha": "Naphtha",
+    "fluid.voluminousenergy.nitrogen": "Nitrogen",
+    "fluid.voluminousenergy.oxygen": "Oxygen",
+    "fluid.voluminousenergy.red_fuming_nitric_acid": "Red Fuming Nitric Acid",
+    "fluid.voluminousenergy.white_fuming_nitric_acid": "White Fuming Nitric Acid",
+    "fluid.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
 
     "_comment": "Items",
     "item.voluminousenergy.petcoke": "Petcoke",
@@ -72,5 +92,6 @@
     "item.voluminousenergy.light_fuel_bucket": "Light Fuels Bucket",
     "item.voluminousenergy.liquefied_coal_bucket": "Liquefied Coal Bucket",
     "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket",
-    "item.voluminousenergy.shredded_biomass": "Shredded Biomass"
+    "item.voluminousenergy.shredded_biomass": "Shredded Biomass",
+    "item.voluminousenergy.silver_microchip": "Silver Microchip"
 }

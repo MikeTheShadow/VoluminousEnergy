@@ -149,9 +149,13 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                     if (oxidizerTank.getFluidAmount() >= amount && fuelTank.getFluidAmount() >= amount){
                         oxidizerTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
                         fuelTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                        counter = (oxidizerRecipe.getProcessTime())/4;
-                        length = counter;
+                        if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()){
+                            counter = (oxidizerRecipe.getProcessTime())/4;
+                        } else {
+                            counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get()/4;
+                        }
                         energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+                        length = counter;
                     }
                 }
 

@@ -32,6 +32,14 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
+        if (tileEntity.getEnergyRate() < 10) {
+            drawString(Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 80, 18, 0xffffff);
+        } else if (tileEntity.getEnergyRate() < 100){
+            drawString(Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 77, 18, 0xffffff);
+        } else {
+            drawString(Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
+        }
+
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
@@ -41,17 +49,19 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
 
-        if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+        if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
+            String name = new TranslationTextComponent(tileEntity.tankOxidizer.get().getTranslationKey(), new Object[0]).getFormattedText();
             int amount = tileEntity.tankOxidizer.get().getAmount();
-            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // Fuel Tank
+            String name = new TranslationTextComponent(tileEntity.tankFuel.get().getTranslationKey(), new Object[0]).getFormattedText();
             int amount = tileEntity.tankFuel.get().getAmount();
-            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(87, 34, 17, 18, mouseX, mouseY)){ // First Output Tank
+        if (isPointInRegion(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
             renderTooltip("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
         }
 

@@ -43,12 +43,14 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
             int amount = tileEntity.tank0.get().getAmount();
-            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            String name = new TranslationTextComponent(tileEntity.tank0.get().getTranslationKey(), new Object[0]).getFormattedText();
+            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
         if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.tank1.get().getAmount();
-            renderTooltip(amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            String name = new TranslationTextComponent(tileEntity.tank1.get().getTranslationKey(), new Object[0]).getFormattedText();
+            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
         super.renderHoveredToolTip(mouseX, mouseY);

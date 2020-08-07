@@ -121,6 +121,8 @@ public class Config {
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
+    public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
+    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -317,6 +319,10 @@ public class Config {
                 .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
         COMBUSTION_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+        COMBUSTION_GENERATOR_BALANCED_MODE = COMMON_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
+                .define("Balanced Mode", false);
+        COMBUSTION_GENERATOR_FIXED_TICK_TIME = COMMON_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
+                .defineInRange("Fixed Process Time", 1600, 0, Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){
