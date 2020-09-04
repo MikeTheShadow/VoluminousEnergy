@@ -226,7 +226,7 @@ public class Config {
             RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
             RUTILE_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Rutile Bottom Offset", 1, 1, 256);
             RUTILE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Rutile Height Offset", 0, 0, 256);
-            RUTILE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 10, 0, 256);
+            RUTILE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 16, 0, 256);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
             RUTILE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();

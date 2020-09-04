@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "x*",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:dusts/niter"
+    },
+    "x": {
+      "tag": "forge:dusts/coal"
+    },
+    "*": {
+      "tag": "forge:dusts/sulfur"
+    }
+  },
+  "result": {
+    "item": "minecraft:gunpowder",
+    "count": 4
+  }
+}

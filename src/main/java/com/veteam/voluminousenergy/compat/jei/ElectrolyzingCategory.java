@@ -35,11 +35,11 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     public ElectrolyzingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/two_to_four.png");
-        background = guiHelper.drawableBuilder(GUI, 0, 0, 88, 77).build();
+        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/electrolyzer_gui.png");
+        background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
-        arrow = guiHelper.drawableBuilder(GUI, 89, 0, 22, 16).buildAnimated(200, IDrawableAnimated.StartDirection.RIGHT, true);
+        arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
@@ -69,21 +69,21 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     @Override
     public void draw(ElectrolyzerRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(0, 9);
+        arrow.draw(25, 30);
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,22,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,26,0x606060);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,40,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,44,0x606060);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,58,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,62,0x606060);
         }
 
     }
@@ -125,8 +125,8 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ElectrolyzerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 11, 22);
-        itemStacks.init(1, false, 57, 4);
+        itemStacks.init(0, false, 5, 20);
+        itemStacks.init(1, false, 49, 2);
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         // Calculate RNG stack, only if RNG stack exists
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(2, true, 57, 22);
+            itemStacks.init(2, true, 49, 20);
             tempStack = recipe.getRngItemSlot0();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount0());
@@ -153,7 +153,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(3, true, 57, 40);
+            itemStacks.init(3, true, 49, 38);
             tempStack = recipe.getRngItemSlot1();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount1());
@@ -161,7 +161,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(4, true, 57, 58);
+            itemStacks.init(4, true, 49, 56);
             tempStack = recipe.getRngItemSlot2();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount2());
@@ -169,7 +169,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         }
 
         if (recipe.isUsesBucket()){
-            itemStacks.init(5, true, 12, 40);
+            itemStacks.init(5, true, 5, 38);
             itemStacks.set(5, new ItemStack(Items.BUCKET, 1));
         }
     }

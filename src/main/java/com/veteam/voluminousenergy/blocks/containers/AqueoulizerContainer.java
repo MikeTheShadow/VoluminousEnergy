@@ -43,8 +43,8 @@ public class AqueoulizerContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
             addSlot(new VEInsertSlot(h, 1, 38, 49)); // Extract fluid from input
-            addSlot(new VEInsertSlot(h, 2, 96, 49)); // Extract fluid from first output
-            addSlot(new VEInsertSlot(h, 3, 137, 49)); // Extract fluid from second output
+            addSlot(new VEInsertSlot(h, 2, 137, 49)); // Extract fluid from first output
+            addSlot(new VEInsertSlot(h, 3, 96, 32)); // Item to be dissolved
         });
         layoutPlayerInventorySlots(8, 84);
 

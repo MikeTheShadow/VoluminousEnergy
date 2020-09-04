@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     private AqueoulizerTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
+    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
 
     public AqueoulizerScreen(AqueoulizerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -32,13 +32,14 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Aqueoulizer",8,6,0xffffff);
+        drawString(Minecraft.getInstance().fontRenderer, "+", 82, 34, 0x606060);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY); //TODO: Aqueoulizer config
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -47,7 +48,7 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.tank1.get().getAmount();
             String name = new TranslationTextComponent(tileEntity.tank1.get().getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
@@ -75,13 +76,13 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+81, j+31, 176, 0, progress, 17);
+            this.blit(i+127, j+31, 176, 0, progress, 17);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
         }
