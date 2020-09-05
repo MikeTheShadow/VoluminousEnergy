@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.VESidedItemManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -25,7 +26,9 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,8 +40,21 @@ import java.util.concurrent.atomic.AtomicReference;
 import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    //private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+
+
+    // Side IO status
+    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,"insert");
+    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,"extract");
+    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,"disabled");
+
+
+    // Sided Item Handlers
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
+    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
+    private LazyOptional<IItemHandlerModifiable> rngItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3));
 
     private int counter;
     private int length;
@@ -50,21 +66,79 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         super(VEBlocks.CRUSHER_TILE);
     }
 
+    public final ItemStackHandler inventory = new ItemStackHandler(3) {
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+            if (inputSlotProp.slot == slot){
+                LOGGER.debug("Input slots match!");
+            }
+            ItemStack referenceStack = stack.copy();
+            referenceStack.setCount(64);
+            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
+            if (slot == 0 && recipe != null){
+                return recipe.ingredient.test(stack);
+            } else if (slot == 1 && recipe1 != null){
+                return stack.getItem() == recipe1.result.getItem();
+            } else if (slot == 2 && recipe1 != null){
+                return stack.getItem() == recipe1.getRngItem().getItem();
+            }
+            return false;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+            ItemStack referenceStack = stack.copy();
+            referenceStack.setCount(64);
+            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
+            if(slot == 0 && recipe != null) {
+                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    if(stack.getItem() == testStack.getItem()){
+                        return super.insertItem(slot, stack, simulate);
+                    }
+                }
+            } else if (slot == 1 && recipe1 != null){
+                if (stack.getItem() == recipe1.result.getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
+            } else if (slot == 2 && recipe1 != null){
+                if (stack.getItem() == recipe1.getRngItem().getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
+            }
+            return stack;
+        }
+
+        @Override
+        protected void onContentsChanged(final int slot) {
+            super.onContentsChanged(slot);
+            // Mark the tile entity as having changed whenever its inventory changes.
+            // "markDirty" tells vanilla that the chunk containing the tile entity has
+            // changed and means the game will save the chunk to disk later.
+            CrusherTile.this.markDirty();
+        }
+    };
+
     @Override
     public void tick(){
-        handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0).copy();
-            ItemStack output = h.getStackInSlot(1).copy();
-            ItemStack rng = h.getStackInSlot(2).copy();
+
+            ItemStack input = inventory.getStackInSlot(0).copy();
+            ItemStack output = inventory.getStackInSlot(1).copy();
+            ItemStack rng = inventory.getStackInSlot(2).copy();
 
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+            LOGGER.debug(inputItemStack.get());
 
             if (!input.isEmpty()){
                 if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,recipe.ingredientCount,false);
+                        inventory.extractItem(0,recipe.ingredientCount,false);
 
                         // Get output stack from the recipe
                         ItemStack newOutputStack = recipe.getResult().copy();
@@ -77,10 +151,10 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                                 output.setCount(1);
                             }
                             newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                            inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                         } else { // Assuming the recipe output item is already in the output slot
                             output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            h.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
+                            inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                         }
 
                         // Manipulating the RNG slot
@@ -99,10 +173,10 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
                                         rng.setCount(1);
                                     }
                                     newRngStack.setCount(recipe.getOutputRngAmount());
-                                    h.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
+                                    inventory.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
                                     rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
-                                    h.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
+                                    inventory.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
                                 }
                             }
                         }
@@ -126,7 +200,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
             } else { // this is if the input slot is empty
                 counter = 0;
             }
-        });
+
     }
 
     /*
@@ -136,8 +210,8 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     public void read(CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
+        this.inventory.deserializeNBT(inv);
+        //createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         super.read(tag);
@@ -145,10 +219,7 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
+        tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
@@ -212,11 +283,90 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
+    private ItemStackHandler createHandler(VESidedItemManager sideProperties) {
+        return new ItemStackHandler(3) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                markDirty();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                ItemStack referenceStack = stack.copy();
+                referenceStack.setCount(64);
+                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
+                if (slot == 0 && recipe != null){
+                    return recipe.ingredient.test(stack);
+                } else if (slot == 1 && recipe1 != null){
+                    return stack.getItem() == recipe1.result.getItem();
+                } else if (slot == 2 && recipe1 != null){
+                    return stack.getItem() == recipe1.getRngItem().getItem();
+                }
+                return false;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){
+                LOGGER.debug(sideProperties.io + " " + sideProperties.slot + " " + sideProperties.side + " Attempting slot " + slot);
+                if (sideProperties.io.equals("insert") && sideProperties.slot == slot){
+                    LOGGER.debug("pass");
+                    ItemStack referenceStack = stack.copy();
+                    referenceStack.setCount(64);
+                    CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+                    CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+
+                    if(slot == 0 && recipe != null) {
+                        for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                            if(stack.getItem() == testStack.getItem()){
+                                LOGGER.debug("pass0");
+                                LOGGER.debug(stack);
+                                return super.insertItem(slot, stack, simulate);
+                            }
+                        }
+                    } else if (slot == 1 && recipe1 != null){
+                        if (stack.getItem() == recipe1.result.getItem()){
+                            LOGGER.debug("pass1");
+                            return super.insertItem(slot, stack, simulate);
+                        }
+                    } else if (slot == 2 && recipe1 != null){
+                        if (stack.getItem() == recipe1.getRngItem().getItem()){
+                            LOGGER.debug("pass2");
+                            return super.insertItem(slot, stack, simulate);
+                        }
+                    }
+                }
+                LOGGER.debug("FAIL");
+                return stack;
+            }
+
+            @Override
+            @Nonnull
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                if (sideProperties.io.equals("extract") && sideProperties.slot == slot) {
+                    return super.extractItem(slot, amount, simulate);
+                }
+                return super.extractItem(slot, 0, true);
+            }
+        };
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if (side == null) {
+                return handler.cast();
+            } else if (side == inputSlotProp.side){
+                LOGGER.debug(inputSlotProp.io);
+                return inputItemHandler.cast();
+            } else if (side == outputSlotProp.side){
+                return outputItemHandler.cast();
+            } else if (side == rngSlotProp.side){
+                return rngItemHandler.cast();
+            }
         }
         if (cap == CapabilityEnergy.ENERGY){
             return energy.cast();
