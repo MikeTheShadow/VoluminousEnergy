@@ -46,8 +46,8 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
     // Side IO status
     public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,"insert");
-    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,"extract");
-    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,"disabled");
+    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.EAST,"extract");
+    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.WEST,"extract");
 
 
     // Sided Item Handlers
@@ -69,9 +69,6 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     public final ItemStackHandler inventory = new ItemStackHandler(3) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-            if (inputSlotProp.slot == slot){
-                LOGGER.debug("Input slots match!");
-            }
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
@@ -114,11 +111,14 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         }
 
         @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate){
+            return super.extractItem(slot,amount,simulate);
+        }
+
+        @Override
         protected void onContentsChanged(final int slot) {
             super.onContentsChanged(slot);
-            // Mark the tile entity as having changed whenever its inventory changes.
-            // "markDirty" tells vanilla that the chunk containing the tile entity has
-            // changed and means the game will save the chunk to disk later.
             CrusherTile.this.markDirty();
         }
     };
@@ -132,7 +132,6 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
             CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
-            LOGGER.debug(inputItemStack.get());
 
             if (!input.isEmpty()){
                 if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
@@ -227,130 +226,9 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         return super.write(tag);
     }
 
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(3) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                markDirty();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
-
-                if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
-                } else if (slot == 1 && recipe1 != null){
-                    return stack.getItem() == recipe1.result.getItem();
-                } else if (slot == 2 && recipe1 != null){
-                    return stack.getItem() == recipe1.getRngItem().getItem();
-                }
-                return false;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
-
-                if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    }
-                } else if (slot == 1 && recipe1 != null){
-                    if (stack.getItem() == recipe1.result.getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 2 && recipe1 != null){
-                    if (stack.getItem() == recipe1.getRngItem().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                }
-                return stack;
-            }
-        };
-    }
 
     private IEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    private ItemStackHandler createHandler(VESidedItemManager sideProperties) {
-        return new ItemStackHandler(3) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                markDirty();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
-
-                if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
-                } else if (slot == 1 && recipe1 != null){
-                    return stack.getItem() == recipe1.result.getItem();
-                } else if (slot == 2 && recipe1 != null){
-                    return stack.getItem() == recipe1.getRngItem().getItem();
-                }
-                return false;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){
-                LOGGER.debug(sideProperties.io + " " + sideProperties.slot + " " + sideProperties.side + " Attempting slot " + slot);
-                if (sideProperties.io.equals("insert") && sideProperties.slot == slot){
-                    LOGGER.debug("pass");
-                    ItemStack referenceStack = stack.copy();
-                    referenceStack.setCount(64);
-                    CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                    CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
-
-                    if(slot == 0 && recipe != null) {
-                        for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-                            if(stack.getItem() == testStack.getItem()){
-                                LOGGER.debug("pass0");
-                                LOGGER.debug(stack);
-                                return super.insertItem(slot, stack, simulate);
-                            }
-                        }
-                    } else if (slot == 1 && recipe1 != null){
-                        if (stack.getItem() == recipe1.result.getItem()){
-                            LOGGER.debug("pass1");
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    } else if (slot == 2 && recipe1 != null){
-                        if (stack.getItem() == recipe1.getRngItem().getItem()){
-                            LOGGER.debug("pass2");
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    }
-                }
-                LOGGER.debug("FAIL");
-                return stack;
-            }
-
-            @Override
-            @Nonnull
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                if (sideProperties.io.equals("extract") && sideProperties.slot == slot) {
-                    return super.extractItem(slot, amount, simulate);
-                }
-                return super.extractItem(slot, 0, true);
-            }
-        };
     }
 
     @Nonnull
@@ -359,13 +237,17 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (side == null) {
                 return handler.cast();
-            } else if (side == inputSlotProp.side){
-                LOGGER.debug(inputSlotProp.io);
-                return inputItemHandler.cast();
-            } else if (side == outputSlotProp.side){
-                return outputItemHandler.cast();
-            } else if (side == rngSlotProp.side){
-                return rngItemHandler.cast();
+            } else {
+                // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
+                if (side.getIndex() == inputSlotProp.side.getIndex() && inputSlotProp.enabled){
+                    return inputItemHandler.cast();
+                }
+                if (side.getIndex() == outputSlotProp.side.getIndex() && outputSlotProp.enabled){
+                    return outputItemHandler.cast();
+                }
+                if (side.getIndex() == rngSlotProp.side.getIndex() && rngSlotProp.enabled){
+                    return rngItemHandler.cast();
+                }
             }
         }
         if (cap == CapabilityEnergy.ENERGY){
