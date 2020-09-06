@@ -14,6 +14,10 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_shell")
     public static AluminumShellBlock ALUMINUM_SHELL;
 
+    // Machine Frames
+    @ObjectHolder(VoluminousEnergy.MODID + ":carbon_shielded_aluminum_machine_frame")
+    public static CarbonShieldedAluminumMachineFrame CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME;
+
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;

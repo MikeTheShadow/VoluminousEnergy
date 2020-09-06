@@ -14,6 +14,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -45,9 +47,9 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
 
 
     // Side IO status
-    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,"insert");
-    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.EAST,"extract");
-    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.WEST,"extract");
+    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true);
+    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,true);
+    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,true);
 
 
     // Sided Item Handlers
@@ -226,9 +228,13 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
         return super.write(tag);
     }
 
-
     private IEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
     }
 
     @Nonnull

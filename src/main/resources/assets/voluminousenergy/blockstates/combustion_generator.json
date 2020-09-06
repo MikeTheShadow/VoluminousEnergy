@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/combustion_generator" },
+    "facing=south": { "model": "voluminousenergy:block/combustion_generator", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/combustion_generator", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/combustion_generator", "y": 90 }
+  }
+}

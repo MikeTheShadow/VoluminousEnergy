@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#*#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/carbon"
+    },
+    "*": {
+      "item": "voluminousenergy:aluminum_shell"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+  }
+}

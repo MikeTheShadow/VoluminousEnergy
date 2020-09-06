@@ -163,8 +163,9 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new RutileOre());
             blockRegisteryEvent.getRegistry().register(new GalenaOre());
 
-            //Shells
+            //Shells and Machine Frames
             blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
+            blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
         }
 
         @SubscribeEvent
@@ -199,6 +200,7 @@ public class VoluminousEnergy
 
             //Shells
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME, properties).setRegistryName("carbon_shielded_aluminum_machine_frame"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);

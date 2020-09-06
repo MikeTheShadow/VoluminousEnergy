@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_top",
+    "up": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_top",
+    "east": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_side",
+    "west": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_side",
+    "north": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_side",
+    "south": "voluminousenergy:block/carbon_shielded_aluminum_machine_frame_side"
+  }
+}

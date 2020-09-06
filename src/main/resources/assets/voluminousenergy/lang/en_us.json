@@ -15,6 +15,7 @@
     "block.voluminousenergy.stirling_generator": "Stirling Generator",
     "block.voluminousenergy.combustion_generator": "Combustion Generator",
     "block.voluminousenergy.aqueoulizer": "Aqueoulizer",
+    "block.voluminousenergy.carbon_shielded_aluminum_machine_frame": "Carbon Shielded Aluminum Machine Frame",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
