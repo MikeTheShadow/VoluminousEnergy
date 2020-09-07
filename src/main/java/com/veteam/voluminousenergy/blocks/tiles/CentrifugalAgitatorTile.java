@@ -28,6 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -413,6 +414,9 @@ public class CentrifugalAgitatorTile extends TileEntity implements ITickableTile
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        }
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+            return fluid.cast();
         }
         return super.getCapability(cap, side);
     }

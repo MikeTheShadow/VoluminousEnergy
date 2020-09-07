@@ -39,7 +39,7 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY); //TODO: Aqueoulizer config
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.AQUEOULIZER_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank

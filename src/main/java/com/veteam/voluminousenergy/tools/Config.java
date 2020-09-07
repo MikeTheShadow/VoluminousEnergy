@@ -20,6 +20,7 @@ public class Config {
     public static final String CATEGORY_COMPRESSOR = "Compressor";
     public static final String CATEGORY_STIRLING_GENERATOR = "Stirling Generator";
     public static final String CATEGORY_COMBUSTION_GENERATOR = "Combustion Generator";
+    public static final String CATEGORY_AQUEOULIZER = "Aqueoulizer";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -124,6 +125,12 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
 
+    // Aqueoulizer Variables
+    public static ForgeConfigSpec.IntValue AQUEOULIZER_MAX_POWER;
+    public static ForgeConfigSpec.IntValue AQUEOULIZER_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue AQUEOULIZER_TRANSFER;
+    public static ForgeConfigSpec.IntValue AQUEOULIZER_HARVEST_LEVEL;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         COMMON_BUILDER.pop();
@@ -164,8 +171,13 @@ public class Config {
         COMMON_BUILDER.pop();
 
         // Combustion Generator
-        COMMON_BUILDER.comment("Combustion Generator Settings").push(CATEGORY_STIRLING_GENERATOR);
+        COMMON_BUILDER.comment("Combustion Generator Settings").push(CATEGORY_COMBUSTION_GENERATOR);
         setupCombustionGenerator();
+        COMMON_BUILDER.pop();
+
+        // Aqueoulizer
+        COMMON_BUILDER.comment("Aqueoulizer Settings").push(CATEGORY_AQUEOULIZER);
+        setupAqueoulizer();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -323,6 +335,17 @@ public class Config {
                 .define("Balanced Mode", false);
         COMBUSTION_GENERATOR_FIXED_TICK_TIME = COMMON_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
                 .defineInRange("Fixed Process Time", 1600, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupAqueoulizer(){
+        AQUEOULIZER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Aqueoulizer to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        AQUEOULIZER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Aqueoulizer")
+                .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
+        AQUEOULIZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Aqueoulizer")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        AQUEOULIZER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){

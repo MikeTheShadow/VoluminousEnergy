@@ -27,7 +27,7 @@ public class AqueoulizerBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get()) // TODO: Config for Aqueoulizer
+                .harvestLevel(Config.AQUEOULIZER_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("aqueoulizer");

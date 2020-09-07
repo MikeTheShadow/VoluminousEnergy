@@ -28,6 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -139,11 +140,11 @@ public class AqueoulizerTile extends TileEntity implements ITickableTileEntity, 
                                         h.extractItem(3, recipe.ingredientCount,false);
 
                                         counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); //TODO: Configs
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.AQUEOULIZER_POWER_USAGE.get()));
                                         this.markDirty();
                                     } else if (counter > 0){
                                         counter--;
-                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); //TODO: Configs
+                                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.AQUEOULIZER_POWER_USAGE.get()));
                                     } else {
                                         counter = recipe.getProcessTime();
                                         length = counter;
@@ -358,7 +359,7 @@ public class AqueoulizerTile extends TileEntity implements ITickableTileEntity, 
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // TODO: CONFIGS: Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
     }
 
     @Nonnull
@@ -369,6 +370,9 @@ public class AqueoulizerTile extends TileEntity implements ITickableTileEntity, 
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        }
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+            return fluid.cast();
         }
         return super.getCapability(cap, side);
     }
