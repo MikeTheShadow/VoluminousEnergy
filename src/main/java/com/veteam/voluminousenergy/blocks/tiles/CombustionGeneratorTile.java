@@ -132,31 +132,32 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                     }
                 }
 
-
-                ItemStack oxidizerStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(),1);
-                ItemStack fuelStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
-
-                CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
-                CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
-
                 if (counter > 0) {
                     if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()){
                         counter--;
                         energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                     }
                     markDirty();
-                } else if (oxidizerRecipe != null && fuelRecipe != null && (oxidizerTank != null || !oxidizerTank.isEmpty()) && (fuelTank != null || !fuelTank.isEmpty())){
-                    int amount = 250;
-                    if (oxidizerTank.getFluidAmount() >= amount && fuelTank.getFluidAmount() >= amount){
-                        oxidizerTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                        fuelTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                        if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()){
-                            counter = (oxidizerRecipe.getProcessTime())/4;
-                        } else {
-                            counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get()/4;
+                } else if ((oxidizerTank != null || !oxidizerTank.isEmpty()) && (fuelTank != null || !fuelTank.isEmpty())){
+                    ItemStack oxidizerStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(),1);
+                    ItemStack fuelStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
+
+                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
+                    CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+
+                    if (oxidizerRecipe != null && fuelRecipe != null){
+                        int amount = 250;
+                        if (oxidizerTank.getFluidAmount() >= amount && fuelTank.getFluidAmount() >= amount){
+                            oxidizerTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                            fuelTank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                            if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()){
+                                counter = (oxidizerRecipe.getProcessTime())/4;
+                            } else {
+                                counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get()/4;
+                            }
+                            energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+                            length = counter;
                         }
-                        energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
-                        length = counter;
                     }
                 }
 
@@ -210,19 +211,16 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
-        // Tanks
-        int inputAmount = tag.getInt("inputAmount");
-        CompoundNBT inputBucket = tag.getCompound("inputTank").copy();
-        //LOGGER.debug("Input " + ItemStack.read(inputBucket).copy() + " amount: " + inputAmount);
-        oxidizerTank.fill(readFluidStackFromNBT(inputAmount, inputBucket.copy()), IFluidHandler.FluidAction.EXECUTE);
-
-        int output1Amount = tag.getInt("input1Amount");
-        CompoundNBT output1Bucket = tag.getCompound("input1Tank").copy();
-        fuelTank.fill(readFluidStackFromNBT(output1Amount, output1Bucket.copy()), IFluidHandler.FluidAction.EXECUTE);
-
+        fluid.ifPresent(f -> {
+            CompoundNBT oxidizerNBT = tag.getCompound("oxidizerTank");
+            CompoundNBT fuelNBT = tag.getCompound("fuelTank");
+            oxidizerTank.readFromNBT(oxidizerNBT);
+            fuelTank.readFromNBT(fuelNBT);
+        });
         super.read(tag);
     }
 
+    @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         handler.ifPresent(h -> {
@@ -235,17 +233,15 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         });
 
         // Tanks
-        // Oxidizer Tank
-        int inputAmount = oxidizerTank.getFluidAmount();
-        //LOGGER.debug("InputAmount: " + inputAmount);
-        tag.put("inputTank", tankToNBT(oxidizerTank).copy());
-        tag.putInt("inputAmount", inputAmount);
+        fluid.ifPresent(f -> {
+            CompoundNBT oxidizerNBT = new CompoundNBT();
+            oxidizerTank.writeToNBT(oxidizerNBT);
+            tag.put("oxidizerTank", oxidizerNBT);
 
-
-        // Fuel Tank
-        int output1Amount = fuelTank.getFluidAmount();
-        tag.put("output1Tank", tankToNBT(fuelTank).copy());
-        tag.putInt("output1Amount", output1Amount);
+            CompoundNBT fuelNBT = new CompoundNBT();
+            fuelTank.writeToNBT(fuelNBT);
+            tag.put("fuelTank", fuelNBT);
+        });
 
         return super.write(tag);
     }
@@ -266,29 +262,12 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         this.read(pkt.getNbtCompound());
     }
 
-    private CompoundNBT tankToNBT(FluidTank tank){
-        CompoundNBT nbt;
-        ItemStack itemStack = new ItemStack(tank.getFluid().getRawFluid().getFilledBucket(), 1);
-        nbt = itemStack.serializeNBT();
-        return nbt;
-    }
-
-    private FluidStack readFluidStackFromNBT(int amount, CompoundNBT itemStackNBT){
-        ItemStack itemStack = ItemStack.read(itemStackNBT);
-        if (itemStack == null || itemStack == ItemStack.EMPTY){
-            LOGGER.debug("ITEMSTACK FROM NBT EMPTY!");
-        }
-        if (itemStack.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) itemStack.getItem()).getFluid(), amount);
-        }
-        return FluidStack.EMPTY;
-    }
 
     private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
-                return 3;
+                return 2;
             }
 
             @Nonnull
@@ -296,7 +275,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             public FluidStack getFluidInTank(int tank) {
                 if (tank == 0) {
                     return oxidizerTank == null ? FluidStack.EMPTY : oxidizerTank.getFluid();
-                } else if (tank == 2) {
+                } else if (tank == 1) {
                     return fuelTank == null ? FluidStack.EMPTY : fuelTank.getFluid();
                 }
                 LOGGER.debug("Invalid tankId in Combustion Generator Tile for getFluidInTank");
@@ -307,7 +286,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             public int getTankCapacity(int tank) {
                 if (tank == 0) {
                     return oxidizerTank == null ? 0 : oxidizerTank.getCapacity();
-                } else if (tank == 2) {
+                } else if (tank == 1) {
                     return fuelTank == null ? 0 : fuelTank.getCapacity();
                 }
                 LOGGER.debug("Invalid tankId in Combustion Generator Tile for getTankCapacity");
@@ -317,8 +296,18 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
+                    ItemStack oxidizerStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
+                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
+                    if (oxidizerRecipe == null){
+                        return false;
+                    }
                     return oxidizerTank != null && oxidizerTank.isFluidValid(stack);
-                } else if (tank == 2) {
+                } else if (tank == 1) {
+                    ItemStack fuelStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
+                    CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+                    if (fuelRecipe == null){
+                        return false;
+                    }
                     return fuelTank != null && fuelTank.isFluidValid(stack);
                 }
                 return false;
@@ -328,7 +317,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             public int fill(FluidStack resource, FluidAction action) {
                 if (isFluidValid(0, resource) && oxidizerTank.isEmpty() || resource.isFluidEqual(oxidizerTank.getFluid())) {
                     return oxidizerTank.fill(resource, action);
-                } else if (isFluidValid(2, resource) && fuelTank.isEmpty() || resource.isFluidEqual(fuelTank.getFluid())) {
+                } else if (isFluidValid(1, resource) && fuelTank.isEmpty() || resource.isFluidEqual(fuelTank.getFluid())) {
                     return fuelTank.fill(resource, action);
                 }
                 return 0;
