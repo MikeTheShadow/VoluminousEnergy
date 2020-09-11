@@ -157,6 +157,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                             }
                             energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
                             length = counter;
+                            markDirty();
                         }
                     }
                 }
@@ -316,9 +317,9 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             @Override
             public int fill(FluidStack resource, FluidAction action) {
                 if (isFluidValid(0, resource) && oxidizerTank.isEmpty() || resource.isFluidEqual(oxidizerTank.getFluid())) {
-                    return oxidizerTank.fill(resource, action);
+                    return oxidizerTank.fill(resource.copy(), action);
                 } else if (isFluidValid(1, resource) && fuelTank.isEmpty() || resource.isFluidEqual(fuelTank.getFluid())) {
-                    return fuelTank.fill(resource, action);
+                    return fuelTank.fill(resource.copy(), action);
                 }
                 return 0;
             }
@@ -330,9 +331,9 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                     return FluidStack.EMPTY;
                 }
                 if (resource.isFluidEqual(oxidizerTank.getFluid())) {
-                    return oxidizerTank.drain(resource, action);
+                    return oxidizerTank.drain(resource.copy(), action);
                 } else if (resource.isFluidEqual(fuelTank.getFluid())) {
-                    return fuelTank.drain(resource, action);
+                    return fuelTank.drain(resource.copy(), action);
                 }
                 return FluidStack.EMPTY;
             }
@@ -366,7 +367,6 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
                 return super.insertItem(slot, stack, simulate);
             }
         };
