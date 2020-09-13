@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -107,6 +108,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
     public static ContainerType<AqueoulizerContainer> AQUEOULIZER_CONTAINER;
+
+    // Air Compressor
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static AirCompressorBlock AIR_COMPRESSOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static TileEntityType<AirCompressorTile> AIR_COMPRESSOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static ContainerType<AirCompressorContainer> AIR_COMPRESSOR_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
