@@ -81,11 +81,10 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
 
             // TODO: Check power
             if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity){
-                LOGGER.debug("airTank amount: " + airTank.getFluidAmount());
                 // Check blocks around the Air Compressor to see if it's air
-                for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(-1,-1,-1),pos.add(1,1,1))){
+                for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(0,0,0),pos.add(1,1,1))){
                     final BlockState blockState = world.getBlockState(blockPos);
-                    LOGGER.debug("Found block: " + blockState.getBlock());
+                    LOGGER.debug("Found block: " + blockState.getBlock() + "airTank amount: " + airTank.getFluidAmount());
                     if (blockState.getBlock() == Blocks.AIR && (airTank.getFluidAmount() + 250) <= tankCapacity){ // If air, fill by 250 mB
                         LOGGER.debug("Adding 250 mB of compressed air!");
                         airTank.fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
