@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -101,12 +102,38 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
 
     @Override
     public void read(CompoundNBT tag){
+        CompoundNBT inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+        createHandler().deserializeNBT(inv);
+        CompoundNBT energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
+        fluid.ifPresent(f -> {
+            CompoundNBT airNBT = tag.getCompound("airTank");
+            airTank.readFromNBT(airNBT);
+        });
+        super.read(tag);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag){
-        return tag;
+        handler.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            tag.put("inv", compound);
+        });
+        energy.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            tag.put("energy", compound);
+        });
+
+        // Tanks
+        fluid.ifPresent(f -> {
+            CompoundNBT tankNBT = new CompoundNBT();
+            airTank.writeToNBT(tankNBT);
+            tag.put("airTank", tankNBT);
+        });
+
+        return super.write(tag);
     }
 
     // TODO: Fluid handler
@@ -165,7 +192,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(1) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -178,7 +205,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
                 return super.insertItem(slot, stack, simulate);
             }
         };
