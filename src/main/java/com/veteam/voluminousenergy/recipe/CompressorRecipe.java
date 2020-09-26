@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -16,6 +17,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CompressorRecipe extends VERecipe {
     public static final IRecipeType<CompressorRecipe> recipeType = IRecipeType.register("compressing");
@@ -28,8 +31,13 @@ public class CompressorRecipe extends VERecipe {
     private int processTime;
     private int outputAmount;
 
-    public CompressorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
+
+    public CompressorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
     @Override
     public Ingredient getIngredient() {
