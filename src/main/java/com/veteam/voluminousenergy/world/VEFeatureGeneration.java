@@ -35,7 +35,7 @@ public class VEFeatureGeneration {
     }
 
     private static void GeyserGeneration(){
-        final int chance = 30;
+        final int chance = 60;
         for (Biome biome : ForgeRegistries.BIOMES){
             biome.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, GeyserFeature.INSTANCE
                     .withConfiguration(new NoFeatureConfig())

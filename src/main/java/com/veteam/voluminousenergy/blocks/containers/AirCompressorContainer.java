@@ -41,7 +41,7 @@ public class AirCompressorContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 38, 18)); // Air Compressor extract slot
+            addSlot(new VEInsertSlot(h, 0, 70, 49)); // Air Compressor extract slot
         });
         layoutPlayerInventorySlots(8, 84);
 

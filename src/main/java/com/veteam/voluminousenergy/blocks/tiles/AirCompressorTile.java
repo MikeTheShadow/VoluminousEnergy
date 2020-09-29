@@ -80,7 +80,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
                 }
             }
 
-            // TODO: Check power
+            // TODO: Check/use power
             if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity){
                 // Check blocks around the Air Compressor to see if it's air
                 for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(0,0,0),pos.add(1,1,1))){
@@ -241,4 +241,19 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
         return new AirCompressorContainer(i, world, pos, playerInventory, playerEntity);
     }
 
+    public int progressCounterPX(int px){
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(100-((counter*100)/length)))/100;
+        }
+    }
+
+    public FluidStack getAirTankFluid(){
+        return this.airTank.getFluid();
+    }
+
+    public int getTankCapacity(){
+        return tankCapacity;
+    }
 }
