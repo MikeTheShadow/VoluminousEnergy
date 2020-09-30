@@ -33,6 +33,8 @@ public class CombustionGeneratorContainer extends Container {
     private IItemHandler playerInventory;
     private static final Logger LOGGER = LogManager.getLogger();
 
+
+
     public CombustionGeneratorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
         super(COMBUSTION_GENERATOR_CONTAINER,id);
         this.tileEntity = world.getTileEntity(pos);

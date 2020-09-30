@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -41,10 +42,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
-public class CrusherTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class CrusherTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     //private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-
+    private ServerPlayerEntity player;
 
     // Side IO status
     public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true);
@@ -128,80 +129,81 @@ public class CrusherTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     public void tick(){
 
-            ItemStack input = inventory.getStackInSlot(0).copy();
-            ItemStack output = inventory.getStackInSlot(1).copy();
-            ItemStack rng = inventory.getStackInSlot(2).copy();
+        updateClients();
 
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
-            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+        ItemStack input = inventory.getStackInSlot(0).copy();
+        ItemStack output = inventory.getStackInSlot(1).copy();
+        ItemStack rng = inventory.getStackInSlot(2).copy();
 
-            if (!input.isEmpty()){
-                if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
-                    if (counter == 1){ //The processing is about to be complete
-                        // Extract the inputted item
-                        inventory.extractItem(0,recipe.ingredientCount,false);
+        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
+        inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
-                        // Get output stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult().copy();
+        if (!input.isEmpty()){
+            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                if (counter == 1){ //The processing is about to be complete
+                    // Extract the inputted item
+                    inventory.extractItem(0,recipe.ingredientCount,false);
 
-                        //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+                    // Get output stack from the recipe
+                    ItemStack newOutputStack = recipe.getResult().copy();
 
-                        // Manipulating the Output slot
-                        if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
-                                output.setCount(1);
-                            }
-                            newOutputStack.setCount(recipe.getOutputAmount());
-                            inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                        } else { // Assuming the recipe output item is already in the output slot
-                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
+                    //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
+
+                    // Manipulating the Output slot
+                    if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
+                        if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
+                            output.setCount(1);
                         }
+                        newOutputStack.setCount(recipe.getOutputAmount());
+                        inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                    } else { // Assuming the recipe output item is already in the output slot
+                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                        inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
+                    }
 
-                        // Manipulating the RNG slot
-                        if (recipe.getChance() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItem().copy();
+                    // Manipulating the RNG slot
+                    if (recipe.getChance() != 0){ // If the chance is ZERO, this functionality won't be used
+                        ItemStack newRngStack = recipe.getRngItem().copy();
 
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
-                            //LOGGER.debug("Random: " + random);
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rng.getItem() != recipe.getRngItem().getItem()){
-                                    if (rng.getItem() == Items.AIR){
-                                        rng.setCount(1);
-                                    }
-                                    newRngStack.setCount(recipe.getOutputRngAmount());
-                                    inventory.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
-                                    inventory.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
+                        // Generate Random floats
+                        Random r = new Random();
+                        float random = abs(0 + r.nextFloat() * (0 - 1));
+                        //LOGGER.debug("Random: " + random);
+                        // ONLY manipulate the slot if the random float is under or is identical to the chance float
+                        if(random <= recipe.getChance()){
+                            //LOGGER.debug("Chance HIT!");
+                            if (rng.getItem() != recipe.getRngItem().getItem()){
+                                if (rng.getItem() == Items.AIR){
+                                    rng.setCount(1);
                                 }
+                                newRngStack.setCount(recipe.getOutputRngAmount());
+                                inventory.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
+                            } else { // Assuming the recipe output item is already in the output slot
+                                rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
+                                inventory.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
                             }
-                        }
-                        counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
-                        markDirty();
-                    } else if (counter > 0){ //In progress
-                        counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
-                    } else { // Check if we should start processing
-                        if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
-                            counter = recipe.getProcessTime();
-                            length = counter;
-                        } else {
-                            counter = 0;
                         }
                     }
-                } else { // This is if we reach the maximum in the slots
-                    counter = 0;
+                    counter--;
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    markDirty();
+                } else if (counter > 0){ //In progress
+                    counter--;
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                } else { // Check if we should start processing
+                    if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
+                        counter = recipe.getProcessTime();
+                        length = counter;
+                    } else {
+                        counter = 0;
+                    }
                 }
-            } else { // this is if the input slot is empty
+            } else { // This is if we reach the maximum in the slots
                 counter = 0;
             }
-
+        } else { // this is if the input slot is empty
+            counter = 0;
+        }
     }
 
     /*

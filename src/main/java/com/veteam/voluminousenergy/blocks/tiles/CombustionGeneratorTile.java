@@ -1,18 +1,13 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
@@ -23,7 +18,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -46,11 +40,9 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CombustionGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class CombustionGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
@@ -74,13 +66,15 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     public CombustionGeneratorTile() {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE);
     }
 
     @Override
     public void tick() {
+
+        updateClients();
+
         handler.ifPresent(h -> {
             ItemStack oxidizerInput = h.getStackInSlot(0).copy();
             ItemStack oxidizerOutput = h.getStackInSlot(1).copy();
@@ -180,12 +174,13 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
             if (fuelTank != null) {
                 tankFuel.set(fuelTank.getFluid().copy());
             }
+
             sendOutPower();
             // End of item handler
         });
     }
 
-    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+    public static int receiveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -198,7 +193,7 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    int received = receiveEnergy(tileEntity, opposite, smallest);
                     ((VEEnergyStorage) energy).consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
@@ -271,7 +266,6 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
         this.read(pkt.getNbtCompound());
     }
 
-
     private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
@@ -290,7 +284,6 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 LOGGER.debug("Invalid tankId in Combustion Generator Tile for getFluidInTank");
                 return FluidStack.EMPTY;
             }
-
             @Override
             public int getTankCapacity(int tank) {
                 if (tank == 0) {
@@ -322,16 +315,8 @@ public class CombustionGeneratorTile extends TileEntity implements ITickableTile
                 return false;
             }
 
-            private void updateClients() {
-                List<ServerPlayerEntity> players = VoluminousEnergy.server.getPlayerList().getPlayers();
-                SUpdateTileEntityPacket packet = getUpdatePacket();
-                if(packet != null) for(ServerPlayerEntity player : players) player.connection.sendPacket(getUpdatePacket());
-            }
-
-
             @Override
             public int fill(FluidStack resource, FluidAction action) {
-                updateClients();
                 if (isFluidValid(0, resource) && oxidizerTank.isEmpty() || resource.isFluidEqual(oxidizerTank.getFluid())) {
                     return oxidizerTank.fill(resource.copy(), action);
                 } else if (isFluidValid(1, resource) && fuelTank.isEmpty() || resource.isFluidEqual(fuelTank.getFluid())) {
