@@ -51,6 +51,6 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
             }
             return ActionResultType.SUCCESS;
         }
-        return super.onBlockActivated(state, world, pos, player, handIn, hit);
+        return ActionResultType.SUCCESS;
     }
 }

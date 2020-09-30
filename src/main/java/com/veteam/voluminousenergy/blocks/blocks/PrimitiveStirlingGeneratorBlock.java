@@ -59,7 +59,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
             }
             return ActionResultType.SUCCESS;
         }
-        return super.onBlockActivated(state, world, pos, player, hand, result);
+        return ActionResultType.SUCCESS;
     }
 
     @Nullable
