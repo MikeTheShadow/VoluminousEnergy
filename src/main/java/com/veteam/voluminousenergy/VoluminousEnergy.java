@@ -18,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -34,6 +35,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -138,6 +140,14 @@ public class VoluminousEnergy
     public void onServerStarting(FMLServerStartingEvent event) {
         LOGGER.info("Hello from Voluminous Energy on server start!");
     }
+
+    @SubscribeEvent
+    public void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        VoluminousEnergy.LOGGER.info("Hello from Voluminous Energy about to server start!");
+        server = event.getServer();
+    }
+
+    public static MinecraftServer server;
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegisterEvents {
