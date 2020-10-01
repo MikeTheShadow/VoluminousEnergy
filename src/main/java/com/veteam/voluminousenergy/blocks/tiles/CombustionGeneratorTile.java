@@ -190,6 +190,9 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                 tankFuel.set(fuelTank.getFluid().copy());
             }
 
+            if (counter == 0){
+                energyRate = 0;
+            }
             sendOutPower();
             // End of item handler
         });

@@ -315,7 +315,7 @@ public class Config {
 
     private static void setupStirlingGenerator(){
         STIRLING_GENERATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Stirling Generator to store")
-                .defineInRange("Maximum Power", 1024000, 0, Integer.MAX_VALUE);
+                .defineInRange("Maximum Power", 5120000, 0, Integer.MAX_VALUE);
         STIRLING_GENERATOR_GENERATE = COMMON_BUILDER.comment("Fallback value for power generation for the Stirling Generator")
                 .defineInRange("Fallback Generation Rate", 128, 0, Integer.MAX_VALUE);
         STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")

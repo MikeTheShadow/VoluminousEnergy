@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
+public class CompressingCategory implements IRecipeCategory<CompressorRecipe> { //TODO: GUI (file and alignment)
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
-public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
@@ -53,6 +53,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
     @Override
     public void tick(){
+
+        updateClients();
+
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack bucket = h.getStackInSlot(1).copy();
