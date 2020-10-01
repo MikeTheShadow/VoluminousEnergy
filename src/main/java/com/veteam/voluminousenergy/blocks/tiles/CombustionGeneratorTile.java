@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -13,6 +14,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -88,7 +90,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
              */
 
             // Input fluid into the oxidizer tank
-            if (oxidizerInput.copy() != null || oxidizerInput.copy() != ItemStack.EMPTY) {
+            if (oxidizerInput.copy() != null || oxidizerInput.copy() != ItemStack.EMPTY && oxidizerOutput.copy() == ItemStack.EMPTY) {
                 if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
                     Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
                     //FluidStack fluidStack = new FluidStack(fluid, 1000);
@@ -96,24 +98,35 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                         updateOxidizerFluidStack.set(new FluidStack(fluid, 1000));
                         oxidizerTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                         h.extractItem(0, 1, false);
-                        h.insertItem(0, new ItemStack(Items.BUCKET, 1), false);
+                        h.insertItem(1, new ItemStack(Items.BUCKET, 1), false);
                     }
                 }
             }
 
+            /*
             // Extract fluid from the oxidizer tank
-            if (oxidizerOutput.copy().getItem() != null || oxidizerOutput.copy() != ItemStack.EMPTY) {
+            if (oxidizerInput.copy().getItem() != null || oxidizerOutput.copy() != ItemStack.EMPTY) {
                 if (oxidizerOutput.getItem() == Items.BUCKET && oxidizerTank.getFluidAmount() >= 1000 && oxidizerOutput.getCount() == 1) {
                     ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(), 1);
                     oxidizerTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(1, 1, false);
+                    h.extractItem(0, 1, false);
                     h.insertItem(1, bucketStack, false);
-
                 }
             }
 
+             */
+            if(oxidizerInput.copy().getItem() == Items.BUCKET && oxidizerOutput.copy() == ItemStack.EMPTY) {
+                if(oxidizerTank.getFluidAmount() >= 1000) {
+                    ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(), 1);
+                    oxidizerTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                    h.extractItem(0, 1, false);
+                    h.insertItem(1, bucketStack, false);
+                }
+            }
+
+
             // Input fluid to the fuel tank
-            if (fuelInput.copy() != null || fuelInput.copy() != ItemStack.EMPTY) {
+            if (fuelInput.copy() != null || fuelInput.copy() != ItemStack.EMPTY && fuelOutput.copy() == ItemStack.EMPTY) {
                 if (fuelInput.copy().getItem() instanceof BucketItem && fuelInput.getCount() == 1) {
                     Fluid fluid = ((BucketItem) fuelInput.copy().getItem()).getFluid();
                     //FluidStack fluidStack = new FluidStack(fluid, 1000);
@@ -121,20 +134,22 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                         updateFuelFluidStack.set(new FluidStack(fluid, 1000));
                         fuelTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                         h.extractItem(2, 1, false);
-                        h.insertItem(2, new ItemStack(Items.BUCKET, 1), false);
+                        h.insertItem(3, new ItemStack(Items.BUCKET, 1), false);
                     }
                 }
             }
 
-            // Extract fluid from the fuel tank
-            if (fuelOutput.copy().getItem() != null || fuelOutput.copy() != ItemStack.EMPTY) {
-                if (fuelOutput.getItem() == Items.BUCKET && fuelTank.getFluidAmount() >= 1000 && fuelOutput.getCount() == 1) {
+
+            if(fuelInput.copy().getItem() == Items.BUCKET && fuelOutput.copy() == ItemStack.EMPTY) {
+                if(fuelTank.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(), 1);
                     fuelTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(3, 1, false);
+                    h.extractItem(2, 1, false);
                     h.insertItem(3, bucketStack, false);
                 }
             }
+
+
 
             // Main Combustion Generator tick logic
             if (counter > 0) {
@@ -362,7 +377,14 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                return true;
+                if(slot == 0 || slot == 1) {
+                    CombustionGeneratorOxidizerRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    return recipe != null || stack.getItem() == Items.BUCKET;
+                } else if(slot == 2 || slot == 3) {
+                    CombustionGeneratorFuelRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    return recipe != null || stack.getItem() == Items.BUCKET;
+                }
+                return false;
             }
 
             @Nonnull
