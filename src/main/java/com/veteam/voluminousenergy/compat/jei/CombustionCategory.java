@@ -83,21 +83,18 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
-                .collect(Collectors.toList()));
-
-        // STACK needs to be 64 for recipes that require more than 1 of the input item
-        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
-        // to save CPU cycles... but this works.
+        ArrayList<ItemStack> inputsList = new ArrayList<>();
         for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
             testStack.setCount(1);
-            ingredients.setInput(VanillaTypes.ITEM, testStack);
+            inputsList.add(testStack);
         }
 
         for (Item oxi : CombustionGeneratorOxidizerRecipe.ingredientList){
-            ingredients.setInput(VanillaTypes.ITEM, new ItemStack(oxi,1));
+            ItemStack oxiStack = new ItemStack(oxi,1);
+            inputsList.add(oxiStack);
         }
+
+        ingredients.setInputs(VanillaTypes.ITEM, inputsList);
     }
 
     @Override

@@ -31,6 +31,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation COMBUSTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting");
     public static final ResourceLocation STIRLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling");
     public static final ResourceLocation CENTRIFUGAL_AGITATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_agitation");
+    public static final ResourceLocation AQUEOULIZING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/aqueoulizing");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -46,6 +47,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new CombustionCategory(guiHelper));
         registration.addRecipeCategories(new StirlingCategory(guiHelper));
         registration.addRecipeCategories(new CentrifugalAgitationCategory(guiHelper));
+        registration.addRecipeCategories(new AqueoulizingCategory(guiHelper));
     }
 
     @Override
@@ -56,6 +58,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(CombustionGeneratorFuelRecipe.RECIPE_TYPE), COMBUSTING_UID);
         registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.recipeType), STIRLING_UID);
         registration.addRecipes(getRecipesOfType(CentrifugalAgitatorRecipe.RECIPE_TYPE), CENTRIFUGAL_AGITATION_UID);
+        registration.addRecipes(getRecipesOfType(AqueoulizerRecipe.RECIPE_TYPE), AQUEOULIZING_UID);
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
@@ -72,6 +75,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
         registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
         registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 32, 28, 23, CENTRIFUGAL_AGITATION_UID);
+        registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 14, 12, AQUEOULIZING_UID);
     }
 
     @Override

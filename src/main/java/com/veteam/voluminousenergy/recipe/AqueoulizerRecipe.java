@@ -25,6 +25,8 @@ public class AqueoulizerRecipe extends VERecipe {
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();
 
+    public static ArrayList<Item> fluidInputList = new ArrayList<>();
+
     private final ResourceLocation recipeId;
     private int processTime;
 
@@ -111,6 +113,10 @@ public class AqueoulizerRecipe extends VERecipe {
             int secondFluidAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"amount",0);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(secondBucketResourceLocation));
             recipe.outputAmount = secondFluidAmount;
+
+            if (!fluidInputList.contains(recipe.inputFluid.getItem())){
+                fluidInputList.add(recipe.inputFluid.getItem());
+            }
 
             return recipe;
         }
