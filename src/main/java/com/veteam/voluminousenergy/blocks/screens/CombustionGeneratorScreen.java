@@ -50,14 +50,14 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
-            String name = new TranslationTextComponent(tileEntity.tankOxidizer.get().getTranslationKey(), new Object[0]).getFormattedText();
-            int amount = tileEntity.tankOxidizer.get().getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(0).getTranslationKey(), new Object[0]).getFormattedText();
+            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
         if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // Fuel Tank
-            String name = new TranslationTextComponent(tileEntity.tankFuel.get().getTranslationKey(), new Object[0]).getFormattedText();
-            int amount = tileEntity.tankFuel.get().getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getFormattedText();
+            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
@@ -91,11 +91,11 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             try{
-                VERender.renderGuiTank(tileEntity.tankOxidizer.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.tankFuel.get(),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
         }

@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
-import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -14,7 +13,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CombustionGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -57,14 +54,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private int counter;
     private int length;
     private int energyRate;
-    private AtomicReference<ItemStack> oxidizerItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
-    private AtomicReference<FluidStack> updateOxidizerFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
-
-    private AtomicReference<ItemStack> fuelItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
-    private AtomicReference<FluidStack> updateFuelFluidStack = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
-
-    public AtomicReference<FluidStack> tankOxidizer = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
-    public AtomicReference<FluidStack> tankFuel = new AtomicReference<FluidStack>(new FluidStack(FluidStack.EMPTY, 0));
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -82,9 +71,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             ItemStack oxidizerOutput = h.getStackInSlot(1).copy();
             ItemStack fuelInput = h.getStackInSlot(2).copy();
             ItemStack fuelOutput = h.getStackInSlot(3).copy();
-
-            oxidizerItemStack.set(oxidizerInput.copy()); // Atomic Reference, use this to query recipes
-
             /*
              *  Manipulate tanks based on input from buckets in slots
              */
@@ -95,7 +81,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
                     //FluidStack fluidStack = new FluidStack(fluid, 1000);
                     if (oxidizerTank.isEmpty() || oxidizerTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && oxidizerTank.getFluidAmount() + 1000 <= tankCapacity) {
-                        updateOxidizerFluidStack.set(new FluidStack(fluid, 1000));
                         oxidizerTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                         h.extractItem(0, 1, false);
                         h.insertItem(1, new ItemStack(Items.BUCKET, 1), false);
@@ -103,18 +88,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                 }
             }
 
-            /*
             // Extract fluid from the oxidizer tank
-            if (oxidizerInput.copy().getItem() != null || oxidizerOutput.copy() != ItemStack.EMPTY) {
-                if (oxidizerOutput.getItem() == Items.BUCKET && oxidizerTank.getFluidAmount() >= 1000 && oxidizerOutput.getCount() == 1) {
-                    ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(), 1);
-                    oxidizerTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(0, 1, false);
-                    h.insertItem(1, bucketStack, false);
-                }
-            }
-
-             */
             if(oxidizerInput.copy().getItem() == Items.BUCKET && oxidizerOutput.copy() == ItemStack.EMPTY) {
                 if(oxidizerTank.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(oxidizerTank.getFluid().getRawFluid().getFilledBucket(), 1);
@@ -131,7 +105,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     Fluid fluid = ((BucketItem) fuelInput.copy().getItem()).getFluid();
                     //FluidStack fluidStack = new FluidStack(fluid, 1000);
                     if (fuelTank.isEmpty() || fuelTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && fuelTank.getFluidAmount() + 1000 <= tankCapacity) {
-                        updateFuelFluidStack.set(new FluidStack(fluid, 1000));
                         fuelTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                         h.extractItem(2, 1, false);
                         h.insertItem(3, new ItemStack(Items.BUCKET, 1), false);
@@ -139,7 +112,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                 }
             }
 
-
+            // Extract fluid from the fuel tank
             if(fuelInput.copy().getItem() == Items.BUCKET && fuelOutput.copy() == ItemStack.EMPTY) {
                 if(fuelTank.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(), 1);
@@ -148,8 +121,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     h.insertItem(3, bucketStack, false);
                 }
             }
-
-
 
             // Main Combustion Generator tick logic
             if (counter > 0) {
@@ -180,14 +151,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                         markDirty();
                     }
                 }
-            }
-
-            if (oxidizerTank != null) {
-                tankOxidizer.set(oxidizerTank.getFluid().copy());
-            }
-
-            if (fuelTank != null) {
-                tankFuel.set(fuelTank.getFluid().copy());
             }
 
             if (counter == 0){
@@ -436,7 +399,6 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         }
     }
 
-    @Deprecated
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return oxidizerTank.getFluid();

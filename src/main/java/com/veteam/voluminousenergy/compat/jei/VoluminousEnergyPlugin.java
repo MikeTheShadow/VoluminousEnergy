@@ -4,13 +4,10 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
-import com.veteam.voluminousenergy.blocks.screens.CompressorScreen;
-import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
-import com.veteam.voluminousenergy.blocks.screens.ElectrolyzerScreen;
-import com.veteam.voluminousenergy.recipe.CompressorRecipe;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipes;
+import com.veteam.voluminousenergy.blocks.screens.*;
+import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
+import com.veteam.voluminousenergy.recipe.*;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -31,6 +28,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation CRUSHING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/crushing");
     public static final ResourceLocation ELECTROLYZING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/electrolyzing");
     public static final ResourceLocation COMPRESSING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/compressing");
+    public static final ResourceLocation COMBUSTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting");
+    public static final ResourceLocation STIRLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -43,6 +42,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new CrushingCategory(guiHelper));
         registration.addRecipeCategories(new ElectrolyzingCategory(guiHelper));
         registration.addRecipeCategories(new CompressingCategory(guiHelper));
+        registration.addRecipeCategories(new CombustionCategory(guiHelper));
+        registration.addRecipeCategories(new StirlingCategory(guiHelper));
     }
 
     @Override
@@ -50,6 +51,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(CrusherRecipe.recipeType), CRUSHING_UID);
         registration.addRecipes(getRecipesOfType(ElectrolyzerRecipe.recipeType), ELECTROLYZING_UID);
         registration.addRecipes(getRecipesOfType(CompressorRecipe.recipeType), COMPRESSING_UID);
+        registration.addRecipes(getRecipesOfType(CombustionGeneratorFuelRecipe.RECIPE_TYPE), COMBUSTING_UID);
+        registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.recipeType), STIRLING_UID);
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
@@ -63,6 +66,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CrusherScreen.class, 78, 32, 28, 23, CRUSHING_UID);
         registration.addRecipeClickArea(ElectrolyzerScreen.class, 78, 32, 28, 23, ELECTROLYZING_UID);
         registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
+        registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
+        registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
     }
 
     @Override

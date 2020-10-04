@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -21,6 +22,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CombustionGeneratorFuelRecipe extends VERecipe {
     public static final IRecipeType<CombustionGeneratorFuelRecipe> RECIPE_TYPE = IRecipeType.register("fuel_combustion");
@@ -36,6 +39,12 @@ public class CombustionGeneratorFuelRecipe extends VERecipe {
 
     public CombustionGeneratorFuelRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
+    }
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
     }
 
     public Ingredient getIngredient(){ return ingredient;}
@@ -94,7 +103,7 @@ public class CombustionGeneratorFuelRecipe extends VERecipe {
                 }
             }
 
-            recipe.result = new ItemStack(Items.AIR); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
+            recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
         }
 

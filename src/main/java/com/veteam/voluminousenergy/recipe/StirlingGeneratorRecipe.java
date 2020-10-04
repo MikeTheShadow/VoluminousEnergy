@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.inventory.IInventory;
@@ -17,6 +18,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class StirlingGeneratorRecipe extends VERecipe {
 
@@ -32,6 +35,12 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
     public StirlingGeneratorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
 
     @Override
     public Ingredient getIngredient() {
@@ -106,7 +115,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
                 }
             }
 
-            recipe.result = new ItemStack(Items.AIR); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
+            recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
         }
 

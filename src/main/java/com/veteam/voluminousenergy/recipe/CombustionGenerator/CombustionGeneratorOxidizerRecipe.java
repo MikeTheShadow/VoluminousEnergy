@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.inventory.IInventory;
@@ -19,12 +20,15 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = IRecipeType.register("oxidizer_combustion");
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();
+    public static ArrayList<OxidizerProperties> oxidizerList = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int processTime;
@@ -35,6 +39,12 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     public CombustionGeneratorOxidizerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
+    }
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
     }
 
     public Ingredient getIngredient(){ return ingredient;}
@@ -90,6 +100,21 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
+                }
+            }
+
+            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+                boolean hit = false;
+                for (OxidizerProperties oxidizerProperties : oxidizerList) {
+                    ItemStack bucketStack = oxidizerProperties.getBucketItem();
+                    if (bucketStack.getItem() == stack.getItem()) {
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit){
+                    OxidizerProperties temp = new OxidizerProperties(stack,recipe.processTime);
+                    oxidizerList.add(temp);
                 }
             }
 
