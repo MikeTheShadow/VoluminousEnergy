@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -11,7 +12,7 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,18 +22,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
-
+public class CentrifugalAgitationCategory implements IRecipeCategory<CentrifugalAgitatorRecipe> {
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
 
-    public CompressingCategory(IGuiHelper guiHelper){
+    public CentrifugalAgitationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
-        background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
+        background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.COMPRESSOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
@@ -41,17 +41,17 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
     @Override
     public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.COMPRESSING_UID;
+        return VoluminousEnergyPlugin.CENTRIFUGAL_AGITATION_UID;
     }
 
     @Override
-    public Class<? extends CompressorRecipe> getRecipeClass() {
-        return CompressorRecipe.class;
+    public Class<? extends CentrifugalAgitatorRecipe> getRecipeClass() {
+        return CentrifugalAgitatorRecipe.class;
     }
 
     @Override
     public String getTitle() {
-        return "Compressing";
+        return "Centrifugal Agitation";
     }
 
     @Override
@@ -65,39 +65,43 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     }
 
     @Override
-    public void draw(CompressorRecipe recipe, double mouseX, double mouseY) {
+    public void draw(CentrifugalAgitatorRecipe recipe, double mouseX, double mouseY) {
         arrow.draw(24, 12);
         emptyArrow.draw(24,12);
         slotDrawable.draw(2,10);
         slotDrawable.draw(48,10);
+        slotDrawable.draw(72,10);
+
+        Minecraft.getInstance().fontRenderer.drawString("mB:", -20,32, 0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.inputAmount + "", 2, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.outputAmount + "", 48, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.secondAmount + "", 72, 32,0x606060);
     }
 
     @Override
-    public void setIngredients(CompressorRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
-                .collect(Collectors.toList()));
-
+    public void setIngredients(CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
         // STACK needs to be 64 for recipes that require more than 1 of the input item
         // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
         // to save CPU cycles... but this works.
         for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
-            testStack.setCount(64);
+            testStack.setCount(1);
             ingredients.setInput(VanillaTypes.ITEM, testStack);
         }
 
         // OUTPUT
         List<ItemStack> outputStacks = new ArrayList<>();
         outputStacks.add(recipe.getRecipeOutput()); // Normal output
+        outputStacks.add(recipe.getSecondResult());
 
         ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CompressorRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, false, 2, 10);
         itemStacks.init(1, false, 48, 10);
+        itemStacks.init(2, false, 72,10);
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
@@ -111,7 +115,12 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         // Calculate output
         ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
         Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
+        ItemStack jeiStack = new ItemStack(outputItem, 1); // Create new stack for JEI with correct amount
         itemStacks.set(1, jeiStack);
+
+        tempStack = recipe.getSecondResult();
+        outputItem = tempStack.getItem();
+        jeiStack = new ItemStack(outputItem, 1);
+        itemStacks.set(2, jeiStack);
     }
 }

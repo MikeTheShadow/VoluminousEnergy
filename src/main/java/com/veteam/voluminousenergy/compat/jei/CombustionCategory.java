@@ -4,11 +4,9 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
@@ -25,23 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> { //TODO: GUI (file and alignment)
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
-    private IDrawable arrow;
 
     public CombustionCategory(IGuiHelper guiHelper){
-        LOGGER.debug("CombustionCategory Called!");
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
-        //arrow = guiHelper.drawableBuilder(new ResourceLocation(VoluminousEnergy.MODID + "textures/gui/combustion_generator.png"), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);
     }
 
     @Override
@@ -51,7 +44,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public Class<? extends CombustionGeneratorFuelRecipe> getRecipeClass() {
-        LOGGER.debug("Getting Combustion Generator Fuel recipy class");
         return CombustionGeneratorFuelRecipe.class;
     }
 
@@ -77,6 +69,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         Minecraft.getInstance().fontRenderer.drawString(recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
         slotDrawable.draw(11,0);
 
+        Minecraft.getInstance().fontRenderer.drawString("Oxidizers: ",2,32,0x606060);
         int j = 0;
         for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
             j = orderOxidizers(i+1,j);
@@ -84,13 +77,12 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerList.get(i).getProcessTime();
             Minecraft.getInstance().fontRenderer.drawString(fePerTick+"",4+j,64,0x606060);
         }
-        Minecraft.getInstance().fontRenderer.drawString(" FE/t",20+j,64,0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.drawString("FE/t:",-28,64,0x606060);
 
     }
 
     @Override
     public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        LOGGER.debug("Combustion Generator Setting Ingredients! ");
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
                 .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
                 .collect(Collectors.toList()));
@@ -110,7 +102,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        LOGGER.debug("Combustion Generator Setting recipe!");
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, false, 11, 0);
 
@@ -122,7 +113,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             ItemStack oxidizerStack = CombustionGeneratorOxidizerRecipe.oxidizerList.get(i-1).getBucketItem();
             itemStacks.set(i,oxidizerStack);
         }
-
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();

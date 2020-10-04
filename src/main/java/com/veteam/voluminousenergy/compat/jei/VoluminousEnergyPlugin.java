@@ -30,6 +30,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation COMPRESSING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/compressing");
     public static final ResourceLocation COMBUSTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting");
     public static final ResourceLocation STIRLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling");
+    public static final ResourceLocation CENTRIFUGAL_AGITATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_agitation");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -44,6 +45,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new CompressingCategory(guiHelper));
         registration.addRecipeCategories(new CombustionCategory(guiHelper));
         registration.addRecipeCategories(new StirlingCategory(guiHelper));
+        registration.addRecipeCategories(new CentrifugalAgitationCategory(guiHelper));
     }
 
     @Override
@@ -53,6 +55,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(CompressorRecipe.recipeType), COMPRESSING_UID);
         registration.addRecipes(getRecipesOfType(CombustionGeneratorFuelRecipe.RECIPE_TYPE), COMBUSTING_UID);
         registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.recipeType), STIRLING_UID);
+        registration.addRecipes(getRecipesOfType(CentrifugalAgitatorRecipe.RECIPE_TYPE), CENTRIFUGAL_AGITATION_UID);
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
@@ -68,6 +71,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
         registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
         registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
+        registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 32, 28, 23, CENTRIFUGAL_AGITATION_UID);
     }
 
     @Override
