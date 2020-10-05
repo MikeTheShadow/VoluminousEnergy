@@ -59,7 +59,6 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
         int j = (this.height - this.ySize) / 2;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
         if (tileEntity != null) {
-            int progress = tileEntity.progressCounterPX(24);
             int power = container.powerScreen(49);
 
             /*Note for this.blit below:
@@ -70,7 +69,6 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i + 79, j + 31, 176, 0, 17, progress);
             this.blit(i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{

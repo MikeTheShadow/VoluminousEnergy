@@ -42,11 +42,12 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class AirCompressorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class AirCompressorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -55,9 +56,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     private final int tankCapacity = 4000;
-    private int counter;
-    private int length;
-    private int energyRate;
+    private byte counter;
 
     private FluidTank airTank = new FluidTank(tankCapacity);
 
@@ -67,6 +66,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
 
     @Override
     public void tick(){
+        updateClients();
         handler.ifPresent(h -> {
             ItemStack slotStack = h.getStackInSlot(0).copy();
 
@@ -81,23 +81,58 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
             }
 
             // TODO: Check/use power
-            if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity){
+            if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity && counter == 20 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 // Check blocks around the Air Compressor to see if it's air
-                for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(0,0,0),pos.add(1,1,1))){
-                    final BlockState blockState = world.getBlockState(blockPos);
-                    LOGGER.debug("Found block: " + blockState.getBlock() + "airTank amount: " + airTank.getFluidAmount());
-                    if (blockState.getBlock() == Blocks.AIR && (airTank.getFluidAmount() + 250) <= tankCapacity){ // If air, fill by 250 mB
-                        LOGGER.debug("Adding 250 mB of compressed air!");
-                        airTank.fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
-                    }
+                int x = this.pos.getX();
+                int y = this.pos.getY();
+                int z = this.pos.getZ();
+
+                // Sanity check
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z)).getBlock()){
+                    addAirToTank();
                 }
+
+                // Check X offsets
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x+1,y,z)).getBlock()){
+                    //LOGGER.debug("HIT! x+1: " + (x+1) + " y: " + y + " z: " + z + " is AIR!");
+                    addAirToTank();
+                }
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x-1,y,z)).getBlock()){
+                    //LOGGER.debug("HIT! x-1: " + (x-1) + " y: " + y + " z: " + z + " is AIR!");
+                    addAirToTank();
+                }
+
+                // Check Y offsets
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x,y+1,z)).getBlock()){
+                    //LOGGER.debug("HIT! x: " + x + " y+1: " + (y+1) + " z: " + z + " is AIR!");
+                    addAirToTank();
+                }
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x,y-1,z)).getBlock()){
+                    //LOGGER.debug("HIT! x: " + x + " y-1: " + (y-1) + " z: " + z + " is AIR!");
+                    addAirToTank();
+                }
+
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z+1)).getBlock()){
+                    //LOGGER.debug("HIT! x: " + x + " y: " + y + " z+1: " + (z+1) + " is AIR!");
+                    addAirToTank();
+                }
+                if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z-1)).getBlock()){
+                    //LOGGER.debug("HIT! x: " + x + " y: " + y + " z-1: " + (z-1) + " is AIR!");
+                    addAirToTank();
+                }
+
+            } else if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Air Compressor
             }
         });
+        if(counter == 20) counter = 0;
+        else counter++;
     }
 
-    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
-                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    public void addAirToTank() {
+        if ((airTank.getFluidAmount() + 250) <= tankCapacity) {
+            airTank.fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
+        }
     }
 
     @Override
@@ -112,6 +147,7 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
             CompoundNBT airNBT = tag.getCompound("airTank");
             airTank.readFromNBT(airNBT);
         });
+
         super.read(tag);
     }
 
@@ -239,14 +275,6 @@ public class AirCompressorTile extends TileEntity implements ITickableTileEntity
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
         return new AirCompressorContainer(i, world, pos, playerInventory, playerEntity);
-    }
-
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
     }
 
     public FluidStack getAirTankFluid(){

@@ -16,6 +16,7 @@
     "block.voluminousenergy.combustion_generator": "Combustion Generator",
     "block.voluminousenergy.aqueoulizer": "Aqueoulizer",
     "block.voluminousenergy.carbon_shielded_aluminum_machine_frame": "Carbon Shielded Aluminum Machine Frame",
+    "block.voluminousenergy.air_compressor": "Air Compressor",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
