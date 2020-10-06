@@ -20,6 +20,7 @@ public class VoluminousTileEntity extends TileEntity {
      * If a player is within 16 blocks send them an update packet
      */
     public void updateClients() {
+        if(world == null) return;
         world.notifyBlockUpdate(this.pos,this.getBlockState(),this.getBlockState(),1);
     }
 }

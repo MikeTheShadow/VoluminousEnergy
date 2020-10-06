@@ -54,6 +54,7 @@ public class VoluminousEnergy
     public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 

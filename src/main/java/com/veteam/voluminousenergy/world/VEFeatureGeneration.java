@@ -13,13 +13,14 @@ import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class VEFeatureGeneration {
+
     public static void VEFeatureGenerationSetup(){
         if (!Config.ENABLE_VE_FEATURE_GEN.get()) return;
         LakeGeneration();
         GeyserGeneration();
     }
 
-    private static void LakeGeneration(){
+    private static void LakeGeneration() {
 
         // Oil Lake generation
         if (Config.GENERATE_OIL_LAKES.get()){
@@ -35,7 +36,7 @@ public class VEFeatureGeneration {
     }
 
     private static void GeyserGeneration(){
-        final int chance = 60;
+        final int chance = 300;
         for (Biome biome : ForgeRegistries.BIOMES){
             biome.addFeature(GenerationStage.Decoration.LOCAL_MODIFICATIONS, GeyserFeature.INSTANCE
                     .withConfiguration(new NoFeatureConfig())

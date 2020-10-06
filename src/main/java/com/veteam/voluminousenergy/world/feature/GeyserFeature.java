@@ -1,8 +1,10 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.datafixers.Dynamic;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.CrudeOil;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -23,9 +25,9 @@ public class GeyserFeature extends Feature<NoFeatureConfig> {
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        int base = worldIn.getChunk(pos).getTopFilledSegment();
-
-        if (base-25 > pos.getY()){
+        ///int base = worldIn.getChunk(pos).getTopFilledSegment();
+        int base = 40;
+        if (base - 25 > pos.getY()){
             return false;
         } else if (base < pos.getY()) {
             return false;
@@ -39,27 +41,52 @@ public class GeyserFeature extends Feature<NoFeatureConfig> {
             }
         }
 
-        // Underground portion?
-        for(int depth = -5; depth <= 0; ++depth) { // depth, initial negative is lowest point, <= highest point
-            for(int widthX = -5; widthX <= 0; ++widthX) { // width on x
-                for(int lengthZ = -5; lengthZ <= 0; ++lengthZ) { // length on z
-                    if (pos.getY() + depth >= 1 && pos.getY() + depth <= 255){
-                        worldIn.setBlockState(pos.add(widthX, depth, lengthZ), this.crudeOil, 2);
+        int totalBuckets = 0;
+
+
+        // Underground portion
+        int baseWidth = 50; //these values are double what they are set as
+        int baseLength = 50; //Both should be an odd number so that they can have a middle point
+        int baseHeight = -11;
+
+        int increase = baseHeight/2;
+        for(int depth = baseHeight; depth <= 0; ++depth) { // depth, initial negative is lowest point, <= highest point
+
+            for(int widthX = (-1 * baseWidth) - increase; widthX < baseWidth + increase; ++widthX) { // width on x
+
+                for(int lengthZ = (-1 * baseLength) - increase; lengthZ < baseLength + increase; ++lengthZ) { // length on z
+
+                    if (pos.getY() + depth >= 1 && pos.getY() + depth <= 250) {
+                        worldIn.setBlockState(
+                                pos.add(
+                                widthX,
+                                depth,
+                                lengthZ),
+                                this.crudeOil, 2
+                        );
+                        totalBuckets++;
                     }
                 }
             }
+            if(depth > baseHeight / 2)increase--;
+            else increase ++;
         }
 
         // Main Geyser
-        for(int depth = -5; depth <= 76; ++depth) { // depth, initial negative is lowest point, <= highest point
-            for(int widthX = -1; widthX <= 0; ++widthX) { // width on x
-                for(int lengthZ = -1; lengthZ <= 0; ++lengthZ) { // length on z
-                    if (pos.getY() + depth >= 1 && pos.getY() + depth <= 255){
-                        worldIn.setBlockState(pos.add(widthX-2, depth, lengthZ-2), this.crudeOil, 2);
+        int additive = 0;
+        for(int depth = 150; depth > -5; --depth) { // depth, initial negative is lowest point, <= highest point
+            if(depth % 50 == 0) additive += 1;
+            for(int widthX = -additive - 1; widthX < additive; ++widthX) { // width on x
+                for(int lengthZ = -additive - 1; lengthZ < additive; ++lengthZ) { // length on z
+                    if (pos.getY() + depth >= 1 && pos.getY() + depth <= 250){
+                        worldIn.setBlockState(pos.add(widthX, depth, lengthZ), this.crudeOil, 2);
+                        totalBuckets++;
                     }
                 }
             }
         }
+        //VoluminousEnergy.LOGGER.info("Total buckets: " + totalBuckets);
+
 
         //worldIn.setBlockState(pos, this.crudeOil, 2);
 
