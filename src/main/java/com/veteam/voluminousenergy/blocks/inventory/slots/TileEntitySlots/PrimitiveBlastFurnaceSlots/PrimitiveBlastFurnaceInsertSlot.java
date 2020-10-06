@@ -19,7 +19,7 @@ public class PrimitiveBlastFurnaceInsertSlot extends VEInsertSlot
     public boolean isItemValid(ItemStack stack){
         ItemStack referenceStack = stack.copy();
         referenceStack.setCount(64);
-        PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+        PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
         return checkRecipe(recipe,referenceStack);
     }
 }

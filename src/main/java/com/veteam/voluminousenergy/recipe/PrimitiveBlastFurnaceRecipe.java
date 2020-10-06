@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> recipeType = IRecipeType.register("primitive_blast_furnacing");
-    public static final Serializer serializer = new Serializer();
+    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = IRecipeType.register("primitive_blast_furnacing");
+    public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
     public Ingredient ingredient;
@@ -75,12 +75,12 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer(){
-        return serializer;
+        return SERIALIZER;
     }
 
     @Override
     public IRecipeType<?> getType(){
-        return recipeType;
+        return RECIPE_TYPE;
     }
 
     public int getOutputAmount(){

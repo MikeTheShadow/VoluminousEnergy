@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 
 public class VERecipe  implements IRecipe<IInventory> {
 
-    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> recipeType = IRecipeType.register("primitive_blast_furnacing");
-    public static final PrimitiveBlastFurnaceRecipe.Serializer serializer = new PrimitiveBlastFurnaceRecipe.Serializer();
-
     public Ingredient ingredient;
     public int ingredientCount;
     public ItemStack result;
@@ -57,12 +54,12 @@ public class VERecipe  implements IRecipe<IInventory> {
 
     @Override
     public IRecipeSerializer<?> getSerializer(){
-        return serializer;
+        return null;
     }
 
     @Override
     public IRecipeType<?> getType(){
-        return recipeType;
+        return null;
     }
 
 }

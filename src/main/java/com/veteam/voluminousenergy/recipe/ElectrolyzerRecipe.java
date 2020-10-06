@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ElectrolyzerRecipe extends VERecipe {
 
-    public static final IRecipeType<ElectrolyzerRecipe> recipeType = IRecipeType.register("electrolyzing");
+    public static final IRecipeType<ElectrolyzerRecipe> RECIPE_TYPE = IRecipeType.register("electrolyzing");
     public static final Serializer serializer = new Serializer();
 
     public final ResourceLocation recipeId;
@@ -89,7 +89,7 @@ public class ElectrolyzerRecipe extends VERecipe {
     public IRecipeSerializer<?> getSerializer(){ return serializer;}
 
     @Override
-    public IRecipeType<?> getType(){return recipeType;}
+    public IRecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getOutputAmount() {return outputAmount;}
 

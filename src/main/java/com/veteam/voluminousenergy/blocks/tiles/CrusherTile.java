@@ -74,8 +74,8 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
             if (slot == 0 && recipe != null){
                 return recipe.ingredient.test(stack);
@@ -92,8 +92,8 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
             if(slot == 0 && recipe != null) {
                 for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
@@ -135,7 +135,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         ItemStack output = inventory.getStackInSlot(1).copy();
         ItemStack rng = inventory.getStackInSlot(2).copy();
 
-        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(input), world).orElse(null);
+        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){

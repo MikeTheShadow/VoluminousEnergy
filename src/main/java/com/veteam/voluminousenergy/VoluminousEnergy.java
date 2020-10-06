@@ -65,8 +65,8 @@ public class VoluminousEnergy
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register recipes (differed)
-        VERecipes.VE_RECIPES.register(modEventBus);
-
+        //VERecipes.VE_RECIPES.register(modEventBus);
+        VERecipes.init();
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);

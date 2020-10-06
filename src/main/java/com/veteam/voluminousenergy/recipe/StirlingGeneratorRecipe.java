@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class StirlingGeneratorRecipe extends VERecipe {
 
-    public static final IRecipeType<StirlingGeneratorRecipe> recipeType = IRecipeType.register("stirling");
+    public static final IRecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = IRecipeType.register("stirling");
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
@@ -85,12 +85,12 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer(){
-        return serializer;
+        return SERIALIZER;
     }
 
     @Override
     public IRecipeType<?> getType(){
-        return recipeType;
+        return RECIPE_TYPE;
     }
 
     public int getEnergyPerTick(){ return energyPerTick;};

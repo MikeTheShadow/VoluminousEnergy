@@ -31,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -53,7 +52,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
-            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(input), world).orElse(null);
+            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (counter > 0){
@@ -135,8 +134,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -149,8 +148,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){

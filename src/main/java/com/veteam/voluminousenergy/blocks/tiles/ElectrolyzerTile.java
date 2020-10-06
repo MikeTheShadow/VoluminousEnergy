@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -64,7 +63,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             ItemStack rngTwo = h.getStackInSlot(4).copy();
             ItemStack rngThree = h.getStackInSlot(5).copy();
 
-            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(input), world).orElse(null);
+            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
@@ -289,8 +288,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 referenceStack.setCount(64);
                 //ItemStack referenceStack1 = inputItemStack.get().copy();
                 //referenceStack1.setCount(64);
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
@@ -317,8 +316,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack.copy()), world).orElse(null);
-                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack.copy()), world).orElse(null);
+                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){

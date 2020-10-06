@@ -51,7 +51,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack output = h.getStackInSlot(1).copy();
 
-            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(input), world).orElse(null);
+            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (!input.isEmpty()){
@@ -144,8 +144,8 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOutput = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(inputItemStack.get().copy()), world).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(referenceStack),world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOutput = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -160,8 +160,8 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOut = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(inputItemStack.get().copy()), world).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType, new Inventory(referenceStack),world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOut = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){

@@ -2,10 +2,7 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.blocks.screens.*;
-import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import mezz.jei.api.IModPlugin;
@@ -13,7 +10,6 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -52,11 +48,11 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration){// Add recipes
-        registration.addRecipes(getRecipesOfType(CrusherRecipe.recipeType), CRUSHING_UID);
-        registration.addRecipes(getRecipesOfType(ElectrolyzerRecipe.recipeType), ELECTROLYZING_UID);
-        registration.addRecipes(getRecipesOfType(CompressorRecipe.recipeType), COMPRESSING_UID);
+        registration.addRecipes(getRecipesOfType(CrusherRecipe.RECIPE_TYPE), CRUSHING_UID);
+        registration.addRecipes(getRecipesOfType(ElectrolyzerRecipe.RECIPE_TYPE), ELECTROLYZING_UID);
+        registration.addRecipes(getRecipesOfType(CompressorRecipe.RECIPE_TYPE), COMPRESSING_UID);
         registration.addRecipes(getRecipesOfType(CombustionGeneratorFuelRecipe.RECIPE_TYPE), COMBUSTING_UID);
-        registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.recipeType), STIRLING_UID);
+        registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.RECIPE_TYPE), STIRLING_UID);
         registration.addRecipes(getRecipesOfType(CentrifugalAgitatorRecipe.RECIPE_TYPE), CENTRIFUGAL_AGITATION_UID);
         registration.addRecipes(getRecipesOfType(AqueoulizerRecipe.RECIPE_TYPE), AQUEOULIZING_UID);
     }

@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CompressorRecipe extends VERecipe {
-    public static final IRecipeType<CompressorRecipe> recipeType = IRecipeType.register("compressing");
+    public static final IRecipeType<CompressorRecipe> RECIPE_TYPE = IRecipeType.register("compressing");
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
@@ -82,12 +82,12 @@ public class CompressorRecipe extends VERecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer(){
-        return serializer;
+        return SERIALIZER;
     }
 
     @Override
     public IRecipeType<?> getType(){
-        return recipeType;
+        return RECIPE_TYPE;
     }
 
     public int getOutputAmount(){

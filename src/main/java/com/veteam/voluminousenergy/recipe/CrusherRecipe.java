@@ -22,8 +22,16 @@ import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    public static final IRecipeType<CrusherRecipe> recipeType = IRecipeType.register("crushing");
-    public static final Serializer serializer = new Serializer();
+    //public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = IRecipeType.register("crushing");
+
+    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = new IRecipeType<CrusherRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.CRUSHING.toString();
+        }
+    };
+
+    public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
     public Ingredient ingredient;
@@ -72,10 +80,10 @@ public class CrusherRecipe extends VERecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return serializer;}
+    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return recipeType;}
+    public IRecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getOutputAmount() {return outputAmount;}
 
