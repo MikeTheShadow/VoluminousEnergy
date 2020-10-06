@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.recipe.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -24,7 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
-    public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = IRecipeType.register("oxidizer_combustion");
+    public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = new IRecipeType<CombustionGeneratorOxidizerRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.OXIDIZING.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();

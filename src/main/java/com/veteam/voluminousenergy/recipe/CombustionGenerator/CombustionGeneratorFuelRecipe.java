@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -17,7 +17,6 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -26,7 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CombustionGeneratorFuelRecipe extends VERecipe {
-    public static final IRecipeType<CombustionGeneratorFuelRecipe> RECIPE_TYPE = IRecipeType.register("fuel_combustion");
+    public static final IRecipeType<CombustionGeneratorFuelRecipe> RECIPE_TYPE = new IRecipeType<CombustionGeneratorFuelRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.FUEL_COMBUSTION.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();

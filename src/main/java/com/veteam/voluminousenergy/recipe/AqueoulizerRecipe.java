@@ -20,7 +20,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class AqueoulizerRecipe extends VERecipe {
-    public static final IRecipeType<AqueoulizerRecipe> RECIPE_TYPE = IRecipeType.register("aqueoulizing");
+    public static final IRecipeType<AqueoulizerRecipe> RECIPE_TYPE = new IRecipeType<AqueoulizerRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.AQUEOULIZING.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();

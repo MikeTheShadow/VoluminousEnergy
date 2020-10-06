@@ -19,7 +19,13 @@ import java.util.ArrayList;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = IRecipeType.register("primitive_blast_furnacing");
+    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = new IRecipeType<PrimitiveBlastFurnaceRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.PRIMITIVE_BLAST_FURNACING.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;

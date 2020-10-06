@@ -20,7 +20,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class CentrifugalAgitatorRecipe extends VERecipe {
-    public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = IRecipeType.register("centrifugal_agitating");
+    public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = new IRecipeType<CentrifugalAgitatorRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.CENTRIFUGAL_AGITATING.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();
