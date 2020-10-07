@@ -4,6 +4,6 @@
     "item": "minecraft:charcoal",
     "count": 1
   },
-  "processTime": 1600,
-  "energyPerTick": 128
+  "process_time": 1600,
+  "energy_per_tick": 128
 }

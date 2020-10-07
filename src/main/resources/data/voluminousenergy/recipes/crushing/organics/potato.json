@@ -4,7 +4,7 @@
     "item": "minecraft:potato",
     "count": 1
   },
-  "processTime": 200,
+  "process_time": 200,
   "result": {
     "item": "voluminousenergy:shredded_biomass",
     "count": 2

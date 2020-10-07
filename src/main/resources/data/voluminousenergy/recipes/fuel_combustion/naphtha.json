@@ -2,6 +2,6 @@
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
     "item": "voluminousenergy:naphtha_bucket",
-    "volumetricEnergy": 51200
+    "volumetric_energy": 51200
   }
 }

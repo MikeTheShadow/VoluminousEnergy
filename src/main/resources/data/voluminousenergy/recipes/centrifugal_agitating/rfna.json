@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:centrifugal_agitating",
-  "processTime": 200,
+  "process_time": 200,
   "ingredient": {
     "item": "voluminousenergy:red_fuming_nitric_acid_bucket",
     "amount": 250

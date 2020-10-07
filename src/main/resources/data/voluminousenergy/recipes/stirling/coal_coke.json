@@ -4,6 +4,6 @@
     "item": "voluminousenergy:coalcoke",
     "count": 1
   },
-  "processTime": 3200,
-  "energyPerTick": 128
+  "process_time": 3200,
+  "energy_per_tick": 128
 }

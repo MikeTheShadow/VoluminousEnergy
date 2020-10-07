@@ -2,6 +2,6 @@
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
     "item": "voluminousenergy:liquefied_coal_bucket",
-    "volumetricEnergy": 102400
+    "volumetric_energy": 102400
   }
 }

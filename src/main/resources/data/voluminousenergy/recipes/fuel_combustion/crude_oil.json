@@ -2,6 +2,6 @@
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
     "item": "voluminousenergy:crude_oil_bucket",
-    "volumetricEnergy": 25600
+    "volumetric_energy": 25600
   }
 }

@@ -2,6 +2,6 @@
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
     "item": "voluminousenergy:light_fuel_bucket",
-    "volumetricEnergy": 102400
+    "volumetric_energy": 102400
   }
 }

@@ -115,7 +115,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.inputAmount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
-            recipe.processTime = JSONUtils.getInt(json,"processTime",200);
+            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if(!ingredientList.contains(stack.getItem())){

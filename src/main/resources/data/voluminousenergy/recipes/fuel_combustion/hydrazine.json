@@ -2,6 +2,6 @@
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
     "item": "voluminousenergy:hydrazine_bucket",
-    "volumetricEnergy": 374400
+    "volumetric_energy": 374400
   }
 }

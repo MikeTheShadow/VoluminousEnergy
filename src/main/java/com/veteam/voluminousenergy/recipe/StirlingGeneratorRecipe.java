@@ -112,8 +112,8 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
-            recipe.processTime = JSONUtils.getInt(json, "processTime", 200);
-            recipe.energyPerTick  = JSONUtils.getInt(json, "energyPerTick", Config.STIRLING_GENERATOR_GENERATE.get());
+            recipe.processTime = JSONUtils.getInt(json, "process_time", 200);
+            recipe.energyPerTick  = JSONUtils.getInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if (!ingredientList.contains(stack.getItem())){
