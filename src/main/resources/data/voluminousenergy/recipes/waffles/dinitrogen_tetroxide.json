@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:oxidizer_combustion",
-  "processTime": 400,
+  "process_time": 400,
   "ingredient": {
     "item": "voluminousenergy:dinitrogen_tetroxide_bucket"
   }

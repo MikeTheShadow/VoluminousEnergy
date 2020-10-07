@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.recipe.RecipeConstants;
+import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -102,7 +102,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getInt(json,"processTime",1600);
+            recipe.processTime = JSONUtils.getInt(json,"process_time",1600);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if(!ingredientList.contains(stack.getItem())){

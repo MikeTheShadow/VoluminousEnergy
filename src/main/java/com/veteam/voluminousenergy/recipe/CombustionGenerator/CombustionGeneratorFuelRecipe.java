@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.recipe.RecipeConstants;
+import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
