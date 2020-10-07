@@ -42,7 +42,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     public ItemStack inputFluid;
     public ItemStack result;
-    public ItemStack secondResult;
 
     public CombustionGeneratorOxidizerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -92,7 +91,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     @Override
     public IRecipeType<?> getType(){return RECIPE_TYPE;}
 
-    public int getProcessTime() { return processTime; }
+    public int getProcessTime(){return processTime;}
 
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CombustionGeneratorOxidizerRecipe> {
@@ -125,7 +124,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 }
             }
 
-            recipe.result = new ItemStack(Items.AIR); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
+            recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
         }
 
@@ -135,6 +134,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
+            recipe.result = buffer.readItemStack();
             recipe.processTime = buffer.readInt();
             return recipe;
         }

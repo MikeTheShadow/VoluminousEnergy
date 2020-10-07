@@ -71,12 +71,14 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
         Minecraft.getInstance().fontRenderer.drawString("Oxidizers: ",2,32,0x606060);
         int j = 0;
+
         for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
             j = orderOxidizers(i+1,j);
             slotDrawable.draw(2 + j, 45);
             int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerList.get(i).getProcessTime();
             Minecraft.getInstance().fontRenderer.drawString(fePerTick+"",4+j,64,0x606060);
         }
+
         Minecraft.getInstance().fontRenderer.drawString("FE/t:",-28,64,0x606060);
 
     }
@@ -104,6 +106,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
         // Setup Oxidizers
         int j = 0;
+
         for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
             j = orderOxidizers(i,j);
             itemStacks.init(i, false, 2 + j, 45);
