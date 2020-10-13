@@ -14,6 +14,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.VEOreGeneration;
+import com.veteam.voluminousenergy.world.biomes.RedDesertBiome;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -23,6 +24,9 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -76,6 +80,7 @@ public class VoluminousEnergy
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
+
     private void setup(final FMLCommonSetupEvent event) {
         VEOreGeneration.OreGeneration(); // Setup custom ore generation
         VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
@@ -334,5 +339,18 @@ public class VoluminousEnergy
                 return new AirCompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("air_compressor"));
         }
+
+        @SubscribeEvent
+        public static void onRegisterBiome(RegistryEvent.Register<Biome> event)
+        {
+            //10 is what the vast majority of vanilla biomes use
+            registerBiome(event, new RedDesertBiome(), "red_desert", 10, BiomeManager.BiomeType.DESERT, BiomeDictionary.Type.COLD, BiomeDictionary.Type.CONIFEROUS, BiomeDictionary.Type.FOREST, BiomeDictionary.Type.HILLS, BiomeDictionary.Type.SNOWY, BiomeDictionary.Type.OVERWORLD);
+        }
+    }
+
+    private static void registerBiome(RegistryEvent.Register<Biome> event, Biome biome, String registryName, int spawnWeight, BiomeManager.BiomeType spawnType, BiomeDictionary.Type... types) {
+        event.getRegistry().register(biome.setRegistryName(new ResourceLocation(MODID, registryName)));
+        BiomeDictionary.addTypes(biome, types);
+        if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
     }
 }

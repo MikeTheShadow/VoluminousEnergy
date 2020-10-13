@@ -82,10 +82,15 @@ public class Config {
 
     public static ForgeConfigSpec COMMON_CONFIG;
 
+    // World Generation Settings
+    public static ForgeConfigSpec.BooleanValue GENERATE_VE_BIOMES;
+
     // World Feature Settings
     public static ForgeConfigSpec.BooleanValue ENABLE_VE_FEATURE_GEN;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_LAKES;
+    public static ForgeConfigSpec.BooleanValue GENERATE_OIL_GEYSER;
     public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
+    public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
     // Ore Settings
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
@@ -232,7 +237,10 @@ public class Config {
     }
 
     private static void setupWorldGen(){
-        ENABLE_VE_FEATURE_GEN = COMMON_BUILDER.comment("Enable/Disable all Voluminous Energy changes to world generation")
+        GENERATE_VE_BIOMES = COMMON_BUILDER.comment("Enable/Disable Voluminous Energy biomes")
+                .define("Enable VE Biomes", true);
+
+        ENABLE_VE_FEATURE_GEN = COMMON_BUILDER.comment("Enable/Disable all Voluminous Energy changes to feature generation")
                 .define("World Generation", true);
 
         COMMON_BUILDER.comment("Feature Generation").push(SUBCATEGORY_FEATURE_GENERATION);
@@ -240,6 +248,10 @@ public class Config {
                     .define("Oil Lakes", true);
             OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Oil Lake Chance (Lower = Higher chance)")
                     .defineInRange("Oil Lake Chance", 80, 10, Integer.MAX_VALUE);
+            GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
+                    .define("Oil Geysers", true);
+            OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
+                    .defineInRange("Oil Geyser Chance", 720, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
