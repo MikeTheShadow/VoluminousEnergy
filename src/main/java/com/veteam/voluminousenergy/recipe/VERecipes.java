@@ -20,9 +20,10 @@ public class VERecipes {
         registerType(RecipeConstants.CENTRIFUGAL_AGITATING,CentrifugalAgitatorRecipe.RECIPE_TYPE);
         registerType(RecipeConstants.COMPRESSING,CompressorRecipe.RECIPE_TYPE);
         registerType(RecipeConstants.STIRLING,StirlingGeneratorRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.OXIDIZING, CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.FUEL_COMBUSTION, CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+        registerType(RecipeConstants.OXIDIZING,CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+        registerType(RecipeConstants.FUEL_COMBUSTION,CombustionGeneratorFuelRecipe.RECIPE_TYPE);
         registerType(RecipeConstants.AQUEOULIZING,AqueoulizerRecipe.RECIPE_TYPE);
+        registerType(RecipeConstants.DISTILLING,DistillationRecipe.RECIPE_TYPE);
 
         //register serializers
         registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING,PrimitiveBlastFurnaceRecipe.SERIALIZER);
@@ -34,6 +35,7 @@ public class VERecipes {
         registerSerializer(RecipeConstants.OXIDIZING,CombustionGeneratorOxidizerRecipe.SERIALIZER);
         registerSerializer(RecipeConstants.FUEL_COMBUSTION,CombustionGeneratorFuelRecipe.SERIALIZER);
         registerSerializer(RecipeConstants.AQUEOULIZING,AqueoulizerRecipe.SERIALIZER);
+        registerSerializer(RecipeConstants.DISTILLING,DistillationRecipe.SERIALIZER);
     }
 
 

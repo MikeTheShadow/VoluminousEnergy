@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class CompressorScreen extends ContainerScreen<CompressorContainer> {
 
     private CompressorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/compressor_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/compressor_gui.png");
 
     public CompressorScreen(CompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);

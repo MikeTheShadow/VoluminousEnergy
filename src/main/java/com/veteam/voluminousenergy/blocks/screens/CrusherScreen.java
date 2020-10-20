@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
-    private static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final Logger LOGGER = LogManager.getLogger();
     private boolean openedIOGui = false;
 

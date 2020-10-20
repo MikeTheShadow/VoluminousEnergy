@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -118,6 +117,16 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
     public static ContainerType<AirCompressorContainer> AIR_COMPRESSOR_CONTAINER;
+
+    // Distillation Unit
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static DistillationUnitBlock DISTILLATION_UNIT_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static TileEntityType<DistillationUnitTile> DISTILLATION_UNIT_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static ContainerType<DistillationUnitContainer> DISTILLATION_UNIT_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

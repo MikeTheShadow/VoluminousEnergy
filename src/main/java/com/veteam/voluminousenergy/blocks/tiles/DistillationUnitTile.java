@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
+import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,9 +39,8 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class DistillationUnitTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
@@ -59,8 +58,8 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
     private static final Logger LOGGER = LogManager.getLogger();
 
 
-    public CentrifugalAgitatorTile() {
-        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE);
+    public DistillationUnitTile() {
+        super(VEBlocks.DISTILLATION_UNIT_TILE);
     }
 
     @Override
@@ -69,15 +68,18 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
         updateClients();
 
         handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0).copy();
-            ItemStack input1 = h.getStackInSlot(1).copy();
-            ItemStack output0 = h.getStackInSlot(2).copy();
-            ItemStack output1 = h.getStackInSlot(3).copy();
+            ItemStack inputTop = h.getStackInSlot(0).copy();
+            ItemStack inputBottom = h.getStackInSlot(1).copy();
+            ItemStack firstOutputTop = h.getStackInSlot(2).copy();
+            ItemStack firstOutputBottom = h.getStackInSlot(3).copy();
+            ItemStack secondOutputTop = h.getStackInSlot(4).copy();
+            ItemStack secondOutputBottom = h.getStackInSlot(5).copy();
+            ItemStack thirdOutput = h.getStackInSlot(6).copy();
 
-            // Input fluid into the input fluid tank
-            if (input.copy() != null || input.copy() != ItemStack.EMPTY && input1.copy() == ItemStack.EMPTY) {
-                if (input.copy().getItem() instanceof BucketItem && input.getCount() == 1) {
-                    Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
+            // Input fluid into the input fluid tank (NEW)
+            if (inputTop.copy() != null || inputTop.copy() != ItemStack.EMPTY && inputBottom.copy() == ItemStack.EMPTY) {
+                if (inputTop.copy().getItem() instanceof BucketItem && inputTop.getCount() == 1) {
+                    Fluid fluid = ((BucketItem) inputTop.copy().getItem()).getFluid();
                     if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= tankCapacity) {
                         inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                         h.extractItem(0, 1, false);
@@ -86,8 +88,8 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                 }
             }
 
-            // Extract fluid from the input tank
-            if(input.copy().getItem() == Items.BUCKET && input1.copy() == ItemStack.EMPTY) {
+            // Extract fluid from the input tank (NEW)
+            if(inputTop.copy().getItem() == Items.BUCKET && inputBottom.copy() == ItemStack.EMPTY) {
                 if(inputTank.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(), 1);
                     inputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -96,41 +98,65 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                 }
             }
 
-            // Extract fluid from the first output tank
-            if (output0.copy().getItem() != null || output0.copy() != ItemStack.EMPTY){
-                if (output0.getItem() == Items.BUCKET && outputTank0.getFluidAmount() >= 1000 && output0.getCount() == 1){
+            // Input fluid into the first output fluid tank (NEW)
+            if (firstOutputTop.copy() != null || firstOutputTop.copy() != ItemStack.EMPTY && firstOutputBottom.copy() == ItemStack.EMPTY) {
+                if (firstOutputTop.copy().getItem() instanceof BucketItem && firstOutputTop.getCount() == 1) {
+                    Fluid fluid = ((BucketItem) firstOutputTop.copy().getItem()).getFluid();
+                    if (outputTank0.isEmpty() || outputTank0.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && outputTank0.getFluidAmount() + 1000 <= tankCapacity) {
+                        outputTank0.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                        h.extractItem(2, 1, false);
+                        h.insertItem(3, new ItemStack(Items.BUCKET, 1), false);
+                    }
+                }
+            }
+
+            // Extract fluid from the first output tank (NEW)
+            if(firstOutputTop.copy().getItem() == Items.BUCKET && firstOutputBottom.copy() == ItemStack.EMPTY) {
+                if(outputTank0.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(outputTank0.getFluid().getRawFluid().getFilledBucket(), 1);
                     outputTank0.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(2,1,false);
-                    h.insertItem(2, bucketStack, false);
+                    h.extractItem(2, 1, false);
+                    h.insertItem(3, bucketStack, false);
+                }
+            }
+
+            // Input fluid into the second output fluid tank
+            if (secondOutputTop.copy() != null || secondOutputTop.copy() != ItemStack.EMPTY && secondOutputBottom.copy() == ItemStack.EMPTY) {
+                if (secondOutputTop.copy().getItem() instanceof BucketItem && secondOutputTop.getCount() == 1) {
+                    Fluid fluid = ((BucketItem) secondOutputTop.copy().getItem()).getFluid();
+                    if (outputTank1.isEmpty() || outputTank1.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && outputTank1.getFluidAmount() + 1000 <= tankCapacity) {
+                        outputTank1.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                        h.extractItem(4, 1, false);
+                        h.insertItem(5, new ItemStack(Items.BUCKET, 1), false);
+                    }
                 }
             }
 
             // Extract fluid from the second output tank
-            if (output1.copy().getItem() != null || output1.copy() != ItemStack.EMPTY){
-                if (output1.getItem() == Items.BUCKET && outputTank1.getFluidAmount() >= 1000 && output1.getCount() == 1){
+            if(secondOutputTop.copy().getItem() == Items.BUCKET && secondOutputBottom.copy() == ItemStack.EMPTY) {
+                if(outputTank1.getFluidAmount() >= 1000) {
                     ItemStack bucketStack = new ItemStack(outputTank1.getFluid().getRawFluid().getFilledBucket(), 1);
                     outputTank1.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(3,1,false);
-                    h.insertItem(3, bucketStack, false);
+                    h.extractItem(4, 1, false);
+                    h.insertItem(5, bucketStack, false);
                 }
             }
 
             // Main Fluid Processing occurs here:
             if (inputTank != null || !inputTank.isEmpty()) {
                 ItemStack inputFluidStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(),1);
-                CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
+                DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
                 if (recipe != null) {
                     if (outputTank0 != null && outputTank1 != null) {
 
                         // Tank fluid amount check + tank cap checks
-                        if (inputTank.getFluidAmount() >= recipe.inputAmount && outputTank0.getFluidAmount() + recipe.outputAmount <= tankCapacity && outputTank1.getFluidAmount() + recipe.secondAmount <= tankCapacity){
+                        if (inputTank.getFluidAmount() >= recipe.getInputAmount() && outputTank0.getFluidAmount() + recipe.getOutputAmount() <= tankCapacity && outputTank1.getFluidAmount() + recipe.getSecondAmount() <= tankCapacity){
                             // Check for power
                             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                                 if (counter == 1){
 
                                     // Drain Input
-                                    inputTank.drain(recipe.inputAmount, IFluidHandler.FluidAction.EXECUTE);
+                                    inputTank.drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
 
                                     // First Output Tank
                                     if (outputTank0.getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
@@ -147,11 +173,11 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                                     }
 
                                     counter--;
-                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); // TODO: Config for Distillation Unit
                                     this.markDirty();
                                 } else if (counter > 0){
                                     counter--;
-                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); // TODO: Config for Distillation Unit
                                 } else {
                                     counter = recipe.getProcessTime();
                                     length = counter;
@@ -256,7 +282,7 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                 } else if (tank == 2) {
                     return outputTank1 == null ? FluidStack.EMPTY : outputTank1.getFluid();
                 }
-                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getFluidInTank");
+                LOGGER.debug("Invalid tankId in Distillation Unit Tile for getFluidInTank");
                 return FluidStack.EMPTY;
             }
 
@@ -269,7 +295,7 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                 } else if (tank == 2) {
                     return outputTank1 == null ? 0 : outputTank1.getCapacity();
                 }
-                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getTankCapacity");
+                LOGGER.debug("Invalid tankId in Distillation Unit Tile for getTankCapacity");
                 return 0;
             }
 
@@ -277,12 +303,12 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
                     ItemStack bucketStack = new ItemStack(stack.getRawFluid().getFilledBucket());
-                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(bucketStack), world).orElse(null);
+                    DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(bucketStack), world).orElse(null);
                     return recipe != null && inputTank != null && inputTank.isFluidValid(stack);
                 } else if (tank == 1) {
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                    DistillationRecipe.ingredientList.forEach(item -> {
+                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
                         if (recipe != null && recipe.getOutputFluid().getFluid().isEquivalentTo(stack.getFluid())){ // In theory should never be null
                             recipeHit.set(true);
                         }
@@ -291,8 +317,8 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
                     return recipeHit.get() && outputTank0 != null && outputTank0.isFluidValid(stack);
                 } else if (tank == 2) {
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)),world).orElse(null);
+                    DistillationRecipe.ingredientList.forEach(item -> {
+                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)),world).orElse(null);
                         if (recipe != null && recipe.getSecondFluid().getFluid().isEquivalentTo(stack.getFluid())){
                             recipeHit.set(true);
                         }
@@ -348,7 +374,7 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(7) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -357,25 +383,34 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1){
-                    CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 && stack.getItem() instanceof BucketItem) {
+                } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
                     if (stack.getItem() == Items.BUCKET) return true;
 
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                    DistillationRecipe.ingredientList.forEach(item -> {
+                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
                         if (recipe != null && recipe.getOutputFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
                             recipeHit.set(true);
                         }
                     });
                     return recipeHit.get();
-                } else if (slot == 3) {
+                } else if (slot == 4 || slot == 5 && stack.getItem() instanceof BucketItem) {
                     if (stack.getItem() == Items.BUCKET) return true;
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                    DistillationRecipe.ingredientList.forEach(item -> {
+                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
                         if (recipe != null && recipe.getSecondFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
+                            recipeHit.set(true);
+                        }
+                    });
+                    return recipeHit.get();
+                } else if (slot == 6){
+                    AtomicBoolean recipeHit = new AtomicBoolean(false);
+                    DistillationRecipe.ingredientList.forEach(item -> {
+                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                        if (recipe != null && recipe.getThirdResult().getItem() == stack.getItem()){
                             recipeHit.set(true);
                         }
                     });
@@ -393,7 +428,7 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private IEnergyStorage createEnergy() { // TODO: Config for Distillation Unit
         return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -420,7 +455,7 @@ public class CentrifugalAgitatorTile extends VoluminousTileEntity implements ITi
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new CentrifugalAgitatorContainer(i, world, pos, playerInventory, playerEntity);
+        return new DistillationUnitContainer(i, world, pos, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {

@@ -14,5 +14,6 @@ public class RecipeConstants {
     public static final ResourceLocation FUEL_COMBUSTION = new ResourceLocation(VoluminousEnergy.MODID, "fuel_combustion");
     public static final ResourceLocation OXIDIZING = new ResourceLocation(VoluminousEnergy.MODID, "oxidizer_combustion");
     public static final ResourceLocation AQUEOULIZING = new ResourceLocation(VoluminousEnergy.MODID, "aqueoulizing");
+    public static final ResourceLocation DISTILLING = new ResourceLocation(VoluminousEnergy.MODID, "distilling");
 
 }

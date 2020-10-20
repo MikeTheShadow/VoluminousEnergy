@@ -2,8 +2,8 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
-import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
+import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
+import com.veteam.voluminousenergy.blocks.tiles.DistillationUnitTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import net.minecraft.client.Minecraft;
@@ -13,13 +13,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
-    private AqueoulizerTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
+// TODO: Actually update/implement Distillation Unit properly
+public class DistillationUnitScreen extends ContainerScreen<DistillationUnitContainer> {
+    private DistillationUnitTile tileEntity;
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
 
-    public AqueoulizerScreen(AqueoulizerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public DistillationUnitScreen(DistillationUnitContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (AqueoulizerTile) screenContainer.tileEntity;
+        tileEntity = (DistillationUnitTile) screenContainer.tileEntity;
     }
 
     @Override
@@ -31,15 +32,14 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(Minecraft.getInstance().fontRenderer, "Aqueoulizer",8,6,0xffffff);
-        drawString(Minecraft.getInstance().fontRenderer, "+", 82, 34, 0x606060);
+        drawString(Minecraft.getInstance().fontRenderer, "Distillation Unit",8,6,0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.AQUEOULIZER_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for Distillation Unit
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -48,9 +48,15 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getFormattedText();
+            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+        }
+
+        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
+            int amount = tileEntity.getFluidStackFromTank(2).getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(2).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
@@ -76,13 +82,17 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+127, j+31, 176, 0, progress, 17);
+            this.blit(i+81, j+31, 176, 0, progress, 17);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+            } catch (Exception e){ }
+
+            try{
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
         }
@@ -90,4 +100,3 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     }
 
 }
-

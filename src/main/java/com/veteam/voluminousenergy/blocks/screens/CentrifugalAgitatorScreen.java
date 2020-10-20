@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitatorContainer> {
     private CentrifugalAgitatorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
 
     public CentrifugalAgitatorScreen(CentrifugalAgitatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -42,20 +42,20 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
-            int amount = tileEntity.tank0.get().getAmount();
-            String name = new TranslationTextComponent(tileEntity.tank0.get().getTranslationKey(), new Object[0]).getFormattedText();
+            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(0).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
         if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
-            int amount = tileEntity.tank1.get().getAmount();
-            String name = new TranslationTextComponent(tileEntity.tank1.get().getTranslationKey(), new Object[0]).getFormattedText();
+            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
         if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
-            int amount = tileEntity.tank2.get().getAmount();
-            String name = new TranslationTextComponent(tileEntity.tank2.get().getTranslationKey(), new Object[0]).getFormattedText();
+            int amount = tileEntity.getFluidStackFromTank(2).getAmount();
+            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(2).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
@@ -84,14 +84,14 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
             this.blit(i+81, j+31, 176, 0, progress, 17);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.tank0.get(),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.tank1.get(),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.tank2.get(),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
         }
