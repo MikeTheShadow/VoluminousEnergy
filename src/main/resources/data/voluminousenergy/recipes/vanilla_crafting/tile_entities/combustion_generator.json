@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "232",
+    "101",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:gears/carbon"
+    },
+    "0": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "*": {
+      "item": "voluminousenergy:primitivestirlinggenerator"
+    },
+    "1": {
+      "tag": "forge:glass_panes"
+    },
+    "2": {
+      "tag": "forge:gears/aluminum"
+    },
+    "3": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:combustion_generator"
+  }
+}

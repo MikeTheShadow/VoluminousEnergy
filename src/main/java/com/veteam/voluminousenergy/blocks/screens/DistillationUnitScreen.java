@@ -13,10 +13,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-// TODO: Actually update/implement Distillation Unit properly
 public class DistillationUnitScreen extends ContainerScreen<DistillationUnitContainer> {
     private DistillationUnitTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -48,13 +47,13 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isPointInRegion(119, 11, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
+        if (isPointInRegion(157, 11, 12, 50, mouseX, mouseY)){ // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
             String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(2).getTranslationKey(), new Object[0]).getFormattedText();
             renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
@@ -88,11 +87,11 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
             VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 11, 0, 12, 50);
             } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 11, 0, 12, 50);
             } catch (Exception e){ }
 
         }

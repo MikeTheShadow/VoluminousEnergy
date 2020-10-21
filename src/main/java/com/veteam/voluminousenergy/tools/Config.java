@@ -251,7 +251,7 @@ public class Config {
             GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Geyser Chance", 1920, 10, Integer.MAX_VALUE);
+                    .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);

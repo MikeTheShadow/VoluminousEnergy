@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "#a#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "*": {
+      "item": "minecraft:iron_block"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:compressor"
+  }
+}

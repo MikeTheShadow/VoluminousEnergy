@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "cbc"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:flint"
+    },
+    "*": {
+      "item": "minecraft:iron_block"
+    },
+    "a": {
+      "tag": "forge:gears/stone"
+    },
+    "b": {
+      "tag": "forge:gears/iron"
+    },
+    "c": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:crusher"
+  }
+}

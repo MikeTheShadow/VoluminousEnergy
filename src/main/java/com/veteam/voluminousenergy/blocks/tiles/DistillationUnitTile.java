@@ -150,7 +150,7 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
                     if (outputTank0 != null && outputTank1 != null) {
 
                         // Tank fluid amount check + tank cap checks
-                        if (inputTank.getFluidAmount() >= recipe.getInputAmount() && outputTank0.getFluidAmount() + recipe.getOutputAmount() <= tankCapacity && outputTank1.getFluidAmount() + recipe.getSecondAmount() <= tankCapacity){
+                        if (thirdOutput.getCount() < recipe.getThirdResult().getMaxStackSize() && inputTank.getFluidAmount() >= recipe.getInputAmount() && outputTank0.getFluidAmount() + recipe.getOutputAmount() <= tankCapacity && outputTank1.getFluidAmount() + recipe.getSecondAmount() <= tankCapacity){
                             // Check for power
                             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                                 if (counter == 1){
@@ -170,6 +170,19 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
                                         outputTank1.setFluid(recipe.getSecondFluid());
                                     } else {
                                         outputTank1.fill(recipe.getSecondFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                    }
+
+                                    if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
+                                        if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
+                                            thirdOutput.setCount(1);
+                                        }
+                                        ItemStack recipeStack = new ItemStack(recipe.getThirdResult().getItem(),recipe.getOutputAmount());
+                                        recipeStack.setCount(recipe.getThirdAmount());
+                                        h.insertItem(6,recipeStack.copy(),false); // CRASH the game if this is not empty!
+                                    } else { // Assuming the recipe output item is already in the output slot
+                                        ItemStack recipeStack = new ItemStack(recipe.getThirdResult().getItem(),recipe.getOutputAmount());
+                                        recipeStack.setCount(recipe.getThirdAmount()); // Simply change the stack to equal the output amount
+                                        h.insertItem(6,recipeStack,false); // Place the new output stack on top of the old one
                                     }
 
                                     counter--;

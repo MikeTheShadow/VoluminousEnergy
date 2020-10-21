@@ -28,6 +28,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation STIRLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling");
     public static final ResourceLocation CENTRIFUGAL_AGITATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_agitation");
     public static final ResourceLocation AQUEOULIZING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/aqueoulizing");
+    public static final ResourceLocation DISTILLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/distilling");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -44,6 +45,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new StirlingCategory(guiHelper));
         registration.addRecipeCategories(new CentrifugalAgitationCategory(guiHelper));
         registration.addRecipeCategories(new AqueoulizingCategory(guiHelper));
+        registration.addRecipeCategories(new DistillingCategory(guiHelper));
     }
 
     @Override
@@ -55,6 +57,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(StirlingGeneratorRecipe.RECIPE_TYPE), STIRLING_UID);
         registration.addRecipes(getRecipesOfType(CentrifugalAgitatorRecipe.RECIPE_TYPE), CENTRIFUGAL_AGITATION_UID);
         registration.addRecipes(getRecipesOfType(AqueoulizerRecipe.RECIPE_TYPE), AQUEOULIZING_UID);
+        registration.addRecipes(getRecipesOfType(DistillationRecipe.RECIPE_TYPE), DISTILLING_UID);
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
@@ -70,8 +73,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
         registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
         registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
-        registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 32, 28, 23, CENTRIFUGAL_AGITATION_UID);
-        registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 14, 12, AQUEOULIZING_UID);
+        registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 11, 28, 23, CENTRIFUGAL_AGITATION_UID);
+        registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 11, 23, AQUEOULIZING_UID);
+        registration.addRecipeClickArea(DistillationUnitScreen.class, 78,32,11,23, DISTILLING_UID);
     }
 
     @Override

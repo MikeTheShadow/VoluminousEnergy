@@ -43,11 +43,11 @@ public class DistillationUnitContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
             addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from input
-            addSlot(new VEInsertSlot(h, 2, 96,18)); // Top slot for first output
-            addSlot(new VEInsertSlot(h, 3, 96,49)); // Bottom slot for first output
-            addSlot(new VEInsertSlot(h, 4, 137,18)); // Top slot for from second output
-            addSlot(new VEInsertSlot(h, 5, 137,49)); // Bottom slot for second output
-            addSlot(new VEInsertSlot(h, 6, 178,34)); // Item Output Slot
+            addSlot(new VEInsertSlot(h, 2, 96,11)); // Top slot for first output
+            addSlot(new VEInsertSlot(h, 3, 96,42)); // Bottom slot for first output
+            addSlot(new VEInsertSlot(h, 4, 137,11)); // Top slot for from second output
+            addSlot(new VEInsertSlot(h, 5, 137,42)); // Bottom slot for second output
+            addSlot(new VEInsertSlot(h, 6, 122,64)); // Item Output Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
