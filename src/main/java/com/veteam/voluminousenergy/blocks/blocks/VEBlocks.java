@@ -18,6 +18,13 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":carbon_shielded_aluminum_machine_frame")
     public static CarbonShieldedAluminumMachineFrame CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME;
 
+    // Casings (For multiblocks)
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_machine_casing")
+    public static AluminumMachineCasingBlock ALUMINUM_MACHINE_CASING_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_machine_casing")
+    public static TitaniumMachineCasingBlock TITANIUM_MACHINE_CASING_BLOCK;
+
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;

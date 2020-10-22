@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/distillation_unit" },
+    "facing=south": { "model": "voluminousenergy:block/distillation_unit", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/distillation_unit", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/distillation_unit", "y": 90 }
+  }
+}

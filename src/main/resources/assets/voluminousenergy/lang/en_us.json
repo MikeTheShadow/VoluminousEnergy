@@ -17,6 +17,9 @@
     "block.voluminousenergy.aqueoulizer": "Aqueoulizer",
     "block.voluminousenergy.carbon_shielded_aluminum_machine_frame": "Carbon Shielded Aluminum Machine Frame",
     "block.voluminousenergy.air_compressor": "Air Compressor",
+    "block.voluminousenergy.distillation_unit": "Distillation Unit",
+    "block.voluminousenergy.aluminum_machine_casing": "Aluminum Machine Casing",
+    "block.voluminousenergy.titanium_machine_casing": "Titanium Machine Casing",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -95,5 +98,6 @@
     "item.voluminousenergy.liquefied_coal_bucket": "Liquefied Coal Bucket",
     "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket",
     "item.voluminousenergy.shredded_biomass": "Shredded Biomass",
-    "item.voluminousenergy.silver_microchip": "Silver Microchip"
+    "item.voluminousenergy.silver_microchip": "Silver Microchip",
+    "item.voluminousenergy.titanium_plate": "Titanium Plate"
 }

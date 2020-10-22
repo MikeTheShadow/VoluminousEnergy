@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
 import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
+import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 
 public class VEItems
 {
@@ -54,6 +55,7 @@ public class VEItems
     //Plates
     public static AluminumPlate ALUMINUM_PLATE = new AluminumPlate();
     public static CarbonPlate CARBON_PLATE = new CarbonPlate();
+    public static TitaniumPlate TITANIUM_PLATE = new TitaniumPlate();
 
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();

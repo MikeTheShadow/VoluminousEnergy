@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "#forge:plates/aluminum",
-    "#forge:plates/carbon"
+    "#forge:plates/carbon",
+    "#forge:plates/titanium"
   ]
 }

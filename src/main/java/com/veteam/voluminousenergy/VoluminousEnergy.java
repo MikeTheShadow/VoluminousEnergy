@@ -131,6 +131,7 @@ public class VoluminousEnergy
         //Plates
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/aluminum"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/carbon"));
+        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","plates/titanium"));
 
         //Ores
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/saltpeter"));
@@ -184,6 +185,8 @@ public class VoluminousEnergy
             //Shells and Machine Frames
             blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
             blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
+            blockRegisteryEvent.getRegistry().register(new AluminumMachineCasingBlock());
+            blockRegisteryEvent.getRegistry().register(new TitaniumMachineCasingBlock());
         }
 
         @SubscribeEvent
@@ -221,6 +224,8 @@ public class VoluminousEnergy
             //Shells
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME, properties).setRegistryName("carbon_shielded_aluminum_machine_frame"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK, properties).setRegistryName("aluminum_machine_casing"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK, properties).setRegistryName("titanium_machine_casing"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
@@ -267,6 +272,7 @@ public class VoluminousEnergy
             //Plates
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_PLATE);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_PLATE);
+            itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_PLATE);
 
             //Microchips
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
