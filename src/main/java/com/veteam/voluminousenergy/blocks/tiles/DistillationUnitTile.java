@@ -64,7 +64,8 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
 
     private int counter;
     private int length;
-
+    private byte tick = 19;
+    private boolean validity = false;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -75,9 +76,15 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
 
     @Override
     public void tick() {
-
         updateClients();
-        isMultiblockValid();
+        tick++;
+        if (tick == 20){
+            tick = 0;
+            validity = isMultiblockValid();
+        }
+        if (!(validity)) {
+            return;
+        }
         handler.ifPresent(h -> {
             ItemStack inputTop = h.getStackInSlot(0).copy();
             ItemStack inputBottom = h.getStackInSlot(1).copy();
@@ -505,7 +512,7 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
         return tankCapacity;
     }
 
-    public void isMultiblockValid (){ // TODO: Convert to boolean
+    public boolean isMultiblockValid (){
         // Get Direction
         BlockState state = this.world.getBlockState(this.pos);
         Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
@@ -513,13 +520,12 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
         if(it.isPresent()) {
             direction = it.get().getValue().toString();
         }
-        VoluminousEnergy.LOGGER.debug("DIRECTION: " + direction);
 
         // Setup range to check based on direction
         byte sX, sY, sZ, lX, lY, lZ;
 
-        if (direction == null || direction.equals("null")){ // TODO: Return false when boolean
-            return;
+        if (direction == null || direction.equals("null")){
+            return false;
         } else if (direction.equals("north")){
             sX = -1;
             sY = 0;
@@ -549,17 +555,17 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
             lY = 2;
             lZ = 1;
         } else { // Invalid Direction
-            return;
+            return false;
         }
 
-        // Tweak box based on direction
+        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
         for (final BlockPos blockPos :  BlockPos.getAllInBoxMutable(pos.add(sX,sY,sZ),pos.add(lX,lY,lZ))){
-
             final BlockState blockState = world.getBlockState(blockPos);
 
-            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){ // TODO: Actually check not place
-                world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
+            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.getBlock()){ // Fails multiblock condition
+                return false;
             }
         }
+        return true;
     }
 }
