@@ -505,47 +505,61 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
         return tankCapacity;
     }
 
-    public void isMultiblockValid (){
-        //BlockPos bottomRight = this.pos;
-        //bottomRight.offset(Direction.NORTH,1);
-        //bottomRight.add(1,0,1);
-        //VoluminousEnergy.LOGGER.debug(" X:  " + this.pos.getX() + " Y:  " + this.pos.getY() + " Z:  " + this.pos.getZ() + "\n X2: " + bottomRight.getX() + " Y2: " + bottomRight.getY() + " Z2: " + bottomRight.getZ());
+    public void isMultiblockValid (){ // TODO: Convert to boolean
+        // Get Direction
+        BlockState state = this.world.getBlockState(this.pos);
+        Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
+        String direction = "null";
+        if(it.isPresent()) {
+            direction = it.get().getValue().toString();
+        }
+        VoluminousEnergy.LOGGER.debug("DIRECTION: " + direction);
 
-        // Some sort of direction check needs to go here
+        // Setup range to check based on direction
+        byte sX, sY, sZ, lX, lY, lZ;
+
+        if (direction == null || direction.equals("null")){ // TODO: Return false when boolean
+            return;
+        } else if (direction.equals("north")){
+            sX = -1;
+            sY = 0;
+            sZ = 1;
+            lX = 1;
+            lY = 2;
+            lZ = 3;
+        } else if (direction.equals("south")){
+            sX = -1;
+            sY = 0;
+            sZ = -1;
+            lX = 1;
+            lY = 2;
+            lZ = -3;
+        } else if (direction.equals("east")){
+            sX = -1;
+            sY = 0;
+            sZ = 1;
+            lX = -3;
+            lY = 2;
+            lZ = -1;
+        } else if (direction.equals("west")){
+            sX = 1;
+            sY = 0;
+            sZ = -1;
+            lX = 3;
+            lY = 2;
+            lZ = 1;
+        } else { // Invalid Direction
+            return;
+        }
 
         // Tweak box based on direction
-        for (final BlockPos blockPos :  BlockPos.getAllInBoxMutable(pos.add(-1,0,1),pos.add(2,2,2))){
+        for (final BlockPos blockPos :  BlockPos.getAllInBoxMutable(pos.add(sX,sY,sZ),pos.add(lX,lY,lZ))){
 
             final BlockState blockState = world.getBlockState(blockPos);
 
-            //c"X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
-            //VoluminousEnergy.LOGGER.debug(this.world.getBlockState(this.pos));
-            BlockState state = this.world.getBlockState(this.pos);
-            Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
-            String direction = "null";
-            if(it.isPresent()) {
-                direction = it.get().getValue().toString();
-            }
-            VoluminousEnergy.LOGGER.debug("DIRECTION: " + direction);
-
-            //String value = this.world.getBlockState(this.pos).toString();
-            //int start = value.indexOf("facing=");
-            //String location = value.substring(start + 7,value.length() - 1);
-            //VoluminousEnergy.LOGGER.debug(location);
-            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){
+            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){ // TODO: Actually check not place
                 world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
             }
         }
-
-        /*
-        for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(-1,0,1),pos.add(2,2,2))){
-            final BlockState blockState = world.getBlockState(blockPos);
-            VoluminousEnergy.LOGGER.debug("X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
-            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){
-                world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
-            }
-
-        }
-         */
     }
 }
