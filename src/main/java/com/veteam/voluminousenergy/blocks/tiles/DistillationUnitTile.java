@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
@@ -19,6 +20,9 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +45,11 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class DistillationUnitTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -507,8 +515,23 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
 
         // Tweak box based on direction
         for (final BlockPos blockPos :  BlockPos.getAllInBoxMutable(pos.add(-1,0,1),pos.add(2,2,2))){
+
             final BlockState blockState = world.getBlockState(blockPos);
-            //VoluminousEnergy.LOGGER.debug("X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
+
+            //c"X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
+            //VoluminousEnergy.LOGGER.debug(this.world.getBlockState(this.pos));
+            BlockState state = this.world.getBlockState(this.pos);
+            Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
+            String direction = "null";
+            if(it.isPresent()) {
+                direction = it.get().getValue().toString();
+            }
+            VoluminousEnergy.LOGGER.debug("DIRECTION: " + direction);
+
+            //String value = this.world.getBlockState(this.pos).toString();
+            //int start = value.indexOf("facing=");
+            //String location = value.substring(start + 7,value.length() - 1);
+            //VoluminousEnergy.LOGGER.debug(location);
             if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){
                 world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
             }
