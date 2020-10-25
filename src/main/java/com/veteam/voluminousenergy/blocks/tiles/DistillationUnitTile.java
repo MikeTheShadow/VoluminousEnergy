@@ -1,10 +1,12 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -19,6 +21,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -66,7 +69,7 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
     public void tick() {
 
         updateClients();
-
+        isMultiblockValid();
         handler.ifPresent(h -> {
             ItemStack inputTop = h.getStackInSlot(0).copy();
             ItemStack inputBottom = h.getStackInSlot(1).copy();
@@ -492,5 +495,34 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
 
     public int getTankCapacity(){
         return tankCapacity;
+    }
+
+    public void isMultiblockValid (){
+        //BlockPos bottomRight = this.pos;
+        //bottomRight.offset(Direction.NORTH,1);
+        //bottomRight.add(1,0,1);
+        //VoluminousEnergy.LOGGER.debug(" X:  " + this.pos.getX() + " Y:  " + this.pos.getY() + " Z:  " + this.pos.getZ() + "\n X2: " + bottomRight.getX() + " Y2: " + bottomRight.getY() + " Z2: " + bottomRight.getZ());
+
+        // Some sort of direction check needs to go here
+
+        // Tweak box based on direction
+        for (final BlockPos blockPos :  BlockPos.getAllInBoxMutable(pos.add(-1,0,1),pos.add(2,2,2))){
+            final BlockState blockState = world.getBlockState(blockPos);
+            //VoluminousEnergy.LOGGER.debug("X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
+            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){
+                world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
+            }
+        }
+
+        /*
+        for (final BlockPos blockPos : BlockPos.getAllInBoxMutable(pos.add(-1,0,1),pos.add(2,2,2))){
+            final BlockState blockState = world.getBlockState(blockPos);
+            VoluminousEnergy.LOGGER.debug("X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() + " BlockState: " + blockState.getBlock());
+            if (blockState.getBlock() != VEBlocks.DISTILLATION_UNIT_BLOCK.getBlock()){
+                world.setBlockState(blockPos, VEBlocks.ALUMINUM_SHELL.getDefaultState());
+            }
+
+        }
+         */
     }
 }
