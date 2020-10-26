@@ -256,7 +256,7 @@ public class Config {
 
         // Air Compressor
         COMMON_BUILDER.comment("Air Compressor Settings").push(CATEGORY_AIR_COMPRESSOR);
-        setupAqueoulizer();
+        setupAirCompressor();
         COMMON_BUILDER.pop();
 
         // Distillation Unit
