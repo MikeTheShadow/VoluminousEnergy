@@ -76,7 +76,6 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             }
 
             if (fluidTank != null && (fluidTank.getFluidAmount() + 1000) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
-                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Pump
                 fluidPumpMethod();
             }
         });
@@ -84,6 +83,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     public void addFluidToTank() {
         if ((fluidTank.getFluidAmount() + 1000) <= tankCapacity) {
+            energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Pump
             fluidTank.fill(new FluidStack(this.pumpingFluid.getFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
         }
     }
