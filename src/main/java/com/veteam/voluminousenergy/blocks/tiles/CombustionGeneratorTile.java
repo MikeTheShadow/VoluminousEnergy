@@ -202,6 +202,11 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             oxidizerTank.readFromNBT(oxidizerNBT);
             fuelTank.readFromNBT(fuelNBT);
         });
+
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
+        energyRate = tag.getInt("energy_rate");
+
         super.read(tag);
     }
 
@@ -227,6 +232,10 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             fuelTank.writeToNBT(fuelNBT);
             tag.put("fuelTank", fuelNBT);
         });
+
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
+        tag.putInt("energy_rate", energyRate);
 
         return super.write(tag);
     }

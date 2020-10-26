@@ -204,11 +204,11 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
                                     }
 
                                     counter--;
-                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); // TODO: Config for Distillation Unit
+                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.DISTILLATION_UNIT_POWER_USAGE.get()));
                                     this.markDirty();
                                 } else if (counter > 0){
                                     counter--;
-                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get())); // TODO: Config for Distillation Unit
+                                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.DISTILLATION_UNIT_POWER_USAGE.get()));
                                 } else {
                                     counter = recipe.getProcessTime();
                                     length = counter;
@@ -459,8 +459,8 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
         };
     }
 
-    private IEnergyStorage createEnergy() { // TODO: Config for Distillation Unit
-        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
+    private IEnergyStorage createEnergy() {
+        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull

@@ -27,7 +27,7 @@ public class PumpBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.AQUEOULIZER_HARVEST_LEVEL.get()) // TODO: Config for Pump
+                .harvestLevel(Config.PUMP_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("pump");
@@ -36,7 +36,7 @@ public class PumpBlock extends FaceableBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new PumpTile(); // TODO: Tile Entity for the Pump
+        return new PumpTile();
     }
 
     @Override

@@ -69,6 +69,9 @@ public class Config {
     public static final String CATEGORY_STIRLING_GENERATOR = "Stirling Generator";
     public static final String CATEGORY_COMBUSTION_GENERATOR = "Combustion Generator";
     public static final String CATEGORY_AQUEOULIZER = "Aqueoulizer";
+    public static final String CATEGORY_AIR_COMPRESSOR = "Air Compressor";
+    public static final String CATEGORY_DISTILLATION_UNIT = "Distillation Unit";
+    public static final String CATEGORY_PUMP = "Pump";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -184,6 +187,24 @@ public class Config {
     public static ForgeConfigSpec.IntValue AQUEOULIZER_TRANSFER;
     public static ForgeConfigSpec.IntValue AQUEOULIZER_HARVEST_LEVEL;
 
+    // Air Compressor Variables
+    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_HARVEST_LEVEL;
+
+    // Distillation Unit Variables
+    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_MAX_POWER;
+    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_TRANSFER;
+    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_HARVEST_LEVEL;
+
+    // Pump Variables
+    public static ForgeConfigSpec.IntValue PUMP_MAX_POWER;
+    public static ForgeConfigSpec.IntValue PUMP_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue PUMP_TRANSFER;
+    public static ForgeConfigSpec.IntValue PUMP_HARVEST_LEVEL;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         COMMON_BUILDER.pop();
@@ -231,6 +252,21 @@ public class Config {
         // Aqueoulizer
         COMMON_BUILDER.comment("Aqueoulizer Settings").push(CATEGORY_AQUEOULIZER);
         setupAqueoulizer();
+        COMMON_BUILDER.pop();
+
+        // Air Compressor
+        COMMON_BUILDER.comment("Air Compressor Settings").push(CATEGORY_AIR_COMPRESSOR);
+        setupAqueoulizer();
+        COMMON_BUILDER.pop();
+
+        // Distillation Unit
+        COMMON_BUILDER.comment("Distillation Unit Settings").push(CATEGORY_DISTILLATION_UNIT);
+        setupDistillationUnit();
+        COMMON_BUILDER.pop();
+
+        // Pump
+        COMMON_BUILDER.comment("Pump Settings").push(CATEGORY_PUMP);
+        setupPump();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -405,6 +441,39 @@ public class Config {
         AQUEOULIZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Aqueoulizer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         AQUEOULIZER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupAirCompressor(){
+        AIR_COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Air Compressor to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        AIR_COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Air Compressor")
+                .defineInRange("Power Consumption", 24, 0, Integer.MAX_VALUE);
+        AIR_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Air Compressor")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        AIR_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupDistillationUnit(){
+        DISTILLATION_UNIT_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Distillation Unit to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        DISTILLATION_UNIT_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Distillation Unit")
+                .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
+        DISTILLATION_UNIT_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Distillation Unit")
+                .defineInRange("Maximum Transfer", 2500, 0, Integer.MAX_VALUE);
+        DISTILLATION_UNIT_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupPump(){
+        PUMP_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Distillation Unit to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        PUMP_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Distillation Unit")
+                .defineInRange("Power Consumption", 16, 0, Integer.MAX_VALUE);
+        PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Distillation Unit")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        PUMP_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

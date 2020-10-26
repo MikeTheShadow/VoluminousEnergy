@@ -2,28 +2,20 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import jdk.nashorn.internal.ir.BlockStatement;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -42,7 +34,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,7 +71,6 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
                 }
             }
 
-            // TODO: Check/use power
             if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity && counter == 20 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 // Check blocks around the Air Compressor to see if it's air
                 int x = this.pos.getX();
@@ -122,7 +112,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
                 }
 
             } else if (airTank != null && (airTank.getFluidAmount() + 250) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
-                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Air Compressor
+                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.AIR_COMPRESSOR_POWER_USAGE.get()));
             }
         });
         if(counter == 20) counter = 0;
@@ -172,7 +162,24 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         return super.write(tag);
     }
 
-    // TODO: Fluid handler
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.read(pkt.getNbtCompound());
+    }
+
+
     private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
@@ -248,7 +255,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get()); //TODO: Configs
+        return new VEEnergyStorage(Config.AIR_COMPRESSOR_MAX_POWER.get(), Config.AIR_COMPRESSOR_TRANSFER.get());
     }
 
     @Nonnull

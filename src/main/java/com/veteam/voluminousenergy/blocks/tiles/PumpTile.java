@@ -14,6 +14,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -66,7 +68,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             ItemStack slotStack = h.getStackInSlot(0).copy();
 
             // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
-            if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) {
+            if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) { // TODO: Consider 2 slot system like the Combustion Generator/Distillation Unit
                 if (slotStack.getItem() == Items.BUCKET && fluidTank.getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
                     ItemStack bucketStack = new ItemStack(fluidTank.getFluid().getRawFluid().getFilledBucket(), 1);
                     fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -77,13 +79,14 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
             if (fluidTank != null && (fluidTank.getFluidAmount() + 1000) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 fluidPumpMethod();
+                markDirty();
             }
         });
     }
 
     public void addFluidToTank() {
         if ((fluidTank.getFluidAmount() + 1000) <= tankCapacity) {
-            energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get())); // TODO: Config for Pump
+            energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.PUMP_POWER_USAGE.get()));
             fluidTank.fill(new FluidStack(this.pumpingFluid.getFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
         }
     }
@@ -96,10 +99,15 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
-        fluid.ifPresent(f -> {
-            CompoundNBT airNBT = tag.getCompound("tank");
-            fluidTank.readFromNBT(airNBT);
-        });
+        CompoundNBT airNBT = tag.getCompound("tank");
+        fluidTank.readFromNBT(airNBT);
+
+        pumpingFluid = fluidTank.getFluid().getRawFluid();
+
+        lX = tag.getInt("lx");
+        lY = tag.getInt("ly");
+        lZ = tag.getInt("lz");
+        initDone = tag.getBoolean("init_done");
 
         super.read(tag);
     }
@@ -115,17 +123,36 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             tag.put("energy", compound);
         });
 
+        tag.putInt("lx", lX);
+        tag.putInt("ly", lY);
+        tag.putInt("lz", lZ);
+        tag.putBoolean("init_done", initDone);
+
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT tankNBT = new CompoundNBT();
-            fluidTank.writeToNBT(tankNBT);
-            tag.put("tank", tankNBT);
-        });
+        CompoundNBT tankNBT = new CompoundNBT();
+        fluidTank.writeToNBT(tankNBT);
+        tag.put("tank", tankNBT);
 
         return super.write(tag);
     }
 
-    // TODO: Fluid handler
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.read(pkt.getNbtCompound());
+    }
+
     private IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
@@ -201,7 +228,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get()); //TODO: Configs
+        return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 
     @Nonnull

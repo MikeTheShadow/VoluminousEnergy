@@ -39,7 +39,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for air compressor
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank

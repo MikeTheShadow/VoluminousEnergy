@@ -27,7 +27,7 @@ public class AirCompressorBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.AQUEOULIZER_HARVEST_LEVEL.get()) // TODO: Config for Air Compressor
+                .harvestLevel(Config.AIR_COMPRESSOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("air_compressor");

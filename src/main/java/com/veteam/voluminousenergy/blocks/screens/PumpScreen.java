@@ -16,7 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class PumpScreen extends ContainerScreen<PumpContainer> {
 
     private PumpTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png"); // TODO: Refactor Screen for 2 slots and/or separate GUI file
 
     public PumpScreen(PumpContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -39,7 +39,7 @@ public class PumpScreen extends ContainerScreen<PumpContainer> {
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for Pump
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.PUMP_HARVEST_LEVEL.get() + " FE", mouseX, mouseY);
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
