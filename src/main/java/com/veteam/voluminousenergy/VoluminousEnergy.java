@@ -173,6 +173,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new AqueoulizerBlock());
             blockRegisteryEvent.getRegistry().register(new AirCompressorBlock());
             blockRegisteryEvent.getRegistry().register(new DistillationUnitBlock());
+            blockRegisteryEvent.getRegistry().register(new PumpBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -211,6 +212,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.AQUEOULIZER_BLOCK,properties).setRegistryName("aqueoulizer"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.AIR_COMPRESSOR_BLOCK,properties).setRegistryName("air_compressor"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DISTILLATION_UNIT_BLOCK,properties).setRegistryName("distillation_unit"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PUMP_BLOCK,properties).setRegistryName("pump"));
 
             //True Blocks
             //Ores
@@ -292,6 +294,7 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
             event.getRegistry().register(TileEntityType.Builder.create(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null).setRegistryName("air_compressor"));
             event.getRegistry().register(TileEntityType.Builder.create(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null).setRegistryName("distillation_unit"));
+            event.getRegistry().register(TileEntityType.Builder.create(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
         }
 
         @SubscribeEvent
@@ -351,6 +354,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new DistillationUnitContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("distillation_unit"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new PumpContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("pump"));
         }
 
         @SubscribeEvent

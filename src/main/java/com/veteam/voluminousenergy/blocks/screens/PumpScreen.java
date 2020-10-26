@@ -2,8 +2,8 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
+import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
+import com.veteam.voluminousenergy.blocks.tiles.PumpTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import net.minecraft.client.Minecraft;
@@ -13,14 +13,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer> {
+public class PumpScreen extends ContainerScreen<PumpContainer> {
 
-    private AirCompressorTile tileEntity;
+    private PumpTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
 
-    public AirCompressorScreen(AirCompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public PumpScreen(PumpContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (AirCompressorTile) screenContainer.tileEntity;
+        tileEntity = (PumpTile) screenContainer.tileEntity;
     }
 
     @Override
@@ -32,14 +32,14 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
+        drawString(Minecraft.getInstance().fontRenderer, "Pump",8,6,0xffffff);
         this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for air compressor
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for Pump
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank

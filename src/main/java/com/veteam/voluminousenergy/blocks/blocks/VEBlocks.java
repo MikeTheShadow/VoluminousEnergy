@@ -135,6 +135,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
     public static ContainerType<DistillationUnitContainer> DISTILLATION_UNIT_CONTAINER;
 
+    // Pump
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static PumpBlock PUMP_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static TileEntityType<PumpTile> PUMP_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static ContainerType<PumpContainer> PUMP_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;
