@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:fuel_combustion",
   "ingredient": {
-    "item": "voluminousenergy:hydrazine_bucket",
+    "item": "voluminousenergy:nitroglycerin_bucket",
     "volumetric_energy": 374400
   }
 }

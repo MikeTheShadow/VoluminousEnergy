@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
@@ -20,9 +18,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -45,11 +41,9 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class DistillationUnitTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
@@ -293,6 +287,7 @@ public class DistillationUnitTile extends VoluminousTileEntity implements ITicka
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(pkt.getNbtCompound());
     }
 

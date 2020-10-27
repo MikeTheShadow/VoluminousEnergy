@@ -239,6 +239,7 @@ public class AqueoulizerTile extends VoluminousTileEntity implements ITickableTi
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(pkt.getNbtCompound());
     }
 

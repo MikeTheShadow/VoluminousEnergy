@@ -13,6 +13,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -121,6 +123,11 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
             tag.put("energy",compound);
         });
         return super.write(tag);
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
     }
 
     private ItemStackHandler createHandler() {

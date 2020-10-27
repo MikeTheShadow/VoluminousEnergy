@@ -1,16 +1,11 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -151,15 +146,15 @@ public class VEFluids {
     public static RegistryObject<Item> GASOLINE_BUCKET_REG = VE_FLUID_ITEMS.register("gasoline_bucket",
             Gasoline::GasolineBucket);
 
-    // Hydrazine
-    public static RegistryObject<FlowingFluid> HYDRAZINE_REG = VE_FLUIDS.register("hydrazine",
-            Hydrazine::HydrazineFluid);
-    public static RegistryObject<FlowingFluid> FLOWING_HYDRAZINE_REG = VE_FLUIDS.register("flowing_hydrazine",
-            Hydrazine::FlowingHydrazineFluid);
-    public static RegistryObject<FlowingFluidBlock> FLOWING_HYDRAZINE_BLOCK_REG = VE_FLUID_BLOCKS.register("hydrazine_block",
-            Hydrazine::FlowingHydrazineBlock);
-    public static RegistryObject<Item> HYDRAZINE_BUCKET_REG = VE_FLUID_ITEMS.register("hydrazine_bucket",
-            Hydrazine::HydrazineBucket);
+    // Nitroglycerin
+    public static RegistryObject<FlowingFluid> NITROGLYCERIN_REG = VE_FLUIDS.register("nitroglycerin",
+            Nitroglycerin::NitroglycerinFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_NITROGLYCERIN_REG = VE_FLUIDS.register("flowing_nitroglycerin",
+            Nitroglycerin::FlowingNitroglycerinFluid);
+    public static RegistryObject<FlowingFluidBlock> FLOWING_NITROGLYCERIN_BLOCK_REG = VE_FLUID_BLOCKS.register("nitroglycerin_block",
+            Nitroglycerin::FlowingNitroglycerinBlock);
+    public static RegistryObject<Item> NITROGLYCERIN_BUCKET_REG = VE_FLUID_ITEMS.register("nitroglycerin_bucket",
+            Nitroglycerin::NitroglycerinBucket);
 
     // Light Fuel
     public static RegistryObject<FlowingFluid> LIGHT_FUEL_REG = VE_FLUIDS.register("light_fuel",

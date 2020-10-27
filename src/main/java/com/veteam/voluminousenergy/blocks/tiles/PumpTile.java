@@ -150,6 +150,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(pkt.getNbtCompound());
     }
 
@@ -275,11 +276,11 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
                 this.pumpingFluid = this.world.getBlockState(this.getPos().add(0, -1, 0)).getFluidState().getFluid();
                 initDone = true;
             } catch (Exception e){
-                VoluminousEnergy.LOGGER.debug("Likely not fluid! " + this.world.getBlockState(this.getPos().add(0, -1, 0)));
+                //VoluminousEnergy.LOGGER.debug("Likely not fluid! " + this.world.getBlockState(this.getPos().add(0, -1, 0)));
                 return;
             }
         }
-        VoluminousEnergy.LOGGER.debug("lX: " + lX + " lY: " + lY + " lZ: " + lZ + " getPos: " + this.getPos() + " getPos After modif: " + this.getPos().add(lX,lY,lZ));
+        //VoluminousEnergy.LOGGER.debug("lX: " + lX + " lY: " + lY + " lZ: " + lZ + " getPos: " + this.getPos() + " getPos After modif: " + this.getPos().add(lX,lY,lZ));
         if (lX < 22){
             lX++;
             if(this.pumpingFluid.isEquivalentTo(this.world.getBlockState(this.getPos().add(lX,lY,lZ)).getFluidState().getFluid())){
@@ -302,8 +303,6 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
                 this.world.setBlockState(this.getPos().add(lX,lY,lZ),Blocks.AIR.getDefaultState());
                 addFluidToTank();
             }
-        } else {
-            VoluminousEnergy.LOGGER.debug("DONE");
         }
     }
 }

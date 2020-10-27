@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.VESidedItemManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -14,6 +13,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -355,6 +356,11 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     private IEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
     }
 
     @Nonnull

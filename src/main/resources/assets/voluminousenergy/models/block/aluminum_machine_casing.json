@@ -2,11 +2,11 @@
   "parent": "block/cube",
   "textures": {
     "particle": "minecraft:block/iron_block",
-    "down": "voluminousenergy:block/aluminum_machine_casing_bottom",
-    "up": "voluminousenergy:block/aluminum_machine_casing_top",
-    "east": "voluminousenergy:block/aluminum_machine_casing_side",
-    "west": "voluminousenergy:block/aluminum_machine_casing_side",
-    "north": "voluminousenergy:block/aluminum_machine_casing_front",
-    "south": "voluminousenergy:block/aluminum_machine_casing_side"
+    "down": "voluminousenergy:block/aluminum_machine_casing",
+    "up": "voluminousenergy:block/aluminum_machine_casing",
+    "east": "voluminousenergy:block/aluminum_machine_casing",
+    "west": "voluminousenergy:block/aluminum_machine_casing",
+    "north": "voluminousenergy:block/aluminum_machine_casing",
+    "south": "voluminousenergy:block/aluminum_machine_casing"
   }
 }

@@ -1,8 +1,5 @@
 {
   "variants": {
-    "facing=north": { "model": "voluminousenergy:block/aluminum_machine_casing" },
-    "facing=south": { "model": "voluminousenergy:block/aluminum_machine_casing", "y": 180 },
-    "facing=west": { "model": "voluminousenergy:block/aluminum_machine_casing", "y": 270 },
-    "facing=east": { "model": "voluminousenergy:block/aluminum_machine_casing", "y": 90 }
+    "": {"model": "voluminousenergy:block/aluminum_machine_casing"}
   }
 }

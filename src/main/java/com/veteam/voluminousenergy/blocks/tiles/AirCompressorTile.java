@@ -176,6 +176,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(pkt.getNbtCompound());
     }
 

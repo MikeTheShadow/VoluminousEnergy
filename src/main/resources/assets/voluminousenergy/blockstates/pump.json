@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/pump" },
+    "facing=south": { "model": "voluminousenergy:block/pump", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/pump", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/pump", "y": 90 }
+  }
+}
