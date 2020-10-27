@@ -19,9 +19,10 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class CentrifugalAgitatorRecipe extends VERecipe {
-    public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = new IRecipeType<CentrifugalAgitatorRecipe>() {
+public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
+    public static final IRecipeType<VERecipeFluid> RECIPE_TYPE = new IRecipeType<VERecipeFluid>() {
         @Override
         public String toString() {
             return RecipeConstants.CENTRIFUGAL_AGITATING.toString();
@@ -42,7 +43,16 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public int outputAmount;
     public int secondAmount;
 
-    public CentrifugalAgitatorRecipe(ResourceLocation recipeId){
+    public CentrifugalAgitatorRecipeFluid() {
+        recipeId = null;
+    }
+
+    @Override
+    public ArrayList<Item> getIngredientList() {
+        return ingredientList;
+    }
+
+    public CentrifugalAgitatorRecipeFluid(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
 
@@ -54,7 +64,16 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     public ItemStack getSecondResult(){return secondResult;}
 
-    public FluidStack getSecondFluid(){
+    public List<FluidStack> getOutputFluids() {
+        List<FluidStack> f = new ArrayList<>();
+        f.add(getOutputFluid());
+        f.add(getSecondFluid());
+        return f;
+    }
+
+
+
+    private FluidStack getSecondFluid(){
         if (secondResult.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), secondAmount);
         }
@@ -98,19 +117,24 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public IRecipeType<VERecipeFluid> getType(){return RECIPE_TYPE;}
 
+    @Override
     public int getOutputAmount() {return outputAmount;}
+
+    @Override
+    public int getInputAmount() {return inputAmount;}
 
     public int getSecondAmount(){return secondAmount;}
 
+    @Override
     public int getProcessTime() { return processTime; }
 
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipeFluid> {
         @Override
-        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, JsonObject json) {
-            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
+        public CentrifugalAgitatorRecipeFluid read(ResourceLocation recipeId, JsonObject json) {
+            CentrifugalAgitatorRecipeFluid recipe = new CentrifugalAgitatorRecipeFluid(recipeId);
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
@@ -138,8 +162,8 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
-            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
+        public CentrifugalAgitatorRecipeFluid read(ResourceLocation recipeId, PacketBuffer buffer){
+            CentrifugalAgitatorRecipeFluid recipe = new CentrifugalAgitatorRecipeFluid((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItemStack();
@@ -152,7 +176,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
+        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipeFluid recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItemStack(recipe.getResult());
