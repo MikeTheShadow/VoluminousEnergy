@@ -158,7 +158,6 @@ public class DistillationRecipe extends VEFluidRecipe {
         return l;
     }
 
-
     @Override
     public int getOutputAmount() {return outputAmount;}
 

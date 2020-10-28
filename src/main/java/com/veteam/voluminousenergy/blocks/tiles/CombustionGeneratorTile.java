@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -134,7 +135,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                 ItemStack fuelStack = new ItemStack(fuelTank.getFluid().getRawFluid().getFilledBucket(),1);
 
                 CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
-                CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+                VEFluidRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
 
                 if (oxidizerRecipe != null && fuelRecipe != null){
                     int amount = 250;
@@ -146,7 +147,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                         } else {
                             counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get()/4;
                         }
-                        energyRate = fuelRecipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+                        energyRate = fuelRecipe.getProcessTime()/oxidizerRecipe.getProcessTime(); // Process time in fuel recipe is really volumetric energy
                         length = counter;
                         markDirty();
                     }
@@ -296,7 +297,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     return oxidizerTank != null && oxidizerTank.isFluidValid(stack);
                 } else if (tank == 1) {
                     ItemStack fuelStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
-                    CombustionGeneratorFuelRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+                    VEFluidRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
                     if (fuelRecipe == null){
                         return false;
                     }
@@ -356,7 +357,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     CombustionGeneratorOxidizerRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if(slot == 2 || slot == 3) {
-                    CombustionGeneratorFuelRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 }
                 return false;

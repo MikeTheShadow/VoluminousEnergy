@@ -23,6 +23,7 @@ public class ClientProxy implements IProxy {
         ScreenManager.registerFactory(VEBlocks.AIR_COMPRESSOR_CONTAINER, AirCompressorScreen::new);
         ScreenManager.registerFactory(VEBlocks.DISTILLATION_UNIT_CONTAINER, DistillationUnitScreen::new);
         ScreenManager.registerFactory(VEBlocks.PUMP_CONTAINER, PumpScreen::new);
+        ScreenManager.registerFactory(VEBlocks.GAS_FIRED_FURNACE_CONTAINER, GasFiredFurnaceScreen::new);
     }
 
     @Override
