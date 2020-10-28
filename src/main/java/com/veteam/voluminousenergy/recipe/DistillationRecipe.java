@@ -133,7 +133,7 @@ public class DistillationRecipe extends VEFluidRecipe {
     @Override
     public List<FluidStack> getFluids() {
         List<FluidStack> f = new ArrayList<>();
-        f.add(getInputFluid());
+        f.add(null);
         f.add(getOutputFluid());
         f.add(getSecondFluid());
         return f;
