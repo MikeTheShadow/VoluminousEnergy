@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.recipe;
 
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,13 +14,13 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VERecipeFluid implements IRecipe<IInventory> {
+public abstract class VEFluidRecipe implements IRecipe<IInventory> {
 
     public Ingredient ingredient;
     public int ingredientCount;
     public ItemStack result;
 
-    public VERecipeFluid() {
+    public VEFluidRecipe() {
 
     }
 
@@ -66,7 +65,7 @@ public abstract class VERecipeFluid implements IRecipe<IInventory> {
         return null;
     }
 
-    public IRecipeType<VERecipeFluid> getType(){
+    public IRecipeType<VEFluidRecipe> getType(){
         return null;
     }
 
@@ -77,6 +76,8 @@ public abstract class VERecipeFluid implements IRecipe<IInventory> {
     public List<FluidStack> getOutputFluids() {
         return null;
     }
+
+    public abstract ItemStack getSecondResult();
 
     public int getInputAmount() {
         return -1;
@@ -89,6 +90,8 @@ public abstract class VERecipeFluid implements IRecipe<IInventory> {
     public FluidStack getOutputFluid() {
         return null;
     }
+
+    public abstract int getSecondAmount();
 
     public int getProcessTime() {
         return -1;

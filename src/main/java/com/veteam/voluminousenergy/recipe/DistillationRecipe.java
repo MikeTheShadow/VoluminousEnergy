@@ -22,8 +22,8 @@ import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 
-public class DistillationRecipe extends VERecipe {
-    public static final IRecipeType<DistillationRecipe> RECIPE_TYPE = new IRecipeType<DistillationRecipe>() {
+public class DistillationRecipe extends VEFluidRecipe {
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
         @Override
         public String toString() {
             return RecipeConstants.DISTILLING.toString();
@@ -50,14 +50,23 @@ public class DistillationRecipe extends VERecipe {
         this.recipeId = recipeId;
     }
 
+    public DistillationRecipe() {
+        recipeId = null;
+    }
+
+    @Override
     public Ingredient getIngredient(){ return ingredient;}
 
+    @Override
     public int getIngredientCount(){ return ingredientCount;}
 
+    @Override
     public ItemStack getResult() {return result;}
 
+    @Override
     public ItemStack getSecondResult(){return secondResult;}
 
+    @Override
     public int getInputAmount(){ return inputAmount; }
 
     public FluidStack getSecondFluid(){
@@ -80,6 +89,7 @@ public class DistillationRecipe extends VERecipe {
         }
         return FluidStack.EMPTY;
     }
+
 
     public ItemStack getThirdResult(){
         return thirdResult;
@@ -112,12 +122,15 @@ public class DistillationRecipe extends VERecipe {
     public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
+    @Override
     public int getOutputAmount() {return outputAmount;}
 
+    @Override
     public int getSecondAmount(){return secondAmount;}
 
+    @Override
     public int getProcessTime() { return processTime; }
 
 

@@ -21,8 +21,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
-    public static final IRecipeType<VERecipeFluid> RECIPE_TYPE = new IRecipeType<VERecipeFluid>() {
+public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
         @Override
         public String toString() {
             return RecipeConstants.CENTRIFUGAL_AGITATING.toString();
@@ -43,7 +43,7 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
     public int outputAmount;
     public int secondAmount;
 
-    public CentrifugalAgitatorRecipeFluid() {
+    public CentrifugalAgitatorRecipe() {
         recipeId = null;
     }
 
@@ -52,7 +52,7 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
         return ingredientList;
     }
 
-    public CentrifugalAgitatorRecipeFluid(ResourceLocation recipeId){
+    public CentrifugalAgitatorRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
 
@@ -70,8 +70,6 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
         f.add(getSecondFluid());
         return f;
     }
-
-
 
     private FluidStack getSecondFluid(){
         if (secondResult.getItem() instanceof BucketItem){
@@ -117,7 +115,7 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
     public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<VERecipeFluid> getType(){return RECIPE_TYPE;}
+    public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
     @Override
     public int getOutputAmount() {return outputAmount;}
@@ -131,10 +129,10 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
     public int getProcessTime() { return processTime; }
 
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipeFluid> {
+    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipe> {
         @Override
-        public CentrifugalAgitatorRecipeFluid read(ResourceLocation recipeId, JsonObject json) {
-            CentrifugalAgitatorRecipeFluid recipe = new CentrifugalAgitatorRecipeFluid(recipeId);
+        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, JsonObject json) {
+            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
@@ -162,8 +160,8 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipeFluid read(ResourceLocation recipeId, PacketBuffer buffer){
-            CentrifugalAgitatorRecipeFluid recipe = new CentrifugalAgitatorRecipeFluid((recipeId));
+        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+            CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItemStack();
@@ -176,7 +174,7 @@ public class CentrifugalAgitatorRecipeFluid extends VERecipeFluid {
         }
 
         @Override
-        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipeFluid recipe){
+        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItemStack(recipe.getResult());

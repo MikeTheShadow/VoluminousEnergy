@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipeFluid;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CentrifugalAgitationCategory implements IRecipeCategory<CentrifugalAgitatorRecipeFluid> {
+public class CentrifugalAgitationCategory implements IRecipeCategory<CentrifugalAgitatorRecipe> {
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
@@ -43,8 +43,8 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     }
 
     @Override
-    public Class<? extends CentrifugalAgitatorRecipeFluid> getRecipeClass() {
-        return CentrifugalAgitatorRecipeFluid.class;
+    public Class<? extends CentrifugalAgitatorRecipe> getRecipeClass() {
+        return CentrifugalAgitatorRecipe.class;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     }
 
     @Override
-    public void draw(CentrifugalAgitatorRecipeFluid recipe, double mouseX, double mouseY) {
+    public void draw(CentrifugalAgitatorRecipe recipe, double mouseX, double mouseY) {
         arrow.draw(24, 12);
         emptyArrow.draw(24,12);
         slotDrawable.draw(2,10);
@@ -77,7 +77,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     }
 
     @Override
-    public void setIngredients(CentrifugalAgitatorRecipeFluid recipe, IIngredients ingredients) {
+    public void setIngredients(CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
 
         ArrayList<ItemStack> inputList = new ArrayList<>();
         for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
@@ -95,7 +95,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalAgitatorRecipeFluid recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, false, 2, 10);
         itemStacks.init(1, false, 48, 10);

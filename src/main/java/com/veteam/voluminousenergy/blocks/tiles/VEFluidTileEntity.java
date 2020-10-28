@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.recipe.VERecipeFluid;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.fluid.Fluid;
@@ -87,7 +86,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
     }
 
 
-    public IFluidHandler createFluidHandler(VERecipeFluid veRecipe, RelationalTank... relationalTanks) {
+    public IFluidHandler createFluidHandler(VEFluidRecipe veRecipe, RelationalTank... relationalTanks) {
 
         return new IFluidHandler() {
             @Override
@@ -126,12 +125,12 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                 for(RelationalTank t : relationalTanks) {
                     if(t.getTankType() == TankType.INPUT) {
                         ItemStack bucketStack = new ItemStack(stack.getRawFluid().getFilledBucket());
-                        VERecipeFluid recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(bucketStack), world).orElse(null);
+                        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(bucketStack), world).orElse(null);
                         return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
                     } else {
                         AtomicBoolean recipeHit = new AtomicBoolean(false);
                         veRecipe.getIngredientList().forEach(i -> {
-                            VERecipeFluid recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
+                            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
                             if (recipe != null && recipe.getOutputFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())){ // In theory should never be null
                                 recipeHit.set(true);
                             }
@@ -180,6 +179,10 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                 return FluidStack.EMPTY;
             }
         };
+    }
+
+    public int getTankCapacity(){
+        return TANK_CAPACITY;
     }
 
 }

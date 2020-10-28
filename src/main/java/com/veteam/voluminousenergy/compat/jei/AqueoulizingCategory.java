@@ -71,8 +71,8 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         slotDrawable.draw(72,10);
 
         Minecraft.getInstance().fontRenderer.drawString("mB:", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.inputAmount + "", 24, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.outputAmount + "", 72, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.getInputAmount() + "", 24, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.getOutputAmount() + "", 72, 32,0x606060);
     }
 
     @Override

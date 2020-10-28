@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
@@ -20,8 +21,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class AqueoulizerRecipe extends VERecipe {
-    public static final IRecipeType<AqueoulizerRecipe> RECIPE_TYPE = new IRecipeType<AqueoulizerRecipe>() {
+public class AqueoulizerRecipe extends VEFluidRecipe {
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
         @Override
         public String toString() {
             return RecipeConstants.AQUEOULIZING.toString();
@@ -39,19 +40,27 @@ public class AqueoulizerRecipe extends VERecipe {
 
     public ItemStack inputFluid;
     public ItemStack result;
-    public int inputAmount;
-    public int outputAmount;
+    private int inputAmount;
+    private int outputAmount;
+
+    public AqueoulizerRecipe() {
+        recipeId = null;
+    }
 
     public AqueoulizerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
 
+    @Override
     public Ingredient getIngredient(){ return ingredient;}
 
+    @Override
     public int getIngredientCount(){ return ingredientCount;}
 
+    @Override
     public ItemStack getResult() {return result;}
 
+    @Override
     public FluidStack getOutputFluid(){
         if (result.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
@@ -59,6 +68,7 @@ public class AqueoulizerRecipe extends VERecipe {
         return FluidStack.EMPTY;
     }
 
+    @Override
     public FluidStack getInputFluid(){
         if (inputFluid.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
@@ -89,11 +99,21 @@ public class AqueoulizerRecipe extends VERecipe {
     public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
+    @Override
     public int getOutputAmount() {return outputAmount;}
 
+    @Override
     public int getProcessTime() { return processTime; }
+
+    @Override
+    public int getInputAmount(){
+        return inputAmount;
+    }
+
+
+
 
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AqueoulizerRecipe> {

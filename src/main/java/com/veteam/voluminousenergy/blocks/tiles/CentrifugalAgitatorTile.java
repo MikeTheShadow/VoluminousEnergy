@@ -2,20 +2,17 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipeFluid;
-import com.veteam.voluminousenergy.recipe.VERecipeFluid;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -32,15 +29,12 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
@@ -92,7 +86,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         // Main Fluid Processing occurs here
         if (inputTank != null) {
             ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
-            VERecipeFluid recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipeFluid.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
+            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
             if (recipe != null) {
                 if (outputTank0 != null && outputTank1 != null) {
 
@@ -244,7 +238,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     private IFluidHandler createFluid() {
-        return createFluidHandler(new CentrifugalAgitatorRecipeFluid(), inputTank,outputTank0,outputTank1);
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank,outputTank0,outputTank1);
     }
 
 
