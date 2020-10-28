@@ -21,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DistillationRecipe extends VEFluidRecipe {
     public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
@@ -63,7 +64,6 @@ public class DistillationRecipe extends VEFluidRecipe {
     @Override
     public ItemStack getResult() {return result;}
 
-    @Override
     public ItemStack getSecondResult(){return secondResult;}
 
     @Override
@@ -82,6 +82,7 @@ public class DistillationRecipe extends VEFluidRecipe {
         }
         return FluidStack.EMPTY;
     }
+
 
     public FluidStack getInputFluid(){
         if (inputFluid.getItem() instanceof BucketItem){
@@ -125,10 +126,41 @@ public class DistillationRecipe extends VEFluidRecipe {
     public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
     @Override
-    public int getOutputAmount() {return outputAmount;}
+    public ArrayList<Item> getIngredientList() {
+        return ingredientList;
+    }
 
     @Override
-    public int getSecondAmount(){return secondAmount;}
+    public List<FluidStack> getFluids() {
+        List<FluidStack> f = new ArrayList<>();
+        f.add(getInputFluid());
+        f.add(getOutputFluid());
+        f.add(getSecondFluid());
+        return f;
+    }
+
+    @Override
+    public List<ItemStack> getResults() {
+        List<ItemStack> s = new ArrayList<>();
+        s.add(getResult());
+        s.add(getSecondResult());
+        s.add(getThirdResult());
+        return s;
+    }
+
+    @Override
+    public List<Integer> getAmounts() {
+        List<Integer> l = new ArrayList<>();
+        l.add(getInputAmount());
+        l.add(getOutputAmount());
+        l.add(secondAmount);
+        l.add(getThirdAmount());
+        return l;
+    }
+
+
+    @Override
+    public int getOutputAmount() {return outputAmount;}
 
     @Override
     public int getProcessTime() { return processTime; }

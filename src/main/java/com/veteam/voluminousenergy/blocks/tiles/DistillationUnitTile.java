@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -12,10 +11,8 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -23,7 +20,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.IProperty;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -38,7 +34,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,7 +118,10 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                 if (outputTank0 != null && outputTank1 != null) {
 
                     // Tank fluid amount check + tank cap checks
-                    if (thirdOutput.getCount() < recipe.getThirdResult().getMaxStackSize() && inputTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount() + recipe.getSecondAmount() <= tankCapacity){
+                    if (thirdOutput.getCount() < recipe.getResults().get(2).getMaxStackSize() && inputTank.getTank().getFluidAmount()
+                            >= recipe.getInputAmount() && outputTank0.getTank().getFluidAmount()
+                            + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount()
+                            + recipe.getAmounts().get(2) <= tankCapacity){
                         // Check for power
                         if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                             if (counter == 1){
@@ -139,22 +137,22 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                                 }
 
                                 // Second Output Tank
-                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getOutputFluids().get(1).getRawFluid()){
-                                    outputTank1.getTank().setFluid(recipe.getOutputFluids().get(1));
+                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getFluids().get(1).getRawFluid()){
+                                    outputTank1.getTank().setFluid(recipe.getFluids().get(1));
                                 } else {
-                                    outputTank1.getTank().fill(recipe.getSecondFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank1.getTank().fill(recipe.getFluids().get(2), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
-                                if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
+                                if (thirdOutput.getItem() != recipe.getResults().get(3).getItem()) {
                                     if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                                         thirdOutput.setCount(1);
                                     }
-                                    ItemStack recipeStack = new ItemStack(recipe.getThirdResult().getItem(),recipe.getOutputAmount());
-                                    recipeStack.setCount(recipe.getThirdAmount());
+                                    ItemStack recipeStack = new ItemStack(recipe.getResults().get(3).getItem(),recipe.getOutputAmount());
+                                    recipeStack.setCount(recipe.getAmounts().get(3));
                                     inventory.insertItem(6,recipeStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    ItemStack recipeStack = new ItemStack(recipe.getThirdResult().getItem(),recipe.getOutputAmount());
-                                    recipeStack.setCount(recipe.getThirdAmount()); // Simply change the stack to equal the output amount
+                                    ItemStack recipeStack = new ItemStack(recipe.getResults().get(3).getItem(),recipe.getOutputAmount());
+                                    recipeStack.setCount(recipe.getAmounts().get(3)); // Simply change the stack to equal the output amount
                                     inventory.insertItem(6,recipeStack,false); // Place the new output stack on top of the old one
                                 }
 
@@ -267,14 +265,14 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1){
-                    DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    VEFluidRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
                     if (stack.getItem() == Items.BUCKET) return true;
 
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
                     DistillationRecipe.ingredientList.forEach(item -> {
-                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
                         if (recipe != null && recipe.getOutputFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
                             recipeHit.set(true);
                         }
@@ -284,8 +282,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                     if (stack.getItem() == Items.BUCKET) return true;
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
                     DistillationRecipe.ingredientList.forEach(item -> {
-                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getSecondFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
+                        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                        if (recipe != null && recipe.getFluids().get(2).getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
                             recipeHit.set(true);
                         }
                     });
@@ -293,8 +291,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                 } else if (slot == 6){
                     AtomicBoolean recipeHit = new AtomicBoolean(false);
                     DistillationRecipe.ingredientList.forEach(item -> {
-                        DistillationRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getThirdResult().getItem() == stack.getItem()){
+                        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
+                        if (recipe != null && recipe.getResults().get(2).getItem() == stack.getItem()){
                             recipeHit.set(true);
                         }
                     });
@@ -352,11 +350,11 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
-            return inputTank.getFluid();
+            return inputTank.getTank().getFluid();
         } else if (num == 1){
-            return outputTank0.getFluid();
+            return outputTank0.getTank().getFluid();
         } else if (num == 2){
-            return outputTank1.getFluid();
+            return outputTank1.getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }

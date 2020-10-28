@@ -64,11 +64,16 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     public ItemStack getSecondResult(){return secondResult;}
 
-    public List<FluidStack> getOutputFluids() {
+    public List<FluidStack> getFluids() {
         List<FluidStack> f = new ArrayList<>();
         f.add(getOutputFluid());
         f.add(getSecondFluid());
         return f;
+    }
+
+    @Override
+    public List<ItemStack> getResults() {
+        return null;
     }
 
     private FluidStack getSecondFluid(){
@@ -83,6 +88,11 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
         }
         return FluidStack.EMPTY;
+    }
+
+    @Override
+    public List<Integer> getAmounts() {
+        return null;
     }
 
     public FluidStack getInputFluid(){

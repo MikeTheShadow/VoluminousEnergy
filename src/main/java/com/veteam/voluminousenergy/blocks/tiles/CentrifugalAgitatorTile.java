@@ -93,7 +93,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                     // Tank fluid amount check + tank cap checks
                     if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()
                             && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
-                            && outputTank1.getTank().getFluidAmount() + recipe.getOutputFluids().get(1).getAmount() <= TANK_CAPACITY) {
+                            && outputTank1.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
                         // Check for power
                         if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                             if (counter == 1) {
@@ -109,10 +109,10 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                                 }
 
                                 // Second Output Tank
-                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getOutputFluids().get(1).getRawFluid()) {
-                                    outputTank1.getTank().setFluid(recipe.getOutputFluids().get(1));
+                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getFluids().get(1).getRawFluid()) {
+                                    outputTank1.getTank().setFluid(recipe.getFluids().get(1));
                                 } else {
-                                    outputTank1.getTank().fill(recipe.getOutputFluids().get(1), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank1.getTank().fill(recipe.getFluids().get(1), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 counter--;

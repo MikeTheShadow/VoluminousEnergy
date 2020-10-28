@@ -61,39 +61,24 @@ public abstract class VEFluidRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){
-        return null;
-    }
+    public  abstract IRecipeSerializer<?> getSerializer();
 
-    public IRecipeType<VEFluidRecipe> getType(){
-        return null;
-    }
 
-    public ArrayList<Item>  getIngredientList() {
-        return null;
-    }
+    public abstract IRecipeType<VEFluidRecipe> getType();
 
-    public List<FluidStack> getOutputFluids() {
-        return null;
-    }
+    public abstract ArrayList<Item>  getIngredientList();
 
-    public abstract ItemStack getSecondResult();
+    public abstract List<FluidStack> getFluids();
 
-    public int getInputAmount() {
-        return -1;
-    }
+    public abstract List<ItemStack> getResults();
 
-    public int getOutputAmount() {
-        return -1;
-    }
+    public abstract int getInputAmount();
 
-    public FluidStack getOutputFluid() {
-        return null;
-    }
+    public abstract int getOutputAmount();
 
-    public abstract int getSecondAmount();
+    public abstract FluidStack getOutputFluid();
 
-    public int getProcessTime() {
-        return -1;
-    }
+    public abstract List<Integer> getAmounts();
+
+    public abstract int getProcessTime();
 }

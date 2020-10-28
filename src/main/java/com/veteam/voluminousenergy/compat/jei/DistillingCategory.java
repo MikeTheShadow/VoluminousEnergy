@@ -74,7 +74,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         Minecraft.getInstance().fontRenderer.drawString("mB:", -20,32, 0x606060);
         Minecraft.getInstance().fontRenderer.drawString(recipe.getInputAmount() + "", 2, 32,0x606060);
         Minecraft.getInstance().fontRenderer.drawString(recipe.getOutputAmount() + "", 48, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getSecondAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(recipe.getAmounts().get(2) + "", 72, 32,0x606060);
     }
 
     @Override

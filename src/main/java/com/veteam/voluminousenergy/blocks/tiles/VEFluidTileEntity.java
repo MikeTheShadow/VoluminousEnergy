@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
-public abstract class VEFluidTileEntity extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity, ITickableTileEntity, INamedContainerProvider {
 
     public static final int TANK_CAPACITY = 4000;
 
@@ -131,7 +131,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                         AtomicBoolean recipeHit = new AtomicBoolean(false);
                         veRecipe.getIngredientList().forEach(i -> {
                             VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
-                            if (recipe != null && recipe.getOutputFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())){ // In theory should never be null
+                            if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())){ // In theory should never be null
                                 recipeHit.set(true);
                             }
                         });

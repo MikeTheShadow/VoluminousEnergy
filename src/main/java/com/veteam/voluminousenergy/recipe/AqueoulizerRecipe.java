@@ -20,6 +20,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
     public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
@@ -69,6 +70,10 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     }
 
     @Override
+    public List<Integer> getAmounts() {
+        return null;
+    }
+
     public FluidStack getInputFluid(){
         if (inputFluid.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
@@ -100,6 +105,23 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     @Override
     public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+
+    @Override
+    public ArrayList<Item> getIngredientList() {
+        return null;
+    }
+
+    @Override
+    public List<FluidStack> getFluids() {
+        List<FluidStack> f = new ArrayList<>();
+        f.add(getInputFluid());
+        return f;
+    }
+
+    @Override
+    public List<ItemStack> getResults() {
+        return null;
+    }
 
     @Override
     public int getOutputAmount() {return outputAmount;}

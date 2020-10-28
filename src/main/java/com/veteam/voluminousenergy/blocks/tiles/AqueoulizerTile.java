@@ -85,7 +85,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
             ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
-            if (inputTank.getTank().getFluid().isFluidEqual(recipe.getInputFluid())) {
+            if (inputTank.getTank().getFluid().isFluidEqual(recipe.getFluids().get(0))) {
                 if (outputTank != null) {
 
                     // Tank fluid amount check + tank cap checks
