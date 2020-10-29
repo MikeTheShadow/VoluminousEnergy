@@ -228,7 +228,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
                 if (airTank.getFluidAmount() > 0) {
-                    airTank.drain(maxDrain, action);
+                    return airTank.drain(maxDrain, action);
                 }
                 return FluidStack.EMPTY;
             }

@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     private int lZ = 0;
 
     private FluidTank fluidTank = new FluidTank(tankCapacity);
-    private Fluid pumpingFluid;
+    private Fluid pumpingFluid = Fluids.EMPTY;
 
     public PumpTile() {
         super(VEBlocks.PUMP_TILE);
@@ -276,11 +277,15 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
                 this.pumpingFluid = this.world.getBlockState(this.getPos().add(0, -1, 0)).getFluidState().getFluid();
                 initDone = true;
             } catch (Exception e){
-                //VoluminousEnergy.LOGGER.debug("Likely not fluid! " + this.world.getBlockState(this.getPos().add(0, -1, 0)));
                 return;
             }
         }
-        //VoluminousEnergy.LOGGER.debug("lX: " + lX + " lY: " + lY + " lZ: " + lZ + " getPos: " + this.getPos() + " getPos After modif: " + this.getPos().add(lX,lY,lZ));
+
+        if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isEquivalentTo(Fluids.EMPTY) || this.pumpingFluid == null){ // Sanity check to prevent mass destruction
+            initDone = false;
+            return;
+        }
+
         if (lX < 22){
             lX++;
             if(this.pumpingFluid.isEquivalentTo(this.world.getBlockState(this.getPos().add(lX,lY,lZ)).getFluidState().getFluid())){

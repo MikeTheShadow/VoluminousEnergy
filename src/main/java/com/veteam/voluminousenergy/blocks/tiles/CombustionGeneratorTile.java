@@ -334,9 +334,9 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
                 if (oxidizerTank.getFluidAmount() > 0) {
-                    oxidizerTank.drain(maxDrain, action);
+                    return oxidizerTank.drain(maxDrain, action);
                 } else if (fuelTank.getFluidAmount() > 0) {
-                    fuelTank.drain(maxDrain, action);
+                    return fuelTank.drain(maxDrain, action);
                 }
                 return FluidStack.EMPTY;
             }

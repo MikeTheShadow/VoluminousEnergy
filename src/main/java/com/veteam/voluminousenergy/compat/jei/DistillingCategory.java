@@ -30,7 +30,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     public DistillingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
-        background = guiHelper.drawableBuilder(GUI, 68, 12, 128, 40).build();
+        background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.ALUMINUM_SHELL));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();

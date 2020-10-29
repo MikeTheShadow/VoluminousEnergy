@@ -39,7 +39,7 @@ public class PumpScreen extends ContainerScreen<PumpContainer> {
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.PUMP_HARVEST_LEVEL.get() + " FE", mouseX, mouseY);
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.PUMP_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
