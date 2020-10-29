@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
@@ -11,7 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.BlastingRecipe;
@@ -33,7 +31,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,7 +87,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
             if (furnaceRecipe != null || blastingRecipe != null){
                 if (counter == 1) {
-                    LOGGER.debug("What is in the output slot? " + furnaceOutput);
+                    //LOGGER.debug("What is in the output slot? " + furnaceOutput);
                     // Extract item
                     inventory.extractItem(2,1,false);
 
@@ -101,11 +98,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     } else {
                         newOutputStack = blastingRecipe.getRecipeOutput().copy();
                     }
-                    LOGGER.debug("NewOutputStack: " + newOutputStack);
+                    //LOGGER.debug("NewOutputStack: " + newOutputStack);
 
                     // Output Item
                     if (furnaceOutput.getItem() != newOutputStack.getItem() || furnaceOutput.getItem() == Items.AIR) {
-                        LOGGER.debug("The output is not equal to the new output Stack");
+                        //LOGGER.debug("The output is not equal to the new output Stack");
                         if(furnaceOutput.getItem() == Items.AIR){ // Fix air >1 jamming slots
                             furnaceOutput.setCount(1);
                         }
@@ -114,7 +111,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         } else {
                             newOutputStack.setCount(blastingRecipe.getRecipeOutput().getCount());
                         }
-                        LOGGER.debug("About to insert in pt1: " + newOutputStack);
+                        //LOGGER.debug("About to insert in pt1: " + newOutputStack);
                         inventory.insertItem(3, newOutputStack.copy(),false); // CRASH the game if this is not empty!
 
                     } else { // Assuming the recipe output item is already in the output slot
@@ -124,7 +121,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         } else {
                             furnaceOutput.setCount(blastingRecipe.getRecipeOutput().getCount());
                         }
-                        LOGGER.debug("About to insert in pt2: " + furnaceOutput);
+                        //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
                         inventory.insertItem(3, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
                     }
 
@@ -139,22 +136,22 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
                 // Fuel Management
                 if (fuelCounter == 1){
-                    // Drain Input
-                    fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                     fuelCounter--;
                 } else if (fuelCounter > 0){
                     fuelCounter--;
                 } else {
                     VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(new ItemStack (fuelTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1)), world).orElse(null);
                     if (recipe != null){
+                        // Drain Input
+                        fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
                     }
                 }
 
-            }
+            } else counter = 0;
 
 
-        }
+        } else counter = 0;
     }
 
     /*
@@ -314,31 +311,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
                 } else if (slot == 3){
                     return super.insertItem(slot, stack, simulate);
-                    /*
-                    if (inventory.getStackInSlot(3).copy().getItem() != Items.AIR && stack.getItem() == inventory.getStackInSlot(3).copy().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    } else if (inventory.getStackInSlot(2).copy().getItem() != Items.AIR){
-                        ItemStack referenceStack = inventory.getStackInSlot(2).copy();
-                        referenceStack.setCount(64);
-                        FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack), world).orElse(null);
-                        BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack),world).orElse(null);
-
-                        if (recipe != null || blastingRecipe != null){
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    } else {
-                        for (Item i : ForgeRegistries.ITEMS){
-                            FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(new ItemStack(i, 64)), world).orElse(null);
-                            BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(new ItemStack(i, 64)), world).orElse(null);
-
-                            if (furnaceRecipe != null && furnaceRecipe.getRecipeOutput().getItem() == stack.copy().getItem()){
-                                return super.insertItem(slot, stack, simulate);
-                            } else if (blastingRecipe != null &&  blastingRecipe.getRecipeOutput().getItem() == stack.copy().getItem()){
-                                return super.insertItem(slot, stack, simulate);
-                            }
-                        }
-                    }
-                    */
                 }
                 return ItemStack.EMPTY;
             }

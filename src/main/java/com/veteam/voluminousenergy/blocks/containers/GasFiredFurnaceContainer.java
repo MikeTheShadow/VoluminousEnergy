@@ -41,10 +41,10 @@ public class GasFiredFurnaceContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
-            addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from input
-            addSlot(new VEInsertSlot(h, 2, 96,49)); // Item input slot
-            addSlot(new VEInsertSlot(h, 3, 137,49)); // Item output slot
+            addSlot(new VEInsertSlot(h, 0, 8, 18)); // Fluid input slot
+            addSlot(new VEInsertSlot(h, 1,8,49)); // Extract fluid from input
+            addSlot(new VEInsertSlot(h, 2, 53,33)); // Item input slot
+            addSlot(new VEInsertSlot(h, 3, 116,33)); // Item output slot
         });
         layoutPlayerInventorySlots(8, 84);
 

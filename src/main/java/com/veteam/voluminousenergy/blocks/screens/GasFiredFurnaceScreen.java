@@ -14,7 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class GasFiredFurnaceScreen extends ContainerScreen<GasFiredFurnaceContainer> {
 private GasFiredFurnaceTile tileEntity;
-private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/centrifugal_agitator_gui.png");
+private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/gas_fired_furnace_gui.png");
 
     public GasFiredFurnaceScreen(GasFiredFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -36,7 +36,7 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
 
     @Override
     protected void renderHoveredToolTip(int mouseX,int mouseY){
-        if(isPointInRegion(11,16,12,49,mouseX,mouseY)){
+        if(isPointInRegion(31,18,12,49,mouseX,mouseY)){
             int amount=tileEntity.getFluidFromTank().getAmount();
             String name=new TranslationTextComponent(tileEntity.getFluidFromTank().getTranslationKey(),new Object[0]).getFormattedText();
             renderTooltip(name+", "+amount+" mB / "+tileEntity.getTankCapacity()+" mB",mouseX,mouseY);
@@ -66,7 +66,7 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
             this.blit(i+81,j+31,176,0,progress,17);
             //this.blit(i+11,j+(16+(49-power)),176,24+(49-power),12,power);
 
-            VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+11,j+16,0,12,50);
+            VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
 
 
         }
