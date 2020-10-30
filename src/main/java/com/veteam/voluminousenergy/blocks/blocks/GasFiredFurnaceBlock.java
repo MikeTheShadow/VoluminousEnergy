@@ -29,7 +29,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.ELECTROLYZER_HARVEST_LEVEL.get()) // TODO: Config for Gas Fired Furnace
+                .harvestLevel(Config.GAS_FIRED_FURNACE_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("gas_fired_furnace");
@@ -37,7 +37,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new GasFiredFurnaceTile();} // TODO: Tile for Gas Fired Furnace
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new GasFiredFurnaceTile();}
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){

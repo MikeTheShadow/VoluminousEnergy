@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
@@ -103,11 +102,11 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
                         inventory.insertItem(1, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
                     }
 
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get())); // TODO: Config for the Electric Furnace
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTRIC_FURNACE_POWER_USAGE.get()));
                     counter--;
                     this.markDirty();
                 } else if (counter > 0) {
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get())); // TODO: Config for the Electric Furnace
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTRIC_FURNACE_POWER_USAGE.get()));
                     counter--;
                 } else {
                     counter = 200;
@@ -195,8 +194,8 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
         };
     }
 
-    private IEnergyStorage createEnergy(){ // TODO: Config for the Electric Furnace
-        return new VEEnergyStorage(Config.COMPRESSOR_MAX_POWER.get(), Config.COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
+    private IEnergyStorage createEnergy(){
+        return new VEEnergyStorage(Config.ELECTRIC_FURNACE_MAX_POWER.get(), Config.ELECTRIC_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
@@ -220,7 +219,7 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
     {
-        return new ElectricFurnaceContainer(i,world,pos,playerInventory,playerEntity); // TODO: Container for the Electric Furnace
+        return new ElectricFurnaceContainer(i,world,pos,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){

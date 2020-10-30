@@ -38,7 +38,7 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY); // TODO: Config for the Electric Furnace
+            renderTooltip(container.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE", mouseX, mouseY);
         } else if (isPointInRegion(81,32,9,17,mouseX,mouseY)){
             renderTooltip("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter(), mouseX, mouseY);
         }

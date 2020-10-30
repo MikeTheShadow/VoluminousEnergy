@@ -72,6 +72,8 @@ public class Config {
     public static final String CATEGORY_AIR_COMPRESSOR = "Air Compressor";
     public static final String CATEGORY_DISTILLATION_UNIT = "Distillation Unit";
     public static final String CATEGORY_PUMP = "Pump";
+    public static final String CATEGORY_GAS_FIRED_FURNACE = "Gas Furnace";
+    public static final String CATEGORY_ELECTRIC_FURNACE = "Electric Furnace";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -208,6 +210,15 @@ public class Config {
     public static ForgeConfigSpec.IntValue PUMP_TRANSFER;
     public static ForgeConfigSpec.IntValue PUMP_HARVEST_LEVEL;
 
+    // Gas Fired Furnace Variables
+    public static ForgeConfigSpec.IntValue GAS_FIRED_FURNACE_HARVEST_LEVEL;
+
+    // Electric Furnace Variables
+    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
+    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
+    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_HARVEST_LEVEL;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -271,6 +282,16 @@ public class Config {
         // Pump
         COMMON_BUILDER.comment("Pump Settings").push(CATEGORY_PUMP);
         setupPump();
+        COMMON_BUILDER.pop();
+
+        // Gas Fired Furnace
+        COMMON_BUILDER.comment("Gas Furnace Settings").push(CATEGORY_GAS_FIRED_FURNACE);
+        setupGasFiredFurnace();
+        COMMON_BUILDER.pop();
+
+        // Electric Furnace
+        COMMON_BUILDER.comment("Electric Furnace Settings").push(CATEGORY_ELECTRIC_FURNACE);
+        setupElectricFurnace();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -476,13 +497,29 @@ public class Config {
     }
 
     private static void setupPump(){
-        PUMP_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Distillation Unit to store")
+        PUMP_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Pump to store")
                 .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
-        PUMP_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Distillation Unit")
+        PUMP_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Pump")
                 .defineInRange("Power Consumption", 16, 0, Integer.MAX_VALUE);
-        PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Distillation Unit")
+        PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Pump")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         PUMP_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupGasFiredFurnace(){
+        GAS_FIRED_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupElectricFurnace(){
+        ELECTRIC_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Electric Furnace to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        ELECTRIC_FURNACE_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Electric Furnace")
+                .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
+        ELECTRIC_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electric Furnace")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        ELECTRIC_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

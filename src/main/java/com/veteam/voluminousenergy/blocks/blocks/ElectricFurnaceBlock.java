@@ -28,7 +28,7 @@ public class ElectricFurnaceBlock extends FaceableBlock {
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .lightValue(0)
-                .harvestLevel(Config.ELECTROLYZER_HARVEST_LEVEL.get()) // TODO: Config for the Electric Furnace
+                .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("electric_furnace");
@@ -36,7 +36,7 @@ public class ElectricFurnaceBlock extends FaceableBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new ElectricFurnaceTile();} // TODO: Tile for the Electric Furnace
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new ElectricFurnaceTile();}
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
