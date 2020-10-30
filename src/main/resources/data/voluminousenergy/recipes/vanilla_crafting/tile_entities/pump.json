@@ -13,13 +13,13 @@
       "item": "voluminousenergy:compressor"
     },
     "*": {
-      "tag": "forge:plates/aluminum"
+      "item": "minecraft:iron_ingot"
     },
     "1": {
       "tag": "forge:glass_panes"
     },
     "2": {
-      "tag": "forge:gears/aluminum"
+      "tag": "forge:gears/iron"
     },
     "3": {
       "tag": "forge:microchips"

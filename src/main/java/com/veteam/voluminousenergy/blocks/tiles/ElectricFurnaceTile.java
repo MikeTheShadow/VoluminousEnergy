@@ -1,15 +1,15 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
+import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.BlastingRecipe;
@@ -18,74 +18,56 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GasFiredFurnaceTile extends VEFluidTileEntity {
-
+public class ElectricFurnaceTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-
-    private int fuelCounter;
-    private int fuelLength;
     private int counter;
     private int length;
-
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public GasFiredFurnaceTile() {
-        super(VEBlocks.GAS_FIRED_FURNACE_TILE);
+    public ElectricFurnaceTile(){
+        super(VEBlocks.ELECTRIC_FURNACE_TILE);
     }
 
     public final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
-        return inventory;
-    }
-
-    @Override
-    public void tick() {
-        updateClients();
-        ItemStack input = inventory.getStackInSlot(0).copy();
-        ItemStack input1 = inventory.getStackInSlot(1).copy();
-        ItemStack furnaceInput = inventory.getStackInSlot(2).copy();
-        ItemStack furnaceOutput = inventory.getStackInSlot(3).copy();
-
-        fuelTank.setInput(input.copy());
-        fuelTank.setOutput(input1.copy());
-
-        if(this.inputFluid(fuelTank,0,1)) return;
-        if(this.outputFluid(fuelTank,0,1)) return;
+    public void tick(){
+        ItemStack furnaceInput = inventory.getStackInSlot(0).copy();
+        ItemStack furnaceOutput = inventory.getStackInSlot(1).copy();
 
         inputItemStack.set(furnaceInput.copy()); // Atomic Reference, use this to query recipes FOR OUTPUT SLOT
 
         // Main Processing occurs here
-        if (fuelTank.getTank() != null && !fuelTank.getTank().isEmpty()) {
+        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
             FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), world).orElse(null);
             BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), world).orElse(null);
 
             if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
-                    //LOGGER.debug("What is in the output slot? " + furnaceOutput);
                     // Extract item
-                    inventory.extractItem(2,1,false);
+                    inventory.extractItem(0,1,false);
 
                     // Set output based on recipe
                     ItemStack newOutputStack;
@@ -108,7 +90,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                             newOutputStack.setCount(blastingRecipe.getRecipeOutput().getCount());
                         }
                         //LOGGER.debug("About to insert in pt1: " + newOutputStack);
-                        inventory.insertItem(3, newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                        inventory.insertItem(1, newOutputStack.copy(),false); // CRASH the game if this is not empty!
 
                     } else { // Assuming the recipe output item is already in the output slot
                         // Simply change the stack to equal the output amount
@@ -118,64 +100,31 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                             furnaceOutput.setCount(blastingRecipe.getRecipeOutput().getCount());
                         }
                         //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
-                        inventory.insertItem(3, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
+                        inventory.insertItem(1, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
                     }
 
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get())); // TODO: Config for the Electric Furnace
                     counter--;
                     this.markDirty();
                 } else if (counter > 0) {
+                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get())); // TODO: Config for the Electric Furnace
                     counter--;
                 } else {
                     counter = 200;
                     length = counter;
                 }
 
-                // Fuel Management
-                if (fuelCounter == 1){
-                    fuelCounter--;
-                } else if (fuelCounter > 0){
-                    fuelCounter--;
-                } else {
-                    VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(new ItemStack (fuelTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1)), world).orElse(null);
-                    if (recipe != null){
-                        // Drain Input
-                        fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-                        fuelCounter = recipe.getProcessTime()/4;
-                        fuelLength = fuelCounter;
-                        this.markDirty();
-                    }
-                }
-
             } else counter = 0;
-
-
         } else counter = 0;
     }
 
-    /*
-        Read and Write on World save
-     */
-
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-
-        // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT fuelTank = tag.getCompound("fuelTank");
-
-            this.fuelTank.getTank().readFromNBT(fuelTank);
-
-        });
-
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-        fuelCounter = tag.getInt("fuel_counter");
-        fuelLength = tag.getInt("fuel_length");
-
-
+        CompoundNBT energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         super.read(tag);
     }
 
@@ -185,47 +134,20 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
         });
-
-        // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT fuelTank = new CompoundNBT();
-
-            this.fuelTank.getTank().writeToNBT(fuelTank);
-
-            tag.put("fuelTank", fuelTank);
+        energy.ifPresent(h -> {
+            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            tag.put("energy",compound);
         });
-
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-        tag.putInt("fuel_counter", fuelCounter);
-        tag.putInt("fuel_length", fuelLength);
-
         return super.write(tag);
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
     }
-
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
-    }
-
-    private IFluidHandler createFluid() {
-        return createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
-    }
-
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(2) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -233,13 +155,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot == 0 || slot == 1){
-                    return world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(stack),world).orElse(null) != null
-                            || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2) {
+                if (slot == 0) {
                     return world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world).orElse(null) != null
                             || world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(stack), world).orElse(null) != null;
-                } else if (slot == 3) {
+                } else if (slot == 1) {
                     FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
                     BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
 
@@ -257,13 +176,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
-                if (slot == 0 || slot == 1) {
-                    return super.insertItem(slot, stack, simulate);
-                }
-
-                if (slot == 2){
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+                if (slot == 0){
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
                     FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack), world).orElse(null);
@@ -273,7 +187,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         return super.insertItem(slot, stack, simulate);
                     }
 
-                } else if (slot == 3){
+                } else if (slot == 1){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
@@ -281,71 +195,39 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         };
     }
 
+    private IEnergyStorage createEnergy(){ // TODO: Config for the Electric Furnace
+        return new VEEnergyStorage(Config.COMPRESSOR_MAX_POWER.get(), Config.COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
+        if (cap == CapabilityEnergy.ENERGY){
+            return energy.cast();
         }
         return super.getCapability(cap, side);
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public ITextComponent getDisplayName(){
         return new StringTextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new GasFiredFurnaceContainer(i, world, pos, playerInventory, playerEntity);
+    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
+    {
+        return new ElectricFurnaceContainer(i,world,pos,playerInventory,playerEntity); // TODO: Container for the Electric Furnace
     }
 
-    public int progressCounterPX(int px) {
-        if (counter == 0) {
+    public int progressCounterPX(int px){
+        if (counter == 0){
             return 0;
         } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
-        }
-    }
-
-    public int progressFuelCounterPX(int px) {
-        if (fuelCounter == 0){
-            return 0;
-        } else {
-            return (px*(((fuelCounter*100)/fuelLength)))/100;
-        }
-    }
-
-    @Deprecated // Use method that doesn't take in an int instead
-    public FluidStack getFluidStackFromTank(int num){
-        if (num == 0) {
-            return fuelTank.getTank().getFluid();
-        }
-        return FluidStack.EMPTY;
-    }
-
-    public FluidStack getFluidFromTank(){
-        return fuelTank.getTank().getFluid();
-    }
-
-    public int getTankCapacity(){
-        return TANK_CAPACITY;
-    }
-
-    public int getFuelCounter(){return fuelCounter;}
-
-    public int getCounter(){return counter;}
-
-
-    public int progressFuelCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)fuelCounter/(float)fuelLength)*100));
-        } else {
-            return 0;
+            return (px*(100-((counter*100)/length)))/100;
         }
     }
 
@@ -376,4 +258,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         }
         return false;
     }
+
+    public int getCounter(){
+        return counter;
+    }
+
 }

@@ -155,6 +155,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":gas_fired_furnace")
     public static ContainerType<GasFiredFurnaceContainer> GAS_FIRED_FURNACE_CONTAINER;
 
+    // Electric Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static ElectricFurnaceBlock ELECTRIC_FURNACE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static TileEntityType<ElectricFurnaceTile> ELECTRIC_FURNACE_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static ContainerType<ElectricFurnaceContainer> ELECTRIC_FURNACE_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;
