@@ -85,7 +85,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput), world).orElse(null);
             BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput), world).orElse(null);
 
-            if (furnaceRecipe != null || blastingRecipe != null){
+            if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput)){
                 if (counter == 1) {
                     //LOGGER.debug("What is in the output slot? " + furnaceOutput);
                     // Extract item
@@ -359,5 +359,23 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         } else {
             return 0;
         }
+    }
+
+    public boolean countChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+        if(furnaceRecipe != null){
+            return (itemStack.getCount() + furnaceRecipe.getRecipeOutput().getCount()) <= 64;
+        } else if (blastingRecipe != null){
+            return (itemStack.getCount() + blastingRecipe.getRecipeOutput().getCount()) <= 64;
+        }
+        return false;
+    }
+
+    public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+        if(furnaceRecipe != null){
+            return furnaceRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+        } else if (blastingRecipe != null){
+            return blastingRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+        }
+        return false;
     }
 }
