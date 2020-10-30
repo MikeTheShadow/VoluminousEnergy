@@ -51,9 +51,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
+    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile() {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE);
@@ -77,9 +75,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         fuelTank.setInput(input.copy());
         fuelTank.setOutput(input1.copy());
 
-
         if(this.inputFluid(fuelTank,0,1)) return;
         if(this.outputFluid(fuelTank,0,1)) return;
+
+        inputItemStack.set(furnaceInput.copy()); // Atomic Reference, use this to query recipes FOR OUTPUT SLOT
 
         // Main Processing occurs here
         if (fuelTank.getTank() != null && !fuelTank.getTank().isEmpty()) {
@@ -245,64 +244,17 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     return world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world).orElse(null) != null
                             || world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(stack), world).orElse(null) != null;
                 } else if (slot == 3) {
-                    if (inventory.getStackInSlot(3).copy().getItem() != Items.AIR && stack.copy().getItem() == inventory.getStackInSlot(3).copy().getItem()){return true;}
+                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
 
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inventory.getStackInSlot(2).copy()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inventory.getStackInSlot(2).copy()), world).orElse(null);
+                    // If both recipes are null, then don't bother
+                    if (blastingRecipe == null && furnaceRecipe == null) return false;
 
-                    if (blastingRecipe == null && furnaceRecipe == null) return false;  // If both recipes are null, then don't bother
-
-                    AtomicReference<ItemStack> atomicStack = new AtomicReference<>(stack);
-                    AtomicReference<RecipeManager> atomicRecipeManager = new AtomicReference<>(world.getRecipeManager());
-                    AtomicBoolean hit = new AtomicBoolean(false);
-
-                    if (blastingRecipe != null && furnaceRecipe != null){ // If both aren't null, check both
-                        //LOGGER.debug("Blasting and Furnace isn't null!");
-                        furnaceRecipe.getIngredients().forEach(item -> {
-                            for (ItemStack i : item.getMatchingStacks()) {
-                                FurnaceRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.SMELTING,new Inventory(i), world).orElse(null);
-                                if (testRecipe.getRecipeOutput().getItem() == atomicStack.get().getItem()) {
-                                    hit.set(true);
-                                    break;
-                                }
-                            }
-                        });
-
-                        if (hit.get()) return true;
-
-                        blastingRecipe.getIngredients().forEach(item -> {
-                            for (ItemStack i : item.getMatchingStacks()){
-                                BlastingRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.BLASTING, new Inventory(i), world).orElse(null);
-                                if (testRecipe.getRecipeOutput().getItem() == atomicStack.get().getItem()){
-                                    hit.set(true);
-                                }
-                            }
-                        });
-
-                        return hit.get();
-                    } else if (blastingRecipe != null){
-                        //LOGGER.debug("Blasting isn't null!");
-                        blastingRecipe.getIngredients().forEach(item -> {
-                            for (ItemStack i : item.getMatchingStacks()){
-                                BlastingRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.BLASTING, new Inventory(i), world).orElse(null);
-                                if (testRecipe.getRecipeOutput().getItem() == atomicStack.get().getItem()){
-                                    hit.set(true);
-                                }
-                            }
-                        });
-                    } else if (furnaceRecipe != null) {
-                        //LOGGER.debug("Furnace isn't null!");
-                        furnaceRecipe.getIngredients().forEach(item -> {
-                            for (ItemStack i : item.getMatchingStacks()) {
-                                FurnaceRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.SMELTING,new Inventory(i), world).orElse(null);
-                                if (testRecipe.getRecipeOutput().getItem() == atomicStack.get().getItem()) {
-                                    hit.set(true);
-                                    break;
-                                }
-                            }
-                        });
+                    if (furnaceRecipe != null) {
+                        return stack.getItem() == furnaceRecipe.getRecipeOutput().getItem();
                     }
-                    return hit.get();
+
+                    return stack.getItem() == blastingRecipe.getRecipeOutput().getItem();
                 }
                 return false;
             }
