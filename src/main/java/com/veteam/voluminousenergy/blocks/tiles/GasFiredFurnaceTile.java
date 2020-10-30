@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -82,10 +83,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
         // Main Processing occurs here
         if (fuelTank.getTank() != null && !fuelTank.getTank().isEmpty()) {
-            FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput), world).orElse(null);
-            BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput), world).orElse(null);
+            FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), world).orElse(null);
+            BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), world).orElse(null);
 
-            if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput)){
+            if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceInput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
                     //LOGGER.debug("What is in the output slot? " + furnaceOutput);
                     // Extract item
@@ -372,8 +373,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
+            if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
             return furnaceRecipe.getRecipeOutput().getItem() == itemStack.getItem();
         } else if (blastingRecipe != null){
+            if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
             return blastingRecipe.getRecipeOutput().getItem() == itemStack.getItem();
         }
         return false;
