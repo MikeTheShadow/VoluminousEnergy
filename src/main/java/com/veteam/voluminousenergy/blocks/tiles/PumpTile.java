@@ -47,7 +47,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
-    private final int tankCapacity = Integer.MAX_VALUE;
+    private final int tankCapacity = 4000;
 
     // Working data
     private boolean initDone = false;
@@ -202,7 +202,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
                 if (fluidTank.getFluidAmount() > 0) {
-                    fluidTank.drain(maxDrain, action);
+                    return fluidTank.drain(maxDrain, action);
                 }
                 return FluidStack.EMPTY;
             }

@@ -137,6 +137,9 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
 
+    // General TE settings
+    public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
+
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
@@ -207,6 +210,7 @@ public class Config {
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
+        setupGeneralSettings();
         COMMON_BUILDER.pop();
 
         // World Feature Settings
@@ -270,6 +274,11 @@ public class Config {
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
+    }
+
+    private static void setupGeneralSettings(){
+        ALLOW_EXTRACTION_FROM_INPUT_TANKS = COMMON_BUILDER.comment("Allow pipes to extract fluids from fluid input tanks. Disabling this means that only fluid outputs can be extracted from Tile Entites")
+                .define("Allow Extraction from Input Tanks", false);
     }
 
     private static void setupWorldGen(){

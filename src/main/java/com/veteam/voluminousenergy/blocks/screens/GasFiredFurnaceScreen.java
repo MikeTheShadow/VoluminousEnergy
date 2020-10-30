@@ -40,6 +40,10 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
             int amount=tileEntity.getFluidFromTank().getAmount();
             String name=new TranslationTextComponent(tileEntity.getFluidFromTank().getTranslationKey(),new Object[0]).getFormattedText();
             renderTooltip(name+", "+amount+" mB / "+tileEntity.getTankCapacity()+" mB",mouseX,mouseY);
+        } else if (isPointInRegion(54,54,16,16,mouseX,mouseY)){
+            renderTooltip("Percent burned: " + tileEntity.progressFuelCounterPercent() + "%, Ticks Left: " + tileEntity.getFuelCounter(), mouseX, mouseY);
+        } else if (isPointInRegion(81,32,9,17,mouseX,mouseY)){
+            renderTooltip("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter(), mouseX, mouseY);
         }
 
         super.renderHoveredToolTip(mouseX,mouseY);
@@ -52,8 +56,10 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
         int i=(this.width-this.xSize)/2;
         int j=(this.height-this.ySize)/2;
         this.blit(i,j,0,0,this.xSize,this.ySize);
+        final int flameHeight = 14;
         if(tileEntity!=null){
-            int progress=tileEntity.progressCounterPX(9);
+            int progress = tileEntity.progressCounterPX(9);
+            int fuelProgress = tileEntity.progressFuelCounterPX(flameHeight);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -64,7 +70,7 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             this.blit(i+81,j+31,176,0,progress,17);
-            //this.blit(i+11,j+(16+(49-power)),176,24+(49-power),12,power);
+            this.blit(i+54,j+(54 + (flameHeight - fuelProgress)),176,24 + (flameHeight - fuelProgress),flameHeight,fuelProgress);
 
             VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
 

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.fluid.Fluid;
@@ -170,10 +171,13 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
             @Nonnull
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
-
                 for(RelationalTank t : relationalTanks) {
                     if(t.getTank().getFluidAmount() > 0) {
-                        return t.getTank().drain(maxDrain,action);
+                        if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                            return t.getTank().drain(maxDrain, action);
+                        } else if (t.getTankType() != TankType.INPUT) {
+                            return t.getTank().drain(maxDrain, action);
+                        }
                     }
                 }
                 return FluidStack.EMPTY;

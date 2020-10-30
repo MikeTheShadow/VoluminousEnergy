@@ -47,6 +47,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
 
     private int fuelCounter;
+    private int fuelLength;
     private int counter;
     private int length;
 
@@ -130,7 +131,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 } else if (counter > 0) {
                     counter--;
                 } else {
-                    counter = 400;
+                    counter = 200;
                     length = counter;
                 }
 
@@ -145,6 +146,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
+                        fuelLength = fuelCounter;
+                        this.markDirty();
                     }
                 }
 
@@ -172,6 +175,12 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
         });
 
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
+        fuelCounter = tag.getInt("fuel_counter");
+        fuelLength = tag.getInt("fuel_length");
+
+
         super.read(tag);
     }
 
@@ -190,6 +199,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
             tag.put("fuelTank", fuelTank);
         });
+
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
+        tag.putInt("fuel_counter", fuelCounter);
+        tag.putInt("fuel_length", fuelLength);
 
         return super.write(tag);
     }
@@ -231,6 +245,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     return world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world).orElse(null) != null
                             || world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(stack), world).orElse(null) != null;
                 } else if (slot == 3) {
+                    if (inventory.getStackInSlot(3).copy().getItem() != Items.AIR && stack.copy().getItem() == inventory.getStackInSlot(3).copy().getItem()){return true;}
+
                     FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inventory.getStackInSlot(2).copy()), world).orElse(null);
                     BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inventory.getStackInSlot(2).copy()), world).orElse(null);
 
@@ -241,7 +257,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     AtomicBoolean hit = new AtomicBoolean(false);
 
                     if (blastingRecipe != null && furnaceRecipe != null){ // If both aren't null, check both
-                        LOGGER.debug("Blasting and Furnace isn't null!");
+                        //LOGGER.debug("Blasting and Furnace isn't null!");
                         furnaceRecipe.getIngredients().forEach(item -> {
                             for (ItemStack i : item.getMatchingStacks()) {
                                 FurnaceRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.SMELTING,new Inventory(i), world).orElse(null);
@@ -265,7 +281,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
                         return hit.get();
                     } else if (blastingRecipe != null){
-                        LOGGER.debug("Blasting isn't null!");
+                        //LOGGER.debug("Blasting isn't null!");
                         blastingRecipe.getIngredients().forEach(item -> {
                             for (ItemStack i : item.getMatchingStacks()){
                                 BlastingRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.BLASTING, new Inventory(i), world).orElse(null);
@@ -275,7 +291,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                             }
                         });
                     } else if (furnaceRecipe != null) {
-                        LOGGER.debug("Furnace isn't null!");
+                        //LOGGER.debug("Furnace isn't null!");
                         furnaceRecipe.getIngredients().forEach(item -> {
                             for (ItemStack i : item.getMatchingStacks()) {
                                 FurnaceRecipe testRecipe = atomicRecipeManager.get().getRecipe(IRecipeType.SMELTING,new Inventory(i), world).orElse(null);
@@ -348,6 +364,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         }
     }
 
+    public int progressFuelCounterPX(int px) {
+        if (fuelCounter == 0){
+            return 0;
+        } else {
+            return (px*(((fuelCounter*100)/fuelLength)))/100;
+        }
+    }
+
     @Deprecated // Use method that doesn't take in an int instead
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0) {
@@ -362,5 +386,26 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    public int getFuelCounter(){return fuelCounter;}
+
+    public int getCounter(){return counter;}
+
+
+    public int progressFuelCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)fuelCounter/(float)fuelLength)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
     }
 }

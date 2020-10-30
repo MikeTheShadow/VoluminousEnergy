@@ -2,7 +2,7 @@
   "parent": "block/cube",
   "textures": {
     "particle": "minecraft:block/iron_block",
-    "down": "voluminousenergy:block/distillation_unit_bottom",
+    "down": "voluminousenergy:block/distillation_unit_top",
     "up": "voluminousenergy:block/distillation_unit_top",
     "east": "voluminousenergy:block/distillation_unit_side",
     "west": "voluminousenergy:block/distillation_unit_side",

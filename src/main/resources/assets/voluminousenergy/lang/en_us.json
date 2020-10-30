@@ -21,6 +21,7 @@
     "block.voluminousenergy.aluminum_machine_casing": "Aluminum Machine Casing",
     "block.voluminousenergy.titanium_machine_casing": "Titanium Machine Casing",
     "block.voluminousenergy.pump": "Pump",
+    "block.voluminousenergy.gas_fired_furnace": "Gas Furnace",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
