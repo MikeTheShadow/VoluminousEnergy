@@ -125,6 +125,12 @@ public class StirlingGeneratorRecipe extends VERecipe {
             return recipe;
         }
 
+        /**
+         * These buffers are more important when dealing with a dedicated server. Even if you aren't going to use a result,
+         * and lets say result is just an arbirary item, YOU MUST include it in the buffers or else the client recipe book,
+         * and to extention any mod that checks recipes (hint hint JEI) will also NullPointerException out. The client will not
+         * crash, the server will be fine, but the mods that check recipes (hint hint JEI) will be borked.
+         **/
         @Nullable
         @Override
         public StirlingGeneratorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
@@ -133,6 +139,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();
             recipe.energyPerTick = buffer.readInt();
+            recipe.result = buffer.readItemStack();
             return recipe;
         }
 
@@ -142,6 +149,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.energyPerTick);
+            buffer.writeItemStack(recipe.result);
         }
     }
 }
