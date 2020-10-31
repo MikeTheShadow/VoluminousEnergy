@@ -30,10 +30,12 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
     @Override
     protected void init() {
+        /*
         this.addButton(new ioMenuButton(152,4,20,18, button -> {
             LOGGER.debug("Hit button");
             openedIOGui = ((ioMenuButton) button).openGui();
         }));
+         */
         super.init();
     }
 
@@ -54,13 +56,13 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(container.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE", mouseX, mouseY);
-        } else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
+        } /*else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
             if (openedIOGui){
                 renderTooltip("Close IO Management", mouseX, mouseY);
             } else {
                 renderTooltip("Open IO Management", mouseX, mouseY);
             }
-        }
+        }*/
         super.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -85,7 +87,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
              */
             this.blit(i+79, j+31, 176, 0, 17, progress);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-            drawIOSideHelper(i,j,mouseX,mouseY,partialTicks);
+            //drawIOSideHelper(i,j,mouseX,mouseY,partialTicks);
         }
 
     }
