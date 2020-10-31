@@ -87,11 +87,11 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(pos.offset(dir));
+                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
-                    int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
+                    int smallest = Math.min(Config.STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
                     int received = recieveEnergy(tileEntity, opposite, smallest);
                     ((VEEnergyStorage) energy).consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){

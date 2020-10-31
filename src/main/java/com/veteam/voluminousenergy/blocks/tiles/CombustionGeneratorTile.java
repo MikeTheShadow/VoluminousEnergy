@@ -170,7 +170,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(pos.offset(dir));
+                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
