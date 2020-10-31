@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/electric_furnace_top",
+    "up": "voluminousenergy:block/electric_furnace_top",
+    "east": "voluminousenergy:block/electric_furnace_side",
+    "west": "voluminousenergy:block/electric_furnace_side",
+    "north": "voluminousenergy:block/electric_furnace_front",
+    "south": "voluminousenergy:block/electric_furnace_side"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/titanium_machine_casing",
+    "up": "voluminousenergy:block/titanium_machine_casing",
+    "east": "voluminousenergy:block/titanium_machine_casing",
+    "west": "voluminousenergy:block/titanium_machine_casing",
+    "north": "voluminousenergy:block/titanium_machine_casing",
+    "south": "voluminousenergy:block/titanium_machine_casing"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "aba",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "a": {
+      "tag": "forge:gears/stone"
+    },
+    "b": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:gas_fired_furnace"
+  }
+}

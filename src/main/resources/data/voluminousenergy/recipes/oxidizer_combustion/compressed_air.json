@@ -1,0 +1,7 @@
+{
+  "type": "voluminousenergy:oxidizer_combustion",
+  "process_time": 1600,
+  "ingredient": {
+    "item": "voluminousenergy:compressed_air_bucket"
+  }
+}

@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -15,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -29,6 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -71,28 +75,23 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
         sendOutPower();
     }
 
+    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
     private void sendOutPower() {
         energy.ifPresent(energy -> {
-            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
-            if (capacity.get() > 0){ //If we don't have energy we can't send any out
-                for (Direction direction : Direction.values()){
-                    TileEntity te = world.getTileEntity(pos.offset(direction));
-                    if (te != null){
-                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
-                                    if (handler.canReceive()){
-                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get()),false);
-                                        capacity.addAndGet(-recieved);
-                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
-                                        markDirty();
-                                        return capacity.get() > 0;
-                                    } else {
-                                        return true;
-                                    }
-                                }
-                        ).orElse(true);
-                        if (!doContinue){
-                            return;
-                        }
+            for (Direction dir : Direction.values()){
+                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                Direction opposite = dir.getOpposite();
+                if(tileEntity != null){
+                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                    int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
+                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    if (energy.getEnergyStored() <=0){
+                        break;
                     }
                 }
             }

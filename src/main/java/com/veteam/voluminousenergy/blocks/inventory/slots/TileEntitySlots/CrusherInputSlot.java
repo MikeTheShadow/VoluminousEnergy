@@ -18,7 +18,7 @@ public class CrusherInputSlot extends VEInsertSlot {
     public boolean isItemValid(ItemStack stack){
         ItemStack referenceStack = stack.copy();
         referenceStack.setCount(64);
-        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
+        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
         return checkRecipe(recipe,referenceStack);
     }
 }

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#forge:microchips/gold"
+    "#forge:microchips/gold",
+    "#forge:microchips/silver"
   ]
 }

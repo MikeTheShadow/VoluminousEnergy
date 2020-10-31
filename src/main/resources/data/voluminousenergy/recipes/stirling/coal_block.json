@@ -4,6 +4,6 @@
     "item": "minecraft:coal_block",
     "count": 1
   },
-  "processTime": 16000,
-  "energyPerTick": 128
+  "process_time": 16000,
+  "energy_per_tick": 128
 }

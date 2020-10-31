@@ -4,6 +4,6 @@
     "item": "voluminousenergy:petcoke",
     "count": 1
   },
-  "processTime": 4000,
-  "energyPerTick": 128
+  "process_time": 4000,
+  "energy_per_tick": 128
 }

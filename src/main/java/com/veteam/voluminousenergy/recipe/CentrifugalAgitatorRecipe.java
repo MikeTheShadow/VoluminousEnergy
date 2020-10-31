@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -18,9 +19,16 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class CentrifugalAgitatorRecipe extends VERecipe {
-    public static final IRecipeType<CentrifugalAgitatorRecipe> RECIPE_TYPE = IRecipeType.register("centrifugal_agitating");
+public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.CENTRIFUGAL_AGITATING.toString();
+        }
+    };
+
     public static final Serializer SERIALIZER = new Serializer();
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();
@@ -35,6 +43,15 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public int outputAmount;
     public int secondAmount;
 
+    public CentrifugalAgitatorRecipe() {
+        recipeId = null;
+    }
+
+    @Override
+    public ArrayList<Item> getIngredientList() {
+        return ingredientList;
+    }
+
     public CentrifugalAgitatorRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
@@ -47,7 +64,19 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     public ItemStack getSecondResult(){return secondResult;}
 
-    public FluidStack getSecondFluid(){
+    public List<FluidStack> getFluids() {
+        List<FluidStack> f = new ArrayList<>();
+        f.add(getOutputFluid());
+        f.add(getSecondFluid());
+        return f;
+    }
+
+    @Override
+    public List<ItemStack> getResults() {
+        return null;
+    }
+
+    private FluidStack getSecondFluid(){
         if (secondResult.getItem() instanceof BucketItem){
             return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), secondAmount);
         }
@@ -59,6 +88,11 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
         }
         return FluidStack.EMPTY;
+    }
+
+    @Override
+    public List<Integer> getAmounts() {
+        return null;
     }
 
     public FluidStack getInputFluid(){
@@ -91,12 +125,17 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
+    @Override
     public int getOutputAmount() {return outputAmount;}
+
+    @Override
+    public int getInputAmount() {return inputAmount;}
 
     public int getSecondAmount(){return secondAmount;}
 
+    @Override
     public int getProcessTime() { return processTime; }
 
 
@@ -108,7 +147,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.inputAmount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
-            recipe.processTime = JSONUtils.getInt(json,"processTime",200);
+            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if(!ingredientList.contains(stack.getItem())){

@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
@@ -12,11 +12,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastFurnaceContainer>
-{
-    PrimitiveBlastFurnaceTile tileEntity;
-    Container container;
-    public ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
+public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastFurnaceContainer> {
+    private PrimitiveBlastFurnaceTile tileEntity;
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
@@ -39,7 +37,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;

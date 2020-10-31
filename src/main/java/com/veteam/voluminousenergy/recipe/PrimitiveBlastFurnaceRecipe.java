@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,8 +20,14 @@ import java.util.ArrayList;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> recipeType = IRecipeType.register("primitive_blast_furnacing");
-    public static final Serializer serializer = new Serializer();
+    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = new IRecipeType<PrimitiveBlastFurnaceRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.PRIMITIVE_BLAST_FURNACING.toString();
+        }
+    };
+
+    public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
     public Ingredient ingredient;
@@ -75,12 +82,12 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     @Override
     public IRecipeSerializer<?> getSerializer(){
-        return serializer;
+        return SERIALIZER;
     }
 
     @Override
     public IRecipeType<?> getType(){
-        return recipeType;
+        return RECIPE_TYPE;
     }
 
     public int getOutputAmount(){
@@ -99,7 +106,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
-            recipe.processTime = JSONUtils.getInt(json, "processTime", 200);
+            recipe.processTime = JSONUtils.getInt(json, "process_time", 200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if (!ingredientList.contains(stack.getItem())){
@@ -109,13 +116,9 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
             ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
             int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(), "count", 1);
-            //recipe.result = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation),fluidAmount);
-            //recipe.result = new ItemStack(VEItems.COALCOKE);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
             Result = recipe.result;
-
-
 
             return recipe;
         }

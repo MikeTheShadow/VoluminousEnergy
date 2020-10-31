@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "*0*",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    },
+    "*": {
+      "tag": "forge:microchips"
+    },
+    "0": {
+      "item": "voluminousenergy:aluminum_shell"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:aluminum_machine_casing"
+  }
+}

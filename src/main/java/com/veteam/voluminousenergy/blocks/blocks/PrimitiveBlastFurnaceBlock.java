@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -39,7 +40,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
         if(!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -48,8 +49,8 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
             } else {
                 throw new IllegalStateException("Primitive Blast named container provider is missing!");
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return super.onBlockActivated(state, world, pos, player, handIn, hit);
+        return ActionResultType.SUCCESS;
     }
 }

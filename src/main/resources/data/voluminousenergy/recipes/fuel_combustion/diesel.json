@@ -1,0 +1,7 @@
+{
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "voluminousenergy:diesel_bucket",
+    "volumetric_energy": 256000
+  }
+}

@@ -4,7 +4,7 @@
     "item": "minecraft:coal_block",
     "count": 1
   },
-  "processTime": 1800,
+  "process_time": 1800,
   "result": {
     "item": "voluminousenergy:coalcoke",
     "count": 9

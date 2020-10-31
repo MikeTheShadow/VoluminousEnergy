@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:golden_apple",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:shredded_biomass",
+    "count": 2
+  },
+  "rng": {
+    "item": "minecraft:gold_nugget",
+    "count": 1,
+    "chance": 1
+  }
+}

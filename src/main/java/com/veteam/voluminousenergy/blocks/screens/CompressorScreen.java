@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CompressorTile;
@@ -15,7 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class CompressorScreen extends ContainerScreen<CompressorContainer> {
 
     private CompressorTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/compressor_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/compressor_gui.png");
 
     public CompressorScreen(CompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -45,7 +45,7 @@ public class CompressorScreen extends ContainerScreen<CompressorContainer> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "bcb"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "tag": "forge:gears/aluminum"
+    },
+    "b": {
+      "tag": "forge:microchips"
+    },
+    "c": {
+      "tag": "forge:gears/carbon"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:centrifugal_agitator"
+  }
+}

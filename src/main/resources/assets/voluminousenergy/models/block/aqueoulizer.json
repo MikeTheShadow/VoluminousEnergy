@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/aqueoulizer_top",
+    "up": "voluminousenergy:block/aqueoulizer_top",
+    "east": "voluminousenergy:block/aqueoulizer_side",
+    "west": "voluminousenergy:block/aqueoulizer_side",
+    "north": "voluminousenergy:block/aqueoulizer_front",
+    "south": "voluminousenergy:block/aqueoulizer_side"
+  }
+}

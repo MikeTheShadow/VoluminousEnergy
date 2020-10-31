@@ -13,6 +13,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -31,7 +33,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
@@ -53,19 +54,17 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
-            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(input), world).orElse(null);
+            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (counter > 0){
-                // TODO: Add power based on last inputted item from ItemStack
-                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){ //TODO: Config for Stirling Generator
+                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     counter--;
                     energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                 }
                 markDirty();
             } else if (!input.isEmpty()) {
                 if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
-                    //TODO: Consume item and set energyRate, counter
                     h.extractItem(0,recipe.ingredientCount,false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();
@@ -80,28 +79,23 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         });
     }
 
+    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
     private void sendOutPower() {
         energy.ifPresent(energy -> {
-            AtomicInteger capacity = new AtomicInteger(energy.getEnergyStored());
-            if (capacity.get() > 0){ //If we don't have energy we can't send any out
-                for (Direction direction : Direction.values()){
-                    TileEntity te = world.getTileEntity(pos.offset(direction));
-                    if (te != null){
-                        boolean doContinue = te.getCapability(CapabilityEnergy.ENERGY, direction).map(handler -> {
-                                    if (handler.canReceive()){
-                                        int recieved = handler.receiveEnergy(Math.min(capacity.get(),Config.STIRLING_GENERATOR_SEND.get()),false);
-                                        capacity.addAndGet(-recieved);
-                                        ((VEEnergyStorage) energy).consumeEnergy(recieved);
-                                        markDirty();
-                                        return capacity.get() > 0;
-                                    } else {
-                                        return true;
-                                    }
-                                }
-                        ).orElse(true);
-                        if (!doContinue){
-                            return;
-                        }
+            for (Direction dir : Direction.values()){
+                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                Direction opposite = dir.getOpposite();
+                if(tileEntity != null){
+                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                    int smallest = Math.min(Config.STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
+                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    if (energy.getEnergyStored() <=0){
+                        break;
                     }
                 }
             }
@@ -115,6 +109,11 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
+        energyRate = tag.getInt("energy_rate");
+
         super.read(tag);
     }
 
@@ -128,7 +127,28 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
+
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
+        tag.putInt("energy_rate", energyRate);
+
         return super.write(tag);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.read(pkt.getNbtCompound());
     }
 
     private ItemStackHandler createHandler() {
@@ -142,8 +162,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -156,8 +176,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
@@ -171,9 +191,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         };
     }
 
-    // TODO: Config for Stirling Generator
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(), Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.STIRLING_GENERATOR_MAX_POWER.get(), Config.STIRLING_GENERATOR_SEND.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull
@@ -199,7 +218,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         return new StirlingGeneratorContainer(i,world,pos,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){ // TODO: Implement similar system for flames
+    public int progressCounterPX(int px){
         if (counter == 0){
             return 0;
         } else {

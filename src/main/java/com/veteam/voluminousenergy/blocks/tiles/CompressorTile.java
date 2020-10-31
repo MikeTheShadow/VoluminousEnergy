@@ -13,6 +13,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -53,7 +55,7 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack output = h.getStackInSlot(1).copy();
 
-            CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(input), world).orElse(null);
+            CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (!input.isEmpty()){
@@ -123,6 +125,11 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
         return super.write(tag);
     }
 
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
+    }
+
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(2) {
             @Override
@@ -134,8 +141,8 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -150,8 +157,8 @@ public class CompressorTile extends TileEntity implements ITickableTileEntity, I
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){

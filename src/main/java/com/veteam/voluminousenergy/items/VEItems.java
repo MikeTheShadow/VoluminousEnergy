@@ -4,8 +4,10 @@ import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
 import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
+import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
+import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 
 public class VEItems
 {
@@ -13,6 +15,7 @@ public class VEItems
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
+    public static ShreddedBiomass SHREDDED_BIOMASS = new ShreddedBiomass();
 
     //Dusts
     public static CoalDust COALDUST = new CoalDust();
@@ -52,7 +55,9 @@ public class VEItems
     //Plates
     public static AluminumPlate ALUMINUM_PLATE = new AluminumPlate();
     public static CarbonPlate CARBON_PLATE = new CarbonPlate();
+    public static TitaniumPlate TITANIUM_PLATE = new TitaniumPlate();
 
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
+    public static SilverMicrochip SILVER_MICROCHIP = new SilverMicrochip();
 }

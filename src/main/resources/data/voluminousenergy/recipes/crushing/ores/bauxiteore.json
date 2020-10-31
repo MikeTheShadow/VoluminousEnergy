@@ -4,7 +4,7 @@
     "tag": "forge:ores/bauxite",
     "count": 1
   },
-  "processTime": 200,
+  "process_time": 200,
   "result": {
     "item": "voluminousenergy:bauxite_dust",
     "count": 2

@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,11 +18,21 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    public static final IRecipeType<CrusherRecipe> recipeType = IRecipeType.register("crushing");
-    public static final Serializer serializer = new Serializer();
+    //public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = IRecipeType.register("crushing");
+
+    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = new IRecipeType<CrusherRecipe>() {
+        @Override
+        public String toString() {
+            return RecipeConstants.CRUSHING.toString();
+        }
+    };
+
+    public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
     public Ingredient ingredient;
@@ -31,6 +43,9 @@ public class CrusherRecipe extends VERecipe {
     private int outputAmount;
     private int outputRngAmount;
     private float chance;
+
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
+
 
     public CrusherRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -66,16 +81,20 @@ public class CrusherRecipe extends VERecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return serializer;}
+    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return recipeType;}
+    public IRecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getOutputAmount() {return outputAmount;}
 
     public int getOutputRngAmount(){return outputRngAmount;}
 
     public int getProcessTime() { return processTime; }
+
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CrusherRecipe>{
 
@@ -87,7 +106,7 @@ public class CrusherRecipe extends VERecipe {
 
             recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getInt(json,"processTime",200);
+            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
                 if(!ingredientList.contains(stack.getItem())){

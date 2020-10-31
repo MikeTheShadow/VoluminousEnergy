@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "cbc"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "*": {
+      "item": "minecraft:iron_block"
+    },
+    "a": {
+      "tag": "forge:gears/stone"
+    },
+    "b": {
+      "tag": "forge:microchips"
+    },
+    "c": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:electrolyzer"
+  }
+}

@@ -1,24 +1,40 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
-    private ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private static final Logger LOGGER = LogManager.getLogger();
+    private boolean openedIOGui = false;
 
     public CrusherScreen(CrusherContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CrusherTile) screenContainer.tileEntity;
+    }
+
+    @Override
+    protected void init() {
+        this.addButton(new ioMenuButton(152,4,20,18, button -> {
+            LOGGER.debug("Hit button");
+            openedIOGui = ((ioMenuButton) button).openGui();
+        }));
+        super.init();
     }
 
     @Override
@@ -38,13 +54,19 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(container.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE", mouseX, mouseY);
+        } else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
+            if (openedIOGui){
+                renderTooltip("Close IO Management", mouseX, mouseY);
+            } else {
+                renderTooltip("Open IO Management", mouseX, mouseY);
+            }
         }
         super.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
@@ -63,9 +85,25 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
              */
             this.blit(i+79, j+31, 176, 0, 17, progress);
             this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-
+            drawIOSideHelper(i,j,mouseX,mouseY,partialTicks);
         }
 
     }
 
+    public static ResourceLocation getGUI() {
+        return GUI;
+    }
+
+    private void drawIOSideHelper(int i, int j, int mouseX, int mouseY, float partialTicks){
+        if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)) {
+            this.blit(i+152,j+4,193,19,20,18);
+        } else {
+            this.blit(i+152,j+4,193,0,20,18);
+        }
+        for(Widget widget : this.buttons){
+            if (widget instanceof ioMenuButton){
+                this.openedIOGui = ((ioMenuButton) widget).openGui();
+            }
+        }
+    }
 }

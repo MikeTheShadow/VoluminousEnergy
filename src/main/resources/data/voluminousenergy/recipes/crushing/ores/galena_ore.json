@@ -4,7 +4,7 @@
     "tag": "forge:ores/galena",
     "count": 1
   },
-  "processTime": 200,
+  "process_time": 200,
   "result": {
     "item": "voluminousenergy:galena_dust",
     "count": 2

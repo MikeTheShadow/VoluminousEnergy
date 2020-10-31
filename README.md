@@ -1,5 +1,5 @@
 # Voluminous Energy
-<big> An energy focused tech mod for Minecraft 1.14.4 </big>
+<big> An energy focused tech mod for Minecraft 1.15.2 </big>
 
 ## Ores
 *	Saltpeter
@@ -15,21 +15,21 @@
 	* Source of:
 		* Aluminium (Primary)
 		* Titanium
-        * Oxygen (O<sub>2</sub>, Planned)
+        * Oxygen
 *	Cinnabar
 	* Spawns in Stone
 	* Any Forge registered biome
 	* From Y1 to Y256
 	* Source of:
-	 	* Mercury (Primary, Planned)
+	 	* Mercury (Primary)
 	 	* Sulfur
 *	Rutile
 	* Spawns in Stone
 	* Any Forge registered biome
-	* From Y1 to Y10
+	* From Y1 to Y16
 	* Source of:
 	 	*	Titanium (Primary)
-	 	*	Oxygen (Primary, Planned)
+	 	*	Oxygen (Primary)
 *	Galena
 	* Spawns in Stone
 	* Any Forge registered biome

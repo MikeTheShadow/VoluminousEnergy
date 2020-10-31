@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "*0*",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/titanium"
+    },
+    "*": {
+      "tag": "forge:microchips"
+    },
+    "0": {
+      "item": "voluminousenergy:aluminum_machine_casing"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:titanium_machine_casing"
+  }
+}

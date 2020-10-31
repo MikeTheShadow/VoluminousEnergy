@@ -14,6 +14,17 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_shell")
     public static AluminumShellBlock ALUMINUM_SHELL;
 
+    // Machine Frames
+    @ObjectHolder(VoluminousEnergy.MODID + ":carbon_shielded_aluminum_machine_frame")
+    public static CarbonShieldedAluminumMachineFrame CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME;
+
+    // Casings (For multiblocks)
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_machine_casing")
+    public static AluminumMachineCasingBlock ALUMINUM_MACHINE_CASING_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_machine_casing")
+    public static TitaniumMachineCasingBlock TITANIUM_MACHINE_CASING_BLOCK;
+
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;
@@ -83,6 +94,76 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":stirling_generator")
     public static ContainerType<StirlingGeneratorContainer> STIRLING_GENERATOR_CONTAINER;
+
+    // Combustion Generator
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static CombustionGeneratorBlock COMBUSTION_GENERATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static TileEntityType<CombustionGeneratorTile> COMBUSTION_GENERATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":combustion_generator")
+    public static ContainerType<CombustionGeneratorContainer> COMBUSTION_GENERATOR_CONTAINER;
+
+    // Aqueoulizer
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static AqueoulizerBlock AQUEOULIZER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static TileEntityType<AqueoulizerTile> AQUEOULIZER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aqueoulizer")
+    public static ContainerType<AqueoulizerContainer> AQUEOULIZER_CONTAINER;
+
+    // Air Compressor
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static AirCompressorBlock AIR_COMPRESSOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static TileEntityType<AirCompressorTile> AIR_COMPRESSOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":air_compressor")
+    public static ContainerType<AirCompressorContainer> AIR_COMPRESSOR_CONTAINER;
+
+    // Distillation Unit
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static DistillationUnitBlock DISTILLATION_UNIT_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static TileEntityType<DistillationUnitTile> DISTILLATION_UNIT_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":distillation_unit")
+    public static ContainerType<DistillationUnitContainer> DISTILLATION_UNIT_CONTAINER;
+
+    // Pump
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static PumpBlock PUMP_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static TileEntityType<PumpTile> PUMP_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":pump")
+    public static ContainerType<PumpContainer> PUMP_CONTAINER;
+
+    // Gas Fired Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":gas_fired_furnace")
+    public static GasFiredFurnaceBlock GAS_FIRED_FURNACE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":gas_fired_furnace")
+    public static TileEntityType<GasFiredFurnaceTile> GAS_FIRED_FURNACE_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":gas_fired_furnace")
+    public static ContainerType<GasFiredFurnaceContainer> GAS_FIRED_FURNACE_CONTAINER;
+
+    // Electric Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static ElectricFurnaceBlock ELECTRIC_FURNACE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static TileEntityType<ElectricFurnaceTile> ELECTRIC_FURNACE_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
+    public static ContainerType<ElectricFurnaceContainer> ELECTRIC_FURNACE_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

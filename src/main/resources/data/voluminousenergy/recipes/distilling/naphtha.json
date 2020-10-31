@@ -1,0 +1,20 @@
+{
+  "type": "voluminousenergy:distilling",
+  "process_time": 200,
+  "ingredient": {
+    "item": "voluminousenergy:naphtha_bucket",
+    "amount": 500
+  },
+  "first_result": {
+    "item": "voluminousenergy:gasoline_bucket",
+    "amount": 375
+  },
+  "second_result": {
+    "item": "voluminousenergy:diesel_bucket",
+    "amount": 125
+  },
+  "third_result": {
+    "item": "voluminousenergy:petcoke",
+    "count": 1
+  }
+}

@@ -13,8 +13,9 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -24,8 +25,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,14 +39,18 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
-public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private static final Logger LOGGER = LogManager.getLogger();
+
+    // Sided item handlers
+    private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 2));
+    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 6));
 
 
     public ElectrolyzerTile(){
@@ -53,6 +59,9 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
 
     @Override
     public void tick(){
+
+        updateClients();
+
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack bucket = h.getStackInSlot(1).copy();
@@ -61,7 +70,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
             ItemStack rngTwo = h.getStackInSlot(4).copy();
             ItemStack rngThree = h.getStackInSlot(5).copy();
 
-            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(input), world).orElse(null);
+            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
@@ -254,7 +263,7 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
     public void read(CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
+        //createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         super.read(tag);
@@ -273,89 +282,102 @@ public class ElectrolyzerTile extends TileEntity implements ITickableTileEntity,
         return super.write(tag);
     }
 
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(6) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                markDirty();
-            }
+    public final ItemStackHandler inventory = new ItemStackHandler(6) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            markDirty();
+        }
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                //ItemStack referenceStack1 = inputItemStack.get().copy();
-                //referenceStack1.setCount(64);
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack), world).orElse(null);
-                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+            ItemStack referenceStack = stack.copy();
+            referenceStack.setCount(64);
+            //ItemStack referenceStack1 = inputItemStack.get().copy();
+            //referenceStack1.setCount(64);
+            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+            ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
-                if (slot == 0 && recipe != null){
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return true;
-                        }
+            if (slot == 0 && recipe != null){
+                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    if(stack.getItem() == testStack.getItem()){
+                        return true;
                     }
-                } else if (slot == 1 && stack.getItem() == Items.BUCKET){
-                    return true;
-                } else if (slot == 2 && recipe1 != null){ // Output slot
-                    return stack.getItem() == recipe1.result.getItem();
-                } else if (slot == 3 && recipe1 != null){ // RNG 0 slot
-                    return stack.getItem() == recipe1.getRngItemSlot0().getItem();
-                } else if (slot == 4 && recipe1 != null){ // RNG 1 slot
-                    return stack.getItem() == recipe1.getRngItemSlot1().getItem();
-                } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
-                    return stack.getItem() == recipe1.getRngItemSlot2().getItem();
                 }
-                return false;
+            } else if (slot == 1 && stack.getItem() == Items.BUCKET){
+                return true;
+            } else if (slot == 2 && recipe1 != null){ // Output slot
+                return stack.getItem() == recipe1.result.getItem();
+            } else if (slot == 3 && recipe1 != null){ // RNG 0 slot
+                return stack.getItem() == recipe1.getRngItemSlot0().getItem();
+            } else if (slot == 4 && recipe1 != null){ // RNG 1 slot
+                return stack.getItem() == recipe1.getRngItemSlot1().getItem();
+            } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
+                return stack.getItem() == recipe1.getRngItemSlot2().getItem();
             }
+            return false;
+        }
 
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(referenceStack.copy()), world).orElse(null);
-                ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.recipeType, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+            ItemStack referenceStack = stack.copy();
+            referenceStack.setCount(64);
+            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack.copy()), world).orElse(null);
+            ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
 
-                if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return super.insertItem(slot, stack, simulate);
-                        }
+            if(slot == 0 && recipe != null) {
+                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    if(stack.getItem() == testStack.getItem()){
+                        return super.insertItem(slot, stack, simulate);
                     }
-                } else if ( slot == 1 && stack.getItem() == Items.BUCKET) {
+                }
+            } else if ( slot == 1 && stack.getItem() == Items.BUCKET) {
+                return super.insertItem(slot, stack, simulate);
+            } else if (slot == 2 && recipe1 != null){
+                if (stack.getItem() == recipe1.result.getItem()){
                     return super.insertItem(slot, stack, simulate);
-                } else if (slot == 2 && recipe1 != null){
-                    if (stack.getItem() == recipe1.result.getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 3 && recipe1 != null){
-                    if (stack.getItem() == recipe1.getRngItemSlot0().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 4 && recipe1 != null){
-                    if (stack.getItem() == recipe1.getRngItemSlot1().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 5 && recipe1 != null){
-                    if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
                 }
-                return stack;
+            } else if (slot == 3 && recipe1 != null){
+                if (stack.getItem() == recipe1.getRngItemSlot0().getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
+            } else if (slot == 4 && recipe1 != null){
+                if (stack.getItem() == recipe1.getRngItemSlot1().getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
+            } else if (slot == 5 && recipe1 != null){
+                if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
-        };
-    }
+            return stack;
+        }
+    };
 
     private IEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if (side == null) {
+                return handler.cast();
+            } else {
+                // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
+                if (side.getIndex() == Direction.UP.getIndex()){
+                    return inputItemHandler.cast();
+                }
+                if (side.getIndex() == Direction.DOWN.getIndex()){
+                    return outputItemHandler.cast();
+                }
+            }
         }
         if (cap == CapabilityEnergy.ENERGY){
             return energy.cast();
