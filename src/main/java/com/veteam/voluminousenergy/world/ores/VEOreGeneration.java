@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.world.ores;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
@@ -21,6 +22,7 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 public class VEOreGeneration {
 
     public static void OreGeneration(BiomeLoadingEvent biome){
+        VoluminousEnergy.LOGGER.debug("ORE GEN CALLED!");
         if (biome.getCategory() == Biome.Category.NETHER){
             // Nether ores
         } else if (biome.getCategory() == Biome.Category.THEEND){

@@ -26,6 +26,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +35,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -46,6 +49,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,6 +83,9 @@ public class VoluminousEnergy
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
+
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
         // Config Files to load
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
@@ -386,6 +393,17 @@ public class VoluminousEnergy
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
             // TODO: Reimplement red desert biome
         }
+
+        //@SubscribeEvent
+        //public static void addFeaturesToBiomes(BiomeLoadingEvent biome){
+        //    LOGGER.debug("BIOME LOADING EVENT OCCURED!");
+        /*
+        if (Config.ENABLE_VE_FEATURE_GEN.get()){
+            VEOreGeneration.OreGeneration(biome); // Setup custom ore generation
+            VEFeatureGeneration.VEFeatureGenerationSetup(biome); // Setup feature generation
+        }
+         */
+        //}
     }
 
     // TODO: Reimplement biomes for 1.16.3
@@ -397,11 +415,5 @@ public class VoluminousEnergy
         //BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
     }
 
-    @SubscribeEvent
-    public static void addFeaturesToBiomes(BiomeLoadingEvent biome){
-        if (Config.ENABLE_VE_FEATURE_GEN.get()){
-            VEOreGeneration.OreGeneration(biome); // Setup custom ore generation
-            VEFeatureGeneration.VEFeatureGenerationSetup(biome); // Setup feature generation
-        }
-    }
+
 }
