@@ -38,16 +38,16 @@ public class VERecipes {
         public static final IRecipeType<DistillationRecipe> DISTILLING = registerType(RecipeConstants.DISTILLING);
     }
 
-    public static final RegistryObject<IRecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, PrimitiveBlastFurnaceRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> CRUSHING = registerSerializer(RecipeConstants.CRUSHING, CrusherRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> ELECTROLYZING = registerSerializer(RecipeConstants.ELECTROLYZING, ElectrolyzerRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> CENTRIFUGAL_AGITATING = registerSerializer(RecipeConstants.CENTRIFUGAL_AGITATING, CentrifugalAgitatorRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> COMPRESSING = registerSerializer(RecipeConstants.COMPRESSING, CompressorRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> STIRLING = registerSerializer(RecipeConstants.STIRLING, StirlingGeneratorRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> OXIDIZING = registerSerializer(RecipeConstants.OXIDIZING, CombustionGeneratorOxidizerRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> FUEL_COMBUSTION = registerSerializer(RecipeConstants.FUEL_COMBUSTION, CombustionGeneratorFuelRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> AQUEOULIZING = registerSerializer(RecipeConstants.AQUEOULIZING, AqueoulizerRecipe.Serializer::new);
-    public static final RegistryObject<IRecipeSerializer<?>> DISTILLING = registerSerializer(RecipeConstants.DISTILLING, DistillationRecipe.Serializer::new);
+    public static final RegistryObject<IRecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> CRUSHING = registerSerializer(RecipeConstants.CRUSHING, () -> CrusherRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> ELECTROLYZING = registerSerializer(RecipeConstants.ELECTROLYZING, () -> ElectrolyzerRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> CENTRIFUGAL_AGITATING = registerSerializer(RecipeConstants.CENTRIFUGAL_AGITATING, () -> CentrifugalAgitatorRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> COMPRESSING = registerSerializer(RecipeConstants.COMPRESSING, () -> CompressorRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> STIRLING = registerSerializer(RecipeConstants.STIRLING, () -> StirlingGeneratorRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> OXIDIZING = registerSerializer(RecipeConstants.OXIDIZING, () -> CombustionGeneratorOxidizerRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> FUEL_COMBUSTION = registerSerializer(RecipeConstants.FUEL_COMBUSTION, () -> CombustionGeneratorFuelRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> AQUEOULIZING = registerSerializer(RecipeConstants.AQUEOULIZING, () -> AqueoulizerRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> DISTILLING = registerSerializer(RecipeConstants.DISTILLING, () -> DistillationRecipe.SERIALIZER);
 
     private static RegistryObject<IRecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<IRecipeSerializer<?>> serializer) {
         VoluminousEnergy.LOGGER.info("RSerializing: " + name.toString());
