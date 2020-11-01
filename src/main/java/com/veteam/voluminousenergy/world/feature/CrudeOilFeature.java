@@ -18,10 +18,7 @@ public class CrudeOilFeature extends VELakesFeature {
     @Override
     public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf){
 
-        int r = rand.nextInt(rand.nextInt(generator.getMaxBuildHeight() - 8) + 8);
-        if(r >= 12){
-            return super.generate(worldIn, generator, rand, pos, conf);
-        }
+        if (rand.nextDouble() < 0.1) return super.generate(worldIn, generator, rand, pos, conf);
 
         return super.generate(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
     }

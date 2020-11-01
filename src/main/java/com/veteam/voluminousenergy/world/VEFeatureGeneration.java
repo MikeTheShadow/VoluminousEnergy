@@ -20,7 +20,7 @@ public class VEFeatureGeneration {
 
     public static void addFeaturesToBiomes(BiomeLoadingEvent event){
         if(event.getCategory() != Biome.Category.NETHER && event.getCategory() != Biome.Category.THEEND){
-            VoluminousEnergy.LOGGER.debug(event.getName().toString() + " HIT!!! GOING TO REGISTER OIL!");
+            VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");
              ConfiguredFeature<?, ?> crudeOilLakeFeature = CrudeOilFeature.INSTANCE
                      .withConfiguration(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.getDefaultState().getBlockState()))
                      .withPlacement(Placement.LAVA_LAKE.configure(new ChanceConfig(Config.OIL_LAKE_CHANCE.get())));
