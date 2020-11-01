@@ -30,6 +30,8 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         super(tileEntityTypeIn);
     }
 
+
+
     //use for inputting a fluid
     public boolean inputFluid(RelationalTank tank,int slot1,int slot2) {
         ItemStack input = tank.getInput();

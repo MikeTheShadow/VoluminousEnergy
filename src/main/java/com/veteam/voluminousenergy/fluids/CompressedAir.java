@@ -8,10 +8,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+
+import java.util.function.Supplier;
 
 public class CompressedAir {
     public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/compressed_air_still");
@@ -39,7 +42,7 @@ public class CompressedAir {
         return COMPRESSED_AIR_BLOCK;
     }
 
-    public static Item CompressedAirBucket(){
+    public static Item CompressedAirBucket() {
         COMPRESSED_AIR_BUCKET = new BucketItem(() -> COMPRESSED_AIR, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
         return COMPRESSED_AIR_BUCKET;
     }

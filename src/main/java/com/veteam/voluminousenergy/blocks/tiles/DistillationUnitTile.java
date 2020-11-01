@@ -88,16 +88,11 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         ItemStack secondOutputBottom = inventory.getStackInSlot(5).copy();
         ItemStack thirdOutput = inventory.getStackInSlot(6).copy();
 
-        inputTank.setInput(inputTop.copy());
-        inputTank.setOutput(inputBottom.copy());
+        inputTank.setIOItemstack(inputTop.copy(),inputBottom.copy());
+        outputTank0.setIOItemstack(firstOutputTop.copy(),firstOutputBottom.copy());
+        outputTank1.setIOItemstack(secondOutputTop.copy(),secondOutputBottom.copy());
 
-        outputTank0.setInput(firstOutputTop.copy());
-        outputTank0.setOutput(firstOutputBottom.copy());
-
-        outputTank1.setInput(secondOutputTop.copy());
-        outputTank1.setOutput(secondOutputBottom.copy());
-
-        if(this.inputFluid(inputTank,0,1)) return;
+        if(inputFluid(inputTank,0,1)) return;
         if(this.outputFluid(inputTank,0,1)) return;
 
         if(this.inputFluid(outputTank0,2,3)) return;
@@ -119,7 +114,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                             + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount()
                             + recipe.getAmounts().get(2) <= tankCapacity){
                         // Check for power
-                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
                             if (counter == 1){
 
                                 // Drain Input
@@ -185,7 +180,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
-
         // Tanks
         fluid.ifPresent(f -> {
             CompoundNBT inputTank = tag.getCompound("inputTank");
@@ -261,7 +255,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot == 0 || slot == 1){
+                if (slot == 0 || slot == 1) {
                     VEFluidRecipe recipe = world.getRecipeManager().getRecipe(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
@@ -362,14 +356,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     public boolean isMultiblockValid (){
         // Get Direction
-        BlockState state = this.world.getBlockState(this.pos);
-        // TODO: Update commented out code to 1.16.3
-        /*Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
-        String direction = "null";
-        if(it.isPresent()) {
-            direction = it.get().getValue().toString();
-        }*/
-        String direction = "null";
+        String direction = getDirection();
         // Setup range to check based on direction
         byte sX, sY, sZ, lX, lY, lZ;
 

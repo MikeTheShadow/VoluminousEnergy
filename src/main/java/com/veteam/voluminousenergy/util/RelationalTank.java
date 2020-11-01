@@ -35,6 +35,11 @@ public class RelationalTank {
         this.outputID = outputID;
     }
 
+    public void setIOItemstack(ItemStack input,ItemStack output) {
+        this.input = input;
+        this.output = output;
+    }
+
     public TankType getTankType() {
         return tankType;
     }
