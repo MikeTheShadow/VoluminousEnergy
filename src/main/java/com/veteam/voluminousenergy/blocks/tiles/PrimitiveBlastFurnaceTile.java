@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -97,11 +98,11 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        super.read(tag);
+        super.read(state, tag);
     }
 
     @Override
@@ -136,6 +137,8 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private ItemStackHandler createHandler() {

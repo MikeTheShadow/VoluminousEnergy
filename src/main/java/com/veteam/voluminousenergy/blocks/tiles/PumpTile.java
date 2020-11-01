@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -93,7 +94,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -110,7 +111,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         lZ = tag.getInt("lz");
         initDone = tag.getBoolean("init_done");
 
-        super.read(tag);
+        super.read(state, tag);
     }
 
     @Override
@@ -152,7 +153,8 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private IFluidHandler createFluid() {

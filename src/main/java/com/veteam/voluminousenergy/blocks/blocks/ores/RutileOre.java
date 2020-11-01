@@ -11,6 +11,7 @@ public class RutileOre extends Block {
         super(Properties.create(Material.ROCK)
             .sound(SoundType.STONE)
             .hardnessAndResistance(2.0f)
+            .setRequiresTool()
             .harvestLevel(Config.RUTILE_HARVEST_LEVEL.get())
             .harvestTool(ToolType.PICKAXE)
         );

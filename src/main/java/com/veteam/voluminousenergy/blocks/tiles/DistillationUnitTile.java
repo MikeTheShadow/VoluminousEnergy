@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
@@ -20,7 +19,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.IProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -41,8 +39,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DistillationUnitTile extends VEFluidTileEntity {
@@ -183,7 +179,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -201,7 +197,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             this.outputTank1.getTank().readFromNBT(outputTank1);
         });
 
-        super.read(tag);
+        super.read(state,tag);
     }
 
     @Override
@@ -247,7 +243,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private IFluidHandler createFluid() {
@@ -366,12 +363,13 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     public boolean isMultiblockValid (){
         // Get Direction
         BlockState state = this.world.getBlockState(this.pos);
-        Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
+        // TODO: Update commented out code to 1.16.3
+        /*Optional<Map.Entry<IProperty<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
         String direction = "null";
         if(it.isPresent()) {
             direction = it.get().getValue().toString();
-        }
-
+        }*/
+        String direction = "null";
         // Setup range to check based on direction
         byte sX, sY, sZ, lX, lY, lZ;
 

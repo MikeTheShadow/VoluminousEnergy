@@ -29,7 +29,8 @@ public class CombustionGeneratorBlock extends FaceableBlock {
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.COMBUSTION_GENERATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

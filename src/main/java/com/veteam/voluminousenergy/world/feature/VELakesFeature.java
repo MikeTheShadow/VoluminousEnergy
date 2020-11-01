@@ -1,34 +1,31 @@
 package com.veteam.voluminousenergy.world.feature;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.LakesFeature;
 
 import java.util.Random;
-import java.util.function.Function;
 
-public class VELakesFeature extends LakesFeature {
-    public VELakesFeature(Function<Dynamic<?>, ? extends BlockStateFeatureConfig> p_i51485_1_) {
-        super(p_i51485_1_);
+public class VELakesFeature extends Feature<BlockStateFeatureConfig> {
+    public VELakesFeature(Codec<BlockStateFeatureConfig> p_i231962_1_) {
+        super(p_i231962_1_);
     }
 
     private static final BlockState AIR = Blocks.CAVE_AIR.getDefaultState();
 
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, BlockStateFeatureConfig config){
+    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig config){
         while(pos.getY() > 5 && worldIn.isAirBlock(pos)) {
             pos = pos.down();
         }
@@ -38,7 +35,7 @@ public class VELakesFeature extends LakesFeature {
         } else {
             pos = pos.down(4);
             ChunkPos chunkpos = new ChunkPos(pos);
-            if (!worldIn.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_REFERENCES).getStructureReferences(Feature.VILLAGE.getStructureName()).isEmpty()) {
+            if (!worldIn.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_REFERENCES).getStructureReferences().isEmpty()) {
                 return false;
             } else {
                 boolean[] aboolean = new boolean[2048];
@@ -102,7 +99,7 @@ public class VELakesFeature extends LakesFeature {
                                 BlockPos blockpos = pos.add(i2, j4 - 1, j3);
                                 if (isDirt(worldIn.getBlockState(blockpos).getBlock()) && worldIn.getLightFor(LightType.SKY, pos.add(i2, j4, j3)) > 0) {
                                     Biome biome = worldIn.getBiome(blockpos);
-                                    if (biome.getSurfaceBuilderConfig().getTop().getBlock() == Blocks.MYCELIUM) {
+                                    if (biome.getGenerationSettings().getSurfaceBuilderConfig().getTop().getBlock() == Blocks.MYCELIUM) {
                                         worldIn.setBlockState(blockpos, Blocks.MYCELIUM.getDefaultState(), 2);
                                     } else {
                                         worldIn.setBlockState(blockpos, Blocks.GRASS_BLOCK.getDefaultState(), 2);

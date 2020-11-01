@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
@@ -65,11 +66,11 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     }
 
     @Override
-    public void draw(CompressorRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(24, 12);
-        emptyArrow.draw(24,12);
-        slotDrawable.draw(2,10);
-        slotDrawable.draw(48,10);
+    public void draw(CompressorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,24, 12);
+        emptyArrow.draw(matrixStack,24,12);
+        slotDrawable.draw(matrixStack,2,10);
+        slotDrawable.draw(matrixStack,48,10);
     }
 
     @Override

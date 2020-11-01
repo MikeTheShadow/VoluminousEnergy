@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
@@ -12,6 +13,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.ITextComponent;
+//import net.minecraft.util.text.ITextComponent;
 
 public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer> {
 
@@ -24,40 +27,46 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks){
-        this.renderBackground();
-        super.render(mouseX,mouseY,partialTicks);
-        this.renderHoveredToolTip(mouseX,mouseY);
+    public void render(MatrixStack matrixStack,int mouseX, int mouseY, float partialTicks){
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX,mouseY,partialTicks);
+        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
-        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    protected void init(){
+        super.init();
+        // Buttons go here
     }
 
     @Override
-    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
+        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    }
+
+    @Override
+    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+            //renderTooltip(matrixStack, container.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE", mouseX, mouseY);
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
-            String name = new TranslationTextComponent(tileEntity.getAirTankFluid().getTranslationKey(), new Object[0]).getFormattedText();
+            String name = new TranslationTextComponent(tileEntity.getAirTankFluid().getTranslationKey(), new Object[0]).getKey();
             int amount = tileEntity.getAirTankFluid().getAmount();
-            renderTooltip(name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
         }
 
-        super.renderHoveredToolTip(mouseX, mouseY);
+        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
         if (tileEntity != null) {
             int power = container.powerScreen(49);
 
@@ -69,7 +78,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
+            this.blit(matrixStack,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{
                 VERender.renderGuiTank(tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);

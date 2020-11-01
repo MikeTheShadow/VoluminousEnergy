@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -103,7 +104,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
     }
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -114,7 +115,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         length = tag.getInt("length");
         energyRate = tag.getInt("energy_rate");
 
-        super.read(tag);
+        super.read(state,tag);
     }
 
     @Override
@@ -148,7 +149,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private ItemStackHandler createHandler() {

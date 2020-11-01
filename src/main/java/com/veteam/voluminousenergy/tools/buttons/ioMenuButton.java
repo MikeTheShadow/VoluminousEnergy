@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools.buttons;
 
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -9,7 +10,7 @@ public class ioMenuButton extends Button {
     private boolean cycled = false;
 
     public ioMenuButton(int x, int y, int width, int height, IPressable onPress){
-        super(x, y, width, height, "", button -> {
+        super(x, y, width, height, ITextComponent.getTextComponentOrEmpty(""), button -> {
             ((ioMenuButton) button).cycleMode();
             onPress.onPress(button);
         });

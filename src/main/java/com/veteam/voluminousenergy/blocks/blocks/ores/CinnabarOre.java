@@ -11,6 +11,7 @@ public class CinnabarOre extends Block {
         super(Properties.create(Material.ROCK)
             .sound(SoundType.STONE)
             .hardnessAndResistance(2.0f)
+            .setRequiresTool()
             .harvestLevel(Config.CINNABAR_HARVEST_LEVEL.get())
             .harvestTool(ToolType.PICKAXE)
         );

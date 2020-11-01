@@ -13,17 +13,18 @@ import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
-import com.veteam.voluminousenergy.world.VEOreGeneration;
-import com.veteam.voluminousenergy.world.biomes.RedDesertBiome;
+import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
@@ -31,6 +32,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -43,8 +45,11 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.common.BiomeDictionary.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy
@@ -81,13 +86,13 @@ public class VoluminousEnergy
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        VEOreGeneration.OreGeneration(); // Setup custom ore generation
-        VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
+        //VEOreGeneration.OreGeneration(); // Setup custom ore generation
+        //VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
     }
 
-    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
+    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){/* //TODO: Test if needed, if so find a FIX!
         //True Items
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","silicon"));
 
@@ -138,7 +143,7 @@ public class VoluminousEnergy
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/cinnabar"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/rutile"));
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/galena"));
-
+        */
 
     }
 
@@ -378,16 +383,25 @@ public class VoluminousEnergy
         }
 
         @SubscribeEvent
-        public static void onRegisterBiome(RegistryEvent.Register<Biome> event)
-        {
-            // TODO: Config for spawn weight
-            registerBiome(event, new RedDesertBiome(), "red_desert", 10, BiomeManager.BiomeType.DESERT, BiomeDictionary.Type.COLD, BiomeDictionary.Type.CONIFEROUS, BiomeDictionary.Type.FOREST, BiomeDictionary.Type.HILLS, BiomeDictionary.Type.SNOWY, BiomeDictionary.Type.OVERWORLD);
+        public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
+            // TODO: Reimplement red desert biome
         }
     }
 
-    private static void registerBiome(RegistryEvent.Register<Biome> event, Biome biome, String registryName, int spawnWeight, BiomeManager.BiomeType spawnType, BiomeDictionary.Type... types) {
+    // TODO: Reimplement biomes for 1.16.3
+    private static void registerBiome(RegistryEvent.Register<Biome> event, Biome biome, String registryName, int spawnWeight, BiomeManager.BiomeType spawnType, Type... types) {
         event.getRegistry().register(biome.setRegistryName(new ResourceLocation(MODID, registryName)));
-        BiomeDictionary.addTypes(biome, types);
-        if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
+        BiomeDictionary.addTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(biome))));
+
+        //BiomeDictionary.addTypes(event, types);
+        //BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
+    }
+
+    @SubscribeEvent
+    public static void addFeaturesToBiomes(BiomeLoadingEvent biome){
+        if (Config.ENABLE_VE_FEATURE_GEN.get()){
+            VEOreGeneration.OreGeneration(biome); // Setup custom ore generation
+            VEFeatureGeneration.VEFeatureGenerationSetup(biome); // Setup feature generation
+        }
     }
 }

@@ -27,7 +27,8 @@ public class ElectricFurnaceBlock extends FaceableBlock {
         super(Properties.create(Material.IRON)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

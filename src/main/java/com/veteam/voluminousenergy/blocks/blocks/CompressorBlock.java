@@ -25,7 +25,8 @@ public class CompressorBlock extends FaceableBlock {
         super(Properties.create(Material.IRON)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.COMPRESSOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

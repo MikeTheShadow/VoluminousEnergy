@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
@@ -68,8 +69,8 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(10, 19);
+    public void draw(CrusherRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,10, 19);
 
 
         if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Check RNG if it's not air
@@ -80,7 +81,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             } else if (chance < 10){
                 xPos += 5;
             }
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",xPos,65,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",xPos,65,0x606060);
         }
 
     }

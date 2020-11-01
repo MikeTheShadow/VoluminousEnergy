@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
@@ -22,36 +23,36 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks){
-        this.renderBackground();
-        super.render(mouseX,mouseY,partialTicks);
-        this.renderHoveredToolTip(mouseX,mouseY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+        this.renderBackground(matrixStack);
+        super.render(matrixStack,mouseX,mouseY,partialTicks);
+        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
-        drawString(Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
-        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
+        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
-    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+            //renderTooltip(matrixStack,container.getEnergy() + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
         } else if (isPointInRegion(79, 53, 18, 18, mouseX, mouseY)){
-            renderTooltip("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
+            //renderTooltip(matrixStack,"Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
         }
-        super.renderHoveredToolTip(mouseX, mouseY);
+        super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
         if (tileEntity != null) {
             int progress = tileEntity.progressCounterPX(14);
             int power = container.powerScreen(49);
@@ -64,8 +65,8 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
-            this.blit(i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
+            this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
+            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
 
         }
     }

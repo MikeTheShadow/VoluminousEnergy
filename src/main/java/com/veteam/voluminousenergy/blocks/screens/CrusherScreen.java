@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
@@ -40,22 +41,22 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks){
-        this.renderBackground();
-        super.render(mouseX,mouseY,partialTicks);
-        this.renderHoveredToolTip(mouseX,mouseY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+        this.renderBackground(matrixStack);
+        super.render(matrixStack,mouseX,mouseY,partialTicks);
+        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(Minecraft.getInstance().fontRenderer, "Crusher",8,6,0xffffff);
-        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Crusher",8,6,0xffffff);
+        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
-    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(container.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE", mouseX, mouseY);
+            //renderTooltip(matrixStack,container.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE", mouseX, mouseY);
         } /*else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
             if (openedIOGui){
                 renderTooltip("Close IO Management", mouseX, mouseY);
@@ -63,16 +64,16 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
                 renderTooltip("Open IO Management", mouseX, mouseY);
             }
         }*/
-        super.renderHoveredToolTip(mouseX, mouseY);
+        super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(24);
             int power = container.powerScreen(49);
@@ -85,8 +86,8 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+79, j+31, 176, 0, 17, progress);
-            this.blit(i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
+            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             //drawIOSideHelper(i,j,mouseX,mouseY,partialTicks);
         }
 
@@ -96,11 +97,11 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         return GUI;
     }
 
-    private void drawIOSideHelper(int i, int j, int mouseX, int mouseY, float partialTicks){
+    private void drawIOSideHelper(MatrixStack matrixStack,int i, int j, int mouseX, int mouseY, float partialTicks){
         if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)) {
-            this.blit(i+152,j+4,193,19,20,18);
+            this.blit(matrixStack,i+152,j+4,193,19,20,18);
         } else {
-            this.blit(i+152,j+4,193,0,20,18);
+            this.blit(matrixStack,i+152,j+4,193,0,20,18);
         }
         for(Widget widget : this.buttons){
             if (widget instanceof ioMenuButton){

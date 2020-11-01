@@ -6,6 +6,8 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
+import jdk.nashorn.internal.ir.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -157,7 +159,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -176,7 +178,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         fuelLength = tag.getInt("fuel_length");
 
 
-        super.read(tag);
+        super.read(state,tag);
     }
 
     @Override
@@ -216,7 +218,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private IFluidHandler createFluid() {

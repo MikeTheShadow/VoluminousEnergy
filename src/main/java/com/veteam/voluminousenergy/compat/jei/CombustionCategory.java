@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -63,23 +64,23 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, double mouseX, double mouseY) {
+    public void draw(CombustionGeneratorFuelRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
 
-        Minecraft.getInstance().fontRenderer.drawString("Volumetric Energy: ",31,4,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
-        slotDrawable.draw(11,0);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Volumetric Energy: ",31,4,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
+        slotDrawable.draw(matrixStack,11,0);
 
-        Minecraft.getInstance().fontRenderer.drawString("Oxidizers: ",2,32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Oxidizers: ",2,32,0x606060);
         int j = 0;
 
         for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
             j = orderOxidizers(i+1,j);
-            slotDrawable.draw(2 + j, 45);
+            slotDrawable.draw(matrixStack,2 + j, 45);
             int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerList.get(i).getProcessTime();
-            Minecraft.getInstance().fontRenderer.drawString(fePerTick+"",4+j,64,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,fePerTick+"",4+j,64,0x606060);
         }
 
-        Minecraft.getInstance().fontRenderer.drawString("FE/t:",-28,64,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"FE/t:",-28,64,0x606060);
 
     }
 

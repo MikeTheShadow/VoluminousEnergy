@@ -11,6 +11,7 @@ public class SaltpeterOre extends FallingBlock {
         super(Properties.create(Material.SAND)
             .sound(SoundType.SAND)
             .hardnessAndResistance(0.6f)
+            .setRequiresTool()
             .harvestLevel(Config.SALTPETER_HARVEST_LEVEL.get())
             .harvestTool(ToolType.SHOVEL)
         );

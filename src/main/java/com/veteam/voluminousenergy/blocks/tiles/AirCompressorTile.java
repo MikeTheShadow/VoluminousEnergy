@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -126,7 +127,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -138,7 +139,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             airTank.readFromNBT(airNBT);
         });
 
-        super.read(tag);
+        super.read(state,tag);
     }
 
     @Override
@@ -177,7 +178,8 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
 
