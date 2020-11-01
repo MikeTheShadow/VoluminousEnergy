@@ -49,35 +49,6 @@ public class VERecipes {
     public static final RegistryObject<IRecipeSerializer<?>> AQUEOULIZING = registerSerializer(RecipeConstants.AQUEOULIZING, AqueoulizerRecipe.Serializer::new);
     public static final RegistryObject<IRecipeSerializer<?>> DISTILLING = registerSerializer(RecipeConstants.DISTILLING, DistillationRecipe.Serializer::new);
 
-    public static void init() {
-        /*register types
-        registerType(RecipeConstants.PRIMITIVE_BLAST_FURNACING,PrimitiveBlastFurnaceRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.CRUSHING,CrusherRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.ELECTROLYZING,ElectrolyzerRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.CENTRIFUGAL_AGITATING, CentrifugalAgitatorRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.COMPRESSING,CompressorRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.STIRLING,StirlingGeneratorRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.OXIDIZING,CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.FUEL_COMBUSTION,CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.AQUEOULIZING,AqueoulizerRecipe.RECIPE_TYPE);
-        registerType(RecipeConstants.DISTILLING,DistillationRecipe.RECIPE_TYPE);
-
-        //register serializers
-        registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING,PrimitiveBlastFurnaceRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.CRUSHING,CrusherRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.ELECTROLYZING,ElectrolyzerRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.CENTRIFUGAL_AGITATING, CentrifugalAgitatorRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.COMPRESSING,CompressorRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.STIRLING,StirlingGeneratorRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.OXIDIZING,CombustionGeneratorOxidizerRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.FUEL_COMBUSTION,CombustionGeneratorFuelRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.AQUEOULIZING,AqueoulizerRecipe.SERIALIZER);
-        registerSerializer(RecipeConstants.DISTILLING,DistillationRecipe.SERIALIZER);
-        */
-    }
-
-
-
     private static RegistryObject<IRecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<IRecipeSerializer<?>> serializer) {
         VoluminousEnergy.LOGGER.info("RSerializing: " + name.toString());
         return RECIPE_SERIALIZERS.register(name.getPath(), serializer);
