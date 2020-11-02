@@ -6,7 +6,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;
 
-public class GalenaOre extends Block {
+public class GalenaOre extends VEOreBlock {
     public GalenaOre(){
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.STONE)
