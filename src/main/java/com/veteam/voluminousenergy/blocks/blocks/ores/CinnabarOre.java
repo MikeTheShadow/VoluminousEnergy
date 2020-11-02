@@ -22,6 +22,7 @@ public class CinnabarOre extends VEOreBlock {
         setRegistryName("cinnabarore");
     }
 
+    @Override
     protected int getExperience(Random rand) {
         return MathHelper.nextInt(rand, 1, 3);
     }

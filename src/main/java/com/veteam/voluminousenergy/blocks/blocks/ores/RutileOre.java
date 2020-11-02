@@ -23,6 +23,7 @@ public class RutileOre extends VEOreBlock {
         setRegistryName("rutileore");
     }
 
+    @Override
     protected int getExperience(Random rand) {
         return MathHelper.nextInt(rand, 5, 7);
     }
