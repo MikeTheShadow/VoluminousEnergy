@@ -19,6 +19,6 @@ public class VEOreBlock extends OreBlock {
 
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
-        return silktouch == 0 ? this.getExperience(RANDOM)*fortune : 0;
+        return silktouch == 0 ? this.getExperience(RANDOM)*(1+fortune) : 0;
     }
 }
