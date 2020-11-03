@@ -32,7 +32,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 - 12), 4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
         drawString(matrixStack,Minecraft.getInstance().fontRenderer,"Ticks:" + tileEntity.counter(),8,36,0xffffff);
     }
 

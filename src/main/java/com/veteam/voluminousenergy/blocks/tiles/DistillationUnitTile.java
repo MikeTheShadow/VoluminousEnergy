@@ -57,7 +57,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     private byte tick = 19;
     private boolean validity = false;
 
-    private static final Logger LOGGER = LogManager.getLogger();
     public final ItemStackHandler inventory = createHandler();
 
     @Override
@@ -403,5 +402,9 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             }
         }
         return true;
+    }
+
+    public boolean getMultiblockValidity(){
+        return validity;
     }
 }

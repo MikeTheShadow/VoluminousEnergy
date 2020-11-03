@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContaine
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -33,31 +34,31 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            //renderTooltip(matrixStack,container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(0).getTranslationKey(), new Object[0]).getKey();
-            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getKey();
-            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
+            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
-            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(2).getTranslationKey(), new Object[0]).getKey();
-            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            String name = tileEntity.getFluidStackFromTank(2).getTranslationKey();
+            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderHoveredTooltip(matrixStack,mouseX, mouseY);

@@ -89,5 +89,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":crushing"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":electrolyzing"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":compressing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK), new ResourceLocation("minecraft:blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK), new ResourceLocation("minecraft:smelting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK), new ResourceLocation("minecraft:blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK), new ResourceLocation("minecraft:smelting"));
     }
 }

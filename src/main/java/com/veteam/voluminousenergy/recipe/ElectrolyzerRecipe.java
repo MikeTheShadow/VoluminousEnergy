@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -112,6 +113,11 @@ public class ElectrolyzerRecipe extends VERecipe {
 
     public Map<Ingredient, Integer> getIngredientMap() {
         return ImmutableMap.copyOf(ingredients);
+    }
+
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK);
     }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ElectrolyzerRecipe>{

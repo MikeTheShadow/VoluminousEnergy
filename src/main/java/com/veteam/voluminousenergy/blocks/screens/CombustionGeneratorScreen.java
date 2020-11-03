@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContaine
 import com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,29 +42,29 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             drawString(matrixStack,Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
         }
 
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            //renderTooltip(matrixStack, container.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
-            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(0).getTranslationKey(), new Object[0]).getKey();
+            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            //renderTooltip(matrixStack, name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // Fuel Tank
-            String name = new TranslationTextComponent(tileEntity.getFluidStackFromTank(1).getTranslationKey(), new Object[0]).getKey();
+            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isPointInRegion(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
-            //renderTooltip(matrixStack,"Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t", mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
 
         super.renderHoveredTooltip(matrixStack, mouseX, mouseY);

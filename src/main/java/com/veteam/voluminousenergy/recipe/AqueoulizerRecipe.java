@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -134,9 +134,10 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
         return inputAmount;
     }
 
-
-
-
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<AqueoulizerRecipe> {
         @Override

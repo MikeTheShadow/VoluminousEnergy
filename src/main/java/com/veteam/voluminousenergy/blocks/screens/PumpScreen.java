@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PumpTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,19 +35,19 @@ public class PumpScreen extends ContainerScreen<PumpContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Pump",8,6,0xffffff);
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            //renderTooltip(matrixStack,container.getEnergy() + " FE" + " / " + Config.PUMP_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.PUMP_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
-            String name = new TranslationTextComponent(tileEntity.getAirTankFluid().getTranslationKey(), new Object[0]).getKey();
+            String name = tileEntity.getAirTankFluid().getTranslationKey();
             int amount = tileEntity.getAirTankFluid().getAmount();
-            //renderTooltip(matrixStack,name + ", " + amount + " mB / " + tileEntity.getTankCapacity() + " mB", mouseX, mouseY);
+            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderHoveredTooltip(matrixStack,mouseX, mouseY);

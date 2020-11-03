@@ -33,15 +33,15 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Electric Furnace",8,6,0xffffff);
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory", new Object[0]).getKey(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            //renderTooltip(matrixStack,container.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE", mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
         } else if (isPointInRegion(81,32,9,17,mouseX,mouseY)){
-            //renderTooltip(matrixStack,"Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter(), mouseX, mouseY);
+            renderTooltip(matrixStack,ITextComponent.getTextComponentOrEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
         }
         super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
     }

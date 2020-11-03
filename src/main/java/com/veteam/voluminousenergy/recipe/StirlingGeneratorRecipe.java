@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
@@ -100,6 +101,11 @@ public class StirlingGeneratorRecipe extends VERecipe {
     }
 
     public int getEnergyPerTick(){ return energyPerTick;};
+
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<StirlingGeneratorRecipe>{
 

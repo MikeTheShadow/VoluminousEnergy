@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
 import com.veteam.voluminousenergy.tools.VERender;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,19 +33,19 @@ private final ResourceLocation GUI=new ResourceLocation(VoluminousEnergy.MODID,"
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX,int mouseY){
         drawString(matrixStack,Minecraft.getInstance().fontRenderer,"Gas Fired Furnace",8,6,0xffffff);
-        this.font.drawString(matrixStack,new TranslationTextComponent("container.inventory",new Object[0]).getKey(),8.0F,(float)(this.ySize-96+2),4210752);
+        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX,int mouseY){
         if(isPointInRegion(31,18,12,49,mouseX,mouseY)){
-            int amount=tileEntity.getFluidFromTank().getAmount();
-            String name=new TranslationTextComponent(tileEntity.getFluidFromTank().getTranslationKey(),new Object[0]).getKey();
-            //renderTooltip(matrixStack,name+", "+amount+" mB / "+tileEntity.getTankCapacity()+" mB",mouseX,mouseY);
+            int amount = tileEntity.getFluidFromTank().getAmount();
+            String name = tileEntity.getFluidFromTank().getTranslationKey();
+            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         } else if (isPointInRegion(54,54,16,16,mouseX,mouseY)){
-            //renderTooltip(matrixStack,"Percent burned: " + tileEntity.progressFuelCounterPercent() + "%, Ticks Left: " + tileEntity.getFuelCounter(), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent burned: " + tileEntity.progressFuelCounterPercent() + "%, Ticks Left: " + tileEntity.getFuelCounter()), mouseX, mouseY);
         } else if (isPointInRegion(81,32,9,17,mouseX,mouseY)){
-            //renderTooltip(matrixStack,"Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter(), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
         }
 
         super.renderHoveredTooltip(matrixStack,mouseX,mouseY);
