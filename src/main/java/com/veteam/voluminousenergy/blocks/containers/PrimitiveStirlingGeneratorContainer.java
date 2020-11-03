@@ -37,9 +37,9 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
         this.playerInventory = new InvWrapper(playerInventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 0, 82, 24));
+            addSlot(new SlotItemHandler(h, 0, 80, 35));
         });
-        layoutPlayerInventorySlots(10, 70);
+        layoutPlayerInventorySlots(8, 84);
 
         trackInt(new IntReferenceHolder() {
             @Override
@@ -131,5 +131,15 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
         }
 
         return itemstack;
+    }
+
+    public TileEntity getTileEntity(){
+        return tileEntity;
+    }
+
+    public int powerScreen(int px){
+        int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        return (((stored*100/max*100)/100)*px)/100;
     }
 }

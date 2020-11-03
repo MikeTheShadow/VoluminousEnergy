@@ -35,11 +35,11 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 64, 24, world));
-            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,120,24));
+            addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 53, 33, world));
+            addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,116,33));
             //addSlot(new VEOutputSlot(h, 1,120,24));
         });
-        layoutPlayerInventorySlots(10, 70);
+        layoutPlayerInventorySlots(8, 84);
     }
 
     @Override

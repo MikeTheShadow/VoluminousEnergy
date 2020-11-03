@@ -35,17 +35,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     private int counter;
+    private int length;
 
     public PrimitiveStirlingGeneratorTile() { super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE); }
 
     @Override
     public void tick() {
+        updateClients();
         if (counter > 0){
             counter--;
             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
@@ -67,6 +69,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                     } else if (stack.getItem() == VEItems.PETCOKE){
                         counter = 4000;
                     }
+                    length = counter;
                     markDirty();
                 }
             });
@@ -183,5 +186,31 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     @Override
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity){
         return new PrimitiveStirlingGeneratorContainer(i, world, pos, playerInventory, playerEntity);
+    }
+
+
+    public int progressCounterPX(int px){
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(((counter*100)/length)))/100;
+        }
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+
+    public int ticksLeft(){
+        return counter;
+    }
+
+    public int getEnergyRate(){
+        return 40;
     }
 }

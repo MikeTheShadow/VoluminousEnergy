@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
 
@@ -48,6 +48,7 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
 
     @Override
     public void tick() { //Tick method to run every tick
+        updateClients();
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
             ItemStack output = h.getStackInSlot(1).copy();
@@ -234,4 +235,14 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
      */
+
+    public int getCounter(){return counter;}
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
 }
