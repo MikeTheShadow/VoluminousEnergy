@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,13 +22,9 @@ public class BiomeRegistry {
     public static void bioReg(RegistryEvent.Register<Biome> event) {
         // Red Desert
         BiomeRegistry.Register(new RedDesert(), event);
-        if (VE_BIOME_LIST.get(0) != null){
-            VoluminousEnergy.LOGGER.debug(VE_BIOME_LIST.get(0).getRegistryName() + " NOT NULL!");
-        } else {
-            VoluminousEnergy.LOGGER.debug("IT IS NULL!");
-        }
         RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(BiomeRegistry.VE_BIOME_LIST.get(0))));
         BiomeDictionary.addTypes(registryKey, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
+        BiomeManager.addBiome(BiomeManager.BiomeType.DESERT, new BiomeManager.BiomeEntry(registryKey, 5));
     }
 
     public static void Register(VEBiome veBiome, RegistryEvent.Register<Biome> event){
