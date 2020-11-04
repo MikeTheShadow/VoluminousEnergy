@@ -13,6 +13,8 @@ import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
+import com.veteam.voluminousenergy.world.biomes.BiomeRegistry;
+import com.veteam.voluminousenergy.world.biomes.RedDesert;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
@@ -392,28 +394,13 @@ public class VoluminousEnergy
         @SubscribeEvent
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
             // TODO: Reimplement red desert biome
+            registerBiomes(event);
         }
-
-        //@SubscribeEvent
-        //public static void addFeaturesToBiomes(BiomeLoadingEvent biome){
-        //    LOGGER.debug("BIOME LOADING EVENT OCCURED!");
-        /*
-        if (Config.ENABLE_VE_FEATURE_GEN.get()){
-            VEOreGeneration.OreGeneration(biome); // Setup custom ore generation
-            VEFeatureGeneration.VEFeatureGenerationSetup(biome); // Setup feature generation
-        }
-         */
-        //}
     }
 
-    // TODO: Reimplement biomes for 1.16.3
-    private static void registerBiome(RegistryEvent.Register<Biome> event, Biome biome, String registryName, int spawnWeight, BiomeManager.BiomeType spawnType, Type... types) {
-        event.getRegistry().register(biome.setRegistryName(new ResourceLocation(MODID, registryName)));
-        BiomeDictionary.addTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(biome))));
-
-        //BiomeDictionary.addTypes(event, types);
-        //BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
+    private static void registerBiomes(RegistryEvent.Register<Biome> event) {
+        BiomeRegistry.bioReg(event);
+        //RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(BiomeRegistry.VE_BIOME_LIST.get(0))));
+        //BiomeDictionary.addTypes(registryKey);
     }
-
-
 }
