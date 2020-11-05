@@ -41,6 +41,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     private int counter;
+    private int length;
 
     public PrimitiveStirlingGeneratorTile() { super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE); }
 
@@ -67,6 +68,7 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
                     } else if (stack.getItem() == VEItems.PETCOKE){
                         counter = 4000;
                     }
+                    length = counter;
                     markDirty();
                 }
             });
@@ -183,5 +185,30 @@ public class PrimitiveStirlingGeneratorTile extends TileEntity implements ITicka
     @Override
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity){
         return new PrimitiveStirlingGeneratorContainer(i, world, pos, playerInventory, playerEntity);
+    }
+
+    public int progressCounterPX(int px){
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(((counter*100)/length)))/100;
+        }
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+
+    public int ticksLeft(){
+        return counter;
+    }
+
+    public int getEnergyRate(){
+        return 40;
     }
 }

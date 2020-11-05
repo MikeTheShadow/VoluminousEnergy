@@ -208,7 +208,6 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
     }
 
     public int progressCounter(){
-        //return 100-((counter*100)/200);
         return 100-((counter*100)/length);
     }
 
@@ -216,19 +215,18 @@ public class PrimitiveBlastFurnaceTile extends TileEntity implements ITickableTi
         if (counter == 0){
             return 0;
         } else {
-            //return (px*(100-((counter*100)/200)))/100;
             return (px*(100-((counter*100)/length)))/100;
         }
     }
 
-    /*
-    private PrimitiveBlastFurnaceRecipe getRecipe(final ItemStack input){
-        return getRecipe(new Inventory(input));
+    public int getCounter(){return counter;}
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
     }
 
-    private PrimitiveBlastFurnaceRecipe getRecipe(final IInventory inventory){
-        return world == null ? null: world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType,inventory,world).orElse(null);
-    }
-
-     */
 }

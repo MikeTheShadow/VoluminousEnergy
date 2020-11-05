@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
@@ -29,10 +30,18 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
     }
 
     @Override
+    protected void renderHoveredToolTip(int mouseX, int mouseY){
+        if (isPointInRegion(78,32,19,17,mouseX,mouseY)){
+            renderTooltip( "Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter(), mouseX, mouseY);
+        }
+
+        super.renderHoveredToolTip(mouseX,mouseY);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
-        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 - 12), 4210752);
-        drawString(Minecraft.getInstance().fontRenderer,"Ticks:" + tileEntity.counter(),8,36,0xffffff);
+        this.font.drawString(new TranslationTextComponent("container.inventory", new Object[0]).getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
@@ -52,7 +61,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(i+84, j+24, 180, 0, progress, 16);
+            this.blit(i+78, j+32, 176, 0, progress, 17);
             //this.blit(i,j,180,1,progress,15);
         }
 
