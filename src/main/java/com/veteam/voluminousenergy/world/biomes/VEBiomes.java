@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.biomes;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -19,7 +20,7 @@ public class VEBiomes {
         VEBiomes.registerBiome(biome, event);
         RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(VEBiomes.veBiomeList.get(veBiomeList.size()-1))));
         BiomeDictionary.addTypes(registryKey, dictionaryType);
-        BiomeManager.addBiome(biomeType, new BiomeManager.BiomeEntry(registryKey, weight));
+        if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(biomeType, new BiomeManager.BiomeEntry(registryKey, weight));
     }
 
     public static void registerBiome(VEBiome veBiome, RegistryEvent.Register<Biome> event){
