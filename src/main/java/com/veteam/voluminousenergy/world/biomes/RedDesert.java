@@ -9,10 +9,7 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
 public class RedDesert extends VEBiome {
 
-    public RedDesert(){
-        Biome.Climate climate = new Biome.Climate(Biome.RainType.NONE, 2.0F, Biome.TemperatureModifier.NONE, 1F);
-        this.addWeight(climate, 5);
-    }
+    public RedDesert(){}
 
     @Override
     public final Biome build() {
@@ -53,7 +50,6 @@ public class RedDesert extends VEBiome {
         DefaultBiomeFeatures.withDesertDeadBushes(builder);
         DefaultBiomeFeatures.withDesertVegetation(builder);
         DefaultBiomeFeatures.withDesertWells(builder);
-        //DefaultBiomeFeatures.withDesertMobs(builder);
     }
 
     @Override

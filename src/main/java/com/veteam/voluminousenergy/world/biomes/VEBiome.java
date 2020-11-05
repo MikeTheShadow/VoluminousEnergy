@@ -22,14 +22,11 @@ public class VEBiome {
     private BiFunction<Double, Double, Integer> grassColorFunction;
     private BiFunction<Double, Double, Integer> waterColorFunction;
 
-    protected void configureBiome(Biome.Builder builder) {
-    }
+    protected void configureBiome(Biome.Builder builder) {}
 
-    protected void configureGeneration(BiomeGenerationSettings.Builder builder) {
-    }
+    protected void configureGeneration(BiomeGenerationSettings.Builder builder) {}
 
-    protected void configureMobSpawns(MobSpawnInfo.Builder builder) {
-    }
+    protected void configureMobSpawns(MobSpawnInfo.Builder builder) {}
 
     protected void configureDefaultMobSpawns(MobSpawnInfo.Builder builder) {
         builder.isValidSpawnBiomeForPlayer();
@@ -54,28 +51,12 @@ public class VEBiome {
         return biomeBuilder.build();
     }
 
-    public void addWeight(Biome.Climate climate, int weight) {
-        this.weightMap.put(climate, weight);
-    }
-
     public void setBeachBiome(RegistryKey<Biome> biome) {
         this.beachBiome = biome;
     }
 
     public void setRiverBiome(RegistryKey<Biome> biome) {
         this.riverBiome = biome;
-    }
-
-    public void setFoliageColorFunction(BiFunction<Double, Double, Integer> func) {
-        this.foliageColorFunction = func;
-    }
-
-    public void setGrassColorFunction(BiFunction<Double, Double, Integer> func) {
-        this.grassColorFunction = func;
-    }
-
-    public void setWaterColorFunction(BiFunction<Double, Double, Integer> func) {
-        this.waterColorFunction = func;
     }
 
     public String getName(){

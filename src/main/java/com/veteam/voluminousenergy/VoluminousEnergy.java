@@ -13,7 +13,8 @@ import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
-import com.veteam.voluminousenergy.world.biomes.BiomeRegistry;
+import com.veteam.voluminousenergy.world.biomes.RedDesert;
+import com.veteam.voluminousenergy.world.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.block.Block;
@@ -25,6 +26,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -381,8 +384,7 @@ public class VoluminousEnergy
 
         @SubscribeEvent
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
-            // TODO: Reimplement red desert biome
-            registerBiomes(event);
+            VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
         }
 
         @SubscribeEvent
@@ -390,11 +392,5 @@ public class VoluminousEnergy
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
         }
-    }
-
-    private static void registerBiomes(RegistryEvent.Register<Biome> event) {
-        BiomeRegistry.bioReg(event);
-        //RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(BiomeRegistry.VE_BIOME_LIST.get(0))));
-        //BiomeDictionary.addTypes(registryKey);
     }
 }

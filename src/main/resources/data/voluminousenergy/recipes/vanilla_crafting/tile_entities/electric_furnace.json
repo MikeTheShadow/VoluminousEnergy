@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "aba",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    },
+    "b": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:electric_furnace"
+  }
+}
