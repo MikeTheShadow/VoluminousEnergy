@@ -212,7 +212,6 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     }
 
     public int progressCounter(){
-        //return 100-((counter*100)/200);
         return 100-((counter*100)/length);
     }
 
@@ -220,21 +219,9 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         if (counter == 0){
             return 0;
         } else {
-            //return (px*(100-((counter*100)/200)))/100;
             return (px*(100-((counter*100)/length)))/100;
         }
     }
-
-    /*
-    private PrimitiveBlastFurnaceRecipe getRecipe(final ItemStack input){
-        return getRecipe(new Inventory(input));
-    }
-
-    private PrimitiveBlastFurnaceRecipe getRecipe(final IInventory inventory){
-        return world == null ? null: world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.recipeType,inventory,world).orElse(null);
-    }
-
-     */
 
     public int getCounter(){return counter;}
 
