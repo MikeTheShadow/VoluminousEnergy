@@ -11,10 +11,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,13 +33,10 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
     @Override
     protected void init() {
-        /*
-        this.addButton(new ioMenuButton(152,4,20,18, button -> {
-            LOGGER.debug("Hit button");
-            openedIOGui = ((ioMenuButton) button).openGui();
-        }));
-         */
         super.init();
+        this.addButton(new ioMenuButton(GUI, 64 + (this.width/2), this.guiTop + 4, 20, 18, 193,button ->{
+            // Send packet to server?
+        }));
     }
 
     @Override
@@ -88,7 +87,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
              */
             this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-            //drawIOSideHelper(i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
 
     }
@@ -97,16 +96,15 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         return GUI;
     }
 
-    private void drawIOSideHelper(MatrixStack matrixStack,int i, int j, int mouseX, int mouseY, float partialTicks){
-        if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)) {
-            this.blit(matrixStack,i+152,j+4,193,19,20,18);
-        } else {
-            this.blit(matrixStack,i+152,j+4,193,0,20,18);
-        }
+
+    private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
         for(Widget widget : this.buttons){
             if (widget instanceof ioMenuButton){
-                this.openedIOGui = ((ioMenuButton) widget).openGui();
+                if (((ioMenuButton) widget).shouldIOBeOpen()) { // This means IO Should be open
+
+                }
             }
         }
     }
+
 }
