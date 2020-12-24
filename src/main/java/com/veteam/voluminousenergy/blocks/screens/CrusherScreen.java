@@ -10,6 +10,8 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.boolButton;
 import com.veteam.voluminousenergy.tools.buttons.directionButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
+import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.Network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -41,7 +43,9 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
         // Input Slot
         this.addButton(new boolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.guiTop, button ->{
-            // Do nothing
+            // Send packets
+            Network.channel.sendToServer(new BoolButtonPacket(((boolButton)button).status(),
+                    ((boolButton) button).getAssociatedSlotId()));
         }));
 
         this.addButton(new directionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.guiTop, button ->{

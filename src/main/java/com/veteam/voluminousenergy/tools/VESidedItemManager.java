@@ -29,6 +29,11 @@ public class VESidedItemManager {
         this.side.set(direction);
     }
 
+    public void setDirection(int direction){
+        this.side.set(directionFromInt(direction));
+        VoluminousEnergy.LOGGER.debug("DIRECTION UPDATED TO: " + directionFromInt(direction));
+    }
+
     public Direction getDirection(){
         return this.side.get();
     }
@@ -59,20 +64,25 @@ public class VESidedItemManager {
 
         VoluminousEnergy.LOGGER.debug("Read the following: enabled: " + enabled + " sideInt: " + sideInt);
 
+        setDirection(directionFromInt(sideInt));
+        VoluminousEnergy.LOGGER.debug("Direction set to: " + this.getDirection());
+    }
+
+    public Direction directionFromInt(int sideInt){
         // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
         if(sideInt == 0){
-            setDirection(Direction.DOWN);
+            return Direction.DOWN;
         } else if (sideInt == 1){
-            setDirection(Direction.UP);
+            return Direction.UP;
         } else if (sideInt == 2){
-            setDirection(Direction.NORTH);
+            return Direction.NORTH;
         } else if (sideInt == 3){
-            setDirection(Direction.SOUTH);
+            return Direction.SOUTH;
         } else if (sideInt == 4){
-            setDirection(Direction.WEST);
+            return Direction.WEST;
         } else if (sideInt == 5){
-            setDirection(Direction.EAST);
+            return Direction.EAST;
         }
-        VoluminousEnergy.LOGGER.debug("Direction set to: " + this.getDirection());
+        return Direction.UP;
     }
 }

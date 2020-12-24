@@ -297,6 +297,24 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         }
     }
 
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == inputSlotProp.getSlotNum()){
+            inputSlotProp.setStatus(status);
+        } else if (slotId == outputSlotProp.getSlotNum()){
+            outputSlotProp.setStatus(status);
+        } else if(slotId == rngSlotProp.getSlotNum()){
+            rngSlotProp.setStatus(status);
+        }
+    }
 
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == inputSlotProp.getSlotNum()){
+            inputSlotProp.setDirection(direction);
+        } else if (slotId == outputSlotProp.getSlotNum()){
+            outputSlotProp.setDirection(direction);
+        } else if(slotId == rngSlotProp.getSlotNum()){
+            rngSlotProp.setDirection(direction);
+        }
+    }
 
 }

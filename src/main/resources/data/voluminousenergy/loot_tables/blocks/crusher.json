@@ -25,6 +25,16 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "input_slot_enabled",
+                  "target": "BlockEntityTag.input_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_slot_direction",
+                  "target": "BlockEntityTag.input_slot_direction",
+                  "op": "replace"
                 }
               ]
             },

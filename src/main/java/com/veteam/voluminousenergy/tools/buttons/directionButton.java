@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.tools.buttons;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
+import com.veteam.voluminousenergy.tools.networking.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.Network;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
@@ -70,9 +72,15 @@ public class directionButton extends VEIOButton {
         if(!render) return;
         cycle();
         this.slotManager.setDirection(direction);
+        Network.channel.sendToServer(new DirectionButtonPacket(this.getDirection().getIndex(),this.getAssociatedSlotId()));
     }
 
     public Direction getDirection(){
         return direction;
     }
+
+    public int getAssociatedSlotId(){
+        return this.slotManager.getSlotNum();
+    }
+
 }

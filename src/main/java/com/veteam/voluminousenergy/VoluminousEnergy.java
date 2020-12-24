@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.networking.Network;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.biomes.RedDesert;
 import com.veteam.voluminousenergy.world.biomes.VEBiomes;
@@ -90,6 +91,7 @@ public class VoluminousEnergy
         //VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
+        Network.init();
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){/* //TODO: Test if needed, if so find a FIX!
