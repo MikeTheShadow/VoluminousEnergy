@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.util;
 
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class TextUtil {
@@ -11,5 +13,19 @@ public class TextUtil {
     */
     public static ITextComponent tankTooltip(String fluidName, int amount, int tankCapacity){
         return new TranslationTextComponent(fluidName).append(ITextComponent.getTextComponentOrEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
+    }
+
+    public static ITextComponent slotName(String slotName){
+        return new TranslationTextComponent(slotName);
+    }
+
+    public static ITextComponent translateDirection(Direction direction){
+        return new TranslationTextComponent("direction.voluminousenergy." + direction.name().toLowerCase());
+    }
+
+    public static ITextComponent slotNameWithDirection(String slotName, Direction direction, int ordinal){
+        ITextComponent translatedSlot = slotName(slotName);
+        ITextComponent translatedDirection = translateDirection(direction);
+        return new StringTextComponent(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
     }
 }

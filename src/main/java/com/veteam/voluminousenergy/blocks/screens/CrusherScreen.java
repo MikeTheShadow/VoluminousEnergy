@@ -6,23 +6,24 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
+import com.veteam.voluminousenergy.tools.buttons.boolButton;
+import com.veteam.voluminousenergy.tools.buttons.directionButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
+    private static final ResourceLocation BOOL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/bool_button.png");
     private static final Logger LOGGER = LogManager.getLogger();
     private boolean openedIOGui = false;
 
@@ -34,8 +35,35 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     @Override
     protected void init() {
         super.init();
-        this.addButton(new ioMenuButton(GUI, 64 + (this.width/2), this.guiTop + 4, 20, 18, 193,button ->{
-            // Send packet to server?
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop + 4, button ->{
+            // Do nothing
+        }));
+
+        // Input Slot
+        this.addButton(new boolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.guiTop, button ->{
+            // Do nothing
+        }));
+
+        this.addButton(new directionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.guiTop, button ->{
+            //
+        }));
+
+        // Output Slot
+        this.addButton(new boolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.guiTop+20, button ->{
+            // Do nothing
+        }));
+
+        this.addButton(new directionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.guiTop+20, button ->{
+            //
+        }));
+
+        // RNG slot
+        this.addButton(new boolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.guiTop+40, button ->{
+            // Do nothing
+        }));
+
+        this.addButton(new directionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.guiTop+40, button ->{
+            //
         }));
     }
 
@@ -101,7 +129,17 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         for(Widget widget : this.buttons){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen()) { // This means IO Should be open
-
+                    this.buttons.forEach(button ->{
+                        if (button instanceof VEIOButton){
+                            ((VEIOButton) button).toggleRender(true);
+                        }
+                    });
+                } else {
+                    this.buttons.forEach(button ->{
+                        if(button instanceof VEIOButton){
+                            ((VEIOButton) button).toggleRender(false);
+                        }
+                    });
                 }
             }
         }

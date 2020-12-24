@@ -1,4 +1,18 @@
 {
+    "_comment": "Directions",
+    "direction.voluminousenergy.up": "Up",
+    "direction.voluminousenergy.down": "Down",
+    "direction.voluminousenergy.north": "North",
+    "direction.voluminousenergy.south": "South",
+    "direction.voluminousenergy.east": "East",
+    "direction.voluminousenergy.west": "West",
+
+    "_comment": "Slot Names",
+    "slot.voluminousenergy.rng_slot": "RNG Slot",
+    "slot.voluminousenergy.input_slot": "Input Slot",
+    "slot.voluminousenergy.output_slot": "Output Slot",
+    "slot.voluminousenergy.bucket_slot": "Bucket Slot",
+
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
     "block.voluminousenergy.saltpeterore": "Saltpeter Ore",

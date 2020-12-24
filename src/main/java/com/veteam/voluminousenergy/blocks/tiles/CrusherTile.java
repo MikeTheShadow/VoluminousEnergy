@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
@@ -49,9 +50,9 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     private ServerPlayerEntity player;
 
     // Side IO status
-    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true);
-    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,true);
-    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,true);
+    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
+    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
+    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");
 
 
     // Sided Item Handlers
@@ -218,6 +219,10 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         //createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+
+        inputSlotProp.read(tag, "input_slot");
+        outputSlotProp.read(tag, "output_slot");
+        rngSlotProp.read(tag, "rng_slot");
         super.read(state, tag);
     }
 
@@ -228,6 +233,10 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
+
+        inputSlotProp.write(tag, "input_slot");
+        outputSlotProp.write(tag, "output_slot");
+        rngSlotProp.write(tag, "rng_slot");
         return super.write(tag);
     }
 
@@ -249,14 +258,15 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             if (side == null) {
                 return handler.cast();
             } else {
+                VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.getIndex() == inputSlotProp.side.getIndex() && inputSlotProp.enabled){
+                if (side.getIndex() == inputSlotProp.getDirection().getIndex() && inputSlotProp.getStatus()){
                     return inputItemHandler.cast();
                 }
-                if (side.getIndex() == outputSlotProp.side.getIndex() && outputSlotProp.enabled){
+                if (side.getIndex() == outputSlotProp.getDirection().getIndex() && outputSlotProp.getStatus()){
                     return outputItemHandler.cast();
                 }
-                if (side.getIndex() == rngSlotProp.side.getIndex() && rngSlotProp.enabled){
+                if (side.getIndex() == rngSlotProp.getDirection().getIndex() && rngSlotProp.getStatus()){
                     return rngItemHandler.cast();
                 }
             }
@@ -286,5 +296,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             return (px*(100-((counter*100)/length)))/100;
         }
     }
+
+
 
 }
