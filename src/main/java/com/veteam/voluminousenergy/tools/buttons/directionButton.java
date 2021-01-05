@@ -51,6 +51,29 @@ public class directionButton extends VEIOButton {
         }
     }
 
+    private void setDirection(Direction dir){
+        switch(dir){
+            case UP:
+                direction = Direction.UP;
+                break;
+            case DOWN:
+                direction = Direction.DOWN;
+                break;
+            case NORTH:
+                direction = Direction.NORTH;
+                break;
+            case SOUTH:
+                direction = Direction.SOUTH;
+                break;
+            case EAST:
+                direction = Direction.EAST;
+                break;
+            default:
+                direction = Direction.WEST;
+        }
+        this.slotManager.setDirection(dir);
+    }
+
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
@@ -83,4 +106,20 @@ public class directionButton extends VEIOButton {
         return this.slotManager.getSlotNum();
     }
 
+    public void setDirectionFromInt(int sideInt){
+        if(sideInt == 0){
+            setDirection(Direction.DOWN);
+        } else if (sideInt == 1){
+            setDirection(Direction.UP);
+        } else if (sideInt == 2){
+            setDirection(Direction.NORTH);
+        } else if (sideInt == 3){
+            setDirection(Direction.SOUTH);
+        } else if (sideInt == 4){
+            setDirection(Direction.WEST);
+        } else if (sideInt == 5){
+            setDirection(Direction.EAST);
+        }
+        setDirection(Direction.UP);
+    }
 }

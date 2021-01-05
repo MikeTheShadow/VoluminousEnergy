@@ -317,4 +317,14 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         }
     }
 
+    @Override
+    public void sendPacketToClient(){
+        inputSlotProp.getDirection();
+        inputSlotProp.getStatus();
+        inputSlotProp.getSlotNum();
+
+        //
+
+    }
+
 }

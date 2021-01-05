@@ -25,6 +25,7 @@ public class VoluminousTileEntity extends TileEntity {
     public void updateClients() {
         if(world == null) return;
         world.notifyBlockUpdate(this.pos,this.getBlockState(),this.getBlockState(),1);
+        sendPacketToClient();
     }
 
     public String getDirection() {
@@ -37,5 +38,9 @@ public class VoluminousTileEntity extends TileEntity {
             direction = it.get().getValue().toString();
         }
         return direction;
+    }
+
+    public void sendPacketToClient(){
+
     }
 }

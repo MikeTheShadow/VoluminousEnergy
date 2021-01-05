@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;

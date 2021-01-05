@@ -149,4 +149,11 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         }
     }
 
+    public void updateButtonDirection(int direction, int slotId){
+        for(Widget widget: this.buttons){
+            if(widget instanceof directionButton && ((directionButton) widget).getAssociatedSlotId() == slotId ){
+                ((directionButton) widget).setDirectionFromInt(direction);
+            }
+        }
+    }
 }
