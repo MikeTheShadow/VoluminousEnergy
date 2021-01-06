@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.tools.buttons;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
-import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;

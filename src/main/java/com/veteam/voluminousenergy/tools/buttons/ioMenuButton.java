@@ -2,12 +2,18 @@ package com.veteam.voluminousenergy.tools.buttons;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.UUID;
+
+import static net.minecraft.client.Minecraft.getInstance;
 
 @OnlyIn(Dist.CLIENT)
 public class ioMenuButton extends Button {
@@ -31,7 +37,7 @@ public class ioMenuButton extends Button {
 
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
-        Minecraft minecraft = Minecraft.getInstance();
+        Minecraft minecraft = getInstance();
         minecraft.getTextureManager().bindTexture(texture);
 
         if(!isHovered){
@@ -39,7 +45,7 @@ public class ioMenuButton extends Button {
         } else {
             blit(matrixStack, this.x, this.y, 193, 19, this.width, this.height);
         }
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "IO",(this.x)+5,(this.y)+5,0xffffff);
+        drawString(matrixStack, getInstance().fontRenderer, "IO",(this.x)+5,(this.y)+5,0xffffff);
     }
 
     @Override

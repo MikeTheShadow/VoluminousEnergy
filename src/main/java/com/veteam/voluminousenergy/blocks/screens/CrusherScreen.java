@@ -10,8 +10,9 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.boolButton;
 import com.veteam.voluminousenergy.tools.buttons.directionButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -21,6 +22,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
@@ -133,16 +136,20 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
         for(Widget widget : this.buttons){
             if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen()) { // This means IO Should be open
+                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
                     this.buttons.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
+                            informTileOfIOButton(true);
+                            openedIOGui = !openedIOGui;
                         }
                     });
                 } else {
                     this.buttons.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
+                            informTileOfIOButton(false);
+                            openedIOGui = !openedIOGui;
                         }
                     });
                 }
@@ -166,6 +173,13 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
                 ((boolButton) widget).setStatus(status);
                 ((boolButton) widget).toggleRender(false);
             }
+        }
+    }
+
+    public void informTileOfIOButton(boolean connection){
+        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        if(uuid != null){
+            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }
     }
 }

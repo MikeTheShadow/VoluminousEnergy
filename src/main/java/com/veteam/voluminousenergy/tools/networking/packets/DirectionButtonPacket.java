@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.tools.networking;
+package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
@@ -12,38 +12,36 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class BoolButtonPacket {
-    private boolean status;
+public class DirectionButtonPacket {
+    private int direction;
     private int slotId;
 
-    public BoolButtonPacket(){
+    public DirectionButtonPacket(){
         // Do nothing
     }
 
-    public BoolButtonPacket(boolean updatedStatus, int slot){
-        this.status = updatedStatus;
+    public DirectionButtonPacket(int updatedDirection, int slot){
+        this.direction = updatedDirection;
         this.slotId = slot;
     }
 
-    public static BoolButtonPacket fromBytes(PacketBuffer buffer){
-        BoolButtonPacket packet = new BoolButtonPacket();
-        packet.status = buffer.readBoolean();
+    public static DirectionButtonPacket fromBytes(PacketBuffer buffer){
+        DirectionButtonPacket packet = new DirectionButtonPacket();
+        packet.direction = buffer.readInt();
         packet.slotId = buffer.readInt();
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer){
-        buffer.writeBoolean(this.status);
+        buffer.writeInt(this.direction);
         buffer.writeInt(this.slotId);
     }
 
-    public static void handle(BoolButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
+    public static void handle(DirectionButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.openContainer;
-                VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 break;
             default:
@@ -53,17 +51,16 @@ public class BoolButtonPacket {
 
     }
 
-    public static void handlePacket(BoolButtonPacket packet, Container openContainer, boolean onServer){
-        VoluminousEnergy.LOGGER.debug("Work has enqueued");
+    public static void handlePacket(DirectionButtonPacket packet, Container openContainer, boolean onServer){
         if(openContainer != null){
             if(openContainer instanceof CrusherContainer){
                 if(onServer){
                     TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
                     if (tileEntity instanceof CrusherTile){
-                        ((CrusherTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                        ((CrusherTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
                 } else {
-                    ((CrusherContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                    ((CrusherContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
                 VoluminousEnergy.LOGGER.debug("Not a crusher container.");
