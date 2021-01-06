@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CrusherInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
+import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -33,6 +34,7 @@ public class CrusherContainer extends Container {
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private static final Logger LOGGER = LogManager.getLogger();
+    private CrusherScreen crusherScreen;
 
     public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
         super(CRUSHER_CONTAINER,id);
@@ -131,5 +133,18 @@ public class CrusherContainer extends Container {
             slot.onTake(player, slotStack);
         }
         return returnStack;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setCrusherScreen(CrusherScreen crusherScreen){
+        this.crusherScreen = crusherScreen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){
+        this.crusherScreen.updateButtonDirection(direction,slotId);
+    }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.crusherScreen.updateBooleanButton(status, slotId);
     }
 }

@@ -11,7 +11,7 @@ import com.veteam.voluminousenergy.tools.buttons.boolButton;
 import com.veteam.voluminousenergy.tools.buttons.directionButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.Network;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -32,6 +32,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     public CrusherScreen(CrusherContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CrusherTile) screenContainer.tileEntity;
+        screenContainer.setCrusherScreen(this);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         // Input Slot
         this.addButton(new boolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.guiTop, button ->{
             // Send packets
-            Network.channel.sendToServer(new BoolButtonPacket(((boolButton)button).status(),
+            VENetwork.channel.sendToServer(new BoolButtonPacket(((boolButton)button).status(),
                     ((boolButton) button).getAssociatedSlotId()));
         }));
 
@@ -153,6 +154,17 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         for(Widget widget: this.buttons){
             if(widget instanceof directionButton && ((directionButton) widget).getAssociatedSlotId() == slotId ){
                 ((directionButton) widget).setDirectionFromInt(direction);
+            }
+        }
+    }
+
+    public void updateBooleanButton(boolean status, int slotId){
+        for(Widget widget: this.buttons){
+            if(widget instanceof boolButton && ((boolButton) widget).getAssociatedSlotId() == slotId){
+                VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
+                ((boolButton) widget).toggleRender(true);
+                ((boolButton) widget).setStatus(status);
+                ((boolButton) widget).toggleRender(false);
             }
         }
     }

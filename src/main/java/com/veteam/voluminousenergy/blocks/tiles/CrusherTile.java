@@ -7,7 +7,11 @@ import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
+import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -19,16 +23,23 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -39,6 +50,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -47,7 +59,6 @@ import static net.minecraft.util.math.MathHelper.abs;
 public class CrusherTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     //private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private ServerPlayerEntity player;
 
     // Side IO status
     public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
@@ -319,12 +330,23 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
 
     @Override
     public void sendPacketToClient(){
-        inputSlotProp.getDirection();
-        inputSlotProp.getStatus();
-        inputSlotProp.getSlotNum();
+        if(world == null) return;
+        double x = this.getPos().getX();
+        double y = this.getPos().getY();
+        double z = this.getPos().getZ();
+        final double radius = 16;
+        RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+        PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
-        //
+        // Boolean Buttons
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSlotProp.getStatus(), inputSlotProp.getSlotNum()));
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSlotProp.getStatus(), outputSlotProp.getSlotNum()));
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngSlotProp.getStatus(), rngSlotProp.getSlotNum()));
 
+        // Direction Buttons
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotProp.getDirection().getIndex(),inputSlotProp.getSlotNum()));
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotProp.getDirection().getIndex(),outputSlotProp.getSlotNum()));
+        VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngSlotProp.getDirection().getIndex(), rngSlotProp.getSlotNum()));
     }
 
 }

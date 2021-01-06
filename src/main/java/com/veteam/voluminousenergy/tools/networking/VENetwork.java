@@ -7,12 +7,13 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.Objects;
 
-public class Network {
+public class VENetwork {
     private static final String VERSION = "venet";
+    public static final ResourceLocation CHANNEL_ID = new ResourceLocation(VoluminousEnergy.MODID, "network");
 
     public static SimpleChannel channel;
     static {
-        channel = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(VoluminousEnergy.MODID, "network"))
+        channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_ID)
                 .clientAcceptedVersions(s -> Objects.equals(s, VERSION))
                 .serverAcceptedVersions(s -> Objects.equals(s, VERSION))
                 .networkProtocolVersion(() -> VERSION)
@@ -31,7 +32,7 @@ public class Network {
                 .add();
     }
 
-    private Network(){
+    private VENetwork(){
 
     }
 

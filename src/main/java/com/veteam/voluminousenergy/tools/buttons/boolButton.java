@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
 import com.veteam.voluminousenergy.tools.networking.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.Network;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -48,12 +48,17 @@ public class boolButton extends VEIOButton{
         if(!render) return;
         cycle();
         this.slotManager.setStatus(enable);
-        Network.channel.sendToServer(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()));
+        VENetwork.channel.sendToServer(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()));
     }
 
     public boolean status(){ return enable; }
 
     public int getAssociatedSlotId(){
         return this.slotManager.getSlotNum();
+    }
+
+    public void setStatus(boolean status){
+        enable = status;
+        slotManager.setStatus(status);
     }
 }
