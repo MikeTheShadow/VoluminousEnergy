@@ -10,8 +10,8 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.boolButton;
 import com.veteam.voluminousenergy.tools.buttons.directionButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -28,7 +28,7 @@ import java.util.UUID;
 public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
-    private static final ResourceLocation BOOL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/bool_button.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private static final Logger LOGGER = LogManager.getLogger();
     private boolean openedIOGui = false;
 
@@ -125,7 +125,9 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-
+        // Upgrade slot
+        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     public static ResourceLocation getGUI() {

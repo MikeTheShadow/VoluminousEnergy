@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
+import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 
 public class VEItems
 {
@@ -60,4 +61,7 @@ public class VEItems
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
     public static SilverMicrochip SILVER_MICROCHIP = new SilverMicrochip();
+
+    //Upgrades
+    public static QuartzMultiplier QUARTZ_MULTIPLIER = new QuartzMultiplier();
 }

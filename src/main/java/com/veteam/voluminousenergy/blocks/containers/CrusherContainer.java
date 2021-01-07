@@ -2,9 +2,11 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CrusherInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -47,6 +49,7 @@ public class CrusherContainer extends Container {
             addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
             addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
             addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
+            addSlot(new VEInsertSlot(h, 3,154, -14));//Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

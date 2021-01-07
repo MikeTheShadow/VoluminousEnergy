@@ -3,18 +3,17 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.VESidedItemManager;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -23,11 +22,9 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.datafix.fixes.PlayerUUID;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -43,7 +40,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,7 +76,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         super(VEBlocks.CRUSHER_TILE);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(3) {
+    public final ItemStackHandler inventory = new ItemStackHandler(4) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
             ItemStack referenceStack = stack.copy();
@@ -94,6 +90,8 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                 return stack.getItem() == recipe1.result.getItem();
             } else if (slot == 2 && recipe1 != null){
                 return stack.getItem() == recipe1.getRngItem().getItem();
+            } else if (slot == 3){
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
             }
             return false;
         }
@@ -118,6 +116,10 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                 }
             } else if (slot == 2 && recipe1 != null){
                 if (stack.getItem() == recipe1.getRngItem().getItem()){
+                    return super.insertItem(slot, stack, simulate);
+                }
+            } else if (slot == 3){
+                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
                     return super.insertItem(slot, stack, simulate);
                 }
             }
@@ -150,7 +152,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && canConsumeEnergy()) {
                 if (counter == 1){ //The processing is about to be complete
                     // Extract the inputted item
                     inventory.extractItem(0,recipe.ingredientCount,false);
@@ -196,14 +198,14 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                         }
                     }
                     counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    consumeEnergy();
                     markDirty();
                 } else if (counter > 0){ //In progress
                     counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    consumeEnergy();
                 } else { // Check if we should start processing
                     if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
-                        counter = recipe.getProcessTime();
+                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(3).copy());
                         length = counter;
                     } else {
                         counter = 0;
@@ -215,6 +217,21 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         } else { // this is if the input slot is empty
             counter = 0;
         }
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(3).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
     }
 
     /*

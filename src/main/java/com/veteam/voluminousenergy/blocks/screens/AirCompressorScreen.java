@@ -14,13 +14,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.ITextComponent;
-//import net.minecraft.util.text.ITextComponent;
 
 public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer> {
 
     private AirCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
     public AirCompressorScreen(AirCompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
@@ -84,7 +83,9 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
             try{
                 VERender.renderGuiTank(tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
-
+            // Upgrade slot
+            this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+            this.blit(matrixStack,i+153, j-16,0,0,18,18);
         }
     }
 }

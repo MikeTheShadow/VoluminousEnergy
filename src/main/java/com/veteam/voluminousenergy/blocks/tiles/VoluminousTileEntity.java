@@ -1,15 +1,24 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class VoluminousTileEntity extends TileEntity {
 
@@ -78,5 +87,33 @@ public class VoluminousTileEntity extends TileEntity {
         } else {
             cleanupTick++;
         }
+    }
+
+    protected int calculateCounter(int processTime, ItemStack upgradeStack){
+        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER) {
+            int count = upgradeStack.getCount();
+            if(count == 4){
+                return 5;
+            } else {
+                return (-45*upgradeStack.getCount())+processTime;
+            }
+        }
+        return processTime;
+    }
+
+    protected int consumptionMultiplier(int consumption, ItemStack upgradeStack){
+        if(upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+            int count = upgradeStack.getCount();
+            if(count == 4){
+                return consumption*16;
+            } else if (count == 3) {
+                return consumption*8;
+            } else if(count == 2){
+                return consumption*4;
+            } else if(count == 1){
+                return consumption*2;
+            }
+        }
+        return consumption;
     }
 }
