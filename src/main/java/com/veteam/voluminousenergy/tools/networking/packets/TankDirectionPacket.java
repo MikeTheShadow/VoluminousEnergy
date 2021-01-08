@@ -2,9 +2,7 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -14,32 +12,32 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class DirectionButtonPacket {
+public class TankDirectionPacket {
     private int direction;
-    private int slotId;
+    private int tankId;
 
-    public DirectionButtonPacket(){
+    public TankDirectionPacket(){
         // Do nothing
     }
 
-    public DirectionButtonPacket(int updatedDirection, int slot){
+    public TankDirectionPacket(int updatedDirection, int id){
         this.direction = updatedDirection;
-        this.slotId = slot;
+        this.tankId = id;
     }
 
-    public static DirectionButtonPacket fromBytes(PacketBuffer buffer){
-        DirectionButtonPacket packet = new DirectionButtonPacket();
+    public static TankDirectionPacket fromBytes(PacketBuffer buffer){
+        TankDirectionPacket packet = new TankDirectionPacket();
         packet.direction = buffer.readInt();
-        packet.slotId = buffer.readInt();
+        packet.tankId = buffer.readInt();
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer){
         buffer.writeInt(this.direction);
-        buffer.writeInt(this.slotId);
+        buffer.writeInt(this.tankId);
     }
 
-    public static void handle(DirectionButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
+    public static void handle(TankDirectionPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
@@ -53,26 +51,19 @@ public class DirectionButtonPacket {
 
     }
 
-    public static void handlePacket(DirectionButtonPacket packet, Container openContainer, boolean onServer){
+    public static void handlePacket(TankDirectionPacket packet, Container openContainer, boolean onServer){
         if(openContainer != null){
-            if(openContainer instanceof CrusherContainer){ // Crusher
-                if(onServer){
-                    TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
-                    if (tileEntity instanceof CrusherTile){
-                        ((CrusherTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
-                    }
-                } else {
-                    ((CrusherContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
-                }
-            } else if (openContainer instanceof AirCompressorContainer) { // Air Compressor
+            if (openContainer instanceof AirCompressorContainer) { // Air Compressor
                 if(onServer){
                     TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
                     if (tileEntity instanceof AirCompressorTile){
-                        ((AirCompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                        ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
+                // End of Server side logic
                 } else {
-                    ((AirCompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                    ((AirCompressorContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
                 }
+            // End of Air Compressor
             } else {
                 VoluminousEnergy.LOGGER.warn("Not a valid container.");
             }

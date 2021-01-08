@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.tools;
+package com.veteam.voluminousenergy.tools.sidemanager;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.nbt.CompoundNBT;
@@ -7,12 +7,12 @@ import net.minecraft.util.Direction;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class VESidedItemManager {
+public class VESlotManager {
     private final int slot;
     private AtomicReference<Direction> side = new AtomicReference<>();
     private AtomicBoolean enabled = new AtomicBoolean();
     private final String translationKey;
-    public VESidedItemManager(int slotNum, Direction direction, boolean status, String translationKey){
+    public VESlotManager(int slotNum, Direction direction, boolean status, String translationKey){
         this.side.set(direction);
         this.slot = slotNum;
         this.enabled.set(status);

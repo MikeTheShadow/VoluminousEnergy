@@ -13,6 +13,12 @@
     "slot.voluminousenergy.output_slot": "Output Slot",
     "slot.voluminousenergy.bucket_slot": "Bucket Slot",
 
+    "_comment": "Tank Names",
+    "tank.voluminousenergy.input_tank": "Input Tank",
+    "tank.voluminousenergy.output_tank": "Output Tank",
+    "tank.voluminousenergy.invalid": "INVALID",
+    "tank.voluminousenergy.null": "NULL",
+
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
     "block.voluminousenergy.saltpeterore": "Saltpeter Ore",

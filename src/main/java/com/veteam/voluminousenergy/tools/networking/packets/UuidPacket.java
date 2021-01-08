@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
+import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.inventory.container.Container;
@@ -50,6 +51,9 @@ public class UuidPacket {
         if(openContainer != null){
             if(openContainer instanceof CrusherContainer){
                 TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
+                interactWithTile(packet,tileEntity);
+            } else if (openContainer instanceof AirCompressorContainer){
+                TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
                 interactWithTile(packet,tileEntity);
             }
         }

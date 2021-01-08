@@ -1,32 +1,33 @@
-package com.veteam.voluminousenergy.tools.buttons;
+package com.veteam.voluminousenergy.tools.buttons.tanks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.tools.VESidedItemManager;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class directionButton extends VEIOButton {
-    private VESidedItemManager slotManager;
+public class TankDirectionButton extends VEIOButton {
+    private RelationalTank tank;
     private Direction direction;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public directionButton(VESidedItemManager slotManager, int x, int y, IPressable onPress) {
+    public TankDirectionButton(RelationalTank tank, int x, int y, IPressable onPress) {
         super(x, y, 96, 20, ITextComponent.getTextComponentOrEmpty(""), button -> {
-            ((directionButton) button).cycle();
+            ((TankDirectionButton) button).cycle();
             onPress.onPress(button);
         });
         this.x = x;
         this.y = y;
         this.width = 96;
         this.height = 20;
-        this.slotManager = slotManager;
-        this.direction = slotManager.getDirection();
+        this.tank = tank;
+        this.direction = tank.getSideDirection();
     }
 
     private void cycle(){
@@ -53,7 +54,7 @@ public class directionButton extends VEIOButton {
 
     private void setDirection(Direction dir){
         this.direction = dir;
-        this.slotManager.setDirection(dir);
+        this.tank.setSideDirection(dir);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class directionButton extends VEIOButton {
         }
 
         // Print text
-        ITextComponent textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
+        ITextComponent textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getId());
         drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer, textComponent.getString(),(this.x)+48,(this.y)+5,0xffffff);
     }
 
@@ -76,16 +77,16 @@ public class directionButton extends VEIOButton {
     public void onPress(){
         if(!render) return;
         cycle();
-        this.slotManager.setDirection(direction);
-        VENetwork.channel.sendToServer(new DirectionButtonPacket(this.getDirection().getIndex(),this.getAssociatedSlotId()));
+        this.tank.setSideDirection(direction);
+        VENetwork.channel.sendToServer(new TankDirectionPacket(this.getDirection().getIndex(),this.getId()));
     }
 
     public Direction getDirection(){
         return direction;
     }
 
-    public int getAssociatedSlotId(){
-        return this.slotManager.getSlotNum();
+    public int getId(){
+        return this.tank.getId();
     }
 
     public void setDirectionFromInt(int sideInt){

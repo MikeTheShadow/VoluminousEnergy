@@ -1,13 +1,12 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.VESidedItemManager;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
@@ -55,9 +54,9 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Side IO status
-    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
-    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
-    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");
+    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
+    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
+    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");
 
 
     // Sided Item Handlers
@@ -284,7 +283,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             if (side == null) {
                 return handler.cast();
             } else {
-                VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
+                // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
                 if (side.getIndex() == inputSlotProp.getDirection().getIndex() && inputSlotProp.getStatus()){
                     return inputItemHandler.cast();

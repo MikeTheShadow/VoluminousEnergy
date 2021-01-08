@@ -1,9 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -38,6 +36,18 @@ public class VENetwork {
                 .decoder(UuidPacket::fromBytes)
                 .encoder(UuidPacket::toBytes)
                 .consumer(UuidPacket::handle)
+                .add();
+
+        channel.messageBuilder(TankBoolPacket.class, 4)
+                .decoder(TankBoolPacket::fromBytes)
+                .encoder(TankBoolPacket::toBytes)
+                .consumer(TankBoolPacket::handle)
+                .add();
+
+        channel.messageBuilder(TankDirectionPacket.class, 5)
+                .decoder(TankDirectionPacket::fromBytes)
+                .encoder(TankDirectionPacket::toBytes)
+                .consumer(TankDirectionPacket::handle)
                 .add();
     }
 

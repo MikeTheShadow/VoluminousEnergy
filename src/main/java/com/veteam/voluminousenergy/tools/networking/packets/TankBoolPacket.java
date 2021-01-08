@@ -14,38 +14,38 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class BoolButtonPacket {
+public class TankBoolPacket {
     private boolean status;
-    private int slotId;
+    private int id;
 
-    public BoolButtonPacket(){
+    public TankBoolPacket(){
         // Do nothing
     }
 
-    public BoolButtonPacket(boolean updatedStatus, int slot){
+    public TankBoolPacket(boolean updatedStatus, int id){
         this.status = updatedStatus;
-        this.slotId = slot;
+        this.id = id;
     }
 
-    public static BoolButtonPacket fromBytes(PacketBuffer buffer){
-        BoolButtonPacket packet = new BoolButtonPacket();
+    public static TankBoolPacket fromBytes(PacketBuffer buffer){
+        TankBoolPacket packet = new TankBoolPacket();
         packet.status = buffer.readBoolean();
-        packet.slotId = buffer.readInt();
+        packet.id = buffer.readInt();
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer){
         buffer.writeBoolean(this.status);
-        buffer.writeInt(this.slotId);
+        buffer.writeInt(this.id);
     }
 
-    public static void handle(BoolButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
+    public static void handle(TankBoolPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
         VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.openContainer;
-                VoluminousEnergy.LOGGER.debug("Client bound packet received.");
+                //VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 break;
             default:
@@ -55,27 +55,20 @@ public class BoolButtonPacket {
 
     }
 
-    public static void handlePacket(BoolButtonPacket packet, Container openContainer, boolean onServer){
+    public static void handlePacket(TankBoolPacket packet, Container openContainer, boolean onServer){
         //VoluminousEnergy.LOGGER.debug("Work has enqueued");
         if(openContainer != null){
-            if(openContainer instanceof CrusherContainer){
-                if(onServer){
-                    TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
-                    if (tileEntity instanceof CrusherTile){
-                        ((CrusherTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
-                    }
-                } else {
-                    ((CrusherContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
-                }
-            } else if(openContainer instanceof AirCompressorContainer){
+            if(openContainer instanceof AirCompressorContainer){
                 if(onServer){
                     TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
                     if (tileEntity instanceof AirCompressorTile){
-                        ((AirCompressorTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                        ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
+                // End of Server side logic
                 } else {
-                    ((AirCompressorContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                    ((AirCompressorContainer) openContainer).updateStatusTank(packet.status, packet.id);
                 }
+            // End of Air Compressor logic
             } else {
                 VoluminousEnergy.LOGGER.debug("Not a valid container.");
             }

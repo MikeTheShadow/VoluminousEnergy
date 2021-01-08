@@ -6,12 +6,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
-import com.veteam.voluminousenergy.tools.buttons.boolButton;
-import com.veteam.voluminousenergy.tools.buttons.directionButton;
+import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -46,32 +45,30 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         }));
 
         // Input Slot
-        this.addButton(new boolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.guiTop, button ->{
-            // Send packets
-            VENetwork.channel.sendToServer(new BoolButtonPacket(((boolButton)button).status(),
-                    ((boolButton) button).getAssociatedSlotId()));
+        this.addButton(new SlotBoolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.guiTop, button ->{
+            // Do Nothing
         }));
 
-        this.addButton(new directionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.guiTop, button ->{
-            //
+        this.addButton(new SlotDirectionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.guiTop, button ->{
+            // Do Nothing
         }));
 
         // Output Slot
-        this.addButton(new boolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.guiTop+20, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.guiTop+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new directionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.guiTop+20, button ->{
-            //
+        this.addButton(new SlotDirectionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.guiTop+20, button ->{
+            // Do nothing
         }));
 
         // RNG slot
-        this.addButton(new boolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.guiTop+40, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.guiTop+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new directionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.guiTop+40, button ->{
-            //
+        this.addButton(new SlotDirectionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.guiTop+40, button ->{
+            // Do nothing
         }));
     }
 
@@ -134,7 +131,6 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         return GUI;
     }
 
-
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
         for(Widget widget : this.buttons){
             if (widget instanceof ioMenuButton){
@@ -161,19 +157,19 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
     public void updateButtonDirection(int direction, int slotId){
         for(Widget widget: this.buttons){
-            if(widget instanceof directionButton && ((directionButton) widget).getAssociatedSlotId() == slotId ){
-                ((directionButton) widget).setDirectionFromInt(direction);
+            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
+                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
         }
     }
 
     public void updateBooleanButton(boolean status, int slotId){
         for(Widget widget: this.buttons){
-            if(widget instanceof boolButton && ((boolButton) widget).getAssociatedSlotId() == slotId){
+            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
                 VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((boolButton) widget).toggleRender(true);
-                ((boolButton) widget).setStatus(status);
-                ((boolButton) widget).toggleRender(false);
+                ((SlotBoolButton) widget).toggleRender(true);
+                ((SlotBoolButton) widget).setStatus(status);
+                ((SlotBoolButton) widget).toggleRender(false);
             }
         }
     }

@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

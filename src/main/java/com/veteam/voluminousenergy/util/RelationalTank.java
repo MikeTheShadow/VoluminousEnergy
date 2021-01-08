@@ -1,7 +1,10 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class RelationalTank {
@@ -13,6 +16,9 @@ public class RelationalTank {
     ItemStack input;
     ItemStack output;
     TankType tankType;
+
+    private boolean sideStatus = false;
+    private Direction sideDirection = Direction.DOWN;
 
     public RelationalTank() {
 
@@ -87,4 +93,46 @@ public class RelationalTank {
     public void setOutputID(int outputID) {
         this.outputID = outputID;
     }
+
+    public boolean getSideStatus(){
+        return sideStatus;
+    }
+
+    public void setSideStatus(boolean status){
+        sideStatus = status;
+    }
+
+    public Direction getSideDirection(){
+        return sideDirection;
+    }
+
+    public void setSideDirection(Direction direction){
+        sideDirection = direction;
+    }
+
+    public String getTranslationKey(){
+        if(tankType != null){
+            switch (tankType){
+                case INPUT:
+                    return "tank.voluminousenergy.input_tank";
+                case OUTPUT:
+                    return "tank.voluminousenergy.output_tank";
+                default:
+                    return "tank.voluminousenergy.invalid";
+            }
+        }
+        return "tank.voluminousenergy.null";
+    }
+
+    public void writeGuiProperties(CompoundNBT nbt, String prefix){
+        nbt.putBoolean(prefix + "_enabled", getSideStatus());
+        nbt.putInt(prefix+"_direction", getSideDirection().getIndex());
+    }
+
+    public void readGuiProperties(CompoundNBT nbt, String prefix){
+        setSideStatus(nbt.getBoolean(prefix + "_enabled"));
+        int sideInt = nbt.getInt(prefix + "_direction");
+        setSideDirection(IntToDirection.IntegerToDirection(sideInt));
+    }
+
 }
