@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.tools.buttons.slots;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
@@ -102,7 +102,8 @@ public class SlotDirectionButton extends VEIOButton {
             setDirection(Direction.WEST);
         } else if (sideInt == 5){
             setDirection(Direction.EAST);
+        } else {
+            VoluminousEnergy.LOGGER.warn("Invalid sideInt: " + sideInt + " passed into setDirectionFromInt.");
         }
-        VoluminousEnergy.LOGGER.warn("Invalid sideInt: " + sideInt + " passed into setDirectionFromInt.");
     }
 }

@@ -70,10 +70,10 @@ public class TankBoolPacket {
                 }
             // End of Air Compressor logic
             } else {
-                VoluminousEnergy.LOGGER.debug("Not a valid container.");
+                VoluminousEnergy.LOGGER.debug("TankBoolPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.debug("The container is null");
+            VoluminousEnergy.LOGGER.debug("TankBoolPacket The container is null");
         }
     }
 }

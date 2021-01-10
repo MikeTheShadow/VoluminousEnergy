@@ -36,6 +36,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     public AirCompressorScreen(AirCompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (AirCompressorTile) screenContainer.tileEntity;
+        screenContainer.setAirCompressorScreen(this);
     }
 
     @Override

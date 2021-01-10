@@ -42,7 +42,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputTankFluidHandler);
+    private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutputTank0FluidHandler);
+    private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutputTank1FluidHandler);
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
     RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.INPUT,0);
@@ -133,38 +135,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                 }
             }
         }
-            /*
-            // Extract fluid from the input tank
-            if(input.copy().getItem() == Items.BUCKET && input1.copy() == ItemStack.EMPTY) {
-                if(inputTank.getFluidAmount() >= 1000) {
-                    ItemStack bucketStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(), 1);
-                    inputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(0, 1, false);
-                    h.insertItem(1, bucketStack, false);
-                }
-            }
-
-            // Extract fluid from the first output tank
-            if (output0.copy().getItem() != null || output0.copy() != ItemStack.EMPTY){
-                if (output0.getItem() == Items.BUCKET && outputTank0.getFluidAmount() >= 1000 && output0.getCount() == 1){
-                    ItemStack bucketStack = new ItemStack(outputTank0.getFluid().getRawFluid().getFilledBucket(), 1);
-                    outputTank0.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(2,1,false);
-                    h.insertItem(2, bucketStack, false);
-                }
-            }
-
-            // Extract fluid from the second output tank
-            if (output1.copy().getItem() != null || output1.copy() != ItemStack.EMPTY){
-                if (output1.getItem() == Items.BUCKET && outputTank1.getFluidAmount() >= 1000 && output1.getCount() == 1){
-                    ItemStack bucketStack = new ItemStack(outputTank1.getFluid().getRawFluid().getFilledBucket(), 1);
-                    outputTank1.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(3,1,false);
-                    h.insertItem(3, bucketStack, false);
-                }
-            }
-
-             */
     }
 
     /*
@@ -180,15 +150,17 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputTank = tag.getCompound("inputTank");
-            CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-            CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundNBT inputTank = tag.getCompound("inputTank");
+        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
+        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
 
-            this.inputTank.getTank().readFromNBT(inputTank);
-            this.outputTank0.getTank().readFromNBT(outputTank0);
-            this.outputTank1.getTank().readFromNBT(outputTank1);
-        });
+        this.inputTank.getTank().readFromNBT(inputTank);
+        this.outputTank0.getTank().readFromNBT(outputTank0);
+        this.outputTank1.getTank().readFromNBT(outputTank1);
+
+        this.inputTank.readGuiProperties(tag,"input_tank_gui");
+        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
 
         super.read(state, tag);
     }
@@ -205,19 +177,21 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         });
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputNBT = new CompoundNBT();
-            CompoundNBT outputNBT0 = new CompoundNBT();
-            CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundNBT inputNBT = new CompoundNBT();
+        CompoundNBT outputNBT0 = new CompoundNBT();
+        CompoundNBT outputNBT1 = new CompoundNBT();
 
-            this.inputTank.getTank().writeToNBT(inputNBT);
-            this.outputTank0.getTank().writeToNBT(outputNBT0);
-            this.outputTank1.getTank().writeToNBT(outputNBT1);
+        this.inputTank.getTank().writeToNBT(inputNBT);
+        this.outputTank0.getTank().writeToNBT(outputNBT0);
+        this.outputTank1.getTank().writeToNBT(outputNBT1);
 
-            tag.put("inputTank", inputNBT);
-            tag.put("outputTank0", outputNBT0);
-            tag.put("outputTank1", outputNBT1);
-        });
+        tag.put("inputTank", inputNBT);
+        tag.put("outputTank0", outputNBT0);
+        tag.put("outputTank1", outputNBT1);
+
+        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
+        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
 
         return super.write(tag);
     }
@@ -239,8 +213,16 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    private IFluidHandler createFluid() {
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank,outputTank0,outputTank1);
+    private IFluidHandler createInputTankFluidHandler() {
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank);
+    }
+
+    private IFluidHandler createOutputTank0FluidHandler(){
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank0);
+    }
+
+    private IFluidHandler createOutputTank1FluidHandler(){
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank1);
     }
 
 
@@ -254,35 +236,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 return true;
-                /*
-                if (slot == 0 || slot == 1){
-                    VERecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getOutputFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
-                            recipeHit.set(true);
-                        }
-                    });
-                    return recipeHit.get();
-                } else if (slot == 3) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-                    AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getSecondFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
-                            recipeHit.set(true);
-                        }
-                    });
-                    return recipeHit.get();
-                }
-                return false;
-
-                 */
             }
 
             @Nonnull
@@ -307,7 +260,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
+            if(inputTank.getSideStatus() && inputTank.getSideDirection().getIndex() == side.getIndex()){
+                return inputFluidHandler.cast();
+            } else if (outputTank0.getSideStatus() && outputTank0.getSideDirection().getIndex() == side.getIndex()){
+                return output0FluidHandler.cast();
+            } else if (outputTank1.getSideStatus() && outputTank1.getSideDirection().getIndex() == side.getIndex()){
+                return output1FluidHandler.cast();
+            }
         }
         return super.getCapability(cap, side);
     }

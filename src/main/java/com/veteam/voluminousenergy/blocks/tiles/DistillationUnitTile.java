@@ -34,8 +34,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +42,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DistillationUnitTile extends VEFluidTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
+    private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutput0FluidHandler);
+    private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutput1FluidHandler);
 
     private int tankCapacity = 4000;
 
@@ -180,15 +180,17 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputTank = tag.getCompound("inputTank");
-            CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-            CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundNBT inputTank = tag.getCompound("inputTank");
+        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
+        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
 
-            this.inputTank.getTank().readFromNBT(inputTank);
-            this.outputTank0.getTank().readFromNBT(outputTank0);
-            this.outputTank1.getTank().readFromNBT(outputTank1);
-        });
+        this.inputTank.getTank().readFromNBT(inputTank);
+        this.outputTank0.getTank().readFromNBT(outputTank0);
+        this.outputTank1.getTank().readFromNBT(outputTank1);
+
+        this.inputTank.readGuiProperties(tag, "input_tank_gui");
+        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
 
         super.read(state,tag);
     }
@@ -205,23 +207,26 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         });
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputNBT = new CompoundNBT();
-            CompoundNBT outputNBT0 = new CompoundNBT();
-            CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundNBT inputNBT = new CompoundNBT();
+        CompoundNBT outputNBT0 = new CompoundNBT();
+        CompoundNBT outputNBT1 = new CompoundNBT();
 
-            this.inputTank.getTank().writeToNBT(inputNBT);
-            this.outputTank0.getTank().writeToNBT(outputNBT0);
-            this.outputTank1.getTank().writeToNBT(outputNBT1);
+        this.inputTank.getTank().writeToNBT(inputNBT);
+        this.outputTank0.getTank().writeToNBT(outputNBT0);
+        this.outputTank1.getTank().writeToNBT(outputNBT1);
 
-            tag.put("inputTank", inputNBT);
-            tag.put("outputTank0", outputNBT0);
-            tag.put("outputTank1", outputNBT1);
-        });
+        tag.put("inputTank", inputNBT);
+        tag.put("outputTank0", outputNBT0);
+        tag.put("outputTank1", outputNBT1);
+
+        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
+        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
 
         return super.write(tag);
     }
 
+    /*
     @Override
     public CompoundNBT getUpdateTag() {
         return this.write(new CompoundNBT());
@@ -232,6 +237,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     public SUpdateTileEntityPacket getUpdatePacket() {
         return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
     }
+     */
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
@@ -240,8 +246,16 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    private IFluidHandler createFluid() {
-        return this.createFluidHandler(new DistillationRecipe(), inputTank, outputTank0, outputTank1);
+    private IFluidHandler createInputFluidHandler() {
+        return this.createFluidHandler(new DistillationRecipe(), inputTank);
+    }
+
+    private IFluidHandler createOutput0FluidHandler(){
+        return this.createFluidHandler(new DistillationRecipe(), outputTank0);
+    }
+
+    private IFluidHandler createOutput1FluidHandler(){
+        return this.createFluidHandler(new DistillationRecipe(), outputTank1);
     }
 
 
@@ -314,7 +328,12 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
+            if(inputTank.getSideStatus() && inputTank.getSideDirection().getIndex() == side.getIndex())
+                return inputFluidHandler.cast();
+            if(outputTank0.getSideStatus() && outputTank0.getSideDirection().getIndex() == side.getIndex())
+                return output0FluidHandler.cast();
+            if(outputTank1.getSideStatus() && outputTank1.getSideDirection().getIndex() == side.getIndex())
+                return output1FluidHandler.cast();
         }
         return super.getCapability(cap, side);
     }

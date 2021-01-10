@@ -65,10 +65,10 @@ public class TankDirectionPacket {
                 }
             // End of Air Compressor
             } else {
-                VoluminousEnergy.LOGGER.warn("Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.warn("Handling Direction Packet: The container is null.");
+            VoluminousEnergy.LOGGER.warn("TankDirectionPacket: The container is null.");
         }
     }
 }

@@ -30,7 +30,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +40,9 @@ import javax.annotation.Nullable;
 public class AqueoulizerTile extends VEFluidTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
+    private LazyOptional<IFluidHandler> outputFluidHandler = LazyOptional.of(this::createOutputFluidHandler);
+
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
     RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
@@ -140,13 +141,14 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputTank = tag.getCompound("inputTank");
-            CompoundNBT outputTank = tag.getCompound("outputTank");
+        CompoundNBT inputTank = tag.getCompound("inputTank");
+        CompoundNBT outputTank = tag.getCompound("outputTank");
 
-            this.inputTank.getTank().readFromNBT(inputTank);
-            this.outputTank.getTank().readFromNBT(outputTank);
-        });
+        this.inputTank.getTank().readFromNBT(inputTank);
+        this.outputTank.getTank().readFromNBT(outputTank);
+
+        this.inputTank.readGuiProperties(tag,"input_tank_gui");
+        this.outputTank.readGuiProperties(tag, "output_tank_gui");
 
         super.read(state,tag);
     }
@@ -163,16 +165,17 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         });
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputNBT = new CompoundNBT();
-            CompoundNBT outputNBT = new CompoundNBT();
+        CompoundNBT inputNBT = new CompoundNBT();
+        CompoundNBT outputNBT = new CompoundNBT();
 
-            this.inputTank.getTank().writeToNBT(inputNBT);
-            this.outputTank.getTank().writeToNBT(outputNBT);
+        this.inputTank.getTank().writeToNBT(inputNBT);
+        this.outputTank.getTank().writeToNBT(outputNBT);
 
-            tag.put("inputTank", inputNBT);
-            tag.put("outputTank", outputNBT);
-        });
+        tag.put("inputTank", inputNBT);
+        tag.put("outputTank", outputNBT);
+
+        this.inputTank.writeGuiProperties(tag,"input_tank_gui");
+        this.outputTank.writeGuiProperties(tag, "output_tank_gui");
 
         return super.write(tag);
     }
@@ -195,8 +198,12 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    private IFluidHandler createFluid() {
-        return this.createFluidHandler(new AqueoulizerRecipe(), inputTank, outputTank);
+    private IFluidHandler createInputFluidHandler() {
+        return this.createFluidHandler(new AqueoulizerRecipe(), inputTank);
+    }
+
+    private IFluidHandler createOutputFluidHandler(){
+        return this.createFluidHandler(new AqueoulizerRecipe(), outputTank);
     }
 
 
@@ -215,7 +222,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
                 return super.insertItem(slot, stack, simulate);
             }
         };
@@ -235,7 +241,10 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
+            if(inputTank.getSideStatus() && inputTank.getSideDirection().getIndex() == side.getIndex())
+                return inputFluidHandler.cast();
+            if(outputTank.getSideStatus() && outputTank.getSideDirection().getIndex() == side.getIndex())
+                return outputFluidHandler.cast();
         }
         return super.getCapability(cap, side);
     }

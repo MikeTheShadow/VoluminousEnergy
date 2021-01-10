@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -290,7 +289,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
             return handler.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().getIndex() == side.getIndex()){
             return fluid.cast();
         }
         return super.getCapability(cap, side);

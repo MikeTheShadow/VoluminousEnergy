@@ -74,10 +74,10 @@ public class DirectionButtonPacket {
                     ((AirCompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
-                VoluminousEnergy.LOGGER.warn("Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.warn("Handling Direction Packet: The container is null.");
+            VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: The container is null.");
         }
     }
 }

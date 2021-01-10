@@ -56,7 +56,6 @@ public class BoolButtonPacket {
     }
 
     public static void handlePacket(BoolButtonPacket packet, Container openContainer, boolean onServer){
-        //VoluminousEnergy.LOGGER.debug("Work has enqueued");
         if(openContainer != null){
             if(openContainer instanceof CrusherContainer){
                 if(onServer){
@@ -77,10 +76,10 @@ public class BoolButtonPacket {
                     ((AirCompressorContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
             } else {
-                VoluminousEnergy.LOGGER.debug("Not a valid container.");
+                VoluminousEnergy.LOGGER.debug("BoolButtonPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.debug("The container is null");
+            VoluminousEnergy.LOGGER.debug("BoolButtonPacket: The container is null");
         }
     }
 }

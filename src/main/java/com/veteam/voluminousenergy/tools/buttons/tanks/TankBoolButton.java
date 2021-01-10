@@ -32,7 +32,7 @@ public class TankBoolButton extends VEIOButton {
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
         Minecraft.getInstance().getTextureManager().bindTexture(texture);
-        enable = tank.getSideStatus();
+        enable = this.tank.getSideStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);
         } else {
@@ -58,6 +58,6 @@ public class TankBoolButton extends VEIOButton {
 
     public void setStatus(boolean status) {
         enable = status;
-        tank.setSideStatus(status);
+        this.tank.setSideStatus(status);
     }
 }
