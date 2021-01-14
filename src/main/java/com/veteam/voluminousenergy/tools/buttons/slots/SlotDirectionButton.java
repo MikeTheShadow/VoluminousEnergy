@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
@@ -90,20 +91,6 @@ public class SlotDirectionButton extends VEIOButton {
     }
 
     public void setDirectionFromInt(int sideInt){
-        if(sideInt == 0){
-            setDirection(Direction.DOWN);
-        } else if (sideInt == 1){
-            setDirection(Direction.UP);
-        } else if (sideInt == 2){
-            setDirection(Direction.NORTH);
-        } else if (sideInt == 3){
-            setDirection(Direction.SOUTH);
-        } else if (sideInt == 4){
-            setDirection(Direction.WEST);
-        } else if (sideInt == 5){
-            setDirection(Direction.EAST);
-        } else {
-            VoluminousEnergy.LOGGER.warn("Invalid sideInt: " + sideInt + " passed into setDirectionFromInt.");
-        }
+        setDirection(IntToDirection.IntegerToDirection(sideInt));
     }
 }

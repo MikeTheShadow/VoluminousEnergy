@@ -51,9 +51,9 @@ public class VESlotManager {
     }
 
     public void write(CompoundNBT nbt, String prefix){
-        VoluminousEnergy.LOGGER.debug("Writing to NBT.");
-        VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_enabled as: " + enabled);
-        VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_direction as: " + getDirection().getIndex() + " Meaning: " + getDirection());
+        //VoluminousEnergy.LOGGER.debug("Writing to NBT.");
+        //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_enabled as: " + enabled);
+        //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_direction as: " + getDirection().getIndex() + " Meaning: " + getDirection());
         nbt.putBoolean(prefix + "_enabled", getStatus());
         nbt.putInt(prefix+"_direction", getDirection().getIndex());
     }
@@ -62,10 +62,10 @@ public class VESlotManager {
         setStatus(nbt.getBoolean(prefix + "_enabled"));
         int sideInt = nbt.getInt(prefix + "_direction");
 
-        VoluminousEnergy.LOGGER.debug("Read the following: enabled: " + enabled + " sideInt: " + sideInt);
+        //VoluminousEnergy.LOGGER.debug("Read the following: enabled: " + enabled + " sideInt: " + sideInt);
 
         setDirection(directionFromInt(sideInt));
-        VoluminousEnergy.LOGGER.debug("Direction set to: " + this.getDirection());
+        //VoluminousEnergy.LOGGER.debug("Direction set to: " + this.getDirection());
     }
 
     public Direction directionFromInt(int sideInt){

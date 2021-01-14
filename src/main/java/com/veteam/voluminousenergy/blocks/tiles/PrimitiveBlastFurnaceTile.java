@@ -1,8 +1,16 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,25 +25,37 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
+    private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
+
+    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager outputSm = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot");
 
     private int counter;
     private int length;
@@ -46,56 +66,56 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
     }
 
+    private final ItemStackHandler inventory = createHandler();
+
     @Override
     public void tick() { //Tick method to run every tick
         updateClients();
-        handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0).copy();
-            ItemStack output = h.getStackInSlot(1).copy();
+        ItemStack input = inventory.getStackInSlot(0).copy();
+        ItemStack output = inventory.getStackInSlot(1).copy();
 
-            PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
-            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+        PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+        inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
-            if (!input.isEmpty()){
-                if (output.getCount() + recipe.getOutputAmount() < 64) {
-                    if (this.counter == 1){ //The processing is about to be complete
-                        // Extract the inputted item
-                        h.extractItem(0,recipe.ingredientCount,false);
+        if (!input.isEmpty()){
+            if (output.getCount() + recipe.getOutputAmount() < 64) {
+                if (this.counter == 1){ //The processing is about to be complete
+                    // Extract the inputted item
+                    inventory.extractItem(0,recipe.ingredientCount,false);
 
-                        // Get output stack and RNG stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult().copy();
+                    // Get output stack and RNG stack from the recipe
+                    ItemStack newOutputStack = recipe.getResult().copy();
 
-                        // Manipulating the Output slot
-                        if (output.getItem() != newOutputStack.getItem()) {
-                            if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
-                                output.setCount(1);
-                            }
-                            newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                        } else { // Assuming the recipe output item is already in the output slot
-                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            h.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
+                    // Manipulating the Output slot
+                    if (output.getItem() != newOutputStack.getItem()) {
+                        if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
+                            output.setCount(1);
                         }
-
-                        this.counter--;
-                        markDirty();
-                    } else if (this.counter > 0){ //In progress
-                        this.counter--;
-                    } else { // Check if we should start processing
-                        if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
-                            this.counter = recipe.getProcessTime();
-                            this.length = this.counter;
-                        } else {
-                            this.counter = 0;
-                        }
+                        newOutputStack.setCount(recipe.getOutputAmount());
+                        inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                    } else { // Assuming the recipe output item is already in the output slot
+                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                        inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                     }
-                } else { // This is if we reach the maximum in the slots
-                    this.counter = 0;
+
+                    this.counter--;
+                    markDirty();
+                } else if (this.counter > 0){ //In progress
+                    this.counter--;
+                } else { // Check if we should start processing
+                    if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
+                        this.counter = recipe.getProcessTime();
+                        this.length = this.counter;
+                    } else {
+                        this.counter = 0;
+                    }
                 }
-            } else { // This is if the input slot is empty
+            } else { // This is if we reach the maximum in the slots
                 this.counter = 0;
             }
-        });
+        } else { // This is if the input slot is empty
+            this.counter = 0;
+        }
     }
 
     @Override
@@ -103,6 +123,10 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
+
+        this.inputSm.read(tag, "input_gui");
+        this.outputSm.read(tag,"output_gui");
+
         super.read(state, tag);
     }
 
@@ -112,6 +136,10 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
         });
+
+        this.inputSm.write(tag, "input_gui");
+        this.outputSm.write(tag,"output_gui");
+
         return super.write(tag);
     }
 
@@ -121,23 +149,19 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
      */
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket(){
-        CompoundNBT tag = new CompoundNBT();
-        //Write data into the tag
-        handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        return new SUpdateTileEntityPacket(getPos(), -1, tag);
+    public CompoundNBT getUpdateTag() {
+        return this.write(new CompoundNBT());
     }
 
+    @Nullable
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
-        CompoundNBT tag = pkt.getNbtCompound();
-        //Handle Data from tag
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+    }
+
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         this.read(this.getBlockState(), pkt.getNbtCompound());
         super.onDataPacket(net, pkt);
     }
@@ -190,7 +214,12 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if (side == null)
+                return handler.cast();
+            if (inputSm.getStatus() && inputSm.getDirection().getIndex() == side.getIndex())
+                return inputHandler.cast();
+            else if (outputSm.getStatus() && outputSm.getDirection().getIndex() == side.getIndex())
+                return outputHandler.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -202,8 +231,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
-    {
+    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
         return new PrimitiveBlastFurnaceContainer(i,world,pos,playerInventory,playerEntity);
     }
 
@@ -231,5 +259,77 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         } else {
             return 0;
         }
+    }
+
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == inputSm.getSlotNum()){
+            inputSm.setStatus(status);
+        } else if (slotId == outputSm.getSlotNum()){
+            outputSm.setStatus(status);
+        }
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == inputSm.getSlotNum()){
+            inputSm.setDirection(direction);
+        } else if (slotId == outputSm.getSlotNum()){
+            outputSm.setDirection(direction);
+        }
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            // Boolean Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof PrimitiveBlastFurnaceContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
     }
 }

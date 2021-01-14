@@ -6,10 +6,10 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -50,10 +50,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    //private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    // Side IO status
+    // Slot Managers
     public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
     public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
     public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");

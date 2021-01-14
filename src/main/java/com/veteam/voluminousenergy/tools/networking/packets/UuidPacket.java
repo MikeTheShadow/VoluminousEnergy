@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.PumpTile;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -49,13 +49,38 @@ public class UuidPacket {
 
     public static void handlePacket(UuidPacket packet, Container openContainer){
         if(openContainer != null){
-            if(openContainer instanceof CrusherContainer){
-                TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
-                interactWithTile(packet,tileEntity);
-            } else if (openContainer instanceof AirCompressorContainer){
-                TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
-                interactWithTile(packet,tileEntity);
-            }
+            TileEntity tileEntity = null;
+            if(openContainer instanceof CrusherContainer)
+                tileEntity = ((CrusherContainer) openContainer).tileEntity;
+            else if (openContainer instanceof AirCompressorContainer)
+                tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof AqueoulizerContainer)
+                tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+            else if (openContainer instanceof CentrifugalAgitatorContainer)
+                tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof CombustionGeneratorContainer)
+                tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof CompressorContainer)
+                tileEntity = ((CompressorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof DistillationUnitContainer)
+                tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+            else if (openContainer instanceof ElectricFurnaceContainer)
+                tileEntity = ((ElectricFurnaceContainer) openContainer).tileEntity;
+            else if (openContainer instanceof ElectrolyzerContainer)
+                tileEntity = ((ElectrolyzerContainer) openContainer).tileEntity;
+            else if (openContainer instanceof GasFiredFurnaceContainer)
+                tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+            else if (openContainer instanceof  PrimitiveBlastFurnaceContainer)
+                tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).tileEntity;
+            else if (openContainer instanceof PrimitiveStirlingGeneratorContainer)
+                tileEntity = ((PrimitiveStirlingGeneratorContainer) openContainer).getTileEntity();
+            else if (openContainer instanceof PumpContainer)
+                tileEntity = ((PumpContainer) openContainer).tileEntity;
+            else if (openContainer instanceof StirlingGeneratorContainer)
+                tileEntity = ((StirlingGeneratorContainer) openContainer).tileEntity;
+
+            // When tile is set, but not null
+            if(tileEntity != null) interactWithTile(packet,tileEntity);
         }
     }
 

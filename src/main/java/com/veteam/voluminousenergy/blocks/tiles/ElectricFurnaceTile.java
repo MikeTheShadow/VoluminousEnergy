@@ -1,9 +1,17 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,25 +29,37 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
+    private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot");
 
     private int counter;
     private int length;
@@ -54,6 +74,8 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
 
     @Override
     public void tick(){
+        updateClients();
+
         ItemStack furnaceInput = inventory.getStackInSlot(0).copy();
         ItemStack furnaceOutput = inventory.getStackInSlot(1).copy();
 
@@ -125,6 +147,9 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+
+        inputSlotManager.read(tag, "input_slot_manager");
+        outputSlotManager.read(tag, "output_slot_manager");
         super.read(state, tag);
     }
 
@@ -138,6 +163,9 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
+
+        inputSlotManager.write(tag, "input_slot_manager");
+        outputSlotManager.write(tag, "output_slot_manager");
         return super.write(tag);
     }
 
@@ -205,7 +233,12 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if(side == null)
+                return handler.cast();
+            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().getIndex() == side.getIndex())
+                return inputHandler.cast();
+            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().getIndex() == side.getIndex())
+                return outputHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY){
             return energy.cast();
@@ -263,6 +296,78 @@ public class ElectricFurnaceTile extends TileEntity implements ITickableTileEnti
 
     public int getCounter(){
         return counter;
+    }
+
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == inputSlotManager.getSlotNum()){
+            inputSlotManager.setStatus(status);
+        } else if (slotId == outputSlotManager.getSlotNum()){
+            outputSlotManager.setStatus(status);
+        }
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == inputSlotManager.getSlotNum()){
+            inputSlotManager.setDirection(direction);
+        } else if (slotId == outputSlotManager.getSlotNum()){
+            outputSlotManager.setDirection(direction);
+        }
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSlotManager.getStatus(), inputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            // Boolean Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSlotManager.getStatus(), inputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof ElectricFurnaceContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
     }
 
 }

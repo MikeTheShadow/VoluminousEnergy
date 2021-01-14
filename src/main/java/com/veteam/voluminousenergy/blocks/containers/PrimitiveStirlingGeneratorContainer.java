@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
+import com.veteam.voluminousenergy.blocks.screens.PrimitiveStirlingGeneratorScreen;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +30,7 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
     private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private PrimitiveStirlingGeneratorScreen screen;
 
     public PrimitiveStirlingGeneratorContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
@@ -141,5 +144,16 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
         int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
         return (((stored*100/max*100)/100)*px)/100;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(PrimitiveStirlingGeneratorScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
     }
 }

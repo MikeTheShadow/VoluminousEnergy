@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
+import com.veteam.voluminousenergy.blocks.screens.PrimitiveBlastFurnaceScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -26,6 +28,7 @@ public class PrimitiveBlastFurnaceContainer extends Container {
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private PrimitiveBlastFurnaceScreen screen;
 
     public PrimitiveBlastFurnaceContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player) {
         super(PRIMITIVE_BLAST_FURNACE_CONTAINER, id);
@@ -103,4 +106,14 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         return returnStack;
     }
 
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(PrimitiveBlastFurnaceScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
+    }
 }

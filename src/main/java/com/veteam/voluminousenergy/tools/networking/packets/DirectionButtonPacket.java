@@ -1,10 +1,8 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -55,6 +53,7 @@ public class DirectionButtonPacket {
 
     public static void handlePacket(DirectionButtonPacket packet, Container openContainer, boolean onServer){
         if(openContainer != null){
+            // CRUSHER
             if(openContainer instanceof CrusherContainer){ // Crusher
                 if(onServer){
                     TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
@@ -64,14 +63,135 @@ public class DirectionButtonPacket {
                 } else {
                     ((CrusherContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
+            // AIR COMPRESSOR
             } else if (openContainer instanceof AirCompressorContainer) { // Air Compressor
-                if(onServer){
+                if (onServer) {
                     TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
-                    if (tileEntity instanceof AirCompressorTile){
+                    if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
                 } else {
                     ((AirCompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+            // AQUEOULIZER
+            } else if(openContainer instanceof AqueoulizerContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof AqueoulizerTile) {
+                        ((AqueoulizerTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((AqueoulizerContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // CENTRIFUGAL AGITATOR CONTAINER
+            } else if(openContainer instanceof CentrifugalAgitatorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CentrifugalAgitatorTile) {
+                        ((CentrifugalAgitatorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((CentrifugalAgitatorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // COMBUSTION GENERATOR
+            } else if (openContainer instanceof CombustionGeneratorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CombustionGeneratorTile) {
+                        ((CombustionGeneratorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((CombustionGeneratorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // COMPRESSOR
+            } else if (openContainer instanceof CompressorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((CompressorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CompressorTile) {
+                        ((CompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((CompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // DISTILLATION UNIT
+            } else if (openContainer instanceof DistillationUnitContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof DistillationUnitTile) {
+                        ((DistillationUnitTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((DistillationUnitContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // ELECTRIC FURNACE
+            } else if (openContainer instanceof ElectricFurnaceContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((ElectricFurnaceContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof ElectricFurnaceTile) {
+                        ((ElectricFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((ElectricFurnaceContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // ELECTROLYZER
+            } else if(openContainer instanceof ElectrolyzerContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((ElectrolyzerContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof ElectrolyzerTile) {
+                        ((ElectrolyzerTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((ElectrolyzerContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // GAS FIRED FURNACE
+            } else if(openContainer instanceof GasFiredFurnaceContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof GasFiredFurnaceTile) {
+                        ((GasFiredFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((GasFiredFurnaceContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // Primitive Blast Furnace
+            } else if(openContainer instanceof PrimitiveBlastFurnaceContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof PrimitiveBlastFurnaceTile) {
+                        ((PrimitiveBlastFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((PrimitiveBlastFurnaceContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // Primitive Stirling Generator Container
+            } else if (openContainer instanceof PrimitiveStirlingGeneratorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((PrimitiveStirlingGeneratorContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof PrimitiveStirlingGeneratorTile) {
+                        ((PrimitiveStirlingGeneratorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((PrimitiveStirlingGeneratorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // Pump
+            } else if (openContainer instanceof PumpContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((PumpContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof PumpTile) {
+                        ((PumpTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((PumpContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+                // Stirling Generator
+            } else if (openContainer instanceof StirlingGeneratorContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((StirlingGeneratorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof StirlingGeneratorTile) {
+                        ((StirlingGeneratorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((StirlingGeneratorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");

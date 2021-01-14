@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.StirlingGeneratorInputSlot;
+import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
+import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,6 +33,7 @@ public class StirlingGeneratorContainer extends Container {
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private StirlingGeneratorScreen screen;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public StirlingGeneratorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
@@ -127,5 +130,16 @@ public class StirlingGeneratorContainer extends Container {
             slot.onTake(player, slotStack);
         }
         return returnStack;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(StirlingGeneratorScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
     }
 }

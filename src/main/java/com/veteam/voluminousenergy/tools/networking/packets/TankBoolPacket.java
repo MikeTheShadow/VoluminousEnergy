@@ -1,10 +1,8 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -58,17 +56,83 @@ public class TankBoolPacket {
     public static void handlePacket(TankBoolPacket packet, Container openContainer, boolean onServer){
         //VoluminousEnergy.LOGGER.debug("Work has enqueued");
         if(openContainer != null){
-            if(openContainer instanceof AirCompressorContainer){
-                if(onServer){
+            if(openContainer instanceof AirCompressorContainer) {
+                if (onServer) {
                     TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
-                    if (tileEntity instanceof AirCompressorTile){
+                    if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
-                // End of Server side logic
+                    // End of Server side logic
                 } else {
                     ((AirCompressorContainer) openContainer).updateStatusTank(packet.status, packet.id);
                 }
-            // End of Air Compressor logic
+                // End of Air Compressor logic
+            } else if(openContainer instanceof AqueoulizerContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof AqueoulizerTile) {
+                        ((AqueoulizerTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((AqueoulizerContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of Aqueoulizer
+            } else if(openContainer instanceof CentrifugalAgitatorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CentrifugalAgitatorTile) {
+                        ((CentrifugalAgitatorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((CentrifugalAgitatorContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of CentrifugalAgitator
+            } else if(openContainer instanceof CombustionGeneratorContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CombustionGeneratorTile) {
+                        ((CombustionGeneratorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((CombustionGeneratorContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of CombustionGenerator
+            } else if (openContainer instanceof DistillationUnitContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof DistillationUnitTile) {
+                        ((DistillationUnitTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((DistillationUnitContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of DistillationUnit
+            } else if(openContainer instanceof GasFiredFurnaceContainer) {
+                if (onServer) {
+                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof GasFiredFurnaceTile) {
+                        ((GasFiredFurnaceTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((GasFiredFurnaceContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of GasFiredFurnace
+            } else if (openContainer instanceof PumpContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((PumpContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof PumpTile) {
+                        ((PumpTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((PumpContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of Pump
             } else {
                 VoluminousEnergy.LOGGER.debug("TankBoolPacket: Not a valid container.");
             }
