@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -143,7 +144,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                             + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount()
                             + recipe.getAmounts().get(2) <= tankCapacity){
                         // Check for power
-                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                        if (canConsumeEnergy()) {
                             if (counter == 1){
 
                                 // Drain Input
@@ -177,13 +178,13 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                                 }
 
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.DISTILLATION_UNIT_POWER_USAGE.get()));
+                                consumeEnergy();
                                 this.markDirty();
                             } else if (counter > 0){
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.DISTILLATION_UNIT_POWER_USAGE.get()));
+                                consumeEnergy();
                             } else {
-                                counter = recipe.getProcessTime();
+                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(7).copy());
                                 length = counter;
                             }
                         } // Energy Check
@@ -196,6 +197,21 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
         // End of item handler
 
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(7).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(7).copy());
     }
 
     /*
@@ -272,7 +288,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         return super.write(tag);
     }
 
-    /*
     @Override
     public CompoundNBT getUpdateTag() {
         return this.write(new CompoundNBT());
@@ -283,7 +298,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     public SUpdateTileEntityPacket getUpdatePacket() {
         return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
     }
-     */
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
@@ -306,7 +320,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(7) {
+        return new ItemStackHandler(8) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -347,6 +361,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                         }
                     });
                     return recipeHit.get();
+                } else if (slot == 7){
+                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER);
                 }
                 return false;
             }

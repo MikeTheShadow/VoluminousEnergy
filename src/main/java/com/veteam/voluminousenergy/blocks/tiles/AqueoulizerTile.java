@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -109,7 +110,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         VEFluidRecipe recipe = world.getRecipeManager().getRecipe(AqueoulizerRecipe.RECIPE_TYPE, new Inventory(inputItem.copy()),world).orElse(null);
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
-            ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
+            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
             if (inputTank.getTank().getFluid().isFluidEqual(recipe.getFluids().get(0))) {
                 if (outputTank != null) {
@@ -117,7 +118,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
                     // Tank fluid amount check + tank cap checks
                     if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY){
                         // Check for power
-                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+                        if (canConsumeEnergy()){
                             if (counter == 1){
 
                                 // Drain Input
@@ -133,13 +134,13 @@ public class AqueoulizerTile extends VEFluidTileEntity {
                                 inventory.extractItem(3, recipe.ingredientCount,false);
 
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.AQUEOULIZER_POWER_USAGE.get()));
+                                consumeEnergy();
                                 this.markDirty();
                             } else if (counter > 0){
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.AQUEOULIZER_POWER_USAGE.get()));
+                                consumeEnergy();
                             } else {
-                                counter = recipe.getProcessTime();
+                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(4).copy());
                                 length = counter;
                             }
                         } // Energy Check
@@ -150,6 +151,21 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             }
         }
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(4).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
     }
 
     /*
@@ -217,6 +233,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(this.getBlockState(), pkt.getNbtCompound());
         super.onDataPacket(net, pkt);
     }
@@ -231,7 +248,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -239,6 +256,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
                 return true;
             }
 

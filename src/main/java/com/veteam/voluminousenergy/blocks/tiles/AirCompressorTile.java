@@ -201,7 +201,6 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         return super.write(tag);
     }
 
-    /*
     @Override
     public CompoundNBT getUpdateTag() {
         return this.write(new CompoundNBT());
@@ -212,7 +211,6 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     public SUpdateTileEntityPacket getUpdatePacket() {
         return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
     }
-     */
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {

@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -122,7 +121,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                             && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
                             && outputTank1.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
                         // Check for power
-                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                        if (canConsumeEnergy()) {
                             if (counter == 1) {
 
                                 // Drain Input
@@ -143,13 +142,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                                 }
 
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage) e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                consumeEnergy();
                                 this.markDirty();
                             } else if (counter > 0) {
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage) e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                consumeEnergy();
                             } else {
-                                counter = recipe.getProcessTime();
+                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(4));
                                 length = counter;
                             }
                         } // Energy Check
@@ -159,6 +158,21 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                 }
             }
         }
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(4).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
     }
 
     /*
@@ -220,7 +234,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return super.write(tag);
     }
 
-    /*
     @Override
     public CompoundNBT getUpdateTag() {
         return this.write(new CompoundNBT());
@@ -231,10 +244,10 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     public SUpdateTileEntityPacket getUpdatePacket() {
         return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
     }
-     */
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
         this.read(this.getBlockState(), pkt.getNbtCompound());
         super.onDataPacket(net, pkt);
     }
@@ -253,7 +266,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();

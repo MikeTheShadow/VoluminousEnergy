@@ -20,18 +20,18 @@ public class VESlotManager {
     }
 
     public void setStatus(boolean bool){
-        VoluminousEnergy.LOGGER.debug("STATUS UPDATED TO: " + bool);
+        //VoluminousEnergy.LOGGER.debug("STATUS UPDATED TO: " + bool);
         this.enabled.set(bool);
     }
 
     public void setDirection(Direction direction){
-        VoluminousEnergy.LOGGER.debug("DIRECTION UPDATED TO: " + direction);
+        //VoluminousEnergy.LOGGER.debug("DIRECTION UPDATED TO: " + direction);
         this.side.set(direction);
     }
 
     public void setDirection(int direction){
         this.side.set(directionFromInt(direction));
-        VoluminousEnergy.LOGGER.debug("DIRECTION UPDATED TO: " + directionFromInt(direction));
+        //VoluminousEnergy.LOGGER.debug("DIRECTION UPDATED TO: " + directionFromInt(direction));
     }
 
     public Direction getDirection(){

@@ -47,6 +47,7 @@ public class AqueoulizerContainer extends Container {
             addSlot(new VEInsertSlot(h, 1, 38, 49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 137, 49)); // Extract fluid from first output
             addSlot(new VEInsertSlot(h, 3, 96, 32)); // Item to be dissolved
+            addSlot(new VEInsertSlot(h, 4, 130,-14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

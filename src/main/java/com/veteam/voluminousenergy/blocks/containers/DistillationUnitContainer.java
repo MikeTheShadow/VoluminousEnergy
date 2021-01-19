@@ -50,6 +50,7 @@ public class DistillationUnitContainer extends Container {
             addSlot(new VEInsertSlot(h, 4, 137,11)); // Top slot for from second output
             addSlot(new VEInsertSlot(h, 5, 137,42)); // Bottom slot for second output
             addSlot(new VEInsertSlot(h, 6, 122,64)); // Item Output Slot
+            addSlot(new VEInsertSlot(h, 7,130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 

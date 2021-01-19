@@ -48,7 +48,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop -18, buttons ->{
 
         }));
 

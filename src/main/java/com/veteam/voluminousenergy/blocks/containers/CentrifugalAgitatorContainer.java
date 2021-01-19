@@ -48,6 +48,7 @@ public class CentrifugalAgitatorContainer extends Container {
             addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 96,49)); // Extract fluid from first output
             addSlot(new VEInsertSlot(h, 3, 137,49)); // Extract fluid from second output
+            addSlot(new VEInsertSlot(h, 4, 130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 

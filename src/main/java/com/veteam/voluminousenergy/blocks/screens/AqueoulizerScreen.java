@@ -29,6 +29,7 @@ import java.util.UUID;
 public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     private AqueoulizerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public AqueoulizerScreen(AqueoulizerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -48,7 +49,7 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop -18, buttons ->{
 
         }));
 
@@ -163,6 +164,9 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            // Upgrade slot
+            this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+            this.blit(matrixStack,i+129, j-16,0,0,18,18);
         }
 
     }

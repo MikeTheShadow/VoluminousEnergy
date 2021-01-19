@@ -29,6 +29,7 @@ import java.util.UUID;
 public class DistillationUnitScreen extends ContainerScreen<DistillationUnitContainer> {
     private DistillationUnitTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -48,7 +49,7 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop -18, buttons ->{
 
         }));
 
@@ -208,6 +209,9 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 11, 0, 12, 50);
             } catch (Exception e){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            // Upgrade slot
+            this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+            this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
             this.font.drawString(matrixStack, "MULTIBLOCK IS INVALID! Please build a 3x3x3 of Aluminum Machine Casings BEHIND the Distillation Unit",8.0F, (float)(this.ySize - 96 + 20), 16777215);
         }
