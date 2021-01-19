@@ -95,7 +95,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             }
         }
 
-        if (airTank != null && (airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY && counter == 20 && canConsumeEnergy()){
+        if (airTank != null && (airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY && counter == 0 && canConsumeEnergy()){
             // Check blocks around the Air Compressor to see if it's air
             int x = this.pos.getX();
             int y = this.pos.getY();
@@ -139,8 +139,8 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             consumeEnergy();
         }
 
-        if(counter == 20) counter = 0;
-        else counter++;
+        if(counter == 0) counter = (byte)this.calculateCounter(20,this.inventory.getStackInSlot(1).copy());
+        else counter--;
     }
 
     public void addAirToTank() {
