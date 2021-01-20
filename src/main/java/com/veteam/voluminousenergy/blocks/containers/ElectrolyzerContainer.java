@@ -50,6 +50,7 @@ public class ElectrolyzerContainer extends Container {
             addSlot(new VEOutputSlot(h, 3, 71,57)); //RNG #1 Slot
             addSlot(new VEOutputSlot(h,4, 89, 57)); //RNG #2 Slot
             addSlot(new VEOutputSlot(h,5,107,57)); //RNG #3 Slot
+            addSlot(new VEInsertSlot(h,6,154, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

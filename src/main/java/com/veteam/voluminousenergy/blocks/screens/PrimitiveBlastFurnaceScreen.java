@@ -24,6 +24,7 @@ import java.util.UUID;
 public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastFurnaceContainer> {
     private PrimitiveBlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
@@ -102,7 +103,9 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
             //this.blit(i,j,180,1,progress,15);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-
+        // Upgrade slot
+        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){

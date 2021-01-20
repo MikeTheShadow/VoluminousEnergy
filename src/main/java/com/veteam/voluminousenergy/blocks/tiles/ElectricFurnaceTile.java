@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -77,7 +78,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         inputItemStack.set(furnaceInput.copy()); // Atomic Reference, use this to query recipes FOR OUTPUT SLOT
 
         // Main Processing occurs here
-        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+        if (canConsumeEnergy()){
             FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), world).orElse(null);
             BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), world).orElse(null);
 
@@ -120,19 +121,34 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                         inventory.insertItem(1, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
                     }
 
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTRIC_FURNACE_POWER_USAGE.get()));
+                    consumeEnergy();
                     counter--;
                     this.markDirty();
                 } else if (counter > 0) {
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTRIC_FURNACE_POWER_USAGE.get()));
+                    consumeEnergy();
                     counter--;
                 } else {
-                    counter = 200;
+                    counter = this.calculateCounter(200,inventory.getStackInSlot(2));
                     length = counter;
                 }
 
             } else counter = 0;
         } else counter = 0;
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.ELECTRIC_FURNACE_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(2).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.ELECTRIC_FURNACE_POWER_USAGE.get(), this.inventory.getStackInSlot(2).copy());
     }
 
     @Override
@@ -172,7 +188,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(2) {
+        return new ItemStackHandler(3) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -195,6 +211,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                     }
 
                     return stack.getItem() == blastingRecipe.getRecipeOutput().getItem();
+                } else if (slot == 2){
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
                 return false;
             }
@@ -213,6 +231,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                     }
 
                 } else if (slot == 1){
+                    return super.insertItem(slot, stack, simulate);
+                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

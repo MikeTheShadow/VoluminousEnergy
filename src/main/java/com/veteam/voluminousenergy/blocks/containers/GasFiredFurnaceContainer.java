@@ -48,6 +48,7 @@ public class GasFiredFurnaceContainer extends Container {
             addSlot(new VEInsertSlot(h, 1,8,49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 53,33)); // Item input slot
             addSlot(new VEInsertSlot(h, 3, 116,33)); // Item output slot
+            addSlot(new VEInsertSlot(h, 4,154, -14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 

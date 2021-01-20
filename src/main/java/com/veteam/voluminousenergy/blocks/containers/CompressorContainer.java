@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CompressorInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
 import com.veteam.voluminousenergy.blocks.screens.CompressorScreen;
@@ -47,6 +48,7 @@ public class CompressorContainer extends Container {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new CompressorInputSlot(h, 0, 80, 13, world));
                 addSlot(new VEOutputSlot(h, 1,80,58));//Main Output
+                addSlot(new VEInsertSlot(h, 2,154, -14));//Upgrade slot
             });
             layoutPlayerInventorySlots(8, 84);
 

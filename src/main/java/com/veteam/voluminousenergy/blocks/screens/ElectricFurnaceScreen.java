@@ -26,6 +26,7 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
 
     private ElectricFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electric_furnace_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public ElectricFurnaceScreen(ElectricFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -108,7 +109,9 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-
+        // Upgrade slot
+        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){

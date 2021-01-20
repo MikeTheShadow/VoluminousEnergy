@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveBlastFurnaceScreen;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +41,7 @@ public class PrimitiveBlastFurnaceContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 53, 33, world));
             addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,116,33));
-            //addSlot(new VEOutputSlot(h, 1,120,24));
+            addSlot(new VEInsertSlot(h,2,154, -14));
         });
         layoutPlayerInventorySlots(8, 84);
     }

@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
 import com.veteam.voluminousenergy.blocks.screens.PumpScreen;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;

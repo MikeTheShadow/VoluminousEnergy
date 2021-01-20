@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
@@ -78,7 +79,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+            if (output.getCount() + recipe.getOutputAmount() < 64 && canConsumeEnergy()) {
                 if (this.counter == 1){ //The processing is about to be complete
                     // Extract the inputted item
                     inventory.extractItem(0,recipe.ingredientCount,false);
@@ -99,14 +100,15 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
                     }
 
                     this.counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get()));
+                    consumeEnergy();
                     markDirty();
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.COMPRESSOR_POWER_USAGE.get()));
+                    consumeEnergy();
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                         this.counter = recipe.getProcessTime();
+                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(2));
                         this.length = this.counter;
                     } else {
                         this.counter = 0;
@@ -118,6 +120,21 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         } else { // This is if the input slot is empty
             this.counter = 0;
         }
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(2).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(), this.inventory.getStackInSlot(2).copy());
     }
 
     @Override
@@ -158,7 +175,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(2) {
+        return new ItemStackHandler(3) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -175,6 +192,8 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
                     return recipe.ingredient.test(stack);
                 } else if (slot == 1 && recipe1 != null){
                     return stack.getItem() == recipe1.result.getItem();
+                } else if (slot == 2){
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
                 return false;
             }
@@ -197,6 +216,8 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
                     if (stack.getItem() == recipe1.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
+                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                    return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
             }

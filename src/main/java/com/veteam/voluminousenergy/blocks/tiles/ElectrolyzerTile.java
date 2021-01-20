@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VEEnergyStorage;
@@ -96,7 +97,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
-                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && canConsumeEnergy()) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
                         h.extractItem(0,recipe.ingredientCount,false);
@@ -197,14 +198,14 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                         }
 
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
+                        consumeEnergy();
                         markDirty();
                     } else if (counter > 0){ //In progress
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
+                        consumeEnergy();
                     } else { // Check if we should start processing
                         if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
-                            counter = recipe.getProcessTime();
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(6).copy());
                             length = counter;
                         } else {
                             counter = 0;
@@ -217,6 +218,21 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 counter = 0;
             }
         });
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(6).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(), this.inventory.getStackInSlot(6).copy());
     }
 
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
@@ -320,7 +336,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         return super.write(tag);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(6) {
+    public final ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
@@ -351,6 +367,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 return stack.getItem() == recipe1.getRngItemSlot1().getItem();
             } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
                 return stack.getItem() == recipe1.getRngItemSlot2().getItem();
+            } else if (slot == 6){
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
             }
             return false;
         }
@@ -387,6 +405,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
+            } else if (slot == 6 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                return super.insertItem(slot, stack, simulate);
             }
             return stack;
         }
@@ -438,8 +458,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
-    {
+    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
         return new ElectrolyzerContainer(i,world,pos,playerInventory,playerEntity);
     }
 

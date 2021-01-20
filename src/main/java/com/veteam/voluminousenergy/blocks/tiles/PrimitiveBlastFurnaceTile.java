@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
@@ -92,14 +93,13 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                         output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
                         inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                     }
-
                     this.counter--;
                     markDirty();
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
-                        this.counter = recipe.getProcessTime();
+                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(2).copy());
                         this.length = this.counter;
                     } else {
                         this.counter = 0;
@@ -162,7 +162,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(2) {
+        return new ItemStackHandler(3) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
@@ -174,6 +174,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                     return recipe.ingredient.test(stack);
                 } else if (slot == 1 && recipeOutput != null){
                     return stack.getItem() == recipeOutput.result.getItem();
+                } else if (slot == 2){
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
                 return false;
             }
@@ -192,13 +194,12 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                             return super.insertItem(slot, stack, simulate);
                         }
                     }
-                    //LOGGER.debug("Inserting to Slot 0.");
-
                 } else if (slot == 1 && recipeOut != null){
-                    //LOGGER.debug("Inserting to Slot 1.");
                     if (stack.getItem() == recipeOut.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
+                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                    return super.insertItem(slot,stack,simulate);
                 }
                 return stack;
             }

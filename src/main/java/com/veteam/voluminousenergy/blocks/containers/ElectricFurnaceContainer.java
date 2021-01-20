@@ -44,6 +44,7 @@ public class ElectricFurnaceContainer extends Container {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 53,33)); // Furnace Input Slot
             addSlot(new VEInsertSlot(h, 1,116,33)); // Furnace Output Slot
+            addSlot(new VEInsertSlot(h,2,154, -14));// Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

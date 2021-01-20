@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -150,7 +151,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 } else if (counter > 0) {
                     counter--;
                 } else {
-                    counter = 200;
+                    counter = this.calculateCounter(200, inventory.getStackInSlot(4));
                     length = counter;
                 }
 
@@ -165,6 +166,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
+                        if(inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
+                            fuelCounter = fuelCounter/(inventory.getStackInSlot(4).getCount()^2);
+                        }
                         fuelLength = fuelCounter;
                         this.markDirty();
                     }
@@ -253,7 +257,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -279,6 +283,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     }
 
                     return stack.getItem() == blastingRecipe.getRecipeOutput().getItem();
+                } else if (slot == 4){
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
                 return false;
             }
@@ -302,6 +308,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     }
 
                 } else if (slot == 3){
+                    return super.insertItem(slot, stack, simulate);
+                } else if (slot == 4 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

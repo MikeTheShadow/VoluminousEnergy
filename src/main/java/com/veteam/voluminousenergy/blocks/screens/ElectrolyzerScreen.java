@@ -25,6 +25,7 @@ import java.util.UUID;
 public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
     private ElectrolyzerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electrolyzer_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public ElectrolyzerScreen(ElectrolyzerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -139,7 +140,9 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-
+        // Upgrade slot
+        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){

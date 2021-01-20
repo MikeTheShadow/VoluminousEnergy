@@ -28,6 +28,7 @@ import java.util.UUID;
 public class GasFiredFurnaceScreen extends ContainerScreen<GasFiredFurnaceContainer> {
     private GasFiredFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/gas_fired_furnace_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public GasFiredFurnaceScreen(GasFiredFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -144,7 +145,8 @@ public class GasFiredFurnaceScreen extends ContainerScreen<GasFiredFurnaceContai
             VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-
+        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
