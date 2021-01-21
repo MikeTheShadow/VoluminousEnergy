@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
@@ -64,4 +65,7 @@ public class VEItems
 
     //Upgrades
     public static QuartzMultiplier QUARTZ_MULTIPLIER = new QuartzMultiplier();
+
+    //Batteries
+    public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
 }

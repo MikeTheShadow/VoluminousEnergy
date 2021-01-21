@@ -1,10 +1,9 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveStirlingGeneratorScreen;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

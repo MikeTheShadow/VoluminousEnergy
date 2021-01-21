@@ -293,6 +293,9 @@ public class VoluminousEnergy
 
             //Upgrades
             itemRegisteryEvent.getRegistry().register(VEItems.QUARTZ_MULTIPLIER);
+
+            //Batteries
+            itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
         }
 
         @SubscribeEvent
