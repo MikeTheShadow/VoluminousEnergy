@@ -50,8 +50,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(VoluminousEnergy.MODID)
-public class VoluminousEnergy
-{
+public class VoluminousEnergy {
     public static final String MODID = "voluminousenergy";
 
     public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
@@ -95,59 +94,10 @@ public class VoluminousEnergy
         VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
-    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){/* //TODO: Test if needed, if so find a FIX!
-        //True Items
+    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
+        /* //True Items
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","silicon"));
-
-        //Dusts
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter/saltpeter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coal"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coke"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lapis"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sulfur"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/bauxite"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/cinnabar"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/iron"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/quartz"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sand"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/soulsand"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/titanium"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/rutile"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/gold"));
-
-        //Gears
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/stone"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/titanium"));
-
-        //Ingots
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
-
-        //Plates
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","plates/titanium"));
-
-        //Ores
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/saltpeter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/bauxite"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/cinnabar"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/rutile"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/galena"));
         */
-
     }
 
     @SubscribeEvent
@@ -184,6 +134,7 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new PumpBlock());
             blockRegisteryEvent.getRegistry().register(new GasFiredFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new ElectricFurnaceBlock());
+            blockRegisteryEvent.getRegistry().register(new BatteryBoxBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -225,6 +176,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PUMP_BLOCK,properties).setRegistryName("pump"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GAS_FIRED_FURNACE_BLOCK,properties).setRegistryName("gas_fired_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTRIC_FURNACE_BLOCK,properties).setRegistryName("electric_furnace"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BATTERY_BOX_BLOCK,properties).setRegistryName("battery_box"));
 
             //True Blocks
             //Ores
@@ -315,6 +267,7 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
             event.getRegistry().register(TileEntityType.Builder.create(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
             event.getRegistry().register(TileEntityType.Builder.create(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
+            event.getRegistry().register(TileEntityType.Builder.create(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
         }
 
         @SubscribeEvent
@@ -389,6 +342,11 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new ElectricFurnaceContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("electric_furnace"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new BatteryBoxContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("battery_box"));
         }
 
         @SubscribeEvent

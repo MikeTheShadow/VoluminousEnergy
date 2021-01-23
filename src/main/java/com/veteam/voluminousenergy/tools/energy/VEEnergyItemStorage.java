@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.tools.energy;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.energy.EnergyStorage;
 
@@ -23,9 +24,9 @@ public class VEEnergyItemStorage extends EnergyStorage {
     @Override
     public int extractEnergy(int maxExtract, boolean simulate){
         if(!canExtract()) return 0;
-        int energyStored = getEnergyStored();
-        int energyExtracted = Math.min(capacity - energyStored, Math.min(this.maxExtract,maxExtract));
-        if(!simulate) writeEnergy(energyStored - energyExtracted);
+        int energyExtracted = Math.min(getEnergyStored(), Math.min(this.maxExtract,maxExtract));
+        VoluminousEnergy.LOGGER.debug("Extracting Energy from item. energyStored: " + getEnergyStored() + " energyExtracted: " + energyExtracted + " new total: " + (getEnergyStored() - energyExtracted) + " Max Extract: " + maxExtract);
+        if(!simulate) writeEnergy(getEnergyStored() - energyExtracted);
         return energyExtracted;
     }
 

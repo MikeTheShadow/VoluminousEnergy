@@ -78,6 +78,8 @@ public class UuidPacket {
                 tileEntity = ((PumpContainer) openContainer).tileEntity;
             else if (openContainer instanceof StirlingGeneratorContainer)
                 tileEntity = ((StirlingGeneratorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof BatteryBoxContainer)
+                tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
 
             // When tile is set, but not null
             if(tileEntity != null) interactWithTile(packet,tileEntity);

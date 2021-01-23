@@ -165,6 +165,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
     public static ContainerType<ElectricFurnaceContainer> ELECTRIC_FURNACE_CONTAINER;
 
+    // Electric Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static BatteryBoxBlock BATTERY_BOX_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static TileEntityType<BatteryBoxTile> BATTERY_BOX_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static ContainerType<BatteryBoxContainer> BATTERY_BOX_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

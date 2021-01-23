@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -20,23 +20,23 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ElectricFurnaceBlock extends FaceableBlock {
+public class BatteryBoxBlock extends FaceableBlock {
 
-    public ElectricFurnaceBlock() {
+    public BatteryBoxBlock() {
         super(Properties.create(Material.IRON)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
                 .setLightLevel(l -> 0)
                 .setRequiresTool()
-                .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get())
+                .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get()) // TODO: Config
                 .harvestTool(ToolType.PICKAXE)
         );
-        setRegistryName("electric_furnace");
+        setRegistryName("battery_box");
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new ElectricFurnaceTile();}
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new BatteryBoxTile();}
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
@@ -45,7 +45,7 @@ public class ElectricFurnaceBlock extends FaceableBlock {
             if(tileEntity instanceof INamedContainerProvider) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
             } else {
-                throw new IllegalStateException("Electric Furnace named container provider is missing!");
+                throw new IllegalStateException("Battery Box named container provider is missing!");
             }
             return ActionResultType.SUCCESS;
         }

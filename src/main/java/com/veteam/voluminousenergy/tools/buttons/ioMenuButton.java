@@ -47,7 +47,7 @@ public class ioMenuButton extends Button {
     @Override
     public void onPress(){
         cycleMode();
-        VoluminousEnergy.LOGGER.debug(this.cycled);
+        //VoluminousEnergy.LOGGER.debug(this.cycled);
     }
 
     public boolean shouldIOBeOpen(){

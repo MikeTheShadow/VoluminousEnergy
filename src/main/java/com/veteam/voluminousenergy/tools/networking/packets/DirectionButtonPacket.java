@@ -193,6 +193,16 @@ public class DirectionButtonPacket {
                 } else {
                     ((StirlingGeneratorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
+                // Battery Box
+            } else if (openContainer instanceof BatteryBoxContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof BatteryBoxTile) {
+                        ((BatteryBoxTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((BatteryBoxContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");
             }

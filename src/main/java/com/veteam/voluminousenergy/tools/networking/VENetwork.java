@@ -49,6 +49,12 @@ public class VENetwork {
                 .encoder(TankDirectionPacket::toBytes)
                 .consumer(TankDirectionPacket::handle)
                 .add();
+
+        channel.messageBuilder(BatteryBoxSlotPairPacket.class, 6)
+                .decoder(BatteryBoxSlotPairPacket::fromBytes)
+                .encoder(BatteryBoxSlotPairPacket::toBytes)
+                .consumer(BatteryBoxSlotPairPacket::handle)
+                .add();
     }
 
     private VENetwork(){

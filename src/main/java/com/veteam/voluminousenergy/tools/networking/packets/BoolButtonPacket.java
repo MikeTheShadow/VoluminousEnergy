@@ -38,12 +38,12 @@ public class BoolButtonPacket {
     }
 
     public static void handle(BoolButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
+        //VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.openContainer;
-                VoluminousEnergy.LOGGER.debug("Client bound packet received.");
+                //VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 break;
             default:
@@ -195,7 +195,17 @@ public class BoolButtonPacket {
                     } else {
                         ((StirlingGeneratorContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                     }
-                    // INVALID TE/Container
+                    // Battery Box
+            } else if (openContainer instanceof BatteryBoxContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof BatteryBoxTile) {
+                        ((BatteryBoxTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    ((BatteryBoxContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
+                // INVALID TE/Container
             } else {
                 VoluminousEnergy.LOGGER.debug("BoolButtonPacket: Not a valid container.");
             }

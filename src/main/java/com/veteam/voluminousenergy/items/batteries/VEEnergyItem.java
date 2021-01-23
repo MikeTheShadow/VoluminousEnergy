@@ -85,4 +85,8 @@ public class VEEnergyItem extends Item {
 
     @Override
     public double getDurabilityForDisplay(ItemStack itemStack){return 1-getChargeRatio(itemStack);}
+
+    public int getMaxReceive() {return maxReceive;}
+    public int getMaxExtract() {return maxExtract;}
+
 }
