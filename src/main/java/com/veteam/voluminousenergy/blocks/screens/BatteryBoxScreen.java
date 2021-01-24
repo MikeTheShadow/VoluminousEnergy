@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
+import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSendOutPowerButton;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSlotPairButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -69,6 +70,9 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
         this.addButton(new BatteryBoxSlotPairButton((this.width/2), guiTop + 34, 3, tileEntity, button -> { }));
         this.addButton(new BatteryBoxSlotPairButton((this.width/2)+18,guiTop + 34, 4, tileEntity, button -> { }));
         this.addButton(new BatteryBoxSlotPairButton((this.width/2)+36,guiTop + 34, 5, tileEntity, button -> { }));
+
+        // Send Out Power Button
+        this.addButton(new BatteryBoxSendOutPowerButton((this.width/2)-79,guiTop + 3, tileEntity,button -> { }));
     }
 
     @Override
@@ -100,7 +104,6 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
         this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
         if(tileEntity != null){
             informTileOfIOButton(true);
-            int progress = tileEntity.progressCounterPX(9);
             int power = container.powerScreen(49);
 
             /*Note for this.blit below:
@@ -111,13 +114,10 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81,j+31,176,0,progress,17);
+            //this.blit(matrixStack,i+81,j+31,176,0,progress,17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-        // Upgrade slot
-        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
-        this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
     private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
@@ -176,6 +176,14 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
                 if(((BatteryBoxSlotPairButton) widget).getId() == id){
                     ((BatteryBoxSlotPairButton) widget).setStatus(status);
                 }
+            }
+        }
+    }
+
+    public void updateSendOutPowerButton(boolean status){
+        for(Widget widget : this.buttons){
+            if(widget instanceof BatteryBoxSendOutPowerButton){
+                ((BatteryBoxSendOutPowerButton) widget).setStatus(status);
             }
         }
     }

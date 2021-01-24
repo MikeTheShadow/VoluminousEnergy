@@ -157,4 +157,6 @@ public class BatteryBoxContainer extends Container {
     }
 
     public void updateSlotPairButton(boolean status, int pairId){this.screen.updateSlotPairButton(status,pairId);}
+
+    public void updateSendOutPowerButton(boolean status){this.screen.updateSendOutPowerButton(status);}
 }

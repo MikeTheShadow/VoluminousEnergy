@@ -5,33 +5,31 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class BatteryBoxSlotPairButton extends VEIOButton {
+public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
-    private int id;
     private BatteryBoxTile batteryBoxTile;
-    private boolean isTopIngress;
+    private boolean sendOutPower;
     private int u= 0;
     private int v= 166;
 
 
-    public BatteryBoxSlotPairButton(int x, int y, int id, BatteryBoxTile batteryBoxTile, IPressable onPress) {
+    public BatteryBoxSendOutPowerButton(int x, int y, BatteryBoxTile batteryBoxTile, IPressable onPress) {
         super(x, y, 18, 20, ITextComponent.getTextComponentOrEmpty(""), button -> {
-            ((BatteryBoxSlotPairButton) button).cycle();
+            ((BatteryBoxSendOutPowerButton) button).cycle();
             onPress.onPress(button);
         });
-        this.id = id;
         this.batteryBoxTile = batteryBoxTile;
         this.x = x;
         this.y = y;
-        this.width = 18;
-        this.height = 20;
+        this.width = 16;
+        this.height = 12;
     }
 
     @Override
@@ -39,31 +37,27 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getTextureManager().bindTexture(GUI_TOOLS);
 
-        if(!isHovered) v = 166;
-        else v = 186;
+        if(!isHovered) u = 96;
+        else u = 112;
 
-        if(isTopIngress) u = 0;
-        else u = 18;
+        if(!sendOutPower) v = 178;
+        else v = 166;
 
         blit(matrixStack, this.x, this.y, this.u, this.v, this.width, this.height);
     }
 
     private void cycle(){
-        isTopIngress = !isTopIngress;
-        this.batteryBoxTile.updateSlotPair(isTopIngress,id);
+        sendOutPower = !sendOutPower;
+        this.batteryBoxTile.updateSendOutPower(sendOutPower);
     }
 
     @Override
     public void onPress(){
         cycle();
-        VENetwork.channel.sendToServer(new BatteryBoxSlotPairPacket(this.isTopIngress, this.id));
-    }
-
-    public int getId(){
-        return id;
+        VENetwork.channel.sendToServer(new BatteryBoxSendOutPowerPacket(this.sendOutPower));
     }
 
     public void setStatus(boolean status){
-        isTopIngress = status;
+        sendOutPower = status;
     }
 }

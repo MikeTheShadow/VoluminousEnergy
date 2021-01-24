@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.Path;
 
@@ -30,6 +29,7 @@ public class Config {
     public static final String CATEGORY_PUMP = "Pump";
     public static final String CATEGORY_GAS_FIRED_FURNACE = "Gas Furnace";
     public static final String CATEGORY_ELECTRIC_FURNACE = "Electric Furnace";
+    public static final String CATEGORY_BATTER_BOX = "Battery Box";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -136,7 +136,6 @@ public class Config {
 
     // Combustion Generator Variables
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
     public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
@@ -174,6 +173,11 @@ public class Config {
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_HARVEST_LEVEL;
+
+    // Battery Box Variables
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -248,6 +252,11 @@ public class Config {
         // Electric Furnace
         COMMON_BUILDER.comment("Electric Furnace Settings").push(CATEGORY_ELECTRIC_FURNACE);
         setupElectricFurnace();
+        COMMON_BUILDER.pop();
+
+        // Battery Box
+        COMMON_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTER_BOX);
+        setupBatteryBox();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -476,6 +485,15 @@ public class Config {
         ELECTRIC_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electric Furnace")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         ELECTRIC_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupBatteryBox(){
+        BATTERY_BOX_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Battery Box to store")
+                .defineInRange("Maximum Power", 50_000, 0, Integer.MAX_VALUE);
+        BATTERY_BOX_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Battery Box")
+                .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
+        BATTERY_BOX_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

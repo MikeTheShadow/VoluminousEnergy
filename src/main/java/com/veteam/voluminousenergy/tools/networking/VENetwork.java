@@ -55,6 +55,12 @@ public class VENetwork {
                 .encoder(BatteryBoxSlotPairPacket::toBytes)
                 .consumer(BatteryBoxSlotPairPacket::handle)
                 .add();
+
+        channel.messageBuilder(BatteryBoxSendOutPowerPacket.class, 7)
+                .decoder(BatteryBoxSendOutPowerPacket::fromBytes)
+                .encoder(BatteryBoxSendOutPowerPacket::toBytes)
+                .consumer(BatteryBoxSendOutPowerPacket::handle)
+                .add();
     }
 
     private VENetwork(){

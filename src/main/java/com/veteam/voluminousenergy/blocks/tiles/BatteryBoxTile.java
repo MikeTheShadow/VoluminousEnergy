@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
@@ -21,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
@@ -49,20 +51,19 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
     public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot");
 
-    private final int POWER_MAX_TX = Config.CRUSHER_TRANSFER.get();
-    private final int MAX_POWER = Config.CRUSHER_MAX_POWER.get();
+    private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
+    private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
 
     // Sided Item Handlers
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
     private LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 5, 7));
 
-    //private ArrayList<int[]> slotPairList = new ArrayList<>();
+    // Modes and meta stuff for the battery box
     private boolean[] doDischargeInstead = {true,true,true,true,true,true};
     private boolean topIsIngress = true;
+    private boolean sendOutPower = false;
 
-    private int counter;
-    private int length;
 
     public BatteryBoxTile(){
         super(VEBlocks.BATTERY_BOX_TILE);
@@ -129,6 +130,9 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                     moveItem(i);
                 }
             }
+        }
+        if(sendOutPower){
+            sendOutPower();
         }
     }
 
@@ -295,6 +299,31 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                 > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
     }
 
+     */
+
+    public static int receiveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
+    private void sendOutPower() {
+        energy.ifPresent(energy -> {
+            for (Direction dir : Direction.values()){
+                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                Direction opposite = dir.getOpposite();
+                if(tileEntity != null){
+                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                    int smallest = Math.min(Config.BATTERY_BOX_TRANSFER.get(), energy.getEnergyStored());
+                    int received = receiveEnergy(tileEntity, opposite, smallest);
+                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    if (energy.getEnergyStored() <=0){
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
     /*
         Read and Write on World save
      */
@@ -314,6 +343,8 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         doDischargeInstead[4] = tag.getBoolean("slot_pair_mode_4");
         doDischargeInstead[5] = tag.getBoolean("slot_pair_mode_5");
 
+        sendOutPower = tag.getBoolean("send_out_power");
+
         super.read(state, tag);
     }
 
@@ -332,11 +363,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         tag.putBoolean("slot_pair_mode_4", doDischargeInstead[4]);
         tag.putBoolean("slot_pair_mode_5", doDischargeInstead[5]);
 
+        tag.putBoolean("send_out_power", sendOutPower);
+
         return super.write(tag);
     }
 
     private IEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Override
@@ -380,19 +413,11 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         return new BatteryBoxContainer(i,world,pos,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
-    }
-
     public void updateSlotPair(boolean mode, int pairId){
         if(pairId <6) doDischargeInstead[pairId] = mode;
     }
 
-    public void updateIngress(boolean topIngress){this.topIsIngress = topIngress;};
+    public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
     public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == 0) topManager.setStatus(status); // ingress
@@ -423,6 +448,9 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                         for (int i = 0; i < 6; i++) {
                             VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSlotPairPacket(doDischargeInstead[i], i));
                         }
+
+                        // Send Out Power
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
                     }
                 });
             });
@@ -446,6 +474,9 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             for (int i = 0; i < 6; i++) {
                 VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BatteryBoxSlotPairPacket(doDischargeInstead[i], i));
             }
+
+            // Send out Power
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
         }
     }
 
