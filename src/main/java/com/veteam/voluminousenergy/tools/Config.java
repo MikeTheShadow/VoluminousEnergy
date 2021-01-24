@@ -15,50 +15,6 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
 
-    public static final ClientConfig CLIENT;
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    static {
-        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-        CLIENT_SPEC = specPair.getRight();
-        CLIENT = specPair.getLeft();
-    }
-
-    public static boolean aBoolean;
-    public static int anInt;
-
-    @SubscribeEvent
-    public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
-        if (configEvent.getConfig().getSpec() == Config.CLIENT_SPEC) {
-            bakeConfig();
-        }
-    }
-
-    public static void bakeConfig() {
-        aBoolean = CLIENT.aBoolean.get();
-        anInt = CLIENT.anInt.get();
-    }
-
-    public static class ClientConfig {
-
-        public final ForgeConfigSpec.BooleanValue aBoolean;
-        public final ForgeConfigSpec.IntValue anInt;
-
-        public ClientConfig(ForgeConfigSpec.Builder builder) {
-            aBoolean = builder
-                    .comment("aBoolean usage description")
-                    .translation(VoluminousEnergy.MODID + ".config." + "aBoolean")
-                    .define("aBoolean", false);
-
-            builder.push("category");
-            anInt = builder
-                    .comment("anInt usage description")
-                    .translation(VoluminousEnergy.MODID + ".config." + "anInt")
-                    .defineInRange("anInt", 10, 0, 100);
-            builder.pop();
-        }
-
-    }
-
     public static final String CATEGORY_GENERAL = "General";
     public static final String CATEGORY_WORLDGEN = "World Generation";
     public static final String CATEGORY_PRIMITIVE_STIRLING_GENERATOR = "Primitive Stirling Generator";
