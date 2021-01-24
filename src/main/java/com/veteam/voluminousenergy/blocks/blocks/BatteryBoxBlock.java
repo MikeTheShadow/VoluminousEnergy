@@ -28,7 +28,7 @@ public class BatteryBoxBlock extends FaceableBlock {
                 .hardnessAndResistance(2.0f)
                 .setLightLevel(l -> 0)
                 .setRequiresTool()
-                .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get()) // TODO: Config
+                .harvestLevel(Config.BATTERY_BOX_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("battery_box");
