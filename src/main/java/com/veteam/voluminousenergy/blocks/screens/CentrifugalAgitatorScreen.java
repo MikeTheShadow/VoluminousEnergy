@@ -81,38 +81,38 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
         }));
 
         // Output Extract
-        this.addButton(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.guiTop+40, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.guiTop+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.guiTop+40, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.guiTop+60, button ->{
             // Do nothing
         }));
 
         // Input Tank
-        this.addButton(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.guiTop+60, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.guiTop+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.guiTop+60, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.guiTop+80, button ->{
             // Do nothing
         }));
 
         // Output Tank 0
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.guiTop+80, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.guiTop+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.guiTop+80, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.guiTop+100, button ->{
             // Do nothing
         }));
 
         // Output Tank 1
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.guiTop+100, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.guiTop+120, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.guiTop+100, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.guiTop+120, button ->{
             // Do nothing
         }));
     }
