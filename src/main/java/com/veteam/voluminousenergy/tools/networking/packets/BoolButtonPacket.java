@@ -207,10 +207,10 @@ public class BoolButtonPacket {
                 }
                 // INVALID TE/Container
             } else {
-                VoluminousEnergy.LOGGER.debug("BoolButtonPacket: Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.debug("BoolButtonPacket: The container is null");
+            VoluminousEnergy.LOGGER.warn("BoolButtonPacket: The container is null");
         }
     }
 }

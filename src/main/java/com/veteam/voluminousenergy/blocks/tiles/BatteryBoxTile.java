@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
@@ -57,7 +56,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     // Sided Item Handlers
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
-    private LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 5, 7));
+    private LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
 
     // Modes and meta stuff for the battery box
     private boolean[] doDischargeInstead = {true,true,true,true,true,true};
@@ -112,18 +111,18 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                     if(i >= 6){
                         int j = i-6;
                         if(doDischargeInstead[j]){
-                            VoluminousEnergy.LOGGER.debug("Discharging: " + i);
+                            //VoluminousEnergy.LOGGER.debug("Discharging: " + i);
                             dischargeItem(inventory.getStackInSlot(j));
                         } else {
-                            VoluminousEnergy.LOGGER.debug("Charging: " + i);
+                            //VoluminousEnergy.LOGGER.debug("Charging: " + i);
                             chargeItem(inventory.getStackInSlot(j));
                         }
                     } else {
                         if(doDischargeInstead[i]){
-                            VoluminousEnergy.LOGGER.debug("Discharging: " + i);
+                            //VoluminousEnergy.LOGGER.debug("Discharging: " + i);
                             dischargeItem(inventory.getStackInSlot(i));
                         } else {
-                            VoluminousEnergy.LOGGER.debug("Charging: " + i);
+                            //VoluminousEnergy.LOGGER.debug("Charging: " + i);
                             chargeItem(inventory.getStackInSlot(i));
                         }
                     }
@@ -140,7 +139,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         energy.ifPresent(teEnergy -> {
             if(teEnergy.getEnergyStored() < teEnergy.getMaxEnergyStored()){
                 itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem ->{
-                    //if(energyItem.canExtract()){
+                    if(energyItem.canExtract()){
                         int toExtract;
                         if(itemStack.getItem() instanceof VEEnergyItem) {
                             int maxExtractItem = ((VEEnergyItem) itemStack.getItem()).getMaxExtract();
@@ -157,7 +156,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                                 teEnergy.receiveEnergy(MAX_POWER - teEnergy.getEnergyStored(), false);
                             }
                         }
-                    //}
+                    }
                 });
             }
         });
@@ -167,7 +166,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         energy.ifPresent(teEnergy -> {
             if(teEnergy.getEnergyStored() > 0){
                 itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem -> {
-                    //if(energyItem.canReceive()){
+                    if(energyItem.canReceive()){
                         int toReceive;
                         if(itemStack.getItem() instanceof VEEnergyItem){
                             int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxReceive();
@@ -185,7 +184,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                             teEnergy.extractEnergy(energyItem.getMaxEnergyStored() - energyItem.getEnergyStored(), false);
                             energyItem.receiveEnergy(energyItem.getMaxEnergyStored() - energyItem.getEnergyStored(), false);
                         }
-                    //}
+                    }
                 });
             }
         });
@@ -193,16 +192,16 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
     private void moveItem(int i){
         if(i <6){
-            VoluminousEnergy.LOGGER.debug("Move Item Called");
+            //VoluminousEnergy.LOGGER.debug("Move Item Called");
             ItemStack itemStack = inventory.getStackInSlot(i).copy();
             if(inventory.getStackInSlot(i+6).isEmpty()){
-                VoluminousEnergy.LOGGER.debug("Empty check passed");
+                //VoluminousEnergy.LOGGER.debug("Empty check passed");
                 // Remove stack in the ith, slot and move it to i+6th slot indicating it's discharged
                 itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energy -> {
-                    VoluminousEnergy.LOGGER.debug("Item has Energy Capability");
+                    //VoluminousEnergy.LOGGER.debug("Item has Energy Capability");
                     if((!doDischargeInstead[i] && energy.getEnergyStored() == energy.getMaxEnergyStored())
                             || (doDischargeInstead[i] && energy.getEnergyStored() == 0)){
-                        VoluminousEnergy.LOGGER.debug("Energy stored is Max energy, or item is drained");
+                        //VoluminousEnergy.LOGGER.debug("Energy stored is Max energy, or item is drained");
                         inventory.extractItem(i,1,false);
                         inventory.insertItem(i+6,itemStack.copy(),false);
                     }
@@ -219,87 +218,6 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             });
         }
     }
-
-    /*
-    private void dischargeItems(ArrayList<ItemStack> itemStacks){
-        energy.ifPresent(teEnergy -> {
-            if(teEnergy.getEnergyStored() < teEnergy.getMaxEnergyStored()){
-                itemStacks.forEach(itemStack -> {
-                    itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem ->{
-                        if(energyItem.canExtract()){
-                            int toExtract;
-                            if(itemStack.getItem() instanceof VEEnergyItem) {
-                                int maxExtractItem = ((VEEnergyItem) itemStack.getItem()).getMaxExtract();
-                                toExtract = Math.min(energyItem.getEnergyStored(), maxExtractItem);
-                                toExtract = Math.min(toExtract, POWER_MAX_TX);
-                            } else {
-                                toExtract = Math.min(energyItem.getEnergyStored(), POWER_MAX_TX);
-                            }
-
-                            if(energyItem.getEnergyStored() > 0){
-                                if(toExtract + teEnergy.getEnergyStored() <= MAX_POWER){
-                                    energyItem.extractEnergy(toExtract,false);
-                                    teEnergy.receiveEnergy(toExtract,false);
-                                } else if (teEnergy.getEnergyStored() != MAX_POWER){
-                                    energyItem.extractEnergy(MAX_POWER - teEnergy.getEnergyStored(), false);
-                                    teEnergy.receiveEnergy(MAX_POWER - teEnergy.getEnergyStored(), false);
-                                }
-                            }
-                        }
-                    });
-                });
-            }
-        });
-    }
-
-    private void chargeItems(ArrayList<ItemStack> itemStacks){
-        energy.ifPresent(teEnergy -> {
-            if(teEnergy.getEnergyStored() > 0){
-                itemStacks.forEach(itemStack -> {
-                    itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem -> {
-                        if(energyItem.canReceive()){
-                            int toReceive;
-                            if(itemStack.getItem() instanceof VEEnergyItem){
-                                int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxReceive();
-                                toReceive = Math.min(
-                                        (energyItem.getMaxEnergyStored() - energyItem.getEnergyStored()),
-                                        maxReceiveItem);
-                                toReceive = Math.min(toReceive, POWER_MAX_TX);
-                                toReceive = Math.min(toReceive, teEnergy.getEnergyStored());
-                            } else {
-                                toReceive = Math.min(energyItem.getEnergyStored(), POWER_MAX_TX);
-                            }
-
-                            if(toReceive + teEnergy.getEnergyStored() <= energyItem.getMaxEnergyStored()){
-                                teEnergy.extractEnergy(toReceive, false);
-                                energyItem.receiveEnergy(toReceive, false);
-                            } else if(energyItem.getEnergyStored() != energyItem.getMaxEnergyStored()){ // Actually, this might not be needed
-                                teEnergy.extractEnergy(energyItem.getMaxEnergyStored() - energyItem.getEnergyStored(), false);
-                                energyItem.receiveEnergy(energyItem.getMaxEnergyStored() - energyItem.getEnergyStored(), false);
-                            }
-                        }
-                    });
-                });
-            }
-        });
-    }
-   /*
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
-                .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(3).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
-    }
-
-     */
 
     public static int receiveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->

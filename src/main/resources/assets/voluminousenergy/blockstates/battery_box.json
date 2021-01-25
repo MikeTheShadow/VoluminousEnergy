@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/battery_box" },
+    "facing=south": { "model": "voluminousenergy:block/battery_box", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/battery_box", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/battery_box", "y": 90 }
+  }
+}
