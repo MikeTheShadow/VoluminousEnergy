@@ -43,6 +43,7 @@
     "block.voluminousenergy.pump": "Pump",
     "block.voluminousenergy.gas_fired_furnace": "Gas Furnace",
     "block.voluminousenergy.electric_furnace": "Electric Furnace",
+    "block.voluminousenergy.battery_box": "Battery Box",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -124,5 +125,6 @@
     "item.voluminousenergy.silver_microchip": "Silver Microchip",
     "item.voluminousenergy.titanium_plate": "Titanium Plate",
     "item.voluminousenergy.quartz_multiplier": "Quartz Multiplier",
-    "item.voluminousenergy.mercury_battery": "Mercury Battery"
+    "item.voluminousenergy.mercury_battery": "Mercury Battery",
+    "item.voluminousenergy.lead_acid_battery": "Lead-Acid Battery"
 }

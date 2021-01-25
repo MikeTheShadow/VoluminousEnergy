@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
@@ -68,4 +69,5 @@ public class VEItems
 
     //Batteries
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
+    public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 }

@@ -246,6 +246,7 @@ public class VoluminousEnergy {
 
             //Batteries
             itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_ACID_BATTERY);
         }
 
         @SubscribeEvent

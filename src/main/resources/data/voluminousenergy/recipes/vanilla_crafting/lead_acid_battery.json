@@ -7,17 +7,17 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "forge:ingots/lead"
     },
     "x": {
-      "item": "voluminousenergy:mercury_bucket"
+      "item": "voluminousenergy:sulfuric_acid_bucket"
     },
     "*": {
       "tag": "forge:ingots/silver"
     }
   },
   "result": {
-    "item": "voluminousenergy:mercury_battery",
+    "item": "voluminousenergy:lead_acid_battery",
     "count": 1
   }
 }
