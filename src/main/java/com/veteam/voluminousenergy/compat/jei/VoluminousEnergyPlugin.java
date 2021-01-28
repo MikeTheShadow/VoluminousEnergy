@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.*;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -87,17 +86,17 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":crushing"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":electrolyzing"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK), new ResourceLocation(VoluminousEnergy.MODID + ":compressing"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK), new ResourceLocation(RecipeConstants.CENTRIFUGAL_AGITATING.toString()));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK), new ResourceLocation(RecipeConstants.AQUEOULIZING.toString()));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK), new ResourceLocation(RecipeConstants.STIRLING.toString()));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK), new ResourceLocation(RecipeConstants.FUEL_COMBUSTION.toString()));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK), new ResourceLocation(RecipeConstants.DISTILLING.toString()));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK), new ResourceLocation("minecraft:blasting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK), new ResourceLocation("minecraft:smelting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK), new ResourceLocation("minecraft:blasting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK), new ResourceLocation("minecraft:smelting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/crushing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/electrolyzing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/compressing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_agitation"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/aqueoulizing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/distilling"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:smelting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:smelting"));
     }
 }
