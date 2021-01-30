@@ -73,6 +73,10 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
         //this.font.drawString(this.title.getFormattedText(), 8.0F,6.0F,4210752);
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Stirling Generator",8,6,0xffffff);
+        int generationRate;
+        if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
+        else generationRate = 0;
+        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + generationRate + " FE/t", 50, 18, 0xffffff);
         //this.font.drawString(matrixStack,this.playerInventory.getDisplayName().getString(),8.0F, (float) (this.ySize - 96 - 12), 4210752);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Energy: " + container.getEnergy(), 10, 22, 0xffffff);

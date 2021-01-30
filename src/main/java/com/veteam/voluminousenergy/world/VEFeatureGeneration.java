@@ -9,15 +9,11 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.placement.ChanceConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEFeatureGeneration {
-
-
     public static void addFeaturesToBiomes(BiomeLoadingEvent event){
         if(event.getCategory() != Biome.Category.NETHER && event.getCategory() != Biome.Category.THEEND && Config.ENABLE_VE_FEATURE_GEN.get()){
             VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");

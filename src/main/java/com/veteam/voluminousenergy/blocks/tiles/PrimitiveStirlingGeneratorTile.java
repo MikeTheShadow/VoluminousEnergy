@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
@@ -274,7 +273,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             ArrayList<UUID> toRemove = new ArrayList<>();
             world.getServer().getPlayerList().getPlayers().forEach(player ->{
                 if(player.openContainer != null){
-                    if(!(player.openContainer instanceof PrimitiveBlastFurnaceContainer)){
+                    if(!(player.openContainer instanceof PrimitiveStirlingGeneratorContainer)){
                         toRemove.add(player.getUniqueID());
                     }
                 } else if (player.openContainer == null){

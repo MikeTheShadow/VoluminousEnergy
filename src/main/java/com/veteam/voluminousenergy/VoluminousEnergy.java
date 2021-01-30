@@ -133,6 +133,8 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new GasFiredFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new ElectricFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new BatteryBoxBlock());
+            blockRegisteryEvent.getRegistry().register(new PrimitiveSolarPanelBlock());
+            blockRegisteryEvent.getRegistry().register(new SolarPanelBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -175,6 +177,8 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GAS_FIRED_FURNACE_BLOCK,properties).setRegistryName("gas_fired_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTRIC_FURNACE_BLOCK,properties).setRegistryName("electric_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BATTERY_BOX_BLOCK,properties).setRegistryName("battery_box"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK,properties).setRegistryName("primitive_solar_panel"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLAR_PANEL_BLOCK,properties).setRegistryName("solar_panel"));
 
             //True Blocks
             //Ores
@@ -267,6 +271,8 @@ public class VoluminousEnergy {
             event.getRegistry().register(TileEntityType.Builder.create(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
             event.getRegistry().register(TileEntityType.Builder.create(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
             event.getRegistry().register(TileEntityType.Builder.create(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
+            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
+            event.getRegistry().register(TileEntityType.Builder.create(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
         }
 
         @SubscribeEvent
@@ -346,6 +352,16 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new BatteryBoxContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("battery_box"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveSolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitive_solar_panel"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new SolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("solar_panel"));
         }
 
         @SubscribeEvent

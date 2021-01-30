@@ -2,8 +2,10 @@ package com.veteam.voluminousenergy.world.biomes;
 
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.biome.*;
+import net.minecraft.world.gen.feature.structure.VillageConfig;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
@@ -28,7 +30,7 @@ public class RedDesert extends VEBiome {
 
         // Configure and build the biome
         MoodSoundAmbience justShutUp = new MoodSoundAmbience(SoundEvents.ENTITY_SQUID_AMBIENT, Integer.MAX_VALUE/2,Integer.MAX_VALUE/2, Double.MAX_VALUE/2);
-        BiomeAmbience ambience = (new BiomeAmbience.Builder()).setWaterColor(4159204).setWaterFogColor(4159204).setFogColor(329011).setFogColor(12638463).withSkyColor(calculateColour(2.0F)).withFoliageColor(1).setMoodSound(justShutUp).build();
+        BiomeAmbience ambience = (new BiomeAmbience.Builder()).setWaterColor(4159204).setWaterFogColor(4159204).setFogColor(329011).setFogColor(12638463).withSkyColor(calculateColour(2.0F)).withFoliageColor(10387789).withGrassColor(9470285).setMoodSound(justShutUp).build();
         this.configureBiome(biomeBuilder.category(Biome.Category.DESERT).depth(0.05F).scale(0.05F).temperature(2.0F).downfall(0.05F).precipitation(Biome.RainType.NONE).setEffects(ambience));
         return biomeBuilder.build();
     }
@@ -43,6 +45,7 @@ public class RedDesert extends VEBiome {
         // Underground
         DefaultBiomeFeatures.withCavesAndCanyons(builder);
         DefaultBiomeFeatures.withDebrisOre(builder);
+        DefaultBiomeFeatures.withOverworldOres(builder);
         DefaultBiomeFeatures.withFossils(builder);
         DefaultBiomeFeatures.withMonsterRoom(builder);
 

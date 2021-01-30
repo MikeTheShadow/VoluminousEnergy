@@ -29,7 +29,9 @@ public class Config {
     public static final String CATEGORY_PUMP = "Pump";
     public static final String CATEGORY_GAS_FIRED_FURNACE = "Gas Furnace";
     public static final String CATEGORY_ELECTRIC_FURNACE = "Electric Furnace";
-    public static final String CATEGORY_BATTER_BOX = "Battery Box";
+    public static final String CATEGORY_BATTERY_BOX = "Battery Box";
+    public static final String CATEGORY_PRIMITIVE_SOLAR_PANEL = "Primitive Solar Panel";
+    public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -179,6 +181,18 @@ public class Config {
     public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
     public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
+    // Primitive Solar Panel
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
+
+    // Solar Panel
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -255,8 +269,18 @@ public class Config {
         COMMON_BUILDER.pop();
 
         // Battery Box
-        COMMON_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTER_BOX);
+        COMMON_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTERY_BOX);
         setupBatteryBox();
+        COMMON_BUILDER.pop();
+
+        // Primitive Solar Panel
+        COMMON_BUILDER.comment("Primitive Solar Panel").push(CATEGORY_PRIMITIVE_SOLAR_PANEL);
+        setupPrimitiveSolarPanel();
+        COMMON_BUILDER.pop();
+
+        // Solar Panel
+        COMMON_BUILDER.comment("Solar Panel").push(CATEGORY_SOLAR_PANEL);
+        setupSolarPanel();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -494,6 +518,28 @@ public class Config {
         BATTERY_BOX_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Battery Box")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
         BATTERY_BOX_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    public static void setupPrimitiveSolarPanel(){
+        PRIMITIVE_SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Primitive Solar Panel to store")
+                .defineInRange("Maximum Power", 100_000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Primitive Solar Panel")
+                .defineInRange("Generation Rate", 64, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Primitive Solar Panel")
+                .defineInRange("Maximum Transfer", 1_000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    public static void setupSolarPanel(){
+        SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Solar Panel to store")
+                .defineInRange("Maximum Power", 250_000, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Solar Panel")
+                .defineInRange("Generation Rate", 128, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
+                .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
