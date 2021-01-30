@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -24,6 +25,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -127,6 +129,20 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
+            if(world != null){
+                Random rand = new Random();
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 2, 5)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 5, 7)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+            }
+            
             return super.extractItem(slot,amount,simulate);
         }
 

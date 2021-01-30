@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -26,6 +27,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -236,6 +238,23 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
+            }
+
+            @Override
+            @Nonnull
+            public ItemStack extractItem(int slot, int amount, boolean simulate){
+                if (world != null){
+                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    if(blastingRecipe != null) {
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getRecipeOutput().getItem())
+                            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount * MathHelper.floor(blastingRecipe.getExperience())));
+                    } else if (furnaceRecipe != null) {
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getRecipeOutput().getItem())
+                            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount * MathHelper.floor(furnaceRecipe.getExperience())));
+                    }
+                }
+                return super.extractItem(slot,amount,simulate);
             }
         };
     }

@@ -25,6 +25,6 @@ public class RutileOre extends VEOreBlock {
 
     @Override
     protected int getExperience(Random rand) {
-        return MathHelper.nextInt(rand, 5, 7);
+        return 0;
     }
 }

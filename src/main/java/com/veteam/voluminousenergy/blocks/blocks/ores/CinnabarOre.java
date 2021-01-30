@@ -24,6 +24,6 @@ public class CinnabarOre extends VEOreBlock {
 
     @Override
     protected int getExperience(Random rand) {
-        return MathHelper.nextInt(rand, 1, 3);
+        return 0;
     }
 }

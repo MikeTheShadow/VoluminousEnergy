@@ -24,4 +24,9 @@ public class GalenaOre extends VEOreBlock {
         );
         setRegistryName("galena_ore");
     }
+
+    @Override
+    protected int getExperience(Random rand) {
+        return 0;
+    }
 }
