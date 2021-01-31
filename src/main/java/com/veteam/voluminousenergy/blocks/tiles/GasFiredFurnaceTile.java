@@ -73,8 +73,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private int fuelLength;
     private int counter;
     private int length;
+    private int lastXP;
 
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile() {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE);
@@ -155,6 +157,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 } else {
                     counter = this.calculateCounter(200, inventory.getStackInSlot(4));
                     length = counter;
+                    this.referenceStack.set(furnaceInput.copy());
                 }
 
                 // Fuel Management
@@ -321,20 +324,40 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
                 if (world != null){
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack.get()), world).orElse(null);
+                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack.get()), world).orElse(null);
                     if(blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getRecipeOutput().getItem())
-                            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount * MathHelper.floor(blastingRecipe.getExperience())));
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getRecipeOutput().getItem()) {
+                            if(blastingRecipe.getExperience() > 0){
+                                generateXP(amount, blastingRecipe.getExperience());
+                            }
+                        }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getRecipeOutput().getItem())
-                            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount * MathHelper.floor(furnaceRecipe.getExperience())));
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getRecipeOutput().getItem()) {
+                            if (furnaceRecipe.getExperience() > 0) {
+                                generateXP(amount, furnaceRecipe.getExperience());
+                            }
+                        }
                     }
                 }
-
                 return super.extractItem(slot,amount,simulate);
             }
         };
+    }
+
+    private void generateXP(int craftedAmount, float experience){
+        if(world == null) return;
+        int i = MathHelper.floor((float)craftedAmount * experience);
+        float f = MathHelper.frac((float)craftedAmount * experience);
+        if (f != 0.0F && Math.random() < (double)f) {
+            ++i;
+        }
+
+        while(i > 0) {
+            int j = ExperienceOrbEntity.getXPSplit(i);
+            i -= j;
+            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), j));
+        }
     }
 
     @Nonnull
