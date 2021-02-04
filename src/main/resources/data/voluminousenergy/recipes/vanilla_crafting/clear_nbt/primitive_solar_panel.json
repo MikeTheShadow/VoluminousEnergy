@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:primitive_solar_panel"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:primitive_solar_panel"
+  }
+}

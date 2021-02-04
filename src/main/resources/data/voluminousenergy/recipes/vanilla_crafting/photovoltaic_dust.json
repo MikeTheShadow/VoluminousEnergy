@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "x*",
+    "# "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:dusts/coal"
+    },
+    "x": {
+      "tag": "forge:silicon"
+    },
+    "*": {
+      "tag": "forge:dusts/lapis"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:photovoltaic_dust",
+    "count": 3
+  }
+}

@@ -221,6 +221,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.PHOTOVOLTAIC_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);

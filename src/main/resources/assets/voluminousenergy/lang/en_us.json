@@ -128,5 +128,6 @@
     "item.voluminousenergy.titanium_plate": "Titanium Plate",
     "item.voluminousenergy.quartz_multiplier": "Quartz Multiplier",
     "item.voluminousenergy.mercury_battery": "Mercury Battery",
-    "item.voluminousenergy.lead_acid_battery": "Lead-Acid Battery"
+    "item.voluminousenergy.lead_acid_battery": "Lead-Acid Battery",
+    "item.voluminousenergy.photovoltaic_dust": "Photovoltaic Dust"
 }

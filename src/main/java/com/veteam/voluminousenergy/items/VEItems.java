@@ -40,6 +40,7 @@ public class VEItems
     public static LeadDust LEAD_DUST = new LeadDust();
     public static SilverDust SILVER_DUST = new SilverDust();
     public static GoldDust GOLD_DUST = new GoldDust();
+    public static PhotovoltaicDust PHOTOVOLTAIC_DUST = new PhotovoltaicDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
