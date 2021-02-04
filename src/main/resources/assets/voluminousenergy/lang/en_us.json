@@ -44,6 +44,8 @@
     "block.voluminousenergy.gas_fired_furnace": "Gas Furnace",
     "block.voluminousenergy.electric_furnace": "Electric Furnace",
     "block.voluminousenergy.battery_box": "Battery Box",
+    "block.voluminousenergy.primitive_solar_panel": "Primitive Solar Panel",
+    "block.voluminousenergy.solar_panel": "Solar Panel",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

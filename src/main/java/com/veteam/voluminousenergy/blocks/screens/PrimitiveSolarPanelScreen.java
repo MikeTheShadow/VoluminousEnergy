@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveSolarPanelContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveSolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,8 +42,7 @@ public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPan
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Solar Panel",8,6,0xffffff);
-        int generationRate;
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getWorld().isDaytime())
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 18, 0xffffff);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);

@@ -109,7 +109,9 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
+        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, 16777215);
+
         if (tileEntity.getEnergyRate() < 10) {
             drawString(matrixStack,Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 80, 18, 0xffffff);
         } else if (tileEntity.getEnergyRate() < 100){

@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.SolarPanelContainer;
 import com.veteam.voluminousenergy.blocks.tiles.SolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,15 +35,14 @@ public class SolarPanelScreen extends ContainerScreen<SolarPanelContainer> {
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE / " + Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE / " + Config.SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
         super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Solar Panel",8,6,0xffffff);
-        int generationRate;
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getWorld().isDaytime())
             drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 18, 0xffffff);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);

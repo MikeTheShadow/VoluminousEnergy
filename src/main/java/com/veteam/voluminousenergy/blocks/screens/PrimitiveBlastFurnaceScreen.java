@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -69,7 +70,9 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
+        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitiveblastfurnace"), 8.0F, 6.0F, 16777215);
+
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 

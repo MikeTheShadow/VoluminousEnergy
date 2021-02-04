@@ -110,7 +110,8 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Aqueoulizer",8,6,0xffffff);
+        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Aqueoulizer",8,6,0xffffff);
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("aqueoulizer"), 8.0F, 6.0F, 16777215);
         drawString(matrixStack,Minecraft.getInstance().fontRenderer, "+", 82, 34, 0x606060);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }

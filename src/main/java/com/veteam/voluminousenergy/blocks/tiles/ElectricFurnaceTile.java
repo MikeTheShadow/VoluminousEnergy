@@ -271,9 +271,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         if(world == null) return;
         int i = MathHelper.floor((float)craftedAmount * experience);
         float f = MathHelper.frac((float)craftedAmount * experience);
-        if (f != 0.0F && Math.random() < (double)f) {
-            ++i;
-        }
+        if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
             int j = ExperienceOrbEntity.getXPSplit(i);

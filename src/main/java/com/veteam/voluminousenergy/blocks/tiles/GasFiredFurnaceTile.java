@@ -73,7 +73,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private int fuelLength;
     private int counter;
     private int length;
-    private int lastXP;
 
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
@@ -349,9 +348,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         if(world == null) return;
         int i = MathHelper.floor((float)craftedAmount * experience);
         float f = MathHelper.frac((float)craftedAmount * experience);
-        if (f != 0.0F && Math.random() < (double)f) {
-            ++i;
-        }
+        if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
             int j = ExperienceOrbEntity.getXPSplit(i);

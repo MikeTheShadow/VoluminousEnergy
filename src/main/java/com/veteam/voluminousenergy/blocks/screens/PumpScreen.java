@@ -29,7 +29,7 @@ import java.util.UUID;
 public class PumpScreen extends ContainerScreen<PumpContainer> {
 
     private PumpTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png"); // TODO: Refactor Screen for 2 slots and/or separate GUI file
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
     private boolean openedIOGui = false;
 
     public PumpScreen(PumpContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
@@ -74,7 +74,9 @@ public class PumpScreen extends ContainerScreen<PumpContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Pump",8,6,0xffffff);
+        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Pump",8,6,0xffffff);
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("pump"), 8.0F, 6.0F, 16777215);
+
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 

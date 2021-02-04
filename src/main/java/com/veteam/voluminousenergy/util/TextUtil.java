@@ -28,4 +28,12 @@ public class TextUtil {
         ITextComponent translatedDirection = translateDirection(direction);
         return new StringTextComponent(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
     }
+
+    public static ITextComponent translateString(String toTranslate){
+        return new TranslationTextComponent(toTranslate);
+    }
+
+    public static ITextComponent translateVEBlock(String block){
+        return new TranslationTextComponent("block.voluminousenergy." + block);
+    }
 }

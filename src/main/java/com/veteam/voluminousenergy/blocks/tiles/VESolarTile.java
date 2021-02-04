@@ -9,10 +9,10 @@ public class VESolarTile extends VoluminousTileEntity{
         super(tileEntityTypeIn);
     }
 
-    /*
-    Cosine curve based off the location of the Sun(? I think, at least it looks like that)
-    Noon is the Zenith, hence why we use a cosine curve, since cosine curves start at a max
-    amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit to make it more "reasonable"
+    /**
+    * Cosine curve based off the location of the Sun(? I think, at least it looks like that)
+    * Noon is the Zenith, hence why we use a cosine curve, since cosine curves start at a max
+    * amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit to make it more "reasonable"
     */
     protected float solarIntensity(){
         if(world == null) return 0;
