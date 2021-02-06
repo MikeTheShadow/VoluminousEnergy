@@ -39,7 +39,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements ITickableTil
     public void tick() {
         updateClients();
         if (this.world != null){
-            if (world.getDimensionType().hasSkyLight()) {
+            if (world.getDimensionType().hasSkyLight() && isClear()) {
                 this.generation = (int)(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
                 generateEnergy(this.generation);
                 markDirty();

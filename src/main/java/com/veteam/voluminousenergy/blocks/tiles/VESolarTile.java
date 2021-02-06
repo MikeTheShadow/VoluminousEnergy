@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 public class VESolarTile extends VoluminousTileEntity{
@@ -34,5 +35,10 @@ public class VESolarTile extends VoluminousTileEntity{
         }
 
         return intensity;
+    }
+
+    protected boolean isClear(){
+        if (world == null) return false;
+        return world.canBlockSeeSky(new BlockPos(this.getPos().getX(), this.getPos().getY()+1, this.getPos().getZ()));
     }
 }

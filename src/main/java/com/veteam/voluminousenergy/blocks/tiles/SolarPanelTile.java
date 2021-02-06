@@ -38,7 +38,7 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     public void tick() {
         updateClients();
         if (this.world != null){
-            if (world.getDimensionType().hasSkyLight()) {
+            if (world.getDimensionType().hasSkyLight() && isClear()) {
                 this.generation = (int)(Config.SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
                 generateEnergy(this.generation);
                 markDirty();
