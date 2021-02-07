@@ -46,11 +46,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AqueoulizerTile extends VEFluidTileEntity {
     // Handlers
@@ -107,7 +109,17 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         if(this.outputFluidStatic(outputTank,2)) return;
 
         // Main Fluid Processing occurs here:
-        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(AqueoulizerRecipe.RECIPE_TYPE, new Inventory(inputItem.copy()),world).orElse(null);
+        VEFluidRecipe recipe = null; //= world.getRecipeManager().getRecipe(AqueoulizerRecipe.RECIPE_TYPE, new Inventory(inputItem.copy()),world).orElse(null);
+        // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
+        AtomicReference<VEFluidRecipe> atomicRecipe = new AtomicReference<>(null);
+        world.getRecipeManager().getRecipes().forEach(r -> {
+            if (r instanceof AqueoulizerRecipe){
+                if (((AqueoulizerRecipe) r).getInputFluid().isFluidEqual(this.inputTank.getTank().getFluid()) && ((AqueoulizerRecipe) r).matches(new Inventory(inputItem), this.world)){
+                    atomicRecipe.set(((AqueoulizerRecipe) r));
+                }
+            }
+        });
+        recipe = atomicRecipe.get();
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
             //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
