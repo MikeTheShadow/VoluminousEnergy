@@ -35,6 +35,26 @@
                   "source": "input_slot_direction",
                   "target": "BlockEntityTag.input_slot_direction",
                   "op": "replace"
+                },
+                {
+                  "source": "output_slot_enabled",
+                  "target": "BlockEntityTag.output_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_slot_direction",
+                  "target": "BlockEntityTag.output_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_slot_enabled",
+                  "target": "BlockEntityTag.rng_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_slot_direction",
+                  "target": "BlockEntityTag.rng_slot_direction",
+                  "op": "replace"
                 }
               ]
             },

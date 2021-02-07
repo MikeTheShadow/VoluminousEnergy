@@ -172,7 +172,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
         fluid.ifPresent(f -> {
-            CompoundNBT airNBT = tag.getCompound("airTank");
+            CompoundNBT airNBT = tag.getCompound("air_tank");
             airTank.getTank().readFromNBT(airNBT);
         });
 
@@ -193,7 +193,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         fluid.ifPresent(f -> {
             CompoundNBT tankNBT = new CompoundNBT();
             airTank.getTank().writeToNBT(tankNBT);
-            tag.put("airTank", tankNBT);
+            tag.put("air_tank", tankNBT);
         });
 
         outputSlotManager.write(tag, "output_slot");

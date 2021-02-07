@@ -28,12 +28,17 @@
                 },
                 {
                   "source": "output_slot_enabled",
-                  "target": "BlockEntityTag.input_slot_enabled",
+                  "target": "BlockEntityTag.output_slot_enabled",
                   "op": "replace"
                 },
                 {
                   "source": "output_slot_direction",
-                  "target": "BlockEntityTag.input_slot_direction",
+                  "target": "BlockEntityTag.output_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "air_tank",
+                  "target": "BlockEntityTag.air_tank",
                   "op": "replace"
                 }
               ]

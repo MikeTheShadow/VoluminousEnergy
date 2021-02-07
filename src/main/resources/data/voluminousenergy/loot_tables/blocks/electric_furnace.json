@@ -20,6 +20,26 @@
                   "source": "inv",
                   "target": "BlockEntityTag.inv",
                   "op": "replace"
+                },
+                {
+                  "source": "input_slot_manager_enable",
+                  "target": "BlockEntityTag.input_slot_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_slot_manager_direction",
+                  "target": "BlockEntityTag.input_slot_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_slot_manager_enable",
+                  "target": "BlockEntityTag.output_slot_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_slot_manager_direction",
+                  "target": "BlockEntityTag.output_slot_manager_direction",
+                  "op": "replace"
                 }
               ]
             },

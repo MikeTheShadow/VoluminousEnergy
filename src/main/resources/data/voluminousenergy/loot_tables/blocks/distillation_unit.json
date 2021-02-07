@@ -25,6 +25,121 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "inputTank",
+                  "target": "BlockEntityTag.inputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "outputTank0",
+                  "target": "BlockEntityTag.outputTank0",
+                  "op": "replace"
+                },
+                {
+                  "source": "outputTank1",
+                  "target": "BlockEntityTag.outputTank1",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_tank_gui_enabled",
+                  "target": "BlockEntityTag.input_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_tank_gui_direction",
+                  "target": "BlockEntityTag.input_tank_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_0_gui_enabled",
+                  "target": "BlockEntityTag.output_tank_0_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_0_gui_direction",
+                  "target": "BlockEntityTag.output_tank_0_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_1_gui_enabled",
+                  "target": "BlockEntityTag.output_tank_1_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_1_gui_direction",
+                  "target": "BlockEntityTag.output_tank_1_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "i_top_manager_enabled",
+                  "target": "BlockEntityTag.i_top_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "i_top_manager_direction",
+                  "target": "BlockEntityTag.i_top_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "i_bottom_manager_enabled",
+                  "target": "BlockEntityTag.i_bottom_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "i_bottom_manager_direction",
+                  "target": "BlockEntityTag.i_bottom_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_0_top_manager_enabled",
+                  "target": "BlockEntityTag.o_0_top_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_0_top_manager_direction",
+                  "target": "BlockEntityTag.o_0_top_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_0_bottom_manager_enabled",
+                  "target": "BlockEntityTag.o_0_bottom_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_0_bottom_manager_direction",
+                  "target": "BlockEntityTag.o_0_bottom_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_1_top_manager_enabled",
+                  "target": "BlockEntityTag.o_1_top_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_1_top_manager_direction",
+                  "target": "BlockEntityTag.o_1_top_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_1_bottom_manager_enabled",
+                  "target": "BlockEntityTag.o_1_bottom_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_1_bottom_manager_direction",
+                  "target": "BlockEntityTag.o_1_bottom_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_2_manager_enabled",
+                  "target": "BlockEntityTag.o_2_manager_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "o_2_manager_direction",
+                  "target": "BlockEntityTag.o_2_manager_direction",
+                  "op": "replace"
                 }
               ]
             },

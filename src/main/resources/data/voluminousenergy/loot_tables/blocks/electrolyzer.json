@@ -25,6 +25,66 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "input_manager_enable",
+                  "target": "BlockEntityTag.input_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_manager_direction",
+                  "target": "BlockEntityTag.input_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_manager_enable",
+                  "target": "BlockEntityTag.bucket_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_manager_direction",
+                  "target": "BlockEntityTag.bucket_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_enable",
+                  "target": "BlockEntityTag.output_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_direction",
+                  "target": "BlockEntityTag.output_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_one_manager_enable",
+                  "target": "BlockEntityTag.rng_one_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_one_manager_direction",
+                  "target": "BlockEntityTag.rng_one_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_two_manager_enable",
+                  "target": "BlockEntityTag.rng_two_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_two_manager_direction",
+                  "target": "BlockEntityTag.rng_two_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_three_manager_enable",
+                  "target": "BlockEntityTag.rng_three_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "rng_three_manager_direction",
+                  "target": "BlockEntityTag.rng_three_manager_direction",
+                  "op": "replace"
                 }
               ]
             },

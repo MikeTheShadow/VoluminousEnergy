@@ -20,6 +20,71 @@
                   "source": "inv",
                   "target": "BlockEntityTag.inv",
                   "op": "replace"
+                },
+                {
+                  "source": "fuel_tank",
+                  "target": "BlockEntityTag.fuel_tank",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_counter",
+                  "target": "BlockEntityTag.fuel_counter",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_length",
+                  "target": "BlockEntityTag.fuel_length",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_tank_gui_enable",
+                  "target": "BlockEntityTag.fuel_tank_gui_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_tank_gui_direction",
+                  "target": "BlockEntityTag.fuel_tank_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_input_gui_enable",
+                  "target": "BlockEntityTag.bucket_input_gui_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_input_gui_direction",
+                  "target": "BlockEntityTag.bucket_input_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_output_gui_enable",
+                  "target": "BlockEntityTag.bucket_output_gui_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_output_gui_direction",
+                  "target": "BlockEntityTag.bucket_output_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "furnace_input_gui_enable",
+                  "target": "BlockEntityTag.furnace_input_gui_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "furnace_input_gui_direction",
+                  "target": "BlockEntityTag.furnace_input_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "furnace_output_gui_enable",
+                  "target": "BlockEntityTag.furnace_output_gui_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "furnace_output_gui_direction",
+                  "target": "BlockEntityTag.furnace_output_gui_direction",
+                  "op": "replace"
                 }
               ]
             },
