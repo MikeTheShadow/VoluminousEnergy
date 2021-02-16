@@ -217,7 +217,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     public void updateBooleanButton(boolean status, int slotId){
         for(Widget widget: this.buttons){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
+                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
                 ((SlotBoolButton) widget).setStatus(status);
                 ((SlotBoolButton) widget).toggleRender(false);
@@ -236,7 +236,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     public void updateTankStatus(boolean status, int id){
         for(Widget widget: this.buttons){
             if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
+                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((TankBoolButton) widget).toggleRender(true);
                 ((TankBoolButton) widget).setStatus(status);
                 ((TankBoolButton) widget).toggleRender(false);

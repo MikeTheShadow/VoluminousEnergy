@@ -1,4 +1,8 @@
 {
+    "_comment": "Text",
+    "text.voluminousenergy.multiblock_warn": "Multiblock Invalid",
+    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing BEHIND the Tile Entity",
+
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
     "direction.voluminousenergy.down": "Down",

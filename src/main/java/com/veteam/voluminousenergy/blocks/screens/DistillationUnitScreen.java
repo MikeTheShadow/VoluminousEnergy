@@ -215,7 +215,8 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
             this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
-            this.font.drawString(matrixStack, "MULTIBLOCK IS INVALID! Please build a 3x3x3 of Aluminum Machine Casings BEHIND the Distillation Unit",8.0F, (float)(this.ySize - 96 + 20), 16777215);
+            this.font.func_243246_a(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
+            this.font.func_243246_a(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
         }
 
     }
@@ -255,7 +256,7 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
     public void updateBooleanButton(boolean status, int slotId){
         for(Widget widget: this.buttons){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
+                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
                 ((SlotBoolButton) widget).setStatus(status);
                 ((SlotBoolButton) widget).toggleRender(false);
@@ -274,7 +275,7 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
     public void updateTankStatus(boolean status, int id){
         for(Widget widget: this.buttons){
             if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
+                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((TankBoolButton) widget).toggleRender(true);
                 ((TankBoolButton) widget).setStatus(status);
                 ((TankBoolButton) widget).toggleRender(false);
