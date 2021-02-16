@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
-import com.mojang.realmsclient.util.JsonUtils;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -19,7 +19,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +67,11 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     @Override
     public int getInputAmount(){ return inputAmount; }
+
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK);
+    }
 
     public FluidStack getSecondFluid(){
         if (secondResult.getItem() instanceof BucketItem){

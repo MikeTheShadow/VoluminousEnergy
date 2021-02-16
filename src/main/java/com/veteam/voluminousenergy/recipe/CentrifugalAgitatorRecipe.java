@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -138,6 +139,10 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     @Override
     public int getProcessTime() { return processTime; }
 
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK);
+    }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipe> {
         @Override

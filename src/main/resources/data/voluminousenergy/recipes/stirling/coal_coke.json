@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:stirling",
   "ingredient": {
-    "item": "voluminousenergy:coalcoke",
+    "tag": "forge:coal_coke",
     "count": 1
   },
   "process_time": 3200,

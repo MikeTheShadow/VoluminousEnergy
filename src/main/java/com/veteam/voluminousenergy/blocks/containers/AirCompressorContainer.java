@@ -2,7 +2,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.blocks.screens.AirCompressorScreen;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -31,6 +32,7 @@ public class AirCompressorContainer extends Container {
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    protected AirCompressorScreen airCompressorScreen;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public AirCompressorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
@@ -42,6 +44,7 @@ public class AirCompressorContainer extends Container {
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 70, 49)); // Air Compressor extract slot
+            addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -130,5 +133,25 @@ public class AirCompressorContainer extends Container {
         return returnStack;
     }
 
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setAirCompressorScreen(AirCompressorScreen airCompressorScreen){
+        this.airCompressorScreen = airCompressorScreen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){
+        this.airCompressorScreen.updateButtonDirection(direction,slotId);
+    }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.airCompressorScreen.updateBooleanButton(status, slotId);
+    }
+
+    public void updateStatusTank(boolean status, int id){
+        this.airCompressorScreen.updateTankStatus(status, id);
+    }
+
+    public void updateDirectionTank(int direction, int id){
+        this.airCompressorScreen.updateTankDirection(direction, id);
+    }
 }
 

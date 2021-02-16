@@ -26,3 +26,5 @@ forge*changelog.txt
 /.gradle/
 .idea/
 /mcmodsrepo/
+/logs/debug.log
+/logs/latest.log

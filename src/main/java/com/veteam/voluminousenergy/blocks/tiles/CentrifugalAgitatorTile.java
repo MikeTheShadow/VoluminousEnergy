@@ -5,9 +5,17 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContaine
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -17,8 +25,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -28,24 +38,40 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<IItemHandlerModifiable> input0h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
+    private LazyOptional<IItemHandlerModifiable> input1h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
+    private LazyOptional<IItemHandlerModifiable> output0h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3));
+    private LazyOptional<IItemHandlerModifiable> output1h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3, 4));
 
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputTankFluidHandler);
+    private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutputTank0FluidHandler);
+    private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutputTank1FluidHandler);
+
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot");
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.INPUT,0);
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.INPUT,1);
+    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
+    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.OUTPUT,1);
 
     private int counter;
     private int length;
@@ -95,7 +121,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                             && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
                             && outputTank1.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
                         // Check for power
-                        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                        if (canConsumeEnergy()) {
                             if (counter == 1) {
 
                                 // Drain Input
@@ -116,13 +142,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                                 }
 
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage) e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                consumeEnergy();
                                 this.markDirty();
                             } else if (counter > 0) {
                                 counter--;
-                                energy.ifPresent(e -> ((VEEnergyStorage) e).consumeEnergy(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get()));
+                                consumeEnergy();
                             } else {
-                                counter = recipe.getProcessTime();
+                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(4));
                                 length = counter;
                             }
                         } // Energy Check
@@ -132,38 +158,21 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
                 }
             }
         }
-            /*
-            // Extract fluid from the input tank
-            if(input.copy().getItem() == Items.BUCKET && input1.copy() == ItemStack.EMPTY) {
-                if(inputTank.getFluidAmount() >= 1000) {
-                    ItemStack bucketStack = new ItemStack(inputTank.getFluid().getRawFluid().getFilledBucket(), 1);
-                    inputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(0, 1, false);
-                    h.insertItem(1, bucketStack, false);
-                }
-            }
+    }
 
-            // Extract fluid from the first output tank
-            if (output0.copy().getItem() != null || output0.copy() != ItemStack.EMPTY){
-                if (output0.getItem() == Items.BUCKET && outputTank0.getFluidAmount() >= 1000 && output0.getCount() == 1){
-                    ItemStack bucketStack = new ItemStack(outputTank0.getFluid().getRawFluid().getFilledBucket(), 1);
-                    outputTank0.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(2,1,false);
-                    h.insertItem(2, bucketStack, false);
-                }
-            }
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(4).copy()
+                        )
+                )
+        );
+    }
 
-            // Extract fluid from the second output tank
-            if (output1.copy().getItem() != null || output1.copy() != ItemStack.EMPTY){
-                if (output1.getItem() == Items.BUCKET && outputTank1.getFluidAmount() >= 1000 && output1.getCount() == 1){
-                    ItemStack bucketStack = new ItemStack(outputTank1.getFluid().getRawFluid().getFilledBucket(), 1);
-                    outputTank1.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(3,1,false);
-                    h.insertItem(3, bucketStack, false);
-                }
-            }
-
-             */
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
     }
 
     /*
@@ -171,7 +180,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -179,17 +188,19 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputTank = tag.getCompound("inputTank");
-            CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-            CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundNBT inputTank = tag.getCompound("inputTank");
+        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
+        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
 
-            this.inputTank.getTank().readFromNBT(inputTank);
-            this.outputTank0.getTank().readFromNBT(outputTank0);
-            this.outputTank1.getTank().readFromNBT(outputTank1);
-        });
+        this.inputTank.getTank().readFromNBT(inputTank);
+        this.outputTank0.getTank().readFromNBT(outputTank0);
+        this.outputTank1.getTank().readFromNBT(outputTank1);
 
-        super.read(tag);
+        this.inputTank.readGuiProperties(tag,"input_tank_gui");
+        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
+
+        super.read(state, tag);
     }
 
     @Override
@@ -204,19 +215,21 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         });
 
         // Tanks
-        fluid.ifPresent(f -> {
-            CompoundNBT inputNBT = new CompoundNBT();
-            CompoundNBT outputNBT0 = new CompoundNBT();
-            CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundNBT inputNBT = new CompoundNBT();
+        CompoundNBT outputNBT0 = new CompoundNBT();
+        CompoundNBT outputNBT1 = new CompoundNBT();
 
-            this.inputTank.getTank().writeToNBT(inputNBT);
-            this.outputTank0.getTank().writeToNBT(outputNBT0);
-            this.outputTank1.getTank().writeToNBT(outputNBT1);
+        this.inputTank.getTank().writeToNBT(inputNBT);
+        this.outputTank0.getTank().writeToNBT(outputNBT0);
+        this.outputTank1.getTank().writeToNBT(outputNBT1);
 
-            tag.put("inputTank", inputNBT);
-            tag.put("outputTank0", outputNBT0);
-            tag.put("outputTank1", outputNBT1);
-        });
+        tag.put("inputTank", inputNBT);
+        tag.put("outputTank0", outputNBT0);
+        tag.put("outputTank1", outputNBT1);
+
+        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
+        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
+        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
 
         return super.write(tag);
     }
@@ -234,16 +247,26 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
-    private IFluidHandler createFluid() {
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank,outputTank0,outputTank1);
+    private IFluidHandler createInputTankFluidHandler() {
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank);
+    }
+
+    private IFluidHandler createOutputTank0FluidHandler(){
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank0);
+    }
+
+    private IFluidHandler createOutputTank1FluidHandler(){
+        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank1);
     }
 
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
+        return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -252,35 +275,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 return true;
-                /*
-                if (slot == 0 || slot == 1){
-                    VERecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getOutputFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
-                            recipeHit.set(true);
-                        }
-                    });
-                    return recipeHit.get();
-                } else if (slot == 3) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-                    AtomicBoolean recipeHit = new AtomicBoolean(false);
-                    CentrifugalAgitatorRecipe.ingredientList.forEach(item -> {
-                        CentrifugalAgitatorRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(new ItemStack(item)), world).orElse(null);
-                        if (recipe != null && recipe.getSecondFluid().getRawFluid() == ((BucketItem) stack.getItem()).getFluid() ){
-                            recipeHit.set(true);
-                        }
-                    });
-                    return recipeHit.get();
-                }
-                return false;
-
-                 */
             }
 
             @Nonnull
@@ -299,13 +293,27 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if (side == null) return handler.cast();
+            if(output0sm.getStatus() && output0sm.getDirection().getIndex() == side.getIndex()){
+                return output0h.cast();
+            } else if (output1sm.getStatus() && output1sm.getDirection().getIndex() == side.getIndex()){
+                return output1h.cast();
+            } else if (input0sm.getStatus() && input0sm.getDirection().getIndex() == side.getIndex()){
+                return input0h.cast();
+            } else if (input1sm.getStatus() && input1sm.getDirection().getIndex() == side.getIndex()){
+                return input1h.cast();
+            }
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
+            if(inputTank.getSideStatus() && inputTank.getSideDirection().getIndex() == side.getIndex())
+                return inputFluidHandler.cast();
+            else if (outputTank0.getSideStatus() && outputTank0.getSideDirection().getIndex() == side.getIndex())
+                return output0FluidHandler.cast();
+            else if (outputTank1.getSideStatus() && outputTank1.getSideDirection().getIndex() == side.getIndex())
+                return output1FluidHandler.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -343,4 +351,137 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     public int getTankCapacity(){
         return TANK_CAPACITY;
     }
+
+    public RelationalTank getInputTank(){
+        return this.inputTank;
+    }
+
+    public RelationalTank getOutputTank0(){
+        return this.outputTank0;
+    }
+
+    public RelationalTank getOutputTank1(){
+        return this.outputTank1;
+    }
+
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == input0sm.getSlotNum()){
+            input0sm.setStatus(status);
+        } else if (slotId == input1sm.getSlotNum()){
+            input1sm.setStatus(status);
+        } else if(slotId == output0sm.getSlotNum()){
+            output0sm.setStatus(status);
+        } else if(slotId == output1sm.getSlotNum()){
+            output1sm.setStatus(status);
+        }
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == input0sm.getSlotNum()){
+            input0sm.setDirection(direction);
+        } else if (slotId == input1sm.getSlotNum()){
+            input1sm.setDirection(direction);
+        } else if(slotId == output0sm.getSlotNum()){
+            output0sm.setDirection(direction);
+        } else if(slotId == output1sm.getSlotNum()){
+            output1sm.setDirection(direction);
+        }
+    }
+
+    public void updateTankPacketFromGui(boolean status, int id){
+        if(id == this.inputTank.getId()){
+            this.inputTank.setSideStatus(status);
+        } else if(id == this.outputTank0.getId()){
+            this.outputTank0.setSideStatus(status);
+        } else if(id == this.outputTank1.getId()){
+            this.outputTank1.setSideStatus(status);
+        }
+    }
+
+    public void updateTankPacketFromGui(int direction, int id){
+        if(id == this.inputTank.getId()){
+            this.inputTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+        } else if(id == this.outputTank0.getId()){
+            this.outputTank0.setSideDirection(IntToDirection.IntegerToDirection(direction));
+        } else if(id == this.outputTank1.getId()){
+            this.outputTank1.setSideDirection(IntToDirection.IntegerToDirection(direction));
+        }
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input0sm.getStatus(), input0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input1sm.getStatus(), input1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(output0sm.getStatus(), output0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(output1sm.getStatus(), output1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input0sm.getDirection().getIndex(),input0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input1sm.getDirection().getIndex(),input1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output0sm.getDirection().getIndex(),output0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output1sm.getDirection().getIndex(),output1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(inputTank.getSideDirection().getIndex(), inputTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank0.getSideDirection().getIndex(), outputTank0.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank1.getSideDirection().getIndex(), outputTank1.getId()));
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            // Boolean Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(input0sm.getStatus(), input0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(input1sm.getStatus(), input1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(output0sm.getStatus(), output0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(output1sm.getStatus(), output1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input0sm.getDirection().getIndex(),input0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input1sm.getDirection().getIndex(),input1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output0sm.getDirection().getIndex(),output0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output1sm.getDirection().getIndex(),output1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().getIndex(), inputTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank0.getSideDirection().getIndex(), outputTank0.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank1.getSideDirection().getIndex(), outputTank1.getId()));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof CentrifugalAgitatorContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
+    }
+
 }

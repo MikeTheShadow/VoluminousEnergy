@@ -4,7 +4,8 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.ElectrolyzerInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.blocks.screens.ElectrolyzerScreen;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -31,6 +32,7 @@ public class ElectrolyzerContainer extends Container {
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private ElectrolyzerScreen screen;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ElectrolyzerContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
@@ -47,6 +49,7 @@ public class ElectrolyzerContainer extends Container {
             addSlot(new VEOutputSlot(h, 3, 71,57)); //RNG #1 Slot
             addSlot(new VEOutputSlot(h,4, 89, 57)); //RNG #2 Slot
             addSlot(new VEOutputSlot(h,5,107,57)); //RNG #3 Slot
+            addSlot(new VEInsertSlot(h,6,154, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -135,4 +138,15 @@ public class ElectrolyzerContainer extends Container {
         return returnStack;
     }
 
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(ElectrolyzerScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
+    }
 }

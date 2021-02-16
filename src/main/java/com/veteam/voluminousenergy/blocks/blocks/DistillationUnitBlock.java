@@ -27,7 +27,8 @@ public class DistillationUnitBlock extends FaceableBlock {
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.DISTILLATION_UNIT_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

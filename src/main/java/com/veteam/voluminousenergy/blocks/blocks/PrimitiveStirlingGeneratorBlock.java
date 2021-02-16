@@ -30,7 +30,8 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.STONE)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

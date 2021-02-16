@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "bcb"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    },
+    "b": {
+      "tag": "forge:ingots/lead"
+    },
+    "c": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:battery_box"
+  }
+}

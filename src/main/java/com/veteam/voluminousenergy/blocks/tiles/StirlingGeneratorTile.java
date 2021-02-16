@@ -4,7 +4,12 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -18,13 +23,16 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -33,11 +41,15 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class StirlingGeneratorTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class StirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
 
     private int counter;
     private int length;
@@ -51,6 +63,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     @Override
     public void tick(){
+        updateClients();
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
@@ -103,7 +116,7 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
     }
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -114,7 +127,9 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         length = tag.getInt("length");
         energyRate = tag.getInt("energy_rate");
 
-        super.read(tag);
+        slotManager.read(tag, "slot_manager");
+
+        super.read(state,tag);
     }
 
     @Override
@@ -132,6 +147,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
         tag.putInt("length", length);
         tag.putInt("energy_rate", energyRate);
 
+        slotManager.write(tag, "slot_manager");
+
         return super.write(tag);
     }
 
@@ -148,7 +165,8 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     private ItemStackHandler createHandler() {
@@ -199,11 +217,12 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handler.cast();
+            if(side == null)
+                return handler.cast();
+            else if(slotManager.getStatus() && slotManager.getDirection().getIndex() == side.getIndex())
+                return handler.cast();
         }
-        if (cap == CapabilityEnergy.ENERGY){
-            return energy.cast();
-        }
+        if (cap == CapabilityEnergy.ENERGY) return energy.cast();
         return super.getCapability(cap, side);
     }
 
@@ -240,5 +259,66 @@ public class StirlingGeneratorTile extends TileEntity implements ITickableTileEn
 
     public int getEnergyRate(){
         return energyRate;
+    }
+
+
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            // Boolean Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof StirlingGeneratorContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
     }
 }

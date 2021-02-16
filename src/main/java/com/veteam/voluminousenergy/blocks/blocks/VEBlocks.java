@@ -165,6 +165,36 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":electric_furnace")
     public static ContainerType<ElectricFurnaceContainer> ELECTRIC_FURNACE_CONTAINER;
 
+    // Battery Box
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static BatteryBoxBlock BATTERY_BOX_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static TileEntityType<BatteryBoxTile> BATTERY_BOX_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":battery_box")
+    public static ContainerType<BatteryBoxContainer> BATTERY_BOX_CONTAINER;
+
+    // Primitive Solar Panel
+    @ObjectHolder(VoluminousEnergy.MODID + ":primitive_solar_panel")
+    public static PrimitiveSolarPanelBlock PRIMITIVE_SOLAR_PANEL_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":primitive_solar_panel")
+    public static TileEntityType<PrimitiveSolarPanelTile> PRIMITIVE_SOLAR_PANEL_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":primitive_solar_panel")
+    public static ContainerType<PrimitiveSolarPanelContainer> PRIMITIVE_SOLAR_PANEL_CONTAINER;
+
+    // Solar Panel
+    @ObjectHolder(VoluminousEnergy.MODID + ":solar_panel")
+    public static SolarPanelBlock SOLAR_PANEL_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solar_panel")
+    public static TileEntityType<SolarPanelTile> SOLAR_PANEL_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solar_panel")
+    public static ContainerType<SolarPanelContainer> SOLAR_PANEL_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

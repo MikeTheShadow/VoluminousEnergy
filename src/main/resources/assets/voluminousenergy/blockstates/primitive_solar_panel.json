@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/primitive_solar_panel" },
+    "facing=south": { "model": "voluminousenergy:block/primitive_solar_panel", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/primitive_solar_panel", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/primitive_solar_panel", "y": 90 }
+  }
+}

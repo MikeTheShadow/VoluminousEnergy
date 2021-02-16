@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -99,6 +100,11 @@ public class CompressorRecipe extends VERecipe {
 
     public int getOutputAmount(){
         return outputAmount;
+    }
+
+    @Override
+    public ItemStack getIcon(){
+        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK);
     }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CompressorRecipe>{

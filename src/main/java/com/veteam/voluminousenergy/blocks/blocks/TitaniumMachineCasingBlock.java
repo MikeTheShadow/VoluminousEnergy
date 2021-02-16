@@ -10,6 +10,7 @@ public class TitaniumMachineCasingBlock extends Block {
         super(Block.Properties.create(Material.IRON)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
+                .setRequiresTool()
                 .harvestTool(ToolType.PICKAXE)
                 .harvestLevel(1)
         );

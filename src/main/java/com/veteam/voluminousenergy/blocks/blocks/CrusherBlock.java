@@ -26,7 +26,8 @@ public class CrusherBlock extends FaceableBlock {
         super(Properties.create(Material.ROCK)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.CRUSHER_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

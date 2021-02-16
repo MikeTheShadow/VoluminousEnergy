@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
@@ -68,22 +69,22 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void draw(ElectrolyzerRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(25, 30);
+    public void draw(ElectrolyzerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,25, 30);
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,26,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,26,0x606060);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,44,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,44,0x606060);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            Minecraft.getInstance().fontRenderer.drawString(chance + "%",74,62,0x606060);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,62,0x606060);
         }
 
     }

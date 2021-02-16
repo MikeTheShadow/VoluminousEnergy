@@ -2,8 +2,10 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CompressorInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.blocks.screens.CompressorScreen;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -32,6 +34,7 @@ public class CompressorContainer extends Container {
         public TileEntity tileEntity;
         private PlayerEntity playerEntity;
         private IItemHandler playerInventory;
+        private CompressorScreen screen;
         private static final Logger LOGGER = LogManager.getLogger();
 
         public CompressorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
@@ -44,6 +47,7 @@ public class CompressorContainer extends Container {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 addSlot(new CompressorInputSlot(h, 0, 80, 13, world));
                 addSlot(new VEOutputSlot(h, 1,80,58));//Main Output
+                addSlot(new VEInsertSlot(h, 2,154, -14));//Upgrade slot
             });
             layoutPlayerInventorySlots(8, 84);
 
@@ -131,4 +135,16 @@ public class CompressorContainer extends Container {
             }
             return returnStack;
         }
+
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(CompressorScreen screen){
+        this.screen = screen;
     }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
+    }
+}

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
@@ -63,18 +64,18 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     }
 
     @Override
-    public void draw(DistillationRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(24, 12);
-        emptyArrow.draw(24,12);
-        slotDrawable.draw(2,10);
-        slotDrawable.draw(48,10);
-        slotDrawable.draw(72,10);
-        slotDrawable.draw(96,10);
+    public void draw(DistillationRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,24, 12);
+        emptyArrow.draw(matrixStack,24,12);
+        slotDrawable.draw(matrixStack,2,10);
+        slotDrawable.draw(matrixStack,48,10);
+        slotDrawable.draw(matrixStack,72,10);
+        slotDrawable.draw(matrixStack,96,10);
 
-        Minecraft.getInstance().fontRenderer.drawString("mB:", -20,32, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getInputAmount() + "", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getOutputAmount() + "", 48, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getAmounts().get(2) + "", 72, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", -20,32, 0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getAmounts().get(2) + "", 72, 32,0x606060);
     }
 
     @Override

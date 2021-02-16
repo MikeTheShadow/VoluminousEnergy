@@ -25,6 +25,36 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "inputTank",
+                  "target": "BlockEntityTag.inputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "outputTank",
+                  "target": "BlockEntityTag.outputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_tank_gui_enabled",
+                  "target": "BlockEntityTag.input_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_tank_gui_direction",
+                  "target": "BlockEntityTag.input_tank_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_gui_enabled",
+                  "target": "BlockEntityTag.output_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_gui_direction",
+                  "target": "BlockEntityTag.output_tank_gui_direction",
+                  "op": "replace"
                 }
               ]
             },

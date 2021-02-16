@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:electrolyzer"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:electrolyzer"
+  }
+}

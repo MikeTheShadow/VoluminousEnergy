@@ -26,7 +26,8 @@ public class PumpBlock extends FaceableBlock {
         super(Block.Properties.create(Material.ROCK)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.PUMP_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

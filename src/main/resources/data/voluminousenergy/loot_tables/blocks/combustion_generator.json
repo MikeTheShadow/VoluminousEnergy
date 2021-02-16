@@ -25,6 +25,36 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "oxidizerTank",
+                  "target": "BlockEntityTag.oxidizerTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuelTank",
+                  "target": "BlockEntityTag.fuelTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "oxidizer_tank_gui_enabled",
+                  "target": "BlockEntityTag.oxidizer_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "oxidizer_tank_gui_direction",
+                  "target": "BlockEntityTag.oxidizer_tank_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_tank_gui_enabled",
+                  "target": "BlockEntityTag.fuel_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_tank_gui_direction",
+                  "target": "BlockEntityTag.fuel_tank_gui_direction",
+                  "op": "replace"
                 }
               ]
             },

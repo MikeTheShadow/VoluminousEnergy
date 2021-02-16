@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " * ",
+    "#x#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "x": {
+      "item": "voluminousenergy:mercury_bucket"
+    },
+    "*": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:mercury_battery",
+    "count": 1
+  }
+}

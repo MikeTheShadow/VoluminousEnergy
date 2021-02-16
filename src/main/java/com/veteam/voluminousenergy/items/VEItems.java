@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
+import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
@@ -8,6 +10,7 @@ import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
+import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 
 public class VEItems
 {
@@ -37,6 +40,7 @@ public class VEItems
     public static LeadDust LEAD_DUST = new LeadDust();
     public static SilverDust SILVER_DUST = new SilverDust();
     public static GoldDust GOLD_DUST = new GoldDust();
+    public static PhotovoltaicDust PHOTOVOLTAIC_DUST = new PhotovoltaicDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
@@ -60,4 +64,11 @@ public class VEItems
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
     public static SilverMicrochip SILVER_MICROCHIP = new SilverMicrochip();
+
+    //Upgrades
+    public static QuartzMultiplier QUARTZ_MULTIPLIER = new QuartzMultiplier();
+
+    //Batteries
+    public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
+    public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 }

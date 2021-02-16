@@ -62,4 +62,8 @@ public class VERecipe  implements IRecipe<IInventory> {
         return null;
     }
 
+    @Override
+    public ItemStack getIcon(){
+        return null;
+    }
 }

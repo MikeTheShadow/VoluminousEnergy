@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
-import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -27,7 +26,8 @@ public class ElectricFurnaceBlock extends FaceableBlock {
         super(Properties.create(Material.IRON)
                 .sound(SoundType.METAL)
                 .hardnessAndResistance(2.0f)
-                .lightValue(0)
+                .setLightLevel(l -> 0)
+                .setRequiresTool()
                 .harvestLevel(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );

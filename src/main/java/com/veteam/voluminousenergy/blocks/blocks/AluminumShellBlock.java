@@ -10,6 +10,7 @@ public class AluminumShellBlock extends Block {
         super(Properties.create(Material.IRON)
             .sound(SoundType.METAL)
             .hardnessAndResistance(2.0f)
+            .setRequiresTool()
             .harvestTool(ToolType.PICKAXE)
             .harvestLevel(1)
         );

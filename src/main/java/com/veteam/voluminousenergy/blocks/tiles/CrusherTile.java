@@ -2,13 +2,18 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.VESidedItemManager;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -18,17 +23,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -37,20 +44,20 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    //private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private ServerPlayerEntity player;
 
-    // Side IO status
-    public VESidedItemManager inputSlotProp = new VESidedItemManager(0,Direction.UP,true);
-    public VESidedItemManager outputSlotProp = new VESidedItemManager(1,Direction.DOWN,true);
-    public VESidedItemManager rngSlotProp = new VESidedItemManager(2, Direction.NORTH,true);
+    // Slot Managers
+    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
+    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
+    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");
 
 
     // Sided Item Handlers
@@ -69,7 +76,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         super(VEBlocks.CRUSHER_TILE);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(3) {
+    public final ItemStackHandler inventory = new ItemStackHandler(4) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
             ItemStack referenceStack = stack.copy();
@@ -83,6 +90,8 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                 return stack.getItem() == recipe1.result.getItem();
             } else if (slot == 2 && recipe1 != null){
                 return stack.getItem() == recipe1.getRngItem().getItem();
+            } else if (slot == 3){
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
             }
             return false;
         }
@@ -109,6 +118,10 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                 if (stack.getItem() == recipe1.getRngItem().getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
+            } else if (slot == 3){
+                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                    return super.insertItem(slot, stack, simulate);
+                }
             }
             return stack;
         }
@@ -116,6 +129,20 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
+            if(world != null){
+                Random rand = new Random();
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 2, 5)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 5, 7)));
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK)
+                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+            }
+            
             return super.extractItem(slot,amount,simulate);
         }
 
@@ -139,7 +166,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && canConsumeEnergy()) {
                 if (counter == 1){ //The processing is about to be complete
                     // Extract the inputted item
                     inventory.extractItem(0,recipe.ingredientCount,false);
@@ -185,14 +212,14 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                         }
                     }
                     counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    consumeEnergy();
                     markDirty();
                 } else if (counter > 0){ //In progress
                     counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.CRUSHER_POWER_USAGE.get()));
+                    consumeEnergy();
                 } else { // Check if we should start processing
                     if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
-                        counter = recipe.getProcessTime();
+                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(3).copy());
                         length = counter;
                     } else {
                         counter = 0;
@@ -206,18 +233,37 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         }
     }
 
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(3).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
+    }
+
     /*
         Read and Write on World save
      */
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
-        super.read(tag);
+
+        inputSlotProp.read(tag, "input_slot");
+        outputSlotProp.read(tag, "output_slot");
+        rngSlotProp.read(tag, "rng_slot");
+        super.read(state, tag);
     }
 
     @Override
@@ -227,6 +273,10 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
+
+        inputSlotProp.write(tag, "input_slot");
+        outputSlotProp.write(tag, "output_slot");
+        rngSlotProp.write(tag, "rng_slot");
         return super.write(tag);
     }
 
@@ -237,6 +287,8 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     @Nonnull
@@ -246,14 +298,15 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             if (side == null) {
                 return handler.cast();
             } else {
+                // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.getIndex() == inputSlotProp.side.getIndex() && inputSlotProp.enabled){
+                if (side.getIndex() == inputSlotProp.getDirection().getIndex() && inputSlotProp.getStatus()){
                     return inputItemHandler.cast();
                 }
-                if (side.getIndex() == outputSlotProp.side.getIndex() && outputSlotProp.enabled){
+                if (side.getIndex() == outputSlotProp.getDirection().getIndex() && outputSlotProp.getStatus()){
                     return outputItemHandler.cast();
                 }
-                if (side.getIndex() == rngSlotProp.side.getIndex() && rngSlotProp.enabled){
+                if (side.getIndex() == rngSlotProp.getDirection().getIndex() && rngSlotProp.getStatus()){
                     return rngItemHandler.cast();
                 }
             }
@@ -284,4 +337,83 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         }
     }
 
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == inputSlotProp.getSlotNum()){
+            inputSlotProp.setStatus(status);
+        } else if (slotId == outputSlotProp.getSlotNum()){
+            outputSlotProp.setStatus(status);
+        } else if(slotId == rngSlotProp.getSlotNum()){
+            rngSlotProp.setStatus(status);
+        }
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == inputSlotProp.getSlotNum()){
+            inputSlotProp.setDirection(direction);
+        } else if (slotId == outputSlotProp.getSlotNum()){
+            outputSlotProp.setDirection(direction);
+        } else if(slotId == rngSlotProp.getSlotNum()){
+            rngSlotProp.setDirection(direction);
+        }
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSlotProp.getStatus(), inputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotProp.getStatus(), outputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngSlotProp.getStatus(), rngSlotProp.getSlotNum()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotProp.getDirection().getIndex(),inputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotProp.getDirection().getIndex(),outputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngSlotProp.getDirection().getIndex(), rngSlotProp.getSlotNum()));
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            // Boolean Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSlotProp.getStatus(), inputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSlotProp.getStatus(), outputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngSlotProp.getStatus(), rngSlotProp.getSlotNum()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotProp.getDirection().getIndex(),inputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotProp.getDirection().getIndex(),outputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngSlotProp.getDirection().getIndex(), rngSlotProp.getSlotNum()));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof CrusherContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
+    }
 }

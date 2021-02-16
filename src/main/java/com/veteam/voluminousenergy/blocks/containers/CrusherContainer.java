@@ -2,8 +2,10 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CrusherInputSlot;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -33,6 +35,7 @@ public class CrusherContainer extends Container {
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private static final Logger LOGGER = LogManager.getLogger();
+    private CrusherScreen crusherScreen;
 
     public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
         super(CRUSHER_CONTAINER,id);
@@ -45,6 +48,7 @@ public class CrusherContainer extends Container {
             addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
             addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
             addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
+            addSlot(new VEInsertSlot(h, 3,154, -14));//Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -131,5 +135,18 @@ public class CrusherContainer extends Container {
             slot.onTake(player, slotStack);
         }
         return returnStack;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setCrusherScreen(CrusherScreen crusherScreen){
+        this.crusherScreen = crusherScreen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){
+        this.crusherScreen.updateButtonDirection(direction,slotId);
+    }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.crusherScreen.updateBooleanButton(status, slotId);
     }
 }

@@ -1,8 +1,9 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.PrimitiveStirlingGeneratorScreen;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -28,6 +29,7 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
     private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private PrimitiveStirlingGeneratorScreen screen;
 
     public PrimitiveStirlingGeneratorContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
@@ -37,9 +39,9 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
         this.playerInventory = new InvWrapper(playerInventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new SlotItemHandler(h, 0, 82, 24));
+            addSlot(new SlotItemHandler(h, 0, 80, 35));
         });
-        layoutPlayerInventorySlots(10, 70);
+        layoutPlayerInventorySlots(8, 84);
 
         trackInt(new IntReferenceHolder() {
             @Override
@@ -131,5 +133,26 @@ public class PrimitiveStirlingGeneratorContainer extends Container {
         }
 
         return itemstack;
+    }
+
+    public TileEntity getTileEntity(){
+        return tileEntity;
+    }
+
+    public int powerScreen(int px){
+        int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        return (((stored*100/max*100)/100)*px)/100;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(PrimitiveStirlingGeneratorScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
     }
 }

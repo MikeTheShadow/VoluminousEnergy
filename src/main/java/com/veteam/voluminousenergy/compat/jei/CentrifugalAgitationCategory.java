@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
@@ -63,17 +64,17 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     }
 
     @Override
-    public void draw(CentrifugalAgitatorRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(24, 12);
-        emptyArrow.draw(24,12);
-        slotDrawable.draw(2,10);
-        slotDrawable.draw(48,10);
-        slotDrawable.draw(72,10);
+    public void draw(CentrifugalAgitatorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,24, 12);
+        emptyArrow.draw(matrixStack,24,12);
+        slotDrawable.draw(matrixStack,2,10);
+        slotDrawable.draw(matrixStack,48,10);
+        slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().fontRenderer.drawString("mB:", -20,32, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.inputAmount + "", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.outputAmount + "", 48, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.secondAmount + "", 72, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", -20,32, 0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.inputAmount + "", 2, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.outputAmount + "", 48, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.secondAmount + "", 72, 32,0x606060);
     }
 
     @Override

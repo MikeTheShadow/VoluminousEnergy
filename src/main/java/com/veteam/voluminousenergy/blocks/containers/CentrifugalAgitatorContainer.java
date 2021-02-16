@@ -2,7 +2,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.blocks.screens.CentrifugalAgitatorScreen;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -31,6 +32,7 @@ public class CentrifugalAgitatorContainer extends Container {
     public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private CentrifugalAgitatorScreen screen;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public CentrifugalAgitatorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
@@ -45,6 +47,7 @@ public class CentrifugalAgitatorContainer extends Container {
             addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 96,49)); // Extract fluid from first output
             addSlot(new VEInsertSlot(h, 3, 137,49)); // Extract fluid from second output
+            addSlot(new VEInsertSlot(h, 4, 130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -133,4 +136,23 @@ public class CentrifugalAgitatorContainer extends Container {
         return returnStack;
     }
 
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(CentrifugalAgitatorScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
+
+    public void updateStatusButton(boolean status, int slotId){
+        this.screen.updateBooleanButton(status, slotId);
+    }
+
+    public void updateStatusTank(boolean status, int id){
+        this.screen.updateTankStatus(status, id);
+    }
+
+    public void updateDirectionTank(int direction, int id){
+        this.screen.updateTankDirection(direction, id);
+    }
 }

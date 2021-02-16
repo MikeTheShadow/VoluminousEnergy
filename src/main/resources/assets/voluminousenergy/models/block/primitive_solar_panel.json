@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/primitive_solar_panel_bottom",
+    "up": "voluminousenergy:block/primitive_solar_panel_top",
+    "east": "voluminousenergy:block/primitive_solar_panel_side",
+    "west": "voluminousenergy:block/primitive_solar_panel_side",
+    "north": "voluminousenergy:block/primitive_solar_panel_side",
+    "south": "voluminousenergy:block/primitive_solar_panel_side"
+  }
+}

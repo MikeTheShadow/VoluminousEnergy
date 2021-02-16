@@ -12,25 +12,28 @@ import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
-import com.veteam.voluminousenergy.world.VEOreGeneration;
-import com.veteam.voluminousenergy.world.biomes.RedDesertBiome;
+import com.veteam.voluminousenergy.world.biomes.RedDesert;
+import com.veteam.voluminousenergy.world.biomes.VEBiomes;
+import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
+import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -47,8 +50,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(VoluminousEnergy.MODID)
-public class VoluminousEnergy
-{
+public class VoluminousEnergy {
     public static final String MODID = "voluminousenergy";
 
     public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
@@ -58,8 +60,6 @@ public class VoluminousEnergy
     public static final Logger LOGGER = LogManager.getLogger();
 
     public VoluminousEnergy() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
-        //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -69,11 +69,14 @@ public class VoluminousEnergy
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register recipes (differed)
-        VERecipes.init();
+        VERecipes.RECIPE_SERIALIZERS.register(modEventBus);
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
+
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
         // Config Files to load
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
@@ -81,65 +84,18 @@ public class VoluminousEnergy
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        VEOreGeneration.OreGeneration(); // Setup custom ore generation
-        VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
+        //VEOreGeneration.OreGeneration(); // Setup custom ore generation
+        //VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
+        VENetwork.init();
+        VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
-        //True Items
+        /* //True Items
         ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","silicon"));
-
-        //Dusts
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter/saltpeter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/niter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coal"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/coke"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lapis"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sulfur"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/bauxite"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/cinnabar"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/iron"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/quartz"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/sand"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/soulsand"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/titanium"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/rutile"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/galena"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/lead"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/silver"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","dusts/gold"));
-
-        //Gears
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/iron"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/stone"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","gears/titanium"));
-
-        //Ingots
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/titanium"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/lead"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","ingots/silver"));
-
-        //Plates
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/aluminum"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "plates/carbon"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge","plates/titanium"));
-
-        //Ores
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/saltpeter"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/bauxite"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/cinnabar"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/rutile"));
-        ItemTags.getCollection().getOrCreate(new ResourceLocation("forge", "ores/galena"));
-
-
+        */
     }
 
     @SubscribeEvent
@@ -176,6 +132,9 @@ public class VoluminousEnergy
             blockRegisteryEvent.getRegistry().register(new PumpBlock());
             blockRegisteryEvent.getRegistry().register(new GasFiredFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new ElectricFurnaceBlock());
+            blockRegisteryEvent.getRegistry().register(new BatteryBoxBlock());
+            blockRegisteryEvent.getRegistry().register(new PrimitiveSolarPanelBlock());
+            blockRegisteryEvent.getRegistry().register(new SolarPanelBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -217,6 +176,9 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PUMP_BLOCK,properties).setRegistryName("pump"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GAS_FIRED_FURNACE_BLOCK,properties).setRegistryName("gas_fired_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ELECTRIC_FURNACE_BLOCK,properties).setRegistryName("electric_furnace"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BATTERY_BOX_BLOCK,properties).setRegistryName("battery_box"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK,properties).setRegistryName("primitive_solar_panel"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLAR_PANEL_BLOCK,properties).setRegistryName("solar_panel"));
 
             //True Blocks
             //Ores
@@ -259,6 +221,7 @@ public class VoluminousEnergy
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.PHOTOVOLTAIC_DUST);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
@@ -282,6 +245,13 @@ public class VoluminousEnergy
             //Microchips
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_MICROCHIP);
+
+            //Upgrades
+            itemRegisteryEvent.getRegistry().register(VEItems.QUARTZ_MULTIPLIER);
+
+            //Batteries
+            itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
+            itemRegisteryEvent.getRegistry().register(VEItems.LEAD_ACID_BATTERY);
         }
 
         @SubscribeEvent
@@ -301,6 +271,9 @@ public class VoluminousEnergy
             event.getRegistry().register(TileEntityType.Builder.create(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
             event.getRegistry().register(TileEntityType.Builder.create(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
             event.getRegistry().register(TileEntityType.Builder.create(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
+            event.getRegistry().register(TileEntityType.Builder.create(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
+            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
+            event.getRegistry().register(TileEntityType.Builder.create(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
         }
 
         @SubscribeEvent
@@ -375,19 +348,32 @@ public class VoluminousEnergy
                 BlockPos pos = data.readBlockPos();
                 return new ElectricFurnaceContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("electric_furnace"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new BatteryBoxContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("battery_box"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveSolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("primitive_solar_panel"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new SolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("solar_panel"));
         }
 
         @SubscribeEvent
-        public static void onRegisterBiome(RegistryEvent.Register<Biome> event)
-        {
-            // TODO: Config for spawn weight
-            registerBiome(event, new RedDesertBiome(), "red_desert", 10, BiomeManager.BiomeType.DESERT, BiomeDictionary.Type.COLD, BiomeDictionary.Type.CONIFEROUS, BiomeDictionary.Type.FOREST, BiomeDictionary.Type.HILLS, BiomeDictionary.Type.SNOWY, BiomeDictionary.Type.OVERWORLD);
+        public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
+            VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
         }
-    }
 
-    private static void registerBiome(RegistryEvent.Register<Biome> event, Biome biome, String registryName, int spawnWeight, BiomeManager.BiomeType spawnType, BiomeDictionary.Type... types) {
-        event.getRegistry().register(biome.setRegistryName(new ResourceLocation(MODID, registryName)));
-        BiomeDictionary.addTypes(biome, types);
-        if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(spawnType, new BiomeManager.BiomeEntry(biome, spawnWeight));
+        @SubscribeEvent
+        public static void onRegisterSurfaceBuilder(RegistryEvent.Register<SurfaceBuilder<?>> event){
+            VESurfaceBuilders.init();
+            VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
+        }
     }
 }

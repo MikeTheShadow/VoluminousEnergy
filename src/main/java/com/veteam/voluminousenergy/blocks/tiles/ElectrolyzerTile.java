@@ -2,9 +2,15 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -17,13 +23,16 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -35,22 +44,36 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.math.MathHelper.abs;
 
 public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
+    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
+    private LazyOptional<IItemHandlerModifiable> bucketHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
+    private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
+    private LazyOptional<IItemHandlerModifiable> rngOneHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
+    private LazyOptional<IItemHandlerModifiable> rngTwoHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
+    private LazyOptional<IItemHandlerModifiable> rngThreeHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,5,6));
+
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
+    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot");
+    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot");
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private static final Logger LOGGER = LogManager.getLogger();
 
     // Sided item handlers
-    private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 2));
-    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 6));
+    //private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 2));
+    //private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 6));
 
 
     public ElectrolyzerTile(){
@@ -74,7 +97,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
-                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && canConsumeEnergy()) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
                         h.extractItem(0,recipe.ingredientCount,false);
@@ -175,14 +198,14 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                         }
 
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
+                        consumeEnergy();
                         markDirty();
                     } else if (counter > 0){ //In progress
                         counter--;
-                        energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.ELECTROLYZER_POWER_USAGE.get()));
+                        consumeEnergy();
                     } else { // Check if we should start processing
                         if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
-                            counter = recipe.getProcessTime();
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(6).copy());
                             length = counter;
                         } else {
                             counter = 0;
@@ -195,6 +218,21 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 counter = 0;
             }
         });
+    }
+
+    // Extract logic for energy management, since this is getting quite complex now.
+    private void consumeEnergy(){
+        energy.ifPresent(e -> ((VEEnergyStorage)e)
+                .consumeEnergy(this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(),
+                        this.inventory.getStackInSlot(6).copy()
+                        )
+                )
+        );
+    }
+
+    private boolean canConsumeEnergy(){
+        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                > this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(), this.inventory.getStackInSlot(6).copy());
     }
 
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
@@ -260,13 +298,21 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
      */
 
     @Override
-    public void read(CompoundNBT tag){
+    public void read(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         //createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
-        super.read(tag);
+
+        inputSm.read(tag, "input_manager");
+        bucketSm.read(tag, "bucket_manager");
+        outputSm.read(tag, "output_manager");
+        rngOneSm.read(tag, "rng_one_manager");
+        rngTwoSm.read(tag, "rng_two_manager");
+        rngThreeSm.read(tag, "rng_three_manager");
+
+        super.read(state,tag);
     }
 
     @Override
@@ -279,10 +325,18 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
+
+        inputSm.write(tag, "input_manager");
+        bucketSm.write(tag, "bucket_manager");
+        outputSm.write(tag, "output_manager");
+        rngOneSm.write(tag, "rng_one_manager");
+        rngTwoSm.write(tag, "rng_two_manager");
+        rngThreeSm.write(tag, "rng_three_manager");
+
         return super.write(tag);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(6) {
+    public final ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
@@ -313,6 +367,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 return stack.getItem() == recipe1.getRngItemSlot1().getItem();
             } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
                 return stack.getItem() == recipe1.getRngItemSlot2().getItem();
+            } else if (slot == 6){
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
             }
             return false;
         }
@@ -349,6 +405,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
+            } else if (slot == 6 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                return super.insertItem(slot, stack, simulate);
             }
             return stack;
         }
@@ -361,6 +419,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
+        this.read(this.getBlockState(), pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
     }
 
     @Nonnull
@@ -371,12 +431,18 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 return handler.cast();
             } else {
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.getIndex() == Direction.UP.getIndex()){
-                    return inputItemHandler.cast();
-                }
-                if (side.getIndex() == Direction.DOWN.getIndex()){
-                    return outputItemHandler.cast();
-                }
+                if(inputSm.getStatus() && inputSm.getDirection().getIndex() == side.getIndex())
+                    return inputHandler.cast();
+                else if(bucketSm.getStatus() && bucketSm.getDirection().getIndex() == side.getIndex())
+                    return bucketHandler.cast();
+                else if(outputSm.getStatus() && outputSm.getDirection().getIndex() == side.getIndex())
+                    return outputHandler.cast();
+                else if(rngOneSm.getStatus() && rngOneSm.getDirection().getIndex() == side.getIndex())
+                    return rngOneHandler.cast();
+                else if(rngTwoSm.getStatus() && rngTwoSm.getDirection().getIndex() == side.getIndex())
+                    return rngTwoHandler.cast();
+                else if(rngThreeSm.getStatus() && rngThreeSm.getDirection().getIndex() == side.getIndex())
+                    return rngThreeHandler.cast();
             }
         }
         if (cap == CapabilityEnergy.ENERGY){
@@ -392,8 +458,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
-    {
+    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
         return new ElectrolyzerContainer(i,world,pos,playerInventory,playerEntity);
     }
 
@@ -403,5 +468,96 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         } else {
             return (px*(100-((counter*100)/length)))/100;
         }
+    }
+
+    public void updatePacketFromGui(boolean status, int slotId){
+        if(slotId == inputSm.getSlotNum()) inputSm.setStatus(status);
+        else if (slotId == bucketSm.getSlotNum()) bucketSm.setStatus(status);
+        else if(slotId == outputSm.getSlotNum()) outputSm.setStatus(status);
+        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setStatus(status);
+        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setStatus(status);
+        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setStatus(status);
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        if(slotId == inputSm.getSlotNum()) inputSm.setDirection(direction);
+        else if (slotId == bucketSm.getSlotNum()) bucketSm.setDirection(direction);
+        else if(slotId == outputSm.getSlotNum()) outputSm.setDirection(direction);
+        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setDirection(direction);
+        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setDirection(direction);
+        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setDirection(direction);
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(world == null || getWorld() == null) return;
+        if(getWorld().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                world.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUniqueID().equals(u)){
+                        // Boolean Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketSm.getStatus(), bucketSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngOneSm.getStatus(), rngOneSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngTwoSm.getStatus(), rngTwoSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
+
+                        // Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketSm.getDirection().getIndex(),bucketSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngOneSm.getDirection().getIndex(),rngOneSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngTwoSm.getDirection().getIndex(),rngTwoSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngThreeSm.getDirection().getIndex(),rngThreeSm.getSlotNum()));
+
+                    }
+                });
+            });
+        } else if (!playerUuid.isEmpty()){ // Legacy solution
+            double x = this.getPos().getX();
+            double y = this.getPos().getY();
+            double z = this.getPos().getZ();
+            final double radius = 16;
+            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
+
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(bucketSm.getStatus(), bucketSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngOneSm.getStatus(), rngOneSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngTwoSm.getStatus(), rngTwoSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
+
+            // Direction Buttons
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketSm.getDirection().getIndex(),bucketSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngOneSm.getDirection().getIndex(),rngOneSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngTwoSm.getDirection().getIndex(),rngTwoSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngThreeSm.getDirection().getIndex(),rngThreeSm.getSlotNum()));
+
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || world == null) return;
+        if(world.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            world.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.openContainer != null){
+                    if(!(player.openContainer instanceof ElectrolyzerContainer)){
+                        toRemove.add(player.getUniqueID());
+                    }
+                } else if (player.openContainer == null){
+                    toRemove.add(player.getUniqueID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
     }
 }

@@ -30,8 +30,10 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         super(tileEntityTypeIn);
     }
 
+
+
     //use for inputting a fluid
-    public boolean inputFluid(RelationalTank tank,int slot1,int slot2) {
+    public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput();
         ItemStack output = tank.getOutput();
         FluidTank inputTank = tank.getTank();
@@ -66,8 +68,8 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         }
         return false;
     }
-    //Use only when the input and ouput slot are the same slot
-    public boolean outputFluidStatic(RelationalTank tank,int slot) {
+    //Use only when the input and output slot are the same slot
+    public boolean outputFluidStatic(RelationalTank tank, int slot) {
 
         ItemStack inputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
@@ -92,7 +94,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         return new IFluidHandler() {
             @Override
             public int getTanks() {
-                return 3;
+                return relationalTanks.length;
             }
 
             @Nonnull
@@ -104,7 +106,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                         return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
                     }
                 }
-                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getFluidInTank");
+                LOGGER.debug("Invalid tankId in VEFluidTileEntity for getFluidInTank");
                 return FluidStack.EMPTY;
             }
 
@@ -116,7 +118,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                         return t.getTank() == null ? 0 : t.getTank().getCapacity();
                     }
                 }
-                LOGGER.debug("Invalid tankId in Centrifugal Agitator Tile for getTankCapacity");
+                LOGGER.debug("Invalid tankId in VEFluidTileEntity for getTankCapacity");
                 return 0;
             }
 

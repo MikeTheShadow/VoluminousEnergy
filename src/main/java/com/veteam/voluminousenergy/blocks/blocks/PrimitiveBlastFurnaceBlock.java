@@ -26,7 +26,8 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
         super(Properties.create(Material.ROCK)
                     .sound(SoundType.METAL)
                     .hardnessAndResistance(2.0f)
-                    .lightValue(0)
+                    .setLightLevel(l -> 0)
+                    .setRequiresTool()
                     .harvestLevel(1)
                     .harvestTool(ToolType.PICKAXE)
             );

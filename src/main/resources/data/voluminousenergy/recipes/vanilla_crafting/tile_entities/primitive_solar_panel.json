@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#d#",
+    "ccc",
+    "aba"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    },
+    "b": {
+      "item": "minecraft:iron_block"
+    },
+    "c": {
+      "tag": "forge:dusts/lapis"
+    },
+    "d": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:primitive_solar_panel"
+  }
+}

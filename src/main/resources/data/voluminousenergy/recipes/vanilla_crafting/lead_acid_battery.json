@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " * ",
+    "#x#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/lead"
+    },
+    "x": {
+      "item": "voluminousenergy:sulfuric_acid_bucket"
+    },
+    "*": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:lead_acid_battery",
+    "count": 1
+  }
+}

@@ -1,40 +1,36 @@
 package com.veteam.voluminousenergy.world.feature;
 
-import com.mojang.datafixers.Dynamic;
-import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.fluids.CrudeOil;
-import com.veteam.voluminousenergy.fluids.Naphtha;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.function.Function;
 
 import static java.lang.StrictMath.abs;
 
-public class GeyserFeature extends Feature<NoFeatureConfig> {
-    public static GeyserFeature INSTANCE = new GeyserFeature(NoFeatureConfig::deserialize);
+public class GeyserFeature extends Feature<BlockStateFeatureConfig> {
+    public static GeyserFeature INSTANCE = new GeyserFeature(BlockStateFeatureConfig.field_236455_a_);
 
     private final BlockState crudeOil = CrudeOil.CRUDE_OIL.getDefaultState().getBlockState();
-    public GeyserFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
-        super(configFactoryIn);
+    public GeyserFeature(Codec<BlockStateFeatureConfig> p_i231962_1_) {
+        super(p_i231962_1_);
     }
 
     public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(Blocks.SNOW,Blocks.ICE,Blocks.PACKED_ICE,Blocks.SANDSTONE,Blocks.SAND,Blocks.RED_SAND,Blocks.GRAVEL,Blocks.WATER,Blocks.LAVA));
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig config) {
         ///int base = worldIn.getChunk(pos).getTopFilledSegment();
         int base = 40;
         if (base - 25 > pos.getY()){

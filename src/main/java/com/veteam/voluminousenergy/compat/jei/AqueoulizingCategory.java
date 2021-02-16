@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
@@ -63,16 +64,16 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public void draw(AqueoulizerRecipe recipe, double mouseX, double mouseY) {
-        arrow.draw(48, 12);
-        emptyArrow.draw(48,12);
-        slotDrawable.draw(2,10);
-        slotDrawable.draw(24,10);
-        slotDrawable.draw(72,10);
+    public void draw(AqueoulizerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,48, 12);
+        emptyArrow.draw(matrixStack,48,12);
+        slotDrawable.draw(matrixStack,2,10);
+        slotDrawable.draw(matrixStack,24,10);
+        slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().fontRenderer.drawString("mB:", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getInputAmount() + "", 24, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getOutputAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", 2, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getInputAmount() + "", 24, 32,0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getOutputAmount() + "", 72, 32,0x606060);
     }
 
     @Override

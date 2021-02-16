@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.tools;
+package com.veteam.voluminousenergy.tools.energy;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;

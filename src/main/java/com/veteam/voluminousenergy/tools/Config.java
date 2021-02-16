@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.Path;
 
@@ -14,50 +13,6 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
-
-    public static final ClientConfig CLIENT;
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    static {
-        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-        CLIENT_SPEC = specPair.getRight();
-        CLIENT = specPair.getLeft();
-    }
-
-    public static boolean aBoolean;
-    public static int anInt;
-
-    @SubscribeEvent
-    public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
-        if (configEvent.getConfig().getSpec() == Config.CLIENT_SPEC) {
-            bakeConfig();
-        }
-    }
-
-    public static void bakeConfig() {
-        aBoolean = CLIENT.aBoolean.get();
-        anInt = CLIENT.anInt.get();
-    }
-
-    public static class ClientConfig {
-
-        public final ForgeConfigSpec.BooleanValue aBoolean;
-        public final ForgeConfigSpec.IntValue anInt;
-
-        public ClientConfig(ForgeConfigSpec.Builder builder) {
-            aBoolean = builder
-                    .comment("aBoolean usage description")
-                    .translation(VoluminousEnergy.MODID + ".config." + "aBoolean")
-                    .define("aBoolean", false);
-
-            builder.push("category");
-            anInt = builder
-                    .comment("anInt usage description")
-                    .translation(VoluminousEnergy.MODID + ".config." + "anInt")
-                    .defineInRange("anInt", 10, 0, 100);
-            builder.pop();
-        }
-
-    }
 
     public static final String CATEGORY_GENERAL = "General";
     public static final String CATEGORY_WORLDGEN = "World Generation";
@@ -74,6 +29,9 @@ public class Config {
     public static final String CATEGORY_PUMP = "Pump";
     public static final String CATEGORY_GAS_FIRED_FURNACE = "Gas Furnace";
     public static final String CATEGORY_ELECTRIC_FURNACE = "Electric Furnace";
+    public static final String CATEGORY_BATTERY_BOX = "Battery Box";
+    public static final String CATEGORY_PRIMITIVE_SOLAR_PANEL = "Primitive Solar Panel";
+    public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -180,7 +138,6 @@ public class Config {
 
     // Combustion Generator Variables
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
     public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
@@ -218,6 +175,23 @@ public class Config {
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_HARVEST_LEVEL;
+
+    // Battery Box Variables
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
+    public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
+
+    // Primitive Solar Panel
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
+    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
+
+    // Solar Panel
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
+    public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -292,6 +266,21 @@ public class Config {
         // Electric Furnace
         COMMON_BUILDER.comment("Electric Furnace Settings").push(CATEGORY_ELECTRIC_FURNACE);
         setupElectricFurnace();
+        COMMON_BUILDER.pop();
+
+        // Battery Box
+        COMMON_BUILDER.comment("Battery Box Settings").push(CATEGORY_BATTERY_BOX);
+        setupBatteryBox();
+        COMMON_BUILDER.pop();
+
+        // Primitive Solar Panel
+        COMMON_BUILDER.comment("Primitive Solar Panel").push(CATEGORY_PRIMITIVE_SOLAR_PANEL);
+        setupPrimitiveSolarPanel();
+        COMMON_BUILDER.pop();
+
+        // Solar Panel
+        COMMON_BUILDER.comment("Solar Panel").push(CATEGORY_SOLAR_PANEL);
+        setupSolarPanel();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -520,6 +509,37 @@ public class Config {
         ELECTRIC_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electric Furnace")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         ELECTRIC_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupBatteryBox(){
+        BATTERY_BOX_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Battery Box to store")
+                .defineInRange("Maximum Power", 50_000, 0, Integer.MAX_VALUE);
+        BATTERY_BOX_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Battery Box")
+                .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
+        BATTERY_BOX_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    public static void setupPrimitiveSolarPanel(){
+        PRIMITIVE_SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Primitive Solar Panel to store")
+                .defineInRange("Maximum Power", 100_000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Primitive Solar Panel")
+                .defineInRange("Generation Rate", 64, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Primitive Solar Panel")
+                .defineInRange("Maximum Transfer", 1_000, 0, Integer.MAX_VALUE);
+        PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    public static void setupSolarPanel(){
+        SOLAR_PANEL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Solar Panel to store")
+                .defineInRange("Maximum Power", 250_000, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_GENERATE = COMMON_BUILDER.comment("Value for power generation for the Solar Panel")
+                .defineInRange("Generation Rate", 128, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
+                .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
+        SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#d#",
+    "ccc",
+    "aba"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    },
+    "b": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "c": {
+      "tag": "forge:dusts/photovoltaic"
+    },
+    "d": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:solar_panel"
+  }
+}

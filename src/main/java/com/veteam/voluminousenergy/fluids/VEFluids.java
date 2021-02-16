@@ -12,9 +12,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class VEFluids {
-    public static DeferredRegister<Fluid> VE_FLUIDS = new DeferredRegister<>(ForgeRegistries.FLUIDS, VoluminousEnergy.MODID);
-    public static DeferredRegister<Item> VE_FLUID_ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
-    public static DeferredRegister<Block> VE_FLUID_BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
+    public static DeferredRegister<Fluid> VE_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, VoluminousEnergy.MODID);
+    public static DeferredRegister<Item> VE_FLUID_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
+    public static DeferredRegister<Block> VE_FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
 
     // Oxygen
     public static RegistryObject<FlowingFluid> OXYGEN_REG = VE_FLUIDS.register("oxygen",

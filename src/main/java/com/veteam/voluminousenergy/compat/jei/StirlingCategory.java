@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
@@ -66,11 +67,11 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, double mouseX, double mouseY) {
-        slotDrawable.draw(11,0);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getProcessTime() + " t",-1,28, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(recipe.getProcessTime()/20 + " sec",-1,36, 0x606060);
+    public void draw(StirlingGeneratorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        slotDrawable.draw(matrixStack,11,0);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getProcessTime() + " t",-1,28, 0x606060);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getProcessTime()/20 + " sec",-1,36, 0x606060);
     }
 
     @Override

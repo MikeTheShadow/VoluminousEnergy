@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " * ",
+    "*x*",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/silver"
+    },
+    "x": {
+      "tag": "forge:dusts/quartz"
+    },
+    "*": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:quartz_multiplier",
+    "count": 1
+  }
+}

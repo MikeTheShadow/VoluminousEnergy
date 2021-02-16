@@ -1,4 +1,28 @@
 {
+    "_comment": "Text",
+    "text.voluminousenergy.multiblock_warn": "Multiblock Invalid",
+    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing BEHIND the Tile Entity",
+
+    "_comment": "Directions",
+    "direction.voluminousenergy.up": "Up",
+    "direction.voluminousenergy.down": "Down",
+    "direction.voluminousenergy.north": "North",
+    "direction.voluminousenergy.south": "South",
+    "direction.voluminousenergy.east": "East",
+    "direction.voluminousenergy.west": "West",
+
+    "_comment": "Slot Names",
+    "slot.voluminousenergy.rng_slot": "RNG Slot",
+    "slot.voluminousenergy.input_slot": "Input Slot",
+    "slot.voluminousenergy.output_slot": "Output Slot",
+    "slot.voluminousenergy.bucket_slot": "Bucket Slot",
+
+    "_comment": "Tank Names",
+    "tank.voluminousenergy.input_tank": "Input Tank",
+    "tank.voluminousenergy.output_tank": "Output Tank",
+    "tank.voluminousenergy.invalid": "INVALID",
+    "tank.voluminousenergy.null": "NULL",
+
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
     "block.voluminousenergy.saltpeterore": "Saltpeter Ore",
@@ -23,6 +47,9 @@
     "block.voluminousenergy.pump": "Pump",
     "block.voluminousenergy.gas_fired_furnace": "Gas Furnace",
     "block.voluminousenergy.electric_furnace": "Electric Furnace",
+    "block.voluminousenergy.battery_box": "Battery Box",
+    "block.voluminousenergy.primitive_solar_panel": "Primitive Solar Panel",
+    "block.voluminousenergy.solar_panel": "Solar Panel",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -102,5 +129,9 @@
     "item.voluminousenergy.liquefied_coke_bucket": "Liquefied Coke Bucket",
     "item.voluminousenergy.shredded_biomass": "Shredded Biomass",
     "item.voluminousenergy.silver_microchip": "Silver Microchip",
-    "item.voluminousenergy.titanium_plate": "Titanium Plate"
+    "item.voluminousenergy.titanium_plate": "Titanium Plate",
+    "item.voluminousenergy.quartz_multiplier": "Quartz Multiplier",
+    "item.voluminousenergy.mercury_battery": "Mercury Battery",
+    "item.voluminousenergy.lead_acid_battery": "Lead-Acid Battery",
+    "item.voluminousenergy.photovoltaic_dust": "Photovoltaic Dust"
 }
