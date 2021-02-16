@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.AcidFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -23,7 +24,7 @@ public class SulfuricAcid {
 
     public static FlowingFluid SULFURIC_ACID;
     public static FlowingFluid FLOWING_SULFURIC_ACID;
-    public static FlowingFluidBlock SULFURIC_ACID_BLOCK;
+    public static AcidFlowingFluidBlock SULFURIC_ACID_BLOCK;
     public static Item SULFURIC_ACID_BUCKET;
 
     public static FlowingFluid SulfuricAcidFluid(){
@@ -36,8 +37,8 @@ public class SulfuricAcid {
         return FLOWING_SULFURIC_ACID;
     }
 
-    public static FlowingFluidBlock FlowingSulfuricAcidBlock(){
-        SULFURIC_ACID_BLOCK = new FlowingFluidBlock(() -> SULFURIC_ACID, stdProp);
+    public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock(){
+        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(() -> SULFURIC_ACID, stdProp);
         return SULFURIC_ACID_BLOCK;
     }
 

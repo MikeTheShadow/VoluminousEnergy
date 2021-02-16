@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class Nitroglycerin {
 
     public static FlowingFluid NITROGLYCERIN;
     public static FlowingFluid FLOWING_NITROGLYCERIN;
-    public static FlowingFluidBlock NITROGLYCERIN_BLOCK;
+    public static VEFlowingFluidBlock NITROGLYCERIN_BLOCK;
     public static Item NITROGLYCERIN_BUCKET;
 
     public static FlowingFluid NitroglycerinFluid(){
@@ -34,8 +35,8 @@ public class Nitroglycerin {
         return FLOWING_NITROGLYCERIN;
     }
 
-    public static FlowingFluidBlock FlowingNitroglycerinBlock(){
-        NITROGLYCERIN_BLOCK = new FlowingFluidBlock(() -> NITROGLYCERIN, stdProp);
+    public static VEFlowingFluidBlock FlowingNitroglycerinBlock(){
+        NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(() -> NITROGLYCERIN, stdProp);
         return NITROGLYCERIN_BLOCK;
     }
 

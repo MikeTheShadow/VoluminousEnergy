@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -24,7 +25,7 @@ public class CompressedAir {
 
     public static FlowingFluid COMPRESSED_AIR;
     public static FlowingFluid FLOWING_COMPRESSED_AIR;
-    public static FlowingFluidBlock COMPRESSED_AIR_BLOCK;
+    public static VEFlowingFluidBlock COMPRESSED_AIR_BLOCK;
     public static Item COMPRESSED_AIR_BUCKET;
 
     public static FlowingFluid CompressedAirFluid(){
@@ -37,8 +38,8 @@ public class CompressedAir {
         return FLOWING_COMPRESSED_AIR;
     }
 
-    public static FlowingFluidBlock FlowingCompressedAirBlock(){
-        COMPRESSED_AIR_BLOCK = new FlowingFluidBlock(() -> COMPRESSED_AIR, stdProp);
+    public static VEFlowingFluidBlock FlowingCompressedAirBlock(){
+        COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(() -> COMPRESSED_AIR, stdProp);
         return COMPRESSED_AIR_BLOCK;
     }
 

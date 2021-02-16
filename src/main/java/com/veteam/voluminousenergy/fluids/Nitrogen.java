@@ -46,6 +46,6 @@ public class Nitrogen {
 
 
     public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> NITROGEN, () -> FLOWING_NITROGEN, FluidAttributes.builder(NITROGEN_STILL_TEXTURE, NITROGEN_FLOWING_TEXTURE).viscosity(5))
+            new ForgeFlowingFluid.Properties(() -> NITROGEN, () -> FLOWING_NITROGEN, FluidAttributes.builder(NITROGEN_STILL_TEXTURE, NITROGEN_FLOWING_TEXTURE).viscosity(5).gaseous())
                     .bucket(() -> NITROGEN_BUCKET).block(() -> NITROGEN_BLOCK);
 }

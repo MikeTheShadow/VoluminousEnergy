@@ -46,7 +46,7 @@ public class LightFuel {
 
 
     public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> LIGHT_FUEL, () -> FLOWING_LIGHT_FUEL, FluidAttributes.builder(LIGHT_FUEL_STILL_TEXTURE, LIGHT_FUEL_FLOWING_TEXTURE).viscosity(5))
+            new ForgeFlowingFluid.Properties(() -> LIGHT_FUEL, () -> FLOWING_LIGHT_FUEL, FluidAttributes.builder(LIGHT_FUEL_STILL_TEXTURE, LIGHT_FUEL_FLOWING_TEXTURE).viscosity(5).gaseous())
                     .bucket(() -> LIGHT_FUEL_BUCKET).block(() -> LIGHT_FUEL_BLOCK);
 }
 

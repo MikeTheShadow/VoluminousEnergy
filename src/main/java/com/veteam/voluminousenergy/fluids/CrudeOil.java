@@ -1,9 +1,10 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
+import com.veteam.voluminousenergy.fluids.flowingFluidSource.CrudeOilFlowingFluidSource;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.item.BucketItem;
@@ -21,11 +22,11 @@ public class CrudeOil {
 
     public static FlowingFluid CRUDE_OIL;
     public static FlowingFluid FLOWING_CRUDE_OIL;
-    public static FlowingFluidBlock CRUDE_OIL_BLOCK;
+    public static CrudeOilFlowingFluidBlock CRUDE_OIL_BLOCK;
     public static Item CRUDE_OIL_BUCKET;
 
-    public static FlowingFluid CrudeOilFluid(){
-        CRUDE_OIL = new ForgeFlowingFluid.Source(CrudeOil.properties);
+    public static FlowingFluid CrudeOilFluid(){ // Create custom source here to adjust tick rate for spread speed
+        CRUDE_OIL = new CrudeOilFlowingFluidSource(CrudeOil.properties);
         return CRUDE_OIL;
     }
 
@@ -34,8 +35,8 @@ public class CrudeOil {
         return FLOWING_CRUDE_OIL;
     }
 
-    public static FlowingFluidBlock FlowingCrudeOilBlock(){
-        CRUDE_OIL_BLOCK = new FlowingFluidBlock(() -> CRUDE_OIL, stdProp);
+    public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock(){ // Create a custom block here for block modifications
+        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(() -> CRUDE_OIL, stdProp);
         return CRUDE_OIL_BLOCK;
     }
 
@@ -45,6 +46,6 @@ public class CrudeOil {
     }
 
     public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> CRUDE_OIL, () -> FLOWING_CRUDE_OIL, FluidAttributes.builder(CRUDE_OIL_STILL_TEXTURE, CRUDE_OIL_FLOWING_TEXTURE).viscosity(5))
+            new ForgeFlowingFluid.Properties(() -> CRUDE_OIL, () -> FLOWING_CRUDE_OIL, FluidAttributes.builder(CRUDE_OIL_STILL_TEXTURE, CRUDE_OIL_FLOWING_TEXTURE).density(800).viscosity(10_000))
                     .bucket(() -> CRUDE_OIL_BUCKET).block(() -> CRUDE_OIL_BLOCK);
 }
