@@ -85,14 +85,14 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("battery_box"), 8.0F, 6.0F, 16777215);
+        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("battery_box"), 34.0F, 6.0F, 16777215);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
     @Override
     protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY))
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.BATTERY_BOX_MAX_POWER.get() + " FE"), mouseX, mouseY);
         super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
     }
 

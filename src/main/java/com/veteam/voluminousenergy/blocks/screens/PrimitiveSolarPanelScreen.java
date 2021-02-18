@@ -16,7 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPanelContainer> {
 
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/primitivestirlinggenerator_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private PrimitiveSolarPanelTile tileEntity;
 
     public PrimitiveSolarPanelScreen(PrimitiveSolarPanelContainer container, PlayerInventory inv, ITextComponent name) {
@@ -44,7 +44,7 @@ public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPan
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
         this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getWorld().isDaytime())
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 18, 0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
         this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
     }
 
