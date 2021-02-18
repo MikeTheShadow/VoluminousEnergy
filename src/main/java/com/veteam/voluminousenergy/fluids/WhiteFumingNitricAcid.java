@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.FumingAcidFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class WhiteFumingNitricAcid {
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_WHITE_FUMING_NITRIC_ACID;
-    public static FlowingFluidBlock WHITE_FUMING_NITRIC_ACID_BLOCK;
+    public static FumingAcidFlowingFluidBlock WHITE_FUMING_NITRIC_ACID_BLOCK;
     public static Item WHITE_FUMING_NITRIC_ACID_BUCKET;
 
     public static FlowingFluid WhiteFumingNitricAcidFluid(){
@@ -34,8 +35,8 @@ public class WhiteFumingNitricAcid {
         return FLOWING_WHITE_FUMING_NITRIC_ACID;
     }
 
-    public static FlowingFluidBlock FlowingWhiteFumingNitricAcidBlock(){
-        WHITE_FUMING_NITRIC_ACID_BLOCK = new FlowingFluidBlock(() -> WHITE_FUMING_NITRIC_ACID, stdProp);
+    public static FumingAcidFlowingFluidBlock FlowingWhiteFumingNitricAcidBlock(){
+        WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(() -> WHITE_FUMING_NITRIC_ACID, stdProp);
         return WHITE_FUMING_NITRIC_ACID_BLOCK;
     }
 

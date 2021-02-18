@@ -97,8 +97,10 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
 
-    // General TE settings
+    // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
+    public static ForgeConfigSpec.DoubleValue ACID_DAMAGE;
+    public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
 
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -289,6 +291,10 @@ public class Config {
     private static void setupGeneralSettings(){
         ALLOW_EXTRACTION_FROM_INPUT_TANKS = COMMON_BUILDER.comment("Allow pipes to extract fluids from fluid input tanks. Disabling this means that only fluid outputs can be extracted from Tile Entites")
                 .define("Allow Extraction from Input Tanks", false);
+        ACID_DAMAGE = COMMON_BUILDER.comment("Damage taken from standing in an acid.")
+                .defineInRange("Acid Damage", 3F, 0F, Float.MAX_VALUE);
+        ACID_FIRE_DURATION = COMMON_BUILDER.comment("Duration of fire on an entity for stepping into an acid.")
+                .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
     }
 
     private static void setupWorldGen(){

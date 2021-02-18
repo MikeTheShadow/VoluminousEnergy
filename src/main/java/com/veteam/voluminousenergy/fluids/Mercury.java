@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class Mercury {
 
     public static FlowingFluid MERCURY;
     public static FlowingFluid FLOWING_MERCURY;
-    public static FlowingFluidBlock MERCURY_BLOCK;
+    public static VEFlowingFluidBlock MERCURY_BLOCK;
     public static Item MERCURY_BUCKET;
 
     public static FlowingFluid MercuryFluid(){
@@ -34,8 +35,8 @@ public class Mercury {
         return FLOWING_MERCURY;
     }
 
-    public static FlowingFluidBlock FlowingMercuryBlock(){
-        MERCURY_BLOCK = new FlowingFluidBlock(() -> MERCURY, stdProp);
+    public static VEFlowingFluidBlock FlowingMercuryBlock(){
+        MERCURY_BLOCK = new VEFlowingFluidBlock(() -> MERCURY, stdProp);
         return MERCURY_BLOCK;
     }
 

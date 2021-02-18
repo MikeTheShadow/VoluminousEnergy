@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class Diesel {
 
     public static FlowingFluid DIESEL;
     public static FlowingFluid FLOWING_DIESEL;
-    public static FlowingFluidBlock DIESEL_BLOCK;
+    public static VEFlowingFluidBlock DIESEL_BLOCK;
     public static Item DIESEL_BUCKET;
 
     public static FlowingFluid DieselFluid(){
@@ -34,8 +35,8 @@ public class Diesel {
         return FLOWING_DIESEL;
     }
 
-    public static FlowingFluidBlock FlowingDieselBlock(){
-        DIESEL_BLOCK = new FlowingFluidBlock(() -> DIESEL, stdProp);
+    public static VEFlowingFluidBlock FlowingDieselBlock(){
+        DIESEL_BLOCK = new VEFlowingFluidBlock(() -> DIESEL, stdProp);
         return DIESEL_BLOCK;
     }
 

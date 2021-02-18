@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class DinitrogenTetroxide {
 
     public static FlowingFluid DINITROGEN_TETROXIDE;
     public static FlowingFluid FLOWING_DINITROGEN_TETROXIDE;
-    public static FlowingFluidBlock DINITROGEN_TETROXIDE_BLOCK;
+    public static VEFlowingFluidBlock DINITROGEN_TETROXIDE_BLOCK;
     public static Item DINITROGEN_TETROXIDE_BUCKET;
 
     public static FlowingFluid DinitrogenTetroxideFluid(){
@@ -34,8 +35,8 @@ public class DinitrogenTetroxide {
         return FLOWING_DINITROGEN_TETROXIDE;
     }
 
-    public static FlowingFluidBlock FlowingDinitrogenTetroxideBlock(){
-        DINITROGEN_TETROXIDE_BLOCK = new FlowingFluidBlock(() -> DINITROGEN_TETROXIDE, stdProp);
+    public static VEFlowingFluidBlock FlowingDinitrogenTetroxideBlock(){
+        DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(() -> DINITROGEN_TETROXIDE, stdProp);
         return DINITROGEN_TETROXIDE_BLOCK;
     }
 

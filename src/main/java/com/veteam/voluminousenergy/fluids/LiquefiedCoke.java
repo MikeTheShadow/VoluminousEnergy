@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -21,7 +22,7 @@ public class LiquefiedCoke {
 
     public static FlowingFluid LIQUEFIED_COKE;
     public static FlowingFluid FLOWING_LIQUEFIED_COKE;
-    public static FlowingFluidBlock LIQUEFIED_COKE_BLOCK;
+    public static VEFlowingFluidBlock LIQUEFIED_COKE_BLOCK;
     public static Item LIQUEFIED_COKE_BUCKET;
 
     public static FlowingFluid LiquefiedCokeFluid(){
@@ -34,8 +35,8 @@ public class LiquefiedCoke {
         return FLOWING_LIQUEFIED_COKE;
     }
 
-    public static FlowingFluidBlock FlowingLiquefiedCokeBlock(){
-        LIQUEFIED_COKE_BLOCK = new FlowingFluidBlock(() -> LIQUEFIED_COKE, stdProp);
+    public static VEFlowingFluidBlock FlowingLiquefiedCokeBlock(){
+        LIQUEFIED_COKE_BLOCK = new VEFlowingFluidBlock(() -> LIQUEFIED_COKE, stdProp);
         return LIQUEFIED_COKE_BLOCK;
     }
 
