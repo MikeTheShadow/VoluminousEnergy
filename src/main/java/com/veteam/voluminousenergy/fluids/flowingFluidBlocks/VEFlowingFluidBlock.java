@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.fluids.flowingFluidBlocks;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.Entity;
