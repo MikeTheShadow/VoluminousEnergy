@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -105,6 +106,13 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public List<FluidStack> getFluids() {
         List<FluidStack> f = new ArrayList<>();
         f.add(getOutputFluid());
+        return f;
+    }
+
+    @Override
+    public List<Fluid> getRawFluids() {
+        List<Fluid> f = new ArrayList<>();
+        f.add(getOutputFluid().getRawFluid());
         return f;
     }
 

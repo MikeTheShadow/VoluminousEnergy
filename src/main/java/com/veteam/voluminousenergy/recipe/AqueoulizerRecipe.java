@@ -1,19 +1,25 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -21,6 +27,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
     public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
@@ -32,15 +39,15 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public static ArrayList<Item> ingredientList = new ArrayList<>();
-
-    public static ArrayList<Item> fluidInputList = new ArrayList<>();
+    public ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
+    public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int processTime;
 
-    public ItemStack inputFluid;
-    public ItemStack result;
+    private FluidStack inputFluid;
+    private FluidStack result;
     private int inputAmount;
     private int outputAmount;
 
@@ -59,14 +66,13 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     public int getIngredientCount(){ return ingredientCount;}
 
     @Override
-    public ItemStack getResult() {return result;}
+    @Deprecated
+    // use getOutputFluid instead
+    public ItemStack getResult() {return new ItemStack(this.result.getFluid().getFilledBucket());}
 
     @Override
     public FluidStack getOutputFluid(){
-        if (result.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
-        }
-        return FluidStack.EMPTY;
+        return this.result;
     }
 
     @Override
@@ -75,10 +81,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     }
 
     public FluidStack getInputFluid(){
-        if (inputFluid.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
-        }
-        return FluidStack.EMPTY;
+        return this.inputFluid;
     }
 
     @Override
@@ -95,7 +98,9 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     public boolean canFit(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    @Deprecated
+    // Use getResult instead
+    public ItemStack getRecipeOutput(){return this.getResult();}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -113,9 +118,12 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     @Override
     public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(getInputFluid());
-        return f;
+        return this.fluidInputList;
+    }
+
+    @Override
+    public List<Fluid> getRawFluids(){
+        return this.rawFluidInputList;
     }
 
     @Override
@@ -124,14 +132,14 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public int getOutputAmount() {return outputAmount;}
+    public int getOutputAmount() {return this.outputAmount;}
 
     @Override
     public int getProcessTime() { return processTime; }
 
     @Override
     public int getInputAmount(){
-        return inputAmount;
+        return this.inputAmount;
     }
 
     @Override
@@ -148,25 +156,62 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = JSONUtils.getInt(json,"process_time",200);
 
+
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
+                if(!recipe.ingredientList.contains(stack.getItem())){
+                    recipe.ingredientList.add(stack.getItem());
                 }
             }
 
-            ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"item","minecraft:empty"),':');
+
+            //ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int inputFluidAmount = JSONUtils.getInt(json.get("input_fluid").getAsJsonObject(),"amount",0);
-            recipe.inputFluid = new ItemStack(ForgeRegistries.ITEMS.getValue(bucketResourceLocation));
+            //recipe.inputFluid = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation),inputFluidAmount);
             recipe.inputAmount = inputFluidAmount;
 
-            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(),"item","minecraft:empty"),':');
-            int secondFluidAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"amount",0);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(secondBucketResourceLocation));
-            recipe.outputAmount = secondFluidAmount;
+            // A tag is used instead of a statically defined fluid
+            try{
+                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    VoluminousEnergy.LOGGER.debug("FLUID TAG: " + fluidTagLocation);
+                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    if(tag != null){
+                        for(Fluid fluid : tag.getAllElements()){
+                            FluidStack tempStack = new FluidStack(fluid.getFluid(), inputFluidAmount);
+                            recipe.fluidInputList.add(tempStack);
+                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        }
+                    }else {
+                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    }
 
-            if (!fluidInputList.contains(recipe.inputFluid.getItem())){
-                fluidInputList.add(recipe.inputFluid.getItem());
+                    /*
+                    try{
+                        Objects.requireNonNull(FluidTags.getCollection().get(fluidTagLocation)).getAllElements().forEach(fluid -> {
+                            FluidStack tempStack = new FluidStack(fluid.getFluid(), inputFluidAmount);
+                            VoluminousEnergy.LOGGER.debug("FLUID REG NAME " +  tempStack.getFluid().getRegistryName());
+                            recipe.fluidInputList.add(tempStack);
+                        });
+                    } catch (Exception e){
+                        VoluminousEnergy.LOGGER.debug("FLUID TAG NULL!");
+                    }*/
+
+                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    // In here, a statically defined fluid is used instead of a tag
+                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
+                    recipe.fluidInputList.add(recipe.inputFluid);
+                } else {
+                    throw new JsonSyntaxException("Invalid recipe input for the Aqueoulizer, please check usage of tag and fluid in the json file.");
+                }
+            } catch (Exception e){
+
             }
+
+            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(),"fluid","minecraft:empty"),':');
+            int secondFluidAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"amount",0);
+            recipe.outputAmount = secondFluidAmount;
+            recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),recipe.outputAmount);
 
             return recipe;
         }
@@ -177,8 +222,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             AqueoulizerRecipe recipe = new AqueoulizerRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItemStack();
-            recipe.inputFluid = buffer.readItemStack();
+            recipe.result = buffer.readFluidStack();
+            recipe.inputFluid = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
@@ -189,8 +234,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
         public void write(PacketBuffer buffer, AqueoulizerRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItemStack(recipe.getResult());
-            buffer.writeItemStack(recipe.inputFluid);
+            buffer.writeFluidStack(recipe.result);
+            buffer.writeFluidStack(recipe.inputFluid);
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);

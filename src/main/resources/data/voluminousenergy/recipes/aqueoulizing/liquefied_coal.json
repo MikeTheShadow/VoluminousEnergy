@@ -6,11 +6,11 @@
     "count": 1
   },
   "input_fluid": {
-    "item": "minecraft:water_bucket",
+    "fluid": "minecraft:water",
     "amount": 250
   },
   "result": {
-    "item": "voluminousenergy:liquefied_coal_bucket",
+    "fluid": "voluminousenergy:liquefied_coal",
     "amount": 250
   }
 }

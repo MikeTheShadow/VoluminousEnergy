@@ -8,14 +8,15 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,31 +79,48 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
     @Override
     public void setIngredients(AqueoulizerRecipe recipe, IIngredients ingredients) {
-
+        /*
         List<ItemStack> inputList = new ArrayList<>();
+        List<FluidStack> inputFluid = new ArrayList<>();
         for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
             testStack.setCount(1);
             inputList.add(testStack);
         }
 
-        for (Item item :  AqueoulizerRecipe.fluidInputList){
-            ItemStack bucketStack = new ItemStack(item,1);
-            inputList.add(bucketStack);
+        for (FluidStack fluidStack :  AqueoulizerRecipe.fluidInputList){
+            inputFluid.add(fluidStack);
+        }
+
+        ingredients.setInputs(VanillaTypes.ITEM, inputList);
+        ingredients.setInputs(VanillaTypes.FLUID, inputFluid);
+         */
+
+        // INPUT
+        List<ItemStack> inputList = new ArrayList<>();
+        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
+            testStack.setCount(64);
+            inputList.add(testStack);
         }
         ingredients.setInputs(VanillaTypes.ITEM, inputList);
 
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
+
         // OUTPUT
-        List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getRecipeOutput()); // Normal output
-        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
+        List<FluidStack> outputStacks = new ArrayList<>();
+        outputStacks.add(recipe.getOutputFluid()); // Normal output
+        ingredients.setOutputs(VanillaTypes.FLUID, outputStacks);
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, AqueoulizerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+
         itemStacks.init(0, false, 2, 10);
-        itemStacks.init(1, false, 24, 10);
-        itemStacks.init(2, false, 72,10);
+        fluidStacks.init(1, false, 25, 11);
+        fluidStacks.init(2, false, 73,11);
+
+        // Input
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
@@ -113,13 +131,9 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
 
-        ItemStack inputFluidBucketStack = recipe.inputFluid;
-        itemStacks.set(1, inputFluidBucketStack);
+        fluidStacks.set(1, recipe.fluidInputList);
 
         // Calculate output
-        ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
-        Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, 1); // Create new stack for JEI with correct amount
-        itemStacks.set(2, jeiStack);
+        fluidStacks.set(2, recipe.getOutputFluid());
     }
 }

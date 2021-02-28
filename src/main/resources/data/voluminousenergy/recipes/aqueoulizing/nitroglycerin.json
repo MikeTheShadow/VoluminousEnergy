@@ -6,11 +6,11 @@
     "count": 1
   },
   "input_fluid": {
-    "item": "voluminousenergy:white_fuming_nitric_acid_bucket",
+    "tag": "forge:white_fuming_nitric_acid",
     "amount": 250
   },
   "result": {
-    "item": "voluminousenergy:nitroglycerin_bucket",
+    "fluid": "voluminousenergy:nitroglycerin",
     "amount": 250
   }
 }

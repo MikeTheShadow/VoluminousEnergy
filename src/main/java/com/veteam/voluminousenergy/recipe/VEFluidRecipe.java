@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -69,6 +70,8 @@ public abstract class VEFluidRecipe implements IRecipe<IInventory> {
     public abstract ArrayList<Item>  getIngredientList();
 
     public abstract List<FluidStack> getFluids();
+
+    public abstract List<Fluid> getRawFluids();
 
     public abstract List<ItemStack> getResults();
 
