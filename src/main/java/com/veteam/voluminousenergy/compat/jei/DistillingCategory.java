@@ -8,6 +8,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,52 +82,34 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
 
     @Override
     public void setIngredients(DistillationRecipe recipe, IIngredients ingredients) {
-
-        ArrayList<ItemStack> inputList = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).forEach(itemStack -> {
-            itemStack.setCount(1);
-            inputList.add(itemStack);
-        });
-        ingredients.setInputs(VanillaTypes.ITEM, inputList);
+        // INPUT
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
 
         // OUTPUT
-        List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getRecipeOutput()); // Normal output
-        outputStacks.add(recipe.getSecondResult());
-        outputStacks.add(recipe.getThirdResult());
+        List<FluidStack> outputStacks = new ArrayList<>();
+        outputStacks.add(recipe.getOutputFluid()); // Normal output
+        outputStacks.add(recipe.getSecondFluid());
 
-        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
+        ingredients.setOutputs(VanillaTypes.FLUID, outputStacks);
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getThirdResult());
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, DistillationRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 2,10);
-        itemStacks.init(1, false, 48,10);
-        itemStacks.init(2, false, 72,10);
+        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+
+        fluidStacks.init(0, false, 3,11);
+        fluidStacks.init(1, false, 49,11);
+        fluidStacks.init(2, false, 73,11);
         itemStacks.init(3,false, 96,10);
 
-        // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
-        itemStacks.set(0, inputs);
+        // Input
+        fluidStacks.set(0, recipe.fluidInputList);
 
         // Calculate output
-        ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
-        Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, 1); // Create new stack for JEI with correct amount
-        itemStacks.set(1, jeiStack);
-
-        tempStack = recipe.getSecondResult();
-        outputItem = tempStack.getItem();
-        jeiStack = new ItemStack(outputItem, 1);
-        itemStacks.set(2, jeiStack);
-
-        itemStacks.set(3,recipe.getThirdResult());
-
+        fluidStacks.set(1, recipe.getOutputFluid());
+        fluidStacks.set(2, recipe.getSecondFluid());
+        itemStacks.set(3, recipe.getThirdResult());
     }
 }

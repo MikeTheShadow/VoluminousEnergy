@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -55,14 +56,50 @@ public class RecipeUtil {
         return null;
     }
 
-    /*
-    public static VEFluidRecipe getVEFluidRecipe(World world, FluidStack fluidStack){
+    public static DistillationRecipe getDistillationRecipe(World world, FluidStack inputFluid){
         for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if(recipe instanceof VEFluidRecipe){
-
+            if (recipe instanceof DistillationRecipe){
+                for (FluidStack recipeFluid : ((DistillationRecipe) recipe).fluidInputList){
+                    if(recipeFluid.isFluidEqual(inputFluid)){
+                        return (DistillationRecipe) recipe;
+                    }
+                }
             }
         }
+        return null;
     }
-     */
+
+    public static DistillationRecipe getDistillationRecipeFromResult(World world, FluidStack resultFluid){
+        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof DistillationRecipe){
+                if (((DistillationRecipe) recipe).getOutputFluid().isFluidEqual(resultFluid)){
+                    return (DistillationRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static DistillationRecipe getDistillationRecipeFromSecondResult(World world, FluidStack secondResultFluid){
+        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof DistillationRecipe){
+                if (((DistillationRecipe) recipe).getSecondResult().isFluidEqual(secondResultFluid)){
+                    return (DistillationRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static DistillationRecipe getDistillationRecipeFromThirdResult(World world, ItemStack thirdResultItem){
+        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof DistillationRecipe){
+                if(((DistillationRecipe) recipe).getThirdResult().isItemEqual(thirdResultItem)){
+                    return (DistillationRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
 
 }

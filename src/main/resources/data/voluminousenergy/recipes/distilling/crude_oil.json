@@ -2,15 +2,18 @@
   "type": "voluminousenergy:distilling",
   "process_time": 200,
   "ingredient": {
-    "item": "voluminousenergy:crude_oil_bucket",
+    "item": "voluminousenergy:crude_oil_bucket"
+  },
+  "input_fluid": {
+    "tag": "forge:crude_oil",
     "amount": 250
   },
   "first_result": {
-    "item": "voluminousenergy:light_fuel_bucket",
+    "fluid": "voluminousenergy:light_fuel",
     "amount": 200
   },
   "second_result": {
-    "item": "voluminousenergy:naphtha_bucket",
+    "fluid": "voluminousenergy:naphtha",
     "amount": 50
   },
   "third_result": {

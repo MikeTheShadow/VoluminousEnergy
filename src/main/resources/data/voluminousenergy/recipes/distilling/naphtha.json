@@ -2,15 +2,18 @@
   "type": "voluminousenergy:distilling",
   "process_time": 200,
   "ingredient": {
-    "item": "voluminousenergy:naphtha_bucket",
+    "item": "voluminousenergy:naphtha_bucket"
+  },
+  "input_fluid": {
+    "tag": "forge:naphtha",
     "amount": 500
   },
   "first_result": {
-    "item": "voluminousenergy:gasoline_bucket",
+    "fluid": "voluminousenergy:gasoline",
     "amount": 375
   },
   "second_result": {
-    "item": "voluminousenergy:diesel_bucket",
+    "fluid": "voluminousenergy:diesel",
     "amount": 125
   },
   "third_result": {

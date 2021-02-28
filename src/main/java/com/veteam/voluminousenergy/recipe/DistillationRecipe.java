@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.fluid.Fluid;
@@ -12,6 +14,8 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -22,6 +26,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DistillationRecipe extends VEFluidRecipe {
     public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
@@ -33,14 +38,16 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public static ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
+    public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int processTime;
 
-    private ItemStack inputFluid;
-    private ItemStack result;
-    private ItemStack secondResult;
+    private FluidStack inputFluid;
+    private FluidStack result;
+    private FluidStack secondResult;
     private ItemStack thirdResult;
     private int inputAmount;
     private int outputAmount;
@@ -62,9 +69,9 @@ public class DistillationRecipe extends VEFluidRecipe {
     public int getIngredientCount(){ return ingredientCount;}
 
     @Override
-    public ItemStack getResult() {return result;}
+    public ItemStack getResult() {return new ItemStack(this.result.getFluid().getFilledBucket());}
 
-    public ItemStack getSecondResult(){return secondResult;}
+    public FluidStack getSecondResult(){return this.secondResult;}
 
     @Override
     public int getInputAmount(){ return inputAmount; }
@@ -75,25 +82,15 @@ public class DistillationRecipe extends VEFluidRecipe {
     }
 
     public FluidStack getSecondFluid(){
-        if (secondResult.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) secondResult.getItem()).getFluid(), secondAmount);
-        }
-        return FluidStack.EMPTY;
+        return this.secondResult.copy();
     }
 
     public FluidStack getOutputFluid(){
-        if (result.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) result.getItem()).getFluid(), outputAmount);
-        }
-        return FluidStack.EMPTY;
+        return this.result.copy();
     }
 
-
     public FluidStack getInputFluid(){
-        if (inputFluid.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), inputAmount);
-        }
-        return FluidStack.EMPTY;
+        return this.inputFluid.copy();
     }
 
 
@@ -119,7 +116,8 @@ public class DistillationRecipe extends VEFluidRecipe {
     public boolean canFit(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    @Deprecated
+    public ItemStack getRecipeOutput(){return this.getResult();}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -155,11 +153,7 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     @Override
     public List<ItemStack> getResults() {
-        List<ItemStack> s = new ArrayList<>();
-        s.add(getResult());
-        s.add(getSecondResult());
-        s.add(getThirdResult());
-        return s;
+        return null;
     }
 
     @Override
@@ -190,19 +184,50 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.processTime = JSONUtils.getInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
+                if(!recipe.ingredientList.contains(stack.getItem())){
+                    recipe.ingredientList.add(stack.getItem());
                 }
             }
 
-            ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(),"item","minecraft:empty"),':');
-            int itemAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"amount",0);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(bucketResourceLocation));
-            recipe.outputAmount = itemAmount;
+            int inputFluidAmount = JSONUtils.getInt(json.get("input_fluid").getAsJsonObject(),"amount",0);
+            recipe.inputAmount = inputFluidAmount;
 
-            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(),"item","minecraft:empty"),':');
+            // A tag is used instead of a manually defined fluid
+            try{
+                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    if(tag != null){
+                        for(Fluid fluid : tag.getAllElements()){
+                            FluidStack tempStack = new FluidStack(fluid.getFluid(), recipe.inputAmount);
+                            recipe.fluidInputList.add(tempStack);
+                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        }
+                    } else {
+                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    }
+
+                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    // In here, a manually defined fluid is used instead of a tag
+                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),recipe.inputAmount);
+                    recipe.fluidInputList.add(recipe.inputFluid.copy());
+                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                } else {
+                    throw new JsonSyntaxException("Invalid recipe input for the Centrifugal Agitator, please check usage of tag and fluid in the json file.");
+                }
+            } catch (Exception e){
+
+            }
+
+            ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
+            int firstAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"amount",0);
+            recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstAmount);
+            recipe.outputAmount = firstAmount;
+
+            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int secondFluidAmount = JSONUtils.getInt(json.get("second_result").getAsJsonObject(),"amount",0);
-            recipe.secondResult = new ItemStack(ForgeRegistries.ITEMS.getValue(secondBucketResourceLocation));
+            recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondFluidAmount);
             recipe.secondAmount = secondFluidAmount;
 
             ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("third_result").getAsJsonObject(),"item","minecraft:empty"),':');
@@ -219,11 +244,12 @@ public class DistillationRecipe extends VEFluidRecipe {
             DistillationRecipe recipe = new DistillationRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readFluidStack();
+            recipe.inputFluid = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
-            recipe.secondResult = buffer.readItemStack();
+            recipe.secondResult = buffer.readFluidStack();
             recipe.secondAmount = buffer.readInt();
             return recipe;
         }
@@ -232,11 +258,12 @@ public class DistillationRecipe extends VEFluidRecipe {
         public void write(PacketBuffer buffer, DistillationRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeFluidStack(recipe.result);
+            buffer.writeFluidStack(recipe.inputFluid);
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
-            buffer.writeItemStack(recipe.secondResult);
+            buffer.writeFluidStack(recipe.secondResult);
             buffer.writeInt(recipe.secondAmount);
         }
     }
