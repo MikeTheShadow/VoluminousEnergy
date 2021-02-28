@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,19 @@ public class RecipeUtil {
                         for(Item ingredient : ((AqueoulizerRecipe) recipe).ingredientList){
                             if(ingredient.equals(inputItem.getItem())) return (AqueoulizerRecipe) recipe;
                         }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(World world, FluidStack inputFluid){
+        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CentrifugalAgitatorRecipe){
+                for (FluidStack recipeFluid : ((CentrifugalAgitatorRecipe) recipe).fluidInputList){
+                    if(recipeFluid.isFluidEqual(inputFluid)){
+                        return (CentrifugalAgitatorRecipe) recipe;
                     }
                 }
             }

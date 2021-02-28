@@ -79,21 +79,6 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
     @Override
     public void setIngredients(AqueoulizerRecipe recipe, IIngredients ingredients) {
-        /*
-        List<ItemStack> inputList = new ArrayList<>();
-        List<FluidStack> inputFluid = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
-            testStack.setCount(1);
-            inputList.add(testStack);
-        }
-
-        for (FluidStack fluidStack :  AqueoulizerRecipe.fluidInputList){
-            inputFluid.add(fluidStack);
-        }
-
-        ingredients.setInputs(VanillaTypes.ITEM, inputList);
-        ingredients.setInputs(VanillaTypes.FLUID, inputFluid);
-         */
 
         // INPUT
         List<ItemStack> inputList = new ArrayList<>();

@@ -13,13 +13,11 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -169,11 +167,11 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             //recipe.inputFluid = new FluidStack(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation),inputFluidAmount);
             recipe.inputAmount = inputFluidAmount;
 
-            // A tag is used instead of a statically defined fluid
+            // A tag is used instead of a manually defined fluid
             try{
                 if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
                     ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    VoluminousEnergy.LOGGER.debug("FLUID TAG: " + fluidTagLocation);
+                    //VoluminousEnergy.LOGGER.debug("FLUID TAG: " + fluidTagLocation);
                     ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
                     if(tag != null){
                         for(Fluid fluid : tag.getAllElements()){
@@ -181,26 +179,16 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
                         }
-                    }else {
+                    } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
                     }
 
-                    /*
-                    try{
-                        Objects.requireNonNull(FluidTags.getCollection().get(fluidTagLocation)).getAllElements().forEach(fluid -> {
-                            FluidStack tempStack = new FluidStack(fluid.getFluid(), inputFluidAmount);
-                            VoluminousEnergy.LOGGER.debug("FLUID REG NAME " +  tempStack.getFluid().getRegistryName());
-                            recipe.fluidInputList.add(tempStack);
-                        });
-                    } catch (Exception e){
-                        VoluminousEnergy.LOGGER.debug("FLUID TAG NULL!");
-                    }*/
-
                 } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    // In here, a statically defined fluid is used instead of a tag
+                    // In here, a manually defined fluid is used instead of a tag
                     ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
                     recipe.fluidInputList.add(recipe.inputFluid);
+                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for the Aqueoulizer, please check usage of tag and fluid in the json file.");
                 }
