@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -210,16 +209,13 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readFluidStack();
 
-
             // This is probably not great, but eh, what else am I supposed to do in this situation?
             recipe.inputArraySize = buffer.readInt();
             for (int i = 0; i < recipe.inputArraySize; i++){
                 FluidStack serverFluid = buffer.readFluidStack();
                 recipe.fluidInputList.add(serverFluid.copy());
                 recipe.rawFluidInputList.add(serverFluid.getRawFluid());
-                VoluminousEnergy.LOGGER.debug("READ: " + serverFluid.getRawFluid().getRegistryName());
             }
-
 
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
@@ -237,16 +233,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             buffer.writeInt(recipe.inputArraySize);
             for(int i = 0; i < recipe.inputArraySize; i++){
                 buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
-                VoluminousEnergy.LOGGER.debug("WROTE: " + recipe.fluidInputList.get(i).getRawFluid().getRegistryName());
             }
-
-            /*
-            // Same as the comment in read, not optimal, but necessary
-            buffer.writeInt(recipe.inputArraySize);
-            recipe.fluidInputList.forEach(fluid -> {
-                buffer.writeFluidStack(fluid.copy());
-            });
-             */
 
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);

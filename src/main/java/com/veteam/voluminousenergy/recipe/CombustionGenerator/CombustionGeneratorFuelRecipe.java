@@ -6,8 +6,6 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.util.RecipeConstants;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
@@ -223,19 +221,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
-
-
             // Same as the comment in read, not optimal, but necessary
             buffer.writeInt(recipe.inputArraySize);
             for(int i = 0; i < recipe.inputArraySize; i++){
                 buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
             }
-            /*
-            buffer.writeInt(recipe.inputArraySize);
-            recipe.fluidInputList.forEach(fluid -> {
-                buffer.writeFluidStack(fluid.copy());
-            });
-             */
 
             buffer.writeItemStack(recipe.getResult());
             buffer.writeInt(recipe.volumetricEnergy);

@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -223,7 +222,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
 
-
             // This is probably not great, but eh, what else am I supposed to do in this situation?
             recipe.inputArraySize = buffer.readInt();
             for (int i = 0; i < recipe.inputArraySize; i++){
@@ -231,7 +229,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
                 recipe.fluidInputList.add(serverFluid.copy());
                 recipe.rawFluidInputList.add(serverFluid.getRawFluid());
             }
-
 
             recipe.result = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
@@ -251,13 +248,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             for(int i = 0; i < recipe.inputArraySize; i++){
                 buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
             }
-            /*
-            // Same as the comment in read, not optimal, but necessary
-            buffer.writeInt(recipe.inputArraySize);
-            recipe.fluidInputList.forEach(fluid -> {
-                buffer.writeFluidStack(fluid.copy());
-            });
-             */
 
             buffer.writeFluidStack(recipe.result);
             buffer.writeInt(recipe.inputAmount);

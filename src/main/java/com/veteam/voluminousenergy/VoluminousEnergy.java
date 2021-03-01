@@ -79,7 +79,6 @@ public class VoluminousEnergy {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
         // Config Files to load
-        //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
 
@@ -375,14 +374,6 @@ public class VoluminousEnergy {
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
         }
-        /*
-        @SubscribeEvent
-        public static void onGatherData(GatherDataEvent event){
-            DataGenerator dataGenerator = event.getGenerator();
-            if(event.includeServer()){
-                dataGenerator.addProvider(new VERecipeProvider(dataGenerator));
-            }
-        }
-         */
+
     }
 }

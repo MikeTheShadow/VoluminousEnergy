@@ -4,12 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -180,7 +178,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 FluidStack serverFluid = buffer.readFluidStack();
                 recipe.nsFluidInputList.add(serverFluid.copy());
                 recipe.nsRawFluidInputList.add(serverFluid.getRawFluid());
-                VoluminousEnergy.LOGGER.debug("READ: " + serverFluid.getRawFluid().getRegistryName());
             }
 
             recipe.result = buffer.readItemStack();
@@ -196,7 +193,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             buffer.writeInt(recipe.inputArraySize);
             for(int i = 0; i < recipe.inputArraySize; i++){
                 buffer.writeFluidStack(recipe.nsFluidInputList.get(i).copy());
-                VoluminousEnergy.LOGGER.debug("WROTE: " + recipe.nsFluidInputList.get(i).getRawFluid().getRegistryName());
             }
 
             buffer.writeItemStack(recipe.getResult());
