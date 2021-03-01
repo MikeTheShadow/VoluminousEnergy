@@ -68,7 +68,7 @@ public class VoluminousEnergy {
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register recipes (differed)
+        // Register recipes (deferred)
         VERecipes.RECIPE_SERIALIZERS.register(modEventBus);
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
@@ -375,5 +375,14 @@ public class VoluminousEnergy {
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
         }
+        /*
+        @SubscribeEvent
+        public static void onGatherData(GatherDataEvent event){
+            DataGenerator dataGenerator = event.getGenerator();
+            if(event.includeServer()){
+                dataGenerator.addProvider(new VERecipeProvider(dataGenerator));
+            }
+        }
+         */
     }
 }

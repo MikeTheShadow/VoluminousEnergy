@@ -28,12 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
-    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.CENTRIFUGAL_AGITATING.toString();
-        }
-    };
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_AGITATING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -43,6 +38,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     private final ResourceLocation recipeId;
     private int processTime;
+    private int inputArraySize;
 
     private FluidStack inputFluid;
     private FluidStack result;
@@ -187,6 +183,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), recipe.inputAmount);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                            recipe.inputArraySize = recipe.fluidInputList.size();
                         }
                     } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
@@ -198,6 +195,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),recipe.inputAmount);
                     recipe.fluidInputList.add(recipe.inputFluid.copy());
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for the Centrifugal Agitator, please check usage of tag and fluid in the json file.");
                 }
@@ -224,7 +222,17 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.inputFluid = buffer.readFluidStack();
+
+
+            // This is probably not great, but eh, what else am I supposed to do in this situation?
+            recipe.inputArraySize = buffer.readInt();
+            for (int i = 0; i < recipe.inputArraySize; i++){
+                FluidStack serverFluid = buffer.readFluidStack();
+                recipe.fluidInputList.add(serverFluid.copy());
+                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
+            }
+
+
             recipe.result = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
@@ -238,7 +246,19 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeFluidStack(recipe.inputFluid);
+
+            buffer.writeInt(recipe.inputArraySize);
+            for(int i = 0; i < recipe.inputArraySize; i++){
+                buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
+            }
+            /*
+            // Same as the comment in read, not optimal, but necessary
+            buffer.writeInt(recipe.inputArraySize);
+            recipe.fluidInputList.forEach(fluid -> {
+                buffer.writeFluidStack(fluid.copy());
+            });
+             */
+
             buffer.writeFluidStack(recipe.result);
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);

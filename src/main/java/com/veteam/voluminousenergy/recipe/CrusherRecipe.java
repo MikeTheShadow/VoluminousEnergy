@@ -24,14 +24,7 @@ import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    //public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = IRecipeType.register("crushing");
-
-    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = new IRecipeType<CrusherRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.CRUSHING.toString();
-        }
-    };
+    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING;
 
     public static final Serializer SERIALIZER = new Serializer();
 

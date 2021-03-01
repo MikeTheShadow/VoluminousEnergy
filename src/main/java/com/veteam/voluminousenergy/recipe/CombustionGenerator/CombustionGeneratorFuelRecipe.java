@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.fluid.Fluid;
@@ -30,12 +31,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
-    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.FUEL_COMBUSTION.toString();
-        }
-    };
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -45,6 +41,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
+    private int inputArraySize;
 
     private FluidStack inputFluid;
     private ItemStack result;
@@ -177,6 +174,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                            recipe.inputArraySize = recipe.fluidInputList.size();
                         }
                     } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
@@ -188,6 +186,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
                     recipe.fluidInputList.add(recipe.inputFluid.copy());
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for a Combustible Fuel, please check usage of tag and fluid in the json file.");
                 }
@@ -205,7 +204,15 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.inputFluid = buffer.readFluidStack();
+
+            // This is probably not great, but eh, what else am I supposed to do in this situation?
+            recipe.inputArraySize = buffer.readInt();
+            for (int i = 0; i < recipe.inputArraySize; i++){
+                FluidStack serverFluid = buffer.readFluidStack();
+                recipe.fluidInputList.add(serverFluid.copy());
+                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
+            }
+
             recipe.result = buffer.readItemStack();
             recipe.volumetricEnergy = buffer.readInt();
             return recipe;
@@ -215,7 +222,21 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         public void write(PacketBuffer buffer, CombustionGeneratorFuelRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeFluidStack(recipe.getInputFluid());
+
+
+
+            // Same as the comment in read, not optimal, but necessary
+            buffer.writeInt(recipe.inputArraySize);
+            for(int i = 0; i < recipe.inputArraySize; i++){
+                buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
+            }
+            /*
+            buffer.writeInt(recipe.inputArraySize);
+            recipe.fluidInputList.forEach(fluid -> {
+                buffer.writeFluidStack(fluid.copy());
+            });
+             */
+
             buffer.writeItemStack(recipe.getResult());
             buffer.writeInt(recipe.volumetricEnergy);
         }

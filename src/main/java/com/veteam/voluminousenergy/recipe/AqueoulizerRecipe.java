@@ -28,12 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
-    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.AQUEOULIZING.toString();
-        }
-    };
+    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -43,6 +38,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     private final ResourceLocation recipeId;
     private int processTime;
+    private int inputArraySize;
 
     private FluidStack inputFluid;
     private FluidStack result;
@@ -178,6 +174,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), inputFluidAmount);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                            recipe.inputArraySize = recipe.fluidInputList.size();
                         }
                     } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
@@ -189,6 +186,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
                     recipe.fluidInputList.add(recipe.inputFluid);
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for the Aqueoulizer, please check usage of tag and fluid in the json file.");
                 }
@@ -211,7 +209,18 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readFluidStack();
-            recipe.inputFluid = buffer.readFluidStack();
+
+
+            // This is probably not great, but eh, what else am I supposed to do in this situation?
+            recipe.inputArraySize = buffer.readInt();
+            for (int i = 0; i < recipe.inputArraySize; i++){
+                FluidStack serverFluid = buffer.readFluidStack();
+                recipe.fluidInputList.add(serverFluid.copy());
+                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
+                VoluminousEnergy.LOGGER.debug("READ: " + serverFluid.getRawFluid().getRegistryName());
+            }
+
+
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
@@ -223,7 +232,22 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeFluidStack(recipe.result);
-            buffer.writeFluidStack(recipe.inputFluid);
+
+
+            buffer.writeInt(recipe.inputArraySize);
+            for(int i = 0; i < recipe.inputArraySize; i++){
+                buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
+                VoluminousEnergy.LOGGER.debug("WROTE: " + recipe.fluidInputList.get(i).getRawFluid().getRegistryName());
+            }
+
+            /*
+            // Same as the comment in read, not optimal, but necessary
+            buffer.writeInt(recipe.inputArraySize);
+            recipe.fluidInputList.forEach(fluid -> {
+                buffer.writeFluidStack(fluid.copy());
+            });
+             */
+
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);

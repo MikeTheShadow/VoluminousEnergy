@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.fluid.Fluid;
@@ -32,12 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
-    public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = new IRecipeType<CombustionGeneratorOxidizerRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.OXIDIZING.toString();
-        }
-    };
+    public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -51,6 +47,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     private final ResourceLocation recipeId;
     private int processTime;
+    private int inputArraySize;
 
     private FluidStack inputFluid;
     public ItemStack result;
@@ -145,6 +142,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                             rawFluidInputList.add(tempStack.getRawFluid());
                             recipe.nsFluidInputList.add(tempStack.copy());
                             recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
+                            recipe.inputArraySize = recipe.nsFluidInputList.size();
                         }
                     } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
@@ -158,11 +156,12 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                     rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                     recipe.nsFluidInputList.add(recipe.inputFluid.copy());
                     recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                    recipe.inputArraySize = recipe.nsFluidInputList.size();
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for an Oxidizer, please check usage of tag and fluid in the json file.");
                 }
             } catch (Exception e){
-
+                VoluminousEnergy.LOGGER.debug("NULL! CombustionGeneratorOxidizerRecipe");
             }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
@@ -175,7 +174,15 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.inputFluid = buffer.readFluidStack();
+
+            recipe.inputArraySize = buffer.readInt();
+            for (int i = 0; i < recipe.inputArraySize; i++){
+                FluidStack serverFluid = buffer.readFluidStack();
+                recipe.nsFluidInputList.add(serverFluid.copy());
+                recipe.nsRawFluidInputList.add(serverFluid.getRawFluid());
+                VoluminousEnergy.LOGGER.debug("READ: " + serverFluid.getRawFluid().getRegistryName());
+            }
+
             recipe.result = buffer.readItemStack();
             recipe.processTime = buffer.readInt();
             return recipe;
@@ -185,7 +192,13 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         public void write(PacketBuffer buffer, CombustionGeneratorOxidizerRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeFluidStack(recipe.inputFluid);
+
+            buffer.writeInt(recipe.inputArraySize);
+            for(int i = 0; i < recipe.inputArraySize; i++){
+                buffer.writeFluidStack(recipe.nsFluidInputList.get(i).copy());
+                VoluminousEnergy.LOGGER.debug("WROTE: " + recipe.nsFluidInputList.get(i).getRawFluid().getRegistryName());
+            }
+
             buffer.writeItemStack(recipe.getResult());
             buffer.writeInt(recipe.processTime);
         }
