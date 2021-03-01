@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -15,17 +17,17 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = new IRecipeType<VEFluidRecipe>() {
@@ -37,13 +39,15 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public static ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
+    public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
 
-    public ItemStack inputFluid;
-    public ItemStack result;
+    private FluidStack inputFluid;
+    private ItemStack result;
 
     public CombustionGeneratorFuelRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -66,10 +70,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public ItemStack getResult() {return result;}
 
     public FluidStack getInputFluid(){
-        if (inputFluid.getItem() instanceof BucketItem){
-            return new FluidStack(((BucketItem) inputFluid.getItem()).getFluid(), 1000);
-        }
-        return FluidStack.EMPTY;
+        return this.inputFluid.copy();
     }
 
     @Override
@@ -161,9 +162,37 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.volumetricEnergy = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
+                if(!recipe.ingredientList.contains(stack.getItem())){
+                    recipe.ingredientList.add(stack.getItem());
                 }
+            }
+
+            // A tag is used instead of a manually defined fluid
+            try{
+                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    if(tag != null){
+                        for(Fluid fluid : tag.getAllElements()){
+                            FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
+                            recipe.fluidInputList.add(tempStack);
+                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        }
+                    } else {
+                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    }
+
+                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
+                    // In here, a manually defined fluid is used instead of a tag
+                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
+                    recipe.fluidInputList.add(recipe.inputFluid.copy());
+                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                } else {
+                    throw new JsonSyntaxException("Invalid recipe input for a Combustible Fuel, please check usage of tag and fluid in the json file.");
+                }
+            } catch (Exception e){
+
             }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
@@ -176,6 +205,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
             recipe.ingredient = Ingredient.read(buffer);
             recipe.ingredientCount = buffer.readByte();
+            recipe.inputFluid = buffer.readFluidStack();
             recipe.result = buffer.readItemStack();
             recipe.volumetricEnergy = buffer.readInt();
             return recipe;
@@ -185,6 +215,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         public void write(PacketBuffer buffer, CombustionGeneratorFuelRecipe recipe){
             recipe.ingredient.write(buffer);
             buffer.writeByte(recipe.getIngredientCount());
+            buffer.writeFluidStack(recipe.getInputFluid());
             buffer.writeItemStack(recipe.getResult());
             buffer.writeInt(recipe.volumetricEnergy);
         }

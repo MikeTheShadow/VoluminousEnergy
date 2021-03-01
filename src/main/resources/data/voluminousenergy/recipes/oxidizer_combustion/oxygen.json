@@ -3,5 +3,8 @@
   "process_time": 800,
   "ingredient": {
     "item": "voluminousenergy:oxygen_bucket"
+  },
+  "input_fluid": {
+    "tag": "forge:oxygen"
   }
 }

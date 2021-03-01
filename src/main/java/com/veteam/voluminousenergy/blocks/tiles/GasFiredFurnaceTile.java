@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
@@ -165,7 +166,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 } else if (fuelCounter > 0){
                     fuelCounter--;
                 } else {
-                    VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(new ItemStack (fuelTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1)), world).orElse(null);
+                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(world, fuelTank.getTank().getFluid().copy());
                     if (recipe != null){
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);

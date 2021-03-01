@@ -214,7 +214,7 @@ public class DistillationRecipe extends VEFluidRecipe {
                     recipe.fluidInputList.add(recipe.inputFluid.copy());
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 } else {
-                    throw new JsonSyntaxException("Invalid recipe input for the Centrifugal Agitator, please check usage of tag and fluid in the json file.");
+                    throw new JsonSyntaxException("Invalid recipe input for the Distillation Unit, please check usage of tag and fluid in the json file.");
                 }
             } catch (Exception e){
 

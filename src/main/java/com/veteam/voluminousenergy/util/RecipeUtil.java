@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -96,6 +98,33 @@ public class RecipeUtil {
             if (recipe instanceof DistillationRecipe){
                 if(((DistillationRecipe) recipe).getThirdResult().isItemEqual(thirdResultItem)){
                     return (DistillationRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static CombustionGeneratorFuelRecipe getFuelCombustionRecipe(World world, FluidStack inputFluid){
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CombustionGeneratorFuelRecipe){
+                if (((CombustionGeneratorFuelRecipe) recipe).rawFluidInputList.contains(inputFluid.getRawFluid())){
+                    return (CombustionGeneratorFuelRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isOxidizer(FluidStack inputFluid){
+        if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(inputFluid.getRawFluid())) return true;
+        return false;
+    }
+
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(World world, FluidStack inputFluid){
+        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof CombustionGeneratorOxidizerRecipe){
+                if(((CombustionGeneratorOxidizerRecipe) recipe).nsRawFluidInputList.contains(inputFluid.getRawFluid())){
+                    return (CombustionGeneratorOxidizerRecipe) recipe;
                 }
             }
         }

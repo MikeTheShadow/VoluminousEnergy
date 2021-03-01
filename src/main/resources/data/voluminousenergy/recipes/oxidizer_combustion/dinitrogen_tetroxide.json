@@ -3,5 +3,8 @@
   "process_time": 400,
   "ingredient": {
     "item": "voluminousenergy:dinitrogen_tetroxide_bucket"
+  },
+  "input_fluid": {
+    "tag": "forge:dinitrogen_tetroxide"
   }
 }

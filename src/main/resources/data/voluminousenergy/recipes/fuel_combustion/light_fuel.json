@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:light_fuel_bucket",
     "volumetric_energy": 102400
+  },
+  "input_fluid": {
+    "tag": "forge:light_fuel"
   }
 }
