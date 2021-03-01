@@ -68,10 +68,10 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Oxidizers: ",2,32,0x606060);
         int j = 0;
 
-        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
+        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             j = orderOxidizers(i+1,j);
             slotDrawable.draw(matrixStack,2 + j, 45);
-            int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerList.get(i).getProcessTime();
+            int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
             Minecraft.getInstance().fontRenderer.drawString(matrixStack,fePerTick+"",4+j,64,0x606060);
         }
 
@@ -95,11 +95,12 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         // Setup Oxidizers
         int j = 0;
 
-        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.fluidInputList.size(); i++){
+        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             j = orderOxidizers(i,j);
             fluidStacks.init(i, false, 3 + j, 46);
-            FluidStack oxidizerStack = CombustionGeneratorOxidizerRecipe.fluidInputList.get(i-1);
-            fluidStacks.set(i,oxidizerStack);
+            ArrayList<FluidStack> oxidizerList = new ArrayList<>();
+            oxidizerList.addAll(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
+            fluidStacks.set(i,oxidizerList);
         }
 
         // Should only be one ingredient...

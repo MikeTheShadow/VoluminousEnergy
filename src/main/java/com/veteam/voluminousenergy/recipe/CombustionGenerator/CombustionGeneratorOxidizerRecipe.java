@@ -37,6 +37,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     public static ArrayList<Item> ingredientList = new ArrayList<>();
     public static ArrayList<OxidizerProperties> oxidizerList = new ArrayList<>();
+    public static ArrayList<CombustionGeneratorOxidizerRecipe> oxidizerRecipes = new ArrayList<>();
     public static ArrayList<FluidStack> fluidInputList = new ArrayList<>();
     public static ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
 
@@ -142,6 +143,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                             recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
                             recipe.inputArraySize = recipe.nsFluidInputList.size();
                         }
+                        oxidizerRecipes.add(recipe);
                     } else {
                         VoluminousEnergy.LOGGER.debug("Tag is null!");
                     }
@@ -155,6 +157,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                     recipe.nsFluidInputList.add(recipe.inputFluid.copy());
                     recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
                     recipe.inputArraySize = recipe.nsFluidInputList.size();
+                    oxidizerRecipes.add(recipe);
                 } else {
                     throw new JsonSyntaxException("Invalid recipe input for an Oxidizer, please check usage of tag and fluid in the json file.");
                 }
