@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "quark"
+    }
+  ],
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "item": "quark:tallow_block",
+    "count": 1
+  },
+  "process_time": 1800,
+  "energy_per_tick": 128
+}
