@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:gasoline_bucket",
     "volumetric_energy": 204800
+  },
+  "input_fluid": {
+    "tag": "forge:gasoline"
   }
 }

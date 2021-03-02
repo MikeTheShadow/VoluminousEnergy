@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,14 +23,7 @@ import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    //public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = IRecipeType.register("crushing");
-
-    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = new IRecipeType<CrusherRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.CRUSHING.toString();
-        }
-    };
+    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING;
 
     public static final Serializer SERIALIZER = new Serializer();
 

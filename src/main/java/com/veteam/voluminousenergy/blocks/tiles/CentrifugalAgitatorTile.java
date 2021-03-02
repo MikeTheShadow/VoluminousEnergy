@@ -13,6 +13,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
@@ -111,8 +112,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         if(this.outputFluidStatic(outputTank1,3)) return;
         // Main Fluid Processing occurs here
         if (inputTank != null) {
-            ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
-            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
+            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
+            //lVEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
+            VEFluidRecipe recipe = RecipeUtil.getCentrifugalAgitatorRecipe(world,inputTank.getTank().getFluid().copy());
             if (recipe != null) {
                 if (outputTank0 != null && outputTank1 != null) {
 
@@ -129,16 +131,17 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
                                 // First Output Tank
                                 if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                    outputTank0.getTank().setFluid(recipe.getOutputFluid());
+                                    outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
                                 } else {
-                                    outputTank0.getTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 // Second Output Tank
-                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getFluids().get(1).getRawFluid()) {
-                                    outputTank1.getTank().setFluid(recipe.getFluids().get(1));
+                                CentrifugalAgitatorRecipe centrifugalAgitatorRecipe = (CentrifugalAgitatorRecipe) recipe;
+                                if (outputTank1.getTank().getFluid().getRawFluid() != centrifugalAgitatorRecipe.getSecondFluid().getRawFluid()) {
+                                    outputTank1.getTank().setFluid(centrifugalAgitatorRecipe.getSecondFluid().copy());
                                 } else {
-                                    outputTank1.getTank().fill(recipe.getFluids().get(1), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank1.getTank().fill(centrifugalAgitatorRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 counter--;

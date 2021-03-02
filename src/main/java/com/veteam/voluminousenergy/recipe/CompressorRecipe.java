@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,12 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CompressorRecipe extends VERecipe {
-    public static final IRecipeType<CompressorRecipe> RECIPE_TYPE = new IRecipeType<CompressorRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.COMPRESSING.toString();
-        }
-    };
+    public static final IRecipeType<CompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING;
 
     public static final Serializer SERIALIZER = new Serializer();
 

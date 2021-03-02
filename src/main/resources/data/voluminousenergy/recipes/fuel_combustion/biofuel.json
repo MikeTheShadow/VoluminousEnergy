@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:biofuel_bucket",
     "volumetric_energy": 115200
+  },
+  "input_fluid": {
+    "tag": "forge:biofuel"
   }
 }

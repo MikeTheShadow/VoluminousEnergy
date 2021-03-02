@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:liquefied_coal_bucket",
     "volumetric_energy": 102400
+  },
+  "input_fluid": {
+    "tag": "forge:liquefied_coal"
   }
 }

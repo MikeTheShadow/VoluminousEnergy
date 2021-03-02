@@ -1,10 +1,9 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.item.BucketItem;
@@ -14,8 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
-import static com.veteam.voluminousenergy.fluids.VEFluids.*;
-
 public class Oxygen {
     public static final ResourceLocation OXYGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/oxygen_still");
     public static final ResourceLocation OXYGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/oxygen_flowing");
@@ -24,7 +21,7 @@ public class Oxygen {
 
     public static FlowingFluid OXYGEN;
     public static FlowingFluid FLOWING_OXYGEN;
-    public static FlowingFluidBlock OXYGEN_BLOCK;
+    public static VEFlowingFluidBlock OXYGEN_BLOCK;
     public static Item OXYGEN_BUCKET;
 
     public static FlowingFluid OxygenFluid(){
@@ -37,8 +34,8 @@ public class Oxygen {
         return FLOWING_OXYGEN;
     }
 
-    public static FlowingFluidBlock FlowingOxygenBlock(){
-        OXYGEN_BLOCK = new FlowingFluidBlock(() -> OXYGEN, stdProp);
+    public static VEFlowingFluidBlock FlowingOxygenBlock(){
+        OXYGEN_BLOCK = new VEFlowingFluidBlock(() -> OXYGEN, stdProp);
         return OXYGEN_BLOCK;
     }
 

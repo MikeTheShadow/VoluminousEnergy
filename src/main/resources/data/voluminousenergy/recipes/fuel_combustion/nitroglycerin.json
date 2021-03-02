@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:nitroglycerin_bucket",
     "volumetric_energy": 374400
+  },
+  "input_fluid": {
+    "tag": "forge:nitroglycerin"
   }
 }

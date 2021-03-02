@@ -68,7 +68,7 @@ public class VoluminousEnergy {
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register recipes (differed)
+        // Register recipes (deferred)
         VERecipes.RECIPE_SERIALIZERS.register(modEventBus);
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
@@ -79,7 +79,6 @@ public class VoluminousEnergy {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
         // Config Files to load
-        //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
     }
 
@@ -89,7 +88,7 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
-        VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
+        //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
@@ -100,12 +99,12 @@ public class VoluminousEnergy {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        LOGGER.info("Hello from Voluminous Energy on server start!");
+        //LOGGER.info("Hello from Voluminous Energy on server start!");
     }
 
     @SubscribeEvent
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        VoluminousEnergy.LOGGER.info("Hello from Voluminous Energy about to server start!");
+        //VoluminousEnergy.LOGGER.info("Hello from Voluminous Energy about to server start!");
         server = event.getServer();
     }
 
@@ -116,7 +115,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
-            LOGGER.info("Hello from Voluminous Energy's block registry!");
+            //LOGGER.info("Hello from Voluminous Energy's block registry!");
             //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
@@ -152,7 +151,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent) {
-            LOGGER.info("Hello from Voluminous Energy's item registry!");
+            //LOGGER.info("Hello from Voluminous Energy's item registry!");
 
             //Item Properties
             Item.Properties properties = new Item.Properties();
@@ -256,7 +255,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-            LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
+            //LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
             event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
             event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
@@ -375,5 +374,6 @@ public class VoluminousEnergy {
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
         }
+
     }
 }

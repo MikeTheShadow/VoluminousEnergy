@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "immersiveengineering"
+    }
+  ],
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "immersiveengineering:biodiesel_bucket",
+    "volumetric_energy": 115200
+  },
+  "input_fluid": {
+    "tag": "forge:biodiesel"
+  }
+}

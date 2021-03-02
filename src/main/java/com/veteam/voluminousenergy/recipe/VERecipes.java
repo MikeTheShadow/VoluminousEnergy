@@ -29,13 +29,13 @@ public class VERecipes {
         public static final IRecipeType<PrimitiveBlastFurnaceRecipe> PRIMITIVE_BLAST_FURNACING = registerType(RecipeConstants.PRIMITIVE_BLAST_FURNACING);
         public static final IRecipeType<CrusherRecipe> CRUSHING = registerType(RecipeConstants.CRUSHING);
         public static final IRecipeType<ElectrolyzerRecipe> ELECTROLYZING = registerType(RecipeConstants.ELECTROLYZING);
-        public static final IRecipeType<CentrifugalAgitatorRecipe> CENTRIFUGAL_AGITATING = registerType(RecipeConstants.CENTRIFUGAL_AGITATING);
+        public static final IRecipeType<VEFluidRecipe> CENTRIFUGAL_AGITATING = registerType(RecipeConstants.CENTRIFUGAL_AGITATING);
         public static final IRecipeType<CompressorRecipe> COMPRESSING = registerType(RecipeConstants.COMPRESSING);
         public static final IRecipeType<StirlingGeneratorRecipe> STIRLING = registerType(RecipeConstants.STIRLING);
         public static final IRecipeType<CombustionGeneratorOxidizerRecipe> OXIDIZING = registerType(RecipeConstants.OXIDIZING);
-        public static final IRecipeType<CombustionGeneratorFuelRecipe> FUEL_COMBUSTION = registerType(RecipeConstants.FUEL_COMBUSTION);
-        public static final IRecipeType<AqueoulizerRecipe> AQUEOULIZING = registerType(RecipeConstants.AQUEOULIZING);
-        public static final IRecipeType<DistillationRecipe> DISTILLING = registerType(RecipeConstants.DISTILLING);
+        public static final IRecipeType<VEFluidRecipe> FUEL_COMBUSTION = registerType(RecipeConstants.FUEL_COMBUSTION);
+        public static final IRecipeType<VEFluidRecipe> AQUEOULIZING = registerType(RecipeConstants.AQUEOULIZING);
+        public static final IRecipeType<VEFluidRecipe> DISTILLING = registerType(RecipeConstants.DISTILLING);
     }
 
     public static final RegistryObject<IRecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);

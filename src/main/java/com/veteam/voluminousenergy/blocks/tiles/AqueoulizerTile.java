@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -14,6 +15,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
@@ -77,8 +79,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private final ItemStackHandler inventory = createHandler();
 
     @Override
@@ -109,22 +109,13 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         if(this.outputFluidStatic(outputTank,2)) return;
 
         // Main Fluid Processing occurs here:
-        VEFluidRecipe recipe = null; //= world.getRecipeManager().getRecipe(AqueoulizerRecipe.RECIPE_TYPE, new Inventory(inputItem.copy()),world).orElse(null);
+        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(world, this.inputTank.getTank().getFluid(),inputItem.copy());
         // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
-        AtomicReference<VEFluidRecipe> atomicRecipe = new AtomicReference<>(null);
-        world.getRecipeManager().getRecipes().forEach(r -> {
-            if (r instanceof AqueoulizerRecipe){
-                if (((AqueoulizerRecipe) r).getInputFluid().isFluidEqual(this.inputTank.getTank().getFluid()) && ((AqueoulizerRecipe) r).matches(new Inventory(inputItem), this.world)){
-                    atomicRecipe.set(((AqueoulizerRecipe) r));
-                }
-            }
-        });
-        recipe = atomicRecipe.get();
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
             //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
-            if (inputTank.getTank().getFluid().isFluidEqual(recipe.getFluids().get(0))) {
+            if (recipe.getRawFluids().contains(inputTank.getTank().getFluid().getRawFluid())) {
                 if (outputTank != null) {
 
                     // Tank fluid amount check + tank cap checks
@@ -138,9 +129,9 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
                                 // Output Tank
                                 if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
-                                    outputTank.getTank().setFluid(recipe.getOutputFluid());
+                                    outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
                                 } else {
-                                    outputTank.getTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 inventory.extractItem(3, recipe.ingredientCount,false);
@@ -159,8 +150,10 @@ public class AqueoulizerTile extends VEFluidTileEntity {
                     } else { // If fluid tank empty set counter to zero
                         counter = 0;
                     }
-                }
-            }
+                } else counter = 0;
+            } else counter = 0;
+        } else {
+            counter = 0;
         }
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }

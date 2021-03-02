@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -14,6 +13,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
@@ -162,11 +162,8 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             }
             markDirty();
         } else if ((oxidizerTank != null || !oxidizerTank.getTank().isEmpty()) && (fuelTank != null || !fuelTank.getTank().isEmpty())){
-            ItemStack oxidizerStack = new ItemStack(oxidizerTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
-            ItemStack fuelStack = new ItemStack(fuelTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
-
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
-            VEFluidRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(world, this.oxidizerTank.getTank().getFluid().copy());
+            VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(world, this.fuelTank.getTank().getFluid().copy());
 
             if (oxidizerRecipe != null && fuelRecipe != null){
                 int amount = 250;
@@ -321,7 +318,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
                     ItemStack oxidizerStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
-                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, new Inventory(oxidizerStack), world).orElse(null);
+                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(world, stack.copy());
                     if (oxidizerRecipe == null){
                         return false;
                     }
@@ -390,8 +387,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
-                    ItemStack fuelStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
-                    VEFluidRecipe fuelRecipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(fuelStack), world).orElse(null);
+                    VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(world, stack.copy());
                     if (fuelRecipe == null){
                         return false;
                     }
@@ -441,11 +437,12 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                if(!(stack.getItem() instanceof BucketItem)) return false;
                 if(slot == 0 || slot == 1) {
-                    CombustionGeneratorOxidizerRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    CombustionGeneratorOxidizerRecipe recipe = RecipeUtil.getOxidizerCombustionRecipe(world, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if(slot == 2 || slot == 3) {
-                    VEFluidRecipe recipe = world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE,new Inventory(stack),world).orElse(null);
+                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(world, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 }
                 return false;

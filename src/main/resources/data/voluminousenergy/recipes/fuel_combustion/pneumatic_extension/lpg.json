@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "pneumaticcraft"
+    }
+  ],
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "pneumaticcraft:lpg_bucket",
+    "volumetric_energy": 230400
+  },
+  "input_fluid": {
+    "tag": "forge:lpg"
+  }
+}

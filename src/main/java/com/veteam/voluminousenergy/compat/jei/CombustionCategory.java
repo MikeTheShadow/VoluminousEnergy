@@ -8,21 +8,16 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
@@ -73,10 +68,10 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Oxidizers: ",2,32,0x606060);
         int j = 0;
 
-        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
+        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             j = orderOxidizers(i+1,j);
             slotDrawable.draw(matrixStack,2 + j, 45);
-            int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerList.get(i).getProcessTime();
+            int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
             Minecraft.getInstance().fontRenderer.drawString(matrixStack,fePerTick+"",4+j,64,0x606060);
         }
 
@@ -86,43 +81,30 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        ArrayList<ItemStack> inputsList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
-            testStack.setCount(1);
-            inputsList.add(testStack);
-        }
-
-        for (Item oxi : CombustionGeneratorOxidizerRecipe.ingredientList){
-            ItemStack oxiStack = new ItemStack(oxi,1);
-            inputsList.add(oxiStack);
-        }
-
-        ingredients.setInputs(VanillaTypes.ITEM, inputsList);
+        ArrayList<FluidStack> anthology = new ArrayList<>();
+        anthology.addAll(recipe.fluidInputList);
+        anthology.addAll(CombustionGeneratorOxidizerRecipe.fluidInputList);
+        ingredients.setInputs(VanillaTypes.FLUID, anthology);
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 11, 0);
+        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+        fluidStacks.init(0, false, 12, 1);
 
         // Setup Oxidizers
         int j = 0;
 
-        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerList.size(); i++){
+        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             j = orderOxidizers(i,j);
-            itemStacks.init(i, false, 2 + j, 45);
-            ItemStack oxidizerStack = CombustionGeneratorOxidizerRecipe.oxidizerList.get(i-1).getBucketItem();
-            itemStacks.set(i,oxidizerStack);
+            fluidStacks.init(i, false, 3 + j, 46);
+            ArrayList<FluidStack> oxidizerList = new ArrayList<>();
+            oxidizerList.addAll(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
+            fluidStacks.set(i,oxidizerList);
         }
 
         // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
-        itemStacks.set(0, inputs);
+        fluidStacks.set(0, recipe.fluidInputList);
     }
 
     public int orderOxidizers(int i, int j){

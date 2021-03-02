@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -124,22 +125,25 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
 
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getTankType() == TankType.INPUT) {
-                        ItemStack bucketStack = new ItemStack(stack.getRawFluid().getFilledBucket());
-                        VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(bucketStack), world).orElse(null);
-                        return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
-                    } else {
-                        AtomicBoolean recipeHit = new AtomicBoolean(false);
-                        veRecipe.getIngredientList().forEach(i -> {
-                            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
-                            if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())){ // In theory should never be null
-                                recipeHit.set(true);
-                            }
-                        });
-                        return recipeHit.get() && t.getTank() != null && t.getTank().isFluidValid(stack);
+                try {
+                    for (RelationalTank t : relationalTanks) {
+                        if (t.getTankType() == TankType.INPUT) {
+                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getFilledBucket());
+                            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(bucketStack), world).orElse(null);
+                            return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
+                        } else {
+                            AtomicBoolean recipeHit = new AtomicBoolean(false);
+                            veRecipe.getIngredientList().forEach(i -> {
+                                VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
+                                if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())) { // In theory should never be null
+                                    recipeHit.set(true);
+                                }
+                            });
+                            return recipeHit.get() && t.getTank() != null && t.getTank().isFluidValid(stack);
+                        }
                     }
+                } catch (Exception e){
+                    LOGGER.debug("ERROR with isFluidValid in VEFluidTileEntity");
                 }
                 return false;
             }

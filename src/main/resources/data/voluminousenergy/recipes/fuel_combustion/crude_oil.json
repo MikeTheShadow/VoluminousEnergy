@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:crude_oil_bucket",
     "volumetric_energy": 25600
+  },
+  "input_fluid": {
+    "tag": "forge:crude_oil"
   }
 }

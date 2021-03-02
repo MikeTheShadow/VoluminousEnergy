@@ -3,5 +3,8 @@
   "ingredient": {
     "item": "voluminousenergy:naphtha_bucket",
     "volumetric_energy": 51200
+  },
+  "input_fluid": {
+    "tag": "forge:naphtha"
   }
 }

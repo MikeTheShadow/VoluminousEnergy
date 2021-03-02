@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "pneumaticcraft"
+    }
+  ],
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "pneumaticcraft:biodiesel_bucket",
+    "volumetric_energy": 115200
+  },
+  "input_fluid": {
+    "tag": "forge:biodiesel"
+  }
+}

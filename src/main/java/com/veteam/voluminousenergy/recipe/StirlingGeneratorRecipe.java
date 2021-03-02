@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,12 +24,7 @@ import java.util.Map;
 
 public class StirlingGeneratorRecipe extends VERecipe {
 
-    public static final IRecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = new IRecipeType<StirlingGeneratorRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.STIRLING.toString();
-        }
-    };
+    public static final IRecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING;
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;

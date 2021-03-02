@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,12 +23,7 @@ import java.util.Map;
 
 public class ElectrolyzerRecipe extends VERecipe {
 
-    public static final IRecipeType<ElectrolyzerRecipe> RECIPE_TYPE = new IRecipeType<ElectrolyzerRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.ELECTROLYZING.toString();
-        }
-    };
+    public static final IRecipeType<ElectrolyzerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.ELECTROLYZING;
 
     public static final Serializer SERIALIZER = new Serializer();
 

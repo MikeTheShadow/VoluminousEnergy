@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,12 +20,7 @@ import java.util.ArrayList;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = new IRecipeType<PrimitiveBlastFurnaceRecipe>() {
-        @Override
-        public String toString() {
-            return RecipeConstants.PRIMITIVE_BLAST_FURNACING.toString();
-        }
-    };
+    public static final IRecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
