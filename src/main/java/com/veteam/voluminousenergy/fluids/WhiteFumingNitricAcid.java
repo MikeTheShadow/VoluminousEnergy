@@ -17,7 +17,7 @@ public class WhiteFumingNitricAcid {
     public static final ResourceLocation WFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/wfna_still");
     public static final ResourceLocation WFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/wfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_WHITE_FUMING_NITRIC_ACID;
@@ -40,7 +40,7 @@ public class WhiteFumingNitricAcid {
     }
 
     public static Item WhiteFumingNitricAcidBucket(){
-        WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> WHITE_FUMING_NITRIC_ACID, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> WHITE_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return WHITE_FUMING_NITRIC_ACID_BUCKET;
     }
 

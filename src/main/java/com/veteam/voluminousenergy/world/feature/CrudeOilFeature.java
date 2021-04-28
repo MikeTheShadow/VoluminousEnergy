@@ -11,17 +11,17 @@ import net.minecraft.world.gen.feature.LakesFeature;
 import java.util.Random;
 
 public class CrudeOilFeature extends VELakesFeature {
-    public static CrudeOilFeature INSTANCE = new CrudeOilFeature(BlockStateFeatureConfig.field_236455_a_);
+    public static CrudeOilFeature INSTANCE = new CrudeOilFeature(BlockStateFeatureConfig.CODEC);
 
     public CrudeOilFeature(Codec<BlockStateFeatureConfig> p_i231962_1_) {
         super(p_i231962_1_);
     }
 
     @Override
-    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf){
+    public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf){
 
-        if (worldIn.canBlockSeeSky(pos)) return super.generate(worldIn, generator, rand, pos, conf);
+        if (worldIn.canSeeSky(pos)) return super.place(worldIn, generator, rand, pos, conf);
 
-        return super.generate(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
+        return super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
     }
 }

@@ -18,7 +18,7 @@ public class DinitrogenTetroxide {
     public static final ResourceLocation DINITROGEN_TETROXIDE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/dinitrogen_tetroxide_still");
     public static final ResourceLocation DINITROGEN_TETROXIDE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/dinitrogen_tetroxide_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid DINITROGEN_TETROXIDE;
     public static FlowingFluid FLOWING_DINITROGEN_TETROXIDE;
@@ -41,7 +41,7 @@ public class DinitrogenTetroxide {
     }
 
     public static Item DinitrogenTetroxideBucket(){
-        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(() -> DINITROGEN_TETROXIDE, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(() -> DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return DINITROGEN_TETROXIDE_BUCKET;
     }
 

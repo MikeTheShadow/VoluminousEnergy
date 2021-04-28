@@ -17,7 +17,7 @@ public class LiquefiedCoal {
     public static final ResourceLocation LIQUEFIED_COAL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/liquefied_coal_still");
     public static final ResourceLocation LIQUEFIED_COAL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/liquefied_coal_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid LIQUEFIED_COAL;
     public static FlowingFluid FLOWING_LIQUEFIED_COAL;
@@ -40,7 +40,7 @@ public class LiquefiedCoal {
     }
 
     public static Item LiquefiedCoalBucket(){
-        LIQUEFIED_COAL_BUCKET = new BucketItem(() -> LIQUEFIED_COAL, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        LIQUEFIED_COAL_BUCKET = new BucketItem(() -> LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIQUEFIED_COAL_BUCKET;
     }
 

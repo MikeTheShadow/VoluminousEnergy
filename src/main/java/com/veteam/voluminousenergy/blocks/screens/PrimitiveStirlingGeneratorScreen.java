@@ -39,61 +39,61 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Input slot
-        this.addButton(new SlotBoolButton(tileEntity.slotManager, (this.width/2)-198, this.guiTop, button->{
+        this.addButton(new SlotBoolButton(tileEntity.slotManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.slotManager, (this.width/2)-184, this.guiTop, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.slotManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
-        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE / " + Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
-        } else if (isPointInRegion(79, 53, 18, 18, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+        } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)){
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
-        super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
+    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY){
         //this.font.drawString(this.title.getFormattedText(), 8.0F,6.0F,4210752);
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Stirling Generator",8,6,0xffffff);
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitivestirlinggenerator"), 8.0F, 6.0F, 16777215);
+        this.font.draw(matrixStack, TextUtil.translateVEBlock("primitivestirlinggenerator"), 8.0F, 6.0F, 16777215);
 
         int generationRate;
         if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
         else generationRate = 0;
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + generationRate + " FE/t", 50, 18, 0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + generationRate + " FE/t", 50, 18, 0xffffff);
         //this.font.drawString(matrixStack,this.playerInventory.getDisplayName().getString(),8.0F, (float) (this.ySize - 96 - 12), 4210752);
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Energy: " + container.getEnergy(), 10, 22, 0xffffff);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY){
+    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY){
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize); // Actual Gui
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui
         if (tileEntity != null) {
-            int power = container.powerScreen(49);
+            int power = menu.powerScreen(49);
             int progress = tileEntity.progressCounterPX(14);
             this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
@@ -145,7 +145,7 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
     }
 
     public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        UUID uuid = Minecraft.getInstance().player.getUUID();
         if(uuid != null){
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }

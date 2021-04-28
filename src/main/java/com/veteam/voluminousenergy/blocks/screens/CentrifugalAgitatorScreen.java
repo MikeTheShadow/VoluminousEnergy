@@ -42,125 +42,125 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop -18, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
 
         }));
 
         // Input insert
-        this.addButton(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.guiTop, button->{
+        this.addButton(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.input0sm, (this.width/2)-184, this.guiTop, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.input0sm, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Input Extract
-        this.addButton(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.guiTop+20, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.input1sm, (this.width/2)-184, this.guiTop+20, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.input1sm, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Output Insert
-        this.addButton(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.guiTop+40, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.guiTop+40, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Output Extract
-        this.addButton(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.guiTop+60, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.guiTop+60, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // Input Tank
-        this.addButton(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.guiTop+80, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.guiTop+80, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
 
         // Output Tank 0
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.guiTop+100, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.guiTop+100, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
 
         // Output Tank 1
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.guiTop+120, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.topPos+120, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.guiTop+120, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.topPos+120, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, 16777215);
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+        this.font.draw(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, 16777215);
+        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
-        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
-        if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+        if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isHovering(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
             renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (isPointInRegion(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
+        if (isHovering(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
             String name = tileEntity.getFluidStackFromTank(2).getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(9);
-            int power = container.powerScreen(49);
+            int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -184,7 +184,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
             } catch (Exception e){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
             // Upgrade slot
-            this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+            this.minecraft.getTextureManager().bind(GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         }
 
@@ -253,7 +253,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     }
 
     public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        UUID uuid = Minecraft.getInstance().player.getUUID();
         if(uuid != null){
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }

@@ -72,10 +72,10 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,72,10);
         slotDrawable.draw(matrixStack,96,10);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", -20,32, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getAmounts().get(2) + "", 72, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"mB:", -20,32, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getAmounts().get(2) + "", 72, 32,0x606060);
     }
 
     @Override

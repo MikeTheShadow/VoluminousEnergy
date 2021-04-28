@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class TitaniumIngot extends Item {
     public TitaniumIngot (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("titanium_ingot");
     }

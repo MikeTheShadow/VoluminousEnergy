@@ -18,15 +18,15 @@ public class VEFeatureGeneration {
         if(event.getCategory() != Biome.Category.NETHER && event.getCategory() != Biome.Category.THEEND && Config.ENABLE_VE_FEATURE_GEN.get()){
             VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");
              ConfiguredFeature<?, ?> crudeOilLakeFeature = CrudeOilFeature.INSTANCE
-                     .withConfiguration(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.getDefaultState().getBlockState()))
-                     .withPlacement(Placement.LAVA_LAKE.configure(new ChanceConfig(Config.OIL_LAKE_CHANCE.get())));
+                     .configured(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                     .decorated(Placement.LAVA_LAKE.configured(new ChanceConfig(Config.OIL_LAKE_CHANCE.get())));
 
             ConfiguredFeature<?, ?> crudeOilGeyser = GeyserFeature.INSTANCE
-                    .withConfiguration(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.getDefaultState().getBlockState()))
-                    .withPlacement(Placement.LAVA_LAKE.configure(new ChanceConfig(Config.OIL_GEYSER_CHANCE.get())));
+                    .configured(new BlockStateFeatureConfig(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                    .decorated(Placement.LAVA_LAKE.configured(new ChanceConfig(Config.OIL_GEYSER_CHANCE.get())));
 
-            if(Config.GENERATE_OIL_LAKES.get()) event.getGeneration().withFeature(GenerationStage.Decoration.LAKES, crudeOilLakeFeature);
-            if(Config.GENERATE_OIL_GEYSER.get()) event.getGeneration().withFeature(GenerationStage.Decoration.LAKES, crudeOilGeyser);
+            if(Config.GENERATE_OIL_LAKES.get()) event.getGeneration().addFeature(GenerationStage.Decoration.LAKES, crudeOilLakeFeature);
+            if(Config.GENERATE_OIL_GEYSER.get()) event.getGeneration().addFeature(GenerationStage.Decoration.LAKES, crudeOilGeyser);
         }
     }
 }

@@ -17,7 +17,7 @@ public class Gasoline {
     public static final ResourceLocation GASOLINE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/gasoline_still");
     public static final ResourceLocation GASOLINE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/gasoline_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid GASOLINE;
     public static FlowingFluid FLOWING_GASOLINE;
@@ -40,7 +40,7 @@ public class Gasoline {
     }
 
     public static Item GasolineBucket(){
-        GASOLINE_BUCKET = new BucketItem(() -> GASOLINE, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        GASOLINE_BUCKET = new BucketItem(() -> GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return GASOLINE_BUCKET;
     }
 

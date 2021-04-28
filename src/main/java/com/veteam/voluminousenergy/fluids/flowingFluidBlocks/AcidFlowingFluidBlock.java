@@ -19,9 +19,10 @@ public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-        if (!entityIn.isImmuneToFire() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)entityIn)) {
-            entityIn.attackEntityFrom(DamageSource.IN_FIRE, Config.ACID_DAMAGE.get().floatValue());
-            entityIn.setFire(Config.ACID_FIRE_DURATION.get());
+
+        if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)entityIn)) {
+            entityIn.hurt(DamageSource.IN_FIRE, Config.ACID_DAMAGE.get().floatValue());
+            entityIn.setSecondsOnFire(Config.ACID_FIRE_DURATION.get());
         }
 
         super.onEntityCollision(state, worldIn, pos, entityIn);

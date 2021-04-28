@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class CarbonPlate extends Item {
     public CarbonPlate (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("carbon_plate");
     }

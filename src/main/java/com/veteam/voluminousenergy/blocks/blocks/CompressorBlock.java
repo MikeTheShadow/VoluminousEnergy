@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 
 public class CompressorBlock extends FaceableBlock {
     public CompressorBlock() {
-        super(Properties.create(Material.IRON)
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setLightLevel(l -> 0)
-                .setRequiresTool()
+                .strength(2.0f)
+                .lightLevel(l -> 0)
+                .requiresCorrectToolForDrops()
                 .harvestLevel(Config.COMPRESSOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
@@ -38,11 +38,11 @@ public class CompressorBlock extends FaceableBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new CompressorTile();}
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
-        if(!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
+        if(!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Compressor named container provider is missing!");
             }

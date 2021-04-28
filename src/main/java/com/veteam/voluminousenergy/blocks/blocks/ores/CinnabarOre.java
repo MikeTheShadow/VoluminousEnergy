@@ -12,10 +12,10 @@ import java.util.Random;
 
 public class CinnabarOre extends VEOreBlock {
     public CinnabarOre(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
             .sound(SoundType.STONE)
-            .hardnessAndResistance(2.0f)
-            .setRequiresTool()
+            .strength(2.0f)
+            .requiresCorrectToolForDrops()
             .harvestLevel(Config.CINNABAR_HARVEST_LEVEL.get())
             .harvestTool(ToolType.PICKAXE)
         );
@@ -23,7 +23,7 @@ public class CinnabarOre extends VEOreBlock {
     }
 
     @Override
-    protected int getExperience(Random rand) {
+    protected int xpOnDrop(Random rand) {
         return 0;
     }
 }

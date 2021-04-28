@@ -10,10 +10,10 @@ import java.util.Random;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
             .sound(SoundType.STONE)
-            .hardnessAndResistance(2.0f)
-            .setRequiresTool()
+            .strength(2.0f)
+            .requiresCorrectToolForDrops()
             .harvestLevel(Config.BAUXITE_HARVEST_LEVEL.get())
             .harvestTool(ToolType.PICKAXE)
         );
@@ -21,7 +21,7 @@ public class BauxiteOre extends VEOreBlock {
     }
 
     @Override
-    protected int getExperience(Random rand) {
+    protected int xpOnDrop(Random rand) {
         return 0;
     }
 

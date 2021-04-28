@@ -15,10 +15,10 @@ public class ElectrolyzerInputSlot extends VEInsertSlot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack){
+    public boolean mayPlace(ItemStack stack){
         ItemStack referenceStack = stack.copy();
         referenceStack.setCount(64);
-        ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+        ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
         return checkRecipe(recipe,referenceStack);
     }
 }

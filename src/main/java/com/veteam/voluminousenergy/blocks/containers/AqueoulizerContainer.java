@@ -37,7 +37,7 @@ public class AqueoulizerContainer extends Container {
 
     public AqueoulizerContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player) {
         super(AQUEOULIZER_CONTAINER, id);
-        this.tileEntity = world.getTileEntity(pos);
+        this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
@@ -51,7 +51,7 @@ public class AqueoulizerContainer extends Container {
         });
         layoutPlayerInventorySlots(8, 84);
 
-        trackInt(new IntReferenceHolder() {
+        addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
                 return getEnergy();
@@ -76,8 +76,8 @@ public class AqueoulizerContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos()), playerEntity, VEBlocks.AQUEOULIZER_BLOCK);
+    public boolean stillValid(PlayerEntity playerIn) {
+        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.AQUEOULIZER_BLOCK);
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
@@ -108,25 +108,25 @@ public class AqueoulizerContainer extends Container {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(final PlayerEntity player, final int index) {
+    public ItemStack quickMoveStack(final PlayerEntity player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
-        final Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            final ItemStack slotStack = slot.getStack();
+        final Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.inventorySlots.size() - player.inventory.mainInventory.size();
+            final int containerSlots = this.slots.size() - player.inventory.items.size();
             if (index < containerSlots) {
-                if (!mergeItemStack(slotStack, containerSlots, this.inventorySlots.size(), true)) {
+                if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!mergeItemStack(slotStack, 0, containerSlots, false)) {
+            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
                 return ItemStack.EMPTY;
             }
             if (slotStack.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;

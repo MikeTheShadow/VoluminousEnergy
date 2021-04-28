@@ -41,123 +41,123 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop -18, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
 
         }));
 
         // Oxidizer insert
-        this.addButton(new SlotBoolButton(tileEntity.oxiInSm, (this.width/2)-198, this.guiTop, button->{
+        this.addButton(new SlotBoolButton(tileEntity.oxiInSm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.oxiInSm, (this.width/2)-184, this.guiTop, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.oxiInSm, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Oxidizer Extract
-        this.addButton(new SlotBoolButton(tileEntity.oxiOutSm, (this.width/2)-198, this.guiTop+20, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.oxiOutSm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.oxiOutSm, (this.width/2)-184, this.guiTop+20, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.oxiOutSm, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Fuel Insert
-        this.addButton(new SlotBoolButton(tileEntity.fuelInSm, (this.width/2)-198, this.guiTop+40, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.fuelInSm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.fuelInSm, (this.width/2)-184, this.guiTop+40, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.fuelInSm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Fuel Extract
-        this.addButton(new SlotBoolButton(tileEntity.fuelOutSm, (this.width/2)-198, this.guiTop+40, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.fuelOutSm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.fuelOutSm, (this.width/2)-184, this.guiTop+40, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.fuelOutSm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Oxidizer Tank
-        this.addButton(new TankBoolButton(tileEntity.getOxidizerTank(), (this.width/2)-198, this.guiTop+60, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getOxidizerTank(), (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOxidizerTank(), (this.width/2)-184, this.guiTop+60, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getOxidizerTank(), (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // Fuel Tank
-        this.addButton(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.guiTop+80, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.guiTop+80, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, 16777215);
+        this.font.draw(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, 16777215);
 
         if (tileEntity.getEnergyRate() < 10) {
-            drawString(matrixStack,Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 80, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 80, 18, 0xffffff);
         } else if (tileEntity.getEnergyRate() < 100){
-            drawString(matrixStack,Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 77, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 77, 18, 0xffffff);
         } else {
-            drawString(matrixStack,Minecraft.getInstance().fontRenderer, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
         }
 
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
-        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
-        if (isPointInRegion(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
+        if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (isPointInRegion(119, 18, 12, 50, mouseX, mouseY)){ // Fuel Tank
+        if (isHovering(119, 18, 12, 50, mouseX, mouseY)){ // Fuel Tank
             String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (isPointInRegion(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+        if (isHovering(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
 
-        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(14);
-            int power = container.powerScreen(49);
+            int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -245,7 +245,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     }
 
     public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        UUID uuid = Minecraft.getInstance().player.getUUID();
         if(uuid != null){
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }

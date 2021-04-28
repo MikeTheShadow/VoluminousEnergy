@@ -61,7 +61,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
-        return Minecraft.getInstance().world.getRecipeManager().getRecipes().stream()
+        return Minecraft.getInstance().level.getRecipeManager().getRecipes().stream()
                 .filter(recipe -> recipe.getType() == recipeType)
                 .collect(Collectors.toList());
     }

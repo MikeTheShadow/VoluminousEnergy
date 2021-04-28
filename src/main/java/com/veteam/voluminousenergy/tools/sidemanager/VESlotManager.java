@@ -55,7 +55,7 @@ public class VESlotManager {
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_enabled as: " + enabled);
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_direction as: " + getDirection().getIndex() + " Meaning: " + getDirection());
         nbt.putBoolean(prefix + "_enabled", getStatus());
-        nbt.putInt(prefix+"_direction", getDirection().getIndex());
+        nbt.putInt(prefix+"_direction", getDirection().get3DDataValue());
     }
 
     public void read(CompoundNBT nbt, String prefix){

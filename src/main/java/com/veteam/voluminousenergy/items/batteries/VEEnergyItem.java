@@ -62,7 +62,7 @@ public class VEEnergyItem extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag){
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag){
         if(CapabilityEnergy.ENERGY == null) return; // sanity check
         itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
             ITextComponent textComponent = new StringTextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
@@ -71,8 +71,8 @@ public class VEEnergyItem extends Item {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
-        if (this.isInGroup(itemGroup)){
+    public void fillItemCategory(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
+        if (this.allowdedIn(itemGroup)){
             itemStacks.add(new ItemStack(this));
             ItemStack chargedStack = new ItemStack(this);
             chargedStack.getOrCreateTag().putInt("energy",this.maxEnergy);

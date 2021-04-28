@@ -17,7 +17,7 @@ public class Nitrogen {
     public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_still");
     public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
@@ -40,7 +40,7 @@ public class Nitrogen {
     }
 
     public static Item NitrogenBucket(){
-        NITROGEN_BUCKET = new BucketItem(() -> NITROGEN, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        NITROGEN_BUCKET = new BucketItem(() -> NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return NITROGEN_BUCKET;
     }
 

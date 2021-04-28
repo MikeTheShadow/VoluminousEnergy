@@ -123,7 +123,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         // Extract fluid from the oxidizer tank
         if(oxidizerInput.copy().getItem() == Items.BUCKET && oxidizerOutput.copy() == ItemStack.EMPTY) {
             if(oxidizerTank.getTank().getFluidAmount() >= 1000) {
-                ItemStack bucketStack = new ItemStack(oxidizerTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
+                ItemStack bucketStack = new ItemStack(oxidizerTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 oxidizerTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 inventory.extractItem(0, 1, false);
                 inventory.insertItem(1, bucketStack, false);
@@ -147,7 +147,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         // Extract fluid from the fuel tank
         if(fuelInput.copy().getItem() == Items.BUCKET && fuelOutput.copy() == ItemStack.EMPTY) {
             if(fuelTank.getTank().getFluidAmount() >= 1000) {
-                ItemStack bucketStack = new ItemStack(fuelTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
+                ItemStack bucketStack = new ItemStack(fuelTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 fuelTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 inventory.extractItem(2, 1, false);
                 inventory.insertItem(3, bucketStack, false);
@@ -160,10 +160,10 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                 counter--;
                 energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
             }
-            markDirty();
+            setChanged();
         } else if ((oxidizerTank != null || !oxidizerTank.getTank().isEmpty()) && (fuelTank != null || !fuelTank.getTank().isEmpty())){
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(world, this.oxidizerTank.getTank().getFluid().copy());
-            VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(world, this.fuelTank.getTank().getFluid().copy());
+            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, this.oxidizerTank.getTank().getFluid().copy());
+            VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(level, this.fuelTank.getTank().getFluid().copy());
 
             if (oxidizerRecipe != null && fuelRecipe != null){
                 int amount = 250;
@@ -177,7 +177,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                     }
                     energyRate = fuelRecipe.getProcessTime()/oxidizerRecipe.getProcessTime(); // Process time in fuel recipe is really volumetric energy
                     length = counter;
-                    markDirty();
+                    setChanged();
                 }
             }
         }
@@ -198,7 +198,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -218,7 +218,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
      */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -237,12 +237,12 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         oxidizerTank.readGuiProperties(tag,"oxidizer_tank_gui");
         fuelTank.readGuiProperties(tag, "fuel_tank_gui");
 
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -268,24 +268,24 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         oxidizerTank.writeGuiProperties(tag, "oxidizer_tank_gui");
         fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -317,8 +317,8 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
-                    ItemStack oxidizerStack = new ItemStack(stack.getFluid().getFilledBucket(),1);
-                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(world, stack.copy());
+                    ItemStack oxidizerStack = new ItemStack(stack.getFluid().getBucket(),1);
+                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, stack.copy());
                     if (oxidizerRecipe == null){
                         return false;
                     }
@@ -387,7 +387,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 if (tank == 0) {
-                    VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(world, stack.copy());
+                    VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(level, stack.copy());
                     if (fuelRecipe == null){
                         return false;
                     }
@@ -432,17 +432,17 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         return new ItemStackHandler(4) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if(!(stack.getItem() instanceof BucketItem)) return false;
                 if(slot == 0 || slot == 1) {
-                    CombustionGeneratorOxidizerRecipe recipe = RecipeUtil.getOxidizerCombustionRecipe(world, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
+                    CombustionGeneratorOxidizerRecipe recipe = RecipeUtil.getOxidizerCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if(slot == 2 || slot == 3) {
-                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(world, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
+                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(),1000));
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 }
                 return false;
@@ -466,22 +466,22 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null)
                 return handler.cast();
-            if(oxiInSm.getStatus() && oxiInSm.getDirection().getIndex() == side.getIndex())
+            if(oxiInSm.getStatus() && oxiInSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return oxiInHandler.cast();
-            else if(oxiOutSm.getStatus() && oxiOutSm.getDirection().getIndex() == side.getIndex())
+            else if(oxiOutSm.getStatus() && oxiOutSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return oxiOutHandler.cast();
-            else if(fuelInSm.getStatus() && fuelInSm.getDirection().getIndex() == side.getIndex())
+            else if(fuelInSm.getStatus() && fuelInSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return fuelInHandler.cast();
-            else if(fuelOutSm.getStatus() && fuelOutSm.getDirection().getIndex() == side.getIndex())
+            else if(fuelOutSm.getStatus() && fuelOutSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return fuelOutHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(oxidizerTank.getSideStatus() && oxidizerTank.getSideDirection().getIndex() == side.getIndex())
+            if(oxidizerTank.getSideStatus() && oxidizerTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return oxidizerHandler.cast();
-            if(fuelTank.getSideStatus() && fuelTank.getSideDirection().getIndex() == side.getIndex())
+            if(fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return fuelHandler.cast();
         }
         return super.getCapability(cap, side);
@@ -495,7 +495,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new CombustionGeneratorContainer(i, world, pos, playerInventory, playerEntity);
+        return new CombustionGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
@@ -581,11 +581,11 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(oxiInSm.getStatus(), oxiInSm.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(oxiOutSm.getStatus(), oxiOutSm.getSlotNum()));
@@ -595,21 +595,21 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiInSm.getDirection().getIndex(),oxiInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiOutSm.getDirection().getIndex(),oxiOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelInSm.getDirection().getIndex(),fuelInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelOutSm.getDirection().getIndex(),fuelOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(oxidizerTank.getSideDirection().getIndex(),oxidizerTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().getIndex(),fuelTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiInSm.getDirection().get3DDataValue(),oxiInSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiOutSm.getDirection().get3DDataValue(),oxiOutSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelInSm.getDirection().get3DDataValue(),fuelInSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelOutSm.getDirection().get3DDataValue(),fuelOutSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(oxidizerTank.getSideDirection().get3DDataValue(),oxidizerTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(),fuelTank.getId()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -621,29 +621,29 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(oxiInSm.getDirection().getIndex(),oxiInSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(oxiOutSm.getDirection().getIndex(),oxiOutSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(fuelInSm.getDirection().getIndex(),fuelInSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(fuelOutSm.getDirection().getIndex(),fuelOutSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(oxidizerTank.getSideDirection().getIndex(), oxidizerTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fuelTank.getSideDirection().getIndex(), fuelTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(oxiInSm.getDirection().get3DDataValue(),oxiInSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(oxiOutSm.getDirection().get3DDataValue(),oxiOutSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(fuelInSm.getDirection().get3DDataValue(),fuelInSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(fuelOutSm.getDirection().get3DDataValue(),fuelOutSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(oxidizerTank.getSideDirection().get3DDataValue(), oxidizerTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(), fuelTank.getId()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof CombustionGeneratorContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof CombustionGeneratorContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

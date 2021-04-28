@@ -18,8 +18,8 @@ public class VEOutputSlot extends SlotItemHandler {
     users from putting anything in the output slot
      */
 
-    @Override
-    public boolean isItemValid(@Nullable ItemStack stack){
+    @Override // mayPlace, as in, you may place it if it's valid. (MCP: isItemValid)
+    public boolean mayPlace(@Nullable ItemStack stack){
         return false;
     }
 }

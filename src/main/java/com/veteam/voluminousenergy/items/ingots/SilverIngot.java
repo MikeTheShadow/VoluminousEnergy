@@ -7,8 +7,8 @@ import net.minecraft.item.Item;
 public class SilverIngot extends Item {
     public SilverIngot (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("silver_ingot");
     }

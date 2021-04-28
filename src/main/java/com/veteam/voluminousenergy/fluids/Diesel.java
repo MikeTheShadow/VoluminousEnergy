@@ -17,7 +17,7 @@ public class Diesel {
     public static final ResourceLocation DIESEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/diesel_still");
     public static final ResourceLocation DIESEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/diesel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid DIESEL;
     public static FlowingFluid FLOWING_DIESEL;
@@ -40,7 +40,7 @@ public class Diesel {
     }
 
     public static Item DieselBucket(){
-        DIESEL_BUCKET = new BucketItem(() -> DIESEL, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        DIESEL_BUCKET = new BucketItem(() -> DIESEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return DIESEL_BUCKET;
     }
 

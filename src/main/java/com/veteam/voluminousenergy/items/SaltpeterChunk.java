@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class SaltpeterChunk extends Item {
     public SaltpeterChunk (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("saltpeterchunk");
     }

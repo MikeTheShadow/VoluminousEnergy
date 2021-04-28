@@ -87,7 +87,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
             if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) { // TODO: Consider 2 slot system like the Combustion Generator/Distillation Unit
                 if (slotStack.getItem() == Items.BUCKET && fluidTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
-                    ItemStack bucketStack = new ItemStack(fluidTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
+                    ItemStack bucketStack = new ItemStack(fluidTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                     fluidTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                     h.extractItem(0, 1, false);
                     h.insertItem(0, bucketStack, false);
@@ -96,7 +96,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
             if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 fluidPumpMethod();
-                markDirty();
+                setChanged();
             }
         });
     }
@@ -109,7 +109,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -129,11 +129,11 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         slotManager.read(tag, "slot_manager");
         fluidTank.readGuiProperties(tag, "tank_gui");
 
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag){
+    public CompoundNBT save(CompoundNBT tag){
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -156,25 +156,25 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         slotManager.write(tag, "slot_manager");
         fluidTank.writeGuiProperties(tag, "tank_gui");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -236,7 +236,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         return new ItemStackHandler(1) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
@@ -279,7 +279,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new PumpContainer(i, world, pos, playerInventory, playerEntity);
+        return new PumpContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getAirTankFluid(){
@@ -297,38 +297,38 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             lZ = -22;
 
             try{
-                this.pumpingFluid = this.world.getBlockState(this.getPos().add(0, -1, 0)).getFluidState().getFluid();
+                this.pumpingFluid = this.level.getBlockState(this.getBlockPos().offset(0, -1, 0)).getFluidState().getType();
                 initDone = true;
             } catch (Exception e){
                 return;
             }
         }
 
-        if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isEquivalentTo(Fluids.EMPTY) || this.pumpingFluid == null){ // Sanity check to prevent mass destruction
+        if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isSame(Fluids.EMPTY) || this.pumpingFluid == null){ // Sanity check to prevent mass destruction
             initDone = false;
             return;
         }
 
         if (lX < 22){
             lX++;
-            if(this.pumpingFluid.isEquivalentTo(this.world.getBlockState(this.getPos().add(lX,lY,lZ)).getFluidState().getFluid())){
-                this.world.setBlockState(this.getPos().add(lX,lY,lZ),Blocks.AIR.getDefaultState());
+            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState()); // setBlockAndUpdate is the replacement for setBlockState in MCP mappings. This is obvious because of the flag of 3.
                 addFluidToTank();
             }
 
         } else if (lX >= 22 && lZ < 22){
             lZ++;
             lX = -22;
-            if(this.pumpingFluid.isEquivalentTo(this.world.getBlockState(this.getPos().add(lX,lY,lZ)).getFluidState().getFluid())){
-                this.world.setBlockState(this.getPos().add(lX,lY,lZ),Blocks.AIR.getDefaultState());
+            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
                 addFluidToTank();
             }
-        } else if (lX >= 22 && lZ >= 22 && this.getPos().add(0,lY,0).getY() > 1){
+        } else if (lX >= 22 && lZ >= 22 && this.getBlockPos().offset(0,lY,0).getY() > 1){
             lY--;
             lX = -22;
             lZ = -22;
-            if(this.pumpingFluid.isEquivalentTo(this.world.getBlockState(this.getPos().add(lX,lY,lZ)).getFluidState().getFluid())){
-                this.world.setBlockState(this.getPos().add(lX,lY,lZ),Blocks.AIR.getDefaultState());
+            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
                 addFluidToTank();
             }
         }
@@ -356,27 +356,27 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fluidTank.getSideStatus(), fluidTank.getId()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fluidTank.getSideDirection().getIndex(), fluidTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fluidTank.getSideDirection().get3DDataValue(), fluidTank.getId()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -384,25 +384,25 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(fluidTank.getSideStatus(), fluidTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fluidTank.getSideDirection().getIndex(), fluidTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fluidTank.getSideDirection().get3DDataValue(), fluidTank.getId()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof PumpContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof PumpContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

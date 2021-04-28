@@ -60,7 +60,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
                 energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
-            markDirty();
+            setChanged();
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
@@ -77,7 +77,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
                         counter = 4000;
                     }
                     length = counter;
-                    markDirty();
+                    setChanged();
                 }
             });
         }
@@ -93,7 +93,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -109,17 +109,17 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
         slotManager.read(tag, "slot_manager");
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
@@ -129,14 +129,14 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             tag.put("energy",compound);
         });
         slotManager.write(tag, "slot_manager");
-        return super.write(tag);
+        return super.save(tag);
     }
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(1) {
             @Override
             protected void onContentsChanged(int slot){
-                markDirty();
+                setChanged();
             }
 
             @Override
@@ -178,7 +178,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null) return handler.cast();
-            if(slotManager.getStatus() && slotManager.getDirection().getIndex() == side.getIndex())
+            if(slotManager.getStatus() && slotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return handler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY){
@@ -195,7 +195,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     @Nullable
     @Override
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity){
-        return new PrimitiveStirlingGeneratorContainer(i, world, pos, playerInventory, playerEntity);
+        return new PrimitiveStirlingGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
 
@@ -234,50 +234,50 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
 
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
                      }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof PrimitiveStirlingGeneratorContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof PrimitiveStirlingGeneratorContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

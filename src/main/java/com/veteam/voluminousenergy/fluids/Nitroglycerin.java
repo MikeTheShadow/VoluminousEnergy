@@ -17,7 +17,7 @@ public class Nitroglycerin {
     public static final ResourceLocation NITROGLYCERIN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitroglycerin_still");
     public static final ResourceLocation NITROGLYCERIN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitroglycerin_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid NITROGLYCERIN;
     public static FlowingFluid FLOWING_NITROGLYCERIN;
@@ -40,7 +40,7 @@ public class Nitroglycerin {
     }
 
     public static Item NitroglycerinBucket(){
-        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return NITROGLYCERIN_BUCKET;
     }
 

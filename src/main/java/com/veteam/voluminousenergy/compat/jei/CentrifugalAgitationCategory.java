@@ -70,10 +70,10 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         slotDrawable.draw(matrixStack,48,10);
         slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", -20,32, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getSecondAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"mB:", -20,32, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getSecondAmount() + "", 72, 32,0x606060);
     }
 
     @Override

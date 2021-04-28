@@ -16,8 +16,8 @@ public class VESolarTile extends VoluminousTileEntity{
     * amplitude, which of course is Noon/Zenith. We do manipulate the curve a bit to make it more "reasonable"
     */
     protected float solarIntensity(){
-        if(world == null) return 0;
-        float celestialAngle = this.world.getCelestialAngleRadians(1.0f); // Zenith = 0rad
+        if(level == null) return 0;
+        float celestialAngle = this.level.getSunAngle(1.0f); // Zenith = 0rad
 
         if(celestialAngle > Math.PI) celestialAngle = (2 * ((float) Math.PI) - celestialAngle);
 
@@ -30,15 +30,15 @@ public class VESolarTile extends VoluminousTileEntity{
         }
 
         if(intensity > 0){
-            if(this.world.isRaining()) return intensity * 0.6f;
-            if(this.world.isThundering()) return intensity * 0.2f;
+            if(this.level.isRaining()) return intensity * 0.6f;
+            if(this.level.isThundering()) return intensity * 0.2f;
         }
 
         return intensity;
     }
 
     protected boolean isClear(){
-        if (world == null) return false;
-        return world.canBlockSeeSky(new BlockPos(this.getPos().getX(), this.getPos().getY()+1, this.getPos().getZ()));
+        if (level == null) return false;
+        return level.canSeeSky(new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY()+1, this.getBlockPos().getZ()));
     }
 }

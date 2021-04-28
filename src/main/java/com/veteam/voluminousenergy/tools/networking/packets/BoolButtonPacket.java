@@ -42,12 +42,12 @@ public class BoolButtonPacket {
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
-                Container clientContainer = Minecraft.getInstance().player.openContainer;
+                Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 //VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 break;
             default:
-                Container serverContainer = (contextSupplier.get().getSender()).openContainer;
+                Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
         }
 

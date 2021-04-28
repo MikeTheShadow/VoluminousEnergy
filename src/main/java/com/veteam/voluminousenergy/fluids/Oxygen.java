@@ -17,7 +17,7 @@ public class Oxygen {
     public static final ResourceLocation OXYGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/oxygen_still");
     public static final ResourceLocation OXYGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/oxygen_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid OXYGEN;
     public static FlowingFluid FLOWING_OXYGEN;
@@ -40,7 +40,7 @@ public class Oxygen {
     }
 
     public static Item OxygenBucket(){
-        OXYGEN_BUCKET = new BucketItem(() -> OXYGEN, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        OXYGEN_BUCKET = new BucketItem(() -> OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return OXYGEN_BUCKET;
     }
 

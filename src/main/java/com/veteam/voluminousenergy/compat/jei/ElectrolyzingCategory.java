@@ -74,17 +74,17 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,26,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,26,0x606060);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,44,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,44,0x606060);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",74,62,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,62,0x606060);
         }
 
     }
@@ -92,21 +92,21 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     @Override
     public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
+                .map(ingredient -> Arrays.asList(ingredient.getItems()))
                 .collect(Collectors.toList()));
 
 
         // STACK needs to be 64 for recipes that require more than 1 of the input item
         // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
         // to save CPU cycles... but this works.
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
+        for (ItemStack testStack : recipe.getIngredient().getItems()){
             testStack.setCount(64);
             ingredients.setInput(VanillaTypes.ITEM, testStack);
         }
 
         // OUTPUT
         List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getRecipeOutput()); // Normal output
+        outputStacks.add(recipe.getResultItem()); // Normal output
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){ // Check RNG 0 if it's not air
             outputStacks.add(recipe.getRngItemSlot0());
@@ -131,7 +131,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
+        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
             ItemStack stack = s.copy();
             stack.setCount(recipe.getIngredientCount());
             return stack;
@@ -139,7 +139,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         itemStacks.set(0, inputs);
 
         // Calculate output
-        ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
+        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
         Item outputItem = tempStack.getItem();
         ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
         itemStacks.set(1, jeiStack);

@@ -72,9 +72,9 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         slotDrawable.draw(matrixStack,24,10);
         slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"mB:", 2, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getInputAmount() + "", 24, 32,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getOutputAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"mB:", 2, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 24, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 72, 32,0x606060);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
         // INPUT
         List<ItemStack> inputList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
+        for (ItemStack testStack : recipe.getIngredient().getItems()){
             testStack.setCount(64);
             inputList.add(testStack);
         }
@@ -109,7 +109,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
+        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
             ItemStack stack = s.copy();
             stack.setCount(recipe.getIngredientCount());
             return stack;

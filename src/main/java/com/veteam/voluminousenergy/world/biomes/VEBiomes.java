@@ -18,7 +18,7 @@ public class VEBiomes {
 
     public static void prepareRegistration(RegistryEvent.Register<Biome> event, VEBiome biome, BiomeManager.BiomeType biomeType, int weight, BiomeDictionary.Type... dictionaryType) {
         VEBiomes.registerBiome(biome, event);
-        RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(VEBiomes.veBiomeList.get(veBiomeList.size()-1))));
+        RegistryKey<Biome> registryKey = RegistryKey.create(Registry.BIOME_REGISTRY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(VEBiomes.veBiomeList.get(veBiomeList.size()-1))));
         BiomeDictionary.addTypes(registryKey, dictionaryType);
         if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(biomeType, new BiomeManager.BiomeEntry(registryKey, weight));
     }

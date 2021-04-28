@@ -29,7 +29,7 @@ public class VEBiome {
     protected void configureMobSpawns(MobSpawnInfo.Builder builder) {}
 
     protected void configureDefaultMobSpawns(MobSpawnInfo.Builder builder) {
-        builder.isValidSpawnBiomeForPlayer();
+        builder.setPlayerCanSpawn();
     }
 
     public Biome build() {
@@ -38,13 +38,13 @@ public class VEBiome {
         // Configure the biome generation
         BiomeGenerationSettings.Builder biomeGenBuilder = new BiomeGenerationSettings.Builder();
         this.configureGeneration(biomeGenBuilder);
-        biomeBuilder.withGenerationSettings(biomeGenBuilder.build());
+        biomeBuilder.generationSettings(biomeGenBuilder.build());
 
         // Configure mob spawning
         MobSpawnInfo.Builder mobSpawnBuilder = new MobSpawnInfo.Builder();
         this.configureDefaultMobSpawns(mobSpawnBuilder);
         this.configureMobSpawns(mobSpawnBuilder);
-        biomeBuilder.withMobSpawnSettings(mobSpawnBuilder.copy());
+        biomeBuilder.mobSpawnSettings(mobSpawnBuilder.build());
 
         // Configure and build the biome
         this.configureBiome(biomeBuilder);
@@ -66,6 +66,6 @@ public class VEBiome {
     public static int calculateColour(float temperature) {
         float var = temperature / 3.0F;
         var = MathHelper.clamp(var, -1.0F, 1.0F);
-        return MathHelper.hsvToRGB(0.62222224F - var * 0.05F, 0.5F + var * 0.1F, 1.0F);
+        return MathHelper.hsvToRgb(0.62222224F - var * 0.05F, 0.5F + var * 0.1F, 1.0F);
     }
 }

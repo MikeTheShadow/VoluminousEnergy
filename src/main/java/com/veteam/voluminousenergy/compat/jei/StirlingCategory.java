@@ -66,21 +66,21 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     @Override
     public void draw(StirlingGeneratorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,11,0);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getProcessTime() + " t",-1,28, 0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getProcessTime()/20 + " sec",-1,36, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime() + " t",-1,28, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime()/20 + " sec",-1,36, 0x606060);
     }
 
     @Override
     public void setIngredients(StirlingGeneratorRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
+                .map(ingredient -> Arrays.asList(ingredient.getItems()))
                 .collect(Collectors.toList()));
 
         // STACK needs to be 64 for recipes that require more than 1 of the input item
         // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
         // to save CPU cycles... but this works.
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
+        for (ItemStack testStack : recipe.getIngredient().getItems()){
             testStack.setCount(64);
             ingredients.setInput(VanillaTypes.ITEM, testStack);
         }
@@ -93,7 +93,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
+        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
             ItemStack stack = s.copy();
             stack.setCount(recipe.getIngredientCount());
             return stack;

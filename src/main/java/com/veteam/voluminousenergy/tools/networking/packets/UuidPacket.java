@@ -31,18 +31,18 @@ public class UuidPacket {
 
     public static UuidPacket fromBytes(PacketBuffer buffer){
         UuidPacket packet = new UuidPacket();
-        packet.uuid = buffer.readUniqueId();
+        packet.uuid = buffer.readUUID();
         packet.connection = buffer.readBoolean();
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer){
-        buffer.writeUniqueId(this.uuid);
+        buffer.writeUUID(this.uuid);
         buffer.writeBoolean(this.connection);
     }
 
     public static void handle(UuidPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        Container serverContainer = (contextSupplier.get().getSender()).openContainer;
+        Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
         contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
 
     }

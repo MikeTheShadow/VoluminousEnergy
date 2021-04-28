@@ -70,19 +70,19 @@ public class ElectrolyzerRecipe extends VERecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public boolean canFit(int width, int height){return true;}
+    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    public ItemStack getResultItem(){return result;}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -110,7 +110,7 @@ public class ElectrolyzerRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK);
     }
 
@@ -119,49 +119,49 @@ public class ElectrolyzerRecipe extends VERecipe {
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
         @Override
-        public ElectrolyzerRecipe read(ResourceLocation recipeId, JsonObject json){
+        public ElectrolyzerRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             ElectrolyzerRecipe recipe = new ElectrolyzerRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = JSONUtils.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
             }
 
             // Main Output Slot
-            ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
-            int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"count",1);
-            boolean bucketNeeded = JSONUtils.getBoolean(json.get("result").getAsJsonObject(),"consumes_bucket",false);
+            ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
+            int itemAmount = JSONUtils.getAsInt(json.get("result").getAsJsonObject(),"count",1);
+            boolean bucketNeeded = JSONUtils.getAsBoolean(json.get("result").getAsJsonObject(),"consumes_bucket",false);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
             recipe.usesBucket = bucketNeeded;
 
             // First RNG Slot, RNG 0
-            ResourceLocation rngResourceLocation0 = ResourceLocation.create(JSONUtils.getString(json.get("rng_slot_0").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount0 = JSONUtils.getInt(json.get("rng_slot_0").getAsJsonObject(),"count",0);
-            float rngChance0 = JSONUtils.getFloat(json.get("rng_slot_0").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation0 = ResourceLocation.of(JSONUtils.getAsString(json.get("rng_slot_0").getAsJsonObject(),"item","minecraft:air"),':');
+            int rngAmount0 = JSONUtils.getAsInt(json.get("rng_slot_0").getAsJsonObject(),"count",0);
+            float rngChance0 = JSONUtils.getAsFloat(json.get("rng_slot_0").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult0 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation0));
             recipe.outputRngAmount0 = rngAmount0;
             recipe.chance0 = rngChance0;
 
             //Second RNG Slot, RNG 1
-            ResourceLocation rngResourceLocation1 = ResourceLocation.create(JSONUtils.getString(json.get("rng_slot_1").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount1 = JSONUtils.getInt(json.get("rng_slot_1").getAsJsonObject(),"count",0);
-            float rngChance1 = JSONUtils.getFloat(json.get("rng_slot_1").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation1 = ResourceLocation.of(JSONUtils.getAsString(json.get("rng_slot_1").getAsJsonObject(),"item","minecraft:air"),':');
+            int rngAmount1 = JSONUtils.getAsInt(json.get("rng_slot_1").getAsJsonObject(),"count",0);
+            float rngChance1 = JSONUtils.getAsFloat(json.get("rng_slot_1").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult1 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation1));
             recipe.outputRngAmount1 = rngAmount1;
             recipe.chance1 = rngChance1;
 
             //Third RNG Slot, RNG 2
-            ResourceLocation rngResourceLocation2 = ResourceLocation.create(JSONUtils.getString(json.get("rng_slot_2").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount2 = JSONUtils.getInt(json.get("rng_slot_2").getAsJsonObject(),"count",0);
-            float rngChance2 = JSONUtils.getFloat(json.get("rng_slot_2").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation2 = ResourceLocation.of(JSONUtils.getAsString(json.get("rng_slot_2").getAsJsonObject(),"item","minecraft:air"),':');
+            int rngAmount2 = JSONUtils.getAsInt(json.get("rng_slot_2").getAsJsonObject(),"count",0);
+            float rngChance2 = JSONUtils.getAsFloat(json.get("rng_slot_2").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult2 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation2));
             recipe.outputRngAmount2 = rngAmount2;
@@ -172,47 +172,47 @@ public class ElectrolyzerRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public ElectrolyzerRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public ElectrolyzerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             ElectrolyzerRecipe recipe = new ElectrolyzerRecipe((recipeId));
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.usesBucket = buffer.readBoolean();
             //RNG 0
-            recipe.rngResult0 = buffer.readItemStack();
+            recipe.rngResult0 = buffer.readItem();
             recipe.outputRngAmount0 = buffer.readInt();
             recipe.chance0 = buffer.readFloat();
             //RNG 1
-            recipe.rngResult1 = buffer.readItemStack();
+            recipe.rngResult1 = buffer.readItem();
             recipe.outputRngAmount1 = buffer.readInt();
             recipe.chance1 = buffer.readFloat();
             //RNG 2
-            recipe.rngResult2 = buffer.readItemStack();
+            recipe.rngResult2 = buffer.readItem();
             recipe.outputRngAmount2 = buffer.readInt();
             recipe.chance2 = buffer.readFloat();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, ElectrolyzerRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, ElectrolyzerRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeBoolean(recipe.usesBucket);
             //RNG 0
-            buffer.writeItemStack(recipe.rngResult0);
+            buffer.writeItem(recipe.rngResult0);
             buffer.writeInt(recipe.outputRngAmount0);
             buffer.writeFloat(recipe.chance0);
             //RNG 1
-            buffer.writeItemStack(recipe.rngResult1);
+            buffer.writeItem(recipe.rngResult1);
             buffer.writeInt(recipe.outputRngAmount1);
             buffer.writeFloat(recipe.chance1);
             //RNG 2
-            buffer.writeItemStack(recipe.rngResult2);
+            buffer.writeItem(recipe.rngResult2);
             buffer.writeInt(recipe.outputRngAmount2);
             buffer.writeFloat(recipe.chance2);
         }

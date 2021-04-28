@@ -73,19 +73,19 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public boolean canFit(int width, int height){return true;}
+    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    public ItemStack getResultItem(){return result;}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -101,20 +101,20 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CombustionGeneratorOxidizerRecipe> {
         @Override
-        public CombustionGeneratorOxidizerRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public CombustionGeneratorOxidizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getInt(json,"process_time",1600);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = JSONUtils.getAsInt(json,"process_time",1600);
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
             }
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 boolean hit = false;
                 for (OxidizerProperties oxidizerProperties : oxidizerList) {
                     ItemStack bucketStack = oxidizerProperties.getBucketItem();
@@ -132,10 +132,10 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             // A tag is used instead of a manually defined fluid
             try{
                 if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    ResourceLocation fluidTagLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(fluidTagLocation);
                     if(tag != null){
-                        for(Fluid fluid : tag.getAllElements()){
+                        for(Fluid fluid : tag.getValues()){
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
                             fluidInputList.add(tempStack);
                             rawFluidInputList.add(tempStack.getRawFluid());
@@ -150,7 +150,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
                 } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
                     // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    ResourceLocation fluidResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
                     fluidInputList.add(recipe.inputFluid.copy());
                     rawFluidInputList.add(recipe.inputFluid.getRawFluid());
@@ -171,9 +171,9 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorOxidizerRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public CombustionGeneratorOxidizerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
 
             recipe.inputArraySize = buffer.readInt();
@@ -183,14 +183,14 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 recipe.nsRawFluidInputList.add(serverFluid.getRawFluid());
             }
 
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, CombustionGeneratorOxidizerRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, CombustionGeneratorOxidizerRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
             buffer.writeInt(recipe.inputArraySize);
@@ -198,7 +198,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 buffer.writeFluidStack(recipe.nsFluidInputList.get(i).copy());
             }
 
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
         }
     }

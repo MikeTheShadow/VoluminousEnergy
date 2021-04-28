@@ -38,60 +38,60 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX, mouseY);
+        this.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Input
-        this.addButton(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.guiTop, button->{
+        this.addButton(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.guiTop, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Output
-        this.addButton(new SlotBoolButton(tileEntity.outputSm, (this.width/2)-198, this.guiTop+20, button ->{
+        this.addButton(new SlotBoolButton(tileEntity.outputSm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSm, (this.width/2)-184, this.guiTop+20, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.outputSm, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Primitive Blast Furnace",8,6,0xffffff);
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitiveblastfurnace"), 8.0F, 6.0F, 16777215);
+        this.font.draw(matrixStack, TextUtil.translateVEBlock("primitiveblastfurnace"), 8.0F, 6.0F, 16777215);
 
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX,int mouseY){
-        if (isPointInRegion(78,32,19,17,mouseX,mouseY)){
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX,int mouseY){
+        if (isHovering(78,32,19,17,mouseX,mouseY)){
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
         }
 
-        super.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        super.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize);
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(24);
             /*Note for this.blit below:
@@ -107,7 +107,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
         // Upgrade slot
-        this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        this.minecraft.getTextureManager().bind(GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
@@ -155,7 +155,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
     }
 
     public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        UUID uuid = Minecraft.getInstance().player.getUUID();
         if(uuid != null){
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }

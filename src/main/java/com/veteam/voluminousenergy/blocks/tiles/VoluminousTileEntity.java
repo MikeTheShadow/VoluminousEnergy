@@ -27,16 +27,16 @@ public class VoluminousTileEntity extends TileEntity {
      * If a player is within 16 blocks send them an update packet
      */
     public void updateClients() {
-        if(world == null) return;
-        world.notifyBlockUpdate(this.pos,this.getBlockState(),this.getBlockState(),1);
+        if(level == null) return;
+        level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),1); // notifyBlockUpdate --> sendBlockUpdated
         sendPacketToClient();
         uuidCleanup();
     }
 
     public String getDirection() {
 
-        if(!this.world.hasBlockState(this.getPos(),e -> e == this.getBlockState())) return "null";
-        BlockState state = this.world.getBlockState(this.pos);
+        if(!this.level.isStateAtPosition(this.getBlockPos(),e -> e == this.getBlockState())) return "null";
+        BlockState state = this.level.getBlockState(this.worldPosition);
         Optional<Map.Entry<Property<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
         String direction = "null";
         if(it.isPresent()) {
@@ -65,14 +65,14 @@ public class VoluminousTileEntity extends TileEntity {
 
     // Standard cookie cutter cleanup. Works on servers as a crutch, but not so much on singleplayer
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
+        if(level.getServer() == null) return;
         if(cleanupTick == 20){
             cleanupTick = 0;
             ArrayList<UUID> toRemove = new ArrayList<>();
             this.playerUuid.forEach(u ->{
-                if(!world.getServer().getPlayerList().getPlayers().contains(u)){
+                if(!level.getServer().getPlayerList().getPlayers().contains(u)){
                     toRemove.add(u);
                 }
             });

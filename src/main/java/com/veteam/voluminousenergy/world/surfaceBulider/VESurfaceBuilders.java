@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class VESurfaceBuilders {
     public static ArrayList<SurfaceBuilder<?>> surfaceBuilders = new ArrayList<>();
 
-    public static final SurfaceBuilder<SurfaceBuilderConfig> RED_DESERT = createSurfaceBuilder("red_desert", new RedDesertSurfaceBuilder(SurfaceBuilderConfig.field_237203_a_));
+    public static final SurfaceBuilder<SurfaceBuilderConfig> RED_DESERT = createSurfaceBuilder("red_desert", new RedDesertSurfaceBuilder(SurfaceBuilderConfig.CODEC));
 
     public static void init(){}
 

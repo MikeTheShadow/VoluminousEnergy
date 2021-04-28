@@ -17,7 +17,7 @@ public class SulfuricAcid {
     public static final ResourceLocation SULFURIC_ACID_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/sulfuric_acid_still");
     public static final ResourceLocation SULFURIC_ACID_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/sulfuric_acid_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid SULFURIC_ACID;
     public static FlowingFluid FLOWING_SULFURIC_ACID;
@@ -40,7 +40,7 @@ public class SulfuricAcid {
     }
 
     public static Item SulfuricAcidBucket(){
-        SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return SULFURIC_ACID_BUCKET;
     }
 

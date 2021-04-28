@@ -57,23 +57,23 @@ public class CompressorRecipe extends VERecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){
+    public ItemStack assemble(IInventory inv){
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height){
+    public boolean canCraftInDimensions(int width, int height){
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput(){
+    public ItemStack getResultItem(){
         return result;
     }
 
@@ -97,7 +97,7 @@ public class CompressorRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.COMPRESSOR_BLOCK);
     }
 
@@ -106,22 +106,22 @@ public class CompressorRecipe extends VERecipe {
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
         @Override
-        public CompressorRecipe read(ResourceLocation recipeId, JsonObject json){
+        public CompressorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
 
             CompressorRecipe recipe = new CompressorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
-            recipe.processTime = JSONUtils.getInt(json, "process_time", 200);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
+            recipe.processTime = JSONUtils.getAsInt(json, "process_time", 200);
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if (!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
             }
 
-            ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
-            int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(), "count", 1);
+            ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
+            int itemAmount = JSONUtils.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
 
@@ -130,21 +130,21 @@ public class CompressorRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CompressorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public CompressorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             CompressorRecipe recipe = new CompressorRecipe(recipeId);
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, CompressorRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, CompressorRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
         }

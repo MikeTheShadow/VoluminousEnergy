@@ -17,7 +17,7 @@ public class LiquefiedCoke {
     public static final ResourceLocation LIQUEFIED_COKE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/liquefied_coke_still");
     public static final ResourceLocation LIQUEFIED_COKE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/liquefied_coke_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid LIQUEFIED_COKE;
     public static FlowingFluid FLOWING_LIQUEFIED_COKE;
@@ -40,7 +40,7 @@ public class LiquefiedCoke {
     }
 
     public static Item LiquefiedCokeBucket(){
-        LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIQUEFIED_COKE_BUCKET;
     }
 

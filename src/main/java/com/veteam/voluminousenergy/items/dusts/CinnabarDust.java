@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class CinnabarDust extends Item {
     public CinnabarDust (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup));
+                .stacksTo(64)
+                .tab(VESetup.itemGroup));
         setRegistryName("cinnabar_dust");
     }
 }

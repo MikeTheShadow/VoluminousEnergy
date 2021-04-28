@@ -8,6 +8,7 @@ public class IntToDirection {
         throw new IllegalAccessError("Utility class");
     }
 
+    // 3D Int value to direction object
     public static Direction IntegerToDirection(int direction){
         if(direction == 0){
             return Direction.DOWN;

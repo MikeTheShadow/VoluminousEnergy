@@ -56,19 +56,19 @@ public class CrusherRecipe extends VERecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public boolean canFit(int width, int height){return true;}
+    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    public ItemStack getResultItem(){return result;}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -90,7 +90,7 @@ public class CrusherRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.CRUSHER_BLOCK);
     }
 
@@ -99,27 +99,27 @@ public class CrusherRecipe extends VERecipe {
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
         @Override
-        public CrusherRecipe read(ResourceLocation recipeId, JsonObject json){
+        public CrusherRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = JSONUtils.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
             }
 
-            ResourceLocation itemResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
-            int itemAmount = JSONUtils.getInt(json.get("result").getAsJsonObject(),"count",1);
+            ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
+            int itemAmount = JSONUtils.getAsInt(json.get("result").getAsJsonObject(),"count",1);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
 
-            ResourceLocation rngResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount = JSONUtils.getInt(json.get("rng").getAsJsonObject(),"count",0);
-            float rngChance = JSONUtils.getFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
+            int rngAmount = JSONUtils.getAsInt(json.get("rng").getAsJsonObject(),"count",0);
+            float rngChance = JSONUtils.getAsFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation));
             recipe.outputRngAmount = rngAmount;
@@ -130,27 +130,27 @@ public class CrusherRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CrusherRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public CrusherRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             CrusherRecipe recipe = new CrusherRecipe((recipeId));
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
-            recipe.rngResult = buffer.readItemStack();
+            recipe.rngResult = buffer.readItem();
             recipe.outputRngAmount = buffer.readInt();
             recipe.chance = buffer.readFloat();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, CrusherRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, CrusherRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
-            buffer.writeItemStack(recipe.rngResult);
+            buffer.writeItem(recipe.rngResult);
             buffer.writeInt(recipe.outputRngAmount);
             buffer.writeFloat(recipe.chance);
         }

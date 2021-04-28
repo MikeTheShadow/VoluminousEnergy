@@ -13,10 +13,10 @@ import java.util.Random;
 
 public class RutileOre extends VEOreBlock {
     public RutileOre(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
             .sound(SoundType.STONE)
-            .hardnessAndResistance(2.0f)
-            .setRequiresTool()
+            .strength(2.0f)
+            .requiresCorrectToolForDrops()
             .harvestLevel(Config.RUTILE_HARVEST_LEVEL.get())
             .harvestTool(ToolType.PICKAXE)
         );
@@ -24,7 +24,7 @@ public class RutileOre extends VEOreBlock {
     }
 
     @Override
-    protected int getExperience(Random rand) {
+    protected int xpOnDrop(Random rand) {
         return 0;
     }
 }

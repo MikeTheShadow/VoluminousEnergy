@@ -61,21 +61,21 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     @Override
     public void draw(CombustionGeneratorFuelRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Volumetric Energy: ",31,4,0x606060);
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"Volumetric Energy: ",31,4,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
         slotDrawable.draw(matrixStack,11,0);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"Oxidizers: ",2,32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"Oxidizers: ",2,32,0x606060);
         int j = 0;
 
         for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             j = orderOxidizers(i+1,j);
             slotDrawable.draw(matrixStack,2 + j, 45);
             int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack,fePerTick+"",4+j,64,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",4+j,64,0x606060);
         }
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack,"FE/t:",-28,64,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"FE/t:",-28,64,0x606060);
 
     }
 

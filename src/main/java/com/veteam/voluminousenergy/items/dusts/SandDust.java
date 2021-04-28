@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class SandDust extends Item {
     public SandDust (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup));
+                .stacksTo(64)
+                .tab(VESetup.itemGroup));
         setRegistryName("sand_dust");
     }
 }

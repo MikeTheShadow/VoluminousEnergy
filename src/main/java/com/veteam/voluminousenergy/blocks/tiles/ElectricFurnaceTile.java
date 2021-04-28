@@ -82,8 +82,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
         // Main Processing occurs here
         if (canConsumeEnergy()){
-            FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), world).orElse(null);
-            BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), world).orElse(null);
+            FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), level).orElse(null);
+            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), level).orElse(null);
 
             if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
@@ -93,9 +93,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                     // Set output based on recipe
                     ItemStack newOutputStack;
                     if (furnaceRecipe != null) {
-                        newOutputStack = furnaceRecipe.getRecipeOutput().copy();
+                        newOutputStack = furnaceRecipe.getResultItem().copy();
                     } else {
-                        newOutputStack = blastingRecipe.getRecipeOutput().copy();
+                        newOutputStack = blastingRecipe.getResultItem().copy();
                     }
                     //LOGGER.debug("NewOutputStack: " + newOutputStack);
 
@@ -106,9 +106,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                             furnaceOutput.setCount(1);
                         }
                         if (furnaceRecipe != null){
-                            newOutputStack.setCount(furnaceRecipe.getRecipeOutput().getCount());
+                            newOutputStack.setCount(furnaceRecipe.getResultItem().getCount());
                         } else {
-                            newOutputStack.setCount(blastingRecipe.getRecipeOutput().getCount());
+                            newOutputStack.setCount(blastingRecipe.getResultItem().getCount());
                         }
                         //LOGGER.debug("About to insert in pt1: " + newOutputStack);
                         inventory.insertItem(1, newOutputStack.copy(),false); // CRASH the game if this is not empty!
@@ -116,9 +116,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                     } else { // Assuming the recipe output item is already in the output slot
                         // Simply change the stack to equal the output amount
                         if (furnaceRecipe != null){
-                            furnaceOutput.setCount(furnaceRecipe.getRecipeOutput().getCount());
+                            furnaceOutput.setCount(furnaceRecipe.getResultItem().getCount());
                         } else {
-                            furnaceOutput.setCount(blastingRecipe.getRecipeOutput().getCount());
+                            furnaceOutput.setCount(blastingRecipe.getResultItem().getCount());
                         }
                         //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
                         inventory.insertItem(1, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
@@ -126,7 +126,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
                     consumeEnergy();
                     counter--;
-                    this.markDirty();
+                    this.setChanged();
                 } else if (counter > 0) {
                     consumeEnergy();
                     counter--;
@@ -156,7 +156,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -165,11 +165,11 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
         inputSlotManager.read(tag, "input_slot_manager");
         outputSlotManager.read(tag, "output_slot_manager");
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -181,13 +181,13 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
         inputSlotManager.write(tag, "input_slot_manager");
         outputSlotManager.write(tag, "output_slot_manager");
-        return super.write(tag);
+        return super.save(tag);
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -195,26 +195,26 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         return new ItemStackHandler(3) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0) {
-                    return world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world).orElse(null) != null
-                            || world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(stack), world).orElse(null) != null;
+                    return level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level).orElse(null) != null
+                            || level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(stack), level).orElse(null) != null;
                 } else if (slot == 1) {
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
 
                     if (furnaceRecipe != null) {
-                        return stack.getItem() == furnaceRecipe.getRecipeOutput().getItem();
+                        return stack.getItem() == furnaceRecipe.getResultItem().getItem();
                     }
 
-                    return stack.getItem() == blastingRecipe.getRecipeOutput().getItem();
+                    return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 2){
                     return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
@@ -227,8 +227,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                 if (slot == 0){
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
-                    FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack),world).orElse(null);
+                    FurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack),level).orElse(null);
 
                     if (recipe != null || blastingRecipe != null){
                         return super.insertItem(slot, stack, simulate);
@@ -245,17 +245,17 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
             @Override
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
-                if (world != null){
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack.get()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack.get()), world).orElse(null);
+                if (level != null){
+                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getRecipeOutput().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem().getItem()) {
                             if(blastingRecipe.getExperience() > 0){
                                 generateXP(amount, blastingRecipe.getExperience());
                             }
                         }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getRecipeOutput().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem().getItem()) {
                             if (furnaceRecipe.getExperience() > 0) {
                                 generateXP(amount, furnaceRecipe.getExperience());
                             }
@@ -268,15 +268,15 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     private void generateXP(int craftedAmount, float experience){
-        if(world == null) return;
+        if(level == null) return;
         int i = MathHelper.floor((float)craftedAmount * experience);
         float f = MathHelper.frac((float)craftedAmount * experience);
         if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
-            int j = ExperienceOrbEntity.getXPSplit(i);
+            int j = ExperienceOrbEntity.getExperienceValue(i);
             i -= j;
-            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), j));
+            level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
         }
     }
 
@@ -290,9 +290,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null)
                 return handler.cast();
-            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().getIndex() == side.getIndex())
+            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return inputHandler.cast();
-            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().getIndex() == side.getIndex())
+            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return outputHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY){
@@ -310,7 +310,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
     {
-        return new ElectricFurnaceContainer(i,world,pos,playerInventory,playerEntity);
+        return new ElectricFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){
@@ -331,9 +331,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
     public boolean countChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
-            return (itemStack.getCount() + furnaceRecipe.getRecipeOutput().getCount()) <= 64;
+            return (itemStack.getCount() + furnaceRecipe.getResultItem().getCount()) <= 64;
         } else if (blastingRecipe != null){
-            return (itemStack.getCount() + blastingRecipe.getRecipeOutput().getCount()) <= 64;
+            return (itemStack.getCount() + blastingRecipe.getResultItem().getCount()) <= 64;
         }
         return false;
     }
@@ -341,10 +341,10 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return furnaceRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+            return furnaceRecipe.getResultItem().getItem() == itemStack.getItem();
         } else if (blastingRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return blastingRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+            return blastingRecipe.getResultItem().getItem() == itemStack.getItem();
         }
         return false;
     }
@@ -371,27 +371,27 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSlotManager.getStatus(), inputSlotManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotManager.getDirection().get3DDataValue(),inputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -399,25 +399,25 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotManager.getDirection().get3DDataValue(),inputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof ElectricFurnaceContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof ElectricFurnaceContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

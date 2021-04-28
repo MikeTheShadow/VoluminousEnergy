@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class LapisDust extends Item {
     public LapisDust(){
         super(new Item.Properties()
-            .maxStackSize(64)
-            .group(VESetup.itemGroup));
+            .stacksTo(64)
+            .tab(VESetup.itemGroup));
         setRegistryName("lapisdust");
     }
 }

@@ -93,7 +93,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             ItemStack rngTwo = h.getStackInSlot(4).copy();
             ItemStack rngThree = h.getStackInSlot(5).copy();
 
-            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
@@ -199,7 +199,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
                         counter--;
                         consumeEnergy();
-                        markDirty();
+                        setChanged();
                     } else if (counter > 0){ //In progress
                         counter--;
                         consumeEnergy();
@@ -298,7 +298,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
      */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         //createHandler().deserializeNBT(inv);
@@ -312,11 +312,11 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         rngTwoSm.read(tag, "rng_two_manager");
         rngThreeSm.read(tag, "rng_three_manager");
 
-        super.read(state,tag);
+        super.load(state,tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -333,13 +333,13 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         rngTwoSm.write(tag, "rng_two_manager");
         rngThreeSm.write(tag, "rng_three_manager");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
     public final ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
         protected void onContentsChanged(int slot) {
-            markDirty();
+            setChanged();
         }
 
         @Override
@@ -348,11 +348,11 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             referenceStack.setCount(64);
             //ItemStack referenceStack1 = inputItemStack.get().copy();
             //referenceStack1.setCount(64);
-            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-            ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                for (ItemStack testStack : recipe.ingredient.getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return true;
                     }
@@ -378,11 +378,11 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            ElectrolyzerRecipe recipe = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack.copy()), world).orElse(null);
-            ElectrolyzerRecipe recipe1 = world.getRecipeManager().getRecipe(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack.copy()), level).orElse(null);
+            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                for (ItemStack testStack : recipe.ingredient.getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
@@ -418,8 +418,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -431,17 +431,17 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                 return handler.cast();
             } else {
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if(inputSm.getStatus() && inputSm.getDirection().getIndex() == side.getIndex())
+                if(inputSm.getStatus() && inputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return inputHandler.cast();
-                else if(bucketSm.getStatus() && bucketSm.getDirection().getIndex() == side.getIndex())
+                else if(bucketSm.getStatus() && bucketSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return bucketHandler.cast();
-                else if(outputSm.getStatus() && outputSm.getDirection().getIndex() == side.getIndex())
+                else if(outputSm.getStatus() && outputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return outputHandler.cast();
-                else if(rngOneSm.getStatus() && rngOneSm.getDirection().getIndex() == side.getIndex())
+                else if(rngOneSm.getStatus() && rngOneSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return rngOneHandler.cast();
-                else if(rngTwoSm.getStatus() && rngTwoSm.getDirection().getIndex() == side.getIndex())
+                else if(rngTwoSm.getStatus() && rngTwoSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return rngTwoHandler.cast();
-                else if(rngThreeSm.getStatus() && rngThreeSm.getDirection().getIndex() == side.getIndex())
+                else if(rngThreeSm.getStatus() && rngThreeSm.getDirection().get3DDataValue() == side.get3DDataValue())
                     return rngThreeHandler.cast();
             }
         }
@@ -459,7 +459,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new ElectrolyzerContainer(i,world,pos,playerInventory,playerEntity);
+        return new ElectrolyzerContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){
@@ -490,11 +490,11 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketSm.getStatus(), bucketSm.getSlotNum()));
@@ -504,22 +504,22 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketSm.getDirection().getIndex(),bucketSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngOneSm.getDirection().getIndex(),rngOneSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngTwoSm.getDirection().getIndex(),rngTwoSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngThreeSm.getDirection().getIndex(),rngThreeSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketSm.getDirection().get3DDataValue(),bucketSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngOneSm.getDirection().get3DDataValue(),rngOneSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngTwoSm.getDirection().get3DDataValue(),rngTwoSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngThreeSm.getDirection().get3DDataValue(),rngThreeSm.getSlotNum()));
 
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
@@ -530,30 +530,30 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketSm.getDirection().getIndex(),bucketSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngOneSm.getDirection().getIndex(),rngOneSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngTwoSm.getDirection().getIndex(),rngTwoSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngThreeSm.getDirection().getIndex(),rngThreeSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketSm.getDirection().get3DDataValue(),bucketSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngOneSm.getDirection().get3DDataValue(),rngOneSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngTwoSm.getDirection().get3DDataValue(),rngTwoSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngThreeSm.getDirection().get3DDataValue(),rngThreeSm.getSlotNum()));
 
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof ElectrolyzerContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof ElectrolyzerContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

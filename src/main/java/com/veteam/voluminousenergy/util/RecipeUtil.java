@@ -18,7 +18,7 @@ public class RecipeUtil {
         for (IRecipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
             if(iRecipe instanceof AqueoulizerRecipe){
                 for (FluidStack stack : ((AqueoulizerRecipe) iRecipe).fluidInputList){
-                    if(stack.getFluid().isEquivalentTo(fluid)) return true;
+                    if(stack.getFluid().isSame(fluid)) return true;
                 }
             }
         }
@@ -26,7 +26,7 @@ public class RecipeUtil {
     }
 
     public static boolean isAqueoulizerInputFluidEqual(AqueoulizerRecipe recipe, Fluid fluid){
-        for (FluidStack stack : recipe.fluidInputList){ if(stack.getFluid().isEquivalentTo(fluid)) return true; }
+        for (FluidStack stack : recipe.fluidInputList){ if(stack.getFluid().isSame(fluid)) return true; }
         return false;
     }
 
@@ -96,7 +96,7 @@ public class RecipeUtil {
     public static DistillationRecipe getDistillationRecipeFromThirdResult(World world, ItemStack thirdResultItem){
         for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
-                if(((DistillationRecipe) recipe).getThirdResult().isItemEqual(thirdResultItem)){
+                if(((DistillationRecipe) recipe).getThirdResult().sameItem(thirdResultItem)){
                     return (DistillationRecipe) recipe;
                 }
             }

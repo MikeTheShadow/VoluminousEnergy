@@ -9,8 +9,8 @@ public class PetCoke extends Item
     public PetCoke()
     {
         super(new Item.Properties()
-        .maxStackSize(64)
-        .group(VESetup.itemGroup));
+        .stacksTo(64)
+        .tab(VESetup.itemGroup));
         setRegistryName("petcoke");
     }
 

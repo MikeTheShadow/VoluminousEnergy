@@ -19,7 +19,7 @@ public class SlotBoolButton extends VEIOButton {
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public SlotBoolButton(VESlotManager slotManager, int x, int y, IPressable onPress) {
-        super(x, y, 16, 15, ITextComponent.getTextComponentOrEmpty(""), button -> {
+        super(x, y, 16, 15, ITextComponent.nullToEmpty(""), button -> {
             ((SlotBoolButton) button).cycle();
             onPress.onPress(button);
         });
@@ -33,7 +33,7 @@ public class SlotBoolButton extends VEIOButton {
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        Minecraft.getInstance().getTextureManager().bind(texture);
         enable = slotManager.getStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);

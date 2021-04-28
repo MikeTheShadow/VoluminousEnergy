@@ -156,8 +156,8 @@ public class VoluminousEnergy {
             //Item Properties
             Item.Properties properties = new Item.Properties();
             Item.Properties shovelProperties = new Item.Properties();
-            properties.addToolType(ToolType.PICKAXE,1).group(VESetup.itemGroup);
-            shovelProperties.addToolType(ToolType.SHOVEL,1).group(VESetup.itemGroup);
+            properties.addToolType(ToolType.PICKAXE,1).tab(VESetup.itemGroup);
+            shovelProperties.addToolType(ToolType.SHOVEL,1).tab(VESetup.itemGroup);
 
             //Block Items
             //Tile Entities
@@ -256,23 +256,23 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
             //LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
-            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
-            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
-            event.getRegistry().register(TileEntityType.Builder.create(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
-            event.getRegistry().register(TileEntityType.Builder.create(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
-            event.getRegistry().register(TileEntityType.Builder.create(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
-            event.getRegistry().register(TileEntityType.Builder.create(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
-            event.getRegistry().register(TileEntityType.Builder.create(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
-            event.getRegistry().register(TileEntityType.Builder.create(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null).setRegistryName("combustion_generator"));
-            event.getRegistry().register(TileEntityType.Builder.create(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
-            event.getRegistry().register(TileEntityType.Builder.create(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null).setRegistryName("air_compressor"));
-            event.getRegistry().register(TileEntityType.Builder.create(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null).setRegistryName("distillation_unit"));
-            event.getRegistry().register(TileEntityType.Builder.create(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
-            event.getRegistry().register(TileEntityType.Builder.create(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
-            event.getRegistry().register(TileEntityType.Builder.create(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
-            event.getRegistry().register(TileEntityType.Builder.create(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
-            event.getRegistry().register(TileEntityType.Builder.create(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
-            event.getRegistry().register(TileEntityType.Builder.create(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
+            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
+            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
+            event.getRegistry().register(TileEntityType.Builder.of(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
+            event.getRegistry().register(TileEntityType.Builder.of(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
+            event.getRegistry().register(TileEntityType.Builder.of(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
+            event.getRegistry().register(TileEntityType.Builder.of(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
+            event.getRegistry().register(TileEntityType.Builder.of(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
+            event.getRegistry().register(TileEntityType.Builder.of(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null).setRegistryName("combustion_generator"));
+            event.getRegistry().register(TileEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
+            event.getRegistry().register(TileEntityType.Builder.of(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null).setRegistryName("air_compressor"));
+            event.getRegistry().register(TileEntityType.Builder.of(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null).setRegistryName("distillation_unit"));
+            event.getRegistry().register(TileEntityType.Builder.of(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
+            event.getRegistry().register(TileEntityType.Builder.of(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
+            event.getRegistry().register(TileEntityType.Builder.of(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
+            event.getRegistry().register(TileEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
+            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
+            event.getRegistry().register(TileEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
         }
 
         @SubscribeEvent
