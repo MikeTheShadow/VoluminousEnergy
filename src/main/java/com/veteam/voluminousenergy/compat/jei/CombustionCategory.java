@@ -12,12 +12,14 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
@@ -68,7 +70,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         Minecraft.getInstance().font.draw(matrixStack,"Oxidizers: ",2,32,0x606060);
         int j = 0;
 
-        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
+        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size()/2; i++){
             j = orderOxidizers(i+1,j);
             slotDrawable.draw(matrixStack,2 + j, 45);
             int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
@@ -95,12 +97,11 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         // Setup Oxidizers
         int j = 0;
 
-        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
+        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size()/2; i++){
             j = orderOxidizers(i,j);
             fluidStacks.init(i, false, 3 + j, 46);
-            ArrayList<FluidStack> oxidizerList = new ArrayList<>();
-            oxidizerList.addAll(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
-            fluidStacks.set(i,oxidizerList);
+            ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
+            fluidStacks.set(i, oxidizerList);
         }
 
         // Should only be one ingredient...
