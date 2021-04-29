@@ -29,8 +29,7 @@ public class RedDesert extends VEBiome {
         biomeBuilder.mobSpawnSettings(mobSpawnBuilder.build());
 
         // Configure and build the biome
-        MoodSoundAmbience justShutUp = new MoodSoundAmbience(SoundEvents.SQUID_AMBIENT, Integer.MAX_VALUE/2,Integer.MAX_VALUE/2, Double.MAX_VALUE/2);
-        BiomeAmbience ambience = (new BiomeAmbience.Builder()).waterColor(4159204).waterFogColor(4159204).fogColor(329011)/*.setFogColor(12638463)*/.skyColor(calculateColour(2.0F)).foliageColorOverride(10387789).grassColorOverride(9470285).ambientMoodSound(justShutUp).build();
+        BiomeAmbience ambience = (new BiomeAmbience.Builder()).waterColor(4159204).waterFogColor(4159204)/*.fogColor(329011)*/.fogColor(12638463).skyColor(calculateColour(2.0F)).foliageColorOverride(10387789).grassColorOverride(9470285)/*.ambientMoodSound(justShutUp)*/.build();
         this.configureBiome(biomeBuilder.biomeCategory(Biome.Category.DESERT).depth(0.05F).scale(0.05F).temperature(2.0F).downfall(0.05F).precipitation(Biome.RainType.NONE).specialEffects(ambience));
         return biomeBuilder.build();
     }
