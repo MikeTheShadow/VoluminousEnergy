@@ -102,8 +102,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
                         // Extract the inputted item
                         h.extractItem(0,recipe.ingredientCount,false);
                         // Extract bucket if it uses a bucket
-                        if (recipe.isUsesBucket()){
-                            h.extractItem(1,1,false);
+                        if (recipe.needsBuckets() > 0){
+                            h.extractItem(1,recipe.needsBuckets(),false);
                         }
 
                         // Get output stack from the recipe
@@ -252,9 +252,10 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     private boolean usesBucket(ElectrolyzerRecipe recipe,ItemStack bucket){
         if (recipe != null){ // If the recipe is null, don't bother processing
-            if (recipe.isUsesBucket()){ // If it doesn't use a bucket, we know that it must have a valid recipe, return true
+            if (recipe.needsBuckets() > 0){ // If it doesn't use a bucket, we know that it must have a valid recipe, return true
                 if (!bucket.isEmpty() && bucket.getItem() == Items.BUCKET){
-                    return true; // Needs a bucket, has a bucket. Return true.
+                    if(bucket.getCount() >= recipe.needsBuckets()) return true; // Needs a bucket, has enough buckets. Return true.
+                    return false; // Needs a bucket, doesn't have enough buckets. Return false.
                 } else {
                     return false; // Needs a bucket, doesn't have a bucket. Return false.
                 }

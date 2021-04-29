@@ -76,8 +76,8 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     @Override
     protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
-        this.font.draw(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, 16777215);
-        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 + 2), 16777215);
     }
 
     @Override

@@ -42,10 +42,10 @@ public class SolarPanelScreen extends ContainerScreen<SolarPanelContainer> {
 
     @Override
     protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY){
-        this.font.draw(matrixStack, TextUtil.translateVEBlock("solar_panel"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getLevel().isDay())
             drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
-        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override

@@ -169,9 +169,9 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
             itemStacks.set(4, rngStack);
         }
 
-        if (recipe.isUsesBucket()){
+        if (recipe.needsBuckets() > 0){
             itemStacks.init(5, true, 5, 38);
-            itemStacks.set(5, new ItemStack(Items.BUCKET, 1));
+            itemStacks.set(5, new ItemStack(Items.BUCKET, recipe.needsBuckets()));
         }
     }
 }

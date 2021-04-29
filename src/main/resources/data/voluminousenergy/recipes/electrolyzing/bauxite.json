@@ -8,7 +8,7 @@
   "result": {
     "item": "voluminousenergy:aluminum_dust",
     "count": 8,
-    "consumes_bucket": false
+    "consumes_bucket": 0
   },
   "rng_slot_0": {
     "item": "voluminousenergy:iron_dust",

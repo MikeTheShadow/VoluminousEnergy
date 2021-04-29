@@ -147,9 +147,9 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
     @Override
     protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Distillation Unit",8,6,0xffffff);
-        this.font.draw(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, 16777215);
 
-        this.font.draw(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
@@ -215,8 +215,8 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
             this.minecraft.getTextureManager().bind(GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
-            this.font.draw(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
-            this.font.draw(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
         }
 
     }
