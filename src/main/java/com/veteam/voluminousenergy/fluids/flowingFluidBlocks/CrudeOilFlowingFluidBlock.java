@@ -18,7 +18,7 @@ public class CrudeOilFlowingFluidBlock extends VEFlowingFluidBlock {
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
         if (entityIn instanceof LivingEntity) {
             entityIn.makeStuckInBlock(state, new Vector3d(0.8F, 0.75F, 0.8F));
         } else if (entityIn instanceof ItemEntity){

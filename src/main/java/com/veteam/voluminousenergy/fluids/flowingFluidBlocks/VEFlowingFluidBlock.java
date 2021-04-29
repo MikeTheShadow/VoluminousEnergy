@@ -19,7 +19,8 @@ public class VEFlowingFluidBlock extends FlowingFluidBlock {
         super(supplier, properties);
     }
 
-    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    @Override
+    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
         if(entityIn instanceof LivingEntity){
             if((entityIn.getY() - entityIn.yOld) > 0 && !entityIn.isCrouching()){
                 entityIn.makeStuckInBlock(state, new Vector3d(0.9F, -0.9F, 0.9F));
