@@ -210,6 +210,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         }
 
         public void saneAdd(CombustionGeneratorOxidizerRecipe recipe){
+            if(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() >= (Short.MAX_VALUE * 32)) return; // If greater than 1,048,544 don't bother to add any more
             // Sanity check to prevent multiple of the same recipes being stored in the array
             ArrayList<FluidStack> sanityList = new ArrayList<>();
             for(int i = 0; (i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() || CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() == 0); i++){
