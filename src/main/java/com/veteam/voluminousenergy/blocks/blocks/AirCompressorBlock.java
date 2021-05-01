@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
-import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;

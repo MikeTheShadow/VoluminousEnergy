@@ -7,11 +7,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.RegistryEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class VEBiomes {
     protected static ArrayList<Biome> veBiomeList = new ArrayList<>();

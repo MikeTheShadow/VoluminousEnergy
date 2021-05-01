@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.ElectrolyzerTile;
 import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.Block;

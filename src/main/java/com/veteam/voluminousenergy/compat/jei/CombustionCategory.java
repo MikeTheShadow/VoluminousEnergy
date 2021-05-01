@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.sun.jna.platform.unix.X11;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -13,16 +12,13 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
@@ -106,13 +102,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                     Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",4+j,64,0x606060);
                 }
             }
-
-            /* Original logic
-            j = orderOxidizers(i+1,j);
-            slotDrawable.draw(matrixStack,2 + j, 45);
-            int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-            Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",4+j,64,0x606060);
-            end of original logic*/
         }
 
         Minecraft.getInstance().font.draw(matrixStack,"FE/t:",-28,64,0x606060);

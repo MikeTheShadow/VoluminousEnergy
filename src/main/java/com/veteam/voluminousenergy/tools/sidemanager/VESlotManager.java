@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 

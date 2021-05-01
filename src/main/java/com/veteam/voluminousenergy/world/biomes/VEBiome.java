@@ -2,8 +2,6 @@ package com.veteam.voluminousenergy.world.biomes;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeGenerationSettings;
 import net.minecraft.world.biome.Biomes;
@@ -11,7 +9,6 @@ import net.minecraft.world.biome.MobSpawnInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class VEBiome {
