@@ -195,6 +195,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":solar_panel")
     public static ContainerType<SolarPanelContainer> SOLAR_PANEL_CONTAINER;
 
+    // Centrifugal Separator
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static CentrifugalSeparatorBlock CENTRIFUGAL_SEPARATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static TileEntityType<CentrifugalSeparatorTile> CENTRIFUGAL_SEPARATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static ContainerType<CentrifugalSeparatorContainer> CENTRIFUGAL_SEPARATOR_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

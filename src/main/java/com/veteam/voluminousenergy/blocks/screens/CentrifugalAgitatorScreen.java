@@ -121,7 +121,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
     protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, 16777215);
-        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), 16777215);
     }
 
     @Override

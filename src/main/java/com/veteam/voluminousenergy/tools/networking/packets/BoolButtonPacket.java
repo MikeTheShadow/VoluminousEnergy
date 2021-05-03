@@ -205,6 +205,16 @@ public class BoolButtonPacket {
                 } else {
                     ((BatteryBoxContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
+                // Centrifugal Separator
+            } else if (openContainer instanceof CentrifugalSeparatorContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((CentrifugalSeparatorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof CentrifugalSeparatorTile) {
+                        ((CentrifugalSeparatorTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    ((CentrifugalSeparatorContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
                 // INVALID TE/Container
             } else {
                 VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");

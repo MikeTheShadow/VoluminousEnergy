@@ -50,6 +50,7 @@
     "block.voluminousenergy.battery_box": "Battery Box",
     "block.voluminousenergy.primitive_solar_panel": "Primitive Solar Panel",
     "block.voluminousenergy.solar_panel": "Solar Panel",
+    "block.voluminousenergy.centrifugal_separator": "Centrifugal Separator",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

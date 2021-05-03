@@ -134,6 +134,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new BatteryBoxBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveSolarPanelBlock());
             blockRegisteryEvent.getRegistry().register(new SolarPanelBlock());
+            blockRegisteryEvent.getRegistry().register(new CentrifugalSeparatorBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -178,6 +179,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BATTERY_BOX_BLOCK,properties).setRegistryName("battery_box"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK,properties).setRegistryName("primitive_solar_panel"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLAR_PANEL_BLOCK,properties).setRegistryName("solar_panel"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK,properties).setRegistryName("centrifugal_separator"));
 
             //True Blocks
             //Ores
@@ -273,6 +275,7 @@ public class VoluminousEnergy {
             event.getRegistry().register(TileEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
             event.getRegistry().register(TileEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
             event.getRegistry().register(TileEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
+            event.getRegistry().register(TileEntityType.Builder.of(CentrifugalSeparatorTile::new,VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).build(null).setRegistryName("centrifugal_separator"));
         }
 
         @SubscribeEvent
@@ -362,6 +365,11 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new SolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("solar_panel"));
+
+            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new CentrifugalSeparatorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("centrifugal_separator"));
         }
 
         @SubscribeEvent

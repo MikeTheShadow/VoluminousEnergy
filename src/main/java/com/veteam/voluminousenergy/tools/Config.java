@@ -32,6 +32,7 @@ public class Config {
     public static final String CATEGORY_BATTERY_BOX = "Battery Box";
     public static final String CATEGORY_PRIMITIVE_SOLAR_PANEL = "Primitive Solar Panel";
     public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
+    public static final String CATEGORY_CENTRIFUGAL_SEPARATOR = "Centrifugal Separator";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -183,17 +184,23 @@ public class Config {
     public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
     public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
-    // Primitive Solar Panel
+    // Primitive Solar Panel Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
 
-    // Solar Panel
+    // Solar Panel Variables
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
+
+    // Centrifugal Separator Variables
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -283,6 +290,11 @@ public class Config {
         // Solar Panel
         COMMON_BUILDER.comment("Solar Panel").push(CATEGORY_SOLAR_PANEL);
         setupSolarPanel();
+        COMMON_BUILDER.pop();
+
+        // Centrifugal Separator
+        COMMON_BUILDER.comment("Centrifugal Separator").push(CATEGORY_CENTRIFUGAL_SEPARATOR);
+        setupCentrifugalSeparator();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -546,6 +558,17 @@ public class Config {
         SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
         SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupCentrifugalSeparator(){
+        CENTRIFUGAL_SEPARATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Centrifugal Separator to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Centrifugal Separator")
+                .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Separator")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
