@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.compat.jei;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
+import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -23,19 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe> {
-
+public class CentrifugalSeparationCategory implements IRecipeCategory<CentrifugalSeparatorRecipe> {
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
 
-    public ElectrolyzingCategory(IGuiHelper guiHelper){
+    public CentrifugalSeparationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -44,17 +43,17 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     @Override
     public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.ELECTROLYZING_UID;
+        return VoluminousEnergyPlugin.CENTRIFUGAL_SEPARATION_UID;
     }
 
     @Override
-    public Class<? extends ElectrolyzerRecipe> getRecipeClass() {
-        return ElectrolyzerRecipe.class;
+    public Class<? extends CentrifugalSeparatorRecipe> getRecipeClass() {
+        return CentrifugalSeparatorRecipe.class;
     }
 
     @Override
     public String getTitle() {
-        return "Electrolyzing";
+        return "Centrifugal Separation";
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void draw(ElectrolyzerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CentrifugalSeparatorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,25, 30);
         emptyArrow.draw(matrixStack,25,30);
         slotDrawable.draw(matrixStack,5,20); // Input
@@ -96,7 +95,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void setIngredients(ElectrolyzerRecipe recipe, IIngredients ingredients) {
+    public void setIngredients(CentrifugalSeparatorRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
                 .map(ingredient -> Arrays.asList(ingredient.getItems()))
                 .collect(Collectors.toList()));
@@ -130,7 +129,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ElectrolyzerRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalSeparatorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, false, 5, 20);
         itemStacks.init(1, false, 49, 2);

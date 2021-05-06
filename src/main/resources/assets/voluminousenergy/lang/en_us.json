@@ -134,5 +134,9 @@
     "item.voluminousenergy.quartz_multiplier": "Quartz Multiplier",
     "item.voluminousenergy.mercury_battery": "Mercury Battery",
     "item.voluminousenergy.lead_acid_battery": "Lead-Acid Battery",
-    "item.voluminousenergy.photovoltaic_dust": "Photovoltaic Dust"
+    "item.voluminousenergy.photovoltaic_dust": "Photovoltaic Dust",
+    "item.voluminousenergy.end_stone_dust": "End Stone Dust",
+    "item.voluminousenergy.basalt_dust": "Basalt Dust",
+    "item.voluminousenergy.flint_dust": "Flint Dust",
+    "item.voluminousenergy.netherrack_dust": "Netherrack Dust"
 }
