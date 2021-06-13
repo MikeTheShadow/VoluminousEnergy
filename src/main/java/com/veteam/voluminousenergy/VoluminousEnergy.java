@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.*;
+import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -18,7 +20,11 @@ import com.veteam.voluminousenergy.world.biomes.RedDesert;
 import com.veteam.voluminousenergy.world.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -27,6 +33,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,6 +47,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
@@ -148,6 +156,10 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
             blockRegisteryEvent.getRegistry().register(new AluminumMachineCasingBlock());
             blockRegisteryEvent.getRegistry().register(new TitaniumMachineCasingBlock());
+
+            //Crops
+            blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
+            blockRegisteryEvent.getRegistry().register(new VEWaterCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
         }
 
         @SubscribeEvent
@@ -180,6 +192,10 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK,properties).setRegistryName("primitive_solar_panel"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLAR_PANEL_BLOCK,properties).setRegistryName("solar_panel"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK,properties).setRegistryName("centrifugal_separator"));
+
+            // Crops
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
+            itemRegisteryEvent.getRegistry().register(VEItems.WATER_CROP_ITEM);
 
             //True Blocks
             //Ores
@@ -385,6 +401,16 @@ public class VoluminousEnergy {
         public static void onRegisterSurfaceBuilder(RegistryEvent.Register<SurfaceBuilder<?>> event){
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
+        }
+
+    }
+
+    @Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ClientRegister {
+
+        @SubscribeEvent
+        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
+            event.enqueueWork(() -> RenderTypeLookup.setRenderLayer(VEBlocks.WATER_CROP.getBlock(), RenderType.cutout()));
         }
 
     }

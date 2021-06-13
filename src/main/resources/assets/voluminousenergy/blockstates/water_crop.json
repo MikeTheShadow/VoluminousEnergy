@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "half=lower,age=0": {
+      "model": "voluminousenergy:block/rice_bottom"
+    },
+    "half=lower,age=1": {
+      "model": "voluminousenergy:block/rice_bottom"
+    },
+    "half=lower,age=2": {
+      "model": "voluminousenergy:block/rice_bottom"
+    },
+    "half=lower,age=3": {
+      "model": "voluminousenergy:block/rice_bottom"
+    },
+    "half=upper,age=0": {
+      "model": "voluminousenergy:block/rice_top0"
+    },
+    "half=upper,age=1": {
+      "model": "voluminousenergy:block/rice_top1"
+    },
+    "half=upper,age=2": {
+      "model": "voluminousenergy:block/rice_top2"
+    },
+    "half=upper,age=3": {
+      "model": "voluminousenergy:block/rice_bottom"
+    }
+  }
+}

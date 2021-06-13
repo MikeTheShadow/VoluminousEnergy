@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -220,5 +222,12 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":galena_ore")
     public static GalenaOre GALENA_ORE;
+
+    //Crops
+    @ObjectHolder(VoluminousEnergy.MODID + ":water_crop")
+    public static VEWaterCrop WATER_CROP;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":land_crop")
+    public static VELandCrop LAND_CROP;
 
 }

@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
+import com.veteam.voluminousenergy.items.crops.WaterCropItem;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
@@ -11,6 +12,8 @@ import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
+import com.veteam.voluminousenergy.setup.VESetup;
+import net.minecraft.item.Item;
 
 public class VEItems
 {
@@ -75,4 +78,7 @@ public class VEItems
     //Batteries
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
+
+    //Crops
+    public static WaterCropItem WATER_CROP_ITEM = new WaterCropItem(new Item.Properties().tab(VESetup.itemGroup));
 }
