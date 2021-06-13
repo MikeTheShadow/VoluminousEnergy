@@ -1,13 +1,12 @@
 package com.veteam.voluminousenergy.items.crops;
 
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.*;
@@ -19,14 +18,14 @@ import net.minecraft.world.World;
 
 public class WaterCropItem extends BlockItem {
 
-    public WaterCropItem(Item.Properties properties){
-        super(VEBlocks.WATER_CROP.getBlock(), properties);
-        setRegistryName("water_crop");
+    public WaterCropItem(Block block, Properties properties){
+        super(block, properties);
+        //setRegistryName("water_crop");
     }
 
     public VEWaterCrop getWaterCrop(){
-        return (VEWaterCrop) VEBlocks.WATER_CROP.getBlock();
-    }
+        return null;
+    } // MUST override
 
     @Override
     public ActionResultType useOn(ItemUseContext context){

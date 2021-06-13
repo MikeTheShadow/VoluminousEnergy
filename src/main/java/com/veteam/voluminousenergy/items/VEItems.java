@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
-import com.veteam.voluminousenergy.items.crops.WaterCropItem;
+import com.veteam.voluminousenergy.items.crops.RiceItem;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
@@ -80,5 +80,6 @@ public class VEItems
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 
     //Crops
-    public static WaterCropItem WATER_CROP_ITEM = new WaterCropItem(new Item.Properties().tab(VESetup.itemGroup));
+    //public static WaterCropItem WATER_CROP_ITEM = new WaterCropItem(VEBlocks.WATER_CROP.getBlock(), new Item.Properties().tab(VESetup.itemGroup));
+    public static RiceItem RICE_ITEM = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
 }

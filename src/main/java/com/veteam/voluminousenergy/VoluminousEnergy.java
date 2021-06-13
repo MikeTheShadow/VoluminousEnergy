@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.*;
+import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
-import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -159,7 +159,7 @@ public class VoluminousEnergy {
 
             //Crops
             blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
-            blockRegisteryEvent.getRegistry().register(new VEWaterCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
+            blockRegisteryEvent.getRegistry().register(new RiceCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
         }
 
         @SubscribeEvent
@@ -195,7 +195,7 @@ public class VoluminousEnergy {
 
             // Crops
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
-            itemRegisteryEvent.getRegistry().register(VEItems.WATER_CROP_ITEM);
+            itemRegisteryEvent.getRegistry().register(VEItems.RICE_ITEM);
 
             //True Blocks
             //Ores
@@ -410,7 +410,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
-            event.enqueueWork(() -> RenderTypeLookup.setRenderLayer(VEBlocks.WATER_CROP.getBlock(), RenderType.cutout()));
+            event.enqueueWork(() -> RenderTypeLookup.setRenderLayer(VEBlocks.RICE_CROP.getBlock(), RenderType.cutout()));
         }
 
     }

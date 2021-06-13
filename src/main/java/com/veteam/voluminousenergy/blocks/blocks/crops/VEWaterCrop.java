@@ -1,11 +1,12 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
-import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.StateContainer;
@@ -17,10 +18,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
@@ -34,7 +32,11 @@ public class VEWaterCrop extends BushBlock implements IGrowable, IWaterLoggable{
     public VEWaterCrop(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2,0)); // set the age of the crop to 0 by default
-        setRegistryName("water_crop");
+        //setRegistryName("water_crop");
+    }
+
+    public Item cropItem(){
+        return null; // MUST override this to prevent NPE.
     }
 
     @Override
@@ -183,7 +185,7 @@ public class VEWaterCrop extends BushBlock implements IGrowable, IWaterLoggable{
         if(age < 2 && player.getItemInHand(handIn).sameItem(new ItemStack(Items.BONE_MEAL,1))){
             return ActionResultType.PASS;
         } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()){ // Make sure the player isn't targetting the bottom
-            popResource(world, pos, new ItemStack(VEItems.WATER_CROP_ITEM.getItem(), 1));
+            popResource(world, pos, new ItemStack(cropItem(), 1));
             world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);  // to tweak
 
             place(world, pos, 18); // Place the crop in it's initial state
