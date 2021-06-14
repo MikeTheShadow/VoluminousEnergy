@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class CentrifugalSeparatorScreen extends ContainerScreen<CentrifugalSeparatorContainer> {
     private CentrifugalSeparatorTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electrolyzer_gui.png"); // TODO: Custom png file
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_separator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
@@ -128,7 +128,7 @@ public class CentrifugalSeparatorScreen extends ContainerScreen<CentrifugalSepar
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(24);
+            int progress = tileEntity.progressCounterPX(9);
             int power = menu.powerScreen(49);
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -138,7 +138,7 @@ public class CentrifugalSeparatorScreen extends ContainerScreen<CentrifugalSepar
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
+            this.blit(matrixStack,i+81,j+31,176,0,progress,17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }

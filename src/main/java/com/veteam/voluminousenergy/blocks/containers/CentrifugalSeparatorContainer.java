@@ -39,13 +39,13 @@ public class CentrifugalSeparatorContainer extends Container {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 71, 13)); // Primary input slot
-            addSlot(new VEInsertSlot(h,1,89,13)); // Empty Bucket slot
-            addSlot(new VEOutputSlot(h, 2,53,57)); //Main Output
-            addSlot(new VEOutputSlot(h, 3, 71,57)); //RNG #1 Slot
-            addSlot(new VEOutputSlot(h,4, 89, 57)); //RNG #2 Slot
-            addSlot(new VEOutputSlot(h,5,107,57)); //RNG #3 Slot
-            addSlot(new VEInsertSlot(h,6,154, -14)); // Upgrade Slot
+            addSlot(new VEInsertSlot(h, 0, 53, 24)); // Primary input slot
+            addSlot(new VEInsertSlot(h,1,53,42)); // Empty Bucket slot
+            addSlot(new VEOutputSlot(h, 2,99,33)); //Main Output
+            addSlot(new VEOutputSlot(h, 3, 117,15)); //RNG #1 Slot
+            addSlot(new VEOutputSlot(h,4, 135, 33)); //RNG #2 Slot
+            addSlot(new VEOutputSlot(h,5,117,51)); //RNG #3 Slot
+            addSlot(new VEInsertSlot(h,6,155, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

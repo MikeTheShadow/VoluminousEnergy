@@ -244,6 +244,13 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.FLINT_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.NETHERRACK_DUST);
 
+            //Raw ore
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_CINNABAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_GALENA);
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_RUTILE);
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_SULFUR);
+
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_INGOT);

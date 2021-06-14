@@ -122,13 +122,6 @@ public class VEWaterCrop extends BushBlock implements IGrowable, IWaterLoggable{
 
         if (age < 2 && worldIn.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock() && worldIn.getRawBrightness(pos.above(), 0) > 12){ // light level may need tweaking
             age++;
-
-            // Perform on bottom half
-            //worldIn.setBlock(pos.below(), this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER).setValue(BlockStateProperties.WATERLOGGED, true).setValue(BlockStateProperties.AGE_2, age), 2);
-
-            // Perform on top half
-            //worldIn.setBlock(pos, this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER).setValue(BlockStateProperties.AGE_2, age), 2);
-
             // Perform on bottom half
             worldIn.setBlock(pos.below(), this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER).setValue(BlockStateProperties.WATERLOGGED, true).setValue(BlockStateProperties.AGE_2, age), 18);
 

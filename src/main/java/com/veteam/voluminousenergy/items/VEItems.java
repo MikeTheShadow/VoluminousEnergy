@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.foods.VEFoods;
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
 import com.veteam.voluminousenergy.items.crops.RiceItem;
@@ -8,6 +9,7 @@ import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
 import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
 import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
+import com.veteam.voluminousenergy.items.ore.*;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
@@ -22,6 +24,13 @@ public class VEItems
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
     public static ShreddedBiomass SHREDDED_BIOMASS = new ShreddedBiomass();
+
+    // Raw Ore
+    public static RawBauxite RAW_BAUXITE = new RawBauxite();
+    public static RawCinnabar RAW_CINNABAR = new RawCinnabar();
+    public static RawGalena RAW_GALENA = new RawGalena();
+    public static RawRutile RAW_RUTILE = new RawRutile();
+    public static RawSulfur RAW_SULFUR = new RawSulfur();
 
     //Dusts
     public static CoalDust COALDUST = new CoalDust();
@@ -81,5 +90,5 @@ public class VEItems
 
     //Crops
     //public static WaterCropItem WATER_CROP_ITEM = new WaterCropItem(VEBlocks.WATER_CROP.getBlock(), new Item.Properties().tab(VESetup.itemGroup));
-    public static RiceItem RICE_ITEM = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
+    public static RiceItem RICE_ITEM = new RiceItem(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.RICE_FOOD)); // Can refactor to call the block here or in the item's class
 }

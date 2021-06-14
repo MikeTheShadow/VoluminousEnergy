@@ -138,5 +138,10 @@
     "item.voluminousenergy.end_stone_dust": "End Stone Dust",
     "item.voluminousenergy.basalt_dust": "Basalt Dust",
     "item.voluminousenergy.flint_dust": "Flint Dust",
-    "item.voluminousenergy.netherrack_dust": "Netherrack Dust"
+    "item.voluminousenergy.netherrack_dust": "Netherrack Dust",
+    "item.voluminousenergy.raw_bauxite": "Raw Bauxite",
+    "item.voluminousenergy.raw_cinnabar": "Raw Cinnabar",
+    "item.voluminousenergy.raw_galena": "Raw Galena",
+    "item.voluminousenergy.raw_rutile": "Raw Rutile",
+    "item.voluminousenergy.raw_sulfur": "Raw Sulfur"
 }

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:bauxiteore"
+    "voluminousenergy:bauxiteore",
+    "voluminousenergy:raw_bauxite"
   ]
 }

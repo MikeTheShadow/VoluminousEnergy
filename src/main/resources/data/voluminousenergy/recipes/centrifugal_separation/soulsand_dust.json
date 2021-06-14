@@ -8,7 +8,7 @@
   "result": {
     "item": "voluminousenergy:sand_dust",
     "count": 10,
-    "consumes_bucket": 1
+    "buckets": 1
   },
   "rng_slot_0": {
     "item": "voluminousenergy:coaldust",

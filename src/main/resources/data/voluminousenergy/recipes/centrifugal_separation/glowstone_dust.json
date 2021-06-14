@@ -8,7 +8,7 @@
   "result": {
     "item": "minecraft:redstone",
     "count": 8,
-    "consumes_bucket": 0
+    "buckets": 0
   },
   "rng_slot_0": {
     "item": "voluminousenergy:gold_dust",
