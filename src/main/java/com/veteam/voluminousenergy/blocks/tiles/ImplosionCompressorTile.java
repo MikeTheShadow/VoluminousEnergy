@@ -110,7 +110,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                         this.counter = recipe.getProcessTime();
-                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(2));
+                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(3));
                         this.length = this.counter;
                     } else {
                         this.counter = 0;

@@ -113,7 +113,7 @@ public class ImplosionCompressorScreen  extends ContainerScreen<ImplosionCompres
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
+            this.blit(matrixStack,i+78,j+31,176,0,progress,17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
         }
         // Upgrade slot
