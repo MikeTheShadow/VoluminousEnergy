@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -81,6 +82,8 @@ public class UuidPacket {
                 tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
             else if (openContainer instanceof CentrifugalSeparatorContainer)
                 tileEntity = ((CentrifugalSeparatorContainer) openContainer).tileEntity;
+            else if (openContainer instanceof ImplosionCompressorContainer)
+                tileEntity = ((ImplosionCompressorContainer) openContainer).tileEntity;
 
             // When tile is set, but not null
             if(tileEntity != null) interactWithTile(packet,tileEntity);

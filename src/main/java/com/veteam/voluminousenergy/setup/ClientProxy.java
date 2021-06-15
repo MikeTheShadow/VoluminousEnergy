@@ -29,6 +29,7 @@ public class ClientProxy implements IProxy {
         ScreenManager.register(VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER, PrimitiveSolarPanelScreen::new);
         ScreenManager.register(VEBlocks.SOLAR_PANEL_CONTAINER, SolarPanelScreen::new);
         ScreenManager.register(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER, CentrifugalSeparatorScreen::new);
+        ScreenManager.register(VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER, ImplosionCompressorScreen::new);
     }
 
     @Override

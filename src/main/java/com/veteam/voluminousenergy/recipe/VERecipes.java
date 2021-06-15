@@ -37,6 +37,7 @@ public class VERecipes {
         public static final IRecipeType<VEFluidRecipe> AQUEOULIZING = registerType(RecipeConstants.AQUEOULIZING);
         public static final IRecipeType<VEFluidRecipe> DISTILLING = registerType(RecipeConstants.DISTILLING);
         public static final IRecipeType<CentrifugalSeparatorRecipe> CENTRIFUGAL_SEPARATION = registerType(RecipeConstants.CENTRIFUGAL_SEPARATION);
+        public static final IRecipeType<ImplosionCompressorRecipe> IMPLOSION_COMPRESSING = registerType(RecipeConstants.IMPLOSION_COMPRESSING);
     }
 
     public static final RegistryObject<IRecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);
@@ -50,6 +51,7 @@ public class VERecipes {
     public static final RegistryObject<IRecipeSerializer<?>> AQUEOULIZING = registerSerializer(RecipeConstants.AQUEOULIZING, () -> AqueoulizerRecipe.SERIALIZER);
     public static final RegistryObject<IRecipeSerializer<?>> DISTILLING = registerSerializer(RecipeConstants.DISTILLING, () -> DistillationRecipe.SERIALIZER);
     public static final RegistryObject<IRecipeSerializer<?>> CENTRIFUGAL_SEPARATION = registerSerializer(RecipeConstants.CENTRIFUGAL_SEPARATION, () -> CentrifugalSeparatorRecipe.SERIALIZER);
+    public static final RegistryObject<IRecipeSerializer<?>> IMPLOSION_COMPRESSING = registerSerializer(RecipeConstants.IMPLOSION_COMPRESSING, () -> ImplosionCompressorRecipe.SERIALIZER);
 
     private static RegistryObject<IRecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<IRecipeSerializer<?>> serializer) {
         VoluminousEnergy.LOGGER.info("RSerializing: " + name.toString());

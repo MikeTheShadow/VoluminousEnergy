@@ -33,6 +33,7 @@ public class Config {
     public static final String CATEGORY_PRIMITIVE_SOLAR_PANEL = "Primitive Solar Panel";
     public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
     public static final String CATEGORY_CENTRIFUGAL_SEPARATOR = "Centrifugal Separator";
+    public static final String CATEGORY_IMPLOSION_COMPRESSOR = "Implosion Compressor";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -202,6 +203,12 @@ public class Config {
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL;
 
+    // Implosion Compressor Variables
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_HARVEST_LEVEL;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -295,6 +302,11 @@ public class Config {
         // Centrifugal Separator
         COMMON_BUILDER.comment("Centrifugal Separator").push(CATEGORY_CENTRIFUGAL_SEPARATOR);
         setupCentrifugalSeparator();
+        COMMON_BUILDER.pop();
+
+        // Implosion Compressor
+        COMMON_BUILDER.comment("Implosion Compressor").push(CATEGORY_IMPLOSION_COMPRESSOR);
+        setupImplosionCompressor();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -570,6 +582,17 @@ public class Config {
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
         CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupImplosionCompressor(){
+        IMPLOSION_COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Implosion Compressor to store")
+                .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Implosion Compressor")
+                .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Implosion Compressor")
+                .defineInRange("Maximum Transfer", 2_500, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){

@@ -207,6 +207,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
     public static ContainerType<CentrifugalSeparatorContainer> CENTRIFUGAL_SEPARATOR_CONTAINER;
 
+    // Implosion Compressor
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static ImplosionCompressorBlock IMPLOSION_COMPRESSOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static TileEntityType<ImplosionCompressorTile> IMPLOSION_COMPRESSOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static ContainerType<ImplosionCompressorContainer> IMPLOSION_COMPRESSOR_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

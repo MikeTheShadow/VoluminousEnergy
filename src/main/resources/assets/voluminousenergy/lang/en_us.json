@@ -51,6 +51,7 @@
     "block.voluminousenergy.primitive_solar_panel": "Primitive Solar Panel",
     "block.voluminousenergy.solar_panel": "Solar Panel",
     "block.voluminousenergy.centrifugal_separator": "Centrifugal Separator",
+    "block.voluminousenergy.implosion_compressor": "Implosion Compressor",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,

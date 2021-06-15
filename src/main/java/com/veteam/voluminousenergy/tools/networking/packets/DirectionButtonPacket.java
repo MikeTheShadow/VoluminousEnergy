@@ -213,6 +213,15 @@ public class DirectionButtonPacket {
                 } else {
                     ((CentrifugalSeparatorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
+            } else if (openContainer instanceof ImplosionCompressorContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((ImplosionCompressorContainer) openContainer).tileEntity;
+                    if (tileEntity instanceof ImplosionCompressorTile) {
+                        ((ImplosionCompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((ImplosionCompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");
             }
