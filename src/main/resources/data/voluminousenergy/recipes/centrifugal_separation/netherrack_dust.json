@@ -1,27 +1,27 @@
 {
   "type": "voluminousenergy:centrifugal_separation",
   "ingredient": {
-    "tag": "forge:dusts/soulsand",
+    "tag": "forge:dusts/netherrack",
     "count": 16
   },
   "process_time": 200,
   "result": {
-    "item": "voluminousenergy:sand_dust",
-    "count": 10,
-    "buckets": 1
+    "item": "voluminousenergy:sulfurdust",
+    "count": 4,
+    "buckets": 0
   },
   "rng_slot_0": {
-    "item": "voluminousenergy:carbondust",
-    "count": 4,
+    "item": "minecraft:redstone",
+    "count": 1,
     "chance": 1
   },
   "rng_slot_1": {
-    "item": "voluminousenergy:crude_oil_bucket",
+    "item": "voluminousenergy:carbondust",
     "count": 1,
     "chance": 1
   },
   "rng_slot_2": {
-    "item": "voluminousenergy:sulfurdust",
+    "item": "minecraft:gold_nugget",
     "count": 1,
     "chance": 1
   }
