@@ -3,6 +3,9 @@ package com.veteam.voluminousenergy.world.biomes;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.*;
+import net.minecraft.world.gen.feature.DesertWellsFeature;
+import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.gen.feature.structure.StructureFeatures;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
@@ -33,10 +36,16 @@ public class RedDesert extends VEBiome {
 
     @Override
     protected void configureGeneration(BiomeGenerationSettings.Builder builder){
-        // Surface Bulider
+        // Surface Builder
         SurfaceBuilderConfig config = new SurfaceBuilderConfig(Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SANDSTONE.defaultBlockState());
         ConfiguredSurfaceBuilder<SurfaceBuilderConfig> configuredSurfaceBuilder = new ConfiguredSurfaceBuilder<>(VESurfaceBuilders.RED_DESERT,config);
         builder.surfaceBuilder(configuredSurfaceBuilder);
+
+        // Structures Builder
+        builder.addStructureStart(StructureFeatures.DESERT_PYRAMID);
+        builder.addStructureStart(StructureFeatures.RUINED_PORTAL_DESERT);
+        builder.addStructureStart(StructureFeatures.VILLAGE_DESERT);
+        builder.addStructureStart(StructureFeatures.STRONGHOLD);
 
         // Underground
         DefaultBiomeFeatures.addDefaultCarvers(builder);
@@ -46,9 +55,9 @@ public class RedDesert extends VEBiome {
         DefaultBiomeFeatures.addDefaultMonsterRoom(builder);
 
         // Above Ground
-        DefaultBiomeFeatures.addDesertVegetation(builder);
-        DefaultBiomeFeatures.addDesertExtraVegetation(builder);
-        DefaultBiomeFeatures.addDesertExtraDecoration(builder);
+        DefaultBiomeFeatures.addDesertVegetation(builder); // Dead bush patches
+        DefaultBiomeFeatures.addDesertExtraVegetation(builder); // Sugar Cane patches, Pumpkins(?!), Cactus
+        DefaultBiomeFeatures.addDesertExtraDecoration(builder); // Desert Wells
     }
 
     @Override
