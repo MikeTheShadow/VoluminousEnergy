@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -282,6 +283,16 @@ public class VoluminousEnergy {
             //Batteries
             itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_ACID_BATTERY);
+
+            // Pickaxe
+            itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.CARBON_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_PICKAXE);
         }
 
         @SubscribeEvent
