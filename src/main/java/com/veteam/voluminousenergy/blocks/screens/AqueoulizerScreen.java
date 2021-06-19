@@ -34,7 +34,7 @@ public class AqueoulizerScreen extends ContainerScreen<AqueoulizerContainer> {
 
     public AqueoulizerScreen(AqueoulizerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (AqueoulizerTile) screenContainer.tileEntity;
+        tileEntity = (AqueoulizerTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

@@ -6,10 +6,8 @@ import com.veteam.voluminousenergy.blocks.screens.DistillationUnitScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
@@ -20,20 +18,16 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.DISTILLATION_UNIT_CONTAINER;
 
-public class DistillationUnitContainer extends Container {
+public class DistillationUnitContainer extends VoluminousContainer {
 
-    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private DistillationUnitScreen screen;
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DistillationUnitContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
         super(DISTILLATION_UNIT_CONTAINER,id);

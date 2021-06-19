@@ -53,7 +53,7 @@ public class BatteryBoxSlotPairPacket {
         if(openContainer != null){
             if(openContainer instanceof BatteryBoxContainer){
                 if(onServer){
-                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if(tileEntity instanceof BatteryBoxTile){ // sanity check
                         ((BatteryBoxTile) tileEntity).updateSlotPair(packet.status, packet.id);
                     }

@@ -30,7 +30,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
 
     public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (StirlingGeneratorTile) screenContainer.tileEntity;
+        tileEntity = (StirlingGeneratorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

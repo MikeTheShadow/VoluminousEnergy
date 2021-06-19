@@ -8,10 +8,8 @@ import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
@@ -22,19 +20,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAINER;
 
-public class CrusherContainer extends Container {
+public class CrusherContainer extends VoluminousContainer {
 
-    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
-    private static final Logger LOGGER = LogManager.getLogger();
     private CrusherScreen crusherScreen;
 
     public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){

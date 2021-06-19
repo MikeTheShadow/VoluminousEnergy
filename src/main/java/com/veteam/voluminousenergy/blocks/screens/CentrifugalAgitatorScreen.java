@@ -34,7 +34,7 @@ public class CentrifugalAgitatorScreen extends ContainerScreen<CentrifugalAgitat
 
     public CentrifugalAgitatorScreen(CentrifugalAgitatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (CentrifugalAgitatorTile) screenContainer.tileEntity;
+        tileEntity = (CentrifugalAgitatorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

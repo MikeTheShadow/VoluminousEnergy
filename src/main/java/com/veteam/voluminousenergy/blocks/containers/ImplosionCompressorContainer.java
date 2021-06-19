@@ -7,10 +7,8 @@ import com.veteam.voluminousenergy.blocks.screens.ImplosionCompressorScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
@@ -26,9 +24,8 @@ import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER;
 
-public class ImplosionCompressorContainer extends Container {
+public class ImplosionCompressorContainer extends VoluminousContainer {
 
-    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private ImplosionCompressorScreen screen;

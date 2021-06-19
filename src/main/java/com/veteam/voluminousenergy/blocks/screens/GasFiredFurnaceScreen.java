@@ -33,7 +33,7 @@ public class GasFiredFurnaceScreen extends ContainerScreen<GasFiredFurnaceContai
 
     public GasFiredFurnaceScreen(GasFiredFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (GasFiredFurnaceTile) screenContainer.tileEntity;
+        tileEntity = (GasFiredFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

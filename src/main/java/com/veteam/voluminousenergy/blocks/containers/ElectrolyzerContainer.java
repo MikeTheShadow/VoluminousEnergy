@@ -8,10 +8,8 @@ import com.veteam.voluminousenergy.blocks.screens.ElectrolyzerScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
@@ -22,18 +20,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
-public class ElectrolyzerContainer extends Container {
+public class ElectrolyzerContainer extends VoluminousContainer {
 
-    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private ElectrolyzerScreen screen;
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public ElectrolyzerContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
         super(VEBlocks.ELECTROLYZER_CONTAINER,id);

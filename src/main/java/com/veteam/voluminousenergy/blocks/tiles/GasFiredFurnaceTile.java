@@ -5,11 +5,9 @@ import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -82,7 +80,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE);
     }
 
-    public final ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -555,5 +553,16 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 1, this.inventory, this.fuelTank);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.inventory = packet.getInventory();
+        packet.updateRelationalTank(this.fuelTank);
     }
 }

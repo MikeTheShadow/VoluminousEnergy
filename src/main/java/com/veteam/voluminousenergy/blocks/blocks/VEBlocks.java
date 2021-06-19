@@ -217,6 +217,13 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
     public static ContainerType<ImplosionCompressorContainer> IMPLOSION_COMPRESSOR_CONTAINER;
 
+    // Blast Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static BlastFurnaceBlock BLAST_FURNACE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static TileEntityType<BlastFurnaceTile> BLAST_FURNACE_TILE;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

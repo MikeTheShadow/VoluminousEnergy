@@ -31,7 +31,7 @@ public class CentrifugalSeparatorScreen extends ContainerScreen<CentrifugalSepar
 
     public CentrifugalSeparatorScreen(CentrifugalSeparatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (CentrifugalSeparatorTile) screenContainer.tileEntity;
+        tileEntity = (CentrifugalSeparatorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

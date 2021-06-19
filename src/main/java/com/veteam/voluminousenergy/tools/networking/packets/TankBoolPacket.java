@@ -58,7 +58,7 @@ public class TankBoolPacket {
         if(openContainer != null){
             if(openContainer instanceof AirCompressorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -69,7 +69,7 @@ public class TankBoolPacket {
                 // End of Air Compressor logic
             } else if(openContainer instanceof AqueoulizerContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AqueoulizerTile) {
                         ((AqueoulizerTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -80,7 +80,7 @@ public class TankBoolPacket {
                 // End of Aqueoulizer
             } else if(openContainer instanceof CentrifugalAgitatorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CentrifugalAgitatorTile) {
                         ((CentrifugalAgitatorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -91,7 +91,7 @@ public class TankBoolPacket {
                 // End of CentrifugalAgitator
             } else if(openContainer instanceof CombustionGeneratorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CombustionGeneratorTile) {
                         ((CombustionGeneratorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -102,7 +102,7 @@ public class TankBoolPacket {
                 // End of CombustionGenerator
             } else if (openContainer instanceof DistillationUnitContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof DistillationUnitTile) {
                         ((DistillationUnitTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -113,7 +113,7 @@ public class TankBoolPacket {
                 // End of DistillationUnit
             } else if(openContainer instanceof GasFiredFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof GasFiredFurnaceTile) {
                         ((GasFiredFurnaceTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -124,7 +124,7 @@ public class TankBoolPacket {
                 // End of GasFiredFurnace
             } else if (openContainer instanceof PumpContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((PumpContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((PumpContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof PumpTile) {
                         ((PumpTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }

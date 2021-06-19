@@ -33,7 +33,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
 
     public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (CombustionGeneratorTile) screenContainer.tileEntity;
+        tileEntity = (CombustionGeneratorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

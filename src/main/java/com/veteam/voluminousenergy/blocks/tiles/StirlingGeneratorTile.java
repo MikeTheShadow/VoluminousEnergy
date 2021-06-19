@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,7 +47,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
@@ -55,7 +56,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     private int length;
     private int energyRate;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
+    private ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(){
         super(VEBlocks.STIRLING_GENERATOR_TILE);
@@ -299,6 +300,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             // Direction Buttons
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -320,5 +322,16 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
     }
 }

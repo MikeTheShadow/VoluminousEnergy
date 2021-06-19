@@ -34,7 +34,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
 
     public BatteryBoxScreen(BatteryBoxContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (BatteryBoxTile) screenContainer.tileEntity;
+        tileEntity = (BatteryBoxTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

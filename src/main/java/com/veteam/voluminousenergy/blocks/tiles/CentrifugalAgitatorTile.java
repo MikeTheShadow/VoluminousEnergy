@@ -7,10 +7,7 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -84,7 +81,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE);
     }
 
-    public final ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -463,6 +460,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank0.getSideDirection().get3DDataValue(), outputTank0.getId()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank1.getSideDirection().get3DDataValue(), outputTank1.getId()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -484,6 +482,20 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 3, this.inventory, this.inputTank, this.outputTank0, this.outputTank1);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
+        packet.updateRelationalTank(this.inputTank);
+        packet.updateRelationalTank(this.outputTank0);
+        packet.updateRelationalTank(this.outputTank1);
     }
 
 }

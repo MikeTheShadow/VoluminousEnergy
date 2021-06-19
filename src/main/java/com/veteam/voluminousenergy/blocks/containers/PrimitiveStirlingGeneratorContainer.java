@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -24,9 +23,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
 
-public class PrimitiveStirlingGeneratorContainer extends Container {
+public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
 
-    private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private PrimitiveStirlingGeneratorScreen screen;

@@ -32,7 +32,7 @@ public class CompressorScreen extends ContainerScreen<CompressorContainer> {
 
     public CompressorScreen(CompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (CompressorTile) screenContainer.tileEntity;
+        tileEntity = (CompressorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

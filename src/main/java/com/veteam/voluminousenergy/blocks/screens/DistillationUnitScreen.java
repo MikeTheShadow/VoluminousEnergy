@@ -34,7 +34,7 @@ public class DistillationUnitScreen extends ContainerScreen<DistillationUnitCont
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (DistillationUnitTile) screenContainer.tileEntity;
+        tileEntity = (DistillationUnitTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

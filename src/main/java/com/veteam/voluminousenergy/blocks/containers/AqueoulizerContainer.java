@@ -6,10 +6,8 @@ import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
@@ -27,9 +25,8 @@ import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AQUEOULIZER_CONTAINER;
 
-public class AqueoulizerContainer extends Container {
+public class AqueoulizerContainer extends VoluminousContainer {
 
-    public TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private AqueoulizerScreen screen;

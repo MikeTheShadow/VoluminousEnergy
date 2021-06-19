@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,13 +43,14 @@ import java.util.UUID;
 
 public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
 
     private int counter;
     private int length;
+    private ItemStackHandler inventory = this.createHandler();
 
     public PrimitiveStirlingGeneratorTile() { super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE); }
 
@@ -262,6 +264,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             // Direction Buttons
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -283,5 +286,17 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
     }
 }

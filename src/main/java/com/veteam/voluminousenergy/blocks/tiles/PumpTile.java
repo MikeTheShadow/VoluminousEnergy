@@ -5,10 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -57,7 +54,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
@@ -73,6 +70,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     private RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT);
     private Fluid pumpingFluid = Fluids.EMPTY;
+    private ItemStackHandler inventory = this.createHandler();
 
     public PumpTile() {
         super(VEBlocks.PUMP_TILE);
@@ -387,6 +385,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fluidTank.getSideDirection().get3DDataValue(), fluidTank.getId()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -408,5 +407,17 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 1, this.inventory, this.fluidTank);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
+        packet.updateRelationalTank(this.fluidTank);
     }
 }

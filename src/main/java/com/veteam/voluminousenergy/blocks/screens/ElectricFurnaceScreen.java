@@ -32,7 +32,7 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
 
     public ElectricFurnaceScreen(ElectricFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (ElectricFurnaceTile) screenContainer.tileEntity;
+        tileEntity = (ElectricFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

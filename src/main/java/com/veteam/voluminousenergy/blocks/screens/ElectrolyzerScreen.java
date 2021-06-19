@@ -31,7 +31,7 @@ public class ElectrolyzerScreen extends ContainerScreen<ElectrolyzerContainer> {
 
     public ElectrolyzerScreen(ElectrolyzerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (ElectrolyzerTile) screenContainer.tileEntity;
+        tileEntity = (ElectrolyzerTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

@@ -34,7 +34,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
 
     public CrusherScreen(CrusherContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (CrusherTile) screenContainer.tileEntity;
+        tileEntity = (CrusherTile) screenContainer.getTileEntity();
         screenContainer.setCrusherScreen(this);
     }
 

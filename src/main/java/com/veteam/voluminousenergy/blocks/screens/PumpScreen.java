@@ -34,7 +34,7 @@ public class PumpScreen extends ContainerScreen<PumpContainer> {
 
     public PumpScreen(PumpContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (PumpTile) screenContainer.tileEntity;
+        tileEntity = (PumpTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

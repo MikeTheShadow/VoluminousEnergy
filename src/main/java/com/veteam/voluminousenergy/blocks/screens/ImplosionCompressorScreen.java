@@ -32,7 +32,7 @@ public class ImplosionCompressorScreen  extends ContainerScreen<ImplosionCompres
 
     public ImplosionCompressorScreen(ImplosionCompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (ImplosionCompressorTile) screenContainer.tileEntity;
+        tileEntity = (ImplosionCompressorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

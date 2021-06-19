@@ -51,39 +51,39 @@ public class UuidPacket {
         if(openContainer != null){
             TileEntity tileEntity = null;
             if(openContainer instanceof CrusherContainer)
-                tileEntity = ((CrusherContainer) openContainer).tileEntity;
+                tileEntity = ((CrusherContainer) openContainer).getTileEntity();
             else if (openContainer instanceof AirCompressorContainer)
-                tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
+                tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof AqueoulizerContainer)
-                tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
             else if (openContainer instanceof CentrifugalAgitatorContainer)
-                tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof CombustionGeneratorContainer)
-                tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof CompressorContainer)
-                tileEntity = ((CompressorContainer) openContainer).tileEntity;
+                tileEntity = ((CompressorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof DistillationUnitContainer)
-                tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
             else if (openContainer instanceof ElectricFurnaceContainer)
-                tileEntity = ((ElectricFurnaceContainer) openContainer).tileEntity;
+                tileEntity = ((ElectricFurnaceContainer) openContainer).getTileEntity();
             else if (openContainer instanceof ElectrolyzerContainer)
-                tileEntity = ((ElectrolyzerContainer) openContainer).tileEntity;
+                tileEntity = ((ElectrolyzerContainer) openContainer).getTileEntity();
             else if (openContainer instanceof GasFiredFurnaceContainer)
-                tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
             else if (openContainer instanceof  PrimitiveBlastFurnaceContainer)
-                tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).tileEntity;
+                tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).getTileEntity();
             else if (openContainer instanceof PrimitiveStirlingGeneratorContainer)
                 tileEntity = ((PrimitiveStirlingGeneratorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof PumpContainer)
-                tileEntity = ((PumpContainer) openContainer).tileEntity;
+                tileEntity = ((PumpContainer) openContainer).getTileEntity();
             else if (openContainer instanceof StirlingGeneratorContainer)
-                tileEntity = ((StirlingGeneratorContainer) openContainer).tileEntity;
+                tileEntity = ((StirlingGeneratorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof BatteryBoxContainer)
-                tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
             else if (openContainer instanceof CentrifugalSeparatorContainer)
-                tileEntity = ((CentrifugalSeparatorContainer) openContainer).tileEntity;
+                tileEntity = ((CentrifugalSeparatorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof ImplosionCompressorContainer)
-                tileEntity = ((ImplosionCompressorContainer) openContainer).tileEntity;
+                tileEntity = ((ImplosionCompressorContainer) openContainer).getTileEntity();
 
             // When tile is set, but not null
             if(tileEntity != null) interactWithTile(packet,tileEntity);

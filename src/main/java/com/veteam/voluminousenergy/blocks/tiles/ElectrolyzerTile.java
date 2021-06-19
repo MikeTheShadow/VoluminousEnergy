@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -337,7 +338,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         return super.save(tag);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(7) {
+    public ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -537,8 +538,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngOneSm.getDirection().get3DDataValue(),rngOneSm.getSlotNum()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngTwoSm.getDirection().get3DDataValue(),rngTwoSm.getSlotNum()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngThreeSm.getDirection().get3DDataValue(),rngThreeSm.getSlotNum()));
-
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -560,5 +561,17 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
     }
 }

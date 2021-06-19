@@ -56,7 +56,7 @@ public class DirectionButtonPacket {
             // CRUSHER
             if(openContainer instanceof CrusherContainer){ // Crusher
                 if(onServer){
-                    TileEntity tileEntity = ((CrusherContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CrusherContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CrusherTile){
                         ((CrusherTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -66,7 +66,7 @@ public class DirectionButtonPacket {
             // AIR COMPRESSOR
             } else if (openContainer instanceof AirCompressorContainer) { // Air Compressor
                 if (onServer) {
-                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -76,7 +76,7 @@ public class DirectionButtonPacket {
             // AQUEOULIZER
             } else if(openContainer instanceof AqueoulizerContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AqueoulizerTile) {
                         ((AqueoulizerTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -86,7 +86,7 @@ public class DirectionButtonPacket {
                 // CENTRIFUGAL AGITATOR CONTAINER
             } else if(openContainer instanceof CentrifugalAgitatorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CentrifugalAgitatorTile) {
                         ((CentrifugalAgitatorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -96,7 +96,7 @@ public class DirectionButtonPacket {
                 // COMBUSTION GENERATOR
             } else if (openContainer instanceof CombustionGeneratorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CombustionGeneratorTile) {
                         ((CombustionGeneratorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -106,7 +106,7 @@ public class DirectionButtonPacket {
                 // COMPRESSOR
             } else if (openContainer instanceof CompressorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CompressorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CompressorTile) {
                         ((CompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -116,7 +116,7 @@ public class DirectionButtonPacket {
                 // DISTILLATION UNIT
             } else if (openContainer instanceof DistillationUnitContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof DistillationUnitTile) {
                         ((DistillationUnitTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -126,7 +126,7 @@ public class DirectionButtonPacket {
                 // ELECTRIC FURNACE
             } else if (openContainer instanceof ElectricFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((ElectricFurnaceContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((ElectricFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof ElectricFurnaceTile) {
                         ((ElectricFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -136,7 +136,7 @@ public class DirectionButtonPacket {
                 // ELECTROLYZER
             } else if(openContainer instanceof ElectrolyzerContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((ElectrolyzerContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((ElectrolyzerContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof ElectrolyzerTile) {
                         ((ElectrolyzerTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -146,7 +146,7 @@ public class DirectionButtonPacket {
                 // GAS FIRED FURNACE
             } else if(openContainer instanceof GasFiredFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof GasFiredFurnaceTile) {
                         ((GasFiredFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -156,7 +156,7 @@ public class DirectionButtonPacket {
                 // Primitive Blast Furnace
             } else if(openContainer instanceof PrimitiveBlastFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((PrimitiveBlastFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof PrimitiveBlastFurnaceTile) {
                         ((PrimitiveBlastFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -176,7 +176,7 @@ public class DirectionButtonPacket {
                 // Pump
             } else if (openContainer instanceof PumpContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((PumpContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((PumpContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof PumpTile) {
                         ((PumpTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -186,7 +186,7 @@ public class DirectionButtonPacket {
                 // Stirling Generator
             } else if (openContainer instanceof StirlingGeneratorContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((StirlingGeneratorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((StirlingGeneratorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof StirlingGeneratorTile) {
                         ((StirlingGeneratorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -196,7 +196,7 @@ public class DirectionButtonPacket {
                 // Battery Box
             } else if (openContainer instanceof BatteryBoxContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof BatteryBoxTile) {
                         ((BatteryBoxTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -206,7 +206,7 @@ public class DirectionButtonPacket {
                 // Centrifugal Separator
             } else if (openContainer instanceof CentrifugalSeparatorContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((CentrifugalSeparatorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CentrifugalSeparatorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CentrifugalSeparatorTile) {
                         ((CentrifugalSeparatorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }
@@ -215,7 +215,7 @@ public class DirectionButtonPacket {
                 }
             } else if (openContainer instanceof ImplosionCompressorContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((ImplosionCompressorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((ImplosionCompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof ImplosionCompressorTile) {
                         ((ImplosionCompressorTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
                     }

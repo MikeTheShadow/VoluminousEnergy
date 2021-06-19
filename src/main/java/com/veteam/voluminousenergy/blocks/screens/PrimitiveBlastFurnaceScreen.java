@@ -30,7 +30,7 @@ public class PrimitiveBlastFurnaceScreen extends ContainerScreen<PrimitiveBlastF
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (PrimitiveBlastFurnaceTile) screenContainer.tileEntity;
+        tileEntity = (PrimitiveBlastFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

@@ -4,9 +4,11 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,7 +64,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
     }
 
-    private final ItemStackHandler inventory = createHandler();
+    private ItemStackHandler inventory = createHandler();
 
     @Override
     public void tick() { //Tick method to run every tick
@@ -306,6 +308,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -327,5 +330,15 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.inventory = packet.getInventory();
     }
 }

@@ -61,6 +61,12 @@ public class VENetwork {
                 .encoder(BatteryBoxSendOutPowerPacket::toBytes)
                 .consumer(BatteryBoxSendOutPowerPacket::handle)
                 .add();
+
+        channel.messageBuilder(UniversalUpdatePacket.class, 8)
+                .decoder(UniversalUpdatePacket::fromBytes)
+                .encoder(UniversalUpdatePacket::toBytes)
+                .consumer(UniversalUpdatePacket::handle)
+                .add();
     }
 
     private VENetwork(){

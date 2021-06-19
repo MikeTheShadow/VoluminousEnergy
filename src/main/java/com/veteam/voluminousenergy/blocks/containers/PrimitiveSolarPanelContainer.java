@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.screens.PrimitiveSolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,9 +20,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER;
 
-public class PrimitiveSolarPanelContainer extends Container {
+public class PrimitiveSolarPanelContainer extends VoluminousContainer {
 
-    private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private PrimitiveSolarPanelScreen screen;
