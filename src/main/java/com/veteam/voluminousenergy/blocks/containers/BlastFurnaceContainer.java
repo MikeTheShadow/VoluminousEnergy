@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.AirCompressorScreen;
+import com.veteam.voluminousenergy.blocks.screens.BlastFurnaceScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,39 +13,38 @@ import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
-import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_CONTAINER;
+import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.BLAST_FURNACE_CONTAINER;
 
-public class AirCompressorContainer extends VoluminousContainer {
+public class BlastFurnaceContainer extends VoluminousContainer {
 
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
-    protected AirCompressorScreen airCompressorScreen;
-    private static final Logger LOGGER = LogManager.getLogger();
+    private BlastFurnaceScreen screen;
 
-    public AirCompressorContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
-        super(AIR_COMPRESSOR_CONTAINER,id);
+    public BlastFurnaceContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
+        super(BLAST_FURNACE_CONTAINER,id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 70, 49)); // Air Compressor extract slot
-            addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
+            addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
+            addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from heat tank
+            addSlot(new VEInsertSlot(h, 2, 96,11)); // First input slot
+            addSlot(new VEInsertSlot(h, 3, 96,42)); // Second input slot
+            addSlot(new VEInsertSlot(h, 4, 137,11)); // Third input slot
+            addSlot(new VEInsertSlot(h, 5,130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 
-        addDataSlot(new IntReferenceHolder() { // TrackInt is now addDataSlot
+        addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
                 return getEnergy();
@@ -58,20 +57,9 @@ public class AirCompressorContainer extends VoluminousContainer {
         });
     }
 
-    public int getEnergy(){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-    }
-
-    public int powerScreen(int px){
-        int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
-    }
-
     @Override
     public boolean stillValid(PlayerEntity playerIn) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.AIR_COMPRESSOR_BLOCK);
+        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.BLAST_FURNACE_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -114,24 +102,21 @@ public class AirCompressorContainer extends VoluminousContainer {
     }
 
     // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setAirCompressorScreen(AirCompressorScreen airCompressorScreen){
-        this.airCompressorScreen = airCompressorScreen;
+    public void setScreen(BlastFurnaceScreen screen){
+        this.screen = screen;
     }
 
-    public void updateDirectionButton(int direction, int slotId){
-        this.airCompressorScreen.updateButtonDirection(direction,slotId);
-    }
+    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
 
     public void updateStatusButton(boolean status, int slotId){
-        this.airCompressorScreen.updateBooleanButton(status, slotId);
+        this.screen.updateBooleanButton(status, slotId);
     }
 
     public void updateStatusTank(boolean status, int id){
-        this.airCompressorScreen.updateTankStatus(status, id);
+        this.screen.updateTankStatus(status, id);
     }
 
     public void updateDirectionTank(int direction, int id){
-        this.airCompressorScreen.updateTankDirection(direction, id);
+        this.screen.updateTankDirection(direction, id);
     }
 }
-

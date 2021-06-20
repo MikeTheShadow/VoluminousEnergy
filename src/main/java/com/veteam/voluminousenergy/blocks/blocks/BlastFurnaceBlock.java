@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
+import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -36,7 +36,7 @@ public class BlastFurnaceBlock extends FaceableBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new CentrifugalAgitatorTile();} // TODO: Tile for the blast furnace
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new BlastFurnaceTile();}
 
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){

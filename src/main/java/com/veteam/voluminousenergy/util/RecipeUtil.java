@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
+import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -131,4 +132,41 @@ public class RecipeUtil {
         return null;
     }
 
+    public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(World world, ItemStack firstInput, ItemStack secondInput){
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) && ((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)){
+                    return (IndustrialBlastingRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isFirstIngredientForIndustrialBlastingRecipe(World world, ItemStack firstInput){
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem())) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isSecondIngredientForIndustrialBlastingRecipe(World world, ItemStack secondInput){
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnOutputForIndustrialBlastingRecipe(World world, ItemStack outputStack){
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).getResult().sameItem(outputStack)) return true;
+            }
+        }
+        return false;
+    }
 }

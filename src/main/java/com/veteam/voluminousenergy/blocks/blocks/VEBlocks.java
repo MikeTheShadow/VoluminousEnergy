@@ -224,6 +224,9 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
     public static TileEntityType<BlastFurnaceTile> BLAST_FURNACE_TILE;
 
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static ContainerType<BlastFurnaceContainer> BLAST_FURNACE_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

@@ -74,7 +74,7 @@ public class VEWaterCrop extends BushBlock implements IGrowable, IWaterLoggable{
             if(doubleBlockHalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !state.canSurvive(worldIn, currentPos)){
                 return Blocks.AIR.defaultBlockState();
             }
-
+            return super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos); // Excluding this super will cause neighbours to break
         }
         return Blocks.AIR.defaultBlockState();
     }

@@ -1,17 +1,15 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
+import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.*;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -20,7 +18,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
@@ -58,37 +55,27 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> iTopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
     private LazyOptional<IItemHandlerModifiable> iBottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IItemHandlerModifiable> o0TopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IItemHandlerModifiable> o0BottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
-    private LazyOptional<IItemHandlerModifiable> o1TopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
-    private LazyOptional<IItemHandlerModifiable> o1BottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 5,6));
-    private LazyOptional<IItemHandlerModifiable> o2Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory,6,7));
+    private LazyOptional<IItemHandlerModifiable> firstItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
+    private LazyOptional<IItemHandlerModifiable> secondItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
+    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
 
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
-    private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutput0FluidHandler);
-    private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutput1FluidHandler);
 
-    public VESlotManager iTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot");
-    public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
-    public VESlotManager o0TopManager = new VESlotManager(2,Direction.UP,false,"slot.voluminousenergy.input_slot");
-    public VESlotManager o0BottomManager = new VESlotManager(3,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
-    public VESlotManager o1TopManager = new VESlotManager(4,Direction.UP,false,"slot.voluminousenergy.input_slot");
-    public VESlotManager o1BottomManager = new VESlotManager(5,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
-    public VESlotManager o2Manager = new VESlotManager(6,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot");
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot");
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot");
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot");
 
-    private int tankCapacity = 4000;
-
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1);
+    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
 
     private int counter;
     private int length;
     private byte tick = 19;
     private boolean validity = false;
 
-    public final ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -110,96 +97,74 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         if (!(validity)) {
             return;
         }
-        ItemStack inputTop = inventory.getStackInSlot(0).copy();
-        ItemStack inputBottom = inventory.getStackInSlot(1).copy();
-        ItemStack firstOutputTop = inventory.getStackInSlot(2).copy();
-        ItemStack firstOutputBottom = inventory.getStackInSlot(3).copy();
-        ItemStack secondOutputTop = inventory.getStackInSlot(4).copy();
-        ItemStack secondOutputBottom = inventory.getStackInSlot(5).copy();
-        ItemStack thirdOutput = inventory.getStackInSlot(6).copy();
 
-        inputTank.setIOItemstack(inputTop.copy(),inputBottom.copy());
-        outputTank0.setIOItemstack(firstOutputTop.copy(),firstOutputBottom.copy());
-        outputTank1.setIOItemstack(secondOutputTop.copy(),secondOutputBottom.copy());
+        // Main idea: Heat --> Needs to be "high enough" to work, 2 Item Inputs, 1 item output.
+        ItemStack heatTankItemInputTop = inventory.getStackInSlot(0).copy();
+        ItemStack heatTankItemInputBottom = inventory.getStackInSlot(1).copy();
+        ItemStack firstItemInput = inventory.getStackInSlot(2).copy();
+        ItemStack secondItemInput = inventory.getStackInSlot(3).copy();
+        ItemStack itemOutput = inventory.getStackInSlot(4).copy();
 
-        if(inputFluid(inputTank,0,1)) return;
-        if(this.outputFluid(inputTank,0,1)) return;
+        heatTank.setIOItemstack(heatTankItemInputTop.copy(),heatTankItemInputBottom.copy());
 
-        if(this.inputFluid(outputTank0,2,3)) return;
-        if(this.outputFluid(outputTank0,2,3)) return;
+        if(inputFluid(heatTank,0,1)) return;
+        if(this.outputFluid(heatTank,0,1)) return;
 
-        if(this.inputFluid(outputTank1,4,5)) return;
-        if(this.outputFluid(outputTank1,4,5)) return;
-
-        // Main Fluid Processing occurs here:
-        if (inputTank != null || !inputTank.getTank().isEmpty()) {
-            VEFluidRecipe recipe = RecipeUtil.getDistillationRecipe(level, inputTank.getTank().getFluid());
-
+        // Main Processing occurs here:
+        if (heatTank != null || !heatTank.getTank().isEmpty()) {
+            IndustrialBlastingRecipe recipe = RecipeUtil.getIndustrialBlastingRecipe(level, firstItemInput.copy(), secondItemInput.copy());
+            VoluminousEnergy.LOGGER.debug("FLUID TEMPERATURE: " + heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() + " FLUID: " + heatTank.getTank().getFluid().getTranslationKey());
             if (recipe != null) {
-                if (outputTank0 != null && outputTank1 != null) {
+                // Tank fluid amount check + capacity and recipe checks
+                if (itemOutput.getCount() < recipe.getResult().getMaxStackSize() &&
+                        heatTank.getTank().getFluidAmount() >= 50 && // TODO: Config to adjust consumption of heat source
+                        heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
+                        recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
+                        firstItemInput.getCount() >= recipe.getIngredientCount() &&
+                        secondItemInput.sameItem(recipe.getSecondInputStack()) &&
+                        secondItemInput.getCount() >= recipe.getSecondInputAmount()){
+                    // Check for power
+                    if (canConsumeEnergy()) {
+                        if (counter == 1){
 
-                    // Tank fluid amount check + tank cap checks
-                    if (thirdOutput.getCount() < ((DistillationRecipe)recipe).getThirdResult().getMaxStackSize() && inputTank.getTank().getFluidAmount()
-                            >= recipe.getInputAmount() && outputTank0.getTank().getFluidAmount()
-                            + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount()
-                            + ((DistillationRecipe)recipe).getSecondFluid().getAmount() <= tankCapacity){
-                        // Check for power
-                        if (canConsumeEnergy()) {
-                            if (counter == 1){
+                            // Drain Input
+                            heatTank.getTank().drain(50, IFluidHandler.FluidAction.EXECUTE); // TODO: Config: See above
 
-                                // Drain Input
-                                inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
+                            inventory.extractItem(2,recipe.getIngredientCount(),false);
+                            inventory.extractItem(3, recipe.getSecondInputAmount(),false);
 
-                                // First Output Tank
-                                if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
-                                    outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
-                                } else {
-                                    outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+                            // Place the new output stack on top of the old one
+                            if (itemOutput.getItem() != recipe.getResult().getItem()) {
+                                if (itemOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
+                                    itemOutput.setCount(1);
                                 }
-
-                                // Second Output Tank
-                                if (outputTank1.getTank().getFluid().getRawFluid() != ((DistillationRecipe)recipe).getSecondResult().getRawFluid()){
-                                    outputTank1.getTank().setFluid(((DistillationRecipe)recipe).getSecondFluid().copy());
-                                } else {
-                                    outputTank1.getTank().fill(((DistillationRecipe)recipe).getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                if (thirdOutput.getItem() != ((DistillationRecipe)recipe).getThirdResult().getItem()) {
-                                    if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
-                                        thirdOutput.setCount(1);
-                                    }
-                                    inventory.insertItem(6,((DistillationRecipe)recipe).getThirdResult().copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    inventory.insertItem(6,((DistillationRecipe)recipe).getThirdResult().copy(),false); // Place the new output stack on top of the old one
-                                }
-
-                                counter--;
-                                consumeEnergy();
-                                this.setChanged();
-                            } else if (counter > 0){
-                                counter--;
-                                consumeEnergy();
-                            } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(7).copy());
-                                length = counter;
                             }
-                        } // Energy Check
-                    } else { // If fluid tank empty set counter to zero
-                        counter = 0;
-                    }
+                            inventory.insertItem(4, recipe.getResult().copy(),false); // CRASH the game if this is not empty!
+
+                            counter--;
+                            consumeEnergy();
+                            this.setChanged();
+                        } else if (counter > 0){
+                            counter--;
+                            consumeEnergy();
+                        } else {
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(5).copy());
+                            length = counter;
+                        }
+                    } // Energy Check
+                } else { // Set counter to zero
+                    counter = 0;
                 }
             }
         }
-
-        // End of item handler
 
     }
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
         energy.ifPresent(e -> ((VEEnergyStorage)e)
-                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(7).copy()
+                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), // TODO: Config for the blast furnace
+                        this.inventory.getStackInSlot(5).copy()
                         )
                 )
         );
@@ -207,7 +172,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     private boolean canConsumeEnergy(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(7).copy());
+                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy()); // TODO: Inventory numbers
     }
 
     /*
@@ -221,26 +186,15 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         createHandler().deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+
         // Tanks
-        CompoundNBT inputTank = tag.getCompound("inputTank");
-        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundNBT heatTank = tag.getCompound("heatTank");
 
-        this.inputTank.getTank().readFromNBT(inputTank);
-        this.outputTank0.getTank().readFromNBT(outputTank0);
-        this.outputTank1.getTank().readFromNBT(outputTank1);
+        this.heatTank.getTank().readFromNBT(heatTank);
+        this.heatTank.readGuiProperties(tag, "heat_tank_gui");
 
-        this.inputTank.readGuiProperties(tag, "input_tank_gui");
-        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
-
-        this.iTopManager.read(tag, "i_top_manager");
-        this.iBottomManager.read(tag, "i_bottom_manager");
-        this.o0TopManager.read(tag, "o_0_top_manager");
-        this.o0BottomManager.read(tag, "o_0_bottom_manager");
-        this.o1TopManager.read(tag, "o_1_top_manager");
-        this.o1BottomManager.read(tag, "o_1_bottom_manager");
-        this.o2Manager.read(tag, "o_2_manager");
+        this.heatTankItemTopManager.read(tag, "heat_top_manager");
+        this.heatTankItemBottomManager.read(tag, "heat_bottom_manager");
 
         super.load(state,tag);
     }
@@ -257,29 +211,16 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         });
 
         // Tanks
-        CompoundNBT inputNBT = new CompoundNBT();
-        CompoundNBT outputNBT0 = new CompoundNBT();
-        CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundNBT heatTankNBT = new CompoundNBT();
 
-        this.inputTank.getTank().writeToNBT(inputNBT);
-        this.outputTank0.getTank().writeToNBT(outputNBT0);
-        this.outputTank1.getTank().writeToNBT(outputNBT1);
+        this.heatTank.getTank().writeToNBT(heatTankNBT);
 
-        tag.put("inputTank", inputNBT);
-        tag.put("outputTank0", outputNBT0);
-        tag.put("outputTank1", outputNBT1);
+        tag.put("heatTank", heatTankNBT);
 
-        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
-        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
+        this.heatTank.writeGuiProperties(tag, "heat_tank_gui");
 
-        this.iTopManager.write(tag, "i_top_manager");
-        this.iBottomManager.write(tag, "i_bottom_manager");
-        this.o0TopManager.write(tag, "o_0_top_manager");
-        this.o0BottomManager.write(tag, "o_0_bottom_manager");
-        this.o1TopManager.write(tag, "o_1_top_manager");
-        this.o1BottomManager.write(tag, "o_1_bottom_manager");
-        this.o2Manager.write(tag, "o_2_manager");
+        this.heatTankItemTopManager.write(tag, "heat_top_manager");
+        this.heatTankItemBottomManager.write(tag, "heat_bottom_manager");
 
         return super.save(tag);
     }
@@ -303,41 +244,27 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     }
 
     private IFluidHandler createInputFluidHandler() {
-        return this.createFluidHandler(new DistillationRecipe(), inputTank);
+        return this.createFluidHandler(new DistillationRecipe(), heatTank); // TODO: Resolve fluid handler for the heat tank
     }
-
-    private IFluidHandler createOutput0FluidHandler(){
-        return this.createFluidHandler(new DistillationRecipe(), outputTank0);
-    }
-
-    private IFluidHandler createOutput1FluidHandler(){
-        return this.createFluidHandler(new DistillationRecipe(), outputTank1);
-    }
-
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(8) {
+        return new ItemStackHandler(6) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!! TODO: Blast furnace recipe
                 if (slot == 0 || slot == 1) {
-                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),level).orElse(null);
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    return RecipeUtil.getDistillationRecipeFromResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
-                } else if (slot == 4 || slot == 5 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    return RecipeUtil.getDistillationRecipeFromSecondResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
-                } else if (slot == 6){
-                    return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
-                } else if (slot == 7){
+                    return stack.getItem() instanceof BucketItem || stack.getItem() == Items.BUCKET;
+                } else if (slot == 2) {
+                    return RecipeUtil.isFirstIngredientForIndustrialBlastingRecipe(level, stack.copy());
+                } else if (slot == 3) {
+                    return RecipeUtil.isSecondIngredientForIndustrialBlastingRecipe(level, stack.copy());
+                } else if (slot == 4) {
+                    return RecipeUtil.isAnOutputForIndustrialBlastingRecipe(level, stack.copy());
+                } else if (slot == 5){
                     return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER);
                 }
                 return false;
@@ -346,14 +273,13 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
-                return super.insertItem(slot, stack, simulate);
+                return super.insertItem(slot, stack, simulate); // TODO: Investigate if needed
             }
         };
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
+        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer TODO: Config
     }
 
     @Nonnull
@@ -362,31 +288,23 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null)
                 return handler.cast();
-            if(iTopManager.getStatus() && iTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
+            if(heatTankItemTopManager.getStatus() && heatTankItemTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return iTopHandler.cast();
-            else if(iBottomManager.getStatus() && iBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
+            else if(heatTankItemBottomManager.getStatus() && heatTankItemBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return iBottomHandler.cast();
-            else if(o0TopManager.getStatus() && o0TopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o0TopHandler.cast();
-            else if(o0BottomManager.getStatus() && o0BottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o0BottomHandler.cast();
-            else if(o1TopManager.getStatus() && o1TopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o1TopHandler.cast();
-            else if(o1BottomManager.getStatus() && o1BottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o1BottomHandler.cast();
-            else if(o2Manager.getStatus() && o2Manager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o2Handler.cast();
+            else if (firstInputSlotManager.getStatus() && firstInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+                return firstItemInputHandler.cast();
+            else if (secondInputSlotManager.getStatus() && secondInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+                return secondItemInputHandler.cast();
+            else if (outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+                return outputItemHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
+            if(heatTank.getSideStatus() && heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return inputFluidHandler.cast();
-            if(outputTank0.getSideStatus() && outputTank0.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return output0FluidHandler.cast();
-            if(outputTank1.getSideStatus() && outputTank1.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return output1FluidHandler.cast();
         }
         return super.getCapability(cap, side);
     }
@@ -399,7 +317,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new DistillationUnitContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return new BlastFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
@@ -412,17 +330,9 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
-            return inputTank.getTank().getFluid();
-        } else if (num == 1){
-            return outputTank0.getTank().getFluid();
-        } else if (num == 2){
-            return outputTank1.getTank().getFluid();
+            return heatTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
-    }
-
-    public int getTankCapacity(){
-        return tankCapacity;
     }
 
     public boolean isMultiblockValid (){
@@ -480,51 +390,31 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         return validity;
     }
 
-    public RelationalTank getInputTank(){
-        return this.inputTank;
+    public RelationalTank getHeatTank(){
+        return this.heatTank;
     }
 
-    public RelationalTank getOutputTank0(){
-        return this.outputTank0;
-    }
-
-    public RelationalTank getOutputTank1(){
-        return this.outputTank1;
+    public int getTemperatureKelvin(){
+        return this.heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature();
     }
 
     public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == iTopManager.getSlotNum()) iTopManager.setStatus(status);
-        else if (slotId == iBottomManager.getSlotNum()) iTopManager.setStatus(status);
-        else if(slotId == o0TopManager.getSlotNum()) o0TopManager.setStatus(status);
-        else if(slotId == o0BottomManager.getSlotNum()) o0BottomManager.setStatus(status);
-        else if(slotId == o1TopManager.getSlotNum()) o1TopManager.setStatus(status);
-        else if(slotId == o1BottomManager.getSlotNum()) o1BottomManager.setStatus(status);
-        else if(slotId == o2Manager.getSlotNum()) o2Manager.setStatus(status);
+        if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
+        else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == iTopManager.getSlotNum()) iTopManager.setDirection(direction);
-        else if (slotId == iBottomManager.getSlotNum()) iBottomManager.setDirection(direction);
-        else if(slotId == o0TopManager.getSlotNum()) o0TopManager.setDirection(direction);
-        else if(slotId == o0BottomManager.getSlotNum()) o0BottomManager.setDirection(direction);
-        else if(slotId == o1TopManager.getSlotNum()) o1TopManager.setDirection(direction);
-        else if(slotId == o1BottomManager.getSlotNum()) o1BottomManager.setDirection(direction);
-        else if(slotId == o2Manager.getSlotNum()) o2Manager.setDirection(direction);
+        if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setDirection(direction);
+        else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemBottomManager.setDirection(direction);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.inputTank.getId()) this.inputTank.setSideStatus(status);
-        else if(id == this.outputTank0.getId()) this.outputTank0.setSideStatus(status);
-        else if(id == this.outputTank1.getId()) this.outputTank1.setSideStatus(status);
+        if(id == this.heatTank.getId()) this.heatTank.setSideStatus(status);
     }
 
     public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.inputTank.getId())
-            this.inputTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        else if(id == this.outputTank0.getId())
-            this.outputTank0.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        else if(id == this.outputTank1.getId())
-            this.outputTank1.setSideDirection(IntToDirection.IntegerToDirection(direction));
+        if(id == this.heatTank.getId())
+            this.heatTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
     }
 
     @Override
@@ -534,29 +424,25 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(iTopManager.getStatus(), iTopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(iBottomManager.getStatus(), iBottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(o0TopManager.getStatus(), o0TopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(o0BottomManager.getStatus(), o0BottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(o1TopManager.getStatus(), o1TopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(o1BottomManager.getStatus(), o1BottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(o2Manager.getStatus(), o2Manager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
+                        // Heat Tank Boolean and Tank Packets
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(heatTankItemTopManager.getStatus(), heatTankItemTopManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(heatTankItemBottomManager.getStatus(), heatTankItemBottomManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(heatTank.getSideStatus(), heatTank.getId()));
 
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(iTopManager.getDirection().get3DDataValue(),iTopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(iBottomManager.getDirection().get3DDataValue(),iBottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(o0TopManager.getDirection().get3DDataValue(),o0TopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(o0BottomManager.getDirection().get3DDataValue(),o0BottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(o1TopManager.getDirection().get3DDataValue(),o1TopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(o1BottomManager.getDirection().get3DDataValue(),o1BottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(o2Manager.getDirection().get3DDataValue(),o2Manager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank0.getSideDirection().get3DDataValue(), outputTank0.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank1.getSideDirection().get3DDataValue(), outputTank1.getId()));
+                        // Input and Output Slot boolean buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(firstInputSlotManager.getStatus(), firstInputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(secondInputSlotManager.getStatus(), secondInputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
+
+                        // Tank Direction Buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(heatTankItemTopManager.getDirection().get3DDataValue(), heatTankItemTopManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(heatTankItemBottomManager.getDirection().get3DDataValue(), heatTankItemBottomManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(heatTank.getSideDirection().get3DDataValue(), heatTank.getId()));
+
+                        // Input and Output Slot Direction buttons
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(firstInputSlotManager.getDirection().get3DDataValue(), firstInputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(secondInputSlotManager.getDirection().get3DDataValue(), secondInputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(), outputSlotManager.getSlotNum()));
                     }
                 });
             });
@@ -569,30 +455,16 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(iTopManager.getStatus(), iTopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(iBottomManager.getStatus(), iBottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o0TopManager.getStatus(), o0TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o0BottomManager.getStatus(), o0BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o1TopManager.getStatus(), o1TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o1BottomManager.getStatus(), o1BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o2Manager.getStatus(), o2Manager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(heatTankItemTopManager.getStatus(), heatTankItemTopManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(heatTankItemBottomManager.getStatus(), heatTankItemBottomManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(heatTank.getSideStatus(), heatTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(iTopManager.getDirection().get3DDataValue(),iTopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(iBottomManager.getDirection().get3DDataValue(),iBottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o0TopManager.getDirection().get3DDataValue(),o0TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o0BottomManager.getDirection().get3DDataValue(),o0BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o1TopManager.getDirection().get3DDataValue(),o1TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o1BottomManager.getDirection().get3DDataValue(),o1BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o2Manager.getDirection().get3DDataValue(),o2Manager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank0.getSideDirection().get3DDataValue(), outputTank0.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank1.getSideDirection().get3DDataValue(), outputTank1.getId()));
-
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(heatTankItemTopManager.getDirection().get3DDataValue(), heatTankItemTopManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(heatTankItemBottomManager.getDirection().get3DDataValue(), heatTankItemBottomManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(heatTank.getSideDirection().get3DDataValue(), heatTank.getId()));
         }
+        super.sendPacketToClient();
     }
 
     @Override
@@ -604,7 +476,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             ArrayList<UUID> toRemove = new ArrayList<>();
             level.getServer().getPlayerList().getPlayers().forEach(player ->{
                 if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof DistillationUnitContainer)){
+                    if(!(player.containerMenu instanceof BlastFurnaceContainer)){
                         toRemove.add(player.getUUID());
                     }
                 } else if (player.containerMenu == null){
@@ -614,5 +486,17 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    @Override
+    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
+        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 1, this.inventory, this.heatTank);
+    }
+
+    @Override
+    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
+        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
+        this.inventory = packet.getInventory();
+        packet.updateRelationalTank(this.heatTank);
     }
 }
