@@ -42,10 +42,12 @@ public class BatteryBoxSlotPairPacket {
             case PLAY_TO_CLIENT: // Packet is being sent to client
                 Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
                 Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
     }
 

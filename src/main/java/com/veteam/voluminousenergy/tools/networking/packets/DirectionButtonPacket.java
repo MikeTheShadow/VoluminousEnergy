@@ -43,10 +43,12 @@ public class DirectionButtonPacket {
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
                 Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
 
     }
@@ -221,6 +223,15 @@ public class DirectionButtonPacket {
                     }
                 } else {
                     ((ImplosionCompressorContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+            } else if (openContainer instanceof BlastFurnaceContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof BlastFurnaceTile) {
+                        ((BlastFurnaceTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((BlastFurnaceContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");

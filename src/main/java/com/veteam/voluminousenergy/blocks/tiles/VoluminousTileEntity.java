@@ -1,19 +1,14 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -53,17 +48,7 @@ public class VoluminousTileEntity extends TileEntity {
     }
 
     // Override this in Tile Entities, should mainly be for IO management. SUPER to this function with proper writing of Universal Update Packets
-    public void sendPacketToClient(){
-        if(this.cleanupTick == 10){
-            double x = this.getBlockPos().getX();
-            double y = this.getBlockPos().getY();
-            double z = this.getBlockPos().getZ();
-            final double radius = 64.0D; // Vanilla's Container#stillValid uses this as a <= value, so we'll use this to ensure no corner cases TODO: Config this as an option between 16 and 64
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
-            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), writeUniversalUpdatePacket());
-        }
-    }
+    public void sendPacketToClient(){ }
 
     public void uuidPacket(UUID uuid, boolean connectionFlag){
         if(!playerUuid.isEmpty()){
@@ -124,12 +109,6 @@ public class VoluminousTileEntity extends TileEntity {
             }
         }
         return consumption;
-    }
-
-    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){}
-
-    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
-        return new UniversalUpdatePacket();
     }
 
     // Simplified call to get the stored energy from the Energy Capability that a TE might have

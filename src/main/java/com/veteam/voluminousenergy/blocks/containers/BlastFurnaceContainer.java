@@ -37,9 +37,9 @@ public class BlastFurnaceContainer extends VoluminousContainer {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 38, 18)); // Fluid input slot
             addSlot(new VEInsertSlot(h, 1,38,49)); // Extract fluid from heat tank
-            addSlot(new VEInsertSlot(h, 2, 96,11)); // First input slot
-            addSlot(new VEInsertSlot(h, 3, 96,42)); // Second input slot
-            addSlot(new VEInsertSlot(h, 4, 137,11)); // Third input slot
+            addSlot(new VEInsertSlot(h, 2, 80,25)); // First input slot
+            addSlot(new VEInsertSlot(h, 3, 80,43)); // Second input slot
+            addSlot(new VEInsertSlot(h, 4, 134,34)); // Third input slot
             addSlot(new VEInsertSlot(h, 5,130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);

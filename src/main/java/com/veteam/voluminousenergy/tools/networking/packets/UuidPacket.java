@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.inventory.container.Container;
@@ -44,7 +45,7 @@ public class UuidPacket {
     public static void handle(UuidPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
         Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
         contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
-
+        contextSupplier.get().setPacketHandled(true);
     }
 
     public static void handlePacket(UuidPacket packet, Container openContainer){
@@ -84,6 +85,8 @@ public class UuidPacket {
                 tileEntity = ((CentrifugalSeparatorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof ImplosionCompressorContainer)
                 tileEntity = ((ImplosionCompressorContainer) openContainer).getTileEntity();
+            else if (openContainer instanceof BlastFurnaceContainer)
+                tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
 
             // When tile is set, but not null
             if(tileEntity != null) interactWithTile(packet,tileEntity);

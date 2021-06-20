@@ -43,12 +43,13 @@ public class BoolButtonPacket {
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.containerMenu;
-                //VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
                 Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
 
     }
@@ -224,6 +225,16 @@ public class BoolButtonPacket {
                     }
                 } else {
                     ((ImplosionCompressorContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
+                // Blast Furnace
+            } else if (openContainer instanceof BlastFurnaceContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof BlastFurnaceTile) {
+                        ((BlastFurnaceTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    ((BlastFurnaceContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
                 // INVALID TE/Container
             } else {

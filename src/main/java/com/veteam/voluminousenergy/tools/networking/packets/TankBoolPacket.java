@@ -43,12 +43,13 @@ public class TankBoolPacket {
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.containerMenu;
-                //VoluminousEnergy.LOGGER.debug("Client bound packet received.");
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
                 Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
 
     }
@@ -133,11 +134,22 @@ public class TankBoolPacket {
                     ((PumpContainer) openContainer).updateStatusTank(packet.status, packet.id);
                 }
                 // End of Pump
+            } else if (openContainer instanceof BlastFurnaceContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof BlastFurnaceTile) {
+                        ((BlastFurnaceTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((BlastFurnaceContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of Blast Furnace
             } else {
-                VoluminousEnergy.LOGGER.debug("TankBoolPacket: Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.debug("TankBoolPacket The container is null");
+            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
         }
     }
 }

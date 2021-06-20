@@ -43,10 +43,12 @@ public class TankDirectionPacket {
             case PLAY_TO_CLIENT:
                 Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
                 Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
 
     }
@@ -130,6 +132,17 @@ public class TankDirectionPacket {
                     ((PumpContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
                 }
                 // End of Pump
+            } else if(openContainer instanceof BlastFurnaceContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof BlastFurnaceTile) {
+                        ((BlastFurnaceTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((BlastFurnaceContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
+                }
+                // End of Blast Furnace
             } else {
                 VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
             }

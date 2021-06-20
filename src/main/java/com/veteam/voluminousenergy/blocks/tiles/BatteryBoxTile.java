@@ -6,7 +6,10 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.*;
+import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -288,6 +291,17 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     }
 
     @Override
+    public CompoundNBT getUpdateTag() {
+        return this.save(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
         this.load(this.getBlockState(), pkt.getTag());
@@ -393,7 +407,6 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             // Send out Power
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
         }
-        super.sendPacketToClient();
     }
 
     @Override
@@ -415,16 +428,5 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
-    }
-
-    @Override
-    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
-        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
-    }
-
-    @Override
-    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
-        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
-        this.inventory = packet.getInventory();
     }
 }

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -9,7 +8,10 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.*;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -113,7 +115,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         // Main Processing occurs here:
         if (heatTank != null || !heatTank.getTank().isEmpty()) {
             IndustrialBlastingRecipe recipe = RecipeUtil.getIndustrialBlastingRecipe(level, firstItemInput.copy(), secondItemInput.copy());
-            VoluminousEnergy.LOGGER.debug("FLUID TEMPERATURE: " + heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() + " FLUID: " + heatTank.getTank().getFluid().getTranslationKey());
+
             if (recipe != null) {
                 // Tank fluid amount check + capacity and recipe checks
                 if (itemOutput.getCount() < recipe.getResult().getMaxStackSize() &&
@@ -398,6 +400,14 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         return this.heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature();
     }
 
+    public int getTemperatureCelsius(){
+        return getTemperatureKelvin()-273;
+    }
+
+    public int getTemperatureFahrenheit(){
+        return (int) ((getTemperatureKelvin()-273) * 1.8)+32;
+    }
+
     public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
@@ -464,7 +474,6 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(heatTankItemBottomManager.getDirection().get3DDataValue(), heatTankItemBottomManager.getSlotNum()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(heatTank.getSideDirection().get3DDataValue(), heatTank.getId()));
         }
-        super.sendPacketToClient();
     }
 
     @Override
@@ -486,17 +495,5 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
-    }
-
-    @Override
-    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
-        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 1, this.inventory, this.heatTank);
-    }
-
-    @Override
-    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
-        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
-        this.inventory = packet.getInventory();
-        packet.updateRelationalTank(this.heatTank);
     }
 }

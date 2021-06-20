@@ -9,7 +9,6 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.UniversalUpdatePacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +18,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -132,6 +133,24 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         });
         slotManager.write(tag, "slot_manager");
         return super.save(tag);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.save(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
+        super.onDataPacket(net, pkt);
     }
 
     private ItemStackHandler createHandler() {
@@ -264,7 +283,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             // Direction Buttons
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
         }
-        super.sendPacketToClient();
     }
 
     @Override
@@ -286,17 +304,5 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
-    }
-
-
-    @Override
-    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
-        return new UniversalUpdatePacket(this.getEnergyStored(), this.inventory);
-    }
-
-    @Override
-    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
-        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
-        this.inventory = packet.getInventory();
     }
 }

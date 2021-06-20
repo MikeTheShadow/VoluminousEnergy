@@ -8,7 +8,10 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.*;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -419,7 +422,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank.getSideDirection().get3DDataValue(), outputTank.getId()));
         }
-        super.sendPacketToClient();
     }
 
     @Override
@@ -441,18 +443,5 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
-    }
-
-    @Override
-    protected UniversalUpdatePacket writeUniversalUpdatePacket(){
-        return new UniversalUpdatePacket(this.getEnergyStored(), (byte) 2, this.inventory, this.inputTank, this.outputTank);
-    }
-
-    @Override
-    public void readUniversalUpdatePacket(UniversalUpdatePacket packet){
-        this.energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(packet.getEnergy())); // Update energy
-        this.inventory = packet.getInventory();
-        packet.updateRelationalTank(this.inputTank);
-        packet.updateRelationalTank(this.outputTank);
     }
 }
