@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:ancient_debris",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:netherite_dust",
+    "count": 2
+  },
+  "rng": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

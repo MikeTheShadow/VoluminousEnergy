@@ -248,6 +248,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.BASALT_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.FLINT_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.NETHERRACK_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.NETHERITE_DUST);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);

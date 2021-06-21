@@ -34,6 +34,7 @@ public class Config {
     public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
     public static final String CATEGORY_CENTRIFUGAL_SEPARATOR = "Centrifugal Separator";
     public static final String CATEGORY_IMPLOSION_COMPRESSOR = "Implosion Compressor";
+    public static final String CATEGORY_BLAST_FURNACE = "Blast Furnace";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -209,6 +210,13 @@ public class Config {
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_HARVEST_LEVEL;
 
+    // Blast Furnace Variables
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HARVEST_LEVEL;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -307,6 +315,11 @@ public class Config {
         // Implosion Compressor
         COMMON_BUILDER.comment("Implosion Compressor").push(CATEGORY_IMPLOSION_COMPRESSOR);
         setupImplosionCompressor();
+        COMMON_BUILDER.pop();
+
+        // Blast Furnace
+        COMMON_BUILDER.comment("Blast Furnace").push(CATEGORY_BLAST_FURNACE);
+        setupBlastFurnace();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -593,6 +606,19 @@ public class Config {
                 .defineInRange("Maximum Transfer", 2_500, 0, Integer.MAX_VALUE);
         IMPLOSION_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupBlastFurnace(){
+        BLAST_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Blast Furnace to store")
+                .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Blast Furnace")
+                .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Blast Furnace")
+                .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = COMMON_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
+                .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){

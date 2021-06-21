@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:implosion_compressing",
+  "ingredient": {
+    "tag": "forge:dusts/coal",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:coal",
+    "count": 1
+  }
+}

@@ -133,6 +133,7 @@ public class RecipeUtil {
     }
 
     public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(World world, ItemStack firstInput, ItemStack secondInput){
+        if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) && ((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)){
@@ -144,6 +145,7 @@ public class RecipeUtil {
     }
 
     public static boolean isFirstIngredientForIndustrialBlastingRecipe(World world, ItemStack firstInput){
+        if (firstInput.isEmpty()) return false;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem())) return true;
@@ -153,6 +155,7 @@ public class RecipeUtil {
     }
 
     public static boolean isSecondIngredientForIndustrialBlastingRecipe(World world, ItemStack secondInput){
+        if(secondInput.isEmpty()) return false;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)) return true;
@@ -162,6 +165,7 @@ public class RecipeUtil {
     }
 
     public static boolean isAnOutputForIndustrialBlastingRecipe(World world, ItemStack outputStack){
+        if (outputStack.isEmpty()) return false;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).getResult().sameItem(outputStack)) return true;

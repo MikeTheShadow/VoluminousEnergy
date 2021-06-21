@@ -22,7 +22,6 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.UUID;
 
@@ -123,7 +122,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     @Override
     protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.DISTILLATION_UNIT_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BLAST_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -154,18 +153,11 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81, j+31, 176, 0, progress, 17);
+            this.blit(matrixStack,i+109, j+32, 176, 0, progress, 17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
-            try{
-                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 11, 0, 12, 50);
-            } catch (Exception e){ }
-
-            try{
-                VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 11, 0, 12, 50);
-            } catch (Exception e){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
             // Upgrade slot
             this.minecraft.getTextureManager().bind(GUI_TOOLS);

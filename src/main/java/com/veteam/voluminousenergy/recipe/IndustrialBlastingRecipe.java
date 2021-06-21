@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -10,6 +11,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -33,6 +35,35 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public IndustrialBlastingRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
+
+    //public Ingredient getIngredient(){ return ingredient;}
+
+    //public int getIngredientCount(){ return ingredientCount;}
+
+    @Override
+    public boolean matches(IInventory inv, World worldIn){
+        ItemStack stack = inv.getItem(0);
+        int count = stack.getCount();
+        return ingredient.test(stack) && count >= ingredientCount;
+    }
+
+    @Override
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height){return true;}
+
+    @Override
+    public ItemStack getResultItem(){return result;}
+
+    @Override
+    public ResourceLocation getId(){return recipeId;}
+
+    @Override
+    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+
+    @Override
+    public IRecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getProcessTime(){ return processTime; }
 
@@ -74,7 +105,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
             // Second Input
             ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
             int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
+            recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
             recipe.secondInputAmount = secondInputAmount;
 
             // Main Output Slot

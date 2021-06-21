@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:industrial_blasting",
+  "ingredient": {
+    "tag": "forge:dusts/flint",
+    "count": 1
+  },
+  "process_time": 200,
+  "second_input": {
+    "item": "minecraft:quartz",
+    "count": 1
+  },
+  "result": {
+    "item": "minecraft:flint",
+    "count": 1
+  },
+  "minimum_heat_kelvin": 900
+}

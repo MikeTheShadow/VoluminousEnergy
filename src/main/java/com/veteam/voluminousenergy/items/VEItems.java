@@ -56,6 +56,7 @@ public class VEItems {
     public static BasaltDust BASALT_DUST = new BasaltDust();
     public static FlintDust FLINT_DUST = new FlintDust();
     public static NetherrackDust NETHERRACK_DUST = new NetherrackDust();
+    public static NetheriteDust NETHERITE_DUST = new NetheriteDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();

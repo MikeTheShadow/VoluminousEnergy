@@ -12,7 +12,7 @@ public class RiceItem extends WaterCropItem {
 
     @Override
     public VEWaterCrop getWaterCrop(){
-        return (VEWaterCrop) VEBlocks.RICE_CROP.getBlock(); // TODO: Switch to rice crop
+        return (VEWaterCrop) VEBlocks.RICE_CROP.getBlock();
     }
 
 }

@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -119,7 +118,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             if (recipe != null) {
                 // Tank fluid amount check + capacity and recipe checks
                 if (itemOutput.getCount() < recipe.getResult().getMaxStackSize() &&
-                        heatTank.getTank().getFluidAmount() >= 50 && // TODO: Config to adjust consumption of heat source
+                        heatTank.getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get() &&
                         heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
                         recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
                         firstItemInput.getCount() >= recipe.getIngredientCount() &&
@@ -130,7 +129,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
                         if (counter == 1){
 
                             // Drain Input
-                            heatTank.getTank().drain(50, IFluidHandler.FluidAction.EXECUTE); // TODO: Config: See above
+                            heatTank.getTank().drain(Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get(), IFluidHandler.FluidAction.EXECUTE);
 
                             inventory.extractItem(2,recipe.getIngredientCount(),false);
                             inventory.extractItem(3, recipe.getSecondInputAmount(),false);
@@ -165,7 +164,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
         energy.ifPresent(e -> ((VEEnergyStorage)e)
-                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), // TODO: Config for the blast furnace
+                .consumeEnergy(this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(5).copy()
                         )
                 )
@@ -174,7 +173,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     private boolean canConsumeEnergy(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy()); // TODO: Inventory numbers
+                > this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy());
     }
 
     /*
@@ -246,7 +245,57 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     }
 
     private IFluidHandler createInputFluidHandler() {
-        return this.createFluidHandler(new DistillationRecipe(), heatTank); // TODO: Resolve fluid handler for the heat tank
+        return new IFluidHandler() {
+            @Override
+            public int getTanks() {
+                return 1;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack getFluidInTank(int tank) {
+                return heatTank == null ? FluidStack.EMPTY : heatTank.getTank().getFluid();
+            }
+
+            @Override
+            public int getTankCapacity(int tank) {
+                return heatTank == null ? 0 : heatTank.getTank().getCapacity();
+            }
+
+            @Override
+            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+                return heatTank != null && heatTank.getTank().isFluidValid(stack);
+            }
+
+            @Override
+            public int fill(FluidStack resource, FluidAction action) {
+                if (isFluidValid(0, resource) && heatTank.getTank().isEmpty() || resource.isFluidEqual(heatTank.getTank().getFluid())) {
+                    return heatTank.getTank().fill(resource.copy(), action);
+                }
+                return 0;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack drain(FluidStack resource, FluidAction action) {
+                if (resource.isEmpty()) {
+                    return FluidStack.EMPTY;
+                }
+                if (resource.isFluidEqual(heatTank.getTank().getFluid())) {
+                    return heatTank.getTank().drain(resource.copy(), action);
+                }
+                return FluidStack.EMPTY;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack drain(int maxDrain, FluidAction action) {
+                if (heatTank.getTank().getFluidAmount() > 0) {
+                    return heatTank.getTank().drain(maxDrain, action);
+                }
+                return FluidStack.EMPTY;
+            }
+        };
     }
 
     private ItemStackHandler createHandler() {
@@ -257,7 +306,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!! TODO: Blast furnace recipe
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1) {
                     return stack.getItem() instanceof BucketItem || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2) {
@@ -281,7 +330,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     }
 
     private IEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer TODO: Config
+        return new VEEnergyStorage(Config.BLAST_FURNACE_MAX_POWER.get(), Config.BLAST_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Nonnull

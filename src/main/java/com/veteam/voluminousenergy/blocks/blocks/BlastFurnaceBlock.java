@@ -28,7 +28,7 @@ public class BlastFurnaceBlock extends FaceableBlock {
                 .strength(3.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
-                .harvestLevel(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get()) // TODO: Config for the blast furnace
+                .harvestLevel(Config.BLAST_FURNACE_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("blast_furnace");

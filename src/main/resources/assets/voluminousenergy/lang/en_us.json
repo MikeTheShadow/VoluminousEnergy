@@ -53,6 +53,7 @@
     "block.voluminousenergy.solar_panel": "Solar Panel",
     "block.voluminousenergy.centrifugal_separator": "Centrifugal Separator",
     "block.voluminousenergy.implosion_compressor": "Implosion Compressor",
+    "block.voluminousenergy.blast_furnace": "Blast Furnace",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -145,5 +146,6 @@
     "item.voluminousenergy.raw_cinnabar": "Raw Cinnabar",
     "item.voluminousenergy.raw_galena": "Raw Galena",
     "item.voluminousenergy.raw_rutile": "Raw Rutile",
-    "item.voluminousenergy.raw_sulfur": "Raw Sulfur"
+    "item.voluminousenergy.raw_sulfur": "Raw Sulfur",
+    "item.voluminousenergy.netherite_dust": "Netherite Dust"
 }
