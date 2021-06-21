@@ -6,7 +6,7 @@
   },
   "process_time": 200,
   "result": {
-    "item": "minecraft:coal_coke",
+    "item": "voluminousenergy:coalcoke",
     "count": 1
   }
 }
