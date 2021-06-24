@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:implosion_compressing",
   "ingredient": {
-    "tag": "forge:dusts/coal_coke",
+    "tag": "forge:dusts/coke",
     "count": 1
   },
   "process_time": 200,

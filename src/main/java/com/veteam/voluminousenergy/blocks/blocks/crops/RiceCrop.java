@@ -12,7 +12,7 @@ public class RiceCrop extends VEWaterCrop {
 
     @Override
     public Item cropItem(){
-        return VEItems.RICE_ITEM.getItem();
+        return VEItems.RICE_GRAIN.getItem();
     }
 
 

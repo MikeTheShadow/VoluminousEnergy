@@ -54,6 +54,9 @@
     "block.voluminousenergy.centrifugal_separator": "Centrifugal Separator",
     "block.voluminousenergy.implosion_compressor": "Implosion Compressor",
     "block.voluminousenergy.blast_furnace": "Blast Furnace",
+    "block.voluminousenergy.rice_crop": "Rice",
+    "block.voluminousenergy.solarium_block": "Block of Solarium",
+    "block.voluminousenergy.eighzo_ore": "Eighzo Ore",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy" ,
@@ -147,5 +150,19 @@
     "item.voluminousenergy.raw_galena": "Raw Galena",
     "item.voluminousenergy.raw_rutile": "Raw Rutile",
     "item.voluminousenergy.raw_sulfur": "Raw Sulfur",
-    "item.voluminousenergy.netherite_dust": "Netherite Dust"
+    "item.voluminousenergy.netherite_dust": "Netherite Dust",
+    "item.voluminousenergy.tungsten_dust": "Tungsten Dust",
+    "item.voluminousenergy.tungsten_ingot": "Tungsten Ingot",
+    "item.voluminousenergy.steel_dust": "Steel Dust",
+    "item.voluminousenergy.steel_ingot": "Steel Ingot",
+    "item.voluminousenergy.tungsten_steel_ingot": "Tungsten Steel Ingot",
+    "item.voluminousenergy.raw_eighzo": "Raw Eighzo",
+    "item.voluminousenergy.eighzo_dust": "Eighzo Dust",
+    "item.voluminousenergy.eighzo_ingot": "Eighzo Ingot",
+    "item.voluminousenergy.solarium_dust": "Solarium Dust",
+    "item.voluminousenergy.solarium_ingot": "Solarium Ingot",
+    "item.voluminousenergy.solarium_gear": "Solarium Gear",
+    "item.voluminousenergy.solarium_plate": "Solarium Plate",
+    "item.voluminousenergy.nighalite_ingot": "Nighalite Ingot",
+    "item.voluminousenergy.cooked_rice": "Cooked Rice"
 }

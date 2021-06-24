@@ -25,6 +25,10 @@
     "#forge:dusts/basalt",
     "#forge:dusts/flint",
     "#forge:dusts/netherrack",
-    "#forge:dusts/netherite"
+    "#forge:dusts/netherite",
+    "#forge:dusts/solarium",
+    "#forge:dusts/steel",
+    "#forge:dusts/tungsten",
+    "#forge:dusts/eighzo"
   ]
 }

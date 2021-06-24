@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -122,7 +123,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
                         heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
                         recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
                         firstItemInput.getCount() >= recipe.getIngredientCount() &&
-                        secondItemInput.sameItem(recipe.getSecondInputStack()) &&
+                        recipe.ingredientListIncludingSeconds.contains(secondItemInput.getItem()) &&
                         secondItemInput.getCount() >= recipe.getSecondInputAmount()){
                     // Check for power
                     if (canConsumeEnergy()) {
@@ -430,7 +431,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
             final BlockState blockState = level.getBlockState(blockPos);
 
-            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.getBlock()){ // Fails multiblock condition
+            if (blockState.getBlock() != VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.getBlock()){ // Fails multiblock condition
                 return false;
             }
         }

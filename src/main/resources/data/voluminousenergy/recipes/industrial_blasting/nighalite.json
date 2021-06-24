@@ -1,16 +1,16 @@
 {
   "type": "voluminousenergy:industrial_blasting",
   "ingredient": {
-    "tag": "forge:dusts/flint",
+    "item": "minecraft:netherite_ingot",
     "count": 1
   },
   "process_time": 200,
   "second_input": {
-    "item": "minecraft:quartz",
+    "item": "minecraft:obsidian",
     "count": 1
   },
   "result": {
-    "item": "minecraft:flint",
+    "item": "voluminousenergy:nighalite_ingot",
     "count": 1
   },
   "minimum_heat_kelvin": 900

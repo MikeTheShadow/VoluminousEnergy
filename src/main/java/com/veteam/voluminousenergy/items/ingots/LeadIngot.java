@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.items.ingots;
 
-
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.Item;
 

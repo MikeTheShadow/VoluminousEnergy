@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:industrial_blasting",
+  "ingredient": {
+    "tag": "forge:ingots/iron",
+    "count": 1
+  },
+  "process_time": 200,
+  "second_input": {
+    "tag": "forge:ingots/carbon",
+    "count": 1
+  },
+  "result": {
+    "item": "voluminousenergy:steel_ingot",
+    "count": 1
+  },
+  "minimum_heat_kelvin": 900
+}

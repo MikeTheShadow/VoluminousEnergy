@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy;
 import com.veteam.voluminousenergy.blocks.blocks.*;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.materials.SolariumBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -163,6 +164,10 @@ public class VoluminousEnergy {
             //Crops
             blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
             blockRegisteryEvent.getRegistry().register(new RiceCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
+
+            // TODO: Solarium Test
+            blockRegisteryEvent.getRegistry().register(new SolariumBlock());
+            blockRegisteryEvent.getRegistry().register(new EighzoOre());
         }
 
         @SubscribeEvent
@@ -199,8 +204,8 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BLAST_FURNACE_BLOCK,properties).setRegistryName("blast_furnace"));
 
             // Crops
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
-            itemRegisteryEvent.getRegistry().register(VEItems.RICE_ITEM);
+            //itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
+            itemRegisteryEvent.getRegistry().register(VEItems.RICE_GRAIN);
 
             //True Blocks
             //Ores
@@ -256,6 +261,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_GALENA);
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_RUTILE);
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_SULFUR);
+            itemRegisteryEvent.getRegistry().register(VEItems.RAW_EIGHZO);
 
             //Ingots and bricks
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_BRICK);
@@ -296,6 +302,28 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_PICKAXE);
+
+            //TODO: Solarium test
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_PLATE);
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
+
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.STEEL_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_DUST);
+
+            itemRegisteryEvent.getRegistry().register(VEItems.STEEL_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_STEEL_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.NIGHALITE_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_INGOT);
+
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_ORE,properties).setRegistryName("eighzo_ore"));
+
+            itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
+
         }
 
         @SubscribeEvent

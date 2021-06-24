@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:compressing",
+  "ingredient": {
+    "tag": "forge:ingots/solarium",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:solarium_plate",
+    "count": 1
+  }
+}

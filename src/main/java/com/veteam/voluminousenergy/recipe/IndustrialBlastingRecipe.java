@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -9,6 +11,8 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -17,10 +21,14 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class IndustrialBlastingRecipe extends VERecipe {
 
     public ArrayList<Item> ingredientList = new ArrayList<>();
+    public ArrayList<Item> ingredientListIncludingSeconds = new ArrayList<>();
+    public ArrayList<Item> onlySecondInput = new ArrayList<>();
     public final ResourceLocation recipeId;
     private int processTime;
     private int minimumHeat;
@@ -36,9 +44,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
         this.recipeId = recipeId;
     }
 
-    //public Ingredient getIngredient(){ return ingredient;}
+    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
-    //public int getIngredientCount(){ return ingredientCount;}
+    public Map<Ingredient, Integer> getIngredientMap() {
+        return ImmutableMap.copyOf(ingredients);
+    }
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
@@ -73,8 +83,6 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public int getOutputAmount() {return outputAmount;}
 
-    public ItemStack getSecondInputStack() { return secondInputStack.copy(); }
-
     public ArrayList<Item> getFirstInputAsList() { return ingredientList; }
 
     public ItemStack getResult(){
@@ -100,13 +108,36 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 if(!recipe.ingredientList.contains(stack.getItem())){
                     recipe.ingredientList.add(stack.getItem());
                 }
+                if(!recipe.ingredientListIncludingSeconds.contains(stack.getItem())){
+                    recipe.ingredientListIncludingSeconds.add(stack.getItem());
+                }
             }
 
             // Second Input
-            ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
-            int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
-            recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
-            recipe.secondInputAmount = secondInputAmount;
+            if(json.get("second_input").getAsJsonObject().has("tag") && !json.get("second_input").getAsJsonObject().has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"tag","minecraft:air"),':');
+                int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+                recipe.secondInputAmount = secondInputAmount;
+
+                ITag<Item> tag = TagCollectionManager.getInstance().getItems().getTag(secondInputResourceLocation);
+                if(tag != null){
+                    recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
+                    recipe.onlySecondInput.addAll(tag.getValues());
+                } else {
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
+                }
+
+            } else if (!json.get("second_input").getAsJsonObject().has("tag") && json.get("second_input").getAsJsonObject().has("item")) {
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
+                int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+                recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
+                recipe.secondInputAmount = secondInputAmount;
+
+                if(!recipe.ingredientListIncludingSeconds.contains(recipe.secondInputStack.getItem()))
+                    recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
+                if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
+                    recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
+            }
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
@@ -130,8 +161,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 recipe.ingredientList.add(buffer.readItem().getItem());
             }
 
-            recipe.ingredientCount = buffer.readInt();
-            recipe.secondInputStack = buffer.readItem();
+            int secondListSize = buffer.readInt();
+            for (int i = 0; i < secondListSize; i++){
+                recipe.onlySecondInput.add(buffer.readItem().getItem());
+            }
+
             recipe.secondInputAmount = buffer.readInt();
 
             recipe.result = buffer.readItem();
@@ -150,9 +184,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 buffer.writeItem(new ItemStack(item));
             });
 
-            buffer.writeInt(recipe.getIngredientCount());
+            buffer.writeInt(recipe.onlySecondInput.size());
+            recipe.onlySecondInput.forEach(item -> {
+                buffer.writeItem(new ItemStack(item));
+            });
 
-            buffer.writeItem(recipe.secondInputStack);
             buffer.writeInt(recipe.secondInputAmount);
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);

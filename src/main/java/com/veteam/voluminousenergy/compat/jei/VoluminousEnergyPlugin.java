@@ -31,6 +31,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation DISTILLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/distilling");
     public static final ResourceLocation CENTRIFUGAL_SEPARATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_separation");
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
+    public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -50,6 +51,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new DistillingCategory(guiHelper));
         registration.addRecipeCategories(new CentrifugalSeparationCategory(guiHelper));
         registration.addRecipeCategories(new ImplosionCompressionCategory(guiHelper));
+        registration.addRecipeCategories(new IndustrialBlastingCategory(guiHelper));
     }
 
     @Override
@@ -64,6 +66,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(DistillationRecipe.RECIPE_TYPE), DISTILLING_UID);
         registration.addRecipes(getRecipesOfType(CentrifugalSeparatorRecipe.RECIPE_TYPE), CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipes(getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE), IMPLOSION_COMPRESSION_UID);
+        registration.addRecipes(getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE), INDUSTRIAL_BLASTING_UID);
     }
 
     private static List<IRecipe<?>> getRecipesOfType(IRecipeType<?> recipeType) {
@@ -84,6 +87,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(DistillationUnitScreen.class, 78,32,11,23, DISTILLING_UID);
         registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
+        registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, INDUSTRIAL_BLASTING_UID);
     }
 
     @Override
@@ -108,5 +112,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:blasting"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_separation"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting"));
     }
 }

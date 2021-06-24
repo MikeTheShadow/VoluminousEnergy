@@ -12,10 +12,13 @@ import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
 import com.veteam.voluminousenergy.items.ore.*;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
+import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
+import net.minecraft.item.Foods;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 
 public class VEItems {
     public static PetCoke PETCOKE = new PetCoke();
@@ -30,6 +33,7 @@ public class VEItems {
     public static RawGalena RAW_GALENA = new RawGalena();
     public static RawRutile RAW_RUTILE = new RawRutile();
     public static RawSulfur RAW_SULFUR = new RawSulfur();
+    public static RawEighzo RAW_EIGHZO = new RawEighzo();
 
     //Dusts
     public static CoalDust COALDUST = new CoalDust();
@@ -57,6 +61,10 @@ public class VEItems {
     public static FlintDust FLINT_DUST = new FlintDust();
     public static NetherrackDust NETHERRACK_DUST = new NetherrackDust();
     public static NetheriteDust NETHERITE_DUST = new NetheriteDust();
+    public static SteelDust STEEL_DUST = new SteelDust();
+    public static TungstenDust TUNGSTEN_DUST = new TungstenDust();
+    public static EighzoDust EIGHZO_DUST = new EighzoDust();
+    public static SolariumDust SOLARIUM_DUST = new SolariumDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
@@ -64,6 +72,12 @@ public class VEItems {
     public static TitaniumIngot TITANIUM_INGOT = new TitaniumIngot();
     public static LeadIngot LEAD_INGOT = new LeadIngot();
     public static SilverIngot SILVER_INGOT = new SilverIngot();
+    public static SteelIngot STEEL_INGOT = new SteelIngot();
+    public static TungstenIngot TUNGSTEN_INGOT = new TungstenIngot();
+    public static TungstenSteelIngot TUNGSTEN_STEEL_INGOT = new TungstenSteelIngot();
+    public static NighaliteIngot NIGHALITE_INGOT = new NighaliteIngot();
+    public static EighzoIngot EIGHZO_INGOT = new EighzoIngot();
+    public static SolariumIngot SOLARIUM_INGOT = new SolariumIngot();
 
     //Gears
     public static StoneGear STONE_GEAR = new StoneGear();
@@ -71,11 +85,13 @@ public class VEItems {
     public static CarbonGear CARBON_GEAR = new CarbonGear();
     public static AluminumGear ALUMINUM_GEAR = new AluminumGear();
     public static TitaniumGear TITANIUM_GEAR = new TitaniumGear();
+    public static SolariumGear SOLARIUM_GEAR = new SolariumGear();
 
     //Plates
     public static AluminumPlate ALUMINUM_PLATE = new AluminumPlate();
     public static CarbonPlate CARBON_PLATE = new CarbonPlate();
     public static TitaniumPlate TITANIUM_PLATE = new TitaniumPlate();
+    public static SolariumPlate SOLARIUM_PLATE = new SolariumPlate();
 
     //Microchips
     public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
@@ -89,6 +105,6 @@ public class VEItems {
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 
     //Crops
-    //public static WaterCropItem WATER_CROP_ITEM = new WaterCropItem(VEBlocks.WATER_CROP.getBlock(), new Item.Properties().tab(VESetup.itemGroup));
-    public static RiceItem RICE_ITEM = new RiceItem(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.RICE_FOOD)); // Can refactor to call the block here or in the item's class
+    public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
+    public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)).setRegistryName("cooked_rice");
 }

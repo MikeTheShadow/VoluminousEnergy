@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.materials.SolariumBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -243,6 +244,9 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":galena_ore")
     public static GalenaOre GALENA_ORE;
 
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_ore")
+    public static EighzoOre EIGHZO_ORE;
+
     //Crops
     //@ObjectHolder(VoluminousEnergy.MODID + ":water_crop")
     //public static VEWaterCrop WATER_CROP;
@@ -252,4 +256,7 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":rice_crop")
     public static RiceCrop RICE_CROP;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_block")
+    public static SolariumBlock SOLARIUM_BLOCK;
 }

@@ -26,6 +26,14 @@ public class VEOreGeneration {
             // Nether ores
         } else if (biome.getCategory() == Biome.Category.THEEND){
             // End ores
+            // TODO: Eighzo ore
+            ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
+                    .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/4))
+                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(/*Bottom offset*/ 1, /*Top offset*/ 1,/*top hard cap*/ 36)))
+                    .squared()
+                    .count(1)
+                    ;
+            biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, eighzoOre);
         } else { // Assuming Overworld, catch all other biomes
             if (biome.getCategory() == Biome.Category.DESERT || biome.getName() == Biomes.BADLANDS.getRegistryName() || biome.getName() == Biomes.ERODED_BADLANDS.getRegistryName()){
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
@@ -94,5 +102,6 @@ public class VEOreGeneration {
         public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState());
         public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
+        public static final RuleTest END = new MultiBlockStateMatchRuleTest(Blocks.END_STONE.defaultBlockState());
     }
 }

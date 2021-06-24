@@ -136,7 +136,8 @@ public class RecipeUtil {
         if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
-                if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) && ((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)){
+                if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) &&
+                        ((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())){
                     return (IndustrialBlastingRecipe) recipe;
                 }
             }
@@ -158,7 +159,7 @@ public class RecipeUtil {
         if(secondInput.isEmpty()) return false;
         for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
-                if (((IndustrialBlastingRecipe) recipe).getSecondInputStack().sameItem(secondInput)) return true;
+                if (((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())) return true;
             }
         }
         return false;

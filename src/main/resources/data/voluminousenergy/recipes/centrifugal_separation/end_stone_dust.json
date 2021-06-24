@@ -11,7 +11,7 @@
     "buckets": 0
   },
   "rng_slot_0": {
-    "item": "voluminousenergy:coaldust",
+    "item": "voluminousenergy:tungsten_dust",
     "count": 2,
     "chance": 1
   },
