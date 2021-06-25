@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:implosion_compressor"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:implosion_compressor"
+  }
+}

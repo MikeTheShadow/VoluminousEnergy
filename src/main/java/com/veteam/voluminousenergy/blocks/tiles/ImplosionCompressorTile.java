@@ -147,9 +147,9 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
 
-        inputSlotManager.read(tag, "input_slot");
-        gunpowderSlotManager.read(tag, "gunpowder_slot");
-        outputSlotManager.read(tag, "output_slot");
+        inputSlotManager.read(tag, "input_manager");
+        gunpowderSlotManager.read(tag, "gunpowder_manager");
+        outputSlotManager.read(tag, "output_manager");
 
         super.load(state, tag);
     }
@@ -165,9 +165,9 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
             tag.put("energy",compound);
         });
 
-        inputSlotManager.write(tag, "input_slot");
-        gunpowderSlotManager.write(tag, "gunpowder_slot");
-        outputSlotManager.write(tag, "output_slot");
+        inputSlotManager.write(tag, "input_manager");
+        gunpowderSlotManager.write(tag, "gunpowder_manager");
+        outputSlotManager.write(tag, "output_manager");
         return super.save(tag);
     }
 

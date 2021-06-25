@@ -26,14 +26,14 @@ public class VEOreGeneration {
             // Nether ores
         } else if (biome.getCategory() == Biome.Category.THEEND){
             // End ores
-            // TODO: Eighzo ore
-            ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
-                    .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/4))
-                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(/*Bottom offset*/ 1, /*Top offset*/ 1,/*top hard cap*/ 36)))
-                    .squared()
-                    .count(1)
-                    ;
-            biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, eighzoOre);
+            if(Config.ENABLE_EIGHZO_ORE.get()) {
+                ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
+                        .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/4))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(/*Bottom offset*/ Config.EIGHZO_BOTTOM_OFFSET.get(), /*Top offset*/ Config.EIGHZO_HEIGHT_OFFSET.get(), /*top hard cap*/ Config.EIGHZO_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.EIGHZO_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, eighzoOre);
+            }
         } else { // Assuming Overworld, catch all other biomes
             if (biome.getCategory() == Biome.Category.DESERT || biome.getName() == Biomes.BADLANDS.getRegistryName() || biome.getName() == Biomes.ERODED_BADLANDS.getRegistryName()){
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
@@ -53,7 +53,7 @@ public class VEOreGeneration {
             if (Config.ENABLE_BAUXITE_ORE.get()){
                 ConfiguredFeature<?, ?> bauxiteOre = Feature.ORE
                         .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
-                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_MAXIMUM_HEIGHT.get())))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.BAUXITE_MAXIMUM_HEIGHT.get())))
                         .squared()
                         .count(Config.BAUXITE_COUNT.get());
 
@@ -64,7 +64,7 @@ public class VEOreGeneration {
             if (Config.ENABLE_CINNABAR_ORE.get()){
                 ConfiguredFeature<?, ?> cinnabarOre = Feature.ORE
                         .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
-                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_MAXIMUM_HEIGHT.get())))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_HEIGHT_OFFSET.get(), Config.CINNABAR_MAXIMUM_HEIGHT.get())))
                         .squared()
                         .count(Config.CINNABAR_COUNT.get());
 
@@ -75,7 +75,7 @@ public class VEOreGeneration {
             if (Config.ENABLE_RUTILE_ORE.get()){
                 ConfiguredFeature<?, ?> rutileOre = Feature.ORE
                         .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
-                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.RUTILE_BOTTOM_OFFSET.get(), Config.RUTILE_BOTTOM_OFFSET.get(), Config.RUTILE_MAXIMUM_HEIGHT.get())))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.RUTILE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.RUTILE_MAXIMUM_HEIGHT.get())))
                         .squared()
                         .count(Config.RUTILE_COUNT.get());
 
@@ -86,7 +86,7 @@ public class VEOreGeneration {
             if (Config.ENABLE_GALENA_ORE.get()){
                 ConfiguredFeature<?, ?> galenaOre = Feature.ORE
                         .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
-                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_MAXIMUM_HEIGHT.get())))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_HEIGHT_OFFSET.get(), Config.GALENA_MAXIMUM_HEIGHT.get())))
                         .squared()
                         .count(Config.GALENA_COUNT.get());
 

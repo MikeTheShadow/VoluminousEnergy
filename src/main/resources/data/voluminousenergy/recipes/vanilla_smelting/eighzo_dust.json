@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "tag": "forge:dusts/silver"
+    "tag": "forge:dusts/eighzo"
   },
-  "result": "voluminousenergy:silver_ingot",
+  "result": "voluminousenergy:eighzo_ingot",
   "experience": 1.0,
   "cookingtime": 200
 }

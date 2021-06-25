@@ -214,6 +214,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GALENA_ORE,properties).setRegistryName("galena_ore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_ORE,properties).setRegistryName("eighzo_ore"));
 
             //Shells
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));
@@ -254,6 +255,9 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.FLINT_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.NETHERRACK_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.NETHERITE_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_DUST);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);
@@ -269,6 +273,12 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_INGOT);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_INGOT);
             itemRegisteryEvent.getRegistry().register(VEItems.SILVER_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.STEEL_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_STEEL_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.NIGHALITE_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_INGOT);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_INGOT);
 
             //Gears
             itemRegisteryEvent.getRegistry().register(VEItems.STONE_GEAR);
@@ -276,11 +286,13 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_GEAR);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_GEAR);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_GEAR);
 
             //Plates
             itemRegisteryEvent.getRegistry().register(VEItems.ALUMINUM_PLATE);
             itemRegisteryEvent.getRegistry().register(VEItems.CARBON_PLATE);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_PLATE);
+            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_PLATE);
 
             //Microchips
             itemRegisteryEvent.getRegistry().register(VEItems.GOLD_MICROCHIP);
@@ -293,35 +305,62 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_ACID_BATTERY);
 
+            // TOOLS
+
             // Pickaxe
             itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.CARBON_PICKAXE);
-            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_PICKAXE);
-            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_PICKAXE);
-            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_PICKAXE);
             itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_PICKAXE);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_PICKAXE);
 
-            //TODO: Solarium test
-            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_DUST);
-            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_INGOT);
-            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_GEAR);
-            itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_PLATE);
+            // Axe
+            itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.CARBON_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_AXE);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_AXE);
+
+            // Shovel
+            itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.CARBON_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_SHOVEL);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_SHOVEL);
+
+            // Hoe
+            itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.CARBON_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_HOE);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_HOE);
+
+            // Sword
+            itemRegisteryEvent.getRegistry().register(VETools.ALUMINUM_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.CARBON_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.TITANIUM_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.TUNGSTEN_STEEL_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_SWORD);
+            itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_SWORD);
+
+            // Block of Materials
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
 
-            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_DUST);
-            itemRegisteryEvent.getRegistry().register(VEItems.STEEL_DUST);
-            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_DUST);
-
-            itemRegisteryEvent.getRegistry().register(VEItems.STEEL_INGOT);
-            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_INGOT);
-            itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_STEEL_INGOT);
-            itemRegisteryEvent.getRegistry().register(VEItems.NIGHALITE_INGOT);
-            itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_INGOT);
-
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_ORE,properties).setRegistryName("eighzo_ore"));
-
+            // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
 
         }

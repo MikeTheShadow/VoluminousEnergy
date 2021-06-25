@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -198,6 +197,10 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         this.heatTankItemTopManager.read(tag, "heat_top_manager");
         this.heatTankItemBottomManager.read(tag, "heat_bottom_manager");
 
+        this.firstInputSlotManager.read(tag, "first_input_manager");
+        this.secondInputSlotManager.read(tag, "second_input_manager");
+        this.outputSlotManager.read(tag, "output_manager");
+
         super.load(state,tag);
     }
 
@@ -223,6 +226,10 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
         this.heatTankItemTopManager.write(tag, "heat_top_manager");
         this.heatTankItemBottomManager.write(tag, "heat_bottom_manager");
+
+        this.firstInputSlotManager.write(tag, "first_input_manager");
+        this.secondInputSlotManager.write(tag, "second_input_manager");
+        this.outputSlotManager.write(tag, "output_manager");
 
         return super.save(tag);
     }

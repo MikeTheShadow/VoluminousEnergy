@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:centrifugal_separator"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:centrifugal_separator"
+  }
+}

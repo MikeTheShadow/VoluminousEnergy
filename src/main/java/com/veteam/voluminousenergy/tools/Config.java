@@ -43,6 +43,7 @@ public class Config {
     public static final String SUBCATEGORY_CINNABAR = "Cinnabar Ore Settings";
     public static final String SUBCATEGORY_RUTILE = "Rutile Ore Settings";
     public static final String SUBCATEGORY_GALENA = "Galena Ore Settings";
+    public static final String SUBCATEGORY_EIGHZO = "Eighzo Ore Settings";
 
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -99,6 +100,14 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
+    // EIGHZO ORE
+    public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
+    public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
+    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue EIGHZO_HEIGHT_OFFSET;
+    public static ForgeConfigSpec.IntValue EIGHZO_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
+    public static ForgeConfigSpec.IntValue EIGHZO_HARVEST_LEVEL;
 
     // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
@@ -413,6 +422,20 @@ public class Config {
             GALENA_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
+
+            //Eighzo
+            COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
+            ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
+                .define("Enable Eighzo Ore", true);
+            EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
+            EIGHZO_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Bottom Offset", 1, 1, 256);
+            EIGHZO_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Height Offset", 0, 0, 256);
+            EIGHZO_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Eighzo Maximum Height", 36, 0, 256);
+            EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+            EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
+
+            COMMON_BUILDER.pop();
+
         COMMON_BUILDER.pop();
     }
 

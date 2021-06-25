@@ -16,9 +16,7 @@ import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Foods;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 
 public class VEItems {
     public static PetCoke PETCOKE = new PetCoke();
@@ -61,7 +59,6 @@ public class VEItems {
     public static FlintDust FLINT_DUST = new FlintDust();
     public static NetherrackDust NETHERRACK_DUST = new NetherrackDust();
     public static NetheriteDust NETHERITE_DUST = new NetheriteDust();
-    public static SteelDust STEEL_DUST = new SteelDust();
     public static TungstenDust TUNGSTEN_DUST = new TungstenDust();
     public static EighzoDust EIGHZO_DUST = new EighzoDust();
     public static SolariumDust SOLARIUM_DUST = new SolariumDust();
