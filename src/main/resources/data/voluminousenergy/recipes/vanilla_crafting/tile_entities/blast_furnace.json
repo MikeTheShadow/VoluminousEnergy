@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "bcb"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/titanium"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "item": "voluminousenergy:primitiveblastfurnace"
+    },
+    "b": {
+      "tag": "forge:plates/titanium"
+    },
+    "c": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:blast_furnace"
+  }
+}

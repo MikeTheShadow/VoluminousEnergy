@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:implosion_compressing",
+  "ingredient": {
+    "tag": "forge:dusts/lapis",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:blue_dye",
+    "count": 1
+  }
+}
