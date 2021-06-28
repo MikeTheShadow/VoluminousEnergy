@@ -171,7 +171,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
-                        if(inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
+                        if(inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
                             fuelCounter = fuelCounter/(inventory.getStackInSlot(4).getCount()^2);
                         }
                         fuelLength = fuelCounter;
