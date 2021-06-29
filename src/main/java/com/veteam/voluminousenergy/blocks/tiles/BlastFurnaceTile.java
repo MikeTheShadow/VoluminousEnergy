@@ -332,7 +332,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                return super.insertItem(slot, stack, simulate); // TODO: Investigate if needed
+                return super.insertItem(slot, stack, simulate);
             }
         };
     }

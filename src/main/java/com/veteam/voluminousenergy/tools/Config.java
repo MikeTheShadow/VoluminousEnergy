@@ -54,10 +54,13 @@ public class Config {
 
     // World Feature Settings
     public static ForgeConfigSpec.BooleanValue ENABLE_VE_FEATURE_GEN;
+    public static ForgeConfigSpec.BooleanValue WORLD_GEN_LOGGING;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_LAKES;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_GEYSER;
     public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
+    public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
+    public static ForgeConfigSpec.IntValue RICE_CHANCE;
     // Ore Settings
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
@@ -351,6 +354,9 @@ public class Config {
                 .define("World Generation", true);
 
         COMMON_BUILDER.comment("Feature Generation").push(SUBCATEGORY_FEATURE_GENERATION);
+            WORLD_GEN_LOGGING = COMMON_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
+                    "Voluminous Energy features and Ores")
+                    .define("Enable Logging", true);
             GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
                     .define("Oil Lakes", true);
             OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Oil Lake Chance (Lower = Higher chance)")
@@ -359,6 +365,10 @@ public class Config {
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
                     .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
+            GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
+                    .define("Generate Rice", true);
+            RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
+                    .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);

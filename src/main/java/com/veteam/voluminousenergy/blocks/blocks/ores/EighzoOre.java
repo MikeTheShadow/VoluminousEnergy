@@ -13,7 +13,7 @@ public class EighzoOre extends VEOreBlock {
                 .sound(SoundType.STONE)
                 .strength(30F, 1200F)
                 .requiresCorrectToolForDrops()
-                .harvestLevel(Config.BAUXITE_HARVEST_LEVEL.get()) // TODO: Config
+                .harvestLevel(Config.EIGHZO_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("eighzo_ore");

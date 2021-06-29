@@ -28,11 +28,12 @@ public class VEOreGeneration {
             // End ores
             if(Config.ENABLE_EIGHZO_ORE.get()) {
                 ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
-                        .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/4))
+                        .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/Config.EIGHZO_SIZE.get()))
                         .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(/*Bottom offset*/ Config.EIGHZO_BOTTOM_OFFSET.get(), /*Top offset*/ Config.EIGHZO_HEIGHT_OFFSET.get(), /*top hard cap*/ Config.EIGHZO_MAXIMUM_HEIGHT.get())))
                         .squared()
                         .count(Config.EIGHZO_COUNT.get());
                 biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, eighzoOre);
+                if(Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Eighzo Ore registered to generate in: " + biome.getName() + " With Size: " + Config.EIGHZO_SIZE.get() + " Bottom Offset: " + Config.EIGHZO_BOTTOM_OFFSET.get() + " Max Height: " + Config.EIGHZO_MAXIMUM_HEIGHT.get() + " Count: " + Config.EIGHZO_COUNT.get());
             }
         } else { // Assuming Overworld, catch all other biomes
             if (biome.getCategory() == Biome.Category.DESERT || biome.getName() == Biomes.BADLANDS.getRegistryName() || biome.getName() == Biomes.ERODED_BADLANDS.getRegistryName()){
@@ -46,7 +47,7 @@ public class VEOreGeneration {
                             .count(Config.SALTPETER_COUNT.get());
 
                     biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, saltpeterOre);
-                    VoluminousEnergy.LOGGER.info("Saltpeter Ore registered to generate in: " + biome.getName() + " With Size: " + Config.SALTPETER_SIZE.get() + " Bottom Offset: " + Config.SALTPETER_BOTTOM_OFFSET.get() + " Max Height: " + Config.SALTPETER_MAXIMUM_HEIGHT.get() + " Count: " + Config.SALTPETER_COUNT.get());
+                    if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Saltpeter Ore registered to generate in: " + biome.getName() + " With Size: " + Config.SALTPETER_SIZE.get() + " Bottom Offset: " + Config.SALTPETER_BOTTOM_OFFSET.get() + " Max Height: " + Config.SALTPETER_MAXIMUM_HEIGHT.get() + " Count: " + Config.SALTPETER_COUNT.get());
                 }
             }
 
@@ -58,7 +59,7 @@ public class VEOreGeneration {
                         .count(Config.BAUXITE_COUNT.get());
 
                 biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, bauxiteOre);
-                VoluminousEnergy.LOGGER.info("Bauxite Ore registered to generate in: " + biome.getName() + " With Size: " + Config.BAUXITE_SIZE.get() + " Bottom Offset: " + Config.BAUXITE_BOTTOM_OFFSET.get() + " Max Height: " + Config.BAUXITE_MAXIMUM_HEIGHT.get() + " Count: " + Config.BAUXITE_COUNT.get());
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Bauxite Ore registered to generate in: " + biome.getName() + " With Size: " + Config.BAUXITE_SIZE.get() + " Bottom Offset: " + Config.BAUXITE_BOTTOM_OFFSET.get() + " Max Height: " + Config.BAUXITE_MAXIMUM_HEIGHT.get() + " Count: " + Config.BAUXITE_COUNT.get());
             }
 
             if (Config.ENABLE_CINNABAR_ORE.get()){
@@ -69,7 +70,7 @@ public class VEOreGeneration {
                         .count(Config.CINNABAR_COUNT.get());
 
                 biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, cinnabarOre);
-                VoluminousEnergy.LOGGER.info("Cinnabar Ore registered to generate in: " + biome.getName() + " With Size: " + Config.CINNABAR_SIZE.get() + " Bottom Offset: " + Config.CINNABAR_BOTTOM_OFFSET.get() + " Max Height: " + Config.CINNABAR_MAXIMUM_HEIGHT.get() + " Count: " + Config.CINNABAR_COUNT.get());
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Cinnabar Ore registered to generate in: " + biome.getName() + " With Size: " + Config.CINNABAR_SIZE.get() + " Bottom Offset: " + Config.CINNABAR_BOTTOM_OFFSET.get() + " Max Height: " + Config.CINNABAR_MAXIMUM_HEIGHT.get() + " Count: " + Config.CINNABAR_COUNT.get());
             }
 
             if (Config.ENABLE_RUTILE_ORE.get()){
@@ -80,7 +81,7 @@ public class VEOreGeneration {
                         .count(Config.RUTILE_COUNT.get());
 
                 biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, rutileOre);
-                VoluminousEnergy.LOGGER.info("Rutile Ore registered to generate in: " + biome.getName() + " With Size: " + Config.RUTILE_SIZE.get() + " Bottom Offset: " + Config.RUTILE_BOTTOM_OFFSET.get() + " Max Height: " + Config.RUTILE_MAXIMUM_HEIGHT.get() + " Count: " + Config.RUTILE_COUNT.get());
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Rutile Ore registered to generate in: " + biome.getName() + " With Size: " + Config.RUTILE_SIZE.get() + " Bottom Offset: " + Config.RUTILE_BOTTOM_OFFSET.get() + " Max Height: " + Config.RUTILE_MAXIMUM_HEIGHT.get() + " Count: " + Config.RUTILE_COUNT.get());
             }
 
             if (Config.ENABLE_GALENA_ORE.get()){
@@ -91,7 +92,7 @@ public class VEOreGeneration {
                         .count(Config.GALENA_COUNT.get());
 
                 biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, galenaOre);
-                VoluminousEnergy.LOGGER.info("Galena Ore registered to generate in: " + biome.getName() + " With Size: " + Config.GALENA_SIZE.get() + " Bottom Offset: " + Config.GALENA_BOTTOM_OFFSET.get() + " Max Height: " + Config.GALENA_MAXIMUM_HEIGHT.get() + " Count: " + Config.GALENA_COUNT.get());
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Galena Ore registered to generate in: " + biome.getName() + " With Size: " + Config.GALENA_SIZE.get() + " Bottom Offset: " + Config.GALENA_BOTTOM_OFFSET.get() + " Max Height: " + Config.GALENA_MAXIMUM_HEIGHT.get() + " Count: " + Config.GALENA_COUNT.get());
             }
 
         }
