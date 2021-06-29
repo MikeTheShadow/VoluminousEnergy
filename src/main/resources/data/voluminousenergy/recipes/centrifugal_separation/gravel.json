@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:centrifugal_separation",
+  "ingredient": {
+    "item": "minecraft:gravel",
+    "count": 4
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:sand_dust",
+    "count": 6,
+    "buckets": 0
+  },
+  "rng_slot_0": {
+    "item": "minecraft:flint",
+    "count": 1,
+    "chance": 0.75
+  },
+  "rng_slot_1": {
+    "item": "voluminousenergy:raw_sulfur",
+    "count": 1,
+    "chance": 0.05
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

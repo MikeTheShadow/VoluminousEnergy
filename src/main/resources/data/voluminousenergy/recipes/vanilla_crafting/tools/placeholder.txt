@@ -1,0 +1,1 @@
+To prevent folders from collapsing in IntelliJ
