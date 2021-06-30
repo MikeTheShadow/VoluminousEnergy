@@ -38,7 +38,6 @@ public class TankBoolPacket {
     }
 
     public static void handle(TankBoolPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:

@@ -23,7 +23,7 @@ public class RiceFeature extends Feature<BlockStateFeatureConfig>  {
     public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf) {
         if(!worldIn.canSeeSky(pos)) return false;
 
-        if (worldIn.isWaterAt(pos.below()) && worldIn.isEmptyBlock(pos)){ // doesn't seem to work
+        if (worldIn.isWaterAt(pos.below()) && worldIn.isEmptyBlock(pos)){
             generateRice(worldIn, pos);
             return true;
         }

@@ -48,7 +48,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
@@ -98,11 +98,11 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
         }));
 
         // Heat Tank
-        this.addButton(new TankBoolButton(tileEntity.getHeatTank(), (this.width/2)-198, this.topPos+140, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getHeatTank(), (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getHeatTank(), (this.width/2)-184, this.topPos+140, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getHeatTank(), (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
     }
@@ -122,7 +122,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     @Override
     protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BLAST_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BLAST_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -164,7 +164,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
             this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), 8.0F, 16.0F, 16777215);
         }
 
     }
