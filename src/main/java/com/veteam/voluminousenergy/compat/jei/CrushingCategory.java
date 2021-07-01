@@ -89,17 +89,15 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     @Override
     public void setIngredients(CrusherRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getItems()))
-                .collect(Collectors.toList()));
-
         // STACK needs to be 64 for recipes that require more than 1 of the input item
         // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
         // to save CPU cycles... but this works.
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(64);
-            ingredients.setInput(VanillaTypes.ITEM, testStack);
+        ArrayList<ItemStack> inputStacks = new ArrayList<>();
+        for (ItemStack tempStack : recipe.getIngredient().getItems()){
+            tempStack.setCount(64);
+            inputStacks.add(tempStack.copy());
         }
+        ingredients.setInputs(VanillaTypes.ITEM, inputStacks);
 
         // OUTPUT
         List<ItemStack> outputStacks = new ArrayList<>();

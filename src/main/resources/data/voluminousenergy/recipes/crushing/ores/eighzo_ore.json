@@ -10,8 +10,8 @@
     "count": 2
   },
   "rng": {
-    "item": "voluminousenergy:end_stone_dust",
-    "count": 1,
-    "chance": 0.25
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
   }
 }
