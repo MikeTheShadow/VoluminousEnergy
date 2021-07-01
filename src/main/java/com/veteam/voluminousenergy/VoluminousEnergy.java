@@ -165,7 +165,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
             blockRegisteryEvent.getRegistry().register(new RiceCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
 
-            // TODO: Solarium Test
+            // Material Blocks
             blockRegisteryEvent.getRegistry().register(new SolariumBlock());
             blockRegisteryEvent.getRegistry().register(new EighzoOre());
         }
