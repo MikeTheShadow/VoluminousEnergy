@@ -3,6 +3,7 @@
   "values": [
     "#forge:plates/aluminum",
     "#forge:plates/carbon",
-    "#forge:plates/titanium"
+    "#forge:plates/titanium",
+    "#forge:plates/solarium"
   ]
 }

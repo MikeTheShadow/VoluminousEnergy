@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class SaltpeterDust extends Item {
     public SaltpeterDust (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("saltpeterdust");
     }

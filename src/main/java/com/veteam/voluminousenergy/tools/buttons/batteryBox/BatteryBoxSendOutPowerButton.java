@@ -21,7 +21,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
 
     public BatteryBoxSendOutPowerButton(int x, int y, BatteryBoxTile batteryBoxTile, IPressable onPress) {
-        super(x, y, 18, 20, ITextComponent.getTextComponentOrEmpty(""), button -> {
+        super(x, y, 18, 20, ITextComponent.nullToEmpty(""), button -> {
             ((BatteryBoxSendOutPowerButton) button).cycle();
             onPress.onPress(button);
         });
@@ -35,7 +35,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        minecraft.getTextureManager().bind(GUI_TOOLS);
 
         if(!isHovered) u = 96;
         else u = 112;

@@ -15,7 +15,7 @@ public class VEInsertSlot  extends SlotItemHandler {
 
     public <C extends IInventory, T extends IRecipe<C>> boolean checkRecipe(VERecipe veRecipe, ItemStack stack) {
         if (veRecipe == null) return false;
-        for (ItemStack testStack : veRecipe.getIngredient().getMatchingStacks()){
+        for (ItemStack testStack : veRecipe.getIngredient().getItems()){
             if(stack.getItem() == testStack.getItem()){
                 return true;
             }

@@ -29,34 +29,34 @@ public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPan
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
-        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE / " + Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
-        super.renderHoveredTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY){
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
-        if (tileEntity.getWorld().isDaytime())
-        drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY){
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
+        if (tileEntity.getLevel().isDay())
+        drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY){
+    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY){
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.xSize, this.ySize); // Actual Gui
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui
         if (tileEntity != null) {
-            int power = container.powerScreen(49);
+            int power = menu.powerScreen(49);
             //int progress = tileEntity.progressCounterPX(14);
             //this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);

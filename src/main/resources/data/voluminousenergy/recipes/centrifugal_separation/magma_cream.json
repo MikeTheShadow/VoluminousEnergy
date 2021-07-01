@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:centrifugal_separation",
+  "ingredient": {
+    "item": "minecraft:magma_cream",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:blaze_powder",
+    "count": 1,
+    "buckets": 0
+  },
+  "rng_slot_0": {
+    "item": "minecraft:slime_ball",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

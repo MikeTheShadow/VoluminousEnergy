@@ -5,6 +5,12 @@
     "#forge:ingots/titanium",
     "#forge:ingots/carbon",
     "#forge:ingots/lead",
-    "#forge:ingots/silver"
+    "#forge:ingots/silver",
+    "#forge:ingots/steel",
+    "#forge:ingots/tungsten",
+    "#forge:ingots/tungsten_steel",
+    "#forge:ingots/nighalite",
+    "#forge:ingots/eighzo",
+    "#forge:ingots/solarium"
   ]
 }

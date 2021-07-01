@@ -17,7 +17,7 @@ public class Biofuel {
     public static final ResourceLocation BIOFUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/biofuel_still");
     public static final ResourceLocation BIOFUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/biofuel_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid BIOFUEL;
     public static FlowingFluid FLOWING_BIOFUEL;
@@ -40,7 +40,7 @@ public class Biofuel {
     }
 
     public static Item BiofuelBucket(){
-        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return BIOFUEL_BUCKET;
     }
 

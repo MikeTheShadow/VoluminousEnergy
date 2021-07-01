@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class TitaniumDust extends Item {
     public TitaniumDust (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup));
+                .stacksTo(64)
+                .tab(VESetup.itemGroup));
         setRegistryName("titanium_dust");
     }
 }

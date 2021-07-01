@@ -36,8 +36,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +44,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
@@ -55,7 +53,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     private int length;
     private int energyRate;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
+    private ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(){
         super(VEBlocks.STIRLING_GENERATOR_TILE);
@@ -67,7 +65,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
-            StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+            StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (counter > 0){
@@ -75,14 +73,14 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
                     counter--;
                     energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
                 }
-                markDirty();
+                setChanged();
             } else if (!input.isEmpty()) {
                 if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     h.extractItem(0,recipe.ingredientCount,false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();
                     this.length = this.counter;
-                    markDirty();
+                    setChanged();
                 }
             }
             if (counter == 0){
@@ -100,7 +98,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -116,7 +114,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -129,11 +127,11 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
 
         slotManager.read(tag, "slot_manager");
 
-        super.read(state,tag);
+        super.load(state,tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -149,23 +147,23 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
 
         slotManager.write(tag, "slot_manager");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -173,15 +171,15 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
         return new ItemStackHandler(1) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -194,11 +192,11 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-                StirlingGeneratorRecipe recipe1 = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    for (ItemStack testStack : recipe.ingredient.getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -219,7 +217,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null)
                 return handler.cast();
-            else if(slotManager.getStatus() && slotManager.getDirection().getIndex() == side.getIndex())
+            else if(slotManager.getStatus() && slotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return handler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) return energy.cast();
@@ -234,7 +232,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new StirlingGeneratorContainer(i,world,pos,playerInventory,playerEntity);
+        return new StirlingGeneratorContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){
@@ -272,49 +270,49 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().getIndex(),slotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof StirlingGeneratorContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof StirlingGeneratorContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

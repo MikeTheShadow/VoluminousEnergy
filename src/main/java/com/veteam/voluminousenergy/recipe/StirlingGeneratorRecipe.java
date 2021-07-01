@@ -59,23 +59,23 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){
+    public ItemStack assemble(IInventory inv){
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height){
+    public boolean canCraftInDimensions(int width, int height){
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput(){
+    public ItemStack getResultItem(){
         return result;
     }
 
@@ -97,7 +97,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
     public int getEnergyPerTick(){ return energyPerTick;};
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
     }
 
@@ -106,16 +106,16 @@ public class StirlingGeneratorRecipe extends VERecipe {
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
         @Override
-        public StirlingGeneratorRecipe read(ResourceLocation recipeId, JsonObject json){
+        public StirlingGeneratorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
 
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(),"count",1);
-            recipe.processTime = JSONUtils.getInt(json, "process_time", 200);
-            recipe.energyPerTick  = JSONUtils.getInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
+            recipe.processTime = JSONUtils.getAsInt(json, "process_time", 200);
+            recipe.energyPerTick  = JSONUtils.getAsInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if (!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
@@ -133,23 +133,23 @@ public class StirlingGeneratorRecipe extends VERecipe {
          **/
         @Nullable
         @Override
-        public StirlingGeneratorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public StirlingGeneratorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();
             recipe.energyPerTick = buffer.readInt();
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, StirlingGeneratorRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, StirlingGeneratorRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.energyPerTick);
-            buffer.writeItemStack(recipe.result);
+            buffer.writeItem(recipe.result);
         }
     }
 }

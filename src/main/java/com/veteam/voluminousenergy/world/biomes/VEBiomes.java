@@ -7,18 +7,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.RegistryEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class VEBiomes {
     protected static ArrayList<Biome> veBiomeList = new ArrayList<>();
 
     public static void prepareRegistration(RegistryEvent.Register<Biome> event, VEBiome biome, BiomeManager.BiomeType biomeType, int weight, BiomeDictionary.Type... dictionaryType) {
         VEBiomes.registerBiome(biome, event);
-        RegistryKey<Biome> registryKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(VEBiomes.veBiomeList.get(veBiomeList.size()-1))));
+        RegistryKey<Biome> registryKey = RegistryKey.create(Registry.BIOME_REGISTRY, Objects.requireNonNull(WorldGenRegistries.BIOME.getKey(VEBiomes.veBiomeList.get(veBiomeList.size()-1))));
         BiomeDictionary.addTypes(registryKey, dictionaryType);
         if (Config.GENERATE_VE_BIOMES.get()) BiomeManager.addBiome(biomeType, new BiomeManager.BiomeEntry(registryKey, weight));
     }

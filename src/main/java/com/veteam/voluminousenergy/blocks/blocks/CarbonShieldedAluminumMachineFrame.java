@@ -7,10 +7,10 @@ import net.minecraftforge.common.ToolType;
 
 public class CarbonShieldedAluminumMachineFrame extends Block {
     public CarbonShieldedAluminumMachineFrame() {
-        super(Properties.create(Material.IRON)
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setRequiresTool()
+                .strength(2.0f)
+                .requiresCorrectToolForDrops()
                 .harvestTool(ToolType.PICKAXE)
                 .harvestLevel(1)
         );

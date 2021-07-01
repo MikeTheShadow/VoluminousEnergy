@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:cinnabarore"
+    "voluminousenergy:cinnabarore",
+    "voluminousenergy:raw_cinnabar"
   ]
 }

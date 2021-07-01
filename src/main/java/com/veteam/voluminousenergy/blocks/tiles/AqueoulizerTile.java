@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -21,7 +20,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,15 +44,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class AqueoulizerTile extends VEFluidTileEntity {
     // Handlers
@@ -79,7 +73,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private final ItemStackHandler inventory = createHandler();
+    private ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -109,7 +103,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         if(this.outputFluidStatic(outputTank,2)) return;
 
         // Main Fluid Processing occurs here:
-        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(world, this.inputTank.getTank().getFluid(),inputItem.copy());
+        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level, this.inputTank.getTank().getFluid(),inputItem.copy());
         // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
@@ -138,7 +132,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
                                 counter--;
                                 consumeEnergy();
-                                this.markDirty();
+                                this.setChanged();
                             } else if (counter > 0){
                                 counter--;
                                 consumeEnergy();
@@ -178,7 +172,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -195,11 +189,11 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         this.inputTank.readGuiProperties(tag,"input_tank_gui");
         this.outputTank.readGuiProperties(tag, "output_tank_gui");
 
-        super.read(state,tag);
+        super.load(state,tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -222,24 +216,24 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         this.inputTank.writeGuiProperties(tag,"input_tank_gui");
         this.outputTank.writeGuiProperties(tag, "output_tank_gui");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -256,7 +250,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
@@ -282,22 +276,22 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null) return handler.cast();
-            if (output0sm.getStatus() && output0sm.getDirection().getIndex() == side.getIndex())
+            if (output0sm.getStatus() && output0sm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return output0Handler.cast();
-            else if (output1sm.getStatus() && output1sm.getDirection().getIndex() == side.getIndex())
+            else if (output1sm.getStatus() && output1sm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return output1Handler.cast();
-            else if (input0sm.getStatus() && input0sm.getDirection().getIndex() == side.getIndex())
+            else if (input0sm.getStatus() && input0sm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return input0Handler.cast();
-            else if (input1sm.getStatus() && input1sm.getDirection().getIndex() == side.getIndex())
+            else if (input1sm.getStatus() && input1sm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return input1Handler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(inputTank.getSideStatus() && inputTank.getSideDirection().getIndex() == side.getIndex())
+            if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return inputFluidHandler.cast();
-            if(outputTank.getSideStatus() && outputTank.getSideDirection().getIndex() == side.getIndex())
+            if(outputTank.getSideStatus() && outputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return outputFluidHandler.cast();
         }
         return super.getCapability(cap, side);
@@ -311,7 +305,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new AqueoulizerContainer(i, world, pos, playerInventory, playerEntity);
+        return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
@@ -381,11 +375,11 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input0sm.getStatus(), input0sm.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input1sm.getStatus(), input1sm.getSlotNum()));
@@ -395,21 +389,21 @@ public class AqueoulizerTile extends VEFluidTileEntity {
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank.getSideStatus(), outputTank.getId()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input0sm.getDirection().getIndex(),input0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input1sm.getDirection().getIndex(),input1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output0sm.getDirection().getIndex(),output0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output1sm.getDirection().getIndex(),output1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(inputTank.getSideDirection().getIndex(), inputTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank.getSideDirection().getIndex(), outputTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input0sm.getDirection().get3DDataValue(),input0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input1sm.getDirection().get3DDataValue(),input1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output0sm.getDirection().get3DDataValue(),output0sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output1sm.getDirection().get3DDataValue(),output1sm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank.getSideDirection().get3DDataValue(), outputTank.getId()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -421,29 +415,29 @@ public class AqueoulizerTile extends VEFluidTileEntity {
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank.getSideStatus(), outputTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input0sm.getDirection().getIndex(),input0sm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input1sm.getDirection().getIndex(),input1sm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output0sm.getDirection().getIndex(),output0sm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output1sm.getDirection().getIndex(),output1sm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().getIndex(), inputTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank.getSideDirection().getIndex(), outputTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input0sm.getDirection().get3DDataValue(),input0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(input1sm.getDirection().get3DDataValue(),input1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output0sm.getDirection().get3DDataValue(),output0sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(output1sm.getDirection().get3DDataValue(),output1sm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank.getSideDirection().get3DDataValue(), outputTank.getId()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof AqueoulizerContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof AqueoulizerContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

@@ -8,8 +8,8 @@ public class MercuryBattery extends VEEnergyItem{
 
     public MercuryBattery() {
         super(new Properties()
-                .group(VESetup.itemGroup)
-                .maxStackSize(1),
+                .tab(VESetup.itemGroup)
+                .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX);
         setRegistryName("mercury_battery");

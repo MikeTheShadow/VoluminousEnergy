@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
-import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -23,11 +22,11 @@ import javax.annotation.Nullable;
 
 public class AirCompressorBlock extends FaceableBlock {
     public AirCompressorBlock(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setLightLevel(l -> 0)
-                .setRequiresTool()
+                .strength(2.0f)
+                .lightLevel(l -> 0)
+                .requiresCorrectToolForDrops()
                 .harvestLevel(Config.AIR_COMPRESSOR_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
@@ -39,11 +38,11 @@ public class AirCompressorBlock extends FaceableBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new AirCompressorTile();}
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
-        if(!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
+        if(!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Air Compressor named container provider is missing!");
             }

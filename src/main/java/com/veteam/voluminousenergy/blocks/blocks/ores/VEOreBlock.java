@@ -13,12 +13,12 @@ public class VEOreBlock extends OreBlock {
     }
 
     @Override
-    protected int getExperience(Random rand) {
+    protected int xpOnDrop(Random rand) {
         return MathHelper.nextInt(rand, 2, 5);
     }
 
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
-        return silktouch == 0 ? this.getExperience(RANDOM)*(1+fortune) : 0;
+        return silktouch == 0 ? this.xpOnDrop(RANDOM)*(1+fortune) : 0;
     }
 }

@@ -5,6 +5,8 @@
     "#forge:ores/bauxite",
     "#forge:ores/cinnabar",
     "#forge:ores/rutile",
-    "#forge:ores/galena"
+    "#forge:ores/galena",
+    "#forge:ores/sulfur",
+    "#forge:ores/eighzo"
   ]
 }

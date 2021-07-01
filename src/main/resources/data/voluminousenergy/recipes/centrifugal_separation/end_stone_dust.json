@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:centrifugal_separation",
+  "ingredient": {
+    "tag": "forge:dusts/endstone",
+    "count": 16
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:sand_dust",
+    "count": 12,
+    "buckets": 0
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:tungsten_dust",
+    "count": 2,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

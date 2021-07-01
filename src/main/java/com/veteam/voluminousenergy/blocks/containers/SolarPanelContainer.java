@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.screens.SolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,22 +20,21 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.SOLAR_PANEL_CONTAINER;
 
-public class SolarPanelContainer extends Container {
+public class SolarPanelContainer extends VoluminousContainer {
 
-    private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private SolarPanelScreen screen;
 
     public SolarPanelContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(SOLAR_PANEL_CONTAINER, windowID);
-        this.tileEntity = world.getTileEntity(pos);
+        this.tileEntity = world.getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
         layoutPlayerInventorySlots(8, 84);
 
-        trackInt(new IntReferenceHolder() {
+        addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
                 return getEnergy();
@@ -54,26 +52,8 @@ public class SolarPanelContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos()), playerEntity, VEBlocks.SOLAR_PANEL_BLOCK);
-    }
-
-
-    private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx){
-        for (int i = 0; i < amount; i++){
-            addSlot(new SlotItemHandler(handler, index, x, y));
-            x += dx;
-            index++;
-        }
-        return index;
-    }
-
-    private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy){
-        for (int j = 0; j < verAmount; j++){
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
-            y += dy;
-        }
-        return index;
+    public boolean stillValid(PlayerEntity playerIn) {
+        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.SOLAR_PANEL_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow){
@@ -87,31 +67,31 @@ public class SolarPanelContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             itemstack = stack.copy();
             if (index == 0) {
-                if (!this.mergeItemStack(stack, 1, 37, true)) {
+                if (!this.moveItemStackTo(stack, 1, 37, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onSlotChange(stack, itemstack);
+                slot.onQuickCraft(stack, itemstack);
             } else {
                 if (index < 28) {
-                    if (!this.mergeItemStack(stack, 28, 37, false)) {
+                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index < 37 && !this.mergeItemStack(stack, 1, 28, false)) {
+                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
                     return ItemStack.EMPTY;
                 }
             }
 
             if (stack.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (stack.getCount() == itemstack.getCount()) {

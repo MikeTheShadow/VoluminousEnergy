@@ -67,7 +67,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     @Override
     @Deprecated
-    public ItemStack getResult() {return new ItemStack(this.result.getFluid().getFilledBucket());}
+    public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
 
     public FluidStack getSecondResult(){return secondResult;}
 
@@ -110,20 +110,20 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public boolean canFit(int width, int height){return true;}
+    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
     @Deprecated
-    public ItemStack getRecipeOutput(){return this.getResult();}
+    public ItemStack getResultItem(){return this.getResult();}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -146,20 +146,20 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     public int getProcessTime() { return processTime; }
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK);
     }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CentrifugalAgitatorRecipe> {
         @Override
-        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public CentrifugalAgitatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             //recipe.inputAmount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
 
-            recipe.processTime = JSONUtils.getInt(json,"process_time",200);
+            recipe.processTime = JSONUtils.getAsInt(json,"process_time",200);
 
             /*
             for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
@@ -169,16 +169,16 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             }
              */
 
-            int inputFluidAmount = JSONUtils.getInt(json.get("input_fluid").getAsJsonObject(),"amount",0);
+            int inputFluidAmount = JSONUtils.getAsInt(json.get("input_fluid").getAsJsonObject(),"amount",0);
             recipe.inputAmount = inputFluidAmount;
 
             // A tag is used instead of a manually defined fluid
             try{
                 if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    ResourceLocation fluidTagLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(fluidTagLocation);
                     if(tag != null){
-                        for(Fluid fluid : tag.getAllElements()){
+                        for(Fluid fluid : tag.getValues()){
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), recipe.inputAmount);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
@@ -190,7 +190,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
                 } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
                     // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    ResourceLocation fluidResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),recipe.inputAmount);
                     recipe.fluidInputList.add(recipe.inputFluid.copy());
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
@@ -202,13 +202,13 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
             }
 
-            ResourceLocation bucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
-            int firstOutputFluidAmount = JSONUtils.getInt(json.get("first_result").getAsJsonObject(),"amount",0);
+            ResourceLocation bucketResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
+            int firstOutputFluidAmount = JSONUtils.getAsInt(json.get("first_result").getAsJsonObject(),"amount",0);
             recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
             recipe.outputAmount = firstOutputFluidAmount;
 
-            ResourceLocation secondBucketResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
-            int secondOutputFluidAmount = JSONUtils.getInt(json.get("second_result").getAsJsonObject(),"amount",0);
+            ResourceLocation secondBucketResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
+            int secondOutputFluidAmount = JSONUtils.getAsInt(json.get("second_result").getAsJsonObject(),"amount",0);
             recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
             recipe.secondAmount = secondOutputFluidAmount;
 
@@ -217,9 +217,9 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public CentrifugalAgitatorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
@@ -240,8 +240,8 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, CentrifugalAgitatorRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
             buffer.writeInt(recipe.inputArraySize);

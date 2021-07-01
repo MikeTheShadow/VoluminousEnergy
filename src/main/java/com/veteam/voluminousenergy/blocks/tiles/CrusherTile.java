@@ -76,13 +76,13 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         super(VEBlocks.CRUSHER_TILE);
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(4) {
+    public ItemStackHandler inventory = new ItemStackHandler(4) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            CrusherRecipe recipe = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+            CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
                 return recipe.ingredient.test(stack);
@@ -101,11 +101,11 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-            CrusherRecipe recipe1 = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+            CrusherRecipe recipe = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+            CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                for (ItemStack testStack : recipe.ingredient.getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
@@ -129,18 +129,18 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
-            if(world != null){
+            if(level != null){
                 Random rand = new Random();
                 if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST)
-                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                    level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
                 if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST)
-                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                    level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
                 if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST)
-                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 2, 5)));
+                    level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*MathHelper.nextInt(rand, 2, 5)));
                 if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST)
-                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 5, 7)));
+                    level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*MathHelper.nextInt(rand, 5, 7)));
                 if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK)
-                    world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
+                    level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*MathHelper.nextInt(rand, 1, 3)));
             }
             
             return super.extractItem(slot,amount,simulate);
@@ -149,7 +149,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         @Override
         protected void onContentsChanged(final int slot) {
             super.onContentsChanged(slot);
-            CrusherTile.this.markDirty();
+            CrusherTile.this.setChanged();
         }
     };
 
@@ -162,7 +162,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         ItemStack output = inventory.getStackInSlot(1).copy();
         ItemStack rng = inventory.getStackInSlot(2).copy();
 
-        CrusherRecipe recipe = world.getRecipeManager().getRecipe(CrusherRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+        CrusherRecipe recipe = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
@@ -213,7 +213,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
                     }
                     counter--;
                     consumeEnergy();
-                    markDirty();
+                    setChanged();
                 } else if (counter > 0){ //In progress
                     counter--;
                     consumeEnergy();
@@ -253,7 +253,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
      */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
@@ -263,11 +263,11 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         inputSlotProp.read(tag, "input_slot");
         outputSlotProp.read(tag, "output_slot");
         rngSlotProp.read(tag, "rng_slot");
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
@@ -277,7 +277,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         inputSlotProp.write(tag, "input_slot");
         outputSlotProp.write(tag, "output_slot");
         rngSlotProp.write(tag, "rng_slot");
-        return super.write(tag);
+        return super.save(tag);
     }
 
     private IEnergyStorage createEnergy(){
@@ -285,9 +285,20 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     }
 
     @Override
+    public CompoundNBT getUpdateTag() {
+        return this.save(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -300,13 +311,13 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             } else {
                 // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.getIndex() == inputSlotProp.getDirection().getIndex() && inputSlotProp.getStatus()){
+                if (side.get3DDataValue() == inputSlotProp.getDirection().get3DDataValue() && inputSlotProp.getStatus()){
                     return inputItemHandler.cast();
                 }
-                if (side.getIndex() == outputSlotProp.getDirection().getIndex() && outputSlotProp.getStatus()){
+                if (side.get3DDataValue() == outputSlotProp.getDirection().get3DDataValue() && outputSlotProp.getStatus()){
                     return outputItemHandler.cast();
                 }
-                if (side.getIndex() == rngSlotProp.getDirection().getIndex() && rngSlotProp.getStatus()){
+                if (side.get3DDataValue() == rngSlotProp.getDirection().get3DDataValue() && rngSlotProp.getStatus()){
                     return rngItemHandler.cast();
                 }
             }
@@ -326,7 +337,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
     {
-        return new CrusherContainer(i,world,pos,playerInventory,playerEntity);
+        return new CrusherContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){
@@ -359,29 +370,29 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSlotProp.getStatus(), inputSlotProp.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotProp.getStatus(), outputSlotProp.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngSlotProp.getStatus(), rngSlotProp.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotProp.getDirection().getIndex(),inputSlotProp.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotProp.getDirection().getIndex(),outputSlotProp.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngSlotProp.getDirection().getIndex(), rngSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotProp.getDirection().get3DDataValue(),inputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotProp.getDirection().get3DDataValue(),outputSlotProp.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngSlotProp.getDirection().get3DDataValue(), rngSlotProp.getSlotNum()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -390,26 +401,26 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(rngSlotProp.getStatus(), rngSlotProp.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotProp.getDirection().getIndex(),inputSlotProp.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotProp.getDirection().getIndex(),outputSlotProp.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngSlotProp.getDirection().getIndex(), rngSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotProp.getDirection().get3DDataValue(),inputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotProp.getDirection().get3DDataValue(),outputSlotProp.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(rngSlotProp.getDirection().get3DDataValue(), rngSlotProp.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof CrusherContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof CrusherContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

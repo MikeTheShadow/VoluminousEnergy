@@ -41,12 +41,14 @@ public class TankDirectionPacket {
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
-                Container clientContainer = Minecraft.getInstance().player.openContainer;
+                Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
-                Container serverContainer = (contextSupplier.get().getSender()).openContainer;
+                Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
 
     }
@@ -55,7 +57,7 @@ public class TankDirectionPacket {
         if(openContainer != null){
             if (openContainer instanceof AirCompressorContainer) { // Air Compressor
                 if (onServer) {
-                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -66,7 +68,7 @@ public class TankDirectionPacket {
                 // End of Air Compressor
             } else if(openContainer instanceof AqueoulizerContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AqueoulizerTile) {
                         ((AqueoulizerTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -77,7 +79,7 @@ public class TankDirectionPacket {
                 // End of Aqueoulizer
             } else if(openContainer instanceof CentrifugalAgitatorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CentrifugalAgitatorTile) {
                         ((CentrifugalAgitatorTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -88,7 +90,7 @@ public class TankDirectionPacket {
                 // End of CentrifugalAgitator
             } else if(openContainer instanceof CombustionGeneratorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CombustionGeneratorTile) {
                         ((CombustionGeneratorTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -99,7 +101,7 @@ public class TankDirectionPacket {
                 // End of CombustionGenerator
             } else if (openContainer instanceof DistillationUnitContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof DistillationUnitTile) {
                         ((DistillationUnitTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -110,7 +112,7 @@ public class TankDirectionPacket {
                 // End of DistillationUnit
             } else if(openContainer instanceof GasFiredFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof GasFiredFurnaceTile) {
                         ((GasFiredFurnaceTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -121,7 +123,7 @@ public class TankDirectionPacket {
                 // End of GasFiredFurnace
             } else if(openContainer instanceof PumpContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((PumpContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((PumpContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof PumpTile) {
                         ((PumpTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
                     }
@@ -130,6 +132,17 @@ public class TankDirectionPacket {
                     ((PumpContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
                 }
                 // End of Pump
+            } else if(openContainer instanceof BlastFurnaceContainer){
+                if (onServer) {
+                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof BlastFurnaceTile) {
+                        ((BlastFurnaceTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((BlastFurnaceContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
+                }
+                // End of Blast Furnace
             } else {
                 VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
             }

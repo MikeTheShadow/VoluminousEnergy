@@ -37,10 +37,11 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     public CrushingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
+        //ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CRUSHER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
-        arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);
+        arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override
@@ -81,28 +82,26 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             } else if (chance < 10){
                 xPos += 5;
             }
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack,chance + "%",xPos,65,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",xPos,65,0x606060);
         }
 
     }
 
     @Override
     public void setIngredients(CrusherRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getMatchingStacks()))
-                .collect(Collectors.toList()));
-
         // STACK needs to be 64 for recipes that require more than 1 of the input item
         // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
         // to save CPU cycles... but this works.
-        for (ItemStack testStack : recipe.getIngredient().getMatchingStacks()){
-            testStack.setCount(64);
-            ingredients.setInput(VanillaTypes.ITEM, testStack);
+        ArrayList<ItemStack> inputStacks = new ArrayList<>();
+        for (ItemStack tempStack : recipe.getIngredient().getItems()){
+            tempStack.setCount(64);
+            inputStacks.add(tempStack.copy());
         }
+        ingredients.setInputs(VanillaTypes.ITEM, inputStacks);
 
         // OUTPUT
         List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getRecipeOutput()); // Normal output
+        outputStacks.add(recipe.getResultItem()); // Normal output
 
         if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Check RNG if it's not air
             outputStacks.add(recipe.getRngItem());
@@ -119,7 +118,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getMatchingStacks()).map(s -> {
+        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
             ItemStack stack = s.copy();
             stack.setCount(recipe.getIngredientCount());
             return stack;
@@ -127,7 +126,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
         itemStacks.set(0, inputs);
 
         // Calculate output
-        ItemStack tempStack = recipe.getRecipeOutput(); // Get Item since amount will be wrong
+        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
         Item outputItem = tempStack.getItem();
         ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
         itemStacks.set(1, jeiStack);

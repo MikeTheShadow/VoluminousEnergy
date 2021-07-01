@@ -1,0 +1,12 @@
+{
+  "type": "voluminousenergy:implosion_compressing",
+  "ingredient": {
+    "tag": "forge:dusts/quartz",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:quartz",
+    "count": 1
+  }
+}

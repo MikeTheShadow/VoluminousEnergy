@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#b#",
+    "a*a",
+    "#b#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "b": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:centrifugal_separator"
+  }
+}

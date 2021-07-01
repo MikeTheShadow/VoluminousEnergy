@@ -88,7 +88,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
         if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) {
             if (slotStack.getItem() == Items.BUCKET && airTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
-                ItemStack bucketStack = new ItemStack(airTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
+                ItemStack bucketStack = new ItemStack(airTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 airTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 inventory.extractItem(0, 1, false);
                 inventory.insertItem(0, bucketStack, false);
@@ -97,40 +97,40 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
         if (airTank != null && (airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY && counter == 0 && canConsumeEnergy()){
             // Check blocks around the Air Compressor to see if it's air
-            int x = this.pos.getX();
-            int y = this.pos.getY();
-            int z = this.pos.getZ();
+            int x = this.worldPosition.getX();
+            int y = this.worldPosition.getY();
+            int z = this.worldPosition.getZ();
 
             // Sanity check
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z)).getBlock()){
                 addAirToTank();
             }
 
             // Check X offsets
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x+1,y,z)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x+1,y,z)).getBlock()){
                 //LOGGER.debug("HIT! x+1: " + (x+1) + " y: " + y + " z: " + z + " is AIR!");
                 addAirToTank();
             }
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x-1,y,z)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x-1,y,z)).getBlock()){
                 //LOGGER.debug("HIT! x-1: " + (x-1) + " y: " + y + " z: " + z + " is AIR!");
                 addAirToTank();
             }
 
             // Check Y offsets
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x,y+1,z)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y+1,z)).getBlock()){
                 //LOGGER.debug("HIT! x: " + x + " y+1: " + (y+1) + " z: " + z + " is AIR!");
                 addAirToTank();
             }
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x,y-1,z)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y-1,z)).getBlock()){
                 //LOGGER.debug("HIT! x: " + x + " y-1: " + (y-1) + " z: " + z + " is AIR!");
                 addAirToTank();
             }
 
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z+1)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z+1)).getBlock()){
                 //LOGGER.debug("HIT! x: " + x + " y: " + y + " z+1: " + (z+1) + " is AIR!");
                 addAirToTank();
             }
-            if (Blocks.AIR == world.getBlockState(new BlockPos(x,y,z-1)).getBlock()){
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z-1)).getBlock()){
                 //LOGGER.debug("HIT! x: " + x + " y: " + y + " z-1: " + (z-1) + " is AIR!");
                 addAirToTank();
             }
@@ -165,7 +165,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         CompoundNBT energyTag = tag.getCompound("energy");
@@ -178,11 +178,11 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
         outputSlotManager.read(tag, "output_slot");
         airTank.readGuiProperties(tag, "air_tank_properties");
-        super.read(state,tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag){
+    public CompoundNBT save(CompoundNBT tag){
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
@@ -198,24 +198,24 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
         outputSlotManager.write(tag, "output_slot");
         airTank.writeGuiProperties(tag, "air_tank_properties");
-        return super.write(tag);
+        return super.save(tag);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -277,7 +277,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     private ItemStackHandler inventory = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
-            markDirty();
+            setChanged();
         }
 
         @Override
@@ -312,7 +312,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             if(side == null){
                 return handler.cast();
             } else {
-                if(side.getIndex() == outputSlotManager.getDirection().getIndex() && outputSlotManager.getStatus()){
+                if(side.get3DDataValue() == outputSlotManager.getDirection().get3DDataValue() && outputSlotManager.getStatus()){
                     return outputItemHandler.cast();
                 }
             }
@@ -334,7 +334,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new AirCompressorContainer(i, world, pos, playerInventory, playerEntity);
+        return new AirCompressorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getAirTankFluid(){
@@ -375,27 +375,27 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(airTank.getSideStatus(), airTank.getId()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(airTank.getSideDirection().getIndex(), airTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(airTank.getSideDirection().get3DDataValue(), airTank.getId()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -403,25 +403,25 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(airTank.getSideStatus(), airTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(airTank.getSideDirection().getIndex(), airTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(airTank.getSideDirection().get3DDataValue(), airTank.getId()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof AirCompressorContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof AirCompressorContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

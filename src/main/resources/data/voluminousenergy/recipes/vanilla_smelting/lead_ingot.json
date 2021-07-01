@@ -4,6 +4,6 @@
     "tag": "forge:dusts/lead"
   },
   "result": "voluminousenergy:lead_ingot",
-  "experience": 0.1,
+  "experience": 1.0,
   "cookingtime": 200
 }

@@ -36,12 +36,14 @@ public class BatteryBoxSendOutPowerPacket {
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch (packetDirection){
             case PLAY_TO_CLIENT: // Packet is being sent to client
-                Container clientContainer = Minecraft.getInstance().player.openContainer;
+                Container clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.get().setPacketHandled(true);
                 break;
             default:
-                Container serverContainer = (contextSupplier.get().getSender()).openContainer;
+                Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.get().setPacketHandled(true);
         }
     }
 
@@ -49,7 +51,7 @@ public class BatteryBoxSendOutPowerPacket {
         if(openContainer != null){
             if(openContainer instanceof BatteryBoxContainer){
                 if(onServer){
-                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).tileEntity;
+                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if(tileEntity instanceof BatteryBoxTile){ // sanity check
                         ((BatteryBoxTile) tileEntity).updateSendOutPower(packet.status);
                     }

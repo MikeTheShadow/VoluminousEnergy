@@ -17,7 +17,7 @@ public class TankBoolButton extends VEIOButton {
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
     public TankBoolButton(RelationalTank tank, int x, int y, Button.IPressable onPress) {
-        super(x, y, 16, 15, ITextComponent.getTextComponentOrEmpty(""), button -> {
+        super(x, y, 16, 15, ITextComponent.nullToEmpty(""), button -> {
             ((TankBoolButton) button).cycle();
             onPress.onPress(button);
         });
@@ -31,7 +31,7 @@ public class TankBoolButton extends VEIOButton {
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        Minecraft.getInstance().getTextureManager().bind(texture);
         enable = this.tank.getSideStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);

@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class GoldDust extends Item {
     public GoldDust (){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup)
+                .stacksTo(64)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("gold_dust");
     }

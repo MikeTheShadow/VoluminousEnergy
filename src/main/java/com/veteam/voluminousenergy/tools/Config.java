@@ -32,6 +32,9 @@ public class Config {
     public static final String CATEGORY_BATTERY_BOX = "Battery Box";
     public static final String CATEGORY_PRIMITIVE_SOLAR_PANEL = "Primitive Solar Panel";
     public static final String CATEGORY_SOLAR_PANEL = "Solar Panel";
+    public static final String CATEGORY_CENTRIFUGAL_SEPARATOR = "Centrifugal Separator";
+    public static final String CATEGORY_IMPLOSION_COMPRESSOR = "Implosion Compressor";
+    public static final String CATEGORY_BLAST_FURNACE = "Blast Furnace";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -40,6 +43,7 @@ public class Config {
     public static final String SUBCATEGORY_CINNABAR = "Cinnabar Ore Settings";
     public static final String SUBCATEGORY_RUTILE = "Rutile Ore Settings";
     public static final String SUBCATEGORY_GALENA = "Galena Ore Settings";
+    public static final String SUBCATEGORY_EIGHZO = "Eighzo Ore Settings";
 
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -50,10 +54,13 @@ public class Config {
 
     // World Feature Settings
     public static ForgeConfigSpec.BooleanValue ENABLE_VE_FEATURE_GEN;
+    public static ForgeConfigSpec.BooleanValue WORLD_GEN_LOGGING;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_LAKES;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_GEYSER;
     public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
+    public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
+    public static ForgeConfigSpec.IntValue RICE_CHANCE;
     // Ore Settings
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
@@ -96,6 +103,14 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
+    // EIGHZO ORE
+    public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
+    public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
+    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue EIGHZO_HEIGHT_OFFSET;
+    public static ForgeConfigSpec.IntValue EIGHZO_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
+    public static ForgeConfigSpec.IntValue EIGHZO_HARVEST_LEVEL;
 
     // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
@@ -183,17 +198,36 @@ public class Config {
     public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
     public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
-    // Primitive Solar Panel
+    // Primitive Solar Panel Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
 
-    // Solar Panel
+    // Solar Panel Variables
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
+
+    // Centrifugal Separator Variables
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL;
+
+    // Implosion Compressor Variables
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
+    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_HARVEST_LEVEL;
+
+    // Blast Furnace Variables
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HARVEST_LEVEL;
+    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
@@ -285,6 +319,21 @@ public class Config {
         setupSolarPanel();
         COMMON_BUILDER.pop();
 
+        // Centrifugal Separator
+        COMMON_BUILDER.comment("Centrifugal Separator").push(CATEGORY_CENTRIFUGAL_SEPARATOR);
+        setupCentrifugalSeparator();
+        COMMON_BUILDER.pop();
+
+        // Implosion Compressor
+        COMMON_BUILDER.comment("Implosion Compressor").push(CATEGORY_IMPLOSION_COMPRESSOR);
+        setupImplosionCompressor();
+        COMMON_BUILDER.pop();
+
+        // Blast Furnace
+        COMMON_BUILDER.comment("Blast Furnace").push(CATEGORY_BLAST_FURNACE);
+        setupBlastFurnace();
+        COMMON_BUILDER.pop();
+
         COMMON_CONFIG = COMMON_BUILDER.build();
     }
 
@@ -305,6 +354,9 @@ public class Config {
                 .define("World Generation", true);
 
         COMMON_BUILDER.comment("Feature Generation").push(SUBCATEGORY_FEATURE_GENERATION);
+            WORLD_GEN_LOGGING = COMMON_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
+                    "Voluminous Energy features and Ores")
+                    .define("Enable Logging", true);
             GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
                     .define("Oil Lakes", true);
             OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Oil Lake Chance (Lower = Higher chance)")
@@ -313,6 +365,10 @@ public class Config {
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
                     .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
+            GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
+                    .define("Generate Rice", true);
+            RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
+                    .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
@@ -376,6 +432,20 @@ public class Config {
             GALENA_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
+
+            //Eighzo
+            COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
+            ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
+                .define("Enable Eighzo Ore", true);
+            EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
+            EIGHZO_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Bottom Offset", 1, 1, 256);
+            EIGHZO_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Height Offset", 0, 0, 256);
+            EIGHZO_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Eighzo Maximum Height", 36, 0, 256);
+            EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+            EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
+
+            COMMON_BUILDER.pop();
+
         COMMON_BUILDER.pop();
     }
 
@@ -547,6 +617,41 @@ public class Config {
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
         SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
                 .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupCentrifugalSeparator(){
+        CENTRIFUGAL_SEPARATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Centrifugal Separator to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Centrifugal Separator")
+                .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Separator")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+        CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupImplosionCompressor(){
+        IMPLOSION_COMPRESSOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Implosion Compressor to store")
+                .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Implosion Compressor")
+                .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Implosion Compressor")
+                .defineInRange("Maximum Transfer", 2_500, 0, Integer.MAX_VALUE);
+        IMPLOSION_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupBlastFurnace(){
+        BLAST_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Blast Furnace to store")
+                .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Blast Furnace")
+                .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Blast Furnace")
+                .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
+                .defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
+        BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = COMMON_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
+                .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path){

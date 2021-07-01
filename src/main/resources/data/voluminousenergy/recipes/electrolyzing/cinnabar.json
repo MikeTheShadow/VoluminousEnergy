@@ -8,7 +8,7 @@
   "result": {
     "item": "voluminousenergy:sulfurdust",
     "count": 1,
-    "consumes_bucket": true
+    "consumes_bucket": 1
   },
   "rng_slot_0": {
     "item": "voluminousenergy:mercury_bucket",

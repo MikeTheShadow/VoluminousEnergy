@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -126,7 +124,7 @@ public class RelationalTank {
 
     public void writeGuiProperties(CompoundNBT nbt, String prefix){
         nbt.putBoolean(prefix + "_enabled", getSideStatus());
-        nbt.putInt(prefix+"_direction", getSideDirection().getIndex());
+        nbt.putInt(prefix+"_direction", getSideDirection().get3DDataValue());
     }
 
     public void readGuiProperties(CompoundNBT nbt, String prefix){

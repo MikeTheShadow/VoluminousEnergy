@@ -7,12 +7,12 @@ import net.minecraftforge.common.ToolType;
 
 public class TitaniumMachineCasingBlock extends Block {
     public TitaniumMachineCasingBlock() {
-        super(Block.Properties.create(Material.IRON)
+        super(Block.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setRequiresTool()
+                .strength(2.0f)
+                .requiresCorrectToolForDrops()
                 .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
+                .harvestLevel(3)
         );
         setRegistryName("titanium_machine_casing");
     }

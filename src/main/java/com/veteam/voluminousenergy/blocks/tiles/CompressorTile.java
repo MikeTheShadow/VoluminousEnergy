@@ -75,7 +75,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         ItemStack input = inventory.getStackInSlot(0).copy();
         ItemStack output = inventory.getStackInSlot(1).copy();
 
-        CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+        CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
@@ -101,7 +101,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
 
                     this.counter--;
                     consumeEnergy();
-                    markDirty();
+                    setChanged();
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
                     consumeEnergy();
@@ -138,7 +138,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -148,11 +148,11 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         inputSlotManager.read(tag, "input_slot");
         outputSlotManager.read(tag, "output_slot");
 
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -164,13 +164,24 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
 
         inputSlotManager.write(tag, "input_slot");
         outputSlotManager.write(tag, "output_slot");
-        return super.write(tag);
+        return super.save(tag);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return this.save(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -178,15 +189,15 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         return new ItemStackHandler(3) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -203,11 +214,11 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                CompressorRecipe recipe = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
-                CompressorRecipe recipe1 = world.getRecipeManager().getRecipe(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),world).orElse(null);
+                CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    for (ItemStack testStack : recipe.ingredient.getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -234,9 +245,9 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if(side == null)
                 return handler.cast();
-            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().getIndex() == side.getIndex())
+            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return inputItemHandler.cast();
-            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().getIndex() == side.getIndex())
+            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
                 return outputItemHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY){
@@ -254,7 +265,7 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
     {
-        return new CompressorContainer(i,world,pos,playerInventory,playerEntity);
+        return new CompressorContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int progressCounterPX(int px){
@@ -283,27 +294,27 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSlotManager.getStatus(), inputSlotManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSlotManager.getDirection().get3DDataValue(),inputSlotManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -311,25 +322,25 @@ public class CompressorTile extends VoluminousTileEntity implements ITickableTil
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotManager.getDirection().getIndex(),inputSlotManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().getIndex(),outputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSlotManager.getDirection().get3DDataValue(),inputSlotManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof CompressorContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof CompressorContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

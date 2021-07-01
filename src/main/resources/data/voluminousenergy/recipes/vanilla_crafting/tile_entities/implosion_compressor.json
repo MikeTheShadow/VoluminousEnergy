@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "a*a",
+    "bcb"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "item": "voluminousenergy:compressor"
+    },
+    "b": {
+      "tag": "forge:plates/titanium"
+    },
+    "c": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:implosion_compressor"
+  }
+}

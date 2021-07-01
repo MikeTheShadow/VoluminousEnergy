@@ -18,8 +18,8 @@ public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderConfig
     }
 
     @Override
-    public void buildSurface(Random random, IChunk chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, long seed, SurfaceBuilderConfig config) {
-        this.build(random, chunkIn, biomeIn, x, z, startHeight, noise, defaultBlock, defaultFluid, Blocks.RED_SAND.getDefaultState(), Blocks.RED_SAND.getDefaultState(), Blocks.RED_SANDSTONE.getDefaultState(), seaLevel);
+    public void apply(Random random, IChunk chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, long seed, SurfaceBuilderConfig config) {
+        this.build(random, chunkIn, biomeIn, x, z, startHeight, noise, defaultBlock, defaultFluid, Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SANDSTONE.defaultBlockState(), seaLevel);
     }
 
     protected void build(Random random, IChunk chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, BlockState top, BlockState middle, BlockState bottom, int sealevel) {
@@ -32,14 +32,14 @@ public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderConfig
         int l = z & 15;
 
         for (int i1 = startHeight; i1 >= 0; --i1) {
-            blockpos$mutable.setPos(k, i1, l);
+            blockpos$mutable.set(k, i1, l);
             BlockState blockstate2 = chunkIn.getBlockState(blockpos$mutable);
             if (blockstate2.isAir()) {
                 i = -1;
-            } else if (blockstate2.equals(defaultBlock.getBlock().getDefaultState())) {
+            } else if (blockstate2.equals(defaultBlock.getBlock().defaultBlockState())) {
                 if (i == -1) {
                     if (j <= 0) {
-                        blockstate = Blocks.AIR.getDefaultState();
+                        blockstate = Blocks.AIR.defaultBlockState();
                         blockstate1 = defaultBlock;
                     } else if (i1 >= sealevel - 4 && i1 <= sealevel + 1) {
                         blockstate = top;
@@ -47,20 +47,20 @@ public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderConfig
                     }
 
                     if (i1 < sealevel && (blockstate == null || blockstate.isAir())) {
-                        if (biomeIn.getTemperature(blockpos$mutable.setPos(x, i1, z)) < 0.15F) {
-                            blockstate = Blocks.ICE.getDefaultState();
+                        if (biomeIn.getTemperature(blockpos$mutable.set(x, i1, z)) < 0.15F) {
+                            blockstate = Blocks.ICE.defaultBlockState();
                         } else {
                             blockstate = defaultFluid;
                         }
 
-                        blockpos$mutable.setPos(k, i1, l);
+                        blockpos$mutable.set(k, i1, l);
                     }
 
                     i = j;
                     if (i1 >= sealevel - 1) {
                         chunkIn.setBlockState(blockpos$mutable, blockstate, false);
                     } else if (i1 < sealevel - 7 - j) {
-                        blockstate = Blocks.AIR.getDefaultState();
+                        blockstate = Blocks.AIR.defaultBlockState();
                         blockstate1 = defaultBlock;
                         chunkIn.setBlockState(blockpos$mutable, bottom, false);
                     } else {
@@ -69,9 +69,9 @@ public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderConfig
                 } else if (i > 0) {
                     --i;
                     chunkIn.setBlockState(blockpos$mutable, blockstate1, false);
-                    if (i == 0 && blockstate1.equals(Blocks.RED_SAND.getDefaultState()) && j > 1) {
+                    if (i == 0 && blockstate1.equals(Blocks.RED_SAND.defaultBlockState()) && j > 1) {
                         i = random.nextInt(4) + Math.max(0, i1 - 63);
-                        blockstate1 = Blocks.RED_SANDSTONE.getDefaultState();
+                        blockstate1 = Blocks.RED_SANDSTONE.defaultBlockState();
                     }
                 }
             }

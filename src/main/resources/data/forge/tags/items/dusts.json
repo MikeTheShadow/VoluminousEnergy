@@ -20,6 +20,14 @@
     "#forge:dusts/lead",
     "#forge:dusts/silver",
     "#forge:dusts/gold",
-    "#forge:dusts/photovoltaic"
+    "#forge:dusts/photovoltaic",
+    "#forge:dusts/endstone",
+    "#forge:dusts/basalt",
+    "#forge:dusts/flint",
+    "#forge:dusts/netherrack",
+    "#forge:dusts/netherite",
+    "#forge:dusts/solarium",
+    "#forge:dusts/tungsten",
+    "#forge:dusts/eighzo"
   ]
 }

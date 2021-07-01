@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -61,7 +60,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         FluidTank outputTank = tank.getTank();
         ItemStackHandler handler = getItemStackHandler();
         if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY){
-            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getFilledBucket(), 1);
+            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot1,1,false);
             handler.insertItem(slot2, bucketStack, false);
@@ -76,7 +75,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         FluidTank outputTank = tank.getTank();
         ItemStackHandler handler = getItemStackHandler();
         if (inputSlot.copy().getItem() == Items.BUCKET && inputSlot.copy().getCount() == 1 && outputTank.getFluidAmount() >= 1000) {
-            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getFilledBucket(), 1);
+            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot,1,false);
             handler.insertItem(slot, bucketStack, false);
@@ -128,14 +127,14 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                 try {
                     for (RelationalTank t : relationalTanks) {
                         if (t.getTankType() == TankType.INPUT) {
-                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getFilledBucket());
-                            VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(bucketStack), world).orElse(null);
+                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getBucket());
+                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new Inventory(bucketStack), level).orElse(null);
                             return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
                         } else {
                             AtomicBoolean recipeHit = new AtomicBoolean(false);
                             veRecipe.getIngredientList().forEach(i -> {
-                                VEFluidRecipe recipe = world.getRecipeManager().getRecipe(veRecipe.getType(), new Inventory(new ItemStack(i)), world).orElse(null);
-                                if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isEquivalentTo(stack.getFluid())) { // In theory should never be null
+                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new Inventory(new ItemStack(i)), level).orElse(null);
+                                if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
                                     recipeHit.set(true);
                                 }
                             });

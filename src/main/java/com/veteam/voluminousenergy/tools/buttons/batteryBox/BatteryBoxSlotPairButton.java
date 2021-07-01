@@ -22,7 +22,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
 
 
     public BatteryBoxSlotPairButton(int x, int y, int id, BatteryBoxTile batteryBoxTile, IPressable onPress) {
-        super(x, y, 18, 20, ITextComponent.getTextComponentOrEmpty(""), button -> {
+        super(x, y, 18, 20, ITextComponent.nullToEmpty(""), button -> {
             ((BatteryBoxSlotPairButton) button).cycle();
             onPress.onPress(button);
         });
@@ -37,7 +37,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     @Override
     public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+        minecraft.getTextureManager().bind(GUI_TOOLS);
 
         if(!isHovered) v = 166;
         else v = 186;

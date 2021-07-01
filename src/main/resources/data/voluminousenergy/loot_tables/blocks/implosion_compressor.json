@@ -1,0 +1,81 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "pool1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "inv",
+                  "target": "BlockEntityTag.inv",
+                  "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "BlockEntityTag.energy",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_manager_enable",
+                  "target": "BlockEntityTag.input_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_manager_direction",
+                  "target": "BlockEntityTag.input_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "gunpowder_manager_enable",
+                  "target": "BlockEntityTag.gunpowder_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "gunpowder_manager_direction",
+                  "target": "BlockEntityTag.gunpowder_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_enable",
+                  "target": "BlockEntityTag.output_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_direction",
+                  "target": "BlockEntityTag.output_manager_direction",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:set_contents",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ]
+            }
+          ],
+          "name": "voluminousenergy:implosion_compressor"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

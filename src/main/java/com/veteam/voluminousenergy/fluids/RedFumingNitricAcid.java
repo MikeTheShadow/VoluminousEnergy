@@ -17,7 +17,7 @@ public class RedFumingNitricAcid {
     public static final ResourceLocation RFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/rfna_still");
     public static final ResourceLocation RFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/rfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid RED_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_RED_FUMING_NITRIC_ACID;
@@ -40,7 +40,7 @@ public class RedFumingNitricAcid {
     }
 
     public static Item RedFumingNitricAcidBucket(){
-        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().containerItem(Items.BUCKET).maxStackSize(1).group(VESetup.itemGroup));
+        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }
 

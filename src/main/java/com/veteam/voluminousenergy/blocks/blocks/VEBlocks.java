@@ -1,6 +1,9 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
+import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.materials.SolariumBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
@@ -195,6 +198,36 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":solar_panel")
     public static ContainerType<SolarPanelContainer> SOLAR_PANEL_CONTAINER;
 
+    // Centrifugal Separator
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static CentrifugalSeparatorBlock CENTRIFUGAL_SEPARATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static TileEntityType<CentrifugalSeparatorTile> CENTRIFUGAL_SEPARATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":centrifugal_separator")
+    public static ContainerType<CentrifugalSeparatorContainer> CENTRIFUGAL_SEPARATOR_CONTAINER;
+
+    // Implosion Compressor
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static ImplosionCompressorBlock IMPLOSION_COMPRESSOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static TileEntityType<ImplosionCompressorTile> IMPLOSION_COMPRESSOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":implosion_compressor")
+    public static ContainerType<ImplosionCompressorContainer> IMPLOSION_COMPRESSOR_CONTAINER;
+
+    // Blast Furnace
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static BlastFurnaceBlock BLAST_FURNACE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static TileEntityType<BlastFurnaceTile> BLAST_FURNACE_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
+    public static ContainerType<BlastFurnaceContainer> BLAST_FURNACE_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;
@@ -211,4 +244,19 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":galena_ore")
     public static GalenaOre GALENA_ORE;
 
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_ore")
+    public static EighzoOre EIGHZO_ORE;
+
+    //Crops
+    //@ObjectHolder(VoluminousEnergy.MODID + ":water_crop")
+    //public static VEWaterCrop WATER_CROP;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":land_crop")
+    public static VELandCrop LAND_CROP;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":rice_crop")
+    public static RiceCrop RICE_CROP;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_block")
+    public static SolariumBlock SOLARIUM_BLOCK;
 }

@@ -5,6 +5,7 @@
     "#forge:gears/iron",
     "#forge:gears/carbon",
     "#forge:gears/aluminum",
-    "#forge:gears/titanium"
+    "#forge:gears/titanium",
+    "#forge:gears/solarium"
   ]
 }

@@ -82,7 +82,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE);
     }
 
-    public final ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -107,8 +107,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
         // Main Processing occurs here
         if (fuelTank.getTank() != null && !fuelTank.getTank().isEmpty()) {
-            FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), world).orElse(null);
-            BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), world).orElse(null);
+            FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), level).orElse(null);
+            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), level).orElse(null);
 
             if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
@@ -119,9 +119,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     // Set output based on recipe
                     ItemStack newOutputStack;
                     if (furnaceRecipe != null) {
-                        newOutputStack = furnaceRecipe.getRecipeOutput().copy();
+                        newOutputStack = furnaceRecipe.getResultItem().copy();
                     } else {
-                        newOutputStack = blastingRecipe.getRecipeOutput().copy();
+                        newOutputStack = blastingRecipe.getResultItem().copy();
                     }
                     //LOGGER.debug("NewOutputStack: " + newOutputStack);
 
@@ -132,9 +132,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                             furnaceOutput.setCount(1);
                         }
                         if (furnaceRecipe != null){
-                            newOutputStack.setCount(furnaceRecipe.getRecipeOutput().getCount());
+                            newOutputStack.setCount(furnaceRecipe.getResultItem().getCount());
                         } else {
-                            newOutputStack.setCount(blastingRecipe.getRecipeOutput().getCount());
+                            newOutputStack.setCount(blastingRecipe.getResultItem().getCount());
                         }
                         //LOGGER.debug("About to insert in pt1: " + newOutputStack);
                         inventory.insertItem(3, newOutputStack.copy(),false); // CRASH the game if this is not empty!
@@ -142,16 +142,16 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                     } else { // Assuming the recipe output item is already in the output slot
                         // Simply change the stack to equal the output amount
                         if (furnaceRecipe != null){
-                            furnaceOutput.setCount(furnaceRecipe.getRecipeOutput().getCount());
+                            furnaceOutput.setCount(furnaceRecipe.getResultItem().getCount());
                         } else {
-                            furnaceOutput.setCount(blastingRecipe.getRecipeOutput().getCount());
+                            furnaceOutput.setCount(blastingRecipe.getResultItem().getCount());
                         }
                         //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
                         inventory.insertItem(3, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
                     }
 
                     counter--;
-                    this.markDirty();
+                    this.setChanged();
                 } else if (counter > 0) {
                     counter--;
                 } else {
@@ -166,16 +166,16 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 } else if (fuelCounter > 0){
                     fuelCounter--;
                 } else {
-                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(world, fuelTank.getTank().getFluid().copy());
+                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(level, fuelTank.getTank().getFluid().copy());
                     if (recipe != null){
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
-                        if(inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
+                        if(inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
                             fuelCounter = fuelCounter/(inventory.getStackInSlot(4).getCount()^2);
                         }
                         fuelLength = fuelCounter;
-                        this.markDirty();
+                        this.setChanged();
                     }
                 }
 
@@ -188,7 +188,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     /* Read and Write on World save */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -208,11 +208,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         this.furnaceInputSm.read(tag, "furnace_input_gui");
         this.furnaceOutputSm.read(tag, "furnace_output_gui");
 
-        super.read(state,tag);
+        super.load(state,tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
@@ -234,25 +234,25 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         this.furnaceInputSm.write(tag, "furnace_input_gui");
         this.furnaceOutputSm.write(tag, "furnace_output_gui");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -265,29 +265,29 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
-                markDirty();
+                setChanged();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1){
-                    return world.getRecipeManager().getRecipe(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(stack),world).orElse(null) != null
+                    return level.getRecipeManager().getRecipeFor(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(stack),level).orElse(null) != null
                             || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2) {
-                    return world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world).orElse(null) != null
-                            || world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(stack), world).orElse(null) != null;
+                    return level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level).orElse(null) != null
+                            || level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(stack), level).orElse(null) != null;
                 } else if (slot == 3) {
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), world).orElse(null);
+                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
 
                     if (furnaceRecipe != null) {
-                        return stack.getItem() == furnaceRecipe.getRecipeOutput().getItem();
+                        return stack.getItem() == furnaceRecipe.getResultItem().getItem();
                     }
 
-                    return stack.getItem() == blastingRecipe.getRecipeOutput().getItem();
+                    return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 4){
                     return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
                 }
@@ -305,8 +305,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 if (slot == 2){
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
-                    FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack),world).orElse(null);
+                    FurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack),level).orElse(null);
 
                     if (recipe != null || blastingRecipe != null){
                         return super.insertItem(slot, stack, simulate);
@@ -323,17 +323,17 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             @Override
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
-                if (world != null){
-                    FurnaceRecipe furnaceRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(referenceStack.get()), world).orElse(null);
-                    BlastingRecipe blastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(referenceStack.get()), world).orElse(null);
+                if (level != null){
+                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getRecipeOutput().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem().getItem()) {
                             if(blastingRecipe.getExperience() > 0){
                                 generateXP(amount, blastingRecipe.getExperience());
                             }
                         }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getRecipeOutput().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem().getItem()) {
                             if (furnaceRecipe.getExperience() > 0) {
                                 generateXP(amount, furnaceRecipe.getExperience());
                             }
@@ -346,15 +346,15 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     private void generateXP(int craftedAmount, float experience){
-        if(world == null) return;
+        if(level == null) return;
         int i = MathHelper.floor((float)craftedAmount * experience);
         float f = MathHelper.frac((float)craftedAmount * experience);
         if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
-            int j = ExperienceOrbEntity.getXPSplit(i);
+            int j = ExperienceOrbEntity.getExperienceValue(i);
             i -= j;
-            world.addEntity(new ExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), j));
+            level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
         }
     }
 
@@ -364,16 +364,16 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
             if (side == null)
                 return handler.cast();
-            if (bucketInputSm.getStatus() && bucketInputSm.getDirection().getIndex() == side.getIndex())
+            if (bucketInputSm.getStatus() && bucketInputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return bucketInputHandler.cast();
-            else if (bucketOutputSm.getStatus() && bucketOutputSm.getDirection().getIndex() == side.getIndex())
+            else if (bucketOutputSm.getStatus() && bucketOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return bucketOutputHandler.cast();
-            else if (furnaceInputSm.getStatus() && furnaceInputSm.getDirection().getIndex() == side.getIndex())
+            else if (furnaceInputSm.getStatus() && furnaceInputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return furnaceInputHandler.cast();
-            else if (furnaceOutputSm.getStatus() && furnaceOutputSm.getDirection().getIndex() == side.getIndex())
+            else if (furnaceOutputSm.getStatus() && furnaceOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return furnaceOutputHandler.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().getIndex() == side.getIndex()){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
                 return fluid.cast();
         }
         return super.getCapability(cap, side);
@@ -387,7 +387,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new GasFiredFurnaceContainer(i, world, pos, playerInventory, playerEntity);
+        return new GasFiredFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
@@ -445,9 +445,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public boolean countChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
-            return (itemStack.getCount() + furnaceRecipe.getRecipeOutput().getCount()) <= 64;
+            return (itemStack.getCount() + furnaceRecipe.getResultItem().getCount()) <= 64;
         } else if (blastingRecipe != null){
-            return (itemStack.getCount() + blastingRecipe.getRecipeOutput().getCount()) <= 64;
+            return (itemStack.getCount() + blastingRecipe.getResultItem().getCount()) <= 64;
         }
         return false;
     }
@@ -455,10 +455,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return furnaceRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+            return furnaceRecipe.getResultItem().getItem() == itemStack.getItem();
         } else if (blastingRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return blastingRecipe.getRecipeOutput().getItem() == itemStack.getItem();
+            return blastingRecipe.getResultItem().getItem() == itemStack.getItem();
         }
         return false;
     }
@@ -491,11 +491,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketInputSm.getStatus(), bucketInputSm.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketOutputSm.getStatus(), bucketOutputSm.getSlotNum()));
@@ -504,20 +504,20 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketInputSm.getDirection().getIndex(),bucketInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketOutputSm.getDirection().getIndex(),bucketOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceInputSm.getDirection().getIndex(),furnaceInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceOutputSm.getDirection().getIndex(),furnaceOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().getIndex(), fuelTank.getId()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketInputSm.getDirection().get3DDataValue(),bucketInputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketOutputSm.getDirection().get3DDataValue(),bucketOutputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceInputSm.getDirection().get3DDataValue(),furnaceInputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceOutputSm.getDirection().get3DDataValue(),furnaceOutputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(), fuelTank.getId()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -528,28 +528,28 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketInputSm.getDirection().getIndex(),bucketInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketOutputSm.getDirection().getIndex(),bucketOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceInputSm.getDirection().getIndex(),furnaceInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceOutputSm.getDirection().getIndex(),furnaceOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fuelTank.getSideDirection().getIndex(), fuelTank.getId()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketInputSm.getDirection().get3DDataValue(),bucketInputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketOutputSm.getDirection().get3DDataValue(),bucketOutputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceInputSm.getDirection().get3DDataValue(),furnaceInputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceOutputSm.getDirection().get3DDataValue(),furnaceOutputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(), fuelTank.getId()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof GasFiredFurnaceContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof GasFiredFurnaceContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

@@ -1,0 +1,96 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "pool1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "inv",
+                  "target": "BlockEntityTag.inv",
+                  "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "BlockEntityTag.energy",
+                  "op": "replace"
+                },
+                {
+                  "source": "heatTank",
+                  "target": "BlockEntityTag.heatTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "heat_tank_gui_enabled",
+                  "target": "BlockEntityTag.heat_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "heat_tank_gui_direction",
+                  "target": "BlockEntityTag.heat_tank_gui_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "first_input_manager_enable",
+                  "target": "BlockEntityTag.first_input_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "first_input_manager_direction",
+                  "target": "BlockEntityTag.first_input_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "second_input_manager_enable",
+                  "target": "BlockEntityTag.second_input_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "second_input_manager_direction",
+                  "target": "BlockEntityTag.second_input_manager_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_enable",
+                  "target": "BlockEntityTag.output_manager_enable",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_manager_direction",
+                  "target": "BlockEntityTag.output_manager_direction",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:set_contents",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ]
+            }
+          ],
+          "name": "voluminousenergy:blast_furnace"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class LeadDust extends Item {
     public LeadDust(){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup));
+                .stacksTo(64)
+                .tab(VESetup.itemGroup));
         setRegistryName("lead_dust");
     }
 }

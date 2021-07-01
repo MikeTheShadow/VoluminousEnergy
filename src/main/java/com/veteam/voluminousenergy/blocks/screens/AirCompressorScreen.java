@@ -35,7 +35,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
 
     public AirCompressorScreen(AirCompressorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (AirCompressorTile) screenContainer.tileEntity;
+        tileEntity = (AirCompressorTile) screenContainer.getTileEntity();
         screenContainer.setAirCompressorScreen(this);
     }
 
@@ -43,67 +43,67 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     public void render(MatrixStack matrixStack,int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX,mouseY,partialTicks);
-        this.renderHoveredTooltip(matrixStack,mouseX,mouseY);
+        this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
     protected void init(){
         super.init();
         // Buttons go here
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.guiTop +4, buttons ->{
+        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Output slot
-        this.addButton(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.guiTop, button->{
+        this.addButton(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.guiTop, button ->{
+        this.addButton(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Output Tank
-        this.addButton(new TankBoolButton(tileEntity.getAirTank(), (this.width/2)-198, this.guiTop+20, button ->{
+        this.addButton(new TankBoolButton(tileEntity.getAirTank(), (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getAirTank(), (this.width/2)-184, this.guiTop+20, button ->{
+        this.addButton(new TankDirectionButton(tileEntity.getAirTank(), (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
-        this.font.func_243246_a(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, 16777215);
-        this.font.func_243246_a(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.ySize - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), 16777215);
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
-        if (isPointInRegion(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.getTextComponentOrEmpty(container.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
-        if (isPointInRegion(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
+        if (isHovering(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
             String name = tileEntity.getAirTankFluid().getTranslationKey();
             int amount = tileEntity.getAirTankFluid().getAmount();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
+        this.minecraft.getTextureManager().bind(GUI);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
-            int power = container.powerScreen(49);
+            int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -119,7 +119,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
                 VERender.renderGuiTank(tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             // Upgrade slot
-            this.minecraft.getTextureManager().bindTexture(GUI_TOOLS);
+            this.minecraft.getTextureManager().bind(GUI_TOOLS);
             this.blit(matrixStack,i+153, j-16,0,0,18,18);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
@@ -188,7 +188,7 @@ public class AirCompressorScreen extends ContainerScreen<AirCompressorContainer>
     }
 
     public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUniqueID();
+        UUID uuid = Minecraft.getInstance().player.getUUID();
         if(uuid != null){
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }

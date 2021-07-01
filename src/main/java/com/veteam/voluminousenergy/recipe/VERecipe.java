@@ -28,22 +28,22 @@ public class VERecipe  implements IRecipe<IInventory> {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
     @Override
-    public ItemStack getCraftingResult(IInventory inv){
+    public ItemStack assemble(IInventory inv){
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height){
+    public boolean canCraftInDimensions(int width, int height){
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput(){
+    public ItemStack getResultItem(){
         return result;
     }
 
@@ -63,7 +63,7 @@ public class VERecipe  implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack getIcon(){
+    public ItemStack getToastSymbol(){
         return null;
     }
 }

@@ -12,7 +12,7 @@ public class TextUtil {
     *   return name.append(textComponent);
     */
     public static ITextComponent tankTooltip(String fluidName, int amount, int tankCapacity){
-        return new TranslationTextComponent(fluidName).append(ITextComponent.getTextComponentOrEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
+        return new TranslationTextComponent(fluidName).append(ITextComponent.nullToEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
     }
 
     public static ITextComponent slotName(String slotName){

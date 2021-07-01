@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
-import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
 import com.veteam.voluminousenergy.blocks.tiles.DistillationUnitTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
@@ -24,11 +23,11 @@ import javax.annotation.Nullable;
 public class DistillationUnitBlock extends FaceableBlock {
 
     public DistillationUnitBlock(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setLightLevel(l -> 0)
-                .setRequiresTool()
+                .strength(2.0f)
+                .lightLevel(l -> 0)
+                .requiresCorrectToolForDrops()
                 .harvestLevel(Config.DISTILLATION_UNIT_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
@@ -40,11 +39,11 @@ public class DistillationUnitBlock extends FaceableBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new DistillationUnitTile();}
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
-        if(!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
+        if(!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Distillation Unit named container provider is missing!");
             }

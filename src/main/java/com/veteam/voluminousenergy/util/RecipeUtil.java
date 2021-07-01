@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
+import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,7 @@ public class RecipeUtil {
         for (IRecipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
             if(iRecipe instanceof AqueoulizerRecipe){
                 for (FluidStack stack : ((AqueoulizerRecipe) iRecipe).fluidInputList){
-                    if(stack.getFluid().isEquivalentTo(fluid)) return true;
+                    if(stack.getFluid().isSame(fluid)) return true;
                 }
             }
         }
@@ -26,7 +27,7 @@ public class RecipeUtil {
     }
 
     public static boolean isAqueoulizerInputFluidEqual(AqueoulizerRecipe recipe, Fluid fluid){
-        for (FluidStack stack : recipe.fluidInputList){ if(stack.getFluid().isEquivalentTo(fluid)) return true; }
+        for (FluidStack stack : recipe.fluidInputList){ if(stack.getFluid().isSame(fluid)) return true; }
         return false;
     }
 
@@ -96,7 +97,7 @@ public class RecipeUtil {
     public static DistillationRecipe getDistillationRecipeFromThirdResult(World world, ItemStack thirdResultItem){
         for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
-                if(((DistillationRecipe) recipe).getThirdResult().isItemEqual(thirdResultItem)){
+                if(((DistillationRecipe) recipe).getThirdResult().sameItem(thirdResultItem)){
                     return (DistillationRecipe) recipe;
                 }
             }
@@ -131,4 +132,46 @@ public class RecipeUtil {
         return null;
     }
 
+    public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(World world, ItemStack firstInput, ItemStack secondInput){
+        if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) &&
+                        ((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())){
+                    return (IndustrialBlastingRecipe) recipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isFirstIngredientForIndustrialBlastingRecipe(World world, ItemStack firstInput){
+        if (firstInput.isEmpty()) return false;
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem())) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isSecondIngredientForIndustrialBlastingRecipe(World world, ItemStack secondInput){
+        if(secondInput.isEmpty()) return false;
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnOutputForIndustrialBlastingRecipe(World world, ItemStack outputStack){
+        if (outputStack.isEmpty()) return false;
+        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof IndustrialBlastingRecipe){
+                if (((IndustrialBlastingRecipe) recipe).getResult().sameItem(outputStack)) return true;
+            }
+        }
+        return false;
+    }
 }

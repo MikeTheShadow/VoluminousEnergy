@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/implosion_compressor" },
+    "facing=south": { "model": "voluminousenergy:block/implosion_compressor", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/implosion_compressor", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/implosion_compressor", "y": 90 }
+  }
+}

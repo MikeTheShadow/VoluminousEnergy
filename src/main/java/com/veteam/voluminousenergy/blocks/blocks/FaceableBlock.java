@@ -8,8 +8,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 
-public class FaceableBlock extends Block
-{
+public class FaceableBlock extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     public FaceableBlock(Properties properties)
@@ -19,7 +18,7 @@ public class FaceableBlock extends Block
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext p_196258_1_) {
-        return this.getDefaultState().with(FACING, p_196258_1_.getPlacementHorizontalFacing().getOpposite());
+        return this.defaultBlockState().setValue(FACING, p_196258_1_.getHorizontalDirection().getOpposite());
     }
 
     @Override
@@ -28,7 +27,7 @@ public class FaceableBlock extends Block
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> state) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> state) {
         state.add(FACING);
     }
 }

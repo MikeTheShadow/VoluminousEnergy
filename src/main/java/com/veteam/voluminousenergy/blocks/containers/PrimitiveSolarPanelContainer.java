@@ -2,15 +2,11 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveSolarPanelScreen;
-import com.veteam.voluminousenergy.blocks.screens.PrimitiveStirlingGeneratorScreen;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
@@ -18,31 +14,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER;
-import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
 
-public class PrimitiveSolarPanelContainer extends Container {
+public class PrimitiveSolarPanelContainer extends VoluminousContainer {
 
-    private TileEntity tileEntity;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
     private PrimitiveSolarPanelScreen screen;
 
     public PrimitiveSolarPanelContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(PRIMITIVE_SOLAR_PANEL_CONTAINER, windowID);
-        this.tileEntity = world.getTileEntity(pos);
+        this.tileEntity = world.getBlockEntity(pos);
         //this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
         layoutPlayerInventorySlots(8, 84);
 
-        trackInt(new IntReferenceHolder() {
+        addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
                 return getEnergy();
@@ -60,26 +53,8 @@ public class PrimitiveSolarPanelContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(tileEntity.getWorld(), tileEntity.getPos()), playerEntity, VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK);
-    }
-
-
-    private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx){
-        for (int i = 0; i < amount; i++){
-            addSlot(new SlotItemHandler(handler, index, x, y));
-            x += dx;
-            index++;
-        }
-        return index;
-    }
-
-    private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy){
-        for (int j = 0; j < verAmount; j++){
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
-            y += dy;
-        }
-        return index;
+    public boolean stillValid(PlayerEntity playerIn) {
+        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow){
@@ -93,31 +68,31 @@ public class PrimitiveSolarPanelContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             itemstack = stack.copy();
             if (index == 0) {
-                if (!this.mergeItemStack(stack, 1, 37, true)) {
+                if (!this.moveItemStackTo(stack, 1, 37, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onSlotChange(stack, itemstack);
+                slot.onQuickCraft(stack, itemstack);
             } else {
                 if (index < 28) {
-                    if (!this.mergeItemStack(stack, 28, 37, false)) {
+                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index < 37 && !this.mergeItemStack(stack, 1, 28, false)) {
+                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
                     return ItemStack.EMPTY;
                 }
             }
 
             if (stack.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (stack.getCount() == itemstack.getCount()) {

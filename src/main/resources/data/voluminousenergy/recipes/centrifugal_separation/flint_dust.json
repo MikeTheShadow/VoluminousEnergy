@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:centrifugal_separation",
+  "ingredient": {
+    "tag": "forge:dusts/flint",
+    "count": 16
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:quartz_dust",
+    "count": 8,
+    "buckets": 0
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:sand_dust",
+    "count": 5,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "voluminousenergy:sulfurdust",
+    "count": 2,
+    "chance": 0.65
+  },
+  "rng_slot_2": {
+    "item": "voluminousenergy:iron_dust",
+    "count": 1,
+    "chance": 0.65
+  }
+}

@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class SilverDust extends Item {
     public SilverDust(){
         super(new Item.Properties()
-                .maxStackSize(64)
-                .group(VESetup.itemGroup));
+                .stacksTo(64)
+                .tab(VESetup.itemGroup));
         setRegistryName("silver_dust");
     }
 }

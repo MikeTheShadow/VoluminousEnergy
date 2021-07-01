@@ -23,11 +23,11 @@ import javax.annotation.Nullable;
 public class CrusherBlock extends FaceableBlock {
 
     public CrusherBlock(){
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
-                .hardnessAndResistance(2.0f)
-                .setLightLevel(l -> 0)
-                .setRequiresTool()
+                .strength(2.0f)
+                .lightLevel(l -> 0)
+                .requiresCorrectToolForDrops()
                 .harvestLevel(Config.CRUSHER_HARVEST_LEVEL.get())
                 .harvestTool(ToolType.PICKAXE)
         );
@@ -39,11 +39,11 @@ public class CrusherBlock extends FaceableBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new CrusherTile();}
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
-        if(!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
+        if(!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Crusher named container provider is missing!");
             }

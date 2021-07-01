@@ -15,10 +15,10 @@ public class StirlingGeneratorInputSlot extends VEInsertSlot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack){
+    public boolean mayPlace(ItemStack stack){
         ItemStack referenceStack = stack.copy();
         referenceStack.setCount(64);
-        StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipe(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
+        StirlingGeneratorRecipe recipe = world.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), world).orElse(null);
         return checkRecipe(recipe,referenceStack);
     }
 }

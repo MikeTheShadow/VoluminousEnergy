@@ -70,19 +70,19 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn){
-        ItemStack stack = inv.getStackInSlot(0);
+        ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
 
     @Override
-    public boolean canFit(int width, int height){return true;}
+    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
-    public ItemStack getRecipeOutput(){return result;}
+    public ItemStack getResultItem(){return result;}
 
     @Override
     public ResourceLocation getId(){return recipeId;}
@@ -149,14 +149,14 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CombustionGeneratorFuelRecipe> {
         @Override
-        public CombustionGeneratorFuelRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.deserialize(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.volumetricEnergy = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
+            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.volumetricEnergy = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
+            for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
                     recipe.ingredientList.add(stack.getItem());
                 }
@@ -165,10 +165,10 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             // A tag is used instead of a manually defined fluid
             try{
                 if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(fluidTagLocation);
+                    ResourceLocation fluidTagLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
+                    ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(fluidTagLocation);
                     if(tag != null){
-                        for(Fluid fluid : tag.getAllElements()){
+                        for(Fluid fluid : tag.getValues()){
                             FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
@@ -180,7 +180,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
                 } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
                     // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.create(JSONUtils.getString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
+                    ResourceLocation fluidResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
                     recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
                     recipe.fluidInputList.add(recipe.inputFluid.copy());
                     recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
@@ -198,9 +198,9 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorFuelRecipe read(ResourceLocation recipeId, PacketBuffer buffer){
+        public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
-            recipe.ingredient = Ingredient.read(buffer);
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
@@ -211,14 +211,14 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 recipe.rawFluidInputList.add(serverFluid.getRawFluid());
             }
 
-            recipe.result = buffer.readItemStack();
+            recipe.result = buffer.readItem();
             recipe.volumetricEnergy = buffer.readInt();
             return recipe;
         }
 
         @Override
-        public void write(PacketBuffer buffer, CombustionGeneratorFuelRecipe recipe){
-            recipe.ingredient.write(buffer);
+        public void toNetwork(PacketBuffer buffer, CombustionGeneratorFuelRecipe recipe){
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
             // Same as the comment in read, not optimal, but necessary
@@ -227,7 +227,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
             }
 
-            buffer.writeItemStack(recipe.getResult());
+            buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.volumetricEnergy);
         }
     }

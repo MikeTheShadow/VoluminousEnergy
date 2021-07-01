@@ -37,11 +37,11 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     @Override
     public void tick() {
         updateClients();
-        if (this.world != null){
-            if (world.getDimensionType().hasSkyLight() && isClear()) {
+        if (this.level != null){
+            if (level.dimensionType().hasSkyLight() && isClear()) {
                 this.generation = (int)(Config.SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
                 generateEnergy(this.generation);
-                markDirty();
+                setChanged();
             }
         }
         sendOutPower();
@@ -61,7 +61,7 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -77,19 +77,19 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT energyTag = tag.getCompound("energy");
         energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         energy.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("energy",compound);
         });
-        return super.write(tag);
+        return super.save(tag);
     }
 
     private IEnergyStorage createEnergy(){
@@ -113,7 +113,7 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     @Nullable
     @Override
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity){
-        return new SolarPanelContainer(i, world, pos, playerInventory, playerEntity);
+        return new SolarPanelContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int getGeneration(){
@@ -122,18 +122,18 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof SolarPanelContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof SolarPanelContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

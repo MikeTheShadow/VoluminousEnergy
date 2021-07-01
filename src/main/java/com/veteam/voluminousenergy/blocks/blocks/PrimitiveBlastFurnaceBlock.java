@@ -23,11 +23,11 @@ import javax.annotation.Nullable;
 public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
 
     public PrimitiveBlastFurnaceBlock() {
-        super(Properties.create(Material.ROCK)
+        super(Properties.of(Material.STONE)
                     .sound(SoundType.METAL)
-                    .hardnessAndResistance(2.0f)
-                    .setLightLevel(l -> 0)
-                    .setRequiresTool()
+                    .strength(2.0f)
+                    .lightLevel(l -> 0)
+                    .requiresCorrectToolForDrops()
                     .harvestLevel(1)
                     .harvestTool(ToolType.PICKAXE)
             );
@@ -41,12 +41,12 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if(!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+        if(!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Primitive Blast named container provider is missing!");
             }

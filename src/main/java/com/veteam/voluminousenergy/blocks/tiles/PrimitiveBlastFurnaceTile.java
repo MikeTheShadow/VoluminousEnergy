@@ -62,7 +62,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
     }
 
-    private final ItemStackHandler inventory = createHandler();
+    private ItemStackHandler inventory = createHandler();
 
     @Override
     public void tick() { //Tick method to run every tick
@@ -70,7 +70,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         ItemStack input = inventory.getStackInSlot(0).copy();
         ItemStack output = inventory.getStackInSlot(1).copy();
 
-        PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), world).orElse(null);
+        PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
@@ -94,7 +94,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                         inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                     }
                     this.counter--;
-                    markDirty();
+                    setChanged();
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
                 } else { // Check if we should start processing
@@ -114,7 +114,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
@@ -122,11 +122,11 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         this.inputSm.read(tag, "input_gui");
         this.outputSm.read(tag,"output_gui");
 
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         handler.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
@@ -135,7 +135,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         this.inputSm.write(tag, "input_gui");
         this.outputSm.write(tag,"output_gui");
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
 
@@ -145,19 +145,19 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -167,8 +167,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOutput = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), world).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOutput = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -185,11 +185,11 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOut = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), world).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = world.getRecipeManager().getRecipe(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),world).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOut = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getMatchingStacks()){
+                    for (ItemStack testStack : recipe.ingredient.getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -212,9 +212,9 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (side == null)
                 return handler.cast();
-            if (inputSm.getStatus() && inputSm.getDirection().getIndex() == side.getIndex())
+            if (inputSm.getStatus() && inputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return inputHandler.cast();
-            else if (outputSm.getStatus() && outputSm.getDirection().getIndex() == side.getIndex())
+            else if (outputSm.getStatus() && outputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return outputHandler.cast();
         }
         return super.getCapability(cap, side);
@@ -228,7 +228,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new PrimitiveBlastFurnaceContainer(i,world,pos,playerInventory,playerEntity);
+        return new PrimitiveBlastFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public int counter(){
@@ -275,27 +275,27 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
                     }
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -303,25 +303,25 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().getIndex(),inputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().getIndex(),outputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
         }
     }
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof PrimitiveBlastFurnaceContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof PrimitiveBlastFurnaceContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));

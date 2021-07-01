@@ -14,7 +14,8 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.template.RuleTest;
 import net.minecraft.world.gen.feature.template.TagMatchRuleTest;
-import net.minecraft.world.gen.placement.*;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEOreGeneration {
@@ -25,64 +26,73 @@ public class VEOreGeneration {
             // Nether ores
         } else if (biome.getCategory() == Biome.Category.THEEND){
             // End ores
+            if(Config.ENABLE_EIGHZO_ORE.get()) {
+                ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
+                        .configured(new OreFeatureConfig(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/Config.EIGHZO_SIZE.get()))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(/*Bottom offset*/ Config.EIGHZO_BOTTOM_OFFSET.get(), /*Top offset*/ Config.EIGHZO_HEIGHT_OFFSET.get(), /*top hard cap*/ Config.EIGHZO_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.EIGHZO_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, eighzoOre);
+                if(Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Eighzo Ore registered to generate in: " + biome.getName() + " With Size: " + Config.EIGHZO_SIZE.get() + " Bottom Offset: " + Config.EIGHZO_BOTTOM_OFFSET.get() + " Max Height: " + Config.EIGHZO_MAXIMUM_HEIGHT.get() + " Count: " + Config.EIGHZO_COUNT.get());
+            }
         } else { // Assuming Overworld, catch all other biomes
             if (biome.getCategory() == Biome.Category.DESERT || biome.getName() == Biomes.BADLANDS.getRegistryName() || biome.getName() == Biomes.ERODED_BADLANDS.getRegistryName()){
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
 
                 if (Config.ENABLE_SALTPETER_ORE.get()){
                     ConfiguredFeature<?, ?> saltpeterOre = Feature.ORE
-                            .withConfiguration(new OreFeatureConfig(replace.SANDS, VEBlocks.SALTPETER_ORE.getDefaultState(), Config.SALTPETER_SIZE.get()))
-                            .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_MAXIMUM_HEIGHT.get())))
-                            .square()
-                            .func_242731_b(Config.SALTPETER_COUNT.get());
+                            .configured(new OreFeatureConfig(replace.SANDS, VEBlocks.SALTPETER_ORE.defaultBlockState(), Config.SALTPETER_SIZE.get()))
+                            .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_MAXIMUM_HEIGHT.get())))
+                            .squared()
+                            .count(Config.SALTPETER_COUNT.get());
 
-                    biome.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, saltpeterOre);
-                    VoluminousEnergy.LOGGER.info("Saltpeter Ore registered to generate in: " + biome.getName() + " With Size: " + Config.SALTPETER_SIZE.get() + " Bottom Offset: " + Config.SALTPETER_BOTTOM_OFFSET.get() + " Max Height: " + Config.SALTPETER_MAXIMUM_HEIGHT.get() + " Count: " + Config.SALTPETER_COUNT.get());
+                    biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, saltpeterOre);
+                    if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Saltpeter Ore registered to generate in: " + biome.getName() + " With Size: " + Config.SALTPETER_SIZE.get() + " Bottom Offset: " + Config.SALTPETER_BOTTOM_OFFSET.get() + " Max Height: " + Config.SALTPETER_MAXIMUM_HEIGHT.get() + " Count: " + Config.SALTPETER_COUNT.get());
                 }
             }
 
             if (Config.ENABLE_BAUXITE_ORE.get()){
                 ConfiguredFeature<?, ?> bauxiteOre = Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.BAUXITE_ORE.getDefaultState(), Config.BAUXITE_SIZE.get()))
-                        .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_MAXIMUM_HEIGHT.get())))
-                        .square()
-                        .func_242731_b(Config.BAUXITE_COUNT.get());
+                        .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.BAUXITE_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.BAUXITE_COUNT.get());
 
-                biome.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, bauxiteOre);
-                VoluminousEnergy.LOGGER.info("Bauxite Ore registered to generate in: " + biome.getName() + " With Size: " + Config.BAUXITE_SIZE.get() + " Bottom Offset: " + Config.BAUXITE_BOTTOM_OFFSET.get() + " Max Height: " + Config.BAUXITE_MAXIMUM_HEIGHT.get() + " Count: " + Config.BAUXITE_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, bauxiteOre);
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Bauxite Ore registered to generate in: " + biome.getName() + " With Size: " + Config.BAUXITE_SIZE.get() + " Bottom Offset: " + Config.BAUXITE_BOTTOM_OFFSET.get() + " Max Height: " + Config.BAUXITE_MAXIMUM_HEIGHT.get() + " Count: " + Config.BAUXITE_COUNT.get());
             }
 
             if (Config.ENABLE_CINNABAR_ORE.get()){
                 ConfiguredFeature<?, ?> cinnabarOre = Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.CINNABAR_ORE.getDefaultState(), Config.CINNABAR_SIZE.get()))
-                        .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_MAXIMUM_HEIGHT.get())))
-                        .square()
-                        .func_242731_b(Config.CINNABAR_COUNT.get());
+                        .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_HEIGHT_OFFSET.get(), Config.CINNABAR_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.CINNABAR_COUNT.get());
 
-                biome.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, cinnabarOre);
-                VoluminousEnergy.LOGGER.info("Cinnabar Ore registered to generate in: " + biome.getName() + " With Size: " + Config.CINNABAR_SIZE.get() + " Bottom Offset: " + Config.CINNABAR_BOTTOM_OFFSET.get() + " Max Height: " + Config.CINNABAR_MAXIMUM_HEIGHT.get() + " Count: " + Config.CINNABAR_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, cinnabarOre);
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Cinnabar Ore registered to generate in: " + biome.getName() + " With Size: " + Config.CINNABAR_SIZE.get() + " Bottom Offset: " + Config.CINNABAR_BOTTOM_OFFSET.get() + " Max Height: " + Config.CINNABAR_MAXIMUM_HEIGHT.get() + " Count: " + Config.CINNABAR_COUNT.get());
             }
 
             if (Config.ENABLE_RUTILE_ORE.get()){
                 ConfiguredFeature<?, ?> rutileOre = Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.RUTILE_ORE.getDefaultState(), Config.RUTILE_SIZE.get()))
-                        .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(Config.RUTILE_BOTTOM_OFFSET.get(), Config.RUTILE_BOTTOM_OFFSET.get(), Config.RUTILE_MAXIMUM_HEIGHT.get())))
-                        .square()
-                        .func_242731_b(Config.RUTILE_COUNT.get());
+                        .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.RUTILE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.RUTILE_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.RUTILE_COUNT.get());
 
-                biome.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, rutileOre);
-                VoluminousEnergy.LOGGER.info("Rutile Ore registered to generate in: " + biome.getName() + " With Size: " + Config.RUTILE_SIZE.get() + " Bottom Offset: " + Config.RUTILE_BOTTOM_OFFSET.get() + " Max Height: " + Config.RUTILE_MAXIMUM_HEIGHT.get() + " Count: " + Config.RUTILE_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, rutileOre);
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Rutile Ore registered to generate in: " + biome.getName() + " With Size: " + Config.RUTILE_SIZE.get() + " Bottom Offset: " + Config.RUTILE_BOTTOM_OFFSET.get() + " Max Height: " + Config.RUTILE_MAXIMUM_HEIGHT.get() + " Count: " + Config.RUTILE_COUNT.get());
             }
 
             if (Config.ENABLE_GALENA_ORE.get()){
                 ConfiguredFeature<?, ?> galenaOre = Feature.ORE
-                        .withConfiguration(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.GALENA_ORE.getDefaultState(), Config.GALENA_SIZE.get()))
-                        .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_MAXIMUM_HEIGHT.get())))
-                        .square()
-                        .func_242731_b(Config.GALENA_COUNT.get());
+                        .configured(new OreFeatureConfig(replace.OVERWORLD, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_HEIGHT_OFFSET.get(), Config.GALENA_MAXIMUM_HEIGHT.get())))
+                        .squared()
+                        .count(Config.GALENA_COUNT.get());
 
-                biome.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, galenaOre);
-                VoluminousEnergy.LOGGER.info("Galena Ore registered to generate in: " + biome.getName() + " With Size: " + Config.GALENA_SIZE.get() + " Bottom Offset: " + Config.GALENA_BOTTOM_OFFSET.get() + " Max Height: " + Config.GALENA_MAXIMUM_HEIGHT.get() + " Count: " + Config.GALENA_COUNT.get());
+                biome.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, galenaOre);
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Galena Ore registered to generate in: " + biome.getName() + " With Size: " + Config.GALENA_SIZE.get() + " Bottom Offset: " + Config.GALENA_BOTTOM_OFFSET.get() + " Max Height: " + Config.GALENA_MAXIMUM_HEIGHT.get() + " Count: " + Config.GALENA_COUNT.get());
             }
 
         }
@@ -90,8 +100,9 @@ public class VEOreGeneration {
 
     public static final class replace { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
         public static final RuleTest OVERWORLD = new TagMatchRuleTest(BlockTags.BASE_STONE_OVERWORLD);
-        public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.getDefaultState(), Blocks.RED_SAND.getDefaultState());
-        public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.getDefaultState(), Blocks.SOUL_SAND.getDefaultState());
-        public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.getDefaultState(), Blocks.WHITE_TERRACOTTA.getDefaultState(), Blocks.ORANGE_TERRACOTTA.getDefaultState(), Blocks.MAGENTA_TERRACOTTA.getDefaultState(), Blocks.LIGHT_BLUE_TERRACOTTA.getDefaultState(), Blocks.YELLOW_TERRACOTTA.getDefaultState(), Blocks.LIME_TERRACOTTA.getDefaultState(), Blocks.PINK_TERRACOTTA.getDefaultState(), Blocks.GRAY_TERRACOTTA.getDefaultState(), Blocks.LIGHT_GRAY_TERRACOTTA.getDefaultState(), Blocks.CYAN_TERRACOTTA.getDefaultState(), Blocks.PURPLE_TERRACOTTA.getDefaultState(), Blocks.BLUE_TERRACOTTA.getDefaultState(), Blocks.BROWN_TERRACOTTA.getDefaultState(), Blocks.GREEN_TERRACOTTA.getDefaultState(), Blocks.RED_TERRACOTTA.getDefaultState(), Blocks.BLACK_TERRACOTTA.getDefaultState());
+        public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState());
+        public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
+        public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
+        public static final RuleTest END = new MultiBlockStateMatchRuleTest(Blocks.END_STONE.defaultBlockState());
     }
 }

@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 public class QuartzMultiplier extends Item {
     public QuartzMultiplier() {
         super(new Item.Properties()
-                .maxStackSize(4)
-                .group(VESetup.itemGroup)
+                .stacksTo(4)
+                .tab(VESetup.itemGroup)
         );
         setRegistryName("quartz_multiplier");
     }

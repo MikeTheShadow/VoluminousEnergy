@@ -76,7 +76,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
          */
     }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(12) {
+    public ItemStackHandler inventory = new ItemStackHandler(12) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
             return stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
@@ -98,7 +98,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         @Override
         protected void onContentsChanged(final int slot) {
             super.onContentsChanged(slot);
-            BatteryBoxTile.this.markDirty();
+            BatteryBoxTile.this.setChanged();
         }
     };
 
@@ -227,7 +227,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = world.getTileEntity(getPos().offset(dir));
+                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -247,7 +247,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
      */
 
     @Override
-    public void read(BlockState state, CompoundNBT tag){
+    public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
@@ -263,11 +263,11 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
         sendOutPower = tag.getBoolean("send_out_power");
 
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> {
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
@@ -283,7 +283,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
         tag.putBoolean("send_out_power", sendOutPower);
 
-        return super.write(tag);
+        return super.save(tag);
     }
 
     private IEnergyStorage createEnergy(){
@@ -291,9 +291,20 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     }
 
     @Override
+    public CompoundNBT getUpdateTag() {
+        return this.save(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getNbtCompound().getInt("energy")));
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        this.load(this.getBlockState(), pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -306,10 +317,10 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             } else {
                 // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
                 // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.getIndex() == topManager.getDirection().getIndex() && topManager.getStatus()){
+                if (side.get3DDataValue() == topManager.getDirection().get3DDataValue() && topManager.getStatus()){
                     return topIsIngress ? topHandler.cast() : bottomHandler.cast();
                 }
-                if (side.getIndex() == bottomManager.getDirection().getIndex() && bottomManager.getStatus()){
+                if (side.get3DDataValue() == bottomManager.getDirection().get3DDataValue() && bottomManager.getStatus()){
                     return topIsIngress ? bottomHandler.cast() : topHandler.cast();
                 }
             }
@@ -328,7 +339,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     @Nullable
     @Override
     public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
-        return new BatteryBoxContainer(i,world,pos,playerInventory,playerEntity);
+        return new BatteryBoxContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
     public void updateSlotPair(boolean mode, int pairId){
@@ -349,18 +360,18 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
     @Override
     public void sendPacketToClient(){
-        if(world == null || getWorld() == null) return;
-        if(getWorld().getServer() != null) {
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> {
-                world.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUniqueID().equals(u)){
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(topManager.getStatus(), topManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bottomManager.getStatus(), bottomManager.getSlotNum()));
 
                         // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(topManager.getDirection().getIndex(), topManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bottomManager.getDirection().getIndex(), bottomManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(topManager.getDirection().get3DDataValue(), topManager.getSlotNum()));
+                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bottomManager.getDirection().get3DDataValue(), bottomManager.getSlotNum()));
 
                         // Slot status
                         for (int i = 0; i < 6; i++) {
@@ -373,11 +384,11 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
                 });
             });
         } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getPos().getX();
-            double y = this.getPos().getY();
-            double z = this.getPos().getZ();
+            double x = this.getBlockPos().getX();
+            double y = this.getBlockPos().getY();
+            double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getWorld().getDimensionKey();
+            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons
@@ -385,8 +396,8 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(bottomManager.getStatus(), bottomManager.getSlotNum()));
 
             // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(topManager.getDirection().getIndex(), topManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bottomManager.getDirection().getIndex(), bottomManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(topManager.getDirection().get3DDataValue(), topManager.getSlotNum()));
+            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bottomManager.getDirection().get3DDataValue(), bottomManager.getSlotNum()));
 
             // Slot status
             for (int i = 0; i < 6; i++) {
@@ -400,18 +411,18 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
     @Override
     protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || world == null) return;
-        if(world.getServer() == null) return;
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
 
         if(cleanupTick == 20){
             ArrayList<UUID> toRemove = new ArrayList<>();
-            world.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.openContainer != null){
-                    if(!(player.openContainer instanceof BatteryBoxContainer)){
-                        toRemove.add(player.getUniqueID());
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof BatteryBoxContainer)){
+                        toRemove.add(player.getUUID());
                     }
-                } else if (player.openContainer == null){
-                    toRemove.add(player.getUniqueID());
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
                 }
             });
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
