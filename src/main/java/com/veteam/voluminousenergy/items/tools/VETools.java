@@ -49,15 +49,14 @@ public class VETools {
             () -> Ingredient.of(VEItems.SOLARIUM_INGOT));
 
     /* TOOLS */
-    private static final Item.Properties PROPERTIES = (new Item.Properties()).tab(VESetup.itemGroup);
-    public static final Item.Properties CARBON_PROP = PROPERTIES.durability(CARBON.getUses());
-    public static final Item.Properties ALUMINUM_PROP = PROPERTIES.durability(ALUMINUM.getUses());
-    public static final Item.Properties TITANIUM_PROP = PROPERTIES.durability(TITANIUM.getUses());
-    public static final Item.Properties TUNGSTEN_PROP = PROPERTIES.durability(TUNGSTEN.getUses());
-    public static final Item.Properties TUNGSTEN_STEEL_PROP = PROPERTIES.durability(TUNGSTEN_STEEL.getUses());
-    public static final Item.Properties NIGHALITE_PROP = PROPERTIES.durability(NIGHALITE.getUses());
-    public static final Item.Properties EIGHZO_PROP = PROPERTIES.durability(EIGHZO.getUses());
-    public static final Item.Properties SOLARIUM_PROP = PROPERTIES.durability(SOLARIUM.getUses());
+    public static final Item.Properties CARBON_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(CARBON.getUses());
+    public static final Item.Properties ALUMINUM_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(ALUMINUM.getUses());
+    public static final Item.Properties TITANIUM_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(TITANIUM.getUses());
+    public static final Item.Properties TUNGSTEN_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(TUNGSTEN.getUses());
+    public static final Item.Properties TUNGSTEN_STEEL_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(TUNGSTEN_STEEL.getUses());
+    public static final Item.Properties NIGHALITE_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(NIGHALITE.getUses());
+    public static final Item.Properties EIGHZO_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(EIGHZO.getUses());
+    public static final Item.Properties SOLARIUM_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(SOLARIUM.getUses());
 
     // Swords
     public static Item CARBON_SWORD = new SwordItem(CARBON, SWORD_1, SWORD_2, CARBON_PROP).setRegistryName("carbon_sword");
