@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "tag": "forge:bones",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:bone_meal",
+    "count": 6
+  },
+  "rng": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}
