@@ -66,7 +66,7 @@ public class VETools {
     public static Item TUNGSTEN_STEEL_SWORD = new SwordItem(TUNGSTEN_STEEL, SWORD_1, SWORD_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_sword");
     public static Item NIGHALITE_SWORD = new SwordItem(NIGHALITE, SWORD_1, SWORD_2, NIGHALITE_PROP).setRegistryName("nighalite_sword");
     public static Item EIGHZO_SWORD = new SwordItem(EIGHZO, SWORD_1, SWORD_2, EIGHZO_PROP).setRegistryName("eighzo_sword");
-    public static Item SOLARIUM_SWORD = new SwordItem(SOLARIUM, SWORD_1, SWORD_2, SOLARIUM_PROP).setRegistryName("solarium_sword");
+    public static Item SOLARIUM_SWORD = new VESwordItem(SOLARIUM, SWORD_1, SWORD_2, SOLARIUM_PROP).setRegistryName("solarium_sword");
 
     // Shovels
     public static Item CARBON_SHOVEL = new ShovelItem(CARBON, SHOVEL_1, SHOVEL_2, CARBON_PROP).setRegistryName("carbon_shovel");
@@ -76,7 +76,7 @@ public class VETools {
     public static Item TUNGSTEN_STEEL_SHOVEL = new ShovelItem(TUNGSTEN_STEEL, SHOVEL_1, SHOVEL_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_shovel");
     public static Item NIGHALITE_SHOVEL = new ShovelItem(NIGHALITE, SHOVEL_1, SHOVEL_2, NIGHALITE_PROP).setRegistryName("nighalite_shovel");
     public static Item EIGHZO_SHOVEL = new ShovelItem(EIGHZO, SHOVEL_1, SHOVEL_2, EIGHZO_PROP).setRegistryName("eighzo_shovel");
-    public static Item SOLARIUM_SHOVEL = new ShovelItem(SOLARIUM, SHOVEL_1, SHOVEL_2, SOLARIUM_PROP).setRegistryName("solarium_shovel");
+    public static Item SOLARIUM_SHOVEL = new VEShovelItem(SOLARIUM, SHOVEL_1, SHOVEL_2, SOLARIUM_PROP).setRegistryName("solarium_shovel");
 
     // Pickaxes
     public static Item CARBON_PICKAXE = new PickaxeItem(CARBON, PICKAXE_1, PICKAXE_2, CARBON_PROP).setRegistryName("carbon_pickaxe");
@@ -86,7 +86,7 @@ public class VETools {
     public static Item TUNGSTEN_STEEL_PICKAXE = new PickaxeItem(TUNGSTEN_STEEL, PICKAXE_1, PICKAXE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_pickaxe");
     public static Item NIGHALITE_PICKAXE = new PickaxeItem(NIGHALITE, PICKAXE_1, PICKAXE_2, NIGHALITE_PROP).setRegistryName("nighalite_pickaxe");
     public static Item EIGHZO_PICKAXE = new PickaxeItem(EIGHZO, PICKAXE_1, PICKAXE_2, EIGHZO_PROP).setRegistryName("eighzo_pickaxe");
-    public static Item SOLARIUM_PICKAXE = new PickaxeItem(SOLARIUM, PICKAXE_1, PICKAXE_2, SOLARIUM_PROP).setRegistryName("solarium_pickaxe");
+    public static Item SOLARIUM_PICKAXE = new VEPickaxeItem(SOLARIUM, PICKAXE_1, PICKAXE_2, SOLARIUM_PROP).setRegistryName("solarium_pickaxe");
 
     // Axes
     public static Item CARBON_AXE = new AxeItem(CARBON, AXE_1, AXE_2, CARBON_PROP).setRegistryName("carbon_axe");
@@ -96,7 +96,7 @@ public class VETools {
     public static Item TUNGSTEN_STEEL_AXE = new AxeItem(TUNGSTEN_STEEL, AXE_1, AXE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_axe");
     public static Item NIGHALITE_AXE = new AxeItem(NIGHALITE, AXE_1, AXE_2, NIGHALITE_PROP).setRegistryName("nighalite_axe");
     public static Item EIGHZO_AXE = new AxeItem(EIGHZO, AXE_1, AXE_2, EIGHZO_PROP).setRegistryName("eighzo_axe");
-    public static Item SOLARIUM_AXE = new AxeItem(SOLARIUM, AXE_1, AXE_2, SOLARIUM_PROP).setRegistryName("solarium_axe");
+    public static Item SOLARIUM_AXE = new VEAxeItem(SOLARIUM, AXE_1, AXE_2, SOLARIUM_PROP).setRegistryName("solarium_axe");
 
     // Hoes
     public static Item CARBON_HOE = new HoeItem(CARBON, HOE_1, HOE_2, CARBON_PROP).setRegistryName("carbon_hoe");
@@ -106,5 +106,5 @@ public class VETools {
     public static Item TUNGSTEN_STEEL_HOE = new HoeItem(TUNGSTEN_STEEL, HOE_1, HOE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_hoe");
     public static Item NIGHALITE_HOE = new HoeItem(NIGHALITE, HOE_1, HOE_2, NIGHALITE_PROP).setRegistryName("nighalite_hoe");
     public static Item EIGHZO_HOE = new HoeItem(EIGHZO, HOE_1, HOE_2, EIGHZO_PROP).setRegistryName("eighzo_hoe");
-    public static Item SOLARIUM_HOE = new HoeItem(SOLARIUM, HOE_1, HOE_2, SOLARIUM_PROP).setRegistryName("solarium_hoe");
+    public static Item SOLARIUM_HOE = new VEHoeItem(SOLARIUM, HOE_1, HOE_2, SOLARIUM_PROP).setRegistryName("solarium_hoe");
 }

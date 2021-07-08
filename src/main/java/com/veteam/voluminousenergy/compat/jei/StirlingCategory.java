@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,8 +15,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final IDrawable background;
     private IDrawable icon;
@@ -50,7 +47,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
 
     @Override
     public String getTitle() {
-        return "Stirling";
+        return TextUtil.translateString("jei.voluminousenergy.stirling").getString();
     }
 
     @Override

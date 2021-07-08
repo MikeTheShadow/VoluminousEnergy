@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -46,7 +47,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public String getTitle() {
-        return "Combustion";
+        return TextUtil.translateString("jei.voluminousenergy.combustion").getString();
     }
 
     @Override

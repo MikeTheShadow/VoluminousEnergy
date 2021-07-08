@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -55,7 +56,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
 
     @Override
     public String getTitle() {
-        return "Industrial Blasting";
+        return TextUtil.translateString("jei.voluminousenergy.industrial_blasting").getString();
     }
 
     @Override

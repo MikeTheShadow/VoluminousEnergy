@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,18 +18,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final IDrawable background;
     private IDrawable icon;
@@ -56,7 +52,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     @Override
     public String getTitle() {
-        return "Crushing";
+        return TextUtil.translateString("jei.voluminousenergy.crushing").getString();
     }
 
     @Override

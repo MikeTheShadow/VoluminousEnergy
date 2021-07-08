@@ -15,6 +15,7 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class Config {
 
     public static final String CATEGORY_GENERAL = "General";
+    public static final String CATEGORY_FOOD = "Food";
     public static final String CATEGORY_WORLDGEN = "World Generation";
     public static final String CATEGORY_PRIMITIVE_STIRLING_GENERATOR = "Primitive Stirling Generator";
     public static final String CATEGORY_CRUSHER = "Crusher";
@@ -60,7 +61,14 @@ public class Config {
     public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
+    public static ForgeConfigSpec.BooleanValue GENERATE_RICE_IN_OCEAN;
     public static ForgeConfigSpec.IntValue RICE_CHANCE;
+
+    // Food Settings
+    public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
+    public static ForgeConfigSpec.DoubleValue COOKED_RICE_SATURATION;
+    public static ForgeConfigSpec.DoubleValue RICE_TICK_CHANCE;
+
     // Ore Settings
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
@@ -116,6 +124,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
     public static ForgeConfigSpec.DoubleValue ACID_DAMAGE;
     public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
+    public static ForgeConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
 
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -234,6 +243,10 @@ public class Config {
         setupGeneralSettings();
         COMMON_BUILDER.pop();
 
+        COMMON_BUILDER.comment("Food Settings").push(CATEGORY_FOOD);
+        setupFoodSettings();
+        COMMON_BUILDER.pop();
+
         // World Feature Settings
         COMMON_BUILDER.comment("World Generation Settings").push(CATEGORY_WORLDGEN);
         setupWorldGen();
@@ -344,6 +357,17 @@ public class Config {
                 .defineInRange("Acid Damage", 3F, 0F, Float.MAX_VALUE);
         ACID_FIRE_DURATION = COMMON_BUILDER.comment("Duration of fire on an entity for stepping into an acid.")
                 .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
+        SOLARIUM_PROTECTIVE_SHEATH_HITS = COMMON_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
+                .defineInRange("Solarium Protective Sheath", 2560, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupFoodSettings(){
+        COOKED_RICE_NUTRITION = COMMON_BUILDER.comment("Nutritional value of Cooked Rice.")
+                .defineInRange("Cooked Rice Nutrition", 5, 1, Integer.MAX_VALUE);
+        COOKED_RICE_SATURATION = COMMON_BUILDER.comment("Saturation of Cooked Rice.")
+                .defineInRange("Cooked Rice Saturation", 0.3F, Float.MIN_NORMAL, Float.MAX_VALUE);
+        RICE_TICK_CHANCE = COMMON_BUILDER.comment("Chance of Rice crop going to next life stage.")
+                .defineInRange("Rice Tick Chance", 0.5F, Float.MIN_NORMAL, 1F);
     }
 
     private static void setupWorldGen(){
@@ -367,6 +391,8 @@ public class Config {
                     .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
             GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
                     .define("Generate Rice", true);
+            GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
+                    .define("Generate Rice in Oceans", false);
             RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
                     .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
