@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "byg"
+    }
+  ],
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "item": "byg:anthracite",
+    "count": 1
+  },
+  "process_time": 2400,
+  "energy_per_tick": 128
+}

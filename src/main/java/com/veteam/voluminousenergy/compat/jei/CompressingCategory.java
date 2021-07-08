@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -51,7 +52,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
     @Override
     public String getTitle() {
-        return "Compressing";
+        return TextUtil.translateString("jei.voluminousenergy.compressing").getString();
     }
 
     @Override

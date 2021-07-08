@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.ImplosionCompressorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -52,7 +53,7 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
 
     @Override
     public String getTitle() {
-        return "Implosion Compressing";
+        return TextUtil.translateString("jei.voluminousenergy.implosion_compressing").getString();
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:pumpkin_seeds",
+    "tag": "forge:seeds",
     "count": 1
   },
   "process_time": 200,

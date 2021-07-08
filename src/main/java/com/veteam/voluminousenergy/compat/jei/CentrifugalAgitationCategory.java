@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -49,7 +50,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
 
     @Override
     public String getTitle() {
-        return "Centrifugal Agitation";
+        return TextUtil.translateString("jei.voluminousenergy.centrifugal_agitation").getString();
     }
 
     @Override

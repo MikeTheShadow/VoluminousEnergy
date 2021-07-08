@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -53,7 +54,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
     @Override
     public String getTitle() {
-        return "Centrifugal Separation";
+        return TextUtil.translateString("jei.voluminousenergy.centrifugal_separation").getString();
     }
 
     @Override
