@@ -4,6 +4,7 @@
     "text.voluminousenergy.multiblock.distillation_unit.requirements": "Carcaça de Máquina de Alumínio 3x3x3 ATRÁS da Entidade",
     "text.voluminousenergy.multiblock.blast_furnace.requirements": "Carcaça de Máquina de Titânio 3x3x3 ATRÁS da Entidade",
     "text.voluminousenergy.temperature": "Temperatura",
+	"text.voluminousenergy.protective_sheath": "Bainha Protetora",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Cima",
@@ -227,5 +228,18 @@
     "item.voluminousenergy.solarium_shovel": "Pá de Solário",
 
     "_comment": "Biomes",
-    "biome.voluminousenergy.red_desert": "Deserto Vermelho"
+    "biome.voluminousenergy.red_desert": "Deserto Vermelho",
+	
+    "_comment": "JEI UI Recipe Names",
+    "jei.voluminousenergy.aqueoulizing": "Aquecendo",
+    "jei.voluminousenergy.centrifugal_agitation": "Agitação Centrífuga",
+    "jei.voluminousenergy.centrifugal_separation": "Separação Centrífuga",
+    "jei.voluminousenergy.combustion": "Combustão",
+    "jei.voluminousenergy.compressing": "Compressão",
+    "jei.voluminousenergy.crushing": "Trituração",
+    "jei.voluminousenergy.distilling": "Destilando",
+    "jei.voluminousenergy.electrolyzing": "Eletrolisação",
+    "jei.voluminousenergy.implosion_compressing": "Compressão á Implosão",
+    "jei.voluminousenergy.industrial_blasting": "Explosão Industrial",
+    "jei.voluminousenergy.stirling": "Vapor"
 }
