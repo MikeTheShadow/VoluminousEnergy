@@ -64,7 +64,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, 16777215);
 
-        drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
         this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
@@ -73,7 +73,7 @@ public class StirlingGeneratorScreen extends ContainerScreen<StirlingGeneratorCo
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft() + ", "+TextUtil.translateString("text.voluminousenergy.generating").getString()+": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }

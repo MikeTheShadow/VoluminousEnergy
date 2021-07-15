@@ -5,6 +5,10 @@
     "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing BEHIND the Tile Entity",
     "text.voluminousenergy.temperature": "Temperature",
     "text.voluminousenergy.protective_sheath": "Protective Sheath",
+    "text.voluminousenergy.generating": "Generating",
+    "text.voluminousenergy.percent_complete": "Percent Complete",
+    "text.voluminousenergy.percent_burned": "Percent Burned",
+    "text.voluminousenergy.ticks_left": "Ticks Left",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",

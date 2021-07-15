@@ -44,7 +44,7 @@ public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPan
     protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY){
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getLevel().isDay())
-        drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
         this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 

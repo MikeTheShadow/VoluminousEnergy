@@ -65,7 +65,7 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, "+TextUtil.translateString("text.voluminousenergy.ticks_left").getString()+": " + tileEntity.ticksLeft() + ", "+TextUtil.translateString("text.voluminousenergy.generating").getString()+": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
@@ -79,7 +79,7 @@ public class PrimitiveStirlingGeneratorScreen extends ContainerScreen<PrimitiveS
         int generationRate;
         if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
         else generationRate = 0;
-        drawString(matrixStack,Minecraft.getInstance().font, "Generating: " + generationRate + " FE/t", 50, 18, 0xffffff);
+        drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + generationRate + " FE/t", 50, 18, 0xffffff);
         //this.font.drawString(matrixStack,this.playerInventory.getDisplayName().getString(),8.0F, (float) (this.ySize - 96 - 12), 4210752);
         this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Energy: " + container.getEnergy(), 10, 22, 0xffffff);

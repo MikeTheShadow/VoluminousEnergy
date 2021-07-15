@@ -84,7 +84,7 @@ public class ElectricFurnaceScreen extends ContainerScreen<ElectricFurnaceContai
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
         } else if (isHovering(81,32,9,17,mouseX,mouseY)){
-            renderTooltip(matrixStack,ITextComponent.nullToEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
+            renderTooltip(matrixStack,ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }

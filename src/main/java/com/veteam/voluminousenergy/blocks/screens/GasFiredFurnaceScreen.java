@@ -113,9 +113,9 @@ public class GasFiredFurnaceScreen extends ContainerScreen<GasFiredFurnaceContai
             String name = tileEntity.getFluidFromTank().getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         } else if (isHovering(54,54,16,16,mouseX,mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressFuelCounterPercent() + "%, Ticks Left: " + tileEntity.getFuelCounter()), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()), mouseX, mouseY);
         } else if (isHovering(81,32,9,17,mouseX,mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%, "+ TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX,mouseY);

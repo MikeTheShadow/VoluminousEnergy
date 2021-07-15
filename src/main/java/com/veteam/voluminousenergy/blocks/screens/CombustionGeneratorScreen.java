@@ -142,7 +142,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
         }
 
         if (isHovering(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+            renderTooltip(matrixStack, ITextComponent.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft() + ", " + TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
