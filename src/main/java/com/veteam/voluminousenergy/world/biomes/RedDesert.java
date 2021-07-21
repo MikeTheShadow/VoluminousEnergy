@@ -49,15 +49,17 @@ public class RedDesert extends VEBiome {
 
         // Underground
         DefaultBiomeFeatures.addDefaultCarvers(builder);
-        DefaultBiomeFeatures.addAncientDebris(builder);
         DefaultBiomeFeatures.addDefaultOres(builder);
         DefaultBiomeFeatures.addFossilDecoration(builder);
         DefaultBiomeFeatures.addDefaultMonsterRoom(builder);
+        DefaultBiomeFeatures.addDefaultUndergroundVariety(builder); // Granite, Andesite, Diorite, etc
+        DefaultBiomeFeatures.addDefaultSoftDisks(builder); // Sand, Clay, Gravel, etc
 
         // Above Ground
         DefaultBiomeFeatures.addDesertVegetation(builder); // Dead bush patches
         DefaultBiomeFeatures.addDesertExtraVegetation(builder); // Sugar Cane patches, Pumpkins(?!), Cactus
         DefaultBiomeFeatures.addDesertExtraDecoration(builder); // Desert Wells
+        DefaultBiomeFeatures.addDefaultMushrooms(builder); // add Mushrooms
     }
 
     @Override

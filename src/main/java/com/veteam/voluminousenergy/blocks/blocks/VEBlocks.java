@@ -3,8 +3,9 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
-import com.veteam.voluminousenergy.blocks.blocks.materials.SolariumBlock;
+import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
+import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.inventory.container.ContainerType;
@@ -257,6 +258,50 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":rice_crop")
     public static RiceCrop RICE_CROP;
 
+    // Material Storage Blocks
     @ObjectHolder(VoluminousEnergy.MODID + ":solarium_block")
     public static SolariumBlock SOLARIUM_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_block")
+    public static AluminumBlock ALUMINUM_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":carbon_block")
+    public static CarbonBlock CARBON_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_block")
+    public static EighzoBlock EIGHZO_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":nighalite_block")
+    public static NighaliteBlock NIGHALITE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":saltpeter_block")
+    public static SaltpeterBlock SALTPETER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_block")
+    public static TitaniumBlock TITANIUM_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":tungsten_block")
+    public static TungstenBlock TUNGSTEN_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":tungsten_steel_block")
+    public static TungstenSteelBlock TUNGSTEN_STEEL_BLOCK;
+
+    // Raw Material Storage Blocks
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_bauxite_block")
+    public static RawBauxiteBlock RAW_BAUXITE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_cinnabar_block")
+    public static RawCinnabarBlock RAW_CINNABAR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_eighzo_block")
+    public static RawEighzoBlock RAW_EIGHZO_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_galena_block")
+    public static RawGalenaBlock RAW_GALENA_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_rutile_block")
+    public static RawRutileBlock RAW_RUTILE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":raw_bone_block")
+    public static RawBoneBlock RAW_BONE_BLOCK;
 }

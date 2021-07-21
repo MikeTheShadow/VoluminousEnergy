@@ -2,9 +2,9 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.*;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
-import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
-import com.veteam.voluminousenergy.blocks.blocks.materials.SolariumBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
+import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
+import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -154,6 +154,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new CinnabarOre());
             blockRegisteryEvent.getRegistry().register(new RutileOre());
             blockRegisteryEvent.getRegistry().register(new GalenaOre());
+            blockRegisteryEvent.getRegistry().register(new EighzoOre());
 
             //Shells and Machine Frames
             blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
@@ -162,12 +163,27 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new TitaniumMachineCasingBlock());
 
             //Crops
-            blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
+            //blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
             blockRegisteryEvent.getRegistry().register(new RiceCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
 
             // Material Blocks
             blockRegisteryEvent.getRegistry().register(new SolariumBlock());
-            blockRegisteryEvent.getRegistry().register(new EighzoOre());
+            blockRegisteryEvent.getRegistry().register(new AluminumBlock());
+            blockRegisteryEvent.getRegistry().register(new CarbonBlock());
+            blockRegisteryEvent.getRegistry().register(new EighzoBlock());
+            blockRegisteryEvent.getRegistry().register(new NighaliteBlock());
+            blockRegisteryEvent.getRegistry().register(new SaltpeterBlock());
+            blockRegisteryEvent.getRegistry().register(new TitaniumBlock());
+            blockRegisteryEvent.getRegistry().register(new TungstenBlock());
+            blockRegisteryEvent.getRegistry().register(new TungstenSteelBlock());
+
+            // Raw Material Blocks
+            blockRegisteryEvent.getRegistry().register(new RawBauxiteBlock());
+            blockRegisteryEvent.getRegistry().register(new RawCinnabarBlock());
+            blockRegisteryEvent.getRegistry().register(new RawEighzoBlock());
+            blockRegisteryEvent.getRegistry().register(new RawGalenaBlock());
+            blockRegisteryEvent.getRegistry().register(new RawRutileBlock());
+            blockRegisteryEvent.getRegistry().register(new RawBoneBlock());
         }
 
         @SubscribeEvent
@@ -221,6 +237,26 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME, properties).setRegistryName("carbon_shielded_aluminum_machine_frame"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK, properties).setRegistryName("aluminum_machine_casing"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK, properties).setRegistryName("titanium_machine_casing"));
+
+            // Raw Material Storage Blocks
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BAUXITE_BLOCK, properties).setRegistryName("raw_bauxite_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_CINNABAR_BLOCK, properties).setRegistryName("raw_cinnabar_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_EIGHZO_BLOCK, properties).setRegistryName("raw_eighzo_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_GALENA_BLOCK, properties).setRegistryName("raw_galena_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_RUTILE_BLOCK, properties).setRegistryName("raw_rutile_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BONE_BLOCK, properties).setRegistryName("raw_bone_block"));
+
+
+            // Material Storage Blocks
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_BLOCK,properties).setRegistryName("aluminum_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_BLOCK,properties).setRegistryName("carbon_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_BLOCK,properties).setRegistryName("eighzo_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.NIGHALITE_BLOCK,properties).setRegistryName("nighalite_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_BLOCK,properties).setRegistryName("saltpeter_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_BLOCK,properties).setRegistryName("titanium_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TUNGSTEN_BLOCK,properties).setRegistryName("tungsten_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TUNGSTEN_STEEL_BLOCK,properties).setRegistryName("tungsten_steel_block"));
 
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
@@ -356,9 +392,6 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VETools.NIGHALITE_SWORD);
             itemRegisteryEvent.getRegistry().register(VETools.EIGHZO_SWORD);
             itemRegisteryEvent.getRegistry().register(VETools.SOLARIUM_SWORD);
-
-            // Block of Materials
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
 
             // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
