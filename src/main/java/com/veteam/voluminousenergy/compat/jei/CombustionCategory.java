@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -176,3 +176,4 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         return j;
     }
 }
+*/
