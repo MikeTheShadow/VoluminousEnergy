@@ -17,8 +17,9 @@ public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBaseCo
         super(p_i232124_1_);
     }
 
+    // TODO: Figure out what new int does, or if seaLevel int is shifted one over
     @Override
-    public void apply(Random random, ChunkAccess chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, long seed, SurfaceBuilderBaseConfiguration config) {
+    public void apply(Random random, ChunkAccess chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, int p_164223_, long seed, SurfaceBuilderBaseConfiguration config) {
         this.build(random, chunkIn, biomeIn, x, z, startHeight, noise, defaultBlock, defaultFluid, Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SANDSTONE.defaultBlockState(), seaLevel);
     }
 

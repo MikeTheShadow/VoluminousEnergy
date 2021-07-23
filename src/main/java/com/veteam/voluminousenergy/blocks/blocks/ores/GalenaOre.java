@@ -7,8 +7,6 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class GalenaOre extends VEOreBlock {
     public GalenaOre(){
         super(Properties.of(Material.STONE)

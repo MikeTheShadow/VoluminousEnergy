@@ -1,20 +1,17 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class VEOreBlock extends OreBlock {
     public VEOreBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
     protected int xpOnDrop(Random rand) {
         return Mth.nextInt(rand, 2, 5);
     }

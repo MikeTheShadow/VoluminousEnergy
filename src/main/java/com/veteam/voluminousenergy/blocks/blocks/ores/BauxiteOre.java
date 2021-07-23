@@ -7,8 +7,6 @@ import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre(){
         super(Properties.of(Material.STONE)

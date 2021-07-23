@@ -167,10 +167,10 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                 if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
                     ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
                     //VoluminousEnergy.LOGGER.debug("FLUID TAG: " + fluidTagLocation);
-                    Tag<Fluid> tag = SerializationTags.getInstance().getFluids().getTag(fluidTagLocation);
+                    Tag<Fluid> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.FLUIDS).getTag(fluidTagLocation);
                     if(tag != null){
                         for(Fluid fluid : tag.getValues()){
-                            FluidStack tempStack = new FluidStack(fluid.getFluid(), inputFluidAmount);
+                            FluidStack tempStack = new FluidStack(fluid, inputFluidAmount);
                             recipe.fluidInputList.add(tempStack);
                             recipe.rawFluidInputList.add(tempStack.getRawFluid());
                             recipe.inputArraySize = recipe.fluidInputList.size();
