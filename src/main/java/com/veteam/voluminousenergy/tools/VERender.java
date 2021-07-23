@@ -1,13 +1,14 @@
 package com.veteam.voluminousenergy.tools;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -57,12 +58,12 @@ public class VERender {
         int renderAmount = (int) Math.max(Math.min(height, amount * height / tankCapacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        Minecraft.getInstance().getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
+        Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
         int color = stack.getFluid().getAttributes().getColor();
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;
-        RenderSystem.color3f(r, g, b);
+        RenderSystem.setShaderFogColor(r, g, b); // TODO: Unsure
 
         RenderSystem.enableBlend();
         for (int i = 0; i < width; i += 16) {
@@ -78,9 +79,9 @@ public class VERender {
                 float minV = icon.getV0();//min
                 float maxV = icon.getV1();//max
 
-                Tessellator tessellator = Tessellator.getInstance();
+                Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder tes = tessellator.getBuilder();
-                tes.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                tes.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
                 tes.vertex(drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * drawHeight / 16F).endVertex();
                 tes.vertex(drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
                 tes.vertex(drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
@@ -89,7 +90,7 @@ public class VERender {
             }
         }
         RenderSystem.disableBlend();
-        RenderSystem.color3f(1, 1, 1);
+        RenderSystem.setShaderFogColor(1, 1, 1); // TODO: Unsure
     }
 
     @Nullable

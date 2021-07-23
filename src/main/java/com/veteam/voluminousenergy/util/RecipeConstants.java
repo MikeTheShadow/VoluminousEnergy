@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RecipeConstants {
 

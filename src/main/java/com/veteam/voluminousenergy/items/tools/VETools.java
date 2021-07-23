@@ -3,7 +3,14 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.item.*;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 
 public class VETools {
 

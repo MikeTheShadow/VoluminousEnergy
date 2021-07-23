@@ -1,18 +1,20 @@
 package com.veteam.voluminousenergy.fluids.flowingFluidBlocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.function.Supplier;
 
-public class VEFlowingFluidBlock extends FlowingFluidBlock {
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+public class VEFlowingFluidBlock extends LiquidBlock {
     private byte check = 0;
 
     public VEFlowingFluidBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
@@ -20,15 +22,15 @@ public class VEFlowingFluidBlock extends FlowingFluidBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         if(entityIn instanceof LivingEntity){
             if((entityIn.getY() - entityIn.yOld) > 0 && !entityIn.isCrouching()){
-                entityIn.makeStuckInBlock(state, new Vector3d(0.9F, -0.9F, 0.9F));
+                entityIn.makeStuckInBlock(state, new Vec3(0.9F, -0.9F, 0.9F));
             } else if ((entityIn.getY() - entityIn.yOld) <= 0 || entityIn.isCrouching()) {
-                entityIn.makeStuckInBlock(state, new Vector3d(0.9F, 0.9F, 0.9F));
+                entityIn.makeStuckInBlock(state, new Vec3(0.9F, 0.9F, 0.9F));
             }
         } else if (entityIn instanceof ItemEntity){
-            entityIn.makeStuckInBlock(state, new Vector3d(0.8F, -1, 0.8F));
+            entityIn.makeStuckInBlock(state, new Vec3(0.8F, -1, 0.8F));
         }
 
     }

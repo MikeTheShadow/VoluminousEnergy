@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
@@ -14,28 +13,32 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 
-public class CrusherScreen extends ContainerScreen<CrusherContainer> {
+public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private static final Logger LOGGER = LogManager.getLogger();
     private boolean openedIOGui = false;
 
-    public CrusherScreen(CrusherContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public CrusherScreen(CrusherContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CrusherTile) screenContainer.getTileEntity();
         screenContainer.setCrusherScreen(this);
+    }
+
+    protected void addButton(Widget widget){
+        this.renderables.add(widget);
     }
 
     @Override
@@ -74,24 +77,24 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Crusher",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("crusher"), 8.0F, 6.0F, 16777215);
 
-        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE"), mouseX, mouseY);
         } /*else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
             if (openedIOGui){
                 renderTooltip("Close IO Management", mouseX, mouseY);
@@ -103,9 +106,9 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI);
+    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bindForSetup(GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -126,7 +129,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
         // Upgrade slot
-        this.minecraft.getTextureManager().bind(GUI_TOOLS);
+        this.minecraft.getTextureManager().bindForSetup(GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
@@ -134,11 +137,11 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
         return GUI;
     }
 
-    private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.buttons){
+    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+        for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
                             informTileOfIOButton(true);
@@ -146,7 +149,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
                         }
                     });
                 } else {
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
                             informTileOfIOButton(false);
@@ -159,7 +162,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
                 ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -167,7 +170,7 @@ public class CrusherScreen extends ContainerScreen<CrusherContainer> {
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);

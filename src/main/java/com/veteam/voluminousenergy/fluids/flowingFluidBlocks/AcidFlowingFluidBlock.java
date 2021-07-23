@@ -1,16 +1,20 @@
 package com.veteam.voluminousenergy.fluids.flowingFluidBlocks;
 
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.function.Supplier;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 
 public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
     public AcidFlowingFluidBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
@@ -18,7 +22,7 @@ public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
 
         if (!entityIn.fireImmune() && entityIn instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)entityIn)) {
             entityIn.hurt(DamageSource.IN_FIRE, Config.ACID_DAMAGE.get().floatValue());
@@ -28,5 +32,8 @@ public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
         super.entityInside(state, worldIn, pos, entityIn);
     }
 
-
+    @Override
+    public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType pathComputationType){
+        return true;
+    }
 }

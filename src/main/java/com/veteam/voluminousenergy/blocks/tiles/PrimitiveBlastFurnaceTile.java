@@ -8,34 +8,33 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements MenuProvider {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
@@ -56,10 +55,14 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
 
-    public PrimitiveBlastFurnaceTile() {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
+    public PrimitiveBlastFurnaceTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
+    }
+
+    @Deprecated
+    public PrimitiveBlastFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
     }
 
     private ItemStackHandler inventory = createHandler();
@@ -70,7 +73,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         ItemStack input = inventory.getStackInSlot(0).copy();
         ItemStack output = inventory.getStackInSlot(1).copy();
 
-        PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
+        PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
@@ -114,21 +117,21 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
 
         this.inputSm.read(tag, "input_gui");
         this.outputSm.read(tag,"output_gui");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("inv",compound);
         });
 
@@ -144,20 +147,20 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
      */
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -167,8 +170,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOutput = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), level).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOutput = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()), level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -185,8 +188,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOut = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()), level).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new Inventory(referenceStack),level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOut = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()), level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getItems()){
@@ -221,13 +224,13 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("voluminousenergy:primitiveblastfurnace");
+    public Component getDisplayName() {
+        return new TranslatableComponent("voluminousenergy:primitiveblastfurnace");
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new PrimitiveBlastFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
@@ -295,7 +298,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

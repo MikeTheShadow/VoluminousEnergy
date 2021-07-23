@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,7 +49,7 @@ public class VESlotManager {
         return translationKey;
     }
 
-    public void write(CompoundNBT nbt, String prefix){
+    public void write(CompoundTag nbt, String prefix){
         //VoluminousEnergy.LOGGER.debug("Writing to NBT.");
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_enabled as: " + enabled);
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_direction as: " + getDirection().getIndex() + " Meaning: " + getDirection());
@@ -57,7 +57,7 @@ public class VESlotManager {
         nbt.putInt(prefix+"_direction", getDirection().get3DDataValue());
     }
 
-    public void read(CompoundNBT nbt, String prefix){
+    public void read(CompoundTag nbt, String prefix){
         setStatus(nbt.getBoolean(prefix + "_enabled"));
         int sideInt = nbt.getInt(prefix + "_direction");
 

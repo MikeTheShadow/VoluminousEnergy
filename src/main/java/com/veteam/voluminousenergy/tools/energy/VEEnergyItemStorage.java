@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.energy;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.EnergyStorage;
 
 public class VEEnergyItemStorage extends EnergyStorage {

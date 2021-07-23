@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
@@ -17,31 +16,35 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
+public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceContainer> {
     private BlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/blast_furnace_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
-    public BlastFurnaceScreen(BlastFurnaceContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public BlastFurnaceScreen(BlastFurnaceContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (BlastFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
+    }
+
+    protected void addButton(Widget widget){
+        this.renderables.add(widget);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("blast_furnace"), 8.0F, 6.0F, 16777215);
 
         //this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
@@ -120,9 +123,9 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BLAST_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BLAST_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -135,9 +138,9 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI);
+    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bindForSetup(GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -160,7 +163,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
 
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
             // Upgrade slot
-            this.minecraft.getTextureManager().bind(GUI_TOOLS);
+            this.minecraft.getTextureManager().bindForSetup(GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
             this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
@@ -169,11 +172,11 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
 
     }
 
-    private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.buttons){
+    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+        for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
                             informTileOfIOButton(true);
@@ -181,7 +184,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
                         }
                     });
                 } else {
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
                             informTileOfIOButton(false);
@@ -194,7 +197,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
                 ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -202,7 +205,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
@@ -213,7 +216,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
                 ((TankDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -221,7 +224,7 @@ public class BlastFurnaceScreen extends ContainerScreen<BlastFurnaceContainer> {
     }
 
     public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((TankBoolButton) widget).toggleRender(true);

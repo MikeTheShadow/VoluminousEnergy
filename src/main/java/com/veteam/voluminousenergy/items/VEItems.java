@@ -16,7 +16,7 @@ import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class VEItems {
     public static PetCoke PETCOKE = new PetCoke();

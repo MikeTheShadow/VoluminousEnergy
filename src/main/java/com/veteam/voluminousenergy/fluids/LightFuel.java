@@ -2,14 +2,14 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -21,7 +21,7 @@ public class LightFuel {
 
     public static FlowingFluid LIGHT_FUEL;
     public static FlowingFluid FLOWING_LIGHT_FUEL;
-    public static FlowingFluidBlock LIGHT_FUEL_BLOCK;
+    public static LiquidBlock LIGHT_FUEL_BLOCK;
     public static Item LIGHT_FUEL_BUCKET;
 
     public static FlowingFluid LightFuelFluid(){
@@ -34,8 +34,8 @@ public class LightFuel {
         return FLOWING_LIGHT_FUEL;
     }
 
-    public static FlowingFluidBlock FlowingLightFuelBlock(){
-        LIGHT_FUEL_BLOCK = new FlowingFluidBlock(() -> LIGHT_FUEL, stdProp);
+    public static LiquidBlock FlowingLightFuelBlock(){
+        LIGHT_FUEL_BLOCK = new LiquidBlock(() -> LIGHT_FUEL, stdProp);
         return LIGHT_FUEL_BLOCK;
     }
 

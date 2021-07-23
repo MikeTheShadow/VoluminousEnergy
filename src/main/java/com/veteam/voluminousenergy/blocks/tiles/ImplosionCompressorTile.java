@@ -10,29 +10,30 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -45,7 +46,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ImplosionCompressorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ImplosionCompressorTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0,1));
     private LazyOptional<IItemHandlerModifiable> gunpowderItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
@@ -60,8 +61,13 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
-    public ImplosionCompressorTile(){
-        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE);
+    public ImplosionCompressorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE, pos, state);
+    }
+
+    @Deprecated
+    public ImplosionCompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE, pos, state);
     }
 
     private ItemStackHandler inventory = createHandler();
@@ -74,7 +80,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
         ItemStack gunpowderInput = inventory.getStackInSlot(1).copy();
         ItemStack output = inventory.getStackInSlot(2).copy();
 
-        ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
+        ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty() && !gunpowderInput.isEmpty()){
@@ -140,28 +146,28 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        CompoundTag energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
 
         inputSlotManager.read(tag, "input_manager");
         gunpowderSlotManager.read(tag, "gunpowder_manager");
         outputSlotManager.read(tag, "output_manager");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("energy",compound);
         });
 
@@ -172,20 +178,20 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -200,8 +206,8 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
-                ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
+                ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
+                ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
                     return recipe.ingredient.test(stack);
@@ -220,8 +226,8 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
-                ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
+                ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
+                ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getItems()) {
@@ -267,13 +273,13 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
     {
         return new ImplosionCompressorContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
@@ -330,7 +336,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements ITi
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

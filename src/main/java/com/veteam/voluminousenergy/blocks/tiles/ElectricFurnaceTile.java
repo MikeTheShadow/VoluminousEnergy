@@ -9,40 +9,39 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.BlastingRecipe;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +49,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
     private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
@@ -63,10 +62,14 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
 
-    public ElectricFurnaceTile(){
-        super(VEBlocks.ELECTRIC_FURNACE_TILE);
+    public ElectricFurnaceTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.ELECTRIC_FURNACE_TILE, pos, state);
+    }
+
+    @Deprecated
+    public ElectricFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(VEBlocks.ELECTRIC_FURNACE_TILE, pos, state);
     }
 
     public ItemStackHandler inventory = createHandler();
@@ -82,8 +85,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
         // Main Processing occurs here
         if (canConsumeEnergy()){
-            FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), level).orElse(null);
-            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), level).orElse(null);
+            SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
 
             if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
@@ -156,26 +159,26 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        CompoundTag energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
 
         inputSlotManager.read(tag, "input_slot_manager");
         outputSlotManager.read(tag, "output_slot_manager");
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("energy",compound);
         });
 
@@ -185,20 +188,20 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -212,11 +215,11 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0) {
-                    return level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level).orElse(null) != null
-                            || level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(stack), level).orElse(null) != null;
+                    return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
+                            || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;
                 } else if (slot == 1) {
-                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), level).orElse(null);
+                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
@@ -238,8 +241,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
                 if (slot == 0){
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
-                    FurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack),level).orElse(null);
+                    SmeltingRecipe recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack),level).orElse(null);
 
                     if (recipe != null || blastingRecipe != null){
                         return super.insertItem(slot, stack, simulate);
@@ -257,8 +260,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
                 if (level != null){
-                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack.get()), level).orElse(null);
+                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {
                         if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem().getItem()) {
                             if(blastingRecipe.getExperience() > 0){
@@ -280,14 +283,14 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
 
     private void generateXP(int craftedAmount, float experience){
         if(level == null) return;
-        int i = MathHelper.floor((float)craftedAmount * experience);
-        float f = MathHelper.frac((float)craftedAmount * experience);
+        int i = Mth.floor((float)craftedAmount * experience);
+        float f = Mth.frac((float)craftedAmount * experience);
         if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
-            int j = ExperienceOrbEntity.getExperienceValue(i);
+            int j = ExperienceOrb.getExperienceValue(i);
             i -= j;
-            level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
+            level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
         }
     }
 
@@ -313,13 +316,13 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity)
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
     {
         return new ElectricFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
@@ -340,7 +343,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         }
     }
 
-    public boolean countChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+    public boolean countChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             return (itemStack.getCount() + furnaceRecipe.getResultItem().getCount()) <= 64;
         } else if (blastingRecipe != null){
@@ -349,7 +352,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
         return false;
     }
 
-    public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+    public boolean itemChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
             return furnaceRecipe.getResultItem().getItem() == itemStack.getItem();
@@ -402,7 +405,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements ITickab
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

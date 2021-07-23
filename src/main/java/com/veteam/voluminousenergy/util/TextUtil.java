@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.util;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextUtil {
     /*
@@ -11,29 +11,29 @@ public class TextUtil {
     *   ITextComponent textComponent = ITextComponent.getTextComponentOrEmpty(", " + amount + " mB / " + tankCapacity + " mB");
     *   return name.append(textComponent);
     */
-    public static ITextComponent tankTooltip(String fluidName, int amount, int tankCapacity){
-        return new TranslationTextComponent(fluidName).append(ITextComponent.nullToEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
+    public static Component tankTooltip(String fluidName, int amount, int tankCapacity){
+        return new TranslatableComponent(fluidName).append(Component.nullToEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
     }
 
-    public static ITextComponent slotName(String slotName){
-        return new TranslationTextComponent(slotName);
+    public static Component slotName(String slotName){
+        return new TranslatableComponent(slotName);
     }
 
-    public static ITextComponent translateDirection(Direction direction){
-        return new TranslationTextComponent("direction.voluminousenergy." + direction.name().toLowerCase());
+    public static Component translateDirection(Direction direction){
+        return new TranslatableComponent("direction.voluminousenergy." + direction.name().toLowerCase());
     }
 
-    public static ITextComponent slotNameWithDirection(String slotName, Direction direction, int ordinal){
-        ITextComponent translatedSlot = slotName(slotName);
-        ITextComponent translatedDirection = translateDirection(direction);
-        return new StringTextComponent(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
+    public static Component slotNameWithDirection(String slotName, Direction direction, int ordinal){
+        Component translatedSlot = slotName(slotName);
+        Component translatedDirection = translateDirection(direction);
+        return new TextComponent(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
     }
 
-    public static ITextComponent translateString(String toTranslate){
-        return new TranslationTextComponent(toTranslate);
+    public static Component translateString(String toTranslate){
+        return new TranslatableComponent(toTranslate);
     }
 
-    public static ITextComponent translateVEBlock(String block){
-        return new TranslationTextComponent("block.voluminousenergy." + block);
+    public static Component translateVEBlock(String block){
+        return new TranslatableComponent("block.voluminousenergy." + block);
     }
 }

@@ -4,11 +4,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -25,14 +25,14 @@ public class TankBoolPacket {
         this.id = id;
     }
 
-    public static TankBoolPacket fromBytes(PacketBuffer buffer){
+    public static TankBoolPacket fromBytes(FriendlyByteBuf buffer){
         TankBoolPacket packet = new TankBoolPacket();
         packet.status = buffer.readBoolean();
         packet.id = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(PacketBuffer buffer){
+    public void toBytes(FriendlyByteBuf buffer){
         buffer.writeBoolean(this.status);
         buffer.writeInt(this.id);
     }
@@ -41,24 +41,24 @@ public class TankBoolPacket {
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
-                Container clientContainer = Minecraft.getInstance().player.containerMenu;
+                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 contextSupplier.get().setPacketHandled(true);
                 break;
             default:
-                Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
+                AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
                 contextSupplier.get().setPacketHandled(true);
         }
 
     }
 
-    public static void handlePacket(TankBoolPacket packet, Container openContainer, boolean onServer){
+    public static void handlePacket(TankBoolPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         //VoluminousEnergy.LOGGER.debug("Work has enqueued");
         if(openContainer != null){
             if(openContainer instanceof AirCompressorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((AirCompressorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AirCompressorTile) {
                         ((AirCompressorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -69,7 +69,7 @@ public class TankBoolPacket {
                 // End of Air Compressor logic
             } else if(openContainer instanceof AqueoulizerContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((AqueoulizerContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof AqueoulizerTile) {
                         ((AqueoulizerTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -80,7 +80,7 @@ public class TankBoolPacket {
                 // End of Aqueoulizer
             } else if(openContainer instanceof CentrifugalAgitatorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((CentrifugalAgitatorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CentrifugalAgitatorTile) {
                         ((CentrifugalAgitatorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -91,7 +91,7 @@ public class TankBoolPacket {
                 // End of CentrifugalAgitator
             } else if(openContainer instanceof CombustionGeneratorContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((CombustionGeneratorContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof CombustionGeneratorTile) {
                         ((CombustionGeneratorTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -102,7 +102,7 @@ public class TankBoolPacket {
                 // End of CombustionGenerator
             } else if (openContainer instanceof DistillationUnitContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((DistillationUnitContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof DistillationUnitTile) {
                         ((DistillationUnitTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -113,7 +113,7 @@ public class TankBoolPacket {
                 // End of DistillationUnit
             } else if(openContainer instanceof GasFiredFurnaceContainer) {
                 if (onServer) {
-                    TileEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((GasFiredFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof GasFiredFurnaceTile) {
                         ((GasFiredFurnaceTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -124,7 +124,7 @@ public class TankBoolPacket {
                 // End of GasFiredFurnace
             } else if (openContainer instanceof PumpContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((PumpContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((PumpContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof PumpTile) {
                         ((PumpTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }
@@ -135,7 +135,7 @@ public class TankBoolPacket {
                 // End of Pump
             } else if (openContainer instanceof BlastFurnaceContainer){
                 if (onServer) {
-                    TileEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
                     if (tileEntity instanceof BlastFurnaceTile) {
                         ((BlastFurnaceTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
                     }

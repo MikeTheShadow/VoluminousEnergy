@@ -1,57 +1,56 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveSolarPanelContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveSolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
-public class PrimitiveSolarPanelScreen extends ContainerScreen<PrimitiveSolarPanelContainer> {
+public class PrimitiveSolarPanelScreen extends AbstractContainerScreen<PrimitiveSolarPanelContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private PrimitiveSolarPanelTile tileEntity;
 
-    public PrimitiveSolarPanelScreen(PrimitiveSolarPanelContainer container, PlayerInventory inv, ITextComponent name) {
+    public PrimitiveSolarPanelScreen(PrimitiveSolarPanelContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = (PrimitiveSolarPanelTile) container.getTileEntity();
         container.setScreen(this);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY){
+    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY){
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, 16777215);
         if (tileEntity.getLevel().isDay())
         drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
-        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY){
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI);
+    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY){
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bindForSetup(GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui

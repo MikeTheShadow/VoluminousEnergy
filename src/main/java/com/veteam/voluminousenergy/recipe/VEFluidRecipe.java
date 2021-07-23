@@ -1,21 +1,21 @@
 package com.veteam.voluminousenergy.recipe;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VEFluidRecipe implements IRecipe<IInventory> {
+public abstract class VEFluidRecipe implements Recipe<Container> {
 
     public Ingredient ingredient;
     public int ingredientCount;
@@ -36,13 +36,13 @@ public abstract class VEFluidRecipe implements IRecipe<IInventory> {
     public ItemStack getResult() { return result; }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
     @Override
-    public ItemStack assemble(IInventory inv){
+    public ItemStack assemble(Container inv){
         return ItemStack.EMPTY;
     }
 
@@ -62,10 +62,10 @@ public abstract class VEFluidRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public  abstract IRecipeSerializer<?> getSerializer();
+    public  abstract RecipeSerializer<?> getSerializer();
 
 
-    public abstract IRecipeType<VEFluidRecipe> getType();
+    public abstract RecipeType<VEFluidRecipe> getType();
 
     public abstract ArrayList<Item>  getIngredientList();
 

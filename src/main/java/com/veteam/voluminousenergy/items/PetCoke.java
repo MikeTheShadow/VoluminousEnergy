@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class PetCoke extends Item
 {
@@ -14,8 +14,9 @@ public class PetCoke extends Item
         setRegistryName("petcoke");
     }
 
-    @Override
+    // TODO: Deal with Burn time in furnace
+    /*@Override
     public int getBurnTime(ItemStack itemStack) {
         return 4000;
-    }
+    }*/
 }

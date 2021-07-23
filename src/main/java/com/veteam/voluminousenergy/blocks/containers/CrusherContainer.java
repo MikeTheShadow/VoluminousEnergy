@@ -6,14 +6,14 @@ import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.IntReferenceHolder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -27,11 +27,11 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAIN
 
 public class CrusherContainer extends VoluminousContainer {
 
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
     private IItemHandler playerInventory;
     private CrusherScreen crusherScreen;
 
-    public CrusherContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
+    public CrusherContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(CRUSHER_CONTAINER,id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -46,7 +46,7 @@ public class CrusherContainer extends VoluminousContainer {
         });
         layoutPlayerInventorySlots(8, 84);
 
-        addDataSlot(new IntReferenceHolder() {
+        addDataSlot(new DataSlot() {
             @Override
             public int get() {
                 return getEnergy();
@@ -71,8 +71,8 @@ public class CrusherContainer extends VoluminousContainer {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.CRUSHER_BLOCK);
+    public boolean stillValid(Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.CRUSHER_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -86,14 +86,14 @@ public class CrusherContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final PlayerEntity player, final int index) {
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.inventory.items.size();
+            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
             if (index < containerSlots) {
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;

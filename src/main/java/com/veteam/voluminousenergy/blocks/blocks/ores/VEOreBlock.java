@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.OreBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class VEOreBlock extends OreBlock {
     public VEOreBlock(Properties properties) {
@@ -14,11 +16,11 @@ public class VEOreBlock extends OreBlock {
 
     @Override
     protected int xpOnDrop(Random rand) {
-        return MathHelper.nextInt(rand, 2, 5);
+        return Mth.nextInt(rand, 2, 5);
     }
 
     @Override
-    public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
+    public int getExpDrop(BlockState state, net.minecraft.world.level.LevelReader reader, BlockPos pos, int fortune, int silktouch) {
         return silktouch == 0 ? this.xpOnDrop(RANDOM)*(1+fortune) : 0;
     }
 }

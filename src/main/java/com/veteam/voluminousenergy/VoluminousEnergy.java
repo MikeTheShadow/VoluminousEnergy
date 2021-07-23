@@ -22,19 +22,19 @@ import com.veteam.voluminousenergy.world.biomes.RedDesert;
 import com.veteam.voluminousenergy.world.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
@@ -52,10 +52,9 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -107,10 +106,10 @@ public class VoluminousEnergy {
         */
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         //LOGGER.info("Hello from Voluminous Energy on server start!");
-    }
+    }*/
 
     @SubscribeEvent
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
@@ -164,7 +163,7 @@ public class VoluminousEnergy {
 
             //Crops
             //blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
-            blockRegisteryEvent.getRegistry().register(new RiceCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
+            blockRegisteryEvent.getRegistry().register(new RiceCrop(BlockBehaviour.Properties.copy(Blocks.ALLIUM))); // TODO: better properties
 
             // Material Blocks
             blockRegisteryEvent.getRegistry().register(new SolariumBlock());
@@ -399,32 +398,32 @@ public class VoluminousEnergy {
         }
 
         @SubscribeEvent
-        public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
+        public static void onTileEntityRegistry(final RegistryEvent.Register<BlockEntityType<?>> event) {
             //LOGGER.info("Hello from Voluminous Energy's tile entity registry!");
-            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
-            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
-            event.getRegistry().register(TileEntityType.Builder.of(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
-            event.getRegistry().register(TileEntityType.Builder.of(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
-            event.getRegistry().register(TileEntityType.Builder.of(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
-            event.getRegistry().register(TileEntityType.Builder.of(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
-            event.getRegistry().register(TileEntityType.Builder.of(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
-            event.getRegistry().register(TileEntityType.Builder.of(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null).setRegistryName("combustion_generator"));
-            event.getRegistry().register(TileEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
-            event.getRegistry().register(TileEntityType.Builder.of(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null).setRegistryName("air_compressor"));
-            event.getRegistry().register(TileEntityType.Builder.of(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null).setRegistryName("distillation_unit"));
-            event.getRegistry().register(TileEntityType.Builder.of(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
-            event.getRegistry().register(TileEntityType.Builder.of(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
-            event.getRegistry().register(TileEntityType.Builder.of(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
-            event.getRegistry().register(TileEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
-            event.getRegistry().register(TileEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
-            event.getRegistry().register(TileEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
-            event.getRegistry().register(TileEntityType.Builder.of(CentrifugalSeparatorTile::new,VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).build(null).setRegistryName("centrifugal_separator"));
-            event.getRegistry().register(TileEntityType.Builder.of(ImplosionCompressorTile::new,VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).build(null).setRegistryName("implosion_compressor"));
-            event.getRegistry().register(TileEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK).build(null).setRegistryName("blast_furnace"));
+            event.getRegistry().register(BlockEntityType.Builder.of(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null).setRegistryName("primitiveblastfurnace"));
+            event.getRegistry().register(BlockEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("primitivestirlinggenerator"));
+            event.getRegistry().register(BlockEntityType.Builder.of(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null).setRegistryName("crusher"));
+            event.getRegistry().register(BlockEntityType.Builder.of(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null).setRegistryName("electrolyzer"));
+            event.getRegistry().register(BlockEntityType.Builder.of(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null).setRegistryName("centrifugal_agitator"));
+            event.getRegistry().register(BlockEntityType.Builder.of(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null).setRegistryName("compressor"));
+            event.getRegistry().register(BlockEntityType.Builder.of(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null).setRegistryName("stirling_generator"));
+            event.getRegistry().register(BlockEntityType.Builder.of(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null).setRegistryName("combustion_generator"));
+            event.getRegistry().register(BlockEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null).setRegistryName("aqueoulizer"));
+            event.getRegistry().register(BlockEntityType.Builder.of(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null).setRegistryName("air_compressor"));
+            event.getRegistry().register(BlockEntityType.Builder.of(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null).setRegistryName("distillation_unit"));
+            event.getRegistry().register(BlockEntityType.Builder.of(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null).setRegistryName("pump"));
+            event.getRegistry().register(BlockEntityType.Builder.of(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null).setRegistryName("gas_fired_furnace"));
+            event.getRegistry().register(BlockEntityType.Builder.of(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null).setRegistryName("electric_furnace"));
+            event.getRegistry().register(BlockEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null).setRegistryName("battery_box"));
+            event.getRegistry().register(BlockEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null).setRegistryName("primitive_solar_panel"));
+            event.getRegistry().register(BlockEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null).setRegistryName("solar_panel"));
+            event.getRegistry().register(BlockEntityType.Builder.of(CentrifugalSeparatorTile::new,VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).build(null).setRegistryName("centrifugal_separator"));
+            event.getRegistry().register(BlockEntityType.Builder.of(ImplosionCompressorTile::new,VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).build(null).setRegistryName("implosion_compressor"));
+            event.getRegistry().register(BlockEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK).build(null).setRegistryName("blast_furnace"));
         }
 
         @SubscribeEvent
-        public static void onContainerRegistry(final RegistryEvent.Register<ContainerType<?>> event){
+        public static void onContainerRegistry(final RegistryEvent.Register<MenuType<?>> event){
 
             event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
@@ -545,7 +544,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
-            event.enqueueWork(() -> RenderTypeLookup.setRenderLayer(VEBlocks.RICE_CROP.getBlock(), RenderType.cutout()));
+            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP, RenderType.cutout()));
         }
 
     }

@@ -17,23 +17,24 @@ import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -43,7 +44,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -95,8 +96,13 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         return inventory;
     }
 
-    public DistillationUnitTile() {
-        super(VEBlocks.DISTILLATION_UNIT_TILE);
+    public DistillationUnitTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.DISTILLATION_UNIT_TILE, pos, state);
+    }
+
+    @Deprecated
+    public DistillationUnitTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.DISTILLATION_UNIT_TILE, pos, state);
     }
 
     @Override
@@ -215,16 +221,16 @@ public class DistillationUnitTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        CompoundTag energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(energyTag));
         // Tanks
-        CompoundNBT inputTank = tag.getCompound("inputTank");
-        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundTag inputTank = tag.getCompound("inputTank");
+        CompoundTag outputTank0 = tag.getCompound("outputTank0");
+        CompoundTag outputTank1 = tag.getCompound("outputTank1");
 
         this.inputTank.getTank().readFromNBT(inputTank);
         this.outputTank0.getTank().readFromNBT(outputTank0);
@@ -242,24 +248,24 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         this.o1BottomManager.read(tag, "o_1_bottom_manager");
         this.o2Manager.read(tag, "o_2_manager");
 
-        super.load(state,tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("energy", compound);
         });
 
         // Tanks
-        CompoundNBT inputNBT = new CompoundNBT();
-        CompoundNBT outputNBT0 = new CompoundNBT();
-        CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundTag inputNBT = new CompoundTag();
+        CompoundTag outputNBT0 = new CompoundTag();
+        CompoundTag outputNBT1 = new CompoundTag();
 
         this.inputTank.getTank().writeToNBT(inputNBT);
         this.outputTank0.getTank().writeToNBT(outputNBT0);
@@ -285,20 +291,20 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -325,7 +331,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1) {
-                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE,new Inventory(stack),level).orElse(null);
+                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE,new SimpleContainer(stack),level).orElse(null);
                     return recipe != null || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
                     if (stack.getItem() == Items.BUCKET) return true;
@@ -392,13 +398,13 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new DistillationUnitContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
@@ -469,7 +475,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
             final BlockState blockState = level.getBlockState(blockPos);
 
-            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.getBlock()){ // Fails multiblock condition
+            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK){ // Fails multiblock condition
                 return false;
             }
         }
@@ -565,7 +571,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

@@ -1,13 +1,11 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.*;
-import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
-import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -30,27 +28,27 @@ public class UuidPacket {
         this.connection = connection;
     }
 
-    public static UuidPacket fromBytes(PacketBuffer buffer){
+    public static UuidPacket fromBytes(FriendlyByteBuf buffer){
         UuidPacket packet = new UuidPacket();
         packet.uuid = buffer.readUUID();
         packet.connection = buffer.readBoolean();
         return packet;
     }
 
-    public void toBytes(PacketBuffer buffer){
+    public void toBytes(FriendlyByteBuf buffer){
         buffer.writeUUID(this.uuid);
         buffer.writeBoolean(this.connection);
     }
 
     public static void handle(UuidPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
+        AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
         contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
         contextSupplier.get().setPacketHandled(true);
     }
 
-    public static void handlePacket(UuidPacket packet, Container openContainer){
+    public static void handlePacket(UuidPacket packet, AbstractContainerMenu openContainer){
         if(openContainer != null){
-            TileEntity tileEntity = null;
+            BlockEntity tileEntity = null;
             if(openContainer instanceof CrusherContainer)
                 tileEntity = ((CrusherContainer) openContainer).getTileEntity();
             else if (openContainer instanceof AirCompressorContainer)
@@ -93,7 +91,7 @@ public class UuidPacket {
         }
     }
 
-    public static void interactWithTile(UuidPacket packet, TileEntity tileEntity){
+    public static void interactWithTile(UuidPacket packet, BlockEntity tileEntity){
         if (tileEntity instanceof VoluminousTileEntity){
             ((VoluminousTileEntity) tileEntity).uuidPacket(packet.uuid, packet.connection);
         }

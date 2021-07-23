@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items.microchips;
 
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class SilverMicrochip extends Item {
     public SilverMicrochip(){

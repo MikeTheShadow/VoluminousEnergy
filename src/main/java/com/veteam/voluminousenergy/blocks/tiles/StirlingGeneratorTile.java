@@ -9,30 +9,31 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class StirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class StirlingGeneratorTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
@@ -55,8 +56,13 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private ItemStackHandler inventory = this.createHandler();
 
-    public StirlingGeneratorTile(){
-        super(VEBlocks.STIRLING_GENERATOR_TILE);
+    public StirlingGeneratorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.STIRLING_GENERATOR_TILE, pos, state);
+    }
+
+    @Deprecated
+    public StirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(VEBlocks.STIRLING_GENERATOR_TILE, pos, state);
     }
 
     @Override
@@ -65,7 +71,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
-            StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
+            StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (counter > 0){
@@ -90,7 +96,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
         });
     }
 
-    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+    public static int recieveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -98,7 +104,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
@@ -114,12 +120,12 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        CompoundTag energyTag = tag.getCompound("energy");
+        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
 
         counter = tag.getInt("counter");
         length = tag.getInt("length");
@@ -127,17 +133,17 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
 
         slotManager.read(tag, "slot_manager");
 
-        super.load(state,tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("energy",compound);
         });
 
@@ -151,19 +157,19 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -178,7 +184,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
                 //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
@@ -192,7 +198,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
+                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
                 //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
@@ -225,13 +231,13 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new StirlingGeneratorContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
@@ -288,7 +294,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements ITick
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

@@ -3,15 +3,15 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.SolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.IntReferenceHolder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
@@ -22,11 +22,11 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.SOLAR_PANEL_CON
 
 public class SolarPanelContainer extends VoluminousContainer {
 
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
     private IItemHandler playerInventory;
     private SolarPanelScreen screen;
 
-    public SolarPanelContainer(int windowID, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
+    public SolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(SOLAR_PANEL_CONTAINER, windowID);
         this.tileEntity = world.getBlockEntity(pos);
         this.playerEntity = player;
@@ -34,7 +34,7 @@ public class SolarPanelContainer extends VoluminousContainer {
 
         layoutPlayerInventorySlots(8, 84);
 
-        addDataSlot(new IntReferenceHolder() {
+        addDataSlot(new DataSlot() {
             @Override
             public int get() {
                 return getEnergy();
@@ -52,8 +52,8 @@ public class SolarPanelContainer extends VoluminousContainer {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.SOLAR_PANEL_BLOCK);
+    public boolean stillValid(Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.SOLAR_PANEL_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow){
@@ -67,7 +67,7 @@ public class SolarPanelContainer extends VoluminousContainer {
     }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -104,7 +104,7 @@ public class SolarPanelContainer extends VoluminousContainer {
         return itemstack;
     }
 
-    public TileEntity getTileEntity(){
+    public BlockEntity getTileEntity(){
         return tileEntity;
     }
 

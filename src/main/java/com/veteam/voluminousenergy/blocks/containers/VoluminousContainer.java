@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
@@ -11,19 +11,19 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public class VoluminousContainer extends Container {
-    TileEntity tileEntity;
+public class VoluminousContainer extends AbstractContainerMenu {
+    BlockEntity tileEntity;
 
-    protected VoluminousContainer(@Nullable ContainerType<?> p_i50105_1_, int p_i50105_2_) {
+    protected VoluminousContainer(@Nullable MenuType<?> p_i50105_1_, int p_i50105_2_) {
         super(p_i50105_1_, p_i50105_2_);
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean stillValid(Player p_75145_1_) {
         return false;
     }
 
-    public TileEntity getTileEntity(){
+    public BlockEntity getTileEntity(){
         return tileEntity;
     }
 

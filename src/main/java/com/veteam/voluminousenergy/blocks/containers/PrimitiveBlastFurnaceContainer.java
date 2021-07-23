@@ -5,13 +5,13 @@ import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.Primit
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.PrimitiveBlastFurnaceSlots.PrimitiveBlastFurnaceOutputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveBlastFurnaceScreen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -23,11 +23,11 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST
 
 public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
 
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
     private IItemHandler playerInventory;
     private PrimitiveBlastFurnaceScreen screen;
 
-    public PrimitiveBlastFurnaceContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player) {
+    public PrimitiveBlastFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(PRIMITIVE_BLAST_FURNACE_CONTAINER, id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -43,8 +43,8 @@ public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
+    public boolean stillValid(Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -58,14 +58,14 @@ public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final PlayerEntity player, final int index) {
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.inventory.items.size();
+            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
             if (index < containerSlots) {
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;

@@ -1,19 +1,19 @@
 package com.veteam.voluminousenergy.items.tools;
 
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.LazyValue;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.LazyLoadedValue;
 
 import java.util.function.Supplier;
 
-public class VEItemTier implements IItemTier {
+public class VEItemTier implements Tier {
 
     private final int tier;
     private final int maxDurability;
     private final float speed;
     private final float damage;
     private final int enchantmentValue;
-    private final LazyValue<Ingredient> repairIngredient;
+    private final LazyLoadedValue<Ingredient> repairIngredient;
 
     VEItemTier(int tier, int maxDurability, float speed, float damage, int enchantmentValue, Supplier<Ingredient> repairIngredient) {
         this.tier = tier;
@@ -21,7 +21,7 @@ public class VEItemTier implements IItemTier {
         this.speed = speed;
         this.damage = damage;
         this.enchantmentValue = enchantmentValue;
-        this.repairIngredient = new LazyValue<>(repairIngredient);
+        this.repairIngredient = new LazyLoadedValue<>(repairIngredient);
     }
 
     @Override

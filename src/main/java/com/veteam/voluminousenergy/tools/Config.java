@@ -9,7 +9,7 @@ import net.minecraftforge.fml.config.ModConfig;
 
 import java.nio.file.Path;
 
-import static net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
@@ -73,50 +73,50 @@ public class Config {
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
     public static ForgeConfigSpec.IntValue SALTPETER_COUNT;
-    public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue SALTPETER_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue SALTPETER_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
     public static ForgeConfigSpec.IntValue SALTPETER_HARVEST_LEVEL;
     // BAUXITE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
     public static ForgeConfigSpec.IntValue BAUXITE_COUNT;
-    public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue BAUXITE_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue BAUXITE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
     public static ForgeConfigSpec.IntValue BAUXITE_HARVEST_LEVEL;
     // CINNABAR ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
     public static ForgeConfigSpec.IntValue CINNABAR_COUNT;
-    public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue CINNABAR_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue CINNABAR_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
     public static ForgeConfigSpec.IntValue CINNABAR_HARVEST_LEVEL;
     // RUTILE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
     public static ForgeConfigSpec.IntValue RUTILE_COUNT;
-    public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue RUTILE_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue RUTILE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_SIZE;
     public static ForgeConfigSpec.IntValue RUTILE_HARVEST_LEVEL;
     // GALENA ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
     public static ForgeConfigSpec.IntValue GALENA_COUNT;
-    public static ForgeConfigSpec.IntValue GALENA_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue GALENA_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue GALENA_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue GALENA_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
     // EIGHZO ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
     public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
-    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_OFFSET;
+    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue EIGHZO_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
     public static ForgeConfigSpec.IntValue EIGHZO_HARVEST_LEVEL;
 
@@ -403,9 +403,9 @@ public class Config {
             ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
                     .define("Enable Saltpeter Ore", true);
             SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
-            SALTPETER_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Bottom Offset", 55, 1, 256);
+            SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Offset", 55, 1, 256);
             SALTPETER_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Height Offset", 0, 0, 256);
-            SALTPETER_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Saltpeter Maximum Height", 256, 0, 256);
+            SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Maximum Height", 256, 0, 256);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
             SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
@@ -415,9 +415,9 @@ public class Config {
             ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
                 .define("Enable Bauxite Ore", true);
             BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
-            BAUXITE_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Bauxite Bottom Offset", 10, 1, 256);
+            BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Offset", 10, 1, 256);
             BAUXITE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Bauxite Height Offset", 0, 0, 256);
-            BAUXITE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Bauxite Maximum Height", 60, 0, 256);
+            BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Maximum Height", 60, 0, 256);
             BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
             BAUXITE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
@@ -427,9 +427,9 @@ public class Config {
             ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
                 .define("Enable Cinnabar Ore", true);
             CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
-            CINNABAR_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Cinnabar Bottom Offset", 1, 1, 256);
+            CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Offset", 1, 1, 256);
             CINNABAR_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Cinnabar Height Offset", 0, 0, 256);
-            CINNABAR_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Cinnabar Maximum Height", 256, 0, 256);
+            CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Maximum Height", 256, 0, 256);
             CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
             CINNABAR_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
@@ -439,9 +439,9 @@ public class Config {
             ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
                 .define("Enable Rutile Ore", true);
             RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
-            RUTILE_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Rutile Bottom Offset", 1, 1, 256);
+            RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Offset", 1, 1, 256);
             RUTILE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Rutile Height Offset", 0, 0, 256);
-            RUTILE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 16, 0, 256);
+            RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 16, 0, 256);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
             RUTILE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
@@ -451,9 +451,9 @@ public class Config {
             ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
                 .define("Enable Galena Ore", true);
             GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
-            GALENA_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Galena Bottom Offset", 12, 1, 256);
+            GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Offset", 12, 1, 256);
             GALENA_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Galena Height Offset", 0, 0, 256);
-            GALENA_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Galena Maximum Height", 32, 0, 256);
+            GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Maximum Height", 32, 0, 256);
             GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
             GALENA_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
@@ -464,9 +464,9 @@ public class Config {
             ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
                 .define("Enable Eighzo Ore", true);
             EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
-            EIGHZO_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Bottom Offset", 1, 1, 256);
+            EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Offset", 1, 1, 256);
             EIGHZO_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Height Offset", 0, 0, 256);
-            EIGHZO_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Eighzo Maximum Height", 36, 0, 256);
+            EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Maximum Height", 36, 0, 256);
             EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
             EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
 
@@ -690,7 +690,7 @@ public class Config {
         spec.setConfig(configData);
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent){
 
     }
@@ -698,6 +698,9 @@ public class Config {
     @SubscribeEvent
     public static void onReload(final ModConfig.Reloading configEvent){
 
-    }
+    }*/
+
+    @SubscribeEvent
+    public static void load(final ModConfig configEvent){ }
 
 }

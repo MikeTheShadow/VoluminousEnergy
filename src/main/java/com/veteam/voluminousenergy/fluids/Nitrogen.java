@@ -2,14 +2,14 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -21,7 +21,7 @@ public class Nitrogen {
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
-    public static FlowingFluidBlock NITROGEN_BLOCK;
+    public static LiquidBlock NITROGEN_BLOCK;
     public static Item NITROGEN_BUCKET;
 
     public static FlowingFluid NitrogenFluid(){
@@ -34,8 +34,8 @@ public class Nitrogen {
         return FLOWING_NITROGEN;
     }
 
-    public static FlowingFluidBlock FlowingNitrogenBlock(){
-        NITROGEN_BLOCK = new FlowingFluidBlock(() -> NITROGEN, stdProp);
+    public static LiquidBlock FlowingNitrogenBlock(){
+        NITROGEN_BLOCK = new LiquidBlock(() -> NITROGEN, stdProp);
         return NITROGEN_BLOCK;
     }
 

@@ -1,16 +1,16 @@
 package com.veteam.voluminousenergy.items.batteries;
 
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,6 +20,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class VEEnergyItem extends Item {
     private final int maxEnergy;
@@ -48,7 +50,7 @@ public class VEEnergyItem extends Item {
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundNBT nbt){
+    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundTag nbt){
         return new ICapabilityProvider() {
             @Nonnull
             @Override
@@ -62,16 +64,16 @@ public class VEEnergyItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag){
+    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
         if(CapabilityEnergy.ENERGY == null) return; // sanity check
         itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
-            ITextComponent textComponent = new StringTextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
+            Component textComponent = new TextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
             tooltip.add(textComponent);
         });
     }
 
     @Override
-    public void fillItemCategory(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
+    public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
         if (this.allowdedIn(itemGroup)){
             itemStacks.add(new ItemStack(this));
             ItemStack chargedStack = new ItemStack(this);

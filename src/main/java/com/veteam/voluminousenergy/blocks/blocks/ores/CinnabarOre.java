@@ -3,8 +3,8 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class CinnabarOre extends VEOreBlock {
     public CinnabarOre(){

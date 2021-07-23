@@ -1,15 +1,17 @@
 package com.veteam.voluminousenergy.tools.buttons;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static net.minecraft.client.Minecraft.getInstance;
+
+import net.minecraft.client.gui.components.Button.OnPress;
 
 @OnlyIn(Dist.CLIENT)
 public class ioMenuButton extends Button {
@@ -18,8 +20,8 @@ public class ioMenuButton extends Button {
     private int x;
     private int y;
 
-    public ioMenuButton(int x, int y, IPressable onPress){
-        super(x, y, 20, 18, ITextComponent.nullToEmpty(""), button -> {
+    public ioMenuButton(int x, int y, OnPress onPress){
+        super(x, y, 20, 18, Component.nullToEmpty(""), button -> {
             ((ioMenuButton) button).cycleMode();
             onPress.onPress(button);
         });
@@ -32,9 +34,9 @@ public class ioMenuButton extends Button {
     private void cycleMode(){ cycled = !cycled;}
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         Minecraft minecraft = getInstance();
-        minecraft.getTextureManager().bind(texture);
+        minecraft.getTextureManager().bindForSetup(texture);
 
         if(!isHovered){
             blit(matrixStack, this.x, this.y, 193, 0, this.width, this.height);
