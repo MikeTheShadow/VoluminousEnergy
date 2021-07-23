@@ -700,7 +700,4 @@ public class Config {
 
     }*/
 
-    @SubscribeEvent
-    public static void load(final ModConfig configEvent){ }
-
 }
