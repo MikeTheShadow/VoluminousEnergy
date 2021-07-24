@@ -1,17 +1,15 @@
 package com.veteam.voluminousenergy.tools.buttons;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static net.minecraft.client.Minecraft.getInstance;
-
-import net.minecraft.client.gui.components.Button.OnPress;
 
 @OnlyIn(Dist.CLIENT)
 public class ioMenuButton extends Button {
@@ -35,8 +33,7 @@ public class ioMenuButton extends Button {
 
     @Override
     public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
-        Minecraft minecraft = getInstance();
-        minecraft.getTextureManager().bindForSetup(texture);
+        RenderSystem.setShaderTexture(0, texture);
 
         if(!isHovered){
             blit(matrixStack, this.x, this.y, 193, 0, this.width, this.height);

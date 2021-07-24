@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
@@ -31,7 +32,7 @@ public class TankBoolButton extends VEIOButton {
     @Override
     public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+        RenderSystem.setShaderTexture(0, texture);
         enable = this.tank.getSideStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);

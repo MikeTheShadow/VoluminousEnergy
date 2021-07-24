@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
@@ -15,12 +16,11 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 
@@ -28,7 +28,6 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private static final Logger LOGGER = LogManager.getLogger();
     private boolean openedIOGui = false;
 
     public CrusherScreen(CrusherContainer screenContainer, Inventory inv, Component titleIn){
@@ -107,8 +106,9 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
 
     @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindForSetup(GUI);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -129,7 +129,7 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
         // Upgrade slot
-        this.minecraft.getTextureManager().bindForSetup(GUI_TOOLS);
+        RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 

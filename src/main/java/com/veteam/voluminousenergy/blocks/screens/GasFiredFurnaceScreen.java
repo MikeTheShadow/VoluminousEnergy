@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
@@ -17,6 +18,7 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -126,8 +128,9 @@ public class GasFiredFurnaceScreen extends AbstractContainerScreen<GasFiredFurna
 
     @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks,int mouseX,int mouseY){
-        //RenderSystem.color4f(1.0F,1.0F,1.0F,1.0F);
-        this.minecraft.getTextureManager().bindForSetup(GUI);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, this.GUI);
         int i=(this.width-this.imageWidth)/2;
         int j=(this.height-this.imageHeight)/2;
         this.blit(matrixStack,i,j,0,0,this.imageWidth,this.imageHeight);
@@ -150,7 +153,7 @@ public class GasFiredFurnaceScreen extends AbstractContainerScreen<GasFiredFurna
             VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-        this.minecraft.getTextureManager().bindForSetup(GUI_TOOLS);
+        RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 

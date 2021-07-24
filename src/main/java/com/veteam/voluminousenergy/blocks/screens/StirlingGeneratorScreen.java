@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGeneratorContainer> {
     private StirlingGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/stirling_generator.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
     public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, Inventory inv, Component titleIn){
@@ -85,8 +87,9 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
 
     @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindForSetup(GUI);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -104,6 +107,7 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
              */
             this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
+            RenderSystem.setShaderTexture(0, GUI_TOOLS);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
     }
