@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -30,7 +29,7 @@ import java.util.UUID;
 
 public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider {
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public PrimitiveSolarPanelTile(BlockPos pos, BlockState state) {
@@ -57,7 +56,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
 
     private void generateEnergy(int fe){
         if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()){
-            energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(fe)); //Amount of energy to add per tick
+            energy.ifPresent(e -> e.addEnergy(fe)); //Amount of energy to add per tick
         }
     }
 
@@ -75,7 +74,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.PRIMITIVE_SOLAR_PANEL_SEND.get(), energy.getEnergyStored());
                     int received = receiveEnergy(tileEntity, opposite, smallest);
-                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
                     }
@@ -87,20 +86,17 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
     @Override
     public void load(CompoundTag tag) {
         CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
         super.load(tag);
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        energy.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get(),Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get());
     }
 

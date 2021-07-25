@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.tools.energy;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
@@ -32,20 +31,25 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         }
     }
 
-    @Override
+    /*@Override
     public CompoundTag serializeNBT(){
         CompoundTag tag = new CompoundTag();
         tag.putInt("energy", getEnergyStored());
         return tag;
+    }*/
+
+    public void serializeNBT(CompoundTag tag) {
+        tag.putInt("energy", getEnergyStored());
+    }
+
+    public void deserializeNBT(CompoundTag tag) {
+        setEnergy(tag.getInt("energy"));
     }
 
     @Override
-    public void deserializeNBT(Tag nbt){
-        if (!(nbt instanceof IntTag intNbt)){
-            VoluminousEnergy.LOGGER.debug(nbt);
-        } else {
-            setEnergy(((IntTag) nbt).getAsInt());
-
-        }
+    public void deserializeNBT(Tag nbt) {
+        if (!(nbt instanceof IntTag intNbt))
+            throw new IllegalArgumentException("VEEnergyStorage: Cannot deserialize to an instance that isn't the default implementation!");
+        setEnergy(intNbt.getAsInt());
     }
 }

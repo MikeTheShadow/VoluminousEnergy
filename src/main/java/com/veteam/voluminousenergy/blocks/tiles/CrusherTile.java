@@ -28,12 +28,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -42,8 +39,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static net.minecraft.util.Mth.abs;
 
 public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
     public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
@@ -242,7 +237,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(3).copy()
                         )
@@ -263,9 +258,8 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     public void load(CompoundTag tag){
         CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
-        //createHandler().deserializeNBT(inv);
         CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
 
         inputSlotProp.read(tag, "input_slot");
         outputSlotProp.read(tag, "output_slot");
@@ -276,10 +270,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         inputSlotProp.write(tag, "input_slot");
         outputSlotProp.write(tag, "output_slot");
@@ -287,7 +278,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -304,7 +295,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
 
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }

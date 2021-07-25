@@ -51,7 +51,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
     private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0,1));
     private LazyOptional<IItemHandlerModifiable> gunpowderItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
     private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
     public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot");
@@ -132,7 +132,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(2).copy()
                         )
@@ -151,7 +151,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
 
         inputSlotManager.read(tag, "input_manager");
         gunpowderSlotManager.read(tag, "gunpowder_manager");
@@ -166,10 +166,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         inputSlotManager.write(tag, "input_manager");
         gunpowderSlotManager.write(tag, "gunpowder_manager");
@@ -190,7 +187,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
 
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
@@ -249,7 +246,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
         };
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.IMPLOSION_COMPRESSOR_MAX_POWER.get(), Config.IMPLOSION_COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 

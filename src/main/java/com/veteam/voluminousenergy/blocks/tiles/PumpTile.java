@@ -46,8 +46,6 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,11 +53,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class PumpTile extends VoluminousTileEntity implements MenuProvider {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
@@ -110,7 +105,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
 
     public void addFluidToTank() {
         if ((fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity) {
-            energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.PUMP_POWER_USAGE.get()));
+            energy.ifPresent(e -> e.consumeEnergy(Config.PUMP_POWER_USAGE.get()));
             fluidTank.getTank().fill(new FluidStack(this.pumpingFluid, 1000), IFluidHandler.FluidAction.EXECUTE);
         }
     }
@@ -121,7 +116,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
 
         CompoundTag airNBT = tag.getCompound("tank");
         fluidTank.getTank().readFromNBT(airNBT);
@@ -145,10 +140,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         tag.putInt("lx", lX);
         tag.putInt("ly", lY);
@@ -180,7 +172,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
@@ -259,7 +251,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 

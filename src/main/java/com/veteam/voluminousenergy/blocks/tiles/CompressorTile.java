@@ -39,8 +39,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,7 +50,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0,1));
     private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
     public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,"slot.voluminousenergy.output_slot");
@@ -60,7 +58,6 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public CompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMPRESSOR_TILE, pos, state);
@@ -129,7 +126,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(2).copy()
                         )
@@ -148,7 +145,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
 
         inputSlotManager.read(tag, "input_slot");
         outputSlotManager.read(tag, "output_slot");
@@ -162,10 +159,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         inputSlotManager.write(tag, "input_slot");
         outputSlotManager.write(tag, "output_slot");
@@ -185,7 +179,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
 
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
@@ -240,7 +234,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
         };
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.COMPRESSOR_MAX_POWER.get(), Config.COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
