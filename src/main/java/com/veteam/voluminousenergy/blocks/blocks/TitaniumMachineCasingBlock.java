@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.ToolType;
 
 public class TitaniumMachineCasingBlock extends Block {
     public TitaniumMachineCasingBlock() {
@@ -11,8 +10,8 @@ public class TitaniumMachineCasingBlock extends Block {
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(3)
+                //.harvestTool(ToolType.PICKAXE)
+                //.harvestLevel(3)
         );
         setRegistryName("titanium_machine_casing");
     }

@@ -1,13 +1,11 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.ToolType;
 
 import java.util.Random;
 
@@ -17,8 +15,8 @@ public class SaltpeterOre extends FallingBlock {
             .sound(SoundType.SAND)
             .strength(0.6f)
             .requiresCorrectToolForDrops()
-            .harvestLevel(Config.SALTPETER_HARVEST_LEVEL.get())
-            .harvestTool(ToolType.SHOVEL)
+            //.harvestLevel(Config.SALTPETER_HARVEST_LEVEL.get())
+            //.harvestTool(ToolType.SHOVEL)
         );
         setRegistryName("saltpeterore");
     }

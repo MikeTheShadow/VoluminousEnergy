@@ -4,7 +4,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.common.ToolType;
 
 public class RawBoneBlock extends Block{
     public RawBoneBlock() {
@@ -12,8 +11,8 @@ public class RawBoneBlock extends Block{
                 .sound(SoundType.BONE_BLOCK)
                 .strength(2F)
                 .requiresCorrectToolForDrops()
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(1)
+                //.harvestTool(ToolType.PICKAXE)
+                //.harvestLevel(1)
         );
         setRegistryName("raw_bone_block");
     }

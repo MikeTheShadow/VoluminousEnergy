@@ -39,7 +39,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -124,7 +123,7 @@ public class VoluminousEnergy {
 
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegisteryEvent) {
-            //LOGGER.info("Hello from Voluminous Energy's block registry!");
+            LOGGER.info("Hello from Voluminous Energy's block registry!");
             //Tile Entities
             blockRegisteryEvent.getRegistry().register(new PrimitiveBlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new PrimitiveStirlingGeneratorBlock());
@@ -190,10 +189,10 @@ public class VoluminousEnergy {
             //LOGGER.info("Hello from Voluminous Energy's item registry!");
 
             //Item Properties
-            Item.Properties properties = new Item.Properties();
-            Item.Properties shovelProperties = new Item.Properties();
-            properties.addToolType(ToolType.PICKAXE,1).tab(VESetup.itemGroup);
-            shovelProperties.addToolType(ToolType.SHOVEL,1).tab(VESetup.itemGroup);
+            Item.Properties properties = new Item.Properties().tab(VESetup.itemGroup);
+            Item.Properties shovelProperties = new Item.Properties().tab(VESetup.itemGroup);
+            //properties.addToolType(ToolType.PICKAXE,1).tab(VESetup.itemGroup);
+            //shovelProperties.addToolType(ToolType.SHOVEL,1).tab(VESetup.itemGroup);
 
             //Block Items
             //Tile Entities

@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.ToolType;
 
 public class CarbonBlock extends Block{
     public CarbonBlock() {
@@ -11,8 +10,8 @@ public class CarbonBlock extends Block{
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(0)
+                //.harvestTool(ToolType.PICKAXE)
+                //.harvestLevel(0)
         );
         setRegistryName("carbon_block");
     }

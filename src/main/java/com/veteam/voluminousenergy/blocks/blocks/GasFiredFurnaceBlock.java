@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -32,8 +30,8 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
-                .harvestLevel(Config.GAS_FIRED_FURNACE_HARVEST_LEVEL.get())
-                .harvestTool(ToolType.PICKAXE)
+                //.harvestLevel(Config.GAS_FIRED_FURNACE_HARVEST_LEVEL.get())
+                //.harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("gas_fired_furnace");
     }

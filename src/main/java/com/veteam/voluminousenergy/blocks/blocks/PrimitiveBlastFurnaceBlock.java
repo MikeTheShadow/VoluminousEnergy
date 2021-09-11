@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -31,8 +30,8 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
                     .strength(2.0f)
                     .lightLevel(l -> 0)
                     .requiresCorrectToolForDrops()
-                    .harvestLevel(1)
-                    .harvestTool(ToolType.PICKAXE)
+                    //.harvestLevel(1)
+                    //.harvestTool(ToolType.PICKAXE)
             );
         setRegistryName("primitiveblastfurnace");
     }

@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.ToolType;
 
 public class NighaliteBlock extends Block {
     public NighaliteBlock() {
@@ -11,8 +10,8 @@ public class NighaliteBlock extends Block {
                 .sound(SoundType.METAL)
                 .strength(2F)
                 .requiresCorrectToolForDrops()
-                .harvestTool(ToolType.PICKAXE)
-                .harvestLevel(4)
+                //.harvestTool(ToolType.PICKAXE)
+                //.harvestLevel(4)
         );
         setRegistryName("nighalite_block");
     }
