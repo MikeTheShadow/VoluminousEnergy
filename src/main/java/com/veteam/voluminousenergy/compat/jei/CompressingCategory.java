@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
-/*
-import com.mojang.blaze3d.matrix.MatrixStack;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
@@ -13,9 +13,10 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,8 +52,8 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.compressing").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.compressing");
     }
 
     @Override
@@ -66,7 +67,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     }
 
     @Override
-    public void draw(CompressorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CompressorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,24, 12);
         emptyArrow.draw(matrixStack,24,12);
         slotDrawable.draw(matrixStack,2,10);
@@ -116,4 +117,3 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         itemStacks.set(1, jeiStack);
     }
 }
-*/

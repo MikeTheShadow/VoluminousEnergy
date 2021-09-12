@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
-/*
-import com.mojang.blaze3d.matrix.MatrixStack;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
@@ -14,10 +14,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,8 +55,8 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.electrolyzing").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.electrolyzing");
     }
 
     @Override
@@ -69,7 +70,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public void draw(ElectrolyzerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(ElectrolyzerRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,25, 30);
         emptyArrow.draw(matrixStack,25,30);
         slotDrawable.draw(matrixStack,5,20); // Input
@@ -182,4 +183,3 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         }
     }
 }
-*/
