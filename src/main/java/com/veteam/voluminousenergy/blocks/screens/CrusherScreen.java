@@ -36,41 +36,37 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
         screenContainer.setCrusherScreen(this);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init() {
         super.init();
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos + 4, button ->{
-            // Do nothing
-        }));
-
-        // Input Slot
-        this.addButton(new SlotBoolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.topPos, button ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, button -> {
             // Do Nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.topPos, button ->{
+        // Input Slot
+        addRenderableWidget(new SlotBoolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.topPos, button ->{
+            // Do Nothing
+        }));
+
+        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.topPos, button ->{
             // Do Nothing
         }));
 
         // Output Slot
-        this.addButton(new SlotBoolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // RNG slot
-        this.addButton(new SlotBoolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
     }
@@ -94,11 +90,11 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.CRUSHER_MAX_POWER.get() + " FE"), mouseX, mouseY);
-        } /*else if (isPointInRegion(152, 4, 20, 18, mouseX, mouseY)){
+        }/* else if (isHovering(152, 4, 20, 18, mouseX, mouseY)){
             if (openedIOGui){
-                renderTooltip("Close IO Management", mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.translateString("voluminousenergy.ui.io_management.close"), mouseX, mouseY);
             } else {
-                renderTooltip("Open IO Management", mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.translateString("voluminousenergy.ui.io_management.open"), mouseX, mouseY);
             }
         }*/
         super.renderTooltip(matrixStack,mouseX, mouseY);

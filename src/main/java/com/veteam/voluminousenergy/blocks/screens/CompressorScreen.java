@@ -37,33 +37,29 @@ public class CompressorScreen extends AbstractContainerScreen<CompressorContaine
         screenContainer.setScreen(this);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Input insert
-        this.addButton(new SlotBoolButton(tileEntity.inputSlotManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.inputSlotManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.inputSlotManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSlotManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Input Extract
-        this.addButton(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
     }

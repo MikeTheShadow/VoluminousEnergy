@@ -43,69 +43,65 @@ public class ElectrolyzerScreen extends AbstractContainerScreen<ElectrolyzerCont
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Input
-        this.addButton(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Bucket Insert
-        this.addButton(new SlotBoolButton(tileEntity.bucketSm, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.bucketSm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.bucketSm, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketSm, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Output
-        this.addButton(new SlotBoolButton(tileEntity.outputSm, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.outputSm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSm, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // RNG 1
-        this.addButton(new SlotBoolButton(tileEntity.rngOneSm, (this.width/2)-198, this.topPos+60, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.rngOneSm, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.rngOneSm, (this.width/2)-184, this.topPos+60, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.rngOneSm, (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // RNG 2
-        this.addButton(new SlotBoolButton(tileEntity.rngTwoSm, (this.width/2)-198, this.topPos+80, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.rngTwoSm, (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.rngTwoSm, (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.rngTwoSm, (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
 
         // RNG 3
-        this.addButton(new SlotBoolButton(tileEntity.rngThreeSm, (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.rngThreeSm, (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.rngThreeSm, (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.rngThreeSm, (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
     }

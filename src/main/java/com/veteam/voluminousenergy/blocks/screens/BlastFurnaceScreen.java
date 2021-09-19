@@ -45,69 +45,65 @@ public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceCont
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Heat Tank Slot Top
-        this.addButton(new SlotBoolButton(tileEntity.heatTankItemTopManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.heatTankItemTopManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.heatTankItemTopManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.heatTankItemTopManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Heat Tank Slot Bottom
-        this.addButton(new SlotBoolButton(tileEntity.heatTankItemBottomManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.heatTankItemBottomManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.heatTankItemBottomManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.heatTankItemBottomManager, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // First Input Slot
-        this.addButton(new SlotBoolButton(tileEntity.firstInputSlotManager, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.firstInputSlotManager, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.firstInputSlotManager, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.firstInputSlotManager, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Second Input Slot
-        this.addButton(new SlotBoolButton(tileEntity.secondInputSlotManager, (this.width/2)-198, this.topPos+60, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.secondInputSlotManager, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.secondInputSlotManager, (this.width/2)-184, this.topPos+60, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.secondInputSlotManager, (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // Output Slot
-        this.addButton(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos+80, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
 
         // Heat Tank
-        this.addButton(new TankBoolButton(tileEntity.getHeatTank(), (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getHeatTank(), (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getHeatTank(), (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getHeatTank(), (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
     }

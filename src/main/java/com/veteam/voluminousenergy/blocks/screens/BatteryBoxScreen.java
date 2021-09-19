@@ -39,46 +39,42 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
         screenContainer.setScreen(this);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Top row
-        this.addButton(new SlotBoolButton(tileEntity.topManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.topManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.topManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.topManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Bottom Row
-        this.addButton(new SlotBoolButton(tileEntity.bottomManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.bottomManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.bottomManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.bottomManager, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Slot arrows
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { }));
 
         // Send Out Power Button
-        this.addButton(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
+        addRenderableWidget(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
     }
 
     @Override

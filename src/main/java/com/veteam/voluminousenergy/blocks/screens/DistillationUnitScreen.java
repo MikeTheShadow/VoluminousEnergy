@@ -46,105 +46,101 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
-    protected void addButton(Widget widget){
-        this.renderables.add(widget);
-    }
-
     @Override
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
 
         }));
 
         // Input Top
-        this.addButton(new SlotBoolButton(tileEntity.iTopManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.iTopManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.iTopManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.iTopManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Input Bottom
-        this.addButton(new SlotBoolButton(tileEntity.iBottomManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.iBottomManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.iBottomManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.iBottomManager, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Output 0 Top
-        this.addButton(new SlotBoolButton(tileEntity.o0TopManager, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.o0TopManager, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.o0TopManager, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.o0TopManager, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Output 0 Bottom
-        this.addButton(new SlotBoolButton(tileEntity.o0BottomManager, (this.width/2)-198, this.topPos+60, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.o0BottomManager, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.o0BottomManager, (this.width/2)-184, this.topPos+60, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.o0BottomManager, (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // Output 1 Top
-        this.addButton(new SlotBoolButton(tileEntity.o1TopManager, (this.width/2)-198, this.topPos+80, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.o1TopManager, (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.o1TopManager, (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.o1TopManager, (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
 
         // Output 1 Bottom
-        this.addButton(new SlotBoolButton(tileEntity.o1BottomManager, (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.o1BottomManager, (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.o1BottomManager, (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.o1BottomManager, (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
 
         // Output 2
-        this.addButton(new SlotBoolButton(tileEntity.o2Manager, (this.width/2)-198, this.topPos+120, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.o2Manager, (this.width/2)-198, this.topPos+120, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.o2Manager, (this.width/2)-184, this.topPos+120, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.o2Manager, (this.width/2)-184, this.topPos+120, button ->{
             // Do nothing
         }));
 
         // Input Tank
-        this.addButton(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+140, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+140, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+140, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+140, button ->{
             // Do nothing
         }));
 
         // Output Tank 0
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+160, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+160, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+160, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+160, button ->{
             // Do nothing
         }));
 
         // Output Tank 1
-        this.addButton(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.topPos+180, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.topPos+180, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.topPos+180, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.topPos+180, button ->{
             // Do nothing
         }));
     }
