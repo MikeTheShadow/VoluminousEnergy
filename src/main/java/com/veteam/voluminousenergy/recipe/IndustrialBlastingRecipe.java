@@ -5,24 +5,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -125,7 +121,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 int secondInputAmount = GsonHelper.getAsInt(secondInputJsonObject,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                Tag<Item> tag = ItemTags.bind(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"));
+                Tag<Item> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.ITEMS).getTag(rs);
+                //Tag<Item> tag = ItemTags.bind(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"));
+                //Tag<Item> tag = ItemTags.createOptional(rs);
 
                 if(tag != null){
                     recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
