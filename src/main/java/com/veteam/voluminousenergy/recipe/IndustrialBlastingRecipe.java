@@ -2,9 +2,11 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -116,7 +118,37 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 }
             }
 
-            // Second Input
+            JsonObject secondInputJsonObject = json.get("second_input").getAsJsonObject();
+
+            if(secondInputJsonObject.has("tag") && !secondInputJsonObject.has("item")){
+                ResourceLocation rs = ResourceLocation.of(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(secondInputJsonObject,"count",1);
+                recipe.secondInputAmount = secondInputAmount;
+
+                Tag<Item> tag = ItemTags.bind(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"));
+
+                if(tag != null){
+                    recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
+                    recipe.onlySecondInput.addAll(tag.getValues());
+                } else {
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe the tag is null");
+                }
+            } else if(!secondInputJsonObject.has("tag") && secondInputJsonObject.has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+                recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
+                recipe.secondInputAmount = secondInputAmount;
+
+                if(!recipe.ingredientListIncludingSeconds.contains(recipe.secondInputStack.getItem()))
+                    recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
+                if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
+                    recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe");
+            }
+
+            /* Second Input
             if(json.get("second_input").getAsJsonObject().has("tag") && !json.get("second_input").getAsJsonObject().has("item")){
                 ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_input").getAsJsonObject(),"tag","minecraft:air"),':');
                 int secondInputAmount = GsonHelper.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
@@ -140,7 +172,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
                     recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
                 if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
                     recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
-            }
+            }*/
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
