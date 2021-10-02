@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.SerializationTags;
@@ -121,9 +122,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 int secondInputAmount = GsonHelper.getAsInt(secondInputJsonObject,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                Tag<Item> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.ITEMS).getTag(rs);
-                //Tag<Item> tag = ItemTags.bind(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"));
-                //Tag<Item> tag = ItemTags.createOptional(rs);
+                Tag<Item> tag = SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, rs, (tempTag) -> {
+                    return new JsonSyntaxException("Invalid item tag for second input in the Industrial Blasting Recipe. The offending tag is: '" + tempTag + "'");
+                });
 
                 if(tag != null){
                     recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
@@ -145,32 +146,6 @@ public class IndustrialBlastingRecipe extends VERecipe {
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe");
             }
-
-            /* Second Input
-            if(json.get("second_input").getAsJsonObject().has("tag") && !json.get("second_input").getAsJsonObject().has("item")){
-                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_input").getAsJsonObject(),"tag","minecraft:air"),':');
-                int secondInputAmount = GsonHelper.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
-                recipe.secondInputAmount = secondInputAmount;
-
-                Tag<Item> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.ITEMS).getTag(secondInputResourceLocation);
-                if(tag != null){
-                    recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
-                    recipe.onlySecondInput.addAll(tag.getValues());
-                } else {
-                    VoluminousEnergy.LOGGER.debug("Tag is null!");
-                }
-
-            } else if (!json.get("second_input").getAsJsonObject().has("tag") && json.get("second_input").getAsJsonObject().has("item")) {
-                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
-                int secondInputAmount = GsonHelper.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
-                recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
-                recipe.secondInputAmount = secondInputAmount;
-
-                if(!recipe.ingredientListIncludingSeconds.contains(recipe.secondInputStack.getItem()))
-                    recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
-                if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
-                    recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
-            }*/
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
