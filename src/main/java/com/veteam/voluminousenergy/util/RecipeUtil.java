@@ -1,11 +1,16 @@
 package com.veteam.voluminousenergy.util;
 
+import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -173,5 +178,17 @@ public class RecipeUtil {
             }
         }
         return false;
+    }
+
+    public static Tag<Fluid> getTagFromResourceLocationForFluids(ResourceLocation fluidTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.FLUID_REGISTRY, fluidTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
+    }
+
+    public static Tag<Item> getTagFromResourceLocationForItems(ResourceLocation itemTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, itemTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
     }
 }

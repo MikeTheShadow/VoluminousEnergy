@@ -5,10 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.core.Registry;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -115,16 +114,14 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 }
             }
 
-            JsonObject secondInputJsonObject = json.get("second_input").getAsJsonObject();
+            JsonObject secondInput = json.get("second_input").getAsJsonObject();
 
-            if(secondInputJsonObject.has("tag") && !secondInputJsonObject.has("item")){
-                ResourceLocation rs = ResourceLocation.of(GsonHelper.getAsString(secondInputJsonObject,"tag","minecraft:air"),':');
-                int secondInputAmount = GsonHelper.getAsInt(secondInputJsonObject,"count",1);
+            if(secondInput.has("tag") && !secondInput.has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(secondInput,"tag","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                Tag<Item> tag = SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, rs, (tempTag) -> {
-                    return new JsonSyntaxException("Invalid item tag for second input in the Industrial Blasting Recipe. The offending tag is: '" + tempTag + "'");
-                });
+                Tag<Item> tag = RecipeUtil.getTagFromResourceLocationForItems(secondInputResourceLocation, "Industrial Blasting");
 
                 if(tag != null){
                     recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
@@ -133,9 +130,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                     throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe the tag is null");
                 }
-            } else if(!secondInputJsonObject.has("tag") && secondInputJsonObject.has("item")){
-                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
-                int secondInputAmount = GsonHelper.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+            } else if(!secondInput.has("tag") && secondInput.has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(secondInput,"item","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
                 recipe.secondInputAmount = secondInputAmount;
 

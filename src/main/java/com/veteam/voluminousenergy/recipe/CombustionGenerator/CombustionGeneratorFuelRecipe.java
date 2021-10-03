@@ -6,21 +6,21 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import net.minecraft.world.level.material.Fluid;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -162,34 +162,32 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 }
             }
 
-            // A tag is used instead of a manually defined fluid
-            try{
-                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    Tag<Fluid> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.FLUIDS).getTag(fluidTagLocation);
-                    if(tag != null){
-                        for(Fluid fluid : tag.getValues()){
-                            FluidStack tempStack = new FluidStack(fluid, 1000);
-                            recipe.fluidInputList.add(tempStack);
-                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                            recipe.inputArraySize = recipe.fluidInputList.size();
-                        }
-                    } else {
-                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+            JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
+
+            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
+                // A tag is used instead of a manually defined fluid
+                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
+
+                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
+                if(tag != null){
+                    for(Fluid fluid : tag.getValues()){
+                        FluidStack tempStack = new FluidStack(fluid, 1000);
+                        recipe.fluidInputList.add(tempStack);
+                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        recipe.inputArraySize = recipe.fluidInputList.size();
                     }
-
-                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
-                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
-                    recipe.fluidInputList.add(recipe.inputFluid.copy());
-                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
-                    throw new JsonSyntaxException("Invalid recipe input for a Combustible Fuel, please check usage of tag and fluid in the json file.");
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
-            } catch (Exception e){
-
+            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
+                // In here, a manually defined fluid is used instead of a tag
+                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                recipe.fluidInputList.add(recipe.inputFluid);
+                recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                recipe.inputArraySize = recipe.fluidInputList.size();
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER

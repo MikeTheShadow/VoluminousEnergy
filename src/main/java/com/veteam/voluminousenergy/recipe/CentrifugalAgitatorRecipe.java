@@ -4,19 +4,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.world.level.material.Fluid;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -157,49 +157,36 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            //recipe.inputAmount = JSONUtils.getInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
 
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            /*
-            for (ItemStack stack : recipe.ingredient.getMatchingStacks()){
-                if(!recipe.ingredientList.contains(stack.getItem())){
-                    recipe.ingredientList.add(stack.getItem());
-                }
-            }
-             */
+            JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
+            recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
 
-            int inputFluidAmount = GsonHelper.getAsInt(json.get("input_fluid").getAsJsonObject(),"amount",0);
-            recipe.inputAmount = inputFluidAmount;
+            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
+                // A tag is used instead of a manually defined fluid
+                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-            // A tag is used instead of a manually defined fluid
-            try{
-                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    Tag<Fluid> tag = SerializationTags.getInstance().getCustomTypeCollection(ForgeRegistries.FLUIDS).getTag(fluidTagLocation);
-                    if(tag != null){
-                        for(Fluid fluid : tag.getValues()){
-                            FluidStack tempStack = new FluidStack(fluid, recipe.inputAmount);
-                            recipe.fluidInputList.add(tempStack);
-                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                            recipe.inputArraySize = recipe.fluidInputList.size();
-                        }
-                    } else {
-                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
+                if(tag != null){
+                    for(Fluid fluid : tag.getValues()){
+                        FluidStack tempStack = new FluidStack(fluid, recipe.inputAmount);
+                        recipe.fluidInputList.add(tempStack);
+                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        recipe.inputArraySize = recipe.fluidInputList.size();
                     }
-
-                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
-                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
-                    recipe.fluidInputList.add(recipe.inputFluid.copy());
-                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
-                    throw new JsonSyntaxException("Invalid recipe input for the Centrifugal Agitator, please check usage of tag and fluid in the json file.");
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
-            } catch (Exception e){
-
+            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
+                // In here, a manually defined fluid is used instead of a tag
+                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                recipe.fluidInputList.add(recipe.inputFluid);
+                recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                recipe.inputArraySize = recipe.fluidInputList.size();
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
