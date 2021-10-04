@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.FumingAcidFlowingFluidBlock;
+import com.veteam.voluminousenergy.items.VENoPlaceBucket;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -40,7 +41,7 @@ public class RedFumingNitricAcid {
     }
 
     public static Item RedFumingNitricAcidBucket(){
-        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        RED_FUMING_NITRIC_ACID_BUCKET = new VENoPlaceBucket(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }
 

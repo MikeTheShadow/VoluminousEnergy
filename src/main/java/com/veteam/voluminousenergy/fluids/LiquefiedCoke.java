@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.items.VENoPlaceBucket;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -40,7 +41,7 @@ public class LiquefiedCoke {
     }
 
     public static Item LiquefiedCokeBucket(){
-        LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        LIQUEFIED_COKE_BUCKET = new VENoPlaceBucket(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIQUEFIED_COKE_BUCKET;
     }
 

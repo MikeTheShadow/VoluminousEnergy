@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
+import com.veteam.voluminousenergy.items.VENoPlaceBucket;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -41,7 +42,7 @@ public class Naphtha {
     }
 
     public static Item NaphthaBucket(){
-        NAPHTHA_BUCKET = new BucketItem(() -> NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        NAPHTHA_BUCKET = new VENoPlaceBucket(() -> NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return NAPHTHA_BUCKET;
     }
 

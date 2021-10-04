@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:lapis_ore",
+    "tag": "minecraft:lapis_ores",
     "count": 1
   },
   "process_time": 200,

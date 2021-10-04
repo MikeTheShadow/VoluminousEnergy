@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.items.VENoPlaceBucket;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -40,7 +41,7 @@ public class LightFuel {
     }
 
     public static Item LightFuelBucket(){
-        LIGHT_FUEL_BUCKET = new BucketItem(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        LIGHT_FUEL_BUCKET = new VENoPlaceBucket(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIGHT_FUEL_BUCKET;
     }
 

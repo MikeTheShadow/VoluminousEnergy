@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.AcidFlowingFluidBlock;
+import com.veteam.voluminousenergy.items.VENoPlaceBucket;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
@@ -40,7 +41,7 @@ public class SulfuricAcid {
     }
 
     public static Item SulfuricAcidBucket(){
-        SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        SULFURIC_ACID_BUCKET = new VENoPlaceBucket(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return SULFURIC_ACID_BUCKET;
     }
 

@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:diamond_ore",
+    "tag": "minecraft:diamond_ores",
     "count": 1
   },
   "process_time": 200,

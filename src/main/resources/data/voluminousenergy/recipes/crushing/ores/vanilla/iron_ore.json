@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:iron_ore",
+    "tag": "minecraft:iron_ores",
     "count": 1
   },
   "process_time": 200,

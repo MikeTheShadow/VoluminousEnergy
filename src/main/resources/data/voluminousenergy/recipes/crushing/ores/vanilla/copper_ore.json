@@ -1,13 +1,13 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "minecraft:emerald_ores",
+    "tag": "minecraft:copper_ores",
     "count": 1
   },
   "process_time": 200,
   "result": {
-    "item": "minecraft:emerald",
-    "count": 1
+    "item": "minecraft:copper_ingot",
+    "count": 2
   },
   "rng": {
     "item": "minecraft:air",

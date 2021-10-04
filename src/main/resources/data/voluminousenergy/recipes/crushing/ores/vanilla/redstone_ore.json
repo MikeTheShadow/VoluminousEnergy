@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:redstone_ore",
+    "tag": "minecraft:redstone_ores",
     "count": 1
   },
   "process_time": 200,
