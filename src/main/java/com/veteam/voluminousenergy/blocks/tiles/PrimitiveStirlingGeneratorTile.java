@@ -224,20 +224,14 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
+        if (counter != 0 && length != 0) return (int)(100-(((float)counter/(float)length)*100));
+        return 0;
     }
 
 

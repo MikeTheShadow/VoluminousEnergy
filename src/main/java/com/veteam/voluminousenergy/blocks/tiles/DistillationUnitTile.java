@@ -226,6 +226,9 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
+
         // Tanks
         CompoundTag inputTank = tag.getCompound("inputTank");
         CompoundTag outputTank0 = tag.getCompound("outputTank0");
@@ -257,6 +260,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         // Tanks
         CompoundTag inputNBT = new CompoundTag();
@@ -405,11 +410,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     }
 
     public int progressCounterPX(int px) {
-        if (counter == 0) {
-            return 0;
-        } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
-        }
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public FluidStack getFluidStackFromTank(int num){

@@ -121,6 +121,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
         CompoundTag inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         this.inputSm.read(tag, "input_gui");
         this.outputSm.read(tag,"output_gui");
@@ -134,6 +136,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
             CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("inv",compound);
         });
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         this.inputSm.write(tag, "input_gui");
         this.outputSm.write(tag,"output_gui");
@@ -234,23 +238,12 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
         return new PrimitiveBlastFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
-    public int counter(){
-        return counter;
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
-    public int progressCounter(){
-        return 100-((counter*100)/length);
-    }
-
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
-    }
-
-    public int getCounter(){return counter;}
+    public int getCounter(){ return counter; }
 
     public int progressCounterPercent(){
         if (length != 0){

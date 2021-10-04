@@ -164,6 +164,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuPro
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         inputSlotManager.read(tag, "input_slot_manager");
         outputSlotManager.read(tag, "output_slot_manager");
@@ -177,6 +179,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuPro
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         inputSlotManager.write(tag, "input_slot_manager");
         outputSlotManager.write(tag, "output_slot_manager");
@@ -323,12 +327,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuPro
         return new ElectricFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public int progressCounterPercent(){

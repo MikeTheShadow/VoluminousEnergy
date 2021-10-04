@@ -297,6 +297,8 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         //createHandler().deserializeNBT(inv);
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         inputSm.read(tag, "input_manager");
         bucketSm.read(tag, "bucket_manager");
@@ -315,6 +317,8 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
             tag.put("inv", compound);
         });
         energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         inputSm.write(tag, "input_manager");
         bucketSm.write(tag, "bucket_manager");
@@ -463,12 +467,9 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
         return new CentrifugalSeparatorContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public void updatePacketFromGui(boolean status, int slotId){

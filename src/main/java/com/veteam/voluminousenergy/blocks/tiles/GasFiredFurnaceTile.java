@@ -398,11 +398,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     public int progressCounterPX(int px) {
-        if (counter == 0) {
-            return 0;
-        } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
-        }
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public int progressFuelCounterPX(int px) {

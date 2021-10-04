@@ -154,7 +154,6 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         }
     };
 
-    //public static void serverTick(Level p_155014_, BlockPos p_155015_, BlockState p_155016_, CrusherTile crusherTile){
     @Override
     public void tick(){
 
@@ -197,10 +196,9 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
                         // Generate Random floats
                         Random r = new Random();
                         float random = abs(0 + r.nextFloat() * (0 - 1));
-                        //LOGGER.debug("Random: " + random);
+
                         // ONLY manipulate the slot if the random float is under or is identical to the chance float
                         if(random <= recipe.getChance()){
-                            //LOGGER.debug("Chance HIT!");
                             if (rng.getItem() != recipe.getRngItem().getItem()){
                                 if (rng.getItem() == Items.AIR){
                                     rng.setCount(1);
@@ -259,6 +257,8 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         inputSlotProp.read(tag, "input_slot");
         outputSlotProp.read(tag, "output_slot");
@@ -270,6 +270,8 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     public CompoundTag save(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         inputSlotProp.write(tag, "input_slot");
         outputSlotProp.write(tag, "output_slot");
@@ -337,12 +339,9 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         return new CrusherContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public void updatePacketFromGui(boolean status, int slotId){
