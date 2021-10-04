@@ -123,8 +123,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     public void load(CompoundTag tag) {
         CompoundTag invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(invTag));
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
         slotManager.read(tag, "slot_manager");
         super.load(tag);
     }

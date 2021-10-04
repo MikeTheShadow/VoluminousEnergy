@@ -246,8 +246,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
         CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         doDischargeInstead[0] = tag.getBoolean("slot_pair_mode_0");
         doDischargeInstead[1] = tag.getBoolean("slot_pair_mode_1");

@@ -163,8 +163,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuPro
         CompoundTag inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         inputSlotManager.read(tag, "input_slot_manager");
         outputSlotManager.read(tag, "output_slot_manager");

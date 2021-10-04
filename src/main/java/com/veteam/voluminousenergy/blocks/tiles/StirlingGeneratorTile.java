@@ -124,8 +124,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements MenuP
         CompoundTag inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         counter = tag.getInt("counter");
         length = tag.getInt("length");

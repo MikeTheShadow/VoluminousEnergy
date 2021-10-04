@@ -258,8 +258,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     public void load(CompoundTag tag){
         CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         inputSlotProp.read(tag, "input_slot");
         outputSlotProp.read(tag, "output_slot");

@@ -167,8 +167,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
     public void load(CompoundTag tag){
         CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         fluid.ifPresent(f -> {
             CompoundTag airNBT = tag.getCompound("air_tank");

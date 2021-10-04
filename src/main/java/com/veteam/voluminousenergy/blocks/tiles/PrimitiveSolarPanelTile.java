@@ -85,8 +85,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
 
     @Override
     public void load(CompoundTag tag) {
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
         super.load(tag);
     }
 

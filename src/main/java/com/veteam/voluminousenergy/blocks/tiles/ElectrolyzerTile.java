@@ -300,8 +300,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
         CompoundTag inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         //createHandler().deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         inputSm.read(tag, "input_manager");
         bucketSm.read(tag, "bucket_manager");

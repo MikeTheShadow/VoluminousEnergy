@@ -183,8 +183,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         CompoundTag inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundTag energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> h.deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         // Tanks
         CompoundTag inputTank = tag.getCompound("inputTank");
