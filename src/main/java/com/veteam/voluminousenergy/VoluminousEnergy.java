@@ -557,10 +557,8 @@ public class VoluminousEnergy {
         public static void onGatherData(GatherDataEvent event){
             DataGenerator dataGenerator = event.getGenerator();
 
-            if(event.includeServer()){
+            if(event.includeServer()) {
                 dataGenerator.addProvider(new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
-            } else {
-                System.out.println("Event doesn't include server ");
             }
         }
     }

@@ -32,7 +32,6 @@ public class VETagDataGenerator extends BlockTagsProvider {
 
     @Override
     protected void addTags(){
-
         // Setup Forge tags
         final Tags.IOptionalNamedTag<Block> NEEDS_WOOD_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_wood_tool"));
         final Tags.IOptionalNamedTag<Block> NEEDS_NETHERITE_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_netherite_tool"));

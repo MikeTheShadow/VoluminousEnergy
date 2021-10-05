@@ -407,7 +407,7 @@ public class Config {
             SALTPETER_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Height Offset", 0, 0, 256);
             SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Maximum Height", 256, 0, 256);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
-            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
