@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:rutileore"
+    "voluminousenergy:blast_furnace",
+    "voluminousenergy:rutileore",
+    "voluminousenergy:titanium_machine_casing"
   ]
 }

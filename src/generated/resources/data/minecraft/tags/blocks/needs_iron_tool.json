@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "voluminousenergy:implosion_compressor",
     "voluminousenergy:cinnabarore",
     "voluminousenergy:galena_ore"
   ]

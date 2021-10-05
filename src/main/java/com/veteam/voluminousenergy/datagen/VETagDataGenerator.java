@@ -35,6 +35,9 @@ public class VETagDataGenerator extends BlockTagsProvider {
         // Setup Forge tags
         final Tags.IOptionalNamedTag<Block> NEEDS_WOOD_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_wood_tool"));
         final Tags.IOptionalNamedTag<Block> NEEDS_NETHERITE_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_netherite_tool"));
+        final Tags.IOptionalNamedTag<Block> NEEDS_NIGHALITE_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"));
+        final Tags.IOptionalNamedTag<Block> NEEDS_EIGHZO_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"));
+        final Tags.IOptionalNamedTag<Block> NEEDS_SOLARIUM_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
 
         // To Mine With Tool
         mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(toMineWithAxe));
@@ -47,6 +50,9 @@ public class VETagDataGenerator extends BlockTagsProvider {
         requiresIron.forEach(needsIron -> tag(BlockTags.NEEDS_IRON_TOOL).add(needsIron));
         requiresDiamond.forEach(needsDiamond -> tag(BlockTags.NEEDS_DIAMOND_TOOL).add(needsDiamond));
         requiresNetherite.forEach(needsNetherite -> tag(NEEDS_NETHERITE_TOOL).add(needsNetherite));
+        requiresNighalite.forEach(needsNighalite -> tag(NEEDS_NIGHALITE_TOOL).add(needsNighalite));
+        requiresEighzo.forEach(needsEighzo -> tag(NEEDS_EIGHZO_TOOL).add(needsEighzo));
+        requiresSolarium.forEach(needsSolarium -> tag(NEEDS_SOLARIUM_TOOL).add(needsSolarium));
     }
 
     public static void addTierBasedOnInt(int tier, Block block){

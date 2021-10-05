@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.SolarPanelTile;
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -28,10 +30,10 @@ public class SolarPanelBlock extends FaceableBlock implements EntityBlock {
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
-                //.harvestLevel(Config.SOLAR_PANEL_HARVEST_LEVEL.get())
-                //.harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("solar_panel");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.SOLAR_PANEL_HARVEST_LEVEL.get(), this);
     }
 
     @Nullable

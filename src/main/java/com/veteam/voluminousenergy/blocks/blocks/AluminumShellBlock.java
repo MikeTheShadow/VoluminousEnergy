@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
@@ -10,9 +11,9 @@ public class AluminumShellBlock extends Block {
             .sound(SoundType.METAL)
             .strength(2.0f)
             .requiresCorrectToolForDrops()
-            //.harvestTool(ToolType.PICKAXE)
-            //.harvestLevel(1)
         );
         setRegistryName("aluminum_shell");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 }

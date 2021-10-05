@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -30,10 +32,10 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
                     .strength(2.0f)
                     .lightLevel(l -> 0)
                     .requiresCorrectToolForDrops()
-                    //.harvestLevel(1)
-                    //.harvestTool(ToolType.PICKAXE)
             );
         setRegistryName("primitiveblastfurnace");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 
     @Nullable
