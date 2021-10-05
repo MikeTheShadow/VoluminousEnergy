@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
@@ -11,15 +13,14 @@ public class BauxiteOre extends VEOreBlock {
             .sound(SoundType.STONE)
             .strength(2.0f)
             .requiresCorrectToolForDrops()
-            //.harvestLevel(Config.BAUXITE_HARVEST_LEVEL.get())
-            //.harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("bauxiteore");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.BAUXITE_HARVEST_LEVEL.get(), this);
     }
 
     @Override
     protected int xpOnDrop(Random rand) {
         return 0;
     }
-
 }
