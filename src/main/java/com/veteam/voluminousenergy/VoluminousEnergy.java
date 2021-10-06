@@ -39,7 +39,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -192,9 +191,7 @@ public class VoluminousEnergy {
 
             //Item Properties
             Item.Properties properties = new Item.Properties();
-            Item.Properties shovelProperties = new Item.Properties();
-            properties.addToolType(ToolType.PICKAXE,1).tab(VESetup.itemGroup);
-            shovelProperties.addToolType(ToolType.SHOVEL,1).tab(VESetup.itemGroup);
+            properties.tab(VESetup.itemGroup);
 
             //Block Items
             //Tile Entities
@@ -225,7 +222,7 @@ public class VoluminousEnergy {
 
             //True Blocks
             //Ores
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,properties).setRegistryName("saltpeterore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
