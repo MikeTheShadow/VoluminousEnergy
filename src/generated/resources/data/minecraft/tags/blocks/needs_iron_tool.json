@@ -3,6 +3,8 @@
   "values": [
     "voluminousenergy:implosion_compressor",
     "voluminousenergy:cinnabarore",
-    "voluminousenergy:galena_ore"
+    "voluminousenergy:galena_ore",
+    "voluminousenergy:raw_cinnabar_block",
+    "voluminousenergy:raw_galena_block"
   ]
 }

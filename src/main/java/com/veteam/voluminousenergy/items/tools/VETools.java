@@ -66,29 +66,29 @@ public class VETools {
     public static final Tier TUNGSTEN_STEEL = TierSortingRegistry.registerTier(
             new ForgeTier(5, 2933, 11.0F, 5.0F, 18, TUNGSTEN_STEEL_TIER_TAG, () -> Ingredient.of(VEItems.TUNGSTEN_STEEL_INGOT)), // Actual tier
             new ResourceLocation(VoluminousEnergy.MODID, "needs_tungsten_steel_tool"), // Resource Location
-            List.of(), // After tier
-            List.of(Tiers.NETHERITE)); // Before tier
+            List.of(Tiers.NETHERITE), // After tier
+            List.of()); // Before tier
 
     public static final Tag.Named<Block> NIGHALITE_TIER_TAG = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID,"needs_nighalite_tool"));
     public static final Tier NIGHALITE = TierSortingRegistry.registerTier(
             new ForgeTier(5, 2434, 13F, 4.6F, 18, NIGHALITE_TIER_TAG, () -> Ingredient.of(VEItems.NIGHALITE_INGOT)), // Actual tier
             new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"), // Resource Location
-            List.of(), // After tier
-            List.of(Tiers.NETHERITE)); // Before tier
+            List.of(Tiers.NETHERITE), // After tier
+            List.of()); // Before tier
 
     public static final Tag.Named<Block> EIGHZO_TIER_TAG = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID,"needs_eighzo_tool"));
     public static final Tier EIGHZO = TierSortingRegistry.registerTier(
             new ForgeTier(6, 7125, 17F, 6.5F, 18, EIGHZO_TIER_TAG, () -> Ingredient.of(VEItems.EIGHZO_INGOT)), // Actual tier
             new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"), // Resource Location
-            List.of(), // After tier
-            List.of(Tiers.NETHERITE)); // Before tier
+            List.of(NIGHALITE), // After tier
+            List.of()); // Before tier
 
     public static final Tag.Named<Block> SOLARIUM_TIER_TAG = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID,"needs_solarium_tool"));
     public static final Tier SOLARIUM = TierSortingRegistry.registerTier(
             new ForgeTier(7, 17_815/*25_912*/, 20F, 8F, 22, SOLARIUM_TIER_TAG, () -> Ingredient.of(VEItems.SOLARIUM_INGOT)), // Actual tier
             new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"), // Resource Location
-            List.of(), // After tier
-            List.of(EIGHZO)); // Before tier
+            List.of(EIGHZO), // After tier
+            List.of()); // Before tier
 
     /* TOOLS */
     public static final Item.Properties CARBON_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(CARBON.getUses());
