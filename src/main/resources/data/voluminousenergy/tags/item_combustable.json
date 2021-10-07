@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#voluminousenergy:item_combustable/coal",
-    "#voluminousenergy:item_combustable/coalcoke",
-    "#voluminousenergy:item_combustable/petcoke"
-  ]
-}

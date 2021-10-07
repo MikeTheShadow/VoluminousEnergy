@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:sweet_berries",
+    "tag": "forge:berries",
     "count": 1
   },
   "process_time": 200,
