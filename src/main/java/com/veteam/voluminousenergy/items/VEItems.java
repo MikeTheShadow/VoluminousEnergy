@@ -62,6 +62,9 @@ public class VEItems {
     public static TungstenDust TUNGSTEN_DUST = new TungstenDust();
     public static EighzoDust EIGHZO_DUST = new EighzoDust();
     public static SolariumDust SOLARIUM_DUST = new SolariumDust();
+    public static CopperDust COPPER_DUST = new CopperDust();
+    public static CopperCarbonateDust COPPER_CARBONATE_DUST = new CopperCarbonateDust();
+    public static CupricOxideDust CUPRIC_OXIDE_DUST = new CupricOxideDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();

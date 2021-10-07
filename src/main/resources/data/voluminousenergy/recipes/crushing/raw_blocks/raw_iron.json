@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:raw_iron_block",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:iron_dust",
+    "count": 18
+  },
+  "rng": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

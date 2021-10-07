@@ -193,9 +193,6 @@ public class VoluminousEnergy {
 
             //Item Properties
             Item.Properties properties = new Item.Properties().tab(VESetup.itemGroup);
-            Item.Properties shovelProperties = new Item.Properties().tab(VESetup.itemGroup);
-            //properties.addToolType(ToolType.PICKAXE,1).tab(VESetup.itemGroup);
-            //shovelProperties.addToolType(ToolType.SHOVEL,1).tab(VESetup.itemGroup);
 
             //Block Items
             //Tile Entities
@@ -226,7 +223,7 @@ public class VoluminousEnergy {
 
             //True Blocks
             //Ores
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,shovelProperties).setRegistryName("saltpeterore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SALTPETER_ORE,properties).setRegistryName("saltpeterore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BAUXITE_ORE,properties).setRegistryName("bauxiteore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CINNABAR_ORE,properties).setRegistryName("cinnabarore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
@@ -239,18 +236,18 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK, properties).setRegistryName("aluminum_machine_casing"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK, properties).setRegistryName("titanium_machine_casing"));
 
-            /* Raw Material Storage Blocks
+            // Raw Material Storage Blocks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BAUXITE_BLOCK, properties).setRegistryName("raw_bauxite_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_CINNABAR_BLOCK, properties).setRegistryName("raw_cinnabar_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_EIGHZO_BLOCK, properties).setRegistryName("raw_eighzo_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_GALENA_BLOCK, properties).setRegistryName("raw_galena_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_RUTILE_BLOCK, properties).setRegistryName("raw_rutile_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BONE_BLOCK, properties).setRegistryName("raw_bone_block"));
-            */
+
 
             // Material Storage Blocks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
-            /*itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_BLOCK,properties).setRegistryName("aluminum_block"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_BLOCK,properties).setRegistryName("aluminum_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_BLOCK,properties).setRegistryName("carbon_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_BLOCK,properties).setRegistryName("eighzo_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.NIGHALITE_BLOCK,properties).setRegistryName("nighalite_block"));
@@ -258,7 +255,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_BLOCK,properties).setRegistryName("titanium_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TUNGSTEN_BLOCK,properties).setRegistryName("tungsten_block"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TUNGSTEN_STEEL_BLOCK,properties).setRegistryName("tungsten_steel_block"));
-            */
+
             //True Items
             itemRegisteryEvent.getRegistry().register(VEItems.PETCOKE);
             itemRegisteryEvent.getRegistry().register(VEItems.COALCOKE);
@@ -295,6 +292,9 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.TUNGSTEN_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.EIGHZO_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SOLARIUM_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.COPPER_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.COPPER_CARBONATE_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.CUPRIC_OXIDE_DUST);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);
