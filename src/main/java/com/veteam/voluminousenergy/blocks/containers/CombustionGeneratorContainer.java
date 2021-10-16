@@ -28,6 +28,7 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private CombustionGeneratorScreen screen;
+    private static final int numberOfSlots = 4;
 
     public CombustionGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(COMBUSTION_GENERATOR_CONTAINER,id);
@@ -90,7 +91,7 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
+            final int containerSlots = numberOfSlots;
             if (index < containerSlots) {
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;

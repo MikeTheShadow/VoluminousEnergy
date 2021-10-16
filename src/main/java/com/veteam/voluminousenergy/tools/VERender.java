@@ -34,7 +34,7 @@ public class VERender {
         // Originally Adapted from Ender IO by Silent's Mechanisms
         int amount;
         try{
-            if (stack.getFluid() == null) {
+            if (stack.getFluid() == null || stack.isEmpty()) {
                 return;
             }
         } catch (Exception e){

@@ -5,7 +5,9 @@ import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.Crushe
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -30,6 +32,7 @@ public class CrusherContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private CrusherScreen crusherScreen;
+    private static final int numberOfSlots = 4;
 
     public CrusherContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(CRUSHER_CONTAINER,id);
@@ -38,12 +41,14 @@ public class CrusherContainer extends VoluminousContainer {
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
-            addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
-            addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
-            addSlot(new VEInsertSlot(h, 3,154, -14));//Upgrade Slot
-        });
+        if(this.tileEntity != null){
+            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+                addSlot(new CrusherInputSlot(h, 0, 80, 13, world));
+                addSlot(new VEOutputSlot(h, 1,71,58));//Main Output
+                addSlot(new VEOutputSlot(h, 2, 89,58));//RNG Slot
+                addSlot(new VEInsertSlot(h, 3,154, -14));//Upgrade Slot
+            });
+        }
         layoutPlayerInventorySlots(8, 84);
 
         addDataSlot(new DataSlot() {
@@ -89,26 +94,37 @@ public class CrusherContainer extends VoluminousContainer {
     public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
+
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
-            if (index < containerSlots) {
+            final int containerSlots =  numberOfSlots;
+
+            if (index < containerSlots) { // Container --> Inventory
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
+            } else { // Inventory --> Container
+                if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 3, 4, false)) {
+                    return ItemStack.EMPTY;
+                }
+
+                if (!moveItemStackTo(slotStack, 0, 1, false)){
+                    return ItemStack.EMPTY;
+                }
             }
-            if (slotStack.getCount() == 0) {
+
+            if (slotStack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(player, slotStack);
         }
         return returnStack;

@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.AirCompressorScreen;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +31,7 @@ public class AirCompressorContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     protected AirCompressorScreen airCompressorScreen;
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final int numberOfSlots = 2;
 
     public AirCompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(AIR_COMPRESSOR_CONTAINER,id);
@@ -92,22 +93,32 @@ public class AirCompressorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
-            if (index < containerSlots) {
+            final int containerSlots = numberOfSlots;
+
+            if (index < containerSlots) { // Container --> Inventory
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
+            } else { // Inventory --> Container
+                if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 1, 2, false)) {
+                    return ItemStack.EMPTY;
+                }
+
+                if (!moveItemStackTo(slotStack, 0, 1, false)){
+                    return ItemStack.EMPTY;
+                }
             }
+
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(player, slotStack);
         }
         return returnStack;

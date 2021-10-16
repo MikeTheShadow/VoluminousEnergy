@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +31,7 @@ public class AqueoulizerContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private AqueoulizerScreen screen;
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final int numberOfSlots = 5;
 
     public AqueoulizerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(AQUEOULIZER_CONTAINER, id);
@@ -91,26 +92,37 @@ public class AqueoulizerContainer extends VoluminousContainer {
     public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
+
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
-            if (index < containerSlots) {
+            final int containerSlots = numberOfSlots;
+
+            if (index < containerSlots) { // Container --> Inventory
                 if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
+            } else { // Inventory --> Container
+                if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 3, 4, false)) {
+                    return ItemStack.EMPTY;
+                }
+
+                if (!moveItemStackTo(slotStack, 0, 3, false)){
+                    return ItemStack.EMPTY;
+                }
             }
+
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(player, slotStack);
         }
         return returnStack;
