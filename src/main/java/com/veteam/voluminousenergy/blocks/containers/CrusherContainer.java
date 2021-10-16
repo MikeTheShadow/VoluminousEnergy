@@ -5,22 +5,19 @@ import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.Crushe
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -99,21 +96,7 @@ public class CrusherContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots =  numberOfSlots;
-
-            if (index < containerSlots) { // Container --> Inventory
-                if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else { // Inventory --> Container
-                if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 3, 4, false)) {
-                    return ItemStack.EMPTY;
-                }
-
-                if (!moveItemStackTo(slotStack, 0, 1, false)){
-                    return ItemStack.EMPTY;
-                }
-            }
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 3, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);

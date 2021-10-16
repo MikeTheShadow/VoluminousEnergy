@@ -4,19 +4,18 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -26,6 +25,7 @@ public class BatteryBoxContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private BatteryBoxScreen screen;
+    private static final int numberOfSlots = 12;
 
     public BatteryBoxContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.BATTERY_BOX_CONTAINER,id);
@@ -96,26 +96,23 @@ public class BatteryBoxContainer extends VoluminousContainer {
     public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
+
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
-            if (index < containerSlots) {
-                if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
+            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(player, slotStack);
         }
         return returnStack;

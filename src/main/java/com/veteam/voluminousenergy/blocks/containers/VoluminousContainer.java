@@ -1,8 +1,10 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
+import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -53,5 +55,33 @@ public class VoluminousContainer extends AbstractContainerMenu {
         int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
         int ret = (((stored*100/max*100)/100)*px)/100;
         return ret;
+    }
+
+    public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack){
+        if (index < containerSlots) { // Container --> Inventory
+            if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
+                return ItemStack.EMPTY;
+            }
+        } else { // Inventory --> Container
+            if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (!slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
+                return ItemStack.EMPTY;
+            }
+        }
+        return null;
+    }
+
+    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack){
+        if (index < containerSlots) {
+            if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
+            return ItemStack.EMPTY;
+        }
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.GasFiredFurnaceScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -28,6 +29,7 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private GasFiredFurnaceScreen screen;
+    private static final int numberOfSlots = 5;
 
     public GasFiredFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(GAS_FIRED_FURNACE_CONTAINER,id);
@@ -37,8 +39,8 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 8, 18)); // Fluid input slot
-            addSlot(new VEInsertSlot(h, 1,8,49)); // Extract fluid from input
+            addSlot(new VEBucketSlot(h, 0, 8, 18)); // Fluid input slot
+            addSlot(new VEBucketSlot(h, 1,8,49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 53,33)); // Item input slot
             addSlot(new VEInsertSlot(h, 3, 116,33)); // Item output slot
             addSlot(new VEInsertSlot(h, 4,154, -14)); // Upgrade slot
@@ -85,14 +87,8 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.containerMenu.getItems().size();
-            if (index < containerSlots) {
-                if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 4, slotStack) != null) return ItemStack.EMPTY;
+
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {

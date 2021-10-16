@@ -3,19 +3,18 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveSolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER;
@@ -29,7 +28,6 @@ public class PrimitiveSolarPanelContainer extends VoluminousContainer {
     public PrimitiveSolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_SOLAR_PANEL_CONTAINER, windowID);
         this.tileEntity = world.getBlockEntity(pos);
-        //this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
