@@ -250,6 +250,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         this.o1BottomManager.read(tag, "o_1_bottom_manager");
         this.o2Manager.read(tag, "o_2_manager");
 
+        this.validity = tag.getBoolean("validity");
+
         super.load(tag);
     }
 
@@ -287,6 +289,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         this.o1TopManager.write(tag, "o_1_top_manager");
         this.o1BottomManager.write(tag, "o_1_bottom_manager");
         this.o2Manager.write(tag, "o_2_manager");
+
+        tag.putBoolean("validity", this.validity);
 
         return super.save(tag);
     }

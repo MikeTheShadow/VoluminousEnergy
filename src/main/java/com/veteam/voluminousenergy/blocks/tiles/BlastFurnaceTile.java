@@ -208,6 +208,8 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         this.secondInputSlotManager.read(tag, "second_input_manager");
         this.outputSlotManager.read(tag, "output_manager");
 
+        this.validity = tag.getBoolean("validity");
+
         super.load(tag);
     }
 
@@ -236,6 +238,8 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         this.firstInputSlotManager.write(tag, "first_input_manager");
         this.secondInputSlotManager.write(tag, "second_input_manager");
         this.outputSlotManager.write(tag, "output_manager");
+
+        tag.putBoolean("validity", this.validity);
 
         return super.save(tag);
     }
