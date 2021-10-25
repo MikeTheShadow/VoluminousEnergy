@@ -13,19 +13,12 @@
               "source": "block_entity"
             }
           ],
-          "name": "voluminousenergy:rice_grain"
+          "name": "voluminousenergy:raw_rutile_block"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:survives_explosion"
-        },
-        {
-          "condition": "minecraft:block_state_property",
-          "block": "voluminousenergy:rice_crop",
-          "properties": {
-            "half": "upper"
-          }
         }
       ]
     }

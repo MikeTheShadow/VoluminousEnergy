@@ -63,6 +63,11 @@
     "block.voluminousenergy.rice_crop": "Rice",
     "block.voluminousenergy.solarium_block": "Block of Solarium",
     "block.voluminousenergy.eighzo_ore": "Eighzo Ore",
+    "block.voluminousenergy.raw_bauxite_block": "Raw Bauxite Block",
+    "block.voluminousenergy.raw_cinnabar_block": "Raw Cinnabar Block",
+    "block.voluminousenergy.raw_eighzo_block": "Raw Eighzo Block",
+    "block.voluminousenergy.raw_galena_block": "Raw Galena Block",
+    "block.voluminousenergy.raw_rutile_block": "Raw Rutile Block",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",
