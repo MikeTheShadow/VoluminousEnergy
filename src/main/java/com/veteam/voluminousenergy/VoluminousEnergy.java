@@ -11,6 +11,8 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBits;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -20,6 +22,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.biomes.RedDesert;
+import com.veteam.voluminousenergy.world.biomes.ShallowWarmOcean;
 import com.veteam.voluminousenergy.world.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
@@ -397,6 +400,10 @@ public class VoluminousEnergy {
             // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
 
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_MULTITOOL);
         }
 
         @SubscribeEvent
@@ -531,6 +538,7 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
             VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
+            VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
         }
 
         @SubscribeEvent
