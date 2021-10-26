@@ -45,7 +45,7 @@ import java.util.UUID;
 public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
 
@@ -115,8 +115,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
         slotManager.read(tag, "slot_manager");
         super.load(state, tag);
     }
@@ -127,10 +126,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
         slotManager.write(tag, "slot_manager");
         return super.save(tag);
     }
@@ -190,7 +186,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         };
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get());
     }
 

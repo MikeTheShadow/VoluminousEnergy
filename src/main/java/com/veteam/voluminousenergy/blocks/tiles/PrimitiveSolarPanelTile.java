@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class PrimitiveSolarPanelTile extends VESolarTile implements ITickableTileEntity, INamedContainerProvider {
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public PrimitiveSolarPanelTile() { super(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE); }
@@ -67,7 +67,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements ITickableTil
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.PRIMITIVE_SOLAR_PANEL_SEND.get(), energy.getEnergyStored());
                     int received = receiveEnergy(tileEntity, opposite, smallest);
-                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
                     }
@@ -78,21 +78,17 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements ITickableTil
 
     @Override
     public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
         super.load(state, tag);
     }
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get(),Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get());
     }
 

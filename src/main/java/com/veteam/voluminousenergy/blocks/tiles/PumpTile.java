@@ -45,8 +45,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,11 +52,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class PumpTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
+    
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
@@ -114,8 +110,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         CompoundNBT airNBT = tag.getCompound("tank");
         fluidTank.getTank().readFromNBT(airNBT);
@@ -139,10 +134,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         tag.putInt("lx", lX);
         tag.putInt("ly", lY);
@@ -253,7 +245,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 

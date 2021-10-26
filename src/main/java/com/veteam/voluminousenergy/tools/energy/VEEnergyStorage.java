@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools.energy;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
@@ -29,6 +30,10 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<C
         }
     }
 
+    public void serializeNBT(CompoundNBT tag) {
+        tag.putInt("energy", getEnergyStored());
+    }
+
     @Override
     public CompoundNBT serializeNBT(){
         CompoundNBT tag = new CompoundNBT();
@@ -37,7 +42,7 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<C
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt){
-        setEnergy(nbt.getInt("energy"));
+    public void deserializeNBT(CompoundNBT tag) {
+        setEnergy(tag.getInt("energy"));
     }
 }

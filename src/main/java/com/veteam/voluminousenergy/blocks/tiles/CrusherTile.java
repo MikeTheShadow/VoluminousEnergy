@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static net.minecraft.util.math.MathHelper.abs;
 
 public class CrusherTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
     public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
@@ -256,9 +256,9 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     public void load(BlockState state, CompoundNBT tag){
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
-        //createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         inputSlotProp.read(tag, "input_slot");
         outputSlotProp.read(tag, "output_slot");
@@ -269,10 +269,9 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
     @Override
     public CompoundNBT save(CompoundNBT tag) {
         tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         inputSlotProp.write(tag, "input_slot");
         outputSlotProp.write(tag, "output_slot");
@@ -280,7 +279,7 @@ public class CrusherTile extends VoluminousTileEntity implements ITickableTileEn
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 

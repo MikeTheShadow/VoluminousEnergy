@@ -31,7 +31,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -44,7 +43,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
@@ -251,8 +250,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         CompoundNBT inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         doDischargeInstead[0] = tag.getBoolean("slot_pair_mode_0");
         doDischargeInstead[1] = tag.getBoolean("slot_pair_mode_1");
@@ -269,10 +267,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     @Override
     public CompoundNBT save(CompoundNBT tag) {
         tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         tag.putBoolean("slot_pair_mode_0", doDischargeInstead[0]);
         tag.putBoolean("slot_pair_mode_1", doDischargeInstead[1]);
@@ -286,7 +281,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 

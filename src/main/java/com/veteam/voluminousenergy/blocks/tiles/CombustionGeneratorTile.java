@@ -66,7 +66,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private LazyOptional<IItemHandlerModifiable> fuelInHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
     private LazyOptional<IItemHandlerModifiable> fuelOutHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4));
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> oxidizerHandler = LazyOptional.of(this::createOxidizerHandler);
     private LazyOptional<IFluidHandler> fuelHandler = LazyOptional.of(this::createFuelHandler);
 
@@ -221,8 +221,9 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         CompoundNBT oxidizerNBT = tag.getCompound("oxidizerTank");
         CompoundNBT fuelNBT = tag.getCompound("fuelTank");
@@ -246,10 +247,9 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         // Tanks
         CompoundNBT oxidizerNBT = new CompoundNBT();
@@ -455,7 +455,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get());
     }
 

@@ -118,6 +118,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
         CompoundNBT inv = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         this.inputSm.read(tag, "input_gui");
         this.outputSm.read(tag,"output_gui");
@@ -131,6 +133,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
             CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
             tag.put("inv",compound);
         });
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         this.inputSm.write(tag, "input_gui");
         this.outputSm.write(tag,"output_gui");

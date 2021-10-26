@@ -17,7 +17,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -29,7 +28,7 @@ import java.util.UUID;
 
 public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, INamedContainerProvider {
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public SolarPanelTile() { super(VEBlocks.SOLAR_PANEL_TILE); }
@@ -79,20 +78,17 @@ public class SolarPanelTile extends VESolarTile implements ITickableTileEntity, 
     @Override
     public void load(BlockState state, CompoundNBT tag) {
         CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(energyTag));
         super.load(state, tag);
     }
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.SOLAR_PANEL_MAX_POWER.get(),Config.SOLAR_PANEL_MAX_POWER.get()); // Config
     }
 
