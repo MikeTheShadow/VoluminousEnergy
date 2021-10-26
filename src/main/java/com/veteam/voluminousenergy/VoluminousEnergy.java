@@ -400,6 +400,7 @@ public class VoluminousEnergy {
             // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
 
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EMPTY_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_MULTITOOL);

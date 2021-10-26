@@ -23,9 +23,7 @@ public class Multitool extends Item implements Vanishable {
     }
 
     public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
-        if(bit != null)
-            return this.bit.getDestroySpeed(itemStack, blockStateToMine);
-        return 0;
+        return this.bit != null ? this.bit.getDestroySpeed(itemStack, blockStateToMine) : 0;
     }
 
     public boolean hurtEnemy(ItemStack p_40994_, LivingEntity p_40995_, LivingEntity p_40996_) {
@@ -47,41 +45,29 @@ public class Multitool extends Item implements Vanishable {
 
     /*public void setBit(@Nonnull MultitoolBit bit, ItemStack stack){
         this.bit = bit;
-    }
-
-    public MultitoolBit getBit(){
-        if(bit != null)
-            return this.bit;
-        return null;
     }*/
 
+    public MultitoolBit getBit(){
+        return this.bit != null ? this.bit : null;
+    }
+
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-        if(bit != null)
+        if(this.bit != null)
             return equipmentSlot == EquipmentSlot.MAINHAND ? this.bit.getDefaultAttributeModifiers(equipmentSlot) : super.getDefaultAttributeModifiers(equipmentSlot);
         return super.getDefaultAttributeModifiers(equipmentSlot);
     }
 
     public float getAttackDamage() {
-        if(bit != null)
-            return this.bit.getAttackDamage();
-        return 0;
+        return this.bit != null ? this.bit.getAttackDamage() : 0;
     }
 
     @Override
     public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
-
-        return this.bit.canPerformAction(toolAction);
+        return this.bit != null ? this.bit.canPerformAction(toolAction) : false;
     }
-
-    /*@Override
-    public void fillItemCategory(CreativeModeTab creativeTab, NonNullList<ItemStack> itemStacks){
-        if(this.allowdedIn(creativeTab)){
-            itemStacks.add(new ItemStack(this));
-        }
-    }*/
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState){
-        return this.bit.isCorrectToolForDrops(blockState);
+        return this.bit != null ? this.bit.isCorrectToolForDrops(blockState) : false;
     }
 }
