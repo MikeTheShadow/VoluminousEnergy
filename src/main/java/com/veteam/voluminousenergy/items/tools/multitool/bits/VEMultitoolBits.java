@@ -67,8 +67,5 @@ public class VEMultitoolBits {
     public static final MultitoolBit SOLARIUM_SCOOPER_BIT = new MultitoolBit(ToolActions.DEFAULT_AXE_ACTIONS, VETools.SOLARIUM, BlockTags.MINEABLE_WITH_SHOVEL,
             DESTROY_SPEED_MULTIPLIER, 1, 1);
 
-
-    // TODO: Trimmer bit, MOTORIZED SHEERS
-    public final MultitoolBit IRON_TRIMMER_BIT = new MultitoolBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, null,
-            0.9F, 1, 1);
+    public static final MultitoolBit IRON_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, 0.9F, 1, 1);
 }

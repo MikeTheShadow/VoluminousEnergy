@@ -13,4 +13,5 @@ public class VEMultitools {
     public static Multitool DIAMOND_DRILL_MULTITOOL = new Multitool(VEMultitoolBits.DIAMOND_DRILL_BIT, "diamond_drill_multitool", MULTITOOL_PROPERTIES);
     public static Multitool IRON_CHAIN_MULTITOOL = new Multitool(VEMultitoolBits.IRON_CHAIN_BIT, "iron_chain_multitool", MULTITOOL_PROPERTIES);
     public static Multitool IRON_SCOOPER_MULTITOOL = new Multitool(VEMultitoolBits.IRON_SCOOPER_BIT, "iron_scooper_multitool", MULTITOOL_PROPERTIES);
+    public static Multitool IRON_TRIMMER_MULTITOOL = new Multitool(VEMultitoolBits.IRON_TRIMMER_BIT, "iron_trimmer_multitool", MULTITOOL_PROPERTIES);
 }
