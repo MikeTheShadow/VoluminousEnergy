@@ -1,12 +1,9 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.recipe.DistillationRecipe;
-import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.SerializationTags;
@@ -18,7 +15,22 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.tools.Tool;
+import java.util.stream.Collectors;
+
 public class RecipeUtil {
+
+    public static Tag<Fluid> getTagFromResourceLocationForFluids(ResourceLocation fluidTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.FLUID_REGISTRY, fluidTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
+    }
+
+    public static Tag<Item> getTagFromResourceLocationForItems(ResourceLocation itemTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, itemTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
+    }
 
     public static boolean isAqueoulizerInputFluidEqual(Level world, Fluid fluid){
         for (Recipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
@@ -180,15 +192,28 @@ public class RecipeUtil {
         return false;
     }
 
-    public static Tag<Fluid> getTagFromResourceLocationForFluids(ResourceLocation fluidTagLocation, String friendlyRecipeNameOnError){
-        return SerializationTags.getInstance().getTagOrThrow(Registry.FLUID_REGISTRY, fluidTagLocation, (tempTag) -> {
-            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
-        });
+    public static ToolingRecipe getToolingRecipeFromBitAndBase(Level world, ItemStack bitStack, ItemStack baseStack){
+        if(baseStack.isEmpty() || bitStack.isEmpty()) return null;
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof ToolingRecipe){
+                if (((ToolingRecipe) recipe).getBits().contains(bitStack)
+                        && ((ToolingRecipe) recipe).getBases().contains(baseStack)) {
+                    return (ToolingRecipe) recipe;
+                }
+            }
+        }
+        return null;
     }
 
-    public static Tag<Item> getTagFromResourceLocationForItems(ResourceLocation itemTagLocation, String friendlyRecipeNameOnError){
-        return SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, itemTagLocation, (tempTag) -> {
-            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
-        });
+    public static ToolingRecipe getToolingRecipeFromResult(Level world, ItemStack resultStack){
+        if(resultStack.isEmpty()) return null;
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe instanceof ToolingRecipe){
+                if(((ToolingRecipe) recipe).getResult().is(resultStack.getItem())){
+                    return (ToolingRecipe) recipe;
+                }
+            }
+        }
+        return null;
     }
 }

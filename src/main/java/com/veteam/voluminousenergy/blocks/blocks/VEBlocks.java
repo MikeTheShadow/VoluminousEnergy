@@ -229,6 +229,13 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":blast_furnace")
     public static MenuType<BlastFurnaceContainer> BLAST_FURNACE_CONTAINER;
 
+    // Tooling Station
+    @ObjectHolder(VoluminousEnergy.MODID + ":tooling_station")
+    public static ToolingStationBlock TOOLING_STATION_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":tooling_station")
+    public static BlockEntityType<ToolingStationTile> TOOLING_STATION_TILE;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

@@ -18,5 +18,5 @@ public class RecipeConstants {
     public static final ResourceLocation CENTRIFUGAL_SEPARATION = new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_separation");
     public static final ResourceLocation IMPLOSION_COMPRESSING = new ResourceLocation(VoluminousEnergy.MODID, "implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING = new ResourceLocation(VoluminousEnergy.MODID, "industrial_blasting");
-
+    public static final ResourceLocation TOOLING = new ResourceLocation(VoluminousEnergy.MODID, "tooling");
 }
