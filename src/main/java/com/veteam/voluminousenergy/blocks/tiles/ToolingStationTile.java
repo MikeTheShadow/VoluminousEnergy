@@ -2,8 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
-import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
+import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
+import com.veteam.voluminousenergy.items.tools.multitool.MultitoolBase;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -28,6 +31,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -171,7 +175,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
         energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(),
+                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), // TODO: Config
                                 this.inventory.getStackInSlot(4).copy()
                         )
                 )
@@ -180,7 +184,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
 
     private boolean canConsumeEnergy(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
+                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy()); // TODO: Config
     }
 
     /*
@@ -247,11 +251,11 @@ public class ToolingStationTile extends VEFluidTileEntity {
     }
 
     private IFluidHandler createFuelFluidHandler() {
-        return this.createFluidHandler(new AqueoulizerRecipe(), fuelTank); // TODO: Recipe
+        return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank); // TODO: Recipe
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(5) { // 2 for fluids + 1 for built tool + 2 for components
+        return new ItemStackHandler(5) { // TODO: 2 for fluids + 1 for built tool + 2 for components
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -259,8 +263,11 @@ public class ToolingStationTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
-                return true;
+                if (slot < 2) return stack.getItem() instanceof BucketItem;
+                if (slot == 2) return stack.getItem() instanceof Multitool;
+                if (slot == 3) return stack.getItem() instanceof BitItem;
+                if (slot == 4) return stack.getItem() instanceof MultitoolBase;
+                return false;
             }
 
             @Nonnull
@@ -309,7 +316,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return new ToolingStationContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
