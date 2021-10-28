@@ -30,9 +30,9 @@ public class ToolingRecipe extends VERecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    protected ArrayList<Item> bits;
-    protected ArrayList<Item> basesAndBits;
-    protected ArrayList<Item> bases;
+    protected ArrayList<Item> bits = new ArrayList<>();
+    protected ArrayList<Item> basesAndBits = new ArrayList<>();
+    protected ArrayList<Item> bases = new ArrayList<>();
 
     public final ResourceLocation recipeId;
     public Ingredient ingredient;
@@ -110,7 +110,7 @@ public class ToolingRecipe extends VERecipe {
     }
 
     public ArrayList<Item> getBases(){
-        return this.getBases();
+        return this.bases;
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ToolingRecipe>{

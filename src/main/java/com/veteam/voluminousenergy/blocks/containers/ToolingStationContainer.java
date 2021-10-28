@@ -40,9 +40,9 @@ public class ToolingStationContainer extends VoluminousContainer {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Fix positioning of slots
             addSlot(new VEBucketSlot(h, 0, 38, 18)); // Fluid input slot
             addSlot(new VEBucketSlot(h, 1, 38, 49)); // Extract fluid from input
-            addSlot(new VEInsertSlot(h, 2, 137, 49)); // Main Tool slot
-            addSlot(new VEInsertSlot(h, 3, 96, 32)); // Bit Slot
-            addSlot(new VEInsertSlot(h, 4, 130,-14)); // Base Slot
+            addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool slot
+            addSlot(new VEInsertSlot(h, 3, 134, 18)); // Bit Slot
+            addSlot(new VEInsertSlot(h, 4, 134,49)); // Base Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

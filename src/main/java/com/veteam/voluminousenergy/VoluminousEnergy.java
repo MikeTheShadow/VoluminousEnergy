@@ -408,6 +408,12 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_MULTITOOL);
+
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_BIT);
         }
 
         @SubscribeEvent

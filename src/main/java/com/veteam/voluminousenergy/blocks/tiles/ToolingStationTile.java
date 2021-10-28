@@ -5,8 +5,10 @@ import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.MultitoolBase;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -122,54 +124,22 @@ public class ToolingStationTile extends VEFluidTileEntity {
             }
         }
 
-        /* Main Fluid Processing occurs here:
-        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level, this.fuelTank.getTank().getFluid(),inputItem.copy());
-        // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
+        if(mainTool.isEmpty()){
+            if(!toolBit.isEmpty() && !toolBase.isEmpty()){
+                ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromBitAndBase(level, toolBit.copy(), toolBase.copy());
+                if (toolingRecipe != null){
+                    inventory.setStackInSlot(2, new ItemStack(toolingRecipe.result.getItem(),1));
+                }
+            }
+        } else if (!mainTool.isEmpty() && toolBase.isEmpty() && toolBit.isEmpty()){
+            ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromResult(level, mainTool.copy());
+            if (toolingRecipe != null){
+                inventory.setStackInSlot(3, new ItemStack(toolingRecipe.getBits().get(0)));
+                inventory.setStackInSlot(4, new ItemStack(toolingRecipe.getBases().get(0)));
+            }
+        }
 
-        if (fuelTank != null && !fuelTank.getTank().isEmpty() && recipe != null) {
-            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
-            if (recipe.getRawFluids().contains(fuelTank.getTank().getFluid().getRawFluid())) {
-                if (outputTank != null) {
-
-                    // Tank fluid amount check + tank cap checks
-                    if (fuelTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY){
-                        // Check for power
-                        if (canConsumeEnergy()){
-                            if (counter == 1){
-
-                                // Drain Input
-                                fuelTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
-
-                                // Output Tank
-                                if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
-                                    outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
-                                } else {
-                                    outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                inventory.extractItem(3, recipe.ingredientCount,false);
-
-                                counter--;
-                                consumeEnergy();
-                                this.setChanged();
-                            } else if (counter > 0){
-                                counter--;
-                                consumeEnergy();
-                            } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(4).copy());
-                                length = counter;
-                            }
-                        } // Energy Check
-                    } else { // If fluid tank empty set counter to zero
-                        counter = 0;
-                    }
-                } else counter = 0;
-            } else counter = 0;
-        } else {
-            counter = 0;
-        }*/
-        //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
 
     // Extract logic for energy management, since this is getting quite complex now.
@@ -258,6 +228,19 @@ public class ToolingStationTile extends VEFluidTileEntity {
         return new ItemStackHandler(5) { // TODO: 2 for fluids + 1 for built tool + 2 for components
             @Override
             protected void onContentsChanged(int slot) {
+                if(slot == 2 && this.getStackInSlot(2).isEmpty()){ // If the crafted multitool is removed, delete the components
+                    if (this.getStackInSlot(3).isEmpty() || this.getStackInSlot(4).isEmpty()){
+
+                    } else {
+                        this.setStackInSlot(3, ItemStack.EMPTY);
+                        this.setStackInSlot(4, ItemStack.EMPTY);
+                    }
+                } else if ((slot == 3 || slot == 4) && (!this.getStackInSlot(2).isEmpty())){
+                    if(this.getStackInSlot(3).isEmpty() || this.getStackInSlot(4).isEmpty()){ // If one of the components of the multitool is removed, delete the multitool
+                        this.setStackInSlot(2, ItemStack.EMPTY);
+                    }
+                }
+
                 setChanged();
             }
 
@@ -266,7 +249,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
                 if (slot < 2) return stack.getItem() instanceof BucketItem;
                 if (slot == 2) return stack.getItem() instanceof Multitool;
                 if (slot == 3) return stack.getItem() instanceof BitItem;
-                if (slot == 4) return stack.getItem() instanceof MultitoolBase;
+                if (slot == 4) return (stack.getItem() instanceof MultitoolBase || stack.getItem() == VEMultitools.EMPTY_MULTITOOL); // TODO: Remove Multitool base?
                 return false;
             }
 

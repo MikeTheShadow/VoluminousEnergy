@@ -63,6 +63,7 @@
     "block.voluminousenergy.rice_crop": "Rice",
     "block.voluminousenergy.solarium_block": "Block of Solarium",
     "block.voluminousenergy.eighzo_ore": "Eighzo Ore",
+    "block.voluminousenergy.tooling_station": "Tooling Station",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",

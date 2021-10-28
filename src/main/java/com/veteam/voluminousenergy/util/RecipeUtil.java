@@ -8,15 +8,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.SerializationTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.tools.Tool;
-import java.util.stream.Collectors;
 
 public class RecipeUtil {
 
@@ -196,8 +193,8 @@ public class RecipeUtil {
         if(baseStack.isEmpty() || bitStack.isEmpty()) return null;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof ToolingRecipe){
-                if (((ToolingRecipe) recipe).getBits().contains(bitStack)
-                        && ((ToolingRecipe) recipe).getBases().contains(baseStack)) {
+                if (((ToolingRecipe) recipe).getBits().contains(bitStack.getItem())
+                        && ((ToolingRecipe) recipe).getBases().contains(baseStack.getItem())) {
                     return (ToolingRecipe) recipe;
                 }
             }

@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class ToolingStationScreen extends AbstractContainerScreen<ToolingStationContainer> {
     private ToolingStationTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
@@ -112,7 +112,6 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("tooling_station"), 8.0F, 6.0F, 16777215);
-        drawString(matrixStack, Minecraft.getInstance().font, "+", 82, 34, 0x606060);
         this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
@@ -166,9 +165,6 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
-            // Upgrade slot
-            RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+129, j-16,0,0,18,18);
         }
 
     }
