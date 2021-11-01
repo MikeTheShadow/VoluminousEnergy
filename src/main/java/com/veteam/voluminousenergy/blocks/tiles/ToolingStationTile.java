@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
-import com.veteam.voluminousenergy.items.tools.multitool.MultitoolBase;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -116,11 +115,30 @@ public class ToolingStationTile extends VEFluidTileEntity {
         VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(this.level,this.fuelTank.getTank().getFluid());
 
         if(fuelRecipe != null){
-            // Logic for fuel
-
             // Logic for refueling the base
             if (!mainTool.isEmpty()){
+                mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
+                    FluidStack itemFluid = fluid.getFluidInTank(0);
+                    FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
+                    int tankCapacity = fluid.getTankCapacity(0);
 
+                    if(itemFluid.getAmount() < tankCapacity && (itemFluid.isFluidEqual(toolingStationFluid) || itemFluid.isEmpty())){
+                        int toTransfer;
+
+                        if (!itemFluid.isEmpty()){
+                            toTransfer = Math.min(toolingStationFluid.getAmount(), itemFluid.getAmount()); // Which amount is smaller
+                            toTransfer = Math.min(toTransfer, (tankCapacity - itemFluid.getAmount())); // Previous value versus the delta between the tankCapacity in the item and the current fluid amount
+                        } else { // Clean slate, check only against the tank capacity
+                            toTransfer = Math.min(toolingStationFluid.getAmount(), tankCapacity);
+                        }
+
+                        // Drain the fluid from the Tooling Station
+                        this.fuelTank.getTank().drain(toTransfer, IFluidHandler.FluidAction.EXECUTE);
+                        toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
+                        // Fill the item
+                        fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+                    }
+                });
             }
         }
 
@@ -249,7 +267,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
                 if (slot < 2) return stack.getItem() instanceof BucketItem;
                 if (slot == 2) return stack.getItem() instanceof Multitool;
                 if (slot == 3) return stack.getItem() instanceof BitItem;
-                if (slot == 4) return (stack.getItem() instanceof MultitoolBase || stack.getItem() == VEMultitools.EMPTY_MULTITOOL); // TODO: Remove Multitool base?
+                if (slot == 4) return (stack.getItem() == VEMultitools.EMPTY_MULTITOOL); // TODO: Remove Multitool base?
                 return false;
             }
 
