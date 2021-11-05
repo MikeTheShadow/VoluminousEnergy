@@ -30,6 +30,7 @@
     "#forge:dusts/tungsten",
     "#forge:dusts/eighzo",
     "#forge:dusts/copper",
-    "#forge:dusts/copper_carbonate"
+    "#forge:dusts/copper_carbonate",
+    "#forge:dusts/cupric_oxide"
   ]
 }
