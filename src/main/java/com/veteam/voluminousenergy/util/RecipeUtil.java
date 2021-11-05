@@ -10,10 +10,14 @@ import net.minecraft.tags.SerializationTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {
 
@@ -212,5 +216,94 @@ public class RecipeUtil {
             }
         }
         return null;
+    }
+
+    //
+    public static ItemStack getPlankFromLog(Level world, ItemStack logStack){
+        if (logStack.isEmpty()) return null;
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CraftingRecipe){
+                if(recipe.getResultItem().getItem().getRegistryName().toString().contains("plank")){
+                    AtomicBoolean foundInput = new AtomicBoolean(false);
+                    recipe.getIngredients().parallelStream().forEach(ingredient -> { // Parallel stream
+                        for(ItemStack itemStack : ingredient.getItems()) {
+                            if(itemStack.getItem().equals(logStack.getItem())){
+                                foundInput.set(true);
+                            }
+                        }
+                    });
+
+                    if (foundInput.get()){
+                        return recipe.getResultItem().copy();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static CraftingRecipe getRecipeFromLog(Level world, ItemStack logStack){
+        if (logStack.isEmpty()) return null;
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CraftingRecipe){
+                if(recipe.getResultItem().getItem().getRegistryName().toString().contains("plank")){
+                    AtomicBoolean foundInput = new AtomicBoolean(false);
+                    recipe.getIngredients().parallelStream().forEach(ingredient -> { // Parallel stream
+                        for(ItemStack itemStack : ingredient.getItems()) {
+                            if(itemStack.getItem().equals(logStack.getItem())){
+                                foundInput.set(true);
+                            }
+                        }
+                    });
+
+                    if (foundInput.get()){
+                        return (CraftingRecipe) recipe;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // Parallel query of global recipes, will this improve performance?
+    public static ItemStack getPlankFromLogParallel(Level world, ItemStack logStack){
+        if (logStack.isEmpty()) return null;
+        AtomicReference<ItemStack> atomicItemStack = new AtomicReference<>();
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CraftingRecipe){
+                if (recipe.getResultItem().getItem().getRegistryName().toString().contains("plank")){
+                    recipe.getIngredients().forEach(ingredient -> {
+                        for (ItemStack itemStack : ingredient.getItems()){
+                            if (itemStack.getItem().equals(logStack.getItem())){
+                                atomicItemStack.set(itemStack.copy());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return atomicItemStack.get();
+    }
+
+    // Parallel query of global recipes, will this improve performance?
+    public static CraftingRecipe getRecipeFromLogParallel(Level world, ItemStack logStack){
+        if (logStack.isEmpty()) return null;
+        AtomicReference<CraftingRecipe> atomicRecipe = new AtomicReference<>();
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CraftingRecipe){
+                if (recipe.getResultItem().getItem().getRegistryName().toString().contains("plank")){
+                    recipe.getIngredients().forEach(ingredient -> {
+                        for (ItemStack itemStack : ingredient.getItems()){
+                            if (itemStack.getItem().equals(logStack.getItem())){
+                                atomicRecipe.set((CraftingRecipe) recipe);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return atomicRecipe.get();
     }
 }

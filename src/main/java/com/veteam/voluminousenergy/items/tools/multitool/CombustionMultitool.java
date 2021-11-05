@@ -51,7 +51,7 @@ public class CombustionMultitool extends Multitool {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             tooltip.add(
                     new TranslatableComponent(fluidStack.getTranslationKey())
-                            .append(", Amount: " // TODO: Not translation friendly
+                            .append(": "
                                     + fluidStack.getAmount()
                                     + " mB / "
                                     + tank.getTank().getCapacity()
