@@ -28,6 +28,8 @@
     "#forge:dusts/netherite",
     "#forge:dusts/solarium",
     "#forge:dusts/tungsten",
-    "#forge:dusts/eighzo"
+    "#forge:dusts/eighzo",
+    "#forge:dusts/copper",
+    "#forge:dusts/copper_carbonate"
   ]
 }

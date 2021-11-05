@@ -8,8 +8,10 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +48,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
         updateClients();
         if (this.level != null){
             if (level.dimensionType().hasSkyLight() && isClear()) {
-                this.generation = (int)(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
+                this.generation = this.getGeneration();
                 generateEnergy(this.generation);
                 setChanged();
             }
@@ -86,13 +88,33 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
     @Override
     public void load(CompoundTag tag) {
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        tag.putInt("generation_rate", this.generation);
         super.load(tag);
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         energy.ifPresent(h -> h.serializeNBT(tag));
+        this.generation = tag.getInt("generation_rate");
         return super.save(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
+        super.onDataPacket(net, pkt);
     }
 
     private VEEnergyStorage createEnergy(){
@@ -120,7 +142,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
     }
 
     public int getGeneration(){
-        return this.generation;
+        return (int)(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
     }
 
     @Override
