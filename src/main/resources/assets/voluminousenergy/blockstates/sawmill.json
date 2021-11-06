@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "voluminousenergy:block/sawmill",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "voluminousenergy:block/sawmill"
+    },
+    "facing=south": {
+      "model": "voluminousenergy:block/sawmill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "voluminousenergy:block/sawmill",
+      "y": 270
+    }
+  }
+}

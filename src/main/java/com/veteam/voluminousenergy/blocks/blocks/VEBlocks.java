@@ -239,6 +239,10 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":tooling_station")
     public static MenuType<ToolingStationContainer> TOOLING_STATION_CONTAINER;
 
+    // Sawmill
+    @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
+    public static SawmillBlock SAWMILL_BLOCK;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

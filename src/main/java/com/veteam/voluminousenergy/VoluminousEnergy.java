@@ -152,6 +152,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new ImplosionCompressorBlock());
             blockRegisteryEvent.getRegistry().register(new BlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new ToolingStationBlock());
+            blockRegisteryEvent.getRegistry().register(new SawmillBlock());
 
             //Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -221,6 +222,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK,properties).setRegistryName("implosion_compressor"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BLAST_FURNACE_BLOCK,properties).setRegistryName("blast_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TOOLING_STATION_BLOCK,properties).setRegistryName("tooling_station"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SAWMILL_BLOCK,properties).setRegistryName("sawmill"));
 
             // Crops
             //itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
