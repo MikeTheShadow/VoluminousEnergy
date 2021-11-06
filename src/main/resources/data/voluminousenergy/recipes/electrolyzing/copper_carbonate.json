@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:electrolyzing",
   "ingredient": {
-    "item": "voluminousenergy:copper_carbonate_dust",
+    "tag": "forge:dusts/copper_carbonate",
     "count": 1
   },
   "process_time": 200,
