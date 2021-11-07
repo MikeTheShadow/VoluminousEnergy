@@ -4,8 +4,8 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fmllegacy.network.NetworkDirection;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
@@ -144,6 +144,28 @@ public class TankBoolPacket {
                     ((BlastFurnaceContainer) openContainer).updateStatusTank(packet.status, packet.id);
                 }
                 // End of Blast Furnace
+            } else if (openContainer instanceof ToolingStationContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((ToolingStationContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof ToolingStationTile) {
+                        ((ToolingStationTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((ToolingStationContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of Tooling Station
+            } else if (openContainer instanceof SawmillContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((SawmillContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof SawmillTile) {
+                        ((SawmillTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id);
+                    }
+                    // End of Server side logic
+                } else {
+                    ((SawmillContainer) openContainer).updateStatusTank(packet.status, packet.id);
+                }
+                // End of Sawmill
             } else {
                 VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
             }

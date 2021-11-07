@@ -4,8 +4,8 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fmllegacy.network.NetworkDirection;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
@@ -232,6 +232,24 @@ public class DirectionButtonPacket {
                     }
                 } else {
                     ((BlastFurnaceContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+            }  else if (openContainer instanceof ToolingStationContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((ToolingStationContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof ToolingStationTile) {
+                        ((ToolingStationTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((ToolingStationContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
+            } else if (openContainer instanceof SawmillContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((SawmillContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof SawmillTile) {
+                        ((SawmillTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId);
+                    }
+                } else {
+                    ((SawmillContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");

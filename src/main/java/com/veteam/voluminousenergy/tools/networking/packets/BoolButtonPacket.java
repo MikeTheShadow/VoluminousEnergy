@@ -236,6 +236,26 @@ public class BoolButtonPacket {
                 } else {
                     ((BlastFurnaceContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
+                // Tooling Station
+            } else if (openContainer instanceof ToolingStationContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((ToolingStationContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof ToolingStationTile) {
+                        ((ToolingStationTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    ((ToolingStationContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
+                // Sawmill
+            } else if (openContainer instanceof SawmillContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((SawmillContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof SawmillTile) {
+                        ((SawmillTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    ((SawmillContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
                 // INVALID TE/Container
             } else {
                 VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");

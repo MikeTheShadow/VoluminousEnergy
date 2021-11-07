@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;

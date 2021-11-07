@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.AqueoulizerScreen;
+import com.veteam.voluminousenergy.blocks.screens.SawmillScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,7 +27,7 @@ public class SawmillContainer extends VoluminousContainer {
 
     private Player playerEntity;
     private IItemHandler playerInventory;
-    private AqueoulizerScreen screen; // TODO: Screen
+    private SawmillScreen screen;
     private static final int numberOfSlots = 6;
 
     public SawmillContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
@@ -113,8 +113,8 @@ public class SawmillContainer extends VoluminousContainer {
         return returnStack;
     }
 
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :( TODO: Sawmill screen
-    public void setScreen(AqueoulizerScreen screen){
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(SawmillScreen screen){
         this.screen = screen;
     }
 
