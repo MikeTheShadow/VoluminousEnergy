@@ -243,6 +243,12 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
     public static SawmillBlock SAWMILL_BLOCK;
 
+    @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
+    public static BlockEntityType<SawmillTile> SAWMILL_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
+    public static MenuType<SawmillContainer> SAWMILL_CONTAINER;
+
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")
     public static SaltpeterOre SALTPETER_ORE;

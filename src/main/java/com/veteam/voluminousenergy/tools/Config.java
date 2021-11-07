@@ -33,6 +33,7 @@ public class Config {
     public static final String CATEGORY_CENTRIFUGAL_SEPARATOR = "Centrifugal Separator";
     public static final String CATEGORY_IMPLOSION_COMPRESSOR = "Implosion Compressor";
     public static final String CATEGORY_BLAST_FURNACE = "Blast Furnace";
+    public static final String CATEGORY_SAWMILL = "Sawmill";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -253,6 +254,19 @@ public class Config {
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
+    // Sawmill Variables
+    public static ForgeConfigSpec.IntValue SAWMILL_MAX_POWER;
+    public static ForgeConfigSpec.IntValue SAWMILL_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue SAWMILL_TRANSFER;
+    public static ForgeConfigSpec.BooleanValue SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED;
+    public static ForgeConfigSpec.ConfigValue<String> SAWMILL_FLUID_LOCATION;
+    public static ForgeConfigSpec.ConfigValue<String> SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION;
+    public static ForgeConfigSpec.IntValue SAWMILL_FLUID_AMOUNT;
+    public static ForgeConfigSpec.IntValue SAWMILL_SECOND_OUTPUT_COUNT;
+    public static ForgeConfigSpec.IntValue SAWMILL_PROCESSING_TIME;
+    public static ForgeConfigSpec.IntValue SAWMILL_PRIMARY_OUTPUT_COUNT;
+    public static ForgeConfigSpec.IntValue SAWMILL_LOG_CONSUMPTION_RATE;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -360,6 +374,11 @@ public class Config {
         // Blast Furnace
         COMMON_BUILDER.comment("Blast Furnace").push(CATEGORY_BLAST_FURNACE);
         setupBlastFurnace();
+        COMMON_BUILDER.pop();
+
+        // Sawmill
+        COMMON_BUILDER.comment("Sawmill").push(CATEGORY_SAWMILL);
+        setupSawmill();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -689,7 +708,33 @@ public class Config {
                 .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
 
-    public static void loadConfig(ForgeConfigSpec spec, Path path){
+    private static void setupSawmill(){
+        SAWMILL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Sawmill to store")
+                .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
+        SAWMILL_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Sawmill")
+                .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
+        SAWMILL_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Sawmill")
+                .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
+        SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED = COMMON_BUILDER.comment("true/false, Allow the use of logs that don't have a proper Sawmill recipe")
+                .define("Allow logs without recipe", true);
+        SAWMILL_FLUID_LOCATION = COMMON_BUILDER.comment("Resource Location of the fluid that will be generated when processing a log without a recipe")
+                .define("Fluid location", "voluminousenergy:crude_oil"); // TODO: Change defaults
+        SAWMILL_FLUID_AMOUNT = COMMON_BUILDER.comment("Amount of fluid that will be generated when processing a log without a recipe")
+                .defineInRange("Fluid Amount", 250, 0, 4_000);
+        SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION = COMMON_BUILDER.comment("Resource Location of the second output item when processing a log without a recipe")
+                .define("Second output item resource location", "voluminousenergy:carbondust"); // TODO: Change defaults
+        SAWMILL_SECOND_OUTPUT_COUNT = COMMON_BUILDER.comment("Item count of the second output item when processing a log without a recipe")
+                .defineInRange("Second output count", 1, 0, 64);
+        SAWMILL_PROCESSING_TIME = COMMON_BUILDER.comment("Processing time when processing a log without a recipe")
+                .defineInRange("Processing time", 200, 0, Integer.MAX_VALUE);
+        SAWMILL_PRIMARY_OUTPUT_COUNT = COMMON_BUILDER.comment("Amount of the primary item (typically a plank) that will be generated when finished processing a log without a recipe")
+                .defineInRange("Primary output count", 6, 1, 64);
+        SAWMILL_LOG_CONSUMPTION_RATE = COMMON_BUILDER.comment("Amount of the input item (typically a log) that will be consumed when finished processing a log without a recipe")
+                .defineInRange("Number of logs to consume", 1, 1, 64);
+        }
+
+
+        public static void loadConfig(ForgeConfigSpec spec, Path path){
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()

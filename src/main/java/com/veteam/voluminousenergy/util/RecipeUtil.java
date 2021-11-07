@@ -15,7 +15,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import org.spongepowered.asm.mixin.injection.At;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -268,7 +270,7 @@ public class RecipeUtil {
     // Parallel query of global recipes, will this improve performance?
     public static ItemStack getPlankFromLogParallel(Level world, ItemStack logStack){
         if (logStack.isEmpty()) return null;
-        AtomicReference<ItemStack> atomicItemStack = new AtomicReference<>();
+        AtomicReference<ItemStack> atomicItemStack = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CraftingRecipe){
@@ -289,7 +291,7 @@ public class RecipeUtil {
     // Parallel query of global recipes, will this improve performance?
     public static CraftingRecipe getRecipeFromLogParallel(Level world, ItemStack logStack){
         if (logStack.isEmpty()) return null;
-        AtomicReference<CraftingRecipe> atomicRecipe = new AtomicReference<>();
+        AtomicReference<CraftingRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CraftingRecipe){
@@ -304,6 +306,61 @@ public class RecipeUtil {
                 }
             }
         });
+        return atomicRecipe.get(); // OR IF DOESN'T WORK: return atomicRecipe.get() == null ? null : atomicRecipe.get();
+    }
+
+    // Parallel query of global recipes, will this improve performance?
+    public static ArrayList<ItemStack> getLogFromPlankParallel(Level world, ItemStack plankStack){
+        if (plankStack.isEmpty()) return null;
+        AtomicReference<ArrayList<ItemStack>> atomicItemStackArray = new AtomicReference<>(new ArrayList<ItemStack>());
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CraftingRecipe){
+                if (recipe.getResultItem().getItem().getRegistryName().toString().contains("plank")){
+                    if (recipe.getResultItem().is(plankStack.getItem())){
+                        recipe.getIngredients().forEach(ingredient -> {
+                            for(int i = 0; i < ingredient.getItems().length; i++) atomicItemStackArray.get().add(ingredient.getItems()[i]);
+                        });
+                    }
+                }
+            }
+        });
+
+        return atomicItemStackArray.get();
+    }
+
+    public static SawmillingRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack){ // Parallel by default
+        if (logStack.isEmpty()) return null;
+        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if(recipe instanceof SawmillingRecipe){
+                recipe.getIngredients().forEach(ingredient -> {
+                    for (ItemStack ingredientStack : ingredient.getItems()){
+                        if (ingredientStack.is(logStack.getItem())){
+                            atomicRecipe.set((SawmillingRecipe) recipe);
+                            break;
+                        }
+                    }
+                });
+            }
+        });
+
+        return atomicRecipe.get();
+    }
+
+    public static SawmillingRecipe getSawmillingRecipeFromPlank(Level world, ItemStack plankStack){ // Parallel by default
+        if (plankStack.isEmpty()) return null;
+        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof SawmillingRecipe){
+                if (((SawmillingRecipe) recipe).result.is(plankStack.getItem())){
+                    atomicRecipe.set((SawmillingRecipe) recipe);
+                }
+            }
+        });
+
         return atomicRecipe.get();
     }
 }

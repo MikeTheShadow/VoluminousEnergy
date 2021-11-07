@@ -40,6 +40,7 @@ public class VERecipes {
         public static final RecipeType<ImplosionCompressorRecipe> IMPLOSION_COMPRESSING = registerType(RecipeConstants.IMPLOSION_COMPRESSING);
         public static final RecipeType<IndustrialBlastingRecipe> INDUSTRIAL_BLASTING = registerType(RecipeConstants.INDUSTRIAL_BLASTING);
         public static final RecipeType<ToolingRecipe> TOOLING = registerType(RecipeConstants.TOOLING);
+        public static final RecipeType<SawmillingRecipe> SAWMILLING = registerType(RecipeConstants.SAWMILLING);
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);
@@ -56,6 +57,7 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> IMPLOSION_COMPRESSING = registerSerializer(RecipeConstants.IMPLOSION_COMPRESSING, () -> ImplosionCompressorRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> INDUSTRIAL_BLASTING = registerSerializer(RecipeConstants.INDUSTRIAL_BLASTING, () -> IndustrialBlastingRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> TOOLING = registerSerializer(RecipeConstants.TOOLING, () -> ToolingRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> SAWMILLING = registerSerializer(RecipeConstants.SAWMILLING, () -> SawmillingRecipe.SERIALIZER);
 
     private static RegistryObject<RecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<RecipeSerializer<?>> serializer) {
         VoluminousEnergy.LOGGER.info("Registering Serializer for Recipe: " + name.toString());
