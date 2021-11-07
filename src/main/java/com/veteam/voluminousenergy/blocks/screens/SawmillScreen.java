@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
     private SawmillTile tileEntity;
-    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
+    private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/sawmill_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
@@ -50,7 +50,7 @@ public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
     protected void init(){
         super.init();
         // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, buttons ->{
 
         }));
 
@@ -112,7 +112,6 @@ public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("sawmill"), 8.0F, 6.0F, 16777215);
-        drawString(matrixStack, Minecraft.getInstance().font, "+", 82, 34, 0x606060);
         this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
@@ -122,15 +121,9 @@ public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
             renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.SAWMILL_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+        if (isHovering(138, 18, 12, 50, mouseX, mouseY)){ // Output Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
-        }
-
-        if (isHovering(157, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
-            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
             renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
@@ -157,15 +150,15 @@ public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+127, j+31, 176, 0, progress, 17);
+            this.blit(matrixStack,i+67, j+31, 176, 0, progress, 17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
 
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+129, j-16,0,0,18,18);
+            this.blit(matrixStack,i+153, j-16,0,0,18,18);
         }
 
     }

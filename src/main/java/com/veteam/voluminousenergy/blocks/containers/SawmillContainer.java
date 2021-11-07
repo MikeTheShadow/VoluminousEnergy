@@ -38,12 +38,12 @@ public class SawmillContainer extends VoluminousContainer {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 38, 18)); // Log input slot
-            addSlot(new VEInsertSlot(h, 1, 38, 49)); // Plank Output
-            addSlot(new VEInsertSlot(h, 2, 137, 49)); // Secondary Output
-            addSlot(new VEBucketSlot(h, 3, 96, 32)); // Bucket Input
-            addSlot(new VEBucketSlot(h, 4, 96, 32)); // Bucket Output
-            addSlot(new VEInsertSlot(h, 5, 130,-14)); // Upgrade Slot
+            addSlot(new VEInsertSlot(h, 0, 44, 32)); // Log input slot
+            addSlot(new VEInsertSlot(h, 1, 80, 24)); // Plank Output
+            addSlot(new VEInsertSlot(h, 2, 80, 42)); // Secondary Output
+            addSlot(new VEBucketSlot(h, 3, 115, 18)); // Bucket Input
+            addSlot(new VEBucketSlot(h, 4, 115, 49)); // Bucket Output
+            addSlot(new VEInsertSlot(h, 5, 154, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 

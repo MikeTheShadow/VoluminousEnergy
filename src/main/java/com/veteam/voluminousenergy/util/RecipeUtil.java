@@ -277,7 +277,7 @@ public class RecipeUtil {
                     recipe.getIngredients().forEach(ingredient -> {
                         for (ItemStack itemStack : ingredient.getItems()){
                             if (itemStack.getItem().equals(logStack.getItem())){
-                                atomicItemStack.set(itemStack.copy());
+                                atomicItemStack.set(recipe.getResultItem().copy());
                             }
                         }
                     });

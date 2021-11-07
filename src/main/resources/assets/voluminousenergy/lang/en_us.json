@@ -64,6 +64,7 @@
     "block.voluminousenergy.solarium_block": "Block of Solarium",
     "block.voluminousenergy.eighzo_ore": "Eighzo Ore",
     "block.voluminousenergy.tooling_station": "Tooling Station",
+    "block.voluminousenergy.sawmill": "Sawmill",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",
