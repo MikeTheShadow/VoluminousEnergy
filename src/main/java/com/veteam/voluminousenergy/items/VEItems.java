@@ -105,6 +105,8 @@ public class VEItems {
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 
+    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
+
     //Crops
     public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
     public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)).setRegistryName("cooked_rice");

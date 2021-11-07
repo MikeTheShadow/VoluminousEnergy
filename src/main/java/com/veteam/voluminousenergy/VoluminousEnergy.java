@@ -269,6 +269,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.SALTPETERCHUNK);
             itemRegisteryEvent.getRegistry().register(VEItems.SILICON);
             itemRegisteryEvent.getRegistry().register(VEItems.SHREDDED_BIOMASS);
+            itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_SAWBLADE);
 
             //Dusts
             itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);
@@ -578,6 +579,7 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP, RenderType.cutout()));
+            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL_BLOCK, RenderType.cutout()));
         }
 
     }

@@ -1,10 +1,10 @@
 {   "parent": "block/block",
   "textures": {
-    "particle": "block/sawmill_bottom",
-    "bottom": "block/sawmill_bottom",
-    "top": "block/sawmill_top",
-    "side": "block/sawmill_side",
-    "saw": "block/sawmill_saw"
+    "particle": "voluminousenergy:block/sawmill_bottom",
+    "bottom": "voluminousenergy:block/sawmill_bottom",
+    "top": "voluminousenergy:block/sawmill_top",
+    "side": "voluminousenergy:block/sawmill_side",
+    "saw": "voluminousenergy:block/sawmill_saw"
   },
   "elements": [
     {   "from": [ 0, 0, 0 ],

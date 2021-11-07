@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "a*a"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:titanium_sawblade"
+    },
+    "*": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "a": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:sawmill"
+  }
+}
