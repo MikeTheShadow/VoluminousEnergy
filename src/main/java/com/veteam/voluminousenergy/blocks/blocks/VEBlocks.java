@@ -324,4 +324,7 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":raw_bone_block")
     public static RawBoneBlock RAW_BONE_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":pressure_ladder")
+    public static PressureLadder PRESSURE_LADDER;
 }

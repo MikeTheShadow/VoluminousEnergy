@@ -190,6 +190,8 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new RawGalenaBlock());
             blockRegisteryEvent.getRegistry().register(new RawRutileBlock());
             blockRegisteryEvent.getRegistry().register(new RawBoneBlock());
+
+            blockRegisteryEvent.getRegistry().register(new PressureLadder());
         }
 
         @SubscribeEvent
@@ -251,6 +253,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_RUTILE_BLOCK, properties).setRegistryName("raw_rutile_block"));
             //itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BONE_BLOCK, properties).setRegistryName("raw_bone_block"));
 
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.PRESSURE_LADDER, properties).setRegistryName("pressure_ladder"));
 
             // Material Storage Blocks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_BLOCK,properties).setRegistryName("solarium_block"));
