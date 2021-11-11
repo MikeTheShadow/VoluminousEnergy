@@ -33,7 +33,7 @@ public class DistillationUnitBlock extends FaceableBlock implements EntityBlock 
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("distillation_unit");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.DISTILLATION_UNIT_HARVEST_LEVEL.get(), this);
     }
 

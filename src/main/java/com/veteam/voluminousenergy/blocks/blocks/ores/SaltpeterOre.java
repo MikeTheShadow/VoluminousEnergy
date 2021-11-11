@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.FallingBlock;
@@ -19,8 +18,8 @@ public class SaltpeterOre extends FallingBlock {
             .requiresCorrectToolForDrops()
         );
         setRegistryName("saltpeterore");
-        VETagDataGenerator.mineableWithShovel.add(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.SALTPETER_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresShovel(this);
+        VETagDataGenerator.setRequiresWood(this);
     }
 
     public int xpOnDrop(Random rand) {

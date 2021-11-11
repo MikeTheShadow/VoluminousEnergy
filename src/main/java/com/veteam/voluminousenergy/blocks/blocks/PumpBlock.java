@@ -33,7 +33,7 @@ public class PumpBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("pump");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.PUMP_HARVEST_LEVEL.get(), this);
     }
 

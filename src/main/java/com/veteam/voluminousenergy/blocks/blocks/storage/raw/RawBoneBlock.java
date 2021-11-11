@@ -14,7 +14,7 @@ public class RawBoneBlock extends Block{
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("raw_bone_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 }

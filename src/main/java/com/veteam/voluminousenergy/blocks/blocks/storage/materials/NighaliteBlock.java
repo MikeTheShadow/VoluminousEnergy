@@ -13,7 +13,7 @@ public class NighaliteBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("nighalite_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(4, this);
     }
 }

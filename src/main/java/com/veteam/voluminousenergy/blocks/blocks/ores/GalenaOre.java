@@ -16,8 +16,8 @@ public class GalenaOre extends VEOreBlock {
                 .strength(2.0f)
         );
         setRegistryName("galena_ore");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.GALENA_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresPickaxe(this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Override

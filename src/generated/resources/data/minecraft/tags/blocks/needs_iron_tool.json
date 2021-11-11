@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "voluminousenergy:implosion_compressor",
+    "voluminousenergy:sawmill",
     "voluminousenergy:cinnabarore",
     "voluminousenergy:galena_ore",
     "voluminousenergy:raw_cinnabar_block",

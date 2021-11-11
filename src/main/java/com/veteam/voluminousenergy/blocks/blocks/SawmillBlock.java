@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +40,8 @@ public class SawmillBlock extends Block implements EntityBlock { // Based on the
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("sawmill");
+        VETagDataGenerator.setRequiresPickaxe(this);
+        VETagDataGenerator.setRequiresIron(this);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 

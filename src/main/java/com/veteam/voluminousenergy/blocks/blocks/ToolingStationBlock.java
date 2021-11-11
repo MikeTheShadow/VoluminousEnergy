@@ -32,7 +32,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("tooling_station");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(3, this);
     }
 

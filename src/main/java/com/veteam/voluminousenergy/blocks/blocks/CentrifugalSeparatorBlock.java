@@ -33,7 +33,7 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("centrifugal_separator");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL.get(), this);
     }
 

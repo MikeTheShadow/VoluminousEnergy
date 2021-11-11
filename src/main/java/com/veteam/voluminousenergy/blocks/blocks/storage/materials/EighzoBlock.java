@@ -14,7 +14,7 @@ public class EighzoBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("eighzo_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.EIGHZO_HARVEST_LEVEL.get(), this);
     }
 }

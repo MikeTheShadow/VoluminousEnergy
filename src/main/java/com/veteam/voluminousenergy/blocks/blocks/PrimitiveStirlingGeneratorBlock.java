@@ -35,7 +35,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
         );
 
         setRegistryName("primitivestirlinggenerator");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get(), this);
     }
 

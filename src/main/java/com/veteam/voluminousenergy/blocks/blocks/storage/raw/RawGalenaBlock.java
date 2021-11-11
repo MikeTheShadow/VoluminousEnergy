@@ -14,7 +14,7 @@ public class RawGalenaBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("raw_galena_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.GALENA_HARVEST_LEVEL.get(), this);
     }
 }

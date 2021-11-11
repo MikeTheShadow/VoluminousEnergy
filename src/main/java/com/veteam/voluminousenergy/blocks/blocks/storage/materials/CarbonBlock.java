@@ -13,7 +13,7 @@ public class CarbonBlock extends Block{
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("carbon_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(0, this);
     }
 }

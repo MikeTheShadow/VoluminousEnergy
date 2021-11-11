@@ -13,7 +13,7 @@ public class TungstenBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("tungsten_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(3, this);
     }
 }

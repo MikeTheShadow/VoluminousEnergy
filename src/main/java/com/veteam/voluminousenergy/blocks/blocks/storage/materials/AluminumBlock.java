@@ -14,7 +14,7 @@ public class AluminumBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("aluminum_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.BAUXITE_HARVEST_LEVEL.get(), this);
     }
 }

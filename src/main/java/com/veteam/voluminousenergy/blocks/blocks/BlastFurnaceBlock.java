@@ -33,7 +33,7 @@ public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("blast_furnace");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.BLAST_FURNACE_HARVEST_LEVEL.get(), this);
     }
 

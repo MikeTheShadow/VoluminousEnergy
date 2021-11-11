@@ -14,7 +14,7 @@ public class RawCinnabarBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("raw_cinnabar_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.CINNABAR_HARVEST_LEVEL.get(), this);
     }
 }

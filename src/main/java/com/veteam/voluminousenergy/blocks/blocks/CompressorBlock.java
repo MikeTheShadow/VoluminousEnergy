@@ -32,7 +32,7 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("compressor");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.COMPRESSOR_HARVEST_LEVEL.get(), this);
     }
 

@@ -4,7 +4,6 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +33,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
                     .requiresCorrectToolForDrops()
             );
         setRegistryName("primitiveblastfurnace");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 

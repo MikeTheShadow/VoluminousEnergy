@@ -33,7 +33,7 @@ public class ElectrolyzerBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("electrolyzer");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.ELECTROLYZER_HARVEST_LEVEL.get(), this);
     }
 

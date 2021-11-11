@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -11,13 +12,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
@@ -28,19 +31,19 @@ import java.util.List;
 import java.util.Random;
 
 public class PressureLadder extends LadderBlock {
-    //public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    //public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final AABB TOUCH_AABB = new AABB(0.125D, 0.0D, 0.125D, 0.875D, 0.25D, 0.875D);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     private final PressurePlateBlock.Sensitivity sensitivity = PressurePlateBlock.Sensitivity.MOBS;
 
     public PressureLadder() {
-        super(BlockBehaviour.Properties.copy(Blocks.LADDER));
+        super(BlockBehaviour.Properties.copy(Blocks.LADDER).requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)
                         .setValue(WATERLOGGED, Boolean.valueOf(false))
                         .setValue(POWERED, Boolean.valueOf(false))
         );
+        VETagDataGenerator.setRequiresAxe(this);
+        VETagDataGenerator.setRequiresWood(this);
         setRegistryName("pressure_ladder");
     }
 

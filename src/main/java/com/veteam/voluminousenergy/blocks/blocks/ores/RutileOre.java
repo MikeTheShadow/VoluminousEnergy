@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
@@ -15,8 +14,8 @@ public class RutileOre extends VEOreBlock {
             .requiresCorrectToolForDrops()
         );
         setRegistryName("rutileore");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.RUTILE_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresPickaxe(this);
+        VETagDataGenerator.setRequiresDiamond(this);
     }
 
     @Override

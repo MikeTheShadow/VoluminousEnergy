@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
-import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
@@ -15,8 +14,8 @@ public class CinnabarOre extends VEOreBlock {
             .requiresCorrectToolForDrops()
         );
         setRegistryName("cinnabarore");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.CINNABAR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresPickaxe(this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Override

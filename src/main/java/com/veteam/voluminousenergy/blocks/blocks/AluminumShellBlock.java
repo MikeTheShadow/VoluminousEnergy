@@ -13,7 +13,7 @@ public class AluminumShellBlock extends Block {
             .requiresCorrectToolForDrops()
         );
         setRegistryName("aluminum_shell");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 }

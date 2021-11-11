@@ -32,7 +32,7 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("implosion_compressor");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.IMPLOSION_COMPRESSOR_HARVEST_LEVEL.get(), this);
     }
 

@@ -14,7 +14,7 @@ public class SaltpeterBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("saltpeter_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.SALTPETER_HARVEST_LEVEL.get(), this);
     }
 }

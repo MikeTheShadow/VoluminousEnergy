@@ -32,7 +32,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("primitive_solar_panel");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get(), this);
     }
 

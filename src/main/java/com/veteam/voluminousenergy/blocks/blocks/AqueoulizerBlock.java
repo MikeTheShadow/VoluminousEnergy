@@ -33,7 +33,7 @@ public class AqueoulizerBlock extends FaceableBlock implements EntityBlock {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("aqueoulizer");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.AQUEOULIZER_HARVEST_LEVEL.get(), this);
     }
 

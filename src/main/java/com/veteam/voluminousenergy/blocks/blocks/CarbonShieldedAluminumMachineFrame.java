@@ -13,7 +13,7 @@ public class CarbonShieldedAluminumMachineFrame extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("carbon_shielded_aluminum_machine_frame");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 }

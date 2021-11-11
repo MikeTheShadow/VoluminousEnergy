@@ -13,7 +13,7 @@ public class AluminumMachineCasingBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("aluminum_machine_casing");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }
 }

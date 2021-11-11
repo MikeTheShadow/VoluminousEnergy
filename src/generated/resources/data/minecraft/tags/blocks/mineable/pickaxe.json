@@ -21,6 +21,8 @@
     "voluminousenergy:centrifugal_separator",
     "voluminousenergy:implosion_compressor",
     "voluminousenergy:blast_furnace",
+    "voluminousenergy:tooling_station",
+    "voluminousenergy:sawmill",
     "voluminousenergy:bauxiteore",
     "voluminousenergy:cinnabarore",
     "voluminousenergy:rutileore",

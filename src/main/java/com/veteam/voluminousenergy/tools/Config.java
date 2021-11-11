@@ -135,6 +135,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
     public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CRUSHER_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue CRUSHER_HARVEST_LEVEL;
 
     // Electrolyzer Variables

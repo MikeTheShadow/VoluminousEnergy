@@ -33,7 +33,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock implements EntityBlo
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("centrifugal_agitator");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get(), this);
     }
 

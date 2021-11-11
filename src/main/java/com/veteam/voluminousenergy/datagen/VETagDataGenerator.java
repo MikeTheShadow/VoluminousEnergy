@@ -12,19 +12,19 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.ArrayList;
 
 public class VETagDataGenerator extends BlockTagsProvider {
-    public static ArrayList<Block> mineableWithAxe = new ArrayList<>();
-    public static ArrayList<Block> mineableWithPickaxe = new ArrayList<>();
-    public static ArrayList<Block> mineableWithHoe = new ArrayList<>();
-    public static ArrayList<Block> mineableWithShovel = new ArrayList<>();
+    private static ArrayList<Block> mineableWithAxe = new ArrayList<>();
+    private static ArrayList<Block> mineableWithPickaxe = new ArrayList<>();
+    private static ArrayList<Block> mineableWithHoe = new ArrayList<>();
+    private static ArrayList<Block> mineableWithShovel = new ArrayList<>();
 
-    public static ArrayList<Block> requiresWood = new ArrayList<>();
-    public static ArrayList<Block> requiresStone = new ArrayList<>();
-    public static ArrayList<Block> requiresIron = new ArrayList<>();
-    public static ArrayList<Block> requiresDiamond = new ArrayList<>();
-    public static ArrayList<Block> requiresNetherite = new ArrayList<>();
-    public static ArrayList<Block> requiresNighalite = new ArrayList<>();
-    public static ArrayList<Block> requiresEighzo = new ArrayList<>();
-    public static ArrayList<Block> requiresSolarium = new ArrayList<>();
+    private static ArrayList<Block> requiresWood = new ArrayList<>();
+    private static ArrayList<Block> requiresStone = new ArrayList<>();
+    private static ArrayList<Block> requiresIron = new ArrayList<>();
+    private static ArrayList<Block> requiresDiamond = new ArrayList<>();
+    private static ArrayList<Block> requiresNetherite = new ArrayList<>();
+    private static ArrayList<Block> requiresNighalite = new ArrayList<>();
+    private static ArrayList<Block> requiresEighzo = new ArrayList<>();
+    private static ArrayList<Block> requiresSolarium = new ArrayList<>();
 
     public VETagDataGenerator(DataGenerator dataGenerator, ExistingFileHelper existingFileHelper) {
         super(dataGenerator, VoluminousEnergy.MODID, existingFileHelper);
@@ -55,6 +55,7 @@ public class VETagDataGenerator extends BlockTagsProvider {
         requiresSolarium.forEach(needsSolarium -> tag(NEEDS_SOLARIUM_TOOL).add(needsSolarium));
     }
 
+    @Deprecated
     public static void addTierBasedOnInt(int tier, Block block){
         switch (tier) {
             case 0 -> requiresWood.add(block);
@@ -68,8 +69,58 @@ public class VETagDataGenerator extends BlockTagsProvider {
         }
     }
 
+    // Tier setter
+    public static void setRequiresWood(Block block){
+        requiresWood.add(block);
+    }
+
+    public static void setRequiresStone(Block block){
+        requiresStone.add(block);
+    }
+
+    public static void setRequiresIron(Block block){
+        requiresIron.add(block);
+    }
+
+    public static void setRequiresDiamond(Block block){
+        requiresDiamond.add(block);
+    }
+
+    public static void setRequiresNetherite(Block block){
+        requiresNetherite.add(block);
+    }
+
+    public static void setRequiresNighalite(Block block){
+        requiresNighalite.add(block);
+    }
+
+    public static void setRequiresEighzo(Block block){
+        requiresEighzo.add(block);
+    }
+
+    public static void setRequiresSolarium(Block block){
+        requiresSolarium.add(block);
+    }
+
+    // Tools setter
+    public static void setRequiresAxe(Block block){
+        mineableWithAxe.add(block);
+    }
+
+    public static void setRequiresPickaxe(Block block){
+        mineableWithPickaxe.add(block);
+    }
+
+    public static void setRequiresHoe(Block block){
+        mineableWithHoe.add(block);
+    }
+
+    public static void setRequiresShovel(Block block){
+        mineableWithShovel.add(block);
+    }
+
     @Override
     public String getName() {
-        return "Voluminous Energy Mineable Tags";
+        return "Voluminous Energy Block Tool Tags";
     }
 }

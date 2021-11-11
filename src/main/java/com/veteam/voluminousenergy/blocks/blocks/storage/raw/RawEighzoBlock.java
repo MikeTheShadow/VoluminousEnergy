@@ -14,7 +14,7 @@ public class RawEighzoBlock extends Block{
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("raw_eighzo_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.EIGHZO_HARVEST_LEVEL.get(), this);
     }
 }

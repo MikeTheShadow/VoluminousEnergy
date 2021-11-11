@@ -31,7 +31,7 @@ public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.AIR_COMPRESSOR_HARVEST_LEVEL.get(), this);
         setRegistryName("air_compressor");
     }

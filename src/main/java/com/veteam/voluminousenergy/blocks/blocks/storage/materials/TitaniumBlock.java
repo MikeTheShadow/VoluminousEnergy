@@ -14,7 +14,7 @@ public class TitaniumBlock extends Block {
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("titanium_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.RUTILE_HARVEST_LEVEL.get(), this);
     }
 }

@@ -32,7 +32,7 @@ public class CombustionGeneratorBlock extends FaceableBlock implements EntityBlo
                 .requiresCorrectToolForDrops()
         );
         setRegistryName("combustion_generator");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(Config.COMBUSTION_GENERATOR_HARVEST_LEVEL.get(), this);
     }
 

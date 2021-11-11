@@ -11,11 +11,9 @@ public class SolariumBlock extends Block {
                 .sound(SoundType.METAL)
                 .strength(25.0F, 1200.0F)
                 .requiresCorrectToolForDrops()
-                //.harvestTool(ToolType.PICKAXE)
-                //.harvestLevel(7)
         );
         setRegistryName("solarium_block");
-        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(7, this);
     }
 }
