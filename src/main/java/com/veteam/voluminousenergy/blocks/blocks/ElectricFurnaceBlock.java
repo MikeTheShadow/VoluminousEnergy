@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
@@ -66,6 +68,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
             } else {
                 throw new IllegalStateException("Electric Furnace named container provider is missing!");
             }
+            player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;

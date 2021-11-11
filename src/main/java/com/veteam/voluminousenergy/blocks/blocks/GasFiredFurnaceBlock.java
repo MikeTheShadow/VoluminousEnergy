@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -67,6 +68,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
             } else {
                 throw new IllegalStateException("GasFiredFurnace named container provider is missing!");
             }
+            player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;

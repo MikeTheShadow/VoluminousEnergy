@@ -1,8 +1,12 @@
 {
   "variants": {
-    "facing=north": { "model": "voluminousenergy:block/primitiveblastfurnace" },
-    "facing=south": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 180 },
-    "facing=west": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 270 },
-    "facing=east": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 90 }
+    "facing=north,lit=false": { "model": "voluminousenergy:block/primitiveblastfurnace" },
+    "facing=south,lit=false": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 180 },
+    "facing=west,lit=false": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 270 },
+    "facing=east,lit=false": { "model": "voluminousenergy:block/primitiveblastfurnace", "y": 90 },
+    "facing=north,lit=true": { "model": "voluminousenergy:block/on/primitiveblastfurnace" },
+    "facing=south,lit=true": { "model": "voluminousenergy:block/on/primitiveblastfurnace", "y": 180 },
+    "facing=west,lit=true": { "model": "voluminousenergy:block/on/primitiveblastfurnace", "y": 270 },
+    "facing=east,lit=true": { "model": "voluminousenergy:block/on/primitiveblastfurnace", "y": 90 }
   }
 }

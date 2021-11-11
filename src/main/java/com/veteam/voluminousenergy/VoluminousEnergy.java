@@ -583,6 +583,7 @@ public class VoluminousEnergy {
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP, RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL_BLOCK, RenderType.cutout()));
+            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER, RenderType.cutout()));
         }
 
     }
