@@ -1,31 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.util.TextUtil;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-
-public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
+public class CrushingCategory {/*implements IRecipeCategory<CrusherRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
@@ -138,4 +113,4 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
         }
     }
 
-}
+*/}

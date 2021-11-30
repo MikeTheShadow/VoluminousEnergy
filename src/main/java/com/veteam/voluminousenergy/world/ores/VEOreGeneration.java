@@ -4,22 +4,21 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
-import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+
+import java.util.List;
 
 public class VEOreGeneration {
 
@@ -30,12 +29,13 @@ public class VEOreGeneration {
         } else if (biome.getCategory() == Biome.BiomeCategory.THEEND){
             // End ores
             if(Config.ENABLE_EIGHZO_ORE.get()) {
-                ConfiguredFeature<?, ?> eighzoOre = Feature.ORE
+               PlacedFeature eighzoOre = Feature.ORE
                         .configured(new OreConfiguration(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/Config.EIGHZO_SIZE.get()))
-                        .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.EIGHZO_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.EIGHZO_TOP_ANCHOR.get())))))
-                        //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(/*Bottom offset*/ Config.EIGHZO_BOTTOM_OFFSET.get(), /*Top offset*/ Config.EIGHZO_HEIGHT_OFFSET.get(), /*top hard cap*/ Config.EIGHZO_MAXIMUM_HEIGHT.get())))
-                        .squared()
-                        .count(Config.EIGHZO_COUNT.get());
+                        .placed(
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.EIGHZO_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.EIGHZO_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                CountPlacement.of(Config.EIGHZO_COUNT.get())
+                        );
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, eighzoOre);
                 oreLog(VEBlocks.EIGHZO_ORE, biome, Config.EIGHZO_SIZE.get(), Config.EIGHZO_BOTTOM_ANCHOR.get(), Config.EIGHZO_TOP_ANCHOR.get(), Config.EIGHZO_COUNT.get());
             }
@@ -44,61 +44,69 @@ public class VEOreGeneration {
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
 
                 if (Config.ENABLE_SALTPETER_ORE.get()){
-                    ConfiguredFeature<?, ?> saltpeterOre = Feature.ORE
+                    PlacedFeature saltpeterOre = Feature.ORE
                             .configured(new OreConfiguration(replace.SANDS, VEBlocks.SALTPETER_ORE.defaultBlockState(), Config.SALTPETER_SIZE.get()))
-                            .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.SALTPETER_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.SALTPETER_TOP_ANCHOR.get())))))
-                            //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_BOTTOM_OFFSET.get(), Config.SALTPETER_MAXIMUM_HEIGHT.get())))
-                            .squared()
-                            .count(Config.SALTPETER_COUNT.get());
-
+                            .placed(
+                                    HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SALTPETER_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.SALTPETER_TOP_ANCHOR.get())),
+                                    InSquarePlacement.spread(),
+                                    BiomeFilter.biome(),
+                                    CountPlacement.of(Config.SALTPETER_COUNT.get())
+                            );
                     biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, saltpeterOre);
                     oreLog(VEBlocks.SALTPETER_ORE, biome, Config.SALTPETER_SIZE.get(), Config.SALTPETER_BOTTOM_ANCHOR.get(), Config.SALTPETER_TOP_ANCHOR.get(), Config.BAUXITE_COUNT.get());
                 }
             }
 
             if (Config.ENABLE_BAUXITE_ORE.get()){
-                ConfiguredFeature<?, ?> bauxiteOre = Feature.ORE
+                PlacedFeature bauxiteOre = Feature.ORE
                         .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
-                        .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.BAUXITE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_TOP_ANCHOR.get())))))
-                        //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(Config.BAUXITE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.BAUXITE_MAXIMUM_HEIGHT.get())))
-                        .squared()
-                        .count(Config.BAUXITE_COUNT.get());
+                        .placed(
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.BAUXITE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                BiomeFilter.biome(),
+                                CountPlacement.of(Config.BAUXITE_COUNT.get())
+                        );
 
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bauxiteOre);
                 oreLog(VEBlocks.BAUXITE_ORE, biome, Config.BAUXITE_SIZE.get(), Config.BAUXITE_BOTTOM_ANCHOR.get(), Config.BAUXITE_TOP_ANCHOR.get(), Config.BAUXITE_COUNT.get());
             }
 
             if (Config.ENABLE_CINNABAR_ORE.get()){
-                ConfiguredFeature<?, ?> cinnabarOre = Feature.ORE
+                PlacedFeature cinnabarOre = Feature.ORE
                         .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
-                        .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.CINNABAR_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_TOP_ANCHOR.get())))))
-                        //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(Config.CINNABAR_BOTTOM_OFFSET.get(), Config.CINNABAR_HEIGHT_OFFSET.get(), Config.CINNABAR_MAXIMUM_HEIGHT.get())))
-                        .squared()
-                        .count(Config.CINNABAR_COUNT.get());
-
+                        .placed(
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.CINNABAR_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                BiomeFilter.biome(),
+                                CountPlacement.of(Config.CINNABAR_COUNT.get())
+                        );
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, cinnabarOre);
                 oreLog(VEBlocks.CINNABAR_ORE, biome, Config.CINNABAR_SIZE.get(), Config.CINNABAR_BOTTOM_ANCHOR.get(), Config.CINNABAR_TOP_ANCHOR.get(), Config.CINNABAR_COUNT.get());
             }
 
             if (Config.ENABLE_RUTILE_ORE.get()){
-                ConfiguredFeature<?, ?> rutileOre = Feature.ORE
+                PlacedFeature rutileOre = Feature.ORE
                         .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
-                        .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.RUTILE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_TOP_ANCHOR.get())))))
-                        //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(Config.RUTILE_BOTTOM_OFFSET.get(), Config.BAUXITE_HEIGHT_OFFSET.get(), Config.RUTILE_MAXIMUM_HEIGHT.get())))
-                        .squared()
-                        .count(Config.RUTILE_COUNT.get());
+                        .placed(
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RUTILE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                BiomeFilter.biome(),
+                                CountPlacement.of(Config.RUTILE_COUNT.get())
+                        );
 
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rutileOre);
                 oreLog(VEBlocks.RUTILE_ORE, biome, Config.RUTILE_SIZE.get(), Config.RUTILE_BOTTOM_ANCHOR.get(), Config.RUTILE_TOP_ANCHOR.get(), Config.RUTILE_COUNT.get());
             }
 
             if (Config.ENABLE_GALENA_ORE.get()){
-                ConfiguredFeature<?, ?> galenaOre = Feature.ORE
+                PlacedFeature galenaOre = Feature.ORE
                         .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
-                        .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())))))
-                        //.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(Config.GALENA_BOTTOM_OFFSET.get(), Config.GALENA_HEIGHT_OFFSET.get(), Config.GALENA_MAXIMUM_HEIGHT.get())))
-                        .squared()
-                        .count(Config.GALENA_COUNT.get());
+                        .placed(
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                BiomeFilter.biome(),
+                                CountPlacement.of(Config.GALENA_COUNT.get())
+                        );
 
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOre);
                 oreLog(VEBlocks.GALENA_ORE, biome, Config.GALENA_SIZE.get(), Config.GALENA_BOTTOM_ANCHOR.get(), Config.GALENA_TOP_ANCHOR.get(), Config.GALENA_COUNT.get());

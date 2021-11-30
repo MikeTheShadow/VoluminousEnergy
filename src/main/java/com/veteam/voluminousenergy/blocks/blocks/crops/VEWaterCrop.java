@@ -67,7 +67,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     @Override
     public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos){
         if(state.getValue(BlockStateProperties.WATERLOGGED)){
-            worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+            worldIn.getFluidTicks().hasScheduledTick(currentPos, Fluids.WATER/*, Fluids.WATER.getTickDelay(worldIn)*/);
         }
 
         DoubleBlockHalf doubleBlockHalf = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
