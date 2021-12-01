@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
-import net.minecraft.world.level.levelgen.placement.ChanceDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -34,14 +33,25 @@ public class VEFeatureGeneration {
     }
 
     public static void addOilLake(BiomeLoadingEvent event){
-        ConfiguredFeature<?, ?> crudeOilLakeFeature = CrudeOilFeature.INSTANCE
+        // For surface oil lakes
+        ConfiguredFeature<?, ?> surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
-                .rarity(25) // 250 works, 80 original TODO: Update config
+                .rarity(65) // 250 works, 80 original TODO: Update config
                 .squared()
                 .count(1); // 4 works
+
+        // For underground oil lakes
+        ConfiguredFeature<?, ?> undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
+                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
+                .rarity(15) // 250 works, 80 original TODO: Update config
+                .squared()
+                .count(1); // 4 works
+
         if(Config.GENERATE_OIL_LAKES.get()){
-            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, crudeOilLakeFeature);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, surfaceCrudeOilLakeFeature);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, undergroundCrudeOilLakeFeature);
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Oil Lakes to generate in: " + event.getName().toString());
         }
     }
@@ -50,7 +60,7 @@ public class VEFeatureGeneration {
         ConfiguredFeature<?, ?> crudeOilGeyser = GeyserFeature.INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.top()))))
-                .rarity(55) // 2520 original TODO: Update config
+                .rarity(100) // 2520 original TODO: Update config
                 .squared()
                 .count(1);
         if(Config.GENERATE_OIL_GEYSER.get()){
