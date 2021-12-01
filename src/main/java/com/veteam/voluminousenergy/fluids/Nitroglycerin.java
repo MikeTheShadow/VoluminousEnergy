@@ -41,7 +41,7 @@ public class Nitroglycerin {
     }
 
     public static Item NitroglycerinBucket(){
-        NITROGLYCERIN_BUCKET = new VENoPlaceBucket(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return NITROGLYCERIN_BUCKET;
     }
 

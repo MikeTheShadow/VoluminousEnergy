@@ -41,7 +41,7 @@ public class WhiteFumingNitricAcid {
     }
 
     public static Item WhiteFumingNitricAcidBucket(){
-        WHITE_FUMING_NITRIC_ACID_BUCKET = new VENoPlaceBucket(() -> WHITE_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> WHITE_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return WHITE_FUMING_NITRIC_ACID_BUCKET;
     }
 

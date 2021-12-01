@@ -41,7 +41,7 @@ public class LiquefiedCoke {
     }
 
     public static Item LiquefiedCokeBucket(){
-        LIQUEFIED_COKE_BUCKET = new VENoPlaceBucket(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIQUEFIED_COKE_BUCKET;
     }
 

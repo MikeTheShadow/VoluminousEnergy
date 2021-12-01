@@ -41,7 +41,7 @@ public class Nitrogen {
     }
 
     public static Item NitrogenBucket(){
-        NITROGEN_BUCKET = new VENoPlaceBucket(() -> NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        NITROGEN_BUCKET = new BucketItem(() -> NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return NITROGEN_BUCKET;
     }
 

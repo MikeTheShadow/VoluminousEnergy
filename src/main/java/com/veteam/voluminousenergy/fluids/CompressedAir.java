@@ -41,7 +41,7 @@ public class CompressedAir {
     }
 
     public static Item CompressedAirBucket() {
-        COMPRESSED_AIR_BUCKET = new VENoPlaceBucket(() -> COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        COMPRESSED_AIR_BUCKET = new BucketItem(() -> COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return COMPRESSED_AIR_BUCKET;
     }
 

@@ -41,7 +41,7 @@ public class LiquefiedCoal {
     }
 
     public static Item LiquefiedCoalBucket(){
-        LIQUEFIED_COAL_BUCKET = new VENoPlaceBucket(() -> LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        LIQUEFIED_COAL_BUCKET = new BucketItem(() -> LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIQUEFIED_COAL_BUCKET;
     }
 

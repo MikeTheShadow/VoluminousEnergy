@@ -41,7 +41,7 @@ public class Mercury {
     }
 
     public static Item MercuryBucket(){
-        MERCURY_BUCKET = new VENoPlaceBucket(() -> MERCURY, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        MERCURY_BUCKET = new BucketItem(() -> MERCURY, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return MERCURY_BUCKET;
     }
 

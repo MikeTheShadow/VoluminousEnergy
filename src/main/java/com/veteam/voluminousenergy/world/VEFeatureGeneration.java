@@ -25,8 +25,8 @@ public class VEFeatureGeneration {
             //if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Will start feature registration process now.");
             // Oil Features
-            //addOilLake(event);
-            //addOilGeyser(event);
+            addOilLake(event);
+            addOilGeyser(event);
 
             // Crop features
             addRice(event);
@@ -36,8 +36,10 @@ public class VEFeatureGeneration {
     public static void addOilLake(BiomeLoadingEvent event){
         ConfiguredFeature<?, ?> crudeOilLakeFeature = CrudeOilFeature.INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .decorated(FeatureDecorator.LAVA_LAKE.configured(new ChanceDecoratorConfiguration(Config.OIL_LAKE_CHANCE.get())));
-
+                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
+                .rarity(25) // 250 works, 80 original TODO: Update config
+                .squared()
+                .count(1); // 4 works
         if(Config.GENERATE_OIL_LAKES.get()){
             event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, crudeOilLakeFeature);
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Oil Lakes to generate in: " + event.getName().toString());
@@ -47,8 +49,10 @@ public class VEFeatureGeneration {
     public static void addOilGeyser(BiomeLoadingEvent event){
         ConfiguredFeature<?, ?> crudeOilGeyser = GeyserFeature.INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .decorated(FeatureDecorator.LAVA_LAKE.configured(new ChanceDecoratorConfiguration(Config.OIL_GEYSER_CHANCE.get())));
-
+                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.top()))))
+                .rarity(55) // 2520 original TODO: Update config
+                .squared()
+                .count(1);
         if(Config.GENERATE_OIL_GEYSER.get()){
             event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, crudeOilGeyser);
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Oil Geysers to generate in: " + event.getName().toString());
