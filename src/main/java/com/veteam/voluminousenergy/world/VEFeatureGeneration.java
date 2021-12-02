@@ -10,11 +10,11 @@ import com.veteam.voluminousenergy.world.feature.RiceFeature;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
-import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEFeatureGeneration {
@@ -37,7 +37,7 @@ public class VEFeatureGeneration {
         ConfiguredFeature<?, ?> surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
-                .rarity(65) // 250 works, 80 original TODO: Update config
+                .rarity(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
                 .squared()
                 .count(1); // 4 works
 
@@ -45,7 +45,7 @@ public class VEFeatureGeneration {
         ConfiguredFeature<?, ?> undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
-                .rarity(15) // 250 works, 80 original TODO: Update config
+                .rarity(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
                 .squared()
                 .count(1); // 4 works
 
@@ -60,7 +60,7 @@ public class VEFeatureGeneration {
         ConfiguredFeature<?, ?> crudeOilGeyser = GeyserFeature.INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
                 .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.top()))))
-                .rarity(100) // 2520 original TODO: Update config
+                .rarity(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
                 .squared()
                 .count(1);
         if(Config.GENERATE_OIL_GEYSER.get()){

@@ -13,10 +13,10 @@ public class CrudeOilFeature extends VELakesFeature {
     public static CrudeOilFeature SURFACE_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, true);
     public static CrudeOilFeature UNDERGROUND_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, false);
 
-    private boolean isForSurface;
+    private final boolean isForSurface;
 
-    public CrudeOilFeature(Codec<BlockStateConfiguration> p_i231962_1_, boolean forSurface) {
-        super(p_i231962_1_);
+    public CrudeOilFeature(Codec<BlockStateConfiguration> codec, boolean forSurface) {
+        super(codec);
         this.isForSurface = forSurface;
     }
 
