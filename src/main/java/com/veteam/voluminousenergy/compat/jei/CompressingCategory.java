@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -116,4 +116,4 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
         itemStacks.set(1, jeiStack);
     }
-}
+}*/

@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -98,4 +98,4 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
     }
-}
+}*/

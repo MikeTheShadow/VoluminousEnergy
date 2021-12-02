@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -123,4 +123,4 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         // Calculate output
         fluidStacks.set(2, recipe.getOutputFluid());
     }
-}
+}*/

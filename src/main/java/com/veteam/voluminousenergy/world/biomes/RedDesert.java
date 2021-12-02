@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.world.biomes;
 
+import com.mojang.bridge.Bridge;
 import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.StructureFeatures;
@@ -8,8 +9,6 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
-import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilderBaseConfiguration;
 
 public class RedDesert extends VEBiome {
 
@@ -32,25 +31,25 @@ public class RedDesert extends VEBiome {
 
         // Configure and build the biome
         BiomeSpecialEffects ambience = (new BiomeSpecialEffects.Builder()).waterColor(4159204).waterFogColor(4159204)/*.fogColor(329011)*/.fogColor(12638463).skyColor(calculateColour(2.0F)).foliageColorOverride(10387789).grassColorOverride(9470285)/*.ambientMoodSound(justShutUp)*/.build();
-        this.configureBiome(biomeBuilder.biomeCategory(Biome.BiomeCategory.DESERT).depth(0.05F).scale(0.05F).temperature(2.0F).downfall(0.05F).precipitation(Biome.Precipitation.NONE).specialEffects(ambience));
+        this.configureBiome(biomeBuilder.biomeCategory(Biome.BiomeCategory.DESERT).temperature(2.0F).downfall(0.05F).precipitation(Biome.Precipitation.NONE).specialEffects(ambience));
         return biomeBuilder.build();
     }
 
     @Override
     protected void configureGeneration(BiomeGenerationSettings.Builder builder){
-        // Surface Builder
-        SurfaceBuilderBaseConfiguration config = new SurfaceBuilderBaseConfiguration(Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SANDSTONE.defaultBlockState());
-        ConfiguredSurfaceBuilder<SurfaceBuilderBaseConfiguration> configuredSurfaceBuilder = new ConfiguredSurfaceBuilder<>(VESurfaceBuilders.RED_DESERT,config);
-        builder.surfaceBuilder(configuredSurfaceBuilder);
+        // Surface Builder TODO: port to 1.18
+        //SurfaceBuilderBaseConfiguration config = new SurfaceBuilderBaseConfiguration(Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SAND.defaultBlockState(),Blocks.RED_SANDSTONE.defaultBlockState());
+        //ConfiguredSurfaceBuilder<SurfaceBuilderBaseConfiguration> configuredSurfaceBuilder = new ConfiguredSurfaceBuilder<>(VESurfaceBuilders.RED_DESERT,config);
+        //builder.surfaceBuilder(configuredSurfaceBuilder);
 
         // Structures Builder
-        builder.addStructureStart(StructureFeatures.DESERT_PYRAMID);
-        builder.addStructureStart(StructureFeatures.RUINED_PORTAL_DESERT);
-        builder.addStructureStart(StructureFeatures.VILLAGE_DESERT);
-        builder.addStructureStart(StructureFeatures.STRONGHOLD);
+        //builder.addStructureStart(StructureFeatures.DESERT_PYRAMID);
+        //builder.addStructureStart(StructureFeatures.RUINED_PORTAL_DESERT);
+        //builder.addStructureStart(StructureFeatures.VILLAGE_DESERT);
+        //builder.addStructureStart(StructureFeatures.STRONGHOLD);
 
         // Underground
-        BiomeDefaultFeatures.addDefaultCarvers(builder);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(builder);
         BiomeDefaultFeatures.addDefaultOres(builder);
         BiomeDefaultFeatures.addFossilDecoration(builder);
         BiomeDefaultFeatures.addDefaultMonsterRoom(builder);

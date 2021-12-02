@@ -99,7 +99,7 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
                             BlockPos blockpos = pos.offset(i2, j4 - 1, j3);
                             if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
                                 Biome biome = worldIn.getBiome(blockpos);
-                                if (biome.getGenerationSettings().getSurfaceBuilderConfig().getTopMaterial().getBlock() == Blocks.MYCELIUM) {
+                                if (biome.getBiomeCategory() == Biome.BiomeCategory.MUSHROOM) {
                                     worldIn.setBlock(blockpos, Blocks.MYCELIUM.defaultBlockState(), 2);
                                 } else {
                                     worldIn.setBlock(blockpos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);

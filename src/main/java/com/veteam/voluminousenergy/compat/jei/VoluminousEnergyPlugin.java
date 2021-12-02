@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -114,4 +114,4 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting"));
     }
-}
+}*/

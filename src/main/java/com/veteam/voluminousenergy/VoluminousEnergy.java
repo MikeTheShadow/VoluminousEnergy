@@ -12,7 +12,6 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
-import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBits;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -22,10 +21,8 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
 import com.veteam.voluminousenergy.world.biomes.RedDesert;
-import com.veteam.voluminousenergy.world.biomes.ShallowWarmOcean;
 import com.veteam.voluminousenergy.world.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
-import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -39,12 +36,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -58,7 +54,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,11 +111,11 @@ public class VoluminousEnergy {
         //LOGGER.info("Hello from Voluminous Energy on server start!");
     }*/
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
         //VoluminousEnergy.LOGGER.info("Hello from Voluminous Energy about to server start!");
         server = event.getServer();
-    }
+    }*/
 
     public static MinecraftServer server;
 
@@ -452,112 +447,112 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void onContainerRegistry(final RegistryEvent.Register<MenuType<?>> event){
 
-            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+            event.getRegistry().register(IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
                 return new PrimitiveBlastFurnaceContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("primitiveblastfurnace"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new PrimitiveStirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("primitivestirlinggenerator"));
 
-            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+            event.getRegistry().register(IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
                 return new CrusherContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("crusher"));
 
-            event.getRegistry().register(IForgeContainerType.create((id, inv, data)-> {
+            event.getRegistry().register(IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
                 return new ElectrolyzerContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("electrolyzer"));
 
-            event.getRegistry().register(IForgeContainerType.create((id, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new CentrifugalAgitatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("centrifugal_agitator"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new CompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("compressor"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new StirlingGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("stirling_generator"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new CombustionGeneratorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("combustion_generator"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new AqueoulizerContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("aqueoulizer"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new AirCompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("air_compressor"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new DistillationUnitContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("distillation_unit"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new PumpContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("pump"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new GasFiredFurnaceContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("gas_fired_furnace"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new ElectricFurnaceContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("electric_furnace"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new BatteryBoxContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("battery_box"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new PrimitiveSolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("primitive_solar_panel"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new SolarPanelContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("solar_panel"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new CentrifugalSeparatorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("centrifugal_separator"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new ImplosionCompressorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("implosion_compressor"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new BlastFurnaceContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("blast_furnace"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new ToolingStationContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("tooling_station"));
 
-            event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> {
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
                 return new SawmillContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("sawmill"));
@@ -569,11 +564,11 @@ public class VoluminousEnergy {
             //VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
         }
 
-        @SubscribeEvent
+        /*@SubscribeEvent
         public static void onRegisterSurfaceBuilder(RegistryEvent.Register<SurfaceBuilder<?>> event){
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
-        }
+        }*/
     }
 
     @Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)

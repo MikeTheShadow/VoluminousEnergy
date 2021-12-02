@@ -61,12 +61,12 @@ public class CombustionMultitool extends Multitool {
         });
     }
 
-    @Override
+    /*@Override
     public boolean showDurabilityBar(ItemStack itemStack){
         return true;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public double getDurabilityForDisplay(ItemStack itemStack){
         AtomicInteger fluidInTank = new AtomicInteger(0);
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
@@ -75,7 +75,7 @@ public class CombustionMultitool extends Multitool {
         });
 
         return 1-(fluidInTank.get() / (double)this.tank.getTank().getTankCapacity(0));
-    }
+    }*/
 
     // This should initialize the FluidHandler and also allow one to get the fluidHandler from this item
     @Nullable

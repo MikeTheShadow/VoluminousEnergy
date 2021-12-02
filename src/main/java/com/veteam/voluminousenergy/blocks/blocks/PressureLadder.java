@@ -99,7 +99,8 @@ public class PressureLadder extends LadderBlock {
         }
 
         if (flag1) {
-            world.getBlockTicks().scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
+            world.getBlockTicks().hasScheduledTick(new BlockPos(blockPos),this);
+            //world.getBlockTicks().scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
         }
 
     }

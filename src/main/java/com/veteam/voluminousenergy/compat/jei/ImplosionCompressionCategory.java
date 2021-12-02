@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -120,4 +120,4 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
         itemStacks.set(1, jeiStack);
         itemStacks.set(2, new ItemStack(Items.GUNPOWDER, 1));
     }
-}
+}*/

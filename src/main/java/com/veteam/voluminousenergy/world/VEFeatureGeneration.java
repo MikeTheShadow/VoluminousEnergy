@@ -10,11 +10,8 @@ import com.veteam.voluminousenergy.world.feature.RiceFeature;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.RangeDecoratorConfiguration;
-import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEFeatureGeneration {
@@ -34,20 +31,25 @@ public class VEFeatureGeneration {
 
     public static void addOilLake(BiomeLoadingEvent event){
         // For surface oil lakes
-        ConfiguredFeature<?, ?> surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
+        PlacedFeature surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
-                .rarity(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
-                .squared()
-                .count(1); // 4 works
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
+                        InSquarePlacement.spread(),
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
+                );
 
         // For underground oil lakes
-        ConfiguredFeature<?, ?> undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
+        PlacedFeature undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.aboveBottom(5), VerticalAnchor.top()))))
-                .rarity(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
-                .squared()
-                .count(1); // 4 works
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
+                        InSquarePlacement.spread(),
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
+                );
+        //.decorated(FeatureDecorator.LAVA_LAKE.configured(new ChanceDecoratorConfiguration(Config.OIL_LAKE_CHANCE.get())));
 
         if(Config.GENERATE_OIL_LAKES.get()){
             event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, surfaceCrudeOilLakeFeature);
@@ -57,12 +59,16 @@ public class VEFeatureGeneration {
     }
 
     public static void addOilGeyser(BiomeLoadingEvent event){
-        ConfiguredFeature<?, ?> crudeOilGeyser = GeyserFeature.INSTANCE
+        PlacedFeature crudeOilGeyser = GeyserFeature.INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.bottom(), VerticalAnchor.top()))))
-                .rarity(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
-                .squared()
-                .count(1);
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
+                        InSquarePlacement.spread(),
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
+
+                );
+
         if(Config.GENERATE_OIL_GEYSER.get()){
             event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, crudeOilGeyser);
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Oil Geysers to generate in: " + event.getName().toString());
@@ -70,12 +76,18 @@ public class VEFeatureGeneration {
     }
 
     public static void addRice(BiomeLoadingEvent event){
-        ConfiguredFeature<?, ?> riceFeature = RiceFeature.INSTANCE
+        PlacedFeature riceFeature = RiceFeature.INSTANCE
                 .configured(new BlockStateConfiguration(VEBlocks.RICE_CROP.defaultBlockState()))
                 // Place anchored to 55 through 256
-                .decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(55), VerticalAnchor.top())))
+                /*.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(55), VerticalAnchor.top())))
                         .squared()
-                        .count(Config.RICE_CHANCE.get()));
+                        .count(Config.RICE_CHANCE.get()));*/
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                        InSquarePlacement.spread(),
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.RICE_CHANCE.get())
+                );
 
         if (Config.GENERATE_RICE.get()) {
             if (event.getCategory() != Biome.BiomeCategory.OCEAN){

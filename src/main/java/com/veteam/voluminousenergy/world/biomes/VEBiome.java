@@ -26,7 +26,7 @@ public class VEBiome {
     protected void configureMobSpawns(MobSpawnSettings.Builder builder) {}
 
     protected void configureDefaultMobSpawns(MobSpawnSettings.Builder builder) {
-        builder.setPlayerCanSpawn();
+        //builder.setPlayerCanSpawn();
     }
 
     public Biome build() {

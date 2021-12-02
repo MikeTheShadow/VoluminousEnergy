@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -105,4 +105,4 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         fluidStacks.set(1, recipe.getOutputFluid());
         fluidStacks.set(2, recipe.getSecondFluid());
     }
-}
+}*/
