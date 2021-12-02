@@ -11,10 +11,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEFeatureGeneration {
@@ -33,25 +30,24 @@ public class VEFeatureGeneration {
     }
 
     public static void addOilLake(BiomeLoadingEvent event){
-        PlacedFeature crudeOilLakeFeature = CrudeOilFeature.INSTANCE
         // For surface oil lakes
         PlacedFeature surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .rarity(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
                 .placed(
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(1)
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
                 );
 
         // For underground oil lakes
         PlacedFeature undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .rarity(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
                 .placed(
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(1)
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
                 );
                 //.decorated(FeatureDecorator.LAVA_LAKE.configured(new ChanceDecoratorConfiguration(Config.OIL_LAKE_CHANCE.get())));
 
@@ -64,12 +60,13 @@ public class VEFeatureGeneration {
 
     public static void addOilGeyser(BiomeLoadingEvent event){
         PlacedFeature crudeOilGeyser = GeyserFeature.INSTANCE
-                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock())
-                .rarity(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
-                .placed( // TODO: Circle back to this error
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(1)
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
+
                 );
 
         if(Config.GENERATE_OIL_GEYSER.get()){
@@ -88,7 +85,8 @@ public class VEFeatureGeneration {
                 .placed(
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(Config.RICE_CHANCE.get())
+                        CountPlacement.of(1),
+                        RarityFilter.onAverageOnceEvery(Config.RICE_CHANCE.get())
                 );
 
         if (Config.GENERATE_RICE.get()) {
