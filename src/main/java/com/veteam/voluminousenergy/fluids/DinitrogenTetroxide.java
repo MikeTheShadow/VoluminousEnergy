@@ -41,7 +41,7 @@ public class DinitrogenTetroxide {
     }
 
     public static Item DinitrogenTetroxideBucket(){
-        DINITROGEN_TETROXIDE_BUCKET = new VENoPlaceBucket(() -> DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(() -> DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return DINITROGEN_TETROXIDE_BUCKET;
     }
 

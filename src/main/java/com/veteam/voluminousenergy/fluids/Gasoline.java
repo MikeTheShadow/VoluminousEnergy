@@ -41,7 +41,7 @@ public class Gasoline {
     }
 
     public static Item GasolineBucket(){
-        GASOLINE_BUCKET = new VENoPlaceBucket(() -> GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        GASOLINE_BUCKET = new BucketItem(() -> GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return GASOLINE_BUCKET;
     }
 
