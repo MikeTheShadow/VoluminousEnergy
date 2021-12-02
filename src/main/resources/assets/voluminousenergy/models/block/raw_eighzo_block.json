@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/raw_eighzo_block",
+    "down": "voluminousenergy:block/raw_eighzo_block",
+    "up": "voluminousenergy:block/raw_eighzo_block",
+    "east": "voluminousenergy:block/raw_eighzo_block",
+    "west": "voluminousenergy:block/raw_eighzo_block",
+    "north": "voluminousenergy:block/raw_eighzo_block",
+    "south": "voluminousenergy:block/raw_eighzo_block"
+  }
+}

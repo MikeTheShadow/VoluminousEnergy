@@ -16,19 +16,21 @@ import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,13 +40,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     private LazyOptional<IItemHandlerModifiable> output0h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3));
     private LazyOptional<IItemHandlerModifiable> output1h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3, 4));
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputTankFluidHandler);
     private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutputTank0FluidHandler);
     private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutputTank1FluidHandler);
@@ -76,12 +76,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
+    public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
+    }
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-
-    public CentrifugalAgitatorTile() {
-        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE);
+    @Deprecated
+    public CentrifugalAgitatorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
     }
 
     public ItemStackHandler inventory = createHandler();
@@ -164,7 +165,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(4).copy()
                         )
@@ -182,17 +183,18 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
      */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         // Tanks
-        CompoundNBT inputTank = tag.getCompound("inputTank");
-        CompoundNBT outputTank0 = tag.getCompound("outputTank0");
-        CompoundNBT outputTank1 = tag.getCompound("outputTank1");
+        CompoundTag inputTank = tag.getCompound("inputTank");
+        CompoundTag outputTank0 = tag.getCompound("outputTank0");
+        CompoundTag outputTank1 = tag.getCompound("outputTank1");
 
         this.inputTank.getTank().readFromNBT(inputTank);
         this.outputTank0.getTank().readFromNBT(outputTank0);
@@ -202,24 +204,23 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
         this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         // Tanks
-        CompoundNBT inputNBT = new CompoundNBT();
-        CompoundNBT outputNBT0 = new CompoundNBT();
-        CompoundNBT outputNBT1 = new CompoundNBT();
+        CompoundTag inputNBT = new CompoundTag();
+        CompoundTag outputNBT0 = new CompoundTag();
+        CompoundTag outputNBT1 = new CompoundTag();
 
         this.inputTank.getTank().writeToNBT(inputNBT);
         this.outputTank0.getTank().writeToNBT(outputNBT0);
@@ -237,20 +238,20 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -287,7 +288,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -321,22 +322,19 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CentrifugalAgitatorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
-        if (counter == 0) {
-            return 0;
-        } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
-        }
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public FluidStack getFluidStackFromTank(int num){
@@ -442,7 +440,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

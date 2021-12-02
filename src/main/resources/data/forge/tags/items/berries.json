@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:berries/sweet_berries",
+    "#forge:berries/glow_berries"
+  ]
+}

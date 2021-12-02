@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
@@ -16,23 +16,24 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
+public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContainer> {
 
     private BatteryBoxTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
-    public BatteryBoxScreen(BatteryBoxContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public BatteryBoxScreen(BatteryBoxContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (BatteryBoxTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
@@ -42,64 +43,65 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 
         }));
 
         // Top row
-        this.addButton(new SlotBoolButton(tileEntity.topManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.topManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.topManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.topManager, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Bottom Row
-        this.addButton(new SlotBoolButton(tileEntity.bottomManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.bottomManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.bottomManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.bottomManager, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Slot arrows
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { }));
-        this.addButton(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { }));
 
         // Send Out Power Button
-        this.addButton(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
+        addRenderableWidget(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("battery_box"), 34.0F, 6.0F, 16777215);
-        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), 16777215);
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY))
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BATTERY_BOX_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.BATTERY_BOX_MAX_POWER.get() + " FE"), mouseX, mouseY);
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI);
+    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -121,11 +123,11 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
         }
     }
 
-    private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.buttons){
+    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+        for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
                             //informTileOfIOButton(true);
@@ -133,7 +135,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
                         }
                     });
                 } else {
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
                             //informTileOfIOButton(false);
@@ -146,7 +148,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
                 ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -154,7 +156,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
@@ -172,7 +174,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateSlotPairButton(boolean status, int id){
-        for(Widget widget : this.buttons){
+        for(Widget widget : this.renderables){
             if(widget instanceof BatteryBoxSlotPairButton){
                 if(((BatteryBoxSlotPairButton) widget).getId() == id){
                     ((BatteryBoxSlotPairButton) widget).setStatus(status);
@@ -182,7 +184,7 @@ public class BatteryBoxScreen extends ContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateSendOutPowerButton(boolean status){
-        for(Widget widget : this.buttons){
+        for(Widget widget : this.renderables){
             if(widget instanceof BatteryBoxSendOutPowerButton){
                 ((BatteryBoxSendOutPowerButton) widget).setStatus(status);
             }

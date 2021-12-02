@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,7 +49,7 @@ public class VESlotManager {
         return translationKey;
     }
 
-    public void write(CompoundNBT nbt, String prefix){
+    public void write(CompoundTag nbt, String prefix){
         //VoluminousEnergy.LOGGER.debug("Writing to NBT.");
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_enabled as: " + enabled);
         //VoluminousEnergy.LOGGER.debug("Writing: " + prefix + "_direction as: " + getDirection().getIndex() + " Meaning: " + getDirection());
@@ -57,7 +57,7 @@ public class VESlotManager {
         nbt.putInt(prefix+"_direction", getDirection().get3DDataValue());
     }
 
-    public void read(CompoundNBT nbt, String prefix){
+    public void read(CompoundTag nbt, String prefix){
         setStatus(nbt.getBoolean(prefix + "_enabled"));
         int sideInt = nbt.getInt(prefix + "_direction");
 
@@ -69,19 +69,14 @@ public class VESlotManager {
 
     public Direction directionFromInt(int sideInt){
         // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-        if(sideInt == 0){
-            return Direction.DOWN;
-        } else if (sideInt == 1){
-            return Direction.UP;
-        } else if (sideInt == 2){
-            return Direction.NORTH;
-        } else if (sideInt == 3){
-            return Direction.SOUTH;
-        } else if (sideInt == 4){
-            return Direction.WEST;
-        } else if (sideInt == 5){
-            return Direction.EAST;
-        }
-        return Direction.UP;
+        return switch (sideInt){
+            case 0 -> Direction.DOWN;
+            case 1 -> Direction.UP;
+            case 2 -> Direction.NORTH;
+            case 3 -> Direction.SOUTH;
+            case 4 -> Direction.WEST;
+            case 5 -> Direction.EAST;
+            default -> Direction.UP;
+        };
     }
 }

@@ -1,13 +1,13 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 import java.util.Random;
 
@@ -17,18 +17,18 @@ public class SaltpeterOre extends FallingBlock {
             .sound(SoundType.SAND)
             .strength(0.6f)
             .requiresCorrectToolForDrops()
-            .harvestLevel(Config.SALTPETER_HARVEST_LEVEL.get())
-            .harvestTool(ToolType.SHOVEL)
         );
         setRegistryName("saltpeterore");
+        VETagDataGenerator.mineableWithShovel.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.SALTPETER_HARVEST_LEVEL.get(), this);
     }
 
     public int xpOnDrop(Random rand) {
-        return MathHelper.nextInt(rand, 1, 9);
+        return Mth.nextInt(rand, 1, 9);
     }
 
     @Override
-    public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
+    public int getExpDrop(BlockState state, net.minecraft.world.level.LevelReader reader, BlockPos pos, int fortune, int silktouch) {
         return silktouch == 0 ? this.xpOnDrop(RANDOM)*(1+fortune) : 0;
     }
 }

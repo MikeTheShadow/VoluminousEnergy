@@ -4,30 +4,30 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.IntReferenceHolder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
 public class BatteryBoxContainer extends VoluminousContainer {
 
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
     private IItemHandler playerInventory;
     private BatteryBoxScreen screen;
+    private static final int numberOfSlots = 12;
 
-    public BatteryBoxContainer(int id, World world, BlockPos pos, PlayerInventory inventory, PlayerEntity player){
+    public BatteryBoxContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.BATTERY_BOX_CONTAINER,id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -53,7 +53,7 @@ public class BatteryBoxContainer extends VoluminousContainer {
         });
         layoutPlayerInventorySlots(8, 84);
 
-        addDataSlot(new IntReferenceHolder() {
+        addDataSlot(new DataSlot() {
             @Override
             public int get() {
                 return getEnergy();
@@ -78,8 +78,8 @@ public class BatteryBoxContainer extends VoluminousContainer {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
-        return stillValid(IWorldPosCallable.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.BATTERY_BOX_BLOCK);
+    public boolean stillValid(Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.BATTERY_BOX_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -93,29 +93,26 @@ public class BatteryBoxContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final PlayerEntity player, final int index) {
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
+
         if (slot != null && slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            final int containerSlots = this.slots.size() - player.inventory.items.size();
-            if (index < containerSlots) {
-                if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
-                return ItemStack.EMPTY;
-            }
+            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
+
             if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
+
             slot.onTake(player, slotStack);
         }
         return returnStack;

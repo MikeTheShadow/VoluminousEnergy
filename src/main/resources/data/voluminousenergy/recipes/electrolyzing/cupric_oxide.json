@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:electrolyzing",
+  "ingredient": {
+    "tag": "forge:dusts/cupric_oxide",
+    "count": 2
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:copper_dust",
+    "count": 2,
+    "consumes_bucket": 1
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:oxygen_bucket",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

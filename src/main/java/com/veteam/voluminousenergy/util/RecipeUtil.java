@@ -1,22 +1,27 @@
 package com.veteam.voluminousenergy.util;
 
+import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RecipeUtil {
 
-    public static boolean isAqueoulizerInputFluidEqual(World world, Fluid fluid){
-        for (IRecipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
+    public static boolean isAqueoulizerInputFluidEqual(Level world, Fluid fluid){
+        for (Recipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
             if(iRecipe instanceof AqueoulizerRecipe){
                 for (FluidStack stack : ((AqueoulizerRecipe) iRecipe).fluidInputList){
                     if(stack.getFluid().isSame(fluid)) return true;
@@ -31,8 +36,8 @@ public class RecipeUtil {
         return false;
     }
 
-    public static AqueoulizerRecipe getAqueoulizerRecipe(World world, FluidStack inputFluid, ItemStack inputItem){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static AqueoulizerRecipe getAqueoulizerRecipe(Level world, FluidStack inputFluid, ItemStack inputItem){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof AqueoulizerRecipe){
                 for (FluidStack recipeFluid : ((AqueoulizerRecipe) recipe).fluidInputList){
                     if(recipeFluid.isFluidEqual(inputFluid)) {
@@ -46,8 +51,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(World world, FluidStack inputFluid){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe){
                 for (FluidStack recipeFluid : ((CentrifugalAgitatorRecipe) recipe).fluidInputList){
                     if(recipeFluid.isFluidEqual(inputFluid)){
@@ -59,8 +64,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static DistillationRecipe getDistillationRecipe(World world, FluidStack inputFluid){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static DistillationRecipe getDistillationRecipe(Level world, FluidStack inputFluid){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
                 for (FluidStack recipeFluid : ((DistillationRecipe) recipe).fluidInputList){
                     if(recipeFluid.isFluidEqual(inputFluid)){
@@ -72,8 +77,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static DistillationRecipe getDistillationRecipeFromResult(World world, FluidStack resultFluid){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static DistillationRecipe getDistillationRecipeFromResult(Level world, FluidStack resultFluid){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
                 if (((DistillationRecipe) recipe).getOutputFluid().isFluidEqual(resultFluid)){
                     return (DistillationRecipe) recipe;
@@ -83,8 +88,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static DistillationRecipe getDistillationRecipeFromSecondResult(World world, FluidStack secondResultFluid){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static DistillationRecipe getDistillationRecipeFromSecondResult(Level world, FluidStack secondResultFluid){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
                 if (((DistillationRecipe) recipe).getSecondResult().isFluidEqual(secondResultFluid)){
                     return (DistillationRecipe) recipe;
@@ -94,8 +99,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static DistillationRecipe getDistillationRecipeFromThirdResult(World world, ItemStack thirdResultItem){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static DistillationRecipe getDistillationRecipeFromThirdResult(Level world, ItemStack thirdResultItem){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
                 if(((DistillationRecipe) recipe).getThirdResult().sameItem(thirdResultItem)){
                     return (DistillationRecipe) recipe;
@@ -105,8 +110,8 @@ public class RecipeUtil {
         return null;
     }
 
-    public static CombustionGeneratorFuelRecipe getFuelCombustionRecipe(World world, FluidStack inputFluid){
-        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static CombustionGeneratorFuelRecipe getFuelCombustionRecipe(Level world, FluidStack inputFluid){
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CombustionGeneratorFuelRecipe){
                 if (((CombustionGeneratorFuelRecipe) recipe).rawFluidInputList.contains(inputFluid.getRawFluid())){
                     return (CombustionGeneratorFuelRecipe) recipe;
@@ -121,8 +126,8 @@ public class RecipeUtil {
         return false;
     }
 
-    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(World world, FluidStack inputFluid){
-        for(IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(Level world, FluidStack inputFluid){
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof CombustionGeneratorOxidizerRecipe){
                 if(((CombustionGeneratorOxidizerRecipe) recipe).nsRawFluidInputList.contains(inputFluid.getRawFluid())){
                     return (CombustionGeneratorOxidizerRecipe) recipe;
@@ -132,9 +137,9 @@ public class RecipeUtil {
         return null;
     }
 
-    public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(World world, ItemStack firstInput, ItemStack secondInput){
+    public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(Level world, ItemStack firstInput, ItemStack secondInput){
         if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
-        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) &&
                         ((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())){
@@ -145,9 +150,9 @@ public class RecipeUtil {
         return null;
     }
 
-    public static boolean isFirstIngredientForIndustrialBlastingRecipe(World world, ItemStack firstInput){
+    public static boolean isFirstIngredientForIndustrialBlastingRecipe(Level world, ItemStack firstInput){
         if (firstInput.isEmpty()) return false;
-        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem())) return true;
             }
@@ -155,9 +160,9 @@ public class RecipeUtil {
         return false;
     }
 
-    public static boolean isSecondIngredientForIndustrialBlastingRecipe(World world, ItemStack secondInput){
+    public static boolean isSecondIngredientForIndustrialBlastingRecipe(Level world, ItemStack secondInput){
         if(secondInput.isEmpty()) return false;
-        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())) return true;
             }
@@ -165,13 +170,25 @@ public class RecipeUtil {
         return false;
     }
 
-    public static boolean isAnOutputForIndustrialBlastingRecipe(World world, ItemStack outputStack){
+    public static boolean isAnOutputForIndustrialBlastingRecipe(Level world, ItemStack outputStack){
         if (outputStack.isEmpty()) return false;
-        for (IRecipe<?> recipe : world.getRecipeManager().getRecipes()){
+        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if (((IndustrialBlastingRecipe) recipe).getResult().sameItem(outputStack)) return true;
             }
         }
         return false;
+    }
+
+    public static Tag<Fluid> getTagFromResourceLocationForFluids(ResourceLocation fluidTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.FLUID_REGISTRY, fluidTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
+    }
+
+    public static Tag<Item> getTagFromResourceLocationForItems(ResourceLocation itemTagLocation, String friendlyRecipeNameOnError){
+        return SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, itemTagLocation, (tempTag) -> {
+            return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
+        });
     }
 }

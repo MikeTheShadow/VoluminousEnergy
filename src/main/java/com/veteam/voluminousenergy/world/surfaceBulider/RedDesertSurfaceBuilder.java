@@ -1,31 +1,32 @@
 package com.veteam.voluminousenergy.world.surfaceBulider;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilder;
+import net.minecraft.world.level.levelgen.surfacebuilders.SurfaceBuilderBaseConfiguration;
 
 import java.util.Random;
 
-public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderConfig> {
+public class RedDesertSurfaceBuilder extends SurfaceBuilder<SurfaceBuilderBaseConfiguration> {
 
-    public RedDesertSurfaceBuilder(Codec<SurfaceBuilderConfig> p_i232124_1_) {
+    public RedDesertSurfaceBuilder(Codec<SurfaceBuilderBaseConfiguration> p_i232124_1_) {
         super(p_i232124_1_);
     }
 
+    // TODO: Figure out what new int does, or if seaLevel int is shifted one over
     @Override
-    public void apply(Random random, IChunk chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, long seed, SurfaceBuilderConfig config) {
+    public void apply(Random random, ChunkAccess chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, int p_164223_, long seed, SurfaceBuilderBaseConfiguration config) {
         this.build(random, chunkIn, biomeIn, x, z, startHeight, noise, defaultBlock, defaultFluid, Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState(), Blocks.RED_SANDSTONE.defaultBlockState(), seaLevel);
     }
 
-    protected void build(Random random, IChunk chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, BlockState top, BlockState middle, BlockState bottom, int sealevel) {
+    protected void build(Random random, ChunkAccess chunkIn, Biome biomeIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, BlockState top, BlockState middle, BlockState bottom, int sealevel) {
         BlockState blockstate = top;
         BlockState blockstate1 = middle;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
         int i = -1;
         int j = (int) (noise / 3.0D + 4.0D + random.nextDouble() * 0.25D);
         int k = x & 15;

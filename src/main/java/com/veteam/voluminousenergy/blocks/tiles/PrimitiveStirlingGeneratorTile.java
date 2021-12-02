@@ -10,29 +10,30 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -42,10 +43,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements MenuProvider {
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
 
@@ -53,7 +54,14 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     private int length;
     private ItemStackHandler inventory = this.createHandler();
 
-    public PrimitiveStirlingGeneratorTile() { super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE); }
+    public PrimitiveStirlingGeneratorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
+    }
+
+    @Deprecated
+    public PrimitiveStirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
+    }
 
     @Override
     public void tick() {
@@ -61,7 +69,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         if (counter > 0){
             counter--;
             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
-                energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
+                energy.ifPresent(e -> e.addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
             setChanged();
         } else {
@@ -88,7 +96,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         sendOutPower();
     }
 
-    public static int recieveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+    public static int recieveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -96,13 +104,13 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
                     int received = recieveEnergy(tileEntity, opposite, smallest);
-                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
                     }
@@ -112,44 +120,40 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT invTag = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(invTag));
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+    public void load(CompoundTag tag) {
+        CompoundTag invTag = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(invTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
         slotManager.read(tag, "slot_manager");
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("inv",compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
         slotManager.write(tag, "slot_manager");
         return super.save(tag);
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -190,7 +194,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         };
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get());
     }
 
@@ -209,31 +213,25 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity){
+    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
         return new PrimitiveStirlingGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
+        if (counter != 0 && length != 0) return (int)(100-(((float)counter/(float)length)*100));
+        return 0;
     }
 
 
@@ -263,7 +261,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
 
-
                         // Direction Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
                      }
@@ -274,7 +271,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

@@ -1,13 +1,14 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class VESolarTile extends VoluminousTileEntity{
+public class VESolarTile extends VoluminousTileEntity {
 
-    public VESolarTile(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public VESolarTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     /**
@@ -21,8 +22,8 @@ public class VESolarTile extends VoluminousTileEntity{
 
         if(celestialAngle > Math.PI) celestialAngle = (2 * ((float) Math.PI) - celestialAngle);
 
-        float intensity = MathHelper.cos(0.2f + (celestialAngle / 1.2f));
-        intensity = MathHelper.clamp(intensity, 0, 1);
+        float intensity = Mth.cos(0.2f + (celestialAngle / 1.2f));
+        intensity = Mth.clamp(intensity, 0, 1);
 
         if(intensity > 0.1f) {
             intensity = intensity * 1.5f;

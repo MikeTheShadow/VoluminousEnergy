@@ -1,18 +1,18 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 
 public class ToolUtil {
     
-    public static void SolariumTooltipAppend(ItemStack stack, List<ITextComponent> tooltip){
+    public static void SolariumTooltipAppend(ItemStack stack, List<Component> tooltip){
         int bonus = 0;
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
 
         if (tag == null) {
             bonus = Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get();
@@ -21,9 +21,9 @@ public class ToolUtil {
             bonus = tag.getInt("bonus");
         }
 
-        ITextComponent translatedComponent = TextUtil.translateString("text.voluminousenergy.protective_sheath");
+        Component translatedComponent = TextUtil.translateString("text.voluminousenergy.protective_sheath");
         String translatedString = translatedComponent.getString();
-        ITextComponent textComponent = new StringTextComponent(translatedString + ": " + bonus);
+        Component textComponent = new TextComponent(translatedString + ": " + bonus);
         tooltip.add(textComponent);
     }
     

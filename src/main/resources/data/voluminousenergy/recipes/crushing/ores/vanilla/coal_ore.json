@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:coal_ore",
+    "tag": "minecraft:coal_ores",
     "count": 1
   },
   "process_time": 200,

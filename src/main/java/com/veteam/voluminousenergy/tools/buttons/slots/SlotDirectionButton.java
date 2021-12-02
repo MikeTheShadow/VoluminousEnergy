@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.tools.buttons.slots;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -9,17 +10,17 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class SlotDirectionButton extends VEIOButton {
     private VESlotManager slotManager;
     private Direction direction;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public SlotDirectionButton(VESlotManager slotManager, int x, int y, IPressable onPress) {
-        super(x, y, 96, 20, ITextComponent.nullToEmpty(""), button -> {
+    public SlotDirectionButton(VESlotManager slotManager, int x, int y, OnPress onPress) {
+        super(x, y, 96, 20, Component.nullToEmpty(""), button -> {
             ((SlotDirectionButton) button).cycle();
             onPress.onPress(button);
         });
@@ -59,9 +60,9 @@ public class SlotDirectionButton extends VEIOButton {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bind(texture);
+        RenderSystem.setShaderTexture(0, texture);
 
         if(!isHovered){ // x: 96 y:20
             blit(matrixStack, this.x, this.y, 0, 166, this.width, this.height);
@@ -70,7 +71,7 @@ public class SlotDirectionButton extends VEIOButton {
         }
 
         // Print text
-        ITextComponent textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
+        Component textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
         drawCenteredString(matrixStack, Minecraft.getInstance().font, textComponent.getString(),(this.x)+48,(this.y)+5,0xffffff);
     }
 

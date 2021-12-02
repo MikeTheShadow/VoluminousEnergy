@@ -1,14 +1,14 @@
 package com.veteam.voluminousenergy.tools.buttons.slots;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,8 +18,8 @@ public class SlotBoolButton extends VEIOButton {
     private VESlotManager slotManager;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public SlotBoolButton(VESlotManager slotManager, int x, int y, IPressable onPress) {
-        super(x, y, 16, 15, ITextComponent.nullToEmpty(""), button -> {
+    public SlotBoolButton(VESlotManager slotManager, int x, int y, OnPress onPress) {
+        super(x, y, 16, 15, Component.nullToEmpty(""), button -> {
             ((SlotBoolButton) button).cycle();
             onPress.onPress(button);
         });
@@ -31,9 +31,9 @@ public class SlotBoolButton extends VEIOButton {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bind(texture);
+        RenderSystem.setShaderTexture(0, texture);
         enable = slotManager.getStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);

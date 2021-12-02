@@ -3,16 +3,16 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    public static final IRecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING;
+    public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -55,14 +55,14 @@ public class CrusherRecipe extends VERecipe {
     public float getChance(){return chance;}
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
 
     @Override
     public boolean canCraftInDimensions(int width, int height){return true;}
@@ -74,10 +74,10 @@ public class CrusherRecipe extends VERecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public RecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getOutputAmount() {return outputAmount;}
 
@@ -94,7 +94,7 @@ public class CrusherRecipe extends VERecipe {
         return new ItemStack(VEBlocks.CRUSHER_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CrusherRecipe>{
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CrusherRecipe>{
 
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
@@ -103,8 +103,8 @@ public class CrusherRecipe extends VERecipe {
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getAsInt(json,"process_time",200);
+            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!ingredientList.contains(stack.getItem())){
@@ -112,14 +112,14 @@ public class CrusherRecipe extends VERecipe {
                 }
             }
 
-            ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
-            int itemAmount = JSONUtils.getAsInt(json.get("result").getAsJsonObject(),"count",1);
+            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
+            int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"count",1);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
 
-            ResourceLocation rngResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount = JSONUtils.getAsInt(json.get("rng").getAsJsonObject(),"count",0);
-            float rngChance = JSONUtils.getAsFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
+            int rngAmount = GsonHelper.getAsInt(json.get("rng").getAsJsonObject(),"count",0);
+            float rngChance = GsonHelper.getAsFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             recipe.rngResult = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation));
             recipe.outputRngAmount = rngAmount;
@@ -130,7 +130,7 @@ public class CrusherRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CrusherRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
+        public CrusherRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CrusherRecipe recipe = new CrusherRecipe((recipeId));
             recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
@@ -144,7 +144,7 @@ public class CrusherRecipe extends VERecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, CrusherRecipe recipe){
+        public void toNetwork(FriendlyByteBuf buffer, CrusherRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());

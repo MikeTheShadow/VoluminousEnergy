@@ -1,5 +1,5 @@
 # Voluminous Energy
-<big> An energy focused tech mod for Minecraft 1.16.3+ </big>
+<big> An energy focused tech mod for Minecraft 1.17.1 </big>
 
 ## Fluids
 * Biofuel

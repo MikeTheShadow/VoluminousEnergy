@@ -4,14 +4,15 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -22,12 +23,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
-public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity, ITickableTileEntity, INamedContainerProvider {
+public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity, MenuProvider {
 
     public static final int TANK_CAPACITY = 4000;
 
-    public VEFluidTileEntity(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public VEFluidTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
 
@@ -128,12 +129,12 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                     for (RelationalTank t : relationalTanks) {
                         if (t.getTankType() == TankType.INPUT) {
                             ItemStack bucketStack = new ItemStack(stack.getRawFluid().getBucket());
-                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new Inventory(bucketStack), level).orElse(null);
+                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(bucketStack), level).orElse(null);
                             return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
                         } else {
                             AtomicBoolean recipeHit = new AtomicBoolean(false);
                             veRecipe.getIngredientList().forEach(i -> {
-                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new Inventory(new ItemStack(i)), level).orElse(null);
+                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(new ItemStack(i)), level).orElse(null);
                                 if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
                                     recipeHit.set(true);
                                 }

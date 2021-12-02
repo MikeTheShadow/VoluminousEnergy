@@ -5,6 +5,10 @@
     "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing BEHIND the Tile Entity",
     "text.voluminousenergy.temperature": "Temperature",
     "text.voluminousenergy.protective_sheath": "Protective Sheath",
+    "text.voluminousenergy.generating": "Generating",
+    "text.voluminousenergy.percent_complete": "Percent Complete",
+    "text.voluminousenergy.percent_burned": "Percent Burned",
+    "text.voluminousenergy.ticks_left": "Ticks Left",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
@@ -100,6 +104,11 @@
     "block.voluminousenergy.red_fuming_nitric_acid": "Red Fuming Nitric Acid",
     "block.voluminousenergy.white_fuming_nitric_acid": "White Fuming Nitric Acid",
     "block.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
+    "block.voluminousenergy.raw_bauxite_block": "Raw Bauxite Block",
+    "block.voluminousenergy.raw_cinnabar_block": "Raw Cinnabar Block",
+    "block.voluminousenergy.raw_eighzo_block": "Raw Eighzo Block",
+    "block.voluminousenergy.raw_galena_block": "Raw Galena Block",
+    "block.voluminousenergy.raw_rutile_block": "Raw Rutile Block",
 
     "_comment": "Items",
     "item.voluminousenergy.petcoke": "Petcoke",
@@ -226,6 +235,9 @@
     "item.voluminousenergy.solarium_sword": "Solarium Sword",
     "item.voluminousenergy.solarium_hoe": "Solarium Hoe",
     "item.voluminousenergy.solarium_shovel": "Solarium Shovel",
+    "item.voluminousenergy.copper_dust": "Copper Dust",
+    "item.voluminousenergy.cupric_oxide_dust": "Cupric Oxide Dust",
+    "item.voluminousenergy.copper_carbonate_dust": "Copper Carbonate Dust",
 
     "_comment": "Biomes",
     "biome.voluminousenergy.red_desert": "Red Desert",

@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:gold_ore",
+    "tag": "minecraft:gold_ores",
     "count": 1
   },
   "process_time": 200,

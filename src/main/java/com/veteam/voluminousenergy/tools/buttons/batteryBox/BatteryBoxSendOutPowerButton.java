@@ -1,14 +1,14 @@
 package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
@@ -20,8 +20,8 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     private int v= 166;
 
 
-    public BatteryBoxSendOutPowerButton(int x, int y, BatteryBoxTile batteryBoxTile, IPressable onPress) {
-        super(x, y, 18, 20, ITextComponent.nullToEmpty(""), button -> {
+    public BatteryBoxSendOutPowerButton(int x, int y, BatteryBoxTile batteryBoxTile, OnPress onPress) {
+        super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
             ((BatteryBoxSendOutPowerButton) button).cycle();
             onPress.onPress(button);
         });
@@ -33,9 +33,8 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
-        Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bind(GUI_TOOLS);
+    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+        RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
         if(!isHovered) u = 96;
         else u = 112;

@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items.plates;
 
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class CarbonPlate extends Item {
     public CarbonPlate (){

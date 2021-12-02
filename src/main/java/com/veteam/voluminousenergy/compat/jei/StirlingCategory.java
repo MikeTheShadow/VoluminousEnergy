@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
@@ -13,8 +13,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,8 +47,8 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.stirling").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.stirling");
     }
 
     @Override
@@ -61,7 +62,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(StirlingGeneratorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,11,0);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime() + " t",-1,28, 0x606060);

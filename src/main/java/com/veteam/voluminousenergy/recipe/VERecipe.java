@@ -1,15 +1,15 @@
 package com.veteam.voluminousenergy.recipe;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-public class VERecipe  implements IRecipe<IInventory> {
+public class VERecipe  implements Recipe<Container> {
 
     public Ingredient ingredient;
     public int ingredientCount;
@@ -27,13 +27,13 @@ public class VERecipe  implements IRecipe<IInventory> {
     public ItemStack getResult() { return result; }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
     @Override
-    public ItemStack assemble(IInventory inv){
+    public ItemStack assemble(Container inv){
         return ItemStack.EMPTY;
     }
 
@@ -53,12 +53,12 @@ public class VERecipe  implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){
+    public RecipeSerializer<?> getSerializer(){
         return null;
     }
 
     @Override
-    public IRecipeType<?> getType(){
+    public RecipeType<?> getType(){
         return null;
     }
 

@@ -1,29 +1,29 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
+import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-
-public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
+public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements EntityBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
 
@@ -32,40 +32,44 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock {
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
-                .harvestLevel(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get())
-                .harvestTool(ToolType.PICKAXE)
         );
 
         setRegistryName("primitivestirlinggenerator");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get(), this);
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
+        return new PrimitiveStirlingGeneratorTile(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> state) {
-        state.add(FACING);
+    // NEW TICK SYSTEM
+    @Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends PrimitiveStirlingGeneratorTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, PrimitiveStirlingGeneratorTile::serverTick);
     }
 
-    @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        if (!world.isClientSide){
-            TileEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof INamedContainerProvider){
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
-            } else {
-                throw new IllegalStateException("Primitive Stirling named container provider is missing!");
-            }
-            return ActionResultType.SUCCESS;
-        }
-        return ActionResultType.SUCCESS;
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends PrimitiveStirlingGeneratorTile> tile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
+    }
+
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new PrimitiveStirlingGeneratorTile();
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (!world.isClientSide){
+            BlockEntity tileEntity = world.getBlockEntity(pos);
+            if (tileEntity instanceof MenuProvider){
+                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+            } else {
+                throw new IllegalStateException("Primitive Stirling named container provider is missing!");
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.SUCCESS;
     }
 }

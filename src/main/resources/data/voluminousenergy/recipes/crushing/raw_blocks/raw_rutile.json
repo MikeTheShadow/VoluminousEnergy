@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "tag": "forge:storage_blocks/raw_rutile",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:rutile_dust",
+    "count": 18
+  },
+  "rng": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

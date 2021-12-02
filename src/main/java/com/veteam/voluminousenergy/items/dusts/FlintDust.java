@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.items.dusts;
 
 import com.veteam.voluminousenergy.setup.VESetup;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class FlintDust extends Item {
     public FlintDust(){

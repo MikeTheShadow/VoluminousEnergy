@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "item": "minecraft:emerald_ore",
+    "tag": "minecraft:emerald_ores",
     "count": 1
   },
   "process_time": 200,

@@ -1,0 +1,28 @@
+{
+  "type": "voluminousenergy:electrolyzing",
+  "ingredient": {
+    "tag": "forge:dusts/copper_carbonate",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:cupric_oxide_dust",
+    "count": 2,
+    "consumes_bucket": 2
+  },
+  "rng_slot_0": {
+    "item": "voluminousenergy:carbondust",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_1": {
+    "item": "minecraft:water_bucket",
+    "count": 1,
+    "chance": 1
+  },
+  "rng_slot_2": {
+    "item": "voluminousenergy:oxygen_bucket",
+    "count": 1,
+    "chance": 1
+  }
+}

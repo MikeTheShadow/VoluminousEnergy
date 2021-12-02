@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
@@ -16,9 +16,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -55,8 +56,8 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.industrial_blasting").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.industrial_blasting");
     }
 
     @Override
@@ -70,7 +71,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
     @Override
-    public void draw(IndustrialBlastingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(IndustrialBlastingRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,54, 12); // 24, 12
         emptyArrow.draw(matrixStack,54,12); // 24, 12
         slotDrawable.draw(matrixStack,30,1); // 2, 1

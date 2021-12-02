@@ -1,26 +1,29 @@
 package com.veteam.voluminousenergy.blocks.blocks;
 
+import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class BatteryBoxBlock extends FaceableBlock {
+public class BatteryBoxBlock extends FaceableBlock implements EntityBlock {
 
     public BatteryBoxBlock() {
         super(Properties.of(Material.METAL)
@@ -28,28 +31,45 @@ public class BatteryBoxBlock extends FaceableBlock {
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
-                .harvestLevel(Config.BATTERY_BOX_HARVEST_LEVEL.get())
-                .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("battery_box");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.BATTERY_BOX_HARVEST_LEVEL.get(), this);
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {return new BatteryBoxTile();}
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
+        return new BatteryBoxTile(VEBlocks.BATTERY_BOX_TILE, pos, state);
+    }
+
+    // NEW TICK SYSTEM
+    @Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends BatteryBoxTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, BatteryBoxTile::serverTick);
+    }
+
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends BatteryBoxTile> tile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return createTicker(level, blockEntityType, VEBlocks.BATTERY_BOX_TILE);
+    }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit){
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
-            TileEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getBlockPos());
+            BlockEntity tileEntity = world.getBlockEntity(pos);
+            if(tileEntity instanceof MenuProvider) {
+                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Battery Box named container provider is missing!");
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
 
     }
 

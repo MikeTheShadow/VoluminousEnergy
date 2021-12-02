@@ -2,19 +2,27 @@ package com.veteam.voluminousenergy.items.crops;
 
 import com.veteam.voluminousenergy.blocks.blocks.crops.VEWaterCrop;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
+
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.Item.Properties;
 
 public class WaterCropItem extends BlockItem {
 
@@ -28,25 +36,25 @@ public class WaterCropItem extends BlockItem {
     } // MUST override
 
     @Override
-    public ActionResultType useOn(ItemUseContext context){
-        return ActionResultType.PASS;
+    public InteractionResult useOn(UseOnContext context){
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand){
+    public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand){
         ItemStack itemStack = playerEntity.getItemInHand(hand);
-        BlockRayTraceResult rayTraceResult = getPlayerPOVHitResult(world, playerEntity, RayTraceContext.FluidMode.SOURCE_ONLY);
+        BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, playerEntity, ClipContext.Fluid.SOURCE_ONLY);
 
-        if(rayTraceResult.getType() == RayTraceResult.Type.MISS){
-            return ActionResult.pass(itemStack);
+        if(rayTraceResult.getType() == HitResult.Type.MISS){
+            return InteractionResultHolder.pass(itemStack);
         }
 
-        if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK){
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK){
             BlockPos pos = rayTraceResult.getBlockPos();
             Direction dir = rayTraceResult.getDirection();
 
             if (!world.mayInteract(playerEntity, pos) || !playerEntity.mayUseItemAt(pos.relative(dir), dir, itemStack)) {
-                return ActionResult.fail(itemStack);
+                return InteractionResultHolder.fail(itemStack);
             }
 
             BlockPos abovePos = pos.above();
@@ -55,18 +63,18 @@ public class WaterCropItem extends BlockItem {
                 if (!world.isClientSide())
                     getWaterCrop().place(world, abovePos, 18); // place the crop on the server
 
-                if (playerEntity instanceof ServerPlayerEntity) {
-                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity) playerEntity, abovePos, itemStack);
+                if (playerEntity instanceof ServerPlayer) {
+                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) playerEntity, abovePos, itemStack);
                 }
 
-                if (!playerEntity.abilities.instabuild) { // this is checking if the player is not in creative mode, don't use item if in creative mode
+                if (!playerEntity.getAbilities().instabuild) { // this is checking if the player is not in creative mode, don't use item if in creative mode
                     itemStack.shrink(1);
                 }
 
-                world.playSound(playerEntity, pos, SoundEvents.CROP_PLANTED, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                return ActionResult.success(itemStack);
+                world.playSound(playerEntity, pos, SoundEvents.CROP_PLANTED, SoundSource.BLOCKS, 1.0F, 1.0F);
+                return InteractionResultHolder.success(itemStack);
             }
         }
-        return ActionResult.fail(itemStack);
+        return InteractionResultHolder.fail(itemStack);
     }
 }

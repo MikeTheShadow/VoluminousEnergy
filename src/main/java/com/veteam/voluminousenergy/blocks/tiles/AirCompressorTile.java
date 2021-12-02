@@ -15,26 +15,25 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -42,27 +41,22 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class AirCompressorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
+public class AirCompressorTile extends VoluminousTileEntity implements MenuProvider {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot");
 
     // Handlers
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Sided item handlers
@@ -75,8 +69,13 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     //private FluidTank airTank = new FluidTank(tankCapacity);
     private RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT);
 
-    public AirCompressorTile() {
-        super(VEBlocks.AIR_COMPRESSOR_TILE);
+    public AirCompressorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
+    }
+
+    @Deprecated
+    public AirCompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
     }
 
     @Override
@@ -151,7 +150,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.AIR_COMPRESSOR_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(1).copy()
                         )
@@ -165,33 +164,29 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         fluid.ifPresent(f -> {
-            CompoundNBT airNBT = tag.getCompound("air_tank");
+            CompoundTag airNBT = tag.getCompound("air_tank");
             airTank.getTank().readFromNBT(airNBT);
         });
 
         outputSlotManager.read(tag, "output_slot");
         airTank.readGuiProperties(tag, "air_tank_properties");
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag){
+    public CompoundTag save(CompoundTag tag){
         tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         // Tanks
         fluid.ifPresent(f -> {
-            CompoundNBT tankNBT = new CompoundNBT();
+            CompoundTag tankNBT = new CompoundTag();
             airTank.getTank().writeToNBT(tankNBT);
             tag.put("air_tank", tankNBT);
         });
@@ -202,20 +197,20 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -301,7 +296,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
         }
     };
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AIR_COMPRESSOR_MAX_POWER.get(), Config.AIR_COMPRESSOR_TRANSFER.get());
     }
 
@@ -327,13 +322,13 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new AirCompressorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
@@ -395,7 +390,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements ITickable
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

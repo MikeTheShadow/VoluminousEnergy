@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -14,8 +14,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.combustion").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.combustion");
     }
 
     @Override
@@ -61,7 +62,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CombustionGeneratorFuelRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
 
         Minecraft.getInstance().font.draw(matrixStack,"Volumetric Energy: ",31,4,0x606060);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);

@@ -13,25 +13,26 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,24 +42,19 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PumpTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
+public class PumpTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
@@ -75,8 +71,13 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     private Fluid pumpingFluid = Fluids.EMPTY;
     private ItemStackHandler inventory = this.createHandler();
 
-    public PumpTile() {
-        super(VEBlocks.PUMP_TILE);
+    public PumpTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.PUMP_TILE, pos, state);
+    }
+
+    @Deprecated
+    public PumpTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.PUMP_TILE, pos, state);
     }
 
     @Override
@@ -104,20 +105,19 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
     public void addFluidToTank() {
         if ((fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity) {
-            energy.ifPresent(e -> ((VEEnergyStorage)e).consumeEnergy(Config.PUMP_POWER_USAGE.get()));
-            fluidTank.getTank().fill(new FluidStack(this.pumpingFluid.getFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
+            energy.ifPresent(e -> e.consumeEnergy(Config.PUMP_POWER_USAGE.get()));
+            fluidTank.getTank().fill(new FluidStack(this.pumpingFluid, 1000), IFluidHandler.FluidAction.EXECUTE);
         }
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
-        CompoundNBT airNBT = tag.getCompound("tank");
+        CompoundTag airNBT = tag.getCompound("tank");
         fluidTank.getTank().readFromNBT(airNBT);
 
         pumpingFluid = fluidTank.getTank().getFluid().getRawFluid();
@@ -130,19 +130,16 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         slotManager.read(tag, "slot_manager");
         fluidTank.readGuiProperties(tag, "tank_gui");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag){
+    public CompoundTag save(CompoundTag tag){
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         tag.putInt("lx", lX);
         tag.putInt("ly", lY);
@@ -150,7 +147,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         tag.putBoolean("init_done", initDone);
 
         // Tanks
-        CompoundNBT tankNBT = new CompoundNBT();
+        CompoundTag tankNBT = new CompoundTag();
         fluidTank.getTank().writeToNBT(tankNBT);
         tag.put("tank", tankNBT);
 
@@ -162,20 +159,20 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
 
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -253,7 +250,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 
@@ -273,13 +270,13 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new PumpContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
@@ -377,7 +374,7 @@ public class PumpTile extends VoluminousTileEntity implements ITickableTileEntit
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

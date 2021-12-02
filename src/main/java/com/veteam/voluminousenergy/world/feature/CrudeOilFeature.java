@@ -1,25 +1,35 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.BlockStateFeatureConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 
 import java.util.Random;
 
 public class CrudeOilFeature extends VELakesFeature {
-    public static CrudeOilFeature INSTANCE = new CrudeOilFeature(BlockStateFeatureConfig.CODEC);
+    public static CrudeOilFeature SURFACE_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, true);
+    public static CrudeOilFeature UNDERGROUND_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, false);
 
-    public CrudeOilFeature(Codec<BlockStateFeatureConfig> p_i231962_1_) {
-        super(p_i231962_1_);
+    private final boolean isForSurface;
+
+    public CrudeOilFeature(Codec<BlockStateConfiguration> codec, boolean forSurface) {
+        super(codec);
+        this.isForSurface = forSurface;
     }
 
     @Override
-    public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateFeatureConfig conf){
+    public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
+        BlockPos pos = context.origin();
+        WorldGenLevel worldIn = context.level();
+        Random rand = context.random();
+        ChunkGenerator generator = context.chunkGenerator();
+        BlockStateConfiguration conf = context.config();
 
-        if (worldIn.canSeeSky(pos)) return super.place(worldIn, generator, rand, pos, conf);
+        if (worldIn.canSeeSky(pos) && this.isForSurface) return super.place(context);
 
-        return super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
+        return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
     }
 }

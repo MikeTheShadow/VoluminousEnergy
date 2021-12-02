@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile;
@@ -17,28 +17,30 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class CombustionGeneratorScreen extends ContainerScreen<CombustionGeneratorContainer> {
+public class CombustionGeneratorScreen extends AbstractContainerScreen<CombustionGeneratorContainer> {
     private CombustionGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/combustion_generator_gui.png");
+    private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
-    public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn){
+    public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CombustionGeneratorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
@@ -48,67 +50,67 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     protected void init(){
         super.init();
         // Buttons
-        this.addButton(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
 
         }));
 
         // Oxidizer insert
-        this.addButton(new SlotBoolButton(tileEntity.oxiInSm, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.oxiInSm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.oxiInSm, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.oxiInSm, (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Oxidizer Extract
-        this.addButton(new SlotBoolButton(tileEntity.oxiOutSm, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.oxiOutSm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.oxiOutSm, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.oxiOutSm, (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
         // Fuel Insert
-        this.addButton(new SlotBoolButton(tileEntity.fuelInSm, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.fuelInSm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.fuelInSm, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelInSm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Fuel Extract
-        this.addButton(new SlotBoolButton(tileEntity.fuelOutSm, (this.width/2)-198, this.topPos+40, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.fuelOutSm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        this.addButton(new SlotDirectionButton(tileEntity.fuelOutSm, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelOutSm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
         // Oxidizer Tank
-        this.addButton(new TankBoolButton(tileEntity.getOxidizerTank(), (this.width/2)-198, this.topPos+60, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOxidizerTank(), (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getOxidizerTank(), (this.width/2)-184, this.topPos+60, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOxidizerTank(), (this.width/2)-184, this.topPos+60, button ->{
             // Do nothing
         }));
 
         // Fuel Tank
-        this.addButton(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.topPos+80, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        this.addButton(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.topPos+80, button ->{
             // Do nothing
         }));
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, 16777215);
 
@@ -120,13 +122,13 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
         }
 
-        this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
@@ -142,16 +144,17 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
         }
 
         if (isHovering(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
-            renderTooltip(matrixStack, ITextComponent.nullToEmpty("Percent burned: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.ticksLeft() + ", Production: " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft() + ", " + TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack,float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI);
+    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -177,16 +180,17 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
             try{
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
             } catch (Exception e){ }
+            RenderSystem.setShaderTexture(0, GUI_TOOLS);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
 
     }
 
-    private void drawIOSideHelper(MatrixStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.buttons){
+    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+        for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
                             informTileOfIOButton(true);
@@ -194,7 +198,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
                         }
                     });
                 } else {
-                    this.buttons.forEach(button ->{
+                    this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
                             informTileOfIOButton(false);
@@ -207,7 +211,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
                 ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -215,7 +219,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
@@ -226,7 +230,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     }
 
     public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
                 ((TankDirectionButton) widget).setDirectionFromInt(direction);
             }
@@ -234,7 +238,7 @@ public class CombustionGeneratorScreen extends ContainerScreen<CombustionGenerat
     }
 
     public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.buttons){
+        for(Widget widget: this.renderables){
             if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((TankBoolButton) widget).toggleRender(true);

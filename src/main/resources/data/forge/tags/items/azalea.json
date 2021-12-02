@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:azalea/azalea",
+    "#forge:azalea/flowering_azalea"
+  ]
+}

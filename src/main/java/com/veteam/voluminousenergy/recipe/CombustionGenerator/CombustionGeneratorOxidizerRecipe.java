@@ -6,20 +6,20 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
-    public static final IRecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING;
+    public static final RecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -73,14 +73,14 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
 
     @Override
     public boolean canCraftInDimensions(int width, int height){return true;}
@@ -92,22 +92,22 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public RecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getProcessTime(){return processTime;}
 
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CombustionGeneratorOxidizerRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CombustionGeneratorOxidizerRecipe> {
         @Override
         public CombustionGeneratorOxidizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getAsInt(json,"process_time",1600);
+            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = GsonHelper.getAsInt(json,"process_time",1600);
 
             for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!ingredientList.contains(stack.getItem())){
@@ -130,44 +130,39 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 }
             }
 
-            // A tag is used instead of a manually defined fluid
-            try{
-                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(fluidTagLocation);
-                    if(tag != null){
-                        for(Fluid fluid : tag.getValues()){
-                            FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
-                            fluidInputList.add(tempStack);
-                            rawFluidInputList.add(tempStack.getRawFluid());
-                            recipe.nsFluidInputList.add(tempStack.copy());
-                            recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
-                            recipe.inputArraySize = recipe.nsFluidInputList.size();
-                        }
+            JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
 
+            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
+                // A tag is used instead of a manually defined fluid
+                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-
-                        // Sane add
-                        saneAdd(recipe);
-                    } else {
-                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
+                if(tag != null){
+                    for(Fluid fluid : tag.getValues()){
+                        FluidStack tempStack = new FluidStack(fluid, 1000);
+                        fluidInputList.add(tempStack);
+                        rawFluidInputList.add(tempStack.getRawFluid());
+                        recipe.nsFluidInputList.add(tempStack.copy());
+                        recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
+                        recipe.inputArraySize = recipe.nsFluidInputList.size();
                     }
-
-                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
-                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
-                    fluidInputList.add(recipe.inputFluid.copy());
-                    rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                    recipe.nsFluidInputList.add(recipe.inputFluid.copy());
-                    recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                    recipe.inputArraySize = recipe.nsFluidInputList.size();
+                    // Sane add
                     saneAdd(recipe);
                 } else {
-                    throw new JsonSyntaxException("Invalid recipe input for an Oxidizer, please check usage of tag and fluid in the json file.");
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
-            } catch (Exception e){
-                VoluminousEnergy.LOGGER.debug("NULL! CombustionGeneratorOxidizerRecipe");
+            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
+                // In here, a manually defined fluid is used instead of a tag
+                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                fluidInputList.add(recipe.inputFluid.copy());
+                rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                recipe.nsFluidInputList.add(recipe.inputFluid.copy());
+                recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                recipe.inputArraySize = recipe.nsFluidInputList.size();
+                saneAdd(recipe);
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
@@ -176,7 +171,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorOxidizerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
+        public CombustionGeneratorOxidizerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
             recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
@@ -195,7 +190,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, CombustionGeneratorOxidizerRecipe recipe){
+        public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorOxidizerRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 

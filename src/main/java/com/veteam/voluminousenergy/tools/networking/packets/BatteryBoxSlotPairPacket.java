@@ -3,11 +3,11 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -24,14 +24,14 @@ public class BatteryBoxSlotPairPacket {
         this.id = id;
     }
 
-    public static BatteryBoxSlotPairPacket fromBytes(PacketBuffer buffer){
+    public static BatteryBoxSlotPairPacket fromBytes(FriendlyByteBuf buffer){
         BatteryBoxSlotPairPacket packet = new BatteryBoxSlotPairPacket();
         packet.status = buffer.readBoolean();
         packet.id = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(PacketBuffer buffer){
+    public void toBytes(FriendlyByteBuf buffer){
         buffer.writeBoolean(this.status);
         buffer.writeInt(this.id);
     }
@@ -40,22 +40,22 @@ public class BatteryBoxSlotPairPacket {
         NetworkDirection packetDirection = contextSupplier.get().getDirection();
         switch (packetDirection){
             case PLAY_TO_CLIENT: // Packet is being sent to client
-                Container clientContainer = Minecraft.getInstance().player.containerMenu;
+                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
                 contextSupplier.get().setPacketHandled(true);
                 break;
             default:
-                Container serverContainer = (contextSupplier.get().getSender()).containerMenu;
+                AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
                 contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
                 contextSupplier.get().setPacketHandled(true);
         }
     }
 
-    public static void handlePacket(BatteryBoxSlotPairPacket packet, Container openContainer, boolean onServer){
+    public static void handlePacket(BatteryBoxSlotPairPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
             if(openContainer instanceof BatteryBoxContainer){
                 if(onServer){
-                    TileEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
+                    BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if(tileEntity instanceof BatteryBoxTile){ // sanity check
                         ((BatteryBoxTile) tileEntity).updateSlotPair(packet.status, packet.id);
                     }

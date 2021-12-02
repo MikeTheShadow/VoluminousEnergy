@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "voluminousenergy:raw_bauxite"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:raw_bauxite_block"
+  }
+}

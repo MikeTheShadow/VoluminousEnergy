@@ -4,17 +4,17 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class StirlingGeneratorRecipe extends VERecipe {
 
-    public static final IRecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING;
+    public static final RecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING;
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
@@ -58,14 +58,14 @@ public class StirlingGeneratorRecipe extends VERecipe {
     public int getProcessTime() { return processTime; }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv){
+    public ItemStack assemble(Container inv){
         return ItemStack.EMPTY;
     }
 
@@ -85,12 +85,12 @@ public class StirlingGeneratorRecipe extends VERecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){
+    public RecipeSerializer<?> getSerializer(){
         return SERIALIZER;
     }
 
     @Override
-    public IRecipeType<?> getType(){
+    public RecipeType<?> getType(){
         return RECIPE_TYPE;
     }
 
@@ -101,7 +101,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<StirlingGeneratorRecipe>{
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StirlingGeneratorRecipe>{
 
         public static ArrayList<Item> ingredientList = new ArrayList<>();
 
@@ -111,9 +111,9 @@ public class StirlingGeneratorRecipe extends VERecipe {
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
-            recipe.processTime = JSONUtils.getAsInt(json, "process_time", 200);
-            recipe.energyPerTick  = JSONUtils.getAsInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
+            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
+            recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
+            recipe.energyPerTick  = GsonHelper.getAsInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
 
             for (ItemStack stack : recipe.ingredient.getItems()){
                 if (!ingredientList.contains(stack.getItem())){
@@ -133,7 +133,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
          **/
         @Nullable
         @Override
-        public StirlingGeneratorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
+        public StirlingGeneratorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
             recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
@@ -144,7 +144,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, StirlingGeneratorRecipe recipe){
+        public void toNetwork(FriendlyByteBuf buffer, StirlingGeneratorRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.processTime);

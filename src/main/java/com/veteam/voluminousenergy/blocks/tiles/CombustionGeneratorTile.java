@@ -16,25 +16,26 @@ import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,7 +45,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -58,7 +59,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class CombustionGeneratorTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class CombustionGeneratorTile extends VoluminousTileEntity implements MenuProvider {
     // Handlers
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> oxiInHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
@@ -66,7 +67,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private LazyOptional<IItemHandlerModifiable> fuelInHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
     private LazyOptional<IItemHandlerModifiable> fuelOutHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4));
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> oxidizerHandler = LazyOptional.of(this::createOxidizerHandler);
     private LazyOptional<IFluidHandler> fuelHandler = LazyOptional.of(this::createFuelHandler);
 
@@ -89,8 +90,13 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CombustionGeneratorTile() {
-        super(VEBlocks.COMBUSTION_GENERATOR_TILE);
+    public CombustionGeneratorTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
+    }
+
+    @Deprecated
+    public CombustionGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
     }
 
     @Override
@@ -157,7 +163,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         if (counter > 0) {
             if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()){
                 counter--;
-                energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
+                energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
             }
             setChanged();
         } else if ((oxidizerTank != null || !oxidizerTank.getTank().isEmpty()) && (fuelTank != null || !fuelTank.getTank().isEmpty())){
@@ -189,7 +195,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
 
     }
 
-    public static int receiveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -197,13 +203,13 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
                     int received = receiveEnergy(tileEntity, opposite, smallest);
-                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
                     }
@@ -217,15 +223,16 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
      */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
-        CompoundNBT oxidizerNBT = tag.getCompound("oxidizerTank");
-        CompoundNBT fuelNBT = tag.getCompound("fuelTank");
+        CompoundTag oxidizerNBT = tag.getCompound("oxidizerTank");
+        CompoundTag fuelNBT = tag.getCompound("fuelTank");
         oxidizerTank.getTank().readFromNBT(oxidizerNBT);
         fuelTank.getTank().readFromNBT(fuelNBT);
 
@@ -236,27 +243,26 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         oxidizerTank.readGuiProperties(tag,"oxidizer_tank_gui");
         fuelTank.readGuiProperties(tag, "fuel_tank_gui");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("energy", compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         // Tanks
-        CompoundNBT oxidizerNBT = new CompoundNBT();
+        CompoundTag oxidizerNBT = new CompoundTag();
         oxidizerTank.getTank().writeToNBT(oxidizerNBT);
         tag.put("oxidizerTank", oxidizerNBT);
 
-        CompoundNBT fuelNBT = new CompoundNBT();
+        CompoundTag fuelNBT = new CompoundTag();
         fuelTank.getTank().writeToNBT(fuelNBT);
         tag.put("fuelTank", fuelNBT);
 
@@ -271,20 +277,20 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -455,7 +461,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
         };
     }
 
-    private IEnergyStorage createEnergy() {
+    private VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get());
     }
 
@@ -487,22 +493,19 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CombustionGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
-        if (counter == 0) {
-            return 0;
-        } else {
-            return (px*(((counter*100)/length)))/100;
-        }
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public FluidStack getFluidStackFromTank(int num){
@@ -608,7 +611,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements ITi
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

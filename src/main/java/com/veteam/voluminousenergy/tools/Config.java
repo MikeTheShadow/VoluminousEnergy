@@ -4,12 +4,9 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.nio.file.Path;
-
-import static net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
@@ -58,7 +55,8 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue WORLD_GEN_LOGGING;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_LAKES;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_GEYSER;
-    public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
+    public static ForgeConfigSpec.IntValue SURFACE_OIL_LAKE_CHANCE;
+    public static ForgeConfigSpec.IntValue UNDERGROUND_OIL_LAKE_CHANCE;
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE_IN_OCEAN;
@@ -73,51 +71,51 @@ public class Config {
     // SALTPETER ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
     public static ForgeConfigSpec.IntValue SALTPETER_COUNT;
-    public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue SALTPETER_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue SALTPETER_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue SALTPETER_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue SALTPETER_HARVEST_LEVEL;
     // BAUXITE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
     public static ForgeConfigSpec.IntValue BAUXITE_COUNT;
-    public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue BAUXITE_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue BAUXITE_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue BAUXITE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue BAUXITE_HARVEST_LEVEL;
     // CINNABAR ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
     public static ForgeConfigSpec.IntValue CINNABAR_COUNT;
-    public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue CINNABAR_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue CINNABAR_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue CINNABAR_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue CINNABAR_HARVEST_LEVEL;
     // RUTILE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
     public static ForgeConfigSpec.IntValue RUTILE_COUNT;
-    public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue RUTILE_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue RUTILE_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue RUTILE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue RUTILE_HARVEST_LEVEL;
     // GALENA ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
     public static ForgeConfigSpec.IntValue GALENA_COUNT;
-    public static ForgeConfigSpec.IntValue GALENA_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue GALENA_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue GALENA_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue GALENA_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue GALENA_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
     // EIGHZO ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
     public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
-    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_OFFSET;
-    public static ForgeConfigSpec.IntValue EIGHZO_HEIGHT_OFFSET;
-    public static ForgeConfigSpec.IntValue EIGHZO_MAXIMUM_HEIGHT;
+    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
+    @Deprecated
     public static ForgeConfigSpec.IntValue EIGHZO_HARVEST_LEVEL;
 
     // General Settings
@@ -130,6 +128,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
+    @Deprecated
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL;
 
     // Crusher Variables
@@ -142,29 +141,34 @@ public class Config {
     public static ForgeConfigSpec.IntValue ELECTROLYZER_MAX_POWER;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue ELECTROLYZER_HARVEST_LEVEL;
 
     // Centrifugal Agitator Variables
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_HARVEST_LEVEL;
 
     // Compressor Variables
     public static ForgeConfigSpec.IntValue COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue COMPRESSOR_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue COMPRESSOR_HARVEST_LEVEL;
 
     // Stirling Generator Variables
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_SEND;
+    @Deprecated
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_HARVEST_LEVEL;
 
     // Combustion Generator Variables
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
+    @Deprecated
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
     public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
@@ -173,68 +177,80 @@ public class Config {
     public static ForgeConfigSpec.IntValue AQUEOULIZER_MAX_POWER;
     public static ForgeConfigSpec.IntValue AQUEOULIZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue AQUEOULIZER_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue AQUEOULIZER_HARVEST_LEVEL;
 
     // Air Compressor Variables
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_HARVEST_LEVEL;
 
     // Distillation Unit Variables
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_MAX_POWER;
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_POWER_USAGE;
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_HARVEST_LEVEL;
 
     // Pump Variables
     public static ForgeConfigSpec.IntValue PUMP_MAX_POWER;
     public static ForgeConfigSpec.IntValue PUMP_POWER_USAGE;
     public static ForgeConfigSpec.IntValue PUMP_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue PUMP_HARVEST_LEVEL;
 
     // Gas Fired Furnace Variables
+    @Deprecated
     public static ForgeConfigSpec.IntValue GAS_FIRED_FURNACE_HARVEST_LEVEL;
 
     // Electric Furnace Variables
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_HARVEST_LEVEL;
 
     // Battery Box Variables
     public static ForgeConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
     public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
     // Primitive Solar Panel Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
+    @Deprecated
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
 
     // Solar Panel Variables
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
+    @Deprecated
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
 
     // Centrifugal Separator Variables
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL;
 
     // Implosion Compressor Variables
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_HARVEST_LEVEL;
 
     // Blast Furnace Variables
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
+    @Deprecated
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
@@ -383,12 +399,14 @@ public class Config {
                     .define("Enable Logging", true);
             GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
                     .define("Oil Lakes", true);
-            OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Oil Lake Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Lake Chance", 80, 10, Integer.MAX_VALUE);
+            SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
+                    .defineInRange("Surface Oil Lake Chance", 65, 10, Integer.MAX_VALUE);
+            UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
+                .defineInRange("Underground Oil Lake Chance", 15, 10, Integer.MAX_VALUE);
             GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
+                    .defineInRange("Oil Geyser Chance", 100, 10, Integer.MAX_VALUE);
             GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
                     .define("Generate Rice", true);
             GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
@@ -403,11 +421,10 @@ public class Config {
             ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
                     .define("Enable Saltpeter Ore", true);
             SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
-            SALTPETER_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Bottom Offset", 55, 1, 256);
-            SALTPETER_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Saltpeter Height Offset", 0, 0, 256);
-            SALTPETER_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Saltpeter Maximum Height", 256, 0, 256);
+            SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, 1, 256);
+            SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 256, 0, 256);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
-            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
@@ -415,11 +432,10 @@ public class Config {
             ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
                 .define("Enable Bauxite Ore", true);
             BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
-            BAUXITE_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Bauxite Bottom Offset", 10, 1, 256);
-            BAUXITE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Bauxite Height Offset", 0, 0, 256);
-            BAUXITE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Bauxite Maximum Height", 60, 0, 256);
+            BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, 1, 256);
+            BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, 0, 256);
             BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
-            BAUXITE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
+            BAUXITE_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Cinnabar
@@ -427,11 +443,10 @@ public class Config {
             ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
                 .define("Enable Cinnabar Ore", true);
             CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
-            CINNABAR_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Cinnabar Bottom Offset", 1, 1, 256);
-            CINNABAR_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Cinnabar Height Offset", 0, 0, 256);
-            CINNABAR_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Cinnabar Maximum Height", 256, 0, 256);
+            CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, 1, 256);
+            CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 256, 0, 256);
             CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
-            CINNABAR_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
+            CINNABAR_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Rutile
@@ -439,11 +454,10 @@ public class Config {
             ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
                 .define("Enable Rutile Ore", true);
             RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
-            RUTILE_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Rutile Bottom Offset", 1, 1, 256);
-            RUTILE_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Rutile Height Offset", 0, 0, 256);
-            RUTILE_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Rutile Maximum Height", 16, 0, 256);
+            RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", 1, 1, 256);
+            RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", 16, 0, 256);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
-            RUTILE_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
+            RUTILE_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Galena
@@ -451,24 +465,22 @@ public class Config {
             ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
                 .define("Enable Galena Ore", true);
             GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
-            GALENA_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Galena Bottom Offset", 12, 1, 256);
-            GALENA_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Galena Height Offset", 0, 0, 256);
-            GALENA_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Galena Maximum Height", 32, 0, 256);
+            GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", 12, 1, 256);
+            GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 32, 0, 256);
             GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
-            GALENA_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
+            GALENA_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
 
             //Eighzo
             COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
-            ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
+            ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore")
                 .define("Enable Eighzo Ore", true);
             EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
-            EIGHZO_BOTTOM_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Bottom Offset", 1, 1, 256);
-            EIGHZO_HEIGHT_OFFSET = COMMON_BUILDER.defineInRange("Eighzo Height Offset", 0, 0, 256);
-            EIGHZO_MAXIMUM_HEIGHT = COMMON_BUILDER.defineInRange("Eighzo Maximum Height", 36, 0, 256);
+            EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, 1, 256);
+            EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, 0, 256);
             EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
-            EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
+            EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
 
             COMMON_BUILDER.pop();
 
@@ -690,7 +702,7 @@ public class Config {
         spec.setConfig(configData);
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent){
 
     }
@@ -698,6 +710,6 @@ public class Config {
     @SubscribeEvent
     public static void onReload(final ModConfig.Reloading configEvent){
 
-    }
+    }*/
 
 }

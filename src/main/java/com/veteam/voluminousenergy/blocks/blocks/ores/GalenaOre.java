@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
+import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 import java.util.Random;
 
@@ -14,10 +14,10 @@ public class GalenaOre extends VEOreBlock {
                 .lightLevel(l -> Config.GALENA_GLOW.get())
                 .requiresCorrectToolForDrops()
                 .strength(2.0f)
-                .harvestLevel(Config.GALENA_HARVEST_LEVEL.get())
-                .harvestTool(ToolType.PICKAXE)
         );
         setRegistryName("galena_ore");
+        VETagDataGenerator.mineableWithPickaxe.add(this);
+        VETagDataGenerator.addTierBasedOnInt(Config.GALENA_HARVEST_LEVEL.get(), this);
     }
 
     @Override

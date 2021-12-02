@@ -10,35 +10,35 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,9 +47,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static net.minecraft.util.math.MathHelper.abs;
-
-public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
     private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
     private LazyOptional<IItemHandlerModifiable> bucketHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
@@ -58,7 +56,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
     private LazyOptional<IItemHandlerModifiable> rngTwoHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
     private LazyOptional<IItemHandlerModifiable> rngThreeHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,5,6));
 
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
     public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot");
@@ -69,15 +67,14 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private static final Logger LOGGER = LogManager.getLogger();
 
-    // Sided item handlers
-    //private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 2));
-    //private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 6));
+    public ElectrolyzerTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.ELECTROLYZER_TILE, pos, state);
+    }
 
-
-    public ElectrolyzerTile(){
-        super(VEBlocks.ELECTROLYZER_TILE);
+    @Deprecated
+    public ElectrolyzerTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(VEBlocks.ELECTROLYZER_TILE, pos, state);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             ItemStack rngTwo = h.getStackInSlot(4).copy();
             ItemStack rngThree = h.getStackInSlot(5).copy();
 
-            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(input), level).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
@@ -131,7 +128,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
                             // Generate Random floats
                             Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
                             //LOGGER.debug("Random: " + random);
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance0()){
@@ -155,7 +152,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
                             // Generate Random floats
                             Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
                             //LOGGER.debug("Random: " + random);
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance1()){
@@ -179,7 +176,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
                             // Generate Random floats
                             Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
+                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
                             //LOGGER.debug("Random: " + random);
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance2()){
@@ -222,7 +219,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
 
     // Extract logic for energy management, since this is getting quite complex now.
     private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
+        energy.ifPresent(e -> e
                 .consumeEnergy(this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(),
                         this.inventory.getStackInSlot(6).copy()
                         )
@@ -299,12 +296,13 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
      */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(inv));
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
         //createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
 
         inputSm.read(tag, "input_manager");
         bucketSm.read(tag, "bucket_manager");
@@ -313,19 +311,18 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         rngTwoSm.read(tag, "rng_two_manager");
         rngThreeSm.read(tag, "rng_three_manager");
 
-        super.load(state,tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
 
         inputSm.write(tag, "input_manager");
         bucketSm.write(tag, "bucket_manager");
@@ -349,8 +346,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             referenceStack.setCount(64);
             //ItemStack referenceStack1 = inputItemStack.get().copy();
             //referenceStack1.setCount(64);
-            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack), level).orElse(null);
-            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
+            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
                 for (ItemStack testStack : recipe.ingredient.getItems()){
@@ -379,8 +376,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(referenceStack.copy()), level).orElse(null);
-            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
+            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack.copy()), level).orElse(null);
+            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
                 for (ItemStack testStack : recipe.ingredient.getItems()){
@@ -413,25 +410,25 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
         }
     };
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -464,22 +461,19 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new ElectrolyzerContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
-    public int progressCounterPX(int px){
-        if (counter == 0){
-            return 0;
-        } else {
-            return (px*(100-((counter*100)/length)))/100;
-        }
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public void updatePacketFromGui(boolean status, int slotId){
@@ -531,7 +525,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements ITickableT
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));

@@ -1,12 +1,14 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -15,13 +17,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class VoluminousTileEntity extends TileEntity {
+public class VoluminousTileEntity extends BlockEntity {
 
     protected ArrayList<UUID> playerUuid = new ArrayList<>();
 
-    public VoluminousTileEntity(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public VoluminousTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile){
+        voluminousTile.tick();
+    }
+
+    public void tick(){ }
 
     protected int cleanupTick = 0;
 

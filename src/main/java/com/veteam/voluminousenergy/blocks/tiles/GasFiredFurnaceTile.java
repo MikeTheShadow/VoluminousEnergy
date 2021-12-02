@@ -15,26 +15,28 @@ import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.BlastingRecipe;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +44,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -78,8 +80,13 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
-    public GasFiredFurnaceTile() {
-        super(VEBlocks.GAS_FIRED_FURNACE_TILE);
+    public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
+    }
+
+    @Deprecated
+    public GasFiredFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
     }
 
     public ItemStackHandler inventory = createHandler();
@@ -107,8 +114,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
         // Main Processing occurs here
         if (fuelTank.getTank() != null && !fuelTank.getTank().isEmpty()) {
-            FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(furnaceInput.copy()), level).orElse(null);
-            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(furnaceInput.copy()), level).orElse(null);
+            SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+            BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
 
             if ((furnaceRecipe != null || blastingRecipe != null) && countChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy()) && itemChecker(furnaceRecipe,blastingRecipe,furnaceOutput.copy())){
                 if (counter == 1) {
@@ -188,13 +195,13 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     /* Read and Write on World save */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
-        CompoundNBT inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(inv));
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
         createHandler().deserializeNBT(inv);
 
         // Tanks
-        CompoundNBT tankNbt = tag.getCompound("fuel_tank");
+        CompoundTag tankNbt = tag.getCompound("fuel_tank");
         this.fuelTank.getTank().readFromNBT(tankNbt);
 
         counter = tag.getInt("counter");
@@ -208,18 +215,18 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         this.furnaceInputSm.read(tag, "furnace_input_gui");
         this.furnaceOutputSm.read(tag, "furnace_output_gui");
 
-        super.load(state,tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
+            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
         });
 
         // Tanks
-        CompoundNBT tankNbt = new CompoundNBT();
+        CompoundTag tankNbt = new CompoundTag();
         this.fuelTank.getTank().writeToNBT(tankNbt);
         tag.put("fuel_tank", tankNbt);
 
@@ -239,20 +246,20 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -271,14 +278,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1){
-                    return level.getRecipeManager().getRecipeFor(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new Inventory(stack),level).orElse(null) != null
+                    return level.getRecipeManager().getRecipeFor(CombustionGeneratorFuelRecipe.RECIPE_TYPE, new SimpleContainer(stack),level).orElse(null) != null
                             || stack.getItem() == Items.BUCKET;
                 } else if (slot == 2) {
-                    return level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level).orElse(null) != null
-                            || level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(stack), level).orElse(null) != null;
+                    return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
+                            || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;
                 } else if (slot == 3) {
-                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(inputItemStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(inputItemStack.get()), level).orElse(null);
+                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
@@ -305,8 +312,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
                 if (slot == 2){
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
-                    FurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack),level).orElse(null);
+                    SmeltingRecipe recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack),level).orElse(null);
 
                     if (recipe != null || blastingRecipe != null){
                         return super.insertItem(slot, stack, simulate);
@@ -324,8 +331,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
                 if (level != null){
-                    FurnaceRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(referenceStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.BLASTING, new Inventory(referenceStack.get()), level).orElse(null);
+                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {
                         if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem().getItem()) {
                             if(blastingRecipe.getExperience() > 0){
@@ -347,14 +354,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     private void generateXP(int craftedAmount, float experience){
         if(level == null) return;
-        int i = MathHelper.floor((float)craftedAmount * experience);
-        float f = MathHelper.frac((float)craftedAmount * experience);
+        int i = Mth.floor((float)craftedAmount * experience);
+        float f = Mth.frac((float)craftedAmount * experience);
         if (f != 0.0F && Math.random() < (double)f) ++i;
 
         while(i > 0) {
-            int j = ExperienceOrbEntity.getExperienceValue(i);
+            int j = ExperienceOrb.getExperienceValue(i);
             i -= j;
-            level.addFreshEntity(new ExperienceOrbEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
+            level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), j));
         }
     }
 
@@ -380,22 +387,19 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new GasFiredFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressCounterPX(int px) {
-        if (counter == 0) {
-            return 0;
-        } else {
-            return (px * (100 - ((counter * 100) / length))) / 100;
-        }
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
     }
 
     public int progressFuelCounterPX(int px) {
@@ -443,7 +447,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         }
     }
 
-    public boolean countChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+    public boolean countChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             return (itemStack.getCount() + furnaceRecipe.getResultItem().getCount()) <= 64;
         } else if (blastingRecipe != null){
@@ -452,7 +456,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         return false;
     }
 
-    public boolean itemChecker(FurnaceRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
+    public boolean itemChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
             return furnaceRecipe.getResultItem().getItem() == itemStack.getItem();
@@ -517,7 +521,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

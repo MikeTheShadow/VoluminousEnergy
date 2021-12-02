@@ -2,20 +2,21 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -36,7 +37,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     private int outputAmount;
     private ItemStack secondInputStack;
 
-    public static final IRecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING;
+    public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -51,14 +52,14 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
 
     @Override
     public boolean canCraftInDimensions(int width, int height){return true;}
@@ -70,10 +71,10 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<?> getType(){return RECIPE_TYPE;}
+    public RecipeType<?> getType(){return RECIPE_TYPE;}
 
     public int getProcessTime(){ return processTime; }
 
@@ -94,15 +95,15 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<IndustrialBlastingRecipe>{
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<IndustrialBlastingRecipe>{
 
         @Override
         public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = JSONUtils.getAsInt(json,"process_time",200);
+            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
@@ -113,23 +114,25 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 }
             }
 
-            // Second Input
-            if(json.get("second_input").getAsJsonObject().has("tag") && !json.get("second_input").getAsJsonObject().has("item")){
-                ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"tag","minecraft:air"),':');
-                int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+            JsonObject secondInput = json.get("second_input").getAsJsonObject();
+
+            if(secondInput.has("tag") && !secondInput.has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(secondInput,"tag","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                ITag<Item> tag = TagCollectionManager.getInstance().getItems().getTag(secondInputResourceLocation);
+                Tag<Item> tag = RecipeUtil.getTagFromResourceLocationForItems(secondInputResourceLocation, "Industrial Blasting");
+
                 if(tag != null){
                     recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
                     recipe.onlySecondInput.addAll(tag.getValues());
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe the tag is null");
                 }
-
-            } else if (!json.get("second_input").getAsJsonObject().has("tag") && json.get("second_input").getAsJsonObject().has("item")) {
-                ResourceLocation secondInputResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("second_input").getAsJsonObject(),"item","minecraft:air"),':');
-                int secondInputAmount = JSONUtils.getAsInt(json.get("second_input").getAsJsonObject(),"count",1);
+            } else if(!secondInput.has("tag") && secondInput.has("item")){
+                ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(secondInput,"item","minecraft:air"),':');
+                int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
                 recipe.secondInputAmount = secondInputAmount;
 
@@ -137,22 +140,24 @@ public class IndustrialBlastingRecipe extends VERecipe {
                     recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
                 if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
                     recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe");
             }
 
             // Main Output Slot
-            ResourceLocation itemResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
-            recipe.outputAmount = JSONUtils.getAsInt(json.get("result").getAsJsonObject(),"count",1);
+            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
+            recipe.outputAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"count",1);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
 
             // Minimum heat
-            recipe.minimumHeat = JSONUtils.getAsInt(json,"minimum_heat_kelvin",300); // Minimum heat in Kelvin (K), default fluid temperature is 300 K
+            recipe.minimumHeat = GsonHelper.getAsInt(json,"minimum_heat_kelvin",300); // Minimum heat in Kelvin (K), default fluid temperature is 300 K
 
             return recipe;
         }
 
         @Nullable
         @Override
-        public IndustrialBlastingRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
+        public IndustrialBlastingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
             recipe.ingredient = Ingredient.fromNetwork(buffer);
 
@@ -176,7 +181,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, IndustrialBlastingRecipe recipe){
+        public void toNetwork(FriendlyByteBuf buffer, IndustrialBlastingRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
 
             buffer.writeInt(recipe.ingredientList.size());

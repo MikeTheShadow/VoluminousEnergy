@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
@@ -15,8 +15,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public String getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.aqueoulizing").getString();
+    public Component getTitle() {
+        return TextUtil.translateString("jei.voluminousenergy.aqueoulizing");
     }
 
     @Override
@@ -66,7 +67,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public void draw(AqueoulizerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(AqueoulizerRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,48, 12);
         emptyArrow.draw(matrixStack,48,12);
         slotDrawable.draw(matrixStack,2,10);

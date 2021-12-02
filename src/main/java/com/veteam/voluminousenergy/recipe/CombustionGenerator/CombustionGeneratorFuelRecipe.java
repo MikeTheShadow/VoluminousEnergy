@@ -6,21 +6,21 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
-    public static final IRecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION;
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -69,14 +69,14 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn){
+    public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.test(stack) && count >= ingredientCount;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv){return ItemStack.EMPTY;}
+    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
 
     @Override
     public boolean canCraftInDimensions(int width, int height){return true;}
@@ -88,10 +88,10 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public ResourceLocation getId(){return recipeId;}
 
     @Override
-    public IRecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public IRecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+    public RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
     @Override
     public ArrayList<Item> getIngredientList() {
@@ -147,14 +147,14 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public int getVolumetricEnergy() {return volumetricEnergy;}
 
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CombustionGeneratorFuelRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CombustionGeneratorFuelRecipe> {
         @Override
         public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);
 
             recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.volumetricEnergy = JSONUtils.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
+            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.volumetricEnergy = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
             for (ItemStack stack : recipe.ingredient.getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
@@ -162,34 +162,32 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 }
             }
 
-            // A tag is used instead of a manually defined fluid
-            try{
-                if(json.get("input_fluid").getAsJsonObject().has("tag") && !json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    ResourceLocation fluidTagLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"tag","minecraft:empty"),':');
-                    ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(fluidTagLocation);
-                    if(tag != null){
-                        for(Fluid fluid : tag.getValues()){
-                            FluidStack tempStack = new FluidStack(fluid.getFluid(), 1000);
-                            recipe.fluidInputList.add(tempStack);
-                            recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                            recipe.inputArraySize = recipe.fluidInputList.size();
-                        }
-                    } else {
-                        VoluminousEnergy.LOGGER.debug("Tag is null!");
+            JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
+
+            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
+                // A tag is used instead of a manually defined fluid
+                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
+
+                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
+                if(tag != null){
+                    for(Fluid fluid : tag.getValues()){
+                        FluidStack tempStack = new FluidStack(fluid, 1000);
+                        recipe.fluidInputList.add(tempStack);
+                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        recipe.inputArraySize = recipe.fluidInputList.size();
                     }
-
-                } else if (!json.get("input_fluid").getAsJsonObject().has("tag") && json.get("input_fluid").getAsJsonObject().has("fluid")){
-                    // In here, a manually defined fluid is used instead of a tag
-                    ResourceLocation fluidResourceLocation = ResourceLocation.of(JSONUtils.getAsString(json.get("input_fluid").getAsJsonObject(),"fluid","minecraft:empty"),':');
-                    recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation).getFluid()),1000);
-                    recipe.fluidInputList.add(recipe.inputFluid.copy());
-                    recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                    recipe.inputArraySize = recipe.fluidInputList.size();
                 } else {
-                    throw new JsonSyntaxException("Invalid recipe input for a Combustible Fuel, please check usage of tag and fluid in the json file.");
+                    VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
-            } catch (Exception e){
-
+            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
+                // In here, a manually defined fluid is used instead of a tag
+                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                recipe.fluidInputList.add(recipe.inputFluid);
+                recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
+                recipe.inputArraySize = recipe.fluidInputList.size();
+            } else {
+                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
@@ -198,7 +196,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer){
+        public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
             recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
@@ -217,7 +215,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, CombustionGeneratorFuelRecipe recipe){
+        public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorFuelRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 

@@ -2,31 +2,33 @@ package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.ToolUtil;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class VEHoeItem extends HoeItem {
-    public VEHoeItem(IItemTier p_i231595_1_, int p_i231595_2_, float p_i231595_3_, Properties p_i231595_4_) {
+    public VEHoeItem(Tier p_i231595_1_, int p_i231595_2_, float p_i231595_3_, Properties p_i231595_4_) {
         super(p_i231595_1_, p_i231595_2_, p_i231595_3_, p_i231595_4_);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag){
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
         ToolUtil.SolariumTooltipAppend(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage){
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
 
         if (tag == null){
             stack.getOrCreateTag().putInt("bonus", Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get());

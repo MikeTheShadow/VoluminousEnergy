@@ -1,23 +1,24 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class TankBoolButton extends VEIOButton {
     private boolean enable = false;
     private RelationalTank tank;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public TankBoolButton(RelationalTank tank, int x, int y, Button.IPressable onPress) {
-        super(x, y, 16, 15, ITextComponent.nullToEmpty(""), button -> {
+    public TankBoolButton(RelationalTank tank, int x, int y, Button.OnPress onPress) {
+        super(x, y, 16, 15, Component.nullToEmpty(""), button -> {
             ((TankBoolButton) button).cycle();
             onPress.onPress(button);
         });
@@ -29,9 +30,9 @@ public class TankBoolButton extends VEIOButton {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
-        Minecraft.getInstance().getTextureManager().bind(texture);
+        RenderSystem.setShaderTexture(0, texture);
         enable = this.tank.getSideStatus();
         if(!enable){
             blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);

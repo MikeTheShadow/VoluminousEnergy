@@ -11,28 +11,27 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPa
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -43,8 +42,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTileEntity, INamedContainerProvider {
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider {
+    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
@@ -63,17 +62,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     private boolean topIsIngress = true;
     private boolean sendOutPower = false;
 
+    public BatteryBoxTile(BlockPos pos, BlockState state) {
+        super(VEBlocks.BATTERY_BOX_TILE, pos, state);
+    }
 
-    public BatteryBoxTile(){
-        super(VEBlocks.BATTERY_BOX_TILE);
-        /*
-        slotPairList.add(new int[]{0,6});
-        slotPairList.add(new int[]{1,7});
-        slotPairList.add(new int[]{2,8});
-        slotPairList.add(new int[]{3,9});
-        slotPairList.add(new int[]{4,10});
-        slotPairList.add(new int[]{5,11});
-         */
+    @Deprecated
+    public BatteryBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
+        super(VEBlocks.BATTERY_BOX_TILE, pos, state);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(12) {
@@ -219,7 +214,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         }
     }
 
-    public static int receiveEnergy(TileEntity tileEntity, Direction from, int maxReceive){
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -227,13 +222,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     private void sendOutPower() {
         energy.ifPresent(energy -> {
             for (Direction dir : Direction.values()){
-                TileEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.BATTERY_BOX_TRANSFER.get(), energy.getEnergyStored());
                     int received = receiveEnergy(tileEntity, opposite, smallest);
-                    ((VEEnergyStorage) energy).consumeEnergy(received);
+                    energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
                     }
@@ -247,12 +242,11 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
      */
 
     @Override
-    public void load(BlockState state, CompoundNBT tag){
-        CompoundNBT inv = tag.getCompound("inv");
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
         this.inventory.deserializeNBT(inv);
         //createHandler().deserializeNBT(inv);
-        CompoundNBT energyTag = tag.getCompound("energy");
-        energy.ifPresent(h -> ((INBTSerializable<CompoundNBT>)h).deserializeNBT(energyTag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         doDischargeInstead[0] = tag.getBoolean("slot_pair_mode_0");
         doDischargeInstead[1] = tag.getBoolean("slot_pair_mode_1");
@@ -263,16 +257,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
 
         sendOutPower = tag.getBoolean("send_out_power");
 
-        super.load(state, tag);
+        super.load(tag);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>)h).serializeNBT();
-            tag.put("energy",compound);
-        });
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         tag.putBoolean("slot_pair_mode_0", doDischargeInstead[0]);
         tag.putBoolean("slot_pair_mode_1", doDischargeInstead[1]);
@@ -286,25 +277,25 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
         return super.save(tag);
     }
 
-    private IEnergyStorage createEnergy(){
+    private VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt){
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
@@ -332,13 +323,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
     }
 
     @Override
-    public ITextComponent getDisplayName(){
-        return new StringTextComponent(getType().getRegistryName().getPath());
+    public Component getDisplayName(){
+        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
     @Override
-    public Container createMenu(int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity) {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new BatteryBoxContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
@@ -388,7 +379,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements ITickableTil
             double y = this.getBlockPos().getY();
             double z = this.getBlockPos().getZ();
             final double radius = 16;
-            RegistryKey<World> worldRegistryKey = this.getLevel().dimension();
+            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
             PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
 
             // Boolean Buttons

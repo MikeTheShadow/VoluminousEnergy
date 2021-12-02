@@ -1,11 +1,11 @@
 package com.veteam.voluminousenergy.util;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.template.BlockStateMatchRuleTest;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
 
 import java.util.Random;
 
-public class MultiBlockStateMatchRuleTest extends BlockStateMatchRuleTest {
+public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
     private final BlockState[] stateList;
 
     public MultiBlockStateMatchRuleTest(BlockState... states) {
