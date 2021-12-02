@@ -41,7 +41,7 @@ public class LightFuel {
     }
 
     public static Item LightFuelBucket(){
-        LIGHT_FUEL_BUCKET = new VENoPlaceBucket(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        LIGHT_FUEL_BUCKET = new BucketItem(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return LIGHT_FUEL_BUCKET;
     }
 

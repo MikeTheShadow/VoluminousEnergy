@@ -55,7 +55,8 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue WORLD_GEN_LOGGING;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_LAKES;
     public static ForgeConfigSpec.BooleanValue GENERATE_OIL_GEYSER;
-    public static ForgeConfigSpec.IntValue OIL_LAKE_CHANCE;
+    public static ForgeConfigSpec.IntValue SURFACE_OIL_LAKE_CHANCE;
+    public static ForgeConfigSpec.IntValue UNDERGROUND_OIL_LAKE_CHANCE;
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE_IN_OCEAN;
@@ -398,12 +399,14 @@ public class Config {
                     .define("Enable Logging", true);
             GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
                     .define("Oil Lakes", true);
-            OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Oil Lake Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Lake Chance", 80, 10, Integer.MAX_VALUE);
+            SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
+                    .defineInRange("Surface Oil Lake Chance", 65, 10, Integer.MAX_VALUE);
+            UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
+                .defineInRange("Underground Oil Lake Chance", 15, 10, Integer.MAX_VALUE);
             GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Geyser Chance", 2520, 10, Integer.MAX_VALUE);
+                    .defineInRange("Oil Geyser Chance", 100, 10, Integer.MAX_VALUE);
             GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
                     .define("Generate Rice", true);
             GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")

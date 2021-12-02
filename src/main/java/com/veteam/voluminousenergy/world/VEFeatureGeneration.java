@@ -24,8 +24,8 @@ public class VEFeatureGeneration {
             //if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Will start feature registration process now.");
             // Oil Features
-            //addOilLake(event);
-            //addOilGeyser(event);
+            addOilLake(event);
+            addOilGeyser(event);
 
             // Crop features
             addRice(event);
@@ -34,27 +34,42 @@ public class VEFeatureGeneration {
 
     public static void addOilLake(BiomeLoadingEvent event){
         PlacedFeature crudeOilLakeFeature = CrudeOilFeature.INSTANCE
+        // For surface oil lakes
+        PlacedFeature surfaceCrudeOilLakeFeature = CrudeOilFeature.SURFACE_INSTANCE
                 .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                .rarity(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
                 .placed(
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(Config.OIL_LAKE_CHANCE.get()) // TODO: Config
+                        CountPlacement.of(1)
+                );
+
+        // For underground oil lakes
+        PlacedFeature undergroundCrudeOilLakeFeature = CrudeOilFeature.UNDERGROUND_INSTANCE
+                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
+                .rarity(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
+                .placed(
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                        InSquarePlacement.spread(),
+                        CountPlacement.of(1)
                 );
                 //.decorated(FeatureDecorator.LAVA_LAKE.configured(new ChanceDecoratorConfiguration(Config.OIL_LAKE_CHANCE.get())));
 
         if(Config.GENERATE_OIL_LAKES.get()){
-            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, crudeOilLakeFeature);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, surfaceCrudeOilLakeFeature);
+            event.getGeneration().addFeature(GenerationStep.Decoration.LAKES, undergroundCrudeOilLakeFeature);
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Oil Lakes to generate in: " + event.getName().toString());
         }
     }
 
     public static void addOilGeyser(BiomeLoadingEvent event){
         PlacedFeature crudeOilGeyser = GeyserFeature.INSTANCE
-                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()))
-                .placed(
+                .configured(new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock())
+                .rarity(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
+                .placed( // TODO: Circle back to this error
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
                         InSquarePlacement.spread(),
-                        CountPlacement.of(Config.OIL_GEYSER_CHANCE.get()) // TODO: Config
+                        CountPlacement.of(1)
                 );
 
         if(Config.GENERATE_OIL_GEYSER.get()){

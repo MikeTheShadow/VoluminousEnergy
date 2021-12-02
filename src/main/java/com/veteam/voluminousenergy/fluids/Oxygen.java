@@ -41,7 +41,7 @@ public class Oxygen {
     }
 
     public static Item OxygenBucket(){
-        OXYGEN_BUCKET = new VENoPlaceBucket(() -> OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        OXYGEN_BUCKET = new BucketItem(() -> OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return OXYGEN_BUCKET;
     }
 

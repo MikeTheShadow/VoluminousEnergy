@@ -42,7 +42,7 @@ public class CrudeOil {
     }
 
     public static Item CrudeOilBucket(){
-        CRUDE_OIL_BUCKET = new VENoPlaceBucket(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        CRUDE_OIL_BUCKET = new BucketItem(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return CRUDE_OIL_BUCKET;
     }
 

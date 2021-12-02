@@ -41,7 +41,7 @@ public class SulfuricAcid {
     }
 
     public static Item SulfuricAcidBucket(){
-        SULFURIC_ACID_BUCKET = new VENoPlaceBucket(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return SULFURIC_ACID_BUCKET;
     }
 

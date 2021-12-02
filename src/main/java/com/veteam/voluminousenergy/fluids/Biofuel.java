@@ -41,7 +41,7 @@ public class Biofuel {
     }
 
     public static Item BiofuelBucket(){
-        BIOFUEL_BUCKET = new VENoPlaceBucket(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return BIOFUEL_BUCKET;
     }
 

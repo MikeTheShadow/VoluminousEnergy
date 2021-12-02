@@ -41,7 +41,7 @@ public class Diesel {
     }
 
     public static Item DieselBucket(){
-        DIESEL_BUCKET = new VENoPlaceBucket(() -> DIESEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        DIESEL_BUCKET = new BucketItem(() -> DIESEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
         return DIESEL_BUCKET;
     }
 
