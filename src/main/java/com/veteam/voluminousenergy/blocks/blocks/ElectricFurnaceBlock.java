@@ -36,7 +36,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("electric_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.ELECTRIC_FURNACE_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

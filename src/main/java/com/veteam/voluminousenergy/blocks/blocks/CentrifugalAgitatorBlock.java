@@ -34,7 +34,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock implements EntityBlo
         );
         setRegistryName("centrifugal_agitator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.CENTRIFUGAL_AGITATOR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

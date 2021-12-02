@@ -39,7 +39,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
             );
         setRegistryName("primitiveblastfurnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(1, this);
+        VETagDataGenerator.setRequiresWood(this);
     }
 
     @Nullable

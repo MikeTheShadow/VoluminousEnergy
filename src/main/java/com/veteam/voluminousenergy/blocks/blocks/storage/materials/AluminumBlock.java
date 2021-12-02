@@ -15,6 +15,6 @@ public class AluminumBlock extends Block {
         );
         setRegistryName("aluminum_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.BAUXITE_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 }

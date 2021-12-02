@@ -34,7 +34,7 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
         );
         setRegistryName("centrifugal_separator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

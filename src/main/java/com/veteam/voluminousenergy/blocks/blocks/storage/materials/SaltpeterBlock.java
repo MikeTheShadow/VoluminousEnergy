@@ -15,6 +15,6 @@ public class SaltpeterBlock extends Block {
         );
         setRegistryName("saltpeter_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.SALTPETER_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresWood(this);
     }
 }

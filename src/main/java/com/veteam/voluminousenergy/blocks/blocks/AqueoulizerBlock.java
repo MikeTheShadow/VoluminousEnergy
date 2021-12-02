@@ -34,7 +34,7 @@ public class AqueoulizerBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("aqueoulizer");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.AQUEOULIZER_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

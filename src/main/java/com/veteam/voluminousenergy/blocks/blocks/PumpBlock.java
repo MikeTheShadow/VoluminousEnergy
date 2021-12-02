@@ -34,7 +34,7 @@ public class PumpBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("pump");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.PUMP_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 
     @Nullable

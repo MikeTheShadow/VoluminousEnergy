@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
+    "voluminousenergy:primitiveblastfurnace",
+    "voluminousenergy:primitivestirlinggenerator",
+    "voluminousenergy:primitive_solar_panel",
     "voluminousenergy:saltpeterore",
     "voluminousenergy:carbon_block",
     "voluminousenergy:saltpeter_block",

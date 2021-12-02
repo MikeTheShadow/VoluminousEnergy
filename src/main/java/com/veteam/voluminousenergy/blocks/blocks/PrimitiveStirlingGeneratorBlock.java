@@ -36,7 +36,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
 
         setRegistryName("primitivestirlinggenerator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresWood(this);
     }
 
     @Override

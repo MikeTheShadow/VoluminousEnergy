@@ -34,7 +34,7 @@ public class BatteryBoxBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("battery_box");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.BATTERY_BOX_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

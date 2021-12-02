@@ -75,49 +75,42 @@ public class Config {
     public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue SALTPETER_HARVEST_LEVEL;
+
     // BAUXITE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
     public static ForgeConfigSpec.IntValue BAUXITE_COUNT;
     public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue BAUXITE_HARVEST_LEVEL;
+
     // CINNABAR ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
     public static ForgeConfigSpec.IntValue CINNABAR_COUNT;
     public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue CINNABAR_HARVEST_LEVEL;
+
     // RUTILE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
     public static ForgeConfigSpec.IntValue RUTILE_COUNT;
     public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue RUTILE_HARVEST_LEVEL;
+
     // GALENA ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
     public static ForgeConfigSpec.IntValue GALENA_COUNT;
     public static ForgeConfigSpec.IntValue GALENA_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue GALENA_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
+
     // EIGHZO ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
     public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
     public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue EIGHZO_HARVEST_LEVEL;
 
     // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
@@ -129,49 +122,35 @@ public class Config {
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL;
 
     // Crusher Variables
     public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
     public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CRUSHER_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue CRUSHER_HARVEST_LEVEL;
 
     // Electrolyzer Variables
     public static ForgeConfigSpec.IntValue ELECTROLYZER_MAX_POWER;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTROLYZER_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue ELECTROLYZER_HARVEST_LEVEL;
 
     // Centrifugal Agitator Variables
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_HARVEST_LEVEL;
 
     // Compressor Variables
     public static ForgeConfigSpec.IntValue COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue COMPRESSOR_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue COMPRESSOR_HARVEST_LEVEL;
 
     // Stirling Generator Variables
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
     public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_SEND;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_HARVEST_LEVEL;
 
     // Combustion Generator Variables
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_HARVEST_LEVEL;
     public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
     public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
 
@@ -179,81 +158,55 @@ public class Config {
     public static ForgeConfigSpec.IntValue AQUEOULIZER_MAX_POWER;
     public static ForgeConfigSpec.IntValue AQUEOULIZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue AQUEOULIZER_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue AQUEOULIZER_HARVEST_LEVEL;
 
     // Air Compressor Variables
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_HARVEST_LEVEL;
 
     // Distillation Unit Variables
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_MAX_POWER;
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_POWER_USAGE;
     public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_HARVEST_LEVEL;
 
     // Pump Variables
     public static ForgeConfigSpec.IntValue PUMP_MAX_POWER;
     public static ForgeConfigSpec.IntValue PUMP_POWER_USAGE;
     public static ForgeConfigSpec.IntValue PUMP_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue PUMP_HARVEST_LEVEL;
-
-    // Gas Fired Furnace Variables
-    @Deprecated
-    public static ForgeConfigSpec.IntValue GAS_FIRED_FURNACE_HARVEST_LEVEL;
 
     // Electric Furnace Variables
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_HARVEST_LEVEL;
 
     // Battery Box Variables
     public static ForgeConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
     public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue BATTERY_BOX_HARVEST_LEVEL;
 
     // Primitive Solar Panel Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL;
 
     // Solar Panel Variables
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
     public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue SOLAR_PANEL_HARVEST_LEVEL;
 
     // Centrifugal Separator Variables
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL;
 
     // Implosion Compressor Variables
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_HARVEST_LEVEL;
 
     // Blast Furnace Variables
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
-    @Deprecated
-    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HARVEST_LEVEL;
     public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
     // Sawmill Variables
@@ -444,7 +397,6 @@ public class Config {
             SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, 1, 256);
             SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 256, 0, 256);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
-            SALTPETER_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
@@ -455,7 +407,6 @@ public class Config {
             BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, 1, 256);
             BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, 0, 256);
             BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
-            BAUXITE_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Cinnabar
@@ -466,7 +417,6 @@ public class Config {
             CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, 1, 256);
             CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 256, 0, 256);
             CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
-            CINNABAR_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Rutile
@@ -477,7 +427,6 @@ public class Config {
             RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", 1, 1, 256);
             RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", 16, 0, 256);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
-            RUTILE_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Galena
@@ -488,7 +437,6 @@ public class Config {
             GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", 12, 1, 256);
             GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 32, 0, 256);
             GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
-            GALENA_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
 
@@ -500,7 +448,6 @@ public class Config {
             EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, 1, 256);
             EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, 0, 256);
             EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
-            EIGHZO_HARVEST_LEVEL = COMMON_BUILDER.comment("NOTE: Deprecated. Use a datapack to change the tag.").defineInRange("Harvest Level", 5, 0, Integer.MAX_VALUE);
 
             COMMON_BUILDER.pop();
 
@@ -514,8 +461,6 @@ public class Config {
                 .defineInRange("Generation (Per Tick)",40, 0, Integer.MAX_VALUE);
         PRIMITIVE_STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Power generation to send per tick")
                 .defineInRange("Output Rate",1000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCrusher(){
@@ -525,8 +470,6 @@ public class Config {
                 .defineInRange("Power Consumption",40,0,Integer.MAX_VALUE);
         CRUSHER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Crusher")
                 .defineInRange("Maximum Transfer",1000,0,Integer.MAX_VALUE);
-        CRUSHER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupElectrolyzer(){
@@ -536,8 +479,6 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         ELECTROLYZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electrolyzer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        ELECTROLYZER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCentrifugalAgitator(){
@@ -547,8 +488,6 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         CENTRIFUGAL_AGITATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Agitator")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_AGITATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCompressor(){
@@ -558,8 +497,6 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Compressor")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupStirlingGenerator(){
@@ -569,8 +506,6 @@ public class Config {
                 .defineInRange("Fallback Generation Rate", 128, 0, Integer.MAX_VALUE);
         STIRLING_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Stirling Generator")
                 .defineInRange("Maximum Transfer", 128000, 0, Integer.MAX_VALUE);
-        STIRLING_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCombustionGenerator(){
@@ -578,8 +513,6 @@ public class Config {
                 .defineInRange("Maximum Power", 5120000, 0, Integer.MAX_VALUE);
         COMBUSTION_GENERATOR_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Combustion Generator")
                 .defineInRange("Maximum Transfer", 512000, 0, Integer.MAX_VALUE);
-        COMBUSTION_GENERATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
         COMBUSTION_GENERATOR_BALANCED_MODE = COMMON_BUILDER.comment("If true, the Combustion Generator will use the process time from the oxidizer's recipe rather than the static process time")
                 .define("Balanced Mode", false);
         COMBUSTION_GENERATOR_FIXED_TICK_TIME = COMMON_BUILDER.comment("The fixed process time for the Combustion Generator is Balanced Mode is not used.")
@@ -593,8 +526,6 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         AQUEOULIZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Aqueoulizer")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        AQUEOULIZER_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupAirCompressor(){
@@ -604,8 +535,6 @@ public class Config {
                 .defineInRange("Power Consumption", 24, 0, Integer.MAX_VALUE);
         AIR_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Air Compressor")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        AIR_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupDistillationUnit(){
@@ -615,8 +544,6 @@ public class Config {
                 .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
         DISTILLATION_UNIT_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Distillation Unit")
                 .defineInRange("Maximum Transfer", 2500, 0, Integer.MAX_VALUE);
-        DISTILLATION_UNIT_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupPump(){
@@ -626,14 +553,10 @@ public class Config {
                 .defineInRange("Power Consumption", 16, 0, Integer.MAX_VALUE);
         PUMP_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Pump")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        PUMP_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
-    private static void setupGasFiredFurnace(){
-        GAS_FIRED_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
-    }
+    @Deprecated // Remove if it will never be utilized in the future, undeprecate if there is a use
+    private static void setupGasFiredFurnace(){}
 
     private static void setupElectricFurnace(){
         ELECTRIC_FURNACE_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Electric Furnace to store")
@@ -642,8 +565,6 @@ public class Config {
                 .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
         ELECTRIC_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Electric Furnace")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        ELECTRIC_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupBatteryBox(){
@@ -651,8 +572,6 @@ public class Config {
                 .defineInRange("Maximum Power", 50_000, 0, Integer.MAX_VALUE);
         BATTERY_BOX_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Battery Box")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
-        BATTERY_BOX_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     public static void setupPrimitiveSolarPanel(){
@@ -662,8 +581,6 @@ public class Config {
                 .defineInRange("Generation Rate", 64, 0, Integer.MAX_VALUE);
         PRIMITIVE_SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Primitive Solar Panel")
                 .defineInRange("Maximum Transfer", 1_000, 0, Integer.MAX_VALUE);
-        PRIMITIVE_SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     public static void setupSolarPanel(){
@@ -673,8 +590,6 @@ public class Config {
                 .defineInRange("Generation Rate", 128, 0, Integer.MAX_VALUE);
         SOLAR_PANEL_SEND = COMMON_BUILDER.comment("Maximum power to send out per tick for the Solar Panel")
                 .defineInRange("Maximum Transfer", 5_000, 0, Integer.MAX_VALUE);
-        SOLAR_PANEL_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupCentrifugalSeparator(){
@@ -684,8 +599,6 @@ public class Config {
                 .defineInRange("Power Consumption", 40, 0, Integer.MAX_VALUE);
         CENTRIFUGAL_SEPARATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Centrifugal Separator")
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
-        CENTRIFUGAL_SEPARATOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 1, 0, Integer.MAX_VALUE);
     }
 
     private static void setupImplosionCompressor(){
@@ -695,8 +608,6 @@ public class Config {
                 .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
         IMPLOSION_COMPRESSOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Implosion Compressor")
                 .defineInRange("Maximum Transfer", 2_500, 0, Integer.MAX_VALUE);
-        IMPLOSION_COMPRESSOR_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 2, 0, Integer.MAX_VALUE);
     }
 
     private static void setupBlastFurnace(){
@@ -706,8 +617,6 @@ public class Config {
                 .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
         BLAST_FURNACE_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Blast Furnace")
                 .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
-        BLAST_FURNACE_HARVEST_LEVEL = COMMON_BUILDER.comment("Harvest level of the tool that is required to receive the block as an item when mined")
-                .defineInRange("Harvest Level", 3, 0, Integer.MAX_VALUE);
         BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION = COMMON_BUILDER.comment("Amount of fluid that is consumed per blasting operation for heat")
                 .defineInRange("Heat Source Consumption", 50, 0, 4_000);
     }
@@ -737,7 +646,6 @@ public class Config {
                 .defineInRange("Number of logs to consume", 1, 1, 64);
         }
 
-
         public static void loadConfig(ForgeConfigSpec spec, Path path){
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
@@ -747,15 +655,4 @@ public class Config {
         configData.load();
         spec.setConfig(configData);
     }
-
-    /*@SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent){
-
-    }
-
-    @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent){
-
-    }*/
-
 }

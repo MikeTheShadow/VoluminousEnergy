@@ -34,7 +34,7 @@ public class CrusherBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("crusher");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.CRUSHER_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 
     @Nullable

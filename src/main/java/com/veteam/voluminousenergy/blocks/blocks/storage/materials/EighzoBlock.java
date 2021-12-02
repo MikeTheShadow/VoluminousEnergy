@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 
+import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +16,6 @@ public class EighzoBlock extends Block {
         );
         setRegistryName("eighzo_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.EIGHZO_HARVEST_LEVEL.get(), this);
+        MaterialConstants.setEighzoTier(this);
     }
 }

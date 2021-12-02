@@ -1,6 +1,13 @@
 {
   "replace": false,
   "values": [
+    "voluminousenergy:centrifugal_agitator",
+    "voluminousenergy:combustion_generator",
+    "voluminousenergy:aqueoulizer",
+    "voluminousenergy:distillation_unit",
+    "voluminousenergy:electric_furnace",
+    "voluminousenergy:battery_box",
+    "voluminousenergy:centrifugal_separator",
     "voluminousenergy:implosion_compressor",
     "voluminousenergy:sawmill",
     "voluminousenergy:cinnabarore",

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.storage.raw;
 
+import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +16,6 @@ public class RawBauxiteBlock extends Block {
         );
         setRegistryName("raw_bauxite_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.BAUXITE_HARVEST_LEVEL.get(), this);
+        MaterialConstants.setBauxiteTier(this);
     }
 }

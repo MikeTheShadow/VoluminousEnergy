@@ -14,6 +14,6 @@ public class TitaniumMachineCasingBlock extends Block {
         );
         setRegistryName("titanium_machine_casing");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(3, this);
+        VETagDataGenerator.setRequiresDiamond(this);
     }
 }

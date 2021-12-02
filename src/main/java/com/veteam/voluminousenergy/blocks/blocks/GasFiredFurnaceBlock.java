@@ -36,7 +36,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("gas_fired_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.GAS_FIRED_FURNACE_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 
     @Nullable

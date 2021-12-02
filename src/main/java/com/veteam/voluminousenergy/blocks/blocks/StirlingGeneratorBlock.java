@@ -33,7 +33,7 @@ public class StirlingGeneratorBlock extends FaceableBlock implements EntityBlock
         );
         setRegistryName("stirling_generator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.STIRLING_GENERATOR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 
     @Nullable

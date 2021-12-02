@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
+import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.level.block.SoundType;
@@ -17,7 +18,7 @@ public class GalenaOre extends VEOreBlock {
         );
         setRegistryName("galena_ore");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        MaterialConstants.setGalenaTier(this);
     }
 
     @Override

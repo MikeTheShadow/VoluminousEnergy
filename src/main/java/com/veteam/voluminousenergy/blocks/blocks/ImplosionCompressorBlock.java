@@ -33,7 +33,7 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
         );
         setRegistryName("implosion_compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.IMPLOSION_COMPRESSOR_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable

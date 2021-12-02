@@ -33,7 +33,7 @@ public class SolarPanelBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("solar_panel");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.SOLAR_PANEL_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresStone(this);
     }
 
     @Nullable

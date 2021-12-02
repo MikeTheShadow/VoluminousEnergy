@@ -15,6 +15,6 @@ public class TitaniumBlock extends Block {
         );
         setRegistryName("titanium_block");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.addTierBasedOnInt(Config.RUTILE_HARVEST_LEVEL.get(), this);
+        VETagDataGenerator.setRequiresDiamond(this);
     }
 }
