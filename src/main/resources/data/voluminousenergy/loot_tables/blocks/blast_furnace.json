@@ -75,6 +75,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:blast_furnace",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

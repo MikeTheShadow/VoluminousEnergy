@@ -60,6 +60,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:aqueoulizer",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

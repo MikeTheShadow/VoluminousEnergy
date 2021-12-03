@@ -30,6 +30,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:battery_box",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

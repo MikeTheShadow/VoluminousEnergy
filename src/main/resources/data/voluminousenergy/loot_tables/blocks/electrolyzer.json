@@ -90,6 +90,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:electrolyzer",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

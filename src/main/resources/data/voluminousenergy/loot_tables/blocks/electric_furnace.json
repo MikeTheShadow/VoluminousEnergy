@@ -45,6 +45,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:electric_furnace",
               "entries": [
                 {
                   "type": "minecraft:dynamic",
