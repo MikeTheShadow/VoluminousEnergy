@@ -42,10 +42,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -134,7 +134,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag){
+    public void saveAdditional(CompoundTag tag){
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -153,14 +153,14 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
 
         slotManager.write(tag, "slot_manager");
         fluidTank.writeGuiProperties(tag, "tank_gui");
-
-        return super.save(tag);
     }
 
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

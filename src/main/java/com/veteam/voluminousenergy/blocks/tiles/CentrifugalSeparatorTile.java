@@ -311,7 +311,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -326,8 +326,6 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
         rngOneSm.write(tag, "rng_one_manager");
         rngTwoSm.write(tag, "rng_two_manager");
         rngThreeSm.write(tag, "rng_three_manager");
-
-        return super.save(tag);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(7) {
@@ -412,7 +410,9 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

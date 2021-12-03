@@ -208,7 +208,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -233,13 +233,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         this.inputTank.writeGuiProperties(tag, "input_tank_gui");
         this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
         this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
-
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

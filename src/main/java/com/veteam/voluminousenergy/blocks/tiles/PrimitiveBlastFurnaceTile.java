@@ -131,7 +131,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("inv",compound);
@@ -141,8 +141,6 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
 
         this.inputSm.write(tag, "input_gui");
         this.outputSm.write(tag,"output_gui");
-
-        return super.save(tag);
     }
 
 
@@ -152,7 +150,9 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

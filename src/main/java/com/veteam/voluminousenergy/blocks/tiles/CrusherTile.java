@@ -267,7 +267,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> h.serializeNBT(tag));
         tag.putInt("counter", counter);
@@ -276,7 +276,6 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         inputSlotProp.write(tag, "input_slot");
         outputSlotProp.write(tag, "output_slot");
         rngSlotProp.write(tag, "rng_slot");
-        return super.save(tag);
     }
 
     private VEEnergyStorage createEnergy(){
@@ -285,7 +284,9 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

@@ -1,15 +1,16 @@
 package com.veteam.voluminousenergy.items.batteries;
 
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -21,22 +22,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class VEEnergyItem extends Item {
     private final int maxEnergy;
-    private final int maxReceive;
-    private final int maxExtract;
+    private final int maxTransfer;
 
     public VEEnergyItem(Properties properties, int maxEnergy, int maxTransfer) {
         this(properties, maxEnergy, maxTransfer, maxEnergy);
     }
 
-    public VEEnergyItem(Properties properties, int maxEnergy, int maxReceive, int maxExtract){
+    @Deprecated
+    public VEEnergyItem(Properties properties, int maxEnergy, int maxTransfer, int maxExtract){
         super(properties);
         this.maxEnergy = maxEnergy;
-        this.maxReceive = maxReceive;
-        this.maxExtract = maxExtract;
+        this.maxTransfer = maxTransfer;
     }
 
     public static float getChargeRatio(ItemStack stack){
@@ -56,7 +54,7 @@ public class VEEnergyItem extends Item {
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
                 if(cap == CapabilityEnergy.ENERGY){
-                    return LazyOptional.of(() -> new VEEnergyItemStorage(itemStack, maxEnergy, maxReceive, maxExtract)).cast();
+                    return LazyOptional.of(() -> new VEEnergyItemStorage(itemStack, maxEnergy, maxTransfer)).cast();
                 }
                 return LazyOptional.empty();
             }
@@ -82,13 +80,23 @@ public class VEEnergyItem extends Item {
         }
     }
 
-    /*@Override
-    public boolean showDurabilityBar(ItemStack itemStack){return true;}
+    @Override
+    public boolean isBarVisible(ItemStack itemStack){return true;}
 
     @Override
-    public double getDurabilityForDisplay(ItemStack itemStack){return 1-getChargeRatio(itemStack);}*/
+    public int getBarWidth(ItemStack itemStack){
+        //return Math.round(getChargeRatio(itemStack));
+        return Math.round(13 * getChargeRatio(itemStack));
+    }
 
-    public int getMaxReceive() {return maxReceive;}
-    public int getMaxExtract() {return maxExtract;}
+    @Override
+    public int getBarColor(ItemStack itemStack) {
+        float f = getChargeRatio(itemStack);
+        return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+    }
+
+    public int getMaxTransfer() {return maxTransfer;}
+    @Deprecated
+    public int getMaxExtract() {return maxTransfer;}
 
 }

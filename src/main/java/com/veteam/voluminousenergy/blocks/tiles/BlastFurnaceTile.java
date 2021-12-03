@@ -214,7 +214,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -241,14 +241,14 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
         tag.putBoolean("validity", this.validity);
 
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -257,7 +257,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        //energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy"))); //TODO: Test this not needed
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }

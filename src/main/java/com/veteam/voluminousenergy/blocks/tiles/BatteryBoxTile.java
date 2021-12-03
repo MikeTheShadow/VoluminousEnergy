@@ -164,7 +164,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
                     if(energyItem.canReceive()){
                         int toReceive;
                         if(itemStack.getItem() instanceof VEEnergyItem){
-                            int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxReceive();
+                            int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxTransfer();
                             toReceive = Math.min(
                                     (energyItem.getMaxEnergyStored() - energyItem.getEnergyStored()),
                                     maxReceiveItem);
@@ -261,7 +261,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> h.serializeNBT(tag));
 
@@ -274,7 +274,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
 
         tag.putBoolean("send_out_power", sendOutPower);
 
-        return super.save(tag);
+        //return super.save(tag);
     }
 
     private VEEnergyStorage createEnergy(){
@@ -283,7 +283,9 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

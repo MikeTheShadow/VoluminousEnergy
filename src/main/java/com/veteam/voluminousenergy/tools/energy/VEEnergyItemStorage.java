@@ -4,11 +4,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.EnergyStorage;
 
-public class VEEnergyItemStorage extends EnergyStorage {
+public class VEEnergyItemStorage extends VEEnergyStorage {
     private final ItemStack itemStack;
 
-    public VEEnergyItemStorage(ItemStack itemStack, int capacity, int maxReceive, int maxExtract) {
-        super(capacity, maxReceive, maxExtract);
+    public VEEnergyItemStorage(ItemStack itemStack, int capacity, int maxTransfer) {
+        super(capacity, maxTransfer);
         this.itemStack = itemStack;
     }
 

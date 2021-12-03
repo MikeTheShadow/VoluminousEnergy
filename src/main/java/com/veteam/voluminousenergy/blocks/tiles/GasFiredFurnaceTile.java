@@ -219,7 +219,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -240,14 +240,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         this.bucketOutputSm.write(tag, "bucket_output_gui");
         this.furnaceInputSm.write(tag, "furnace_input_gui");
         this.furnaceOutputSm.write(tag, "furnace_output_gui");
-
-        return super.save(tag);
     }
 
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable
