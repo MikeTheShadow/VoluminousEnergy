@@ -18,8 +18,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
-import java.util.List;
-
 public class VEOreGeneration {
 
     public static void OreGeneration(BiomeLoadingEvent biome){
@@ -59,7 +57,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_BAUXITE_ORE.get()){
                 PlacedFeature bauxiteOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
+                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.BAUXITE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -73,7 +71,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_CINNABAR_ORE.get()){
                 PlacedFeature cinnabarOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
+                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.CINNABAR_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -86,7 +84,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_RUTILE_ORE.get()){
                 PlacedFeature rutileOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
+                        .configured(new OreConfiguration(replace.OVERWORLD_DEEP, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RUTILE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -99,8 +97,8 @@ public class VEOreGeneration {
             }
 
             if (Config.ENABLE_GALENA_ORE.get()){
-                PlacedFeature galenaOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
+                PlacedFeature galenaOreShallow = Feature.ORE
+                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -108,7 +106,17 @@ public class VEOreGeneration {
                                 CountPlacement.of(Config.GALENA_COUNT.get())
                         );
 
-                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOre);
+                PlacedFeature galenaOreDeep = Feature.ORE // TODO: Deep ore
+                        .configured(new OreConfiguration(replace.OVERWORLD_DEEP, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
+                        .placed(
+                                HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())),
+                                InSquarePlacement.spread(),
+                                BiomeFilter.biome(),
+                                CountPlacement.of(Config.GALENA_COUNT.get())
+                        );
+
+                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOreShallow);
+                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOreDeep);
                 oreLog(VEBlocks.GALENA_ORE, biome, Config.GALENA_SIZE.get(), Config.GALENA_BOTTOM_ANCHOR.get(), Config.GALENA_TOP_ANCHOR.get(), Config.GALENA_COUNT.get());
             }
 
@@ -121,7 +129,8 @@ public class VEOreGeneration {
     }
 
     public static final class replace { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
-        public static final RuleTest OVERWORLD = new TagMatchTest(BlockTags.BASE_STONE_OVERWORLD);
+        public static final RuleTest OVERWORLD_SHALLOW = new TagMatchTest(BlockTags.BASE_STONE_OVERWORLD);
+        public static final RuleTest OVERWORLD_DEEP = new MultiBlockStateMatchRuleTest(Blocks.DEEPSLATE.defaultBlockState(), Blocks.TUFF.defaultBlockState());
         public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState());
         public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
