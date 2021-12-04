@@ -46,11 +46,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,11 +132,13 @@ public class ToolingStationTile extends VEFluidTileEntity {
                             toTransfer = Math.min(toolingStationFluid.getAmount(), tankCapacity);
                         }
 
-                        // Drain the fluid from the Tooling Station
-                        this.fuelTank.getTank().drain(toTransfer, IFluidHandler.FluidAction.EXECUTE);
-                        toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
-                        // Fill the item
-                        fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+                        if (toTransfer > 0){
+                            // Drain the fluid from the Tooling Station
+                            this.fuelTank.getTank().drain(toTransfer, IFluidHandler.FluidAction.EXECUTE);
+                            toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
+                            // Fill the item
+                            fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+                        }
                     }
                 });
             }

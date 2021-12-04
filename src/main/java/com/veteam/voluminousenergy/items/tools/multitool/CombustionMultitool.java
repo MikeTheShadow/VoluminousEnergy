@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
+import com.veteam.voluminousenergy.items.VEToolFluidHandler;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -35,9 +36,7 @@ import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class CombustionMultitool extends Multitool {
 
-    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createToolFluidHandler);
-    private RelationalTank tank = new RelationalTank(new FluidTank(4000),0,null,null, TankType.INPUT);
-    private Level level;
+    public final int TANK_CAPACITY = 4000;
 
     public CombustionMultitool(MultitoolBit bit, String registryName, Properties itemProperties) {
         super(bit, registryName, itemProperties);
@@ -45,10 +44,6 @@ public class CombustionMultitool extends Multitool {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
-        /*if(this.level == null && world != null){
-            this.level = world; // WARN: This may be BAD trying to grab the world via a tooltip method
-        }*/
-
         if(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY == null) return; // sanity check
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
@@ -57,7 +52,7 @@ public class CombustionMultitool extends Multitool {
                             .append(": "
                                     + fluidStack.getAmount()
                                     + " mB / "
-                                    + tank.getTank().getCapacity()
+                                    + this.TANK_CAPACITY
                                     + " mB"
                             )
             );
@@ -77,14 +72,14 @@ public class CombustionMultitool extends Multitool {
             fluidInTank.set(fluidStack.getAmount());
         });
 
-        return (int)Math.round(13 * (fluidInTank.get() / (double)this.tank.getTank().getTankCapacity(0)));
+        return (int)Math.round(13 * (fluidInTank.get() / (double)this.TANK_CAPACITY));
     }
 
     @Override
     public int getBarColor(ItemStack itemStack) {
         AtomicReference<Float> ratio = new AtomicReference<>(0F);
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
-            ratio.set(fluid.getFluidInTank(0).getAmount() / (float)this.tank.getTank().getTankCapacity(0));
+            ratio.set(fluid.getFluidInTank(0).getAmount() / (float)this.TANK_CAPACITY);
         });
         return Mth.hsvToRgb(ratio.get() / 3.0F, 1.0F, 1.0F);
     }
@@ -97,112 +92,10 @@ public class CombustionMultitool extends Multitool {
             @Nonnull
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                return inputFluidHandler.cast();
-            }
-        };
-    }
-
-    // Fluid handler for the CombustionMultitool
-    public IFluidHandler createToolFluidHandler(){
-        return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), this.tank);
-    }
-
-    public IFluidHandler createFluidHandler(VEFluidRecipe veRecipe, RelationalTank... relationalTanks) { // Adapted from VEFluidTileEntity
-
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return relationalTanks.length;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
-                        return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
-                    }
+                if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+                    return LazyOptional.of(() -> VEToolFluidHandler.createToolFluidHandler(itemStack, TANK_CAPACITY)).cast();
                 }
-                LOGGER.debug("Invalid tankId in CombustionMultitool for getFluidInTank");
-                return FluidStack.EMPTY;
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
-                        return t.getTank() == null ? 0 : t.getTank().getCapacity();
-                    }
-                }
-                LOGGER.debug("Invalid tankId in CombustionMultitool for getTankCapacity");
-                return 0;
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (level != null){
-                    for (RelationalTank t : relationalTanks) {
-                        if (t.getTankType() == TankType.INPUT) {
-                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getBucket());
-                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(bucketStack), level).orElse(null);
-                            return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        } else {
-                            AtomicBoolean recipeHit = new AtomicBoolean(false);
-                            veRecipe.getIngredientList().forEach(i -> {
-                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(new ItemStack(i)), level).orElse(null);
-                                if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
-                                    recipeHit.set(true);
-                                }
-                            });
-                            return recipeHit.get() && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        }
-                    }
-                    return false;
-                }
-                return true;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(isFluidValid(t.getId(),resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().fill(resource, action);
-                    }
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-
-                for(RelationalTank t : relationalTanks) {
-                    if(resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().drain(resource,action);
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getTank().getFluidAmount() > 0) {
-                        if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                            return t.getTank().drain(maxDrain, action);
-                        } else if (t.getTankType() != TankType.INPUT) {
-                            return t.getTank().drain(maxDrain, action);
-                        }
-                    }
-                }
-                return FluidStack.EMPTY;
+                return LazyOptional.empty();
             }
         };
     }
