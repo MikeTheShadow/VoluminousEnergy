@@ -155,7 +155,7 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -166,12 +166,13 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
 
         inputSlotManager.write(tag, "input_slot");
         outputSlotManager.write(tag, "output_slot");
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

@@ -248,7 +248,7 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
 
     @Nonnull
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -272,13 +272,13 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
 
         oxidizerTank.writeGuiProperties(tag, "oxidizer_tank_gui");
         fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
-
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

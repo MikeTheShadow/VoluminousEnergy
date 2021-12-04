@@ -25,6 +25,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:solar_panel",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

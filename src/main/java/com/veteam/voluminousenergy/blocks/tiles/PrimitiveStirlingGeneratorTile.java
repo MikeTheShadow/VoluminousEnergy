@@ -129,19 +129,20 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
             tag.put("inv",compound);
         });
         energy.ifPresent(h -> h.serializeNBT(tag));
         slotManager.write(tag, "slot_manager");
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

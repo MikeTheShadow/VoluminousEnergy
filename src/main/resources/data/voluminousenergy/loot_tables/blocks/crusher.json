@@ -60,6 +60,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:crusher",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

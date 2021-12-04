@@ -315,7 +315,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -330,8 +330,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
         rngOneSm.write(tag, "rng_one_manager");
         rngTwoSm.write(tag, "rng_two_manager");
         rngThreeSm.write(tag, "rng_three_manager");
-
-        return super.save(tag);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(7) {
@@ -416,7 +414,9 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

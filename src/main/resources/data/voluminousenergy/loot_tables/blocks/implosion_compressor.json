@@ -60,6 +60,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:implosion_compressor",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

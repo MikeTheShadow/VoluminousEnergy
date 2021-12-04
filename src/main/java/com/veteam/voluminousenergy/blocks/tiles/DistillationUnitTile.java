@@ -256,7 +256,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -291,13 +291,13 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         this.o2Manager.write(tag, "o_2_manager");
 
         tag.putBoolean("validity", this.validity);
-
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

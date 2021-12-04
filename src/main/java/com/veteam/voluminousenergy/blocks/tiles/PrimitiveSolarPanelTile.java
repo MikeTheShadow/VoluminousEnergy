@@ -93,15 +93,16 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         energy.ifPresent(h -> h.serializeNBT(tag));
         this.generation = tag.getInt("generation_rate");
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

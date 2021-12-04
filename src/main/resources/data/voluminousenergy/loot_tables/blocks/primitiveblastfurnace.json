@@ -25,6 +25,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:primitiveblastfurnace",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

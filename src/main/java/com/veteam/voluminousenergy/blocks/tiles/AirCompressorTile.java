@@ -180,7 +180,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag){
+    public void saveAdditional(CompoundTag tag){
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> h.serializeNBT(tag));
 
@@ -193,12 +193,13 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
 
         outputSlotManager.write(tag, "output_slot");
         airTank.writeGuiProperties(tag, "air_tank_properties");
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

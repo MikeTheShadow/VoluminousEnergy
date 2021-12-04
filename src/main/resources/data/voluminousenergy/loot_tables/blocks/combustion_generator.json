@@ -60,6 +60,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:combustion_generator",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

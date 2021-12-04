@@ -135,7 +135,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag){
+    public void saveAdditional(CompoundTag tag){
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -154,14 +154,13 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
 
         slotManager.write(tag, "slot_manager");
         fluidTank.writeGuiProperties(tag, "tank_gui");
-
-        return super.save(tag);
     }
-
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

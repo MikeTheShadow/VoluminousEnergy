@@ -90,6 +90,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:gas_fired_furnace",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

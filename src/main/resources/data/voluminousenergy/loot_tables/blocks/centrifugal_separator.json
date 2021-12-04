@@ -90,6 +90,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:centrifugal_separator",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

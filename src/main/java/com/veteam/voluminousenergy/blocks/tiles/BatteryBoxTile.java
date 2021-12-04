@@ -31,11 +31,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -137,7 +137,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
                     if(energyItem.canExtract()){
                         int toExtract;
                         if(itemStack.getItem() instanceof VEEnergyItem) {
-                            int maxExtractItem = ((VEEnergyItem) itemStack.getItem()).getMaxExtract();
+                            int maxExtractItem = ((VEEnergyItem) itemStack.getItem()).getMaxTransfer();
                             toExtract = Math.min(energyItem.getEnergyStored(), maxExtractItem);
                             toExtract = Math.min(toExtract, POWER_MAX_TX);
                         } else toExtract = Math.min(energyItem.getEnergyStored(), POWER_MAX_TX);
@@ -164,7 +164,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
                     if(energyItem.canReceive()){
                         int toReceive;
                         if(itemStack.getItem() instanceof VEEnergyItem){
-                            int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxReceive();
+                            int maxReceiveItem = ((VEEnergyItem) itemStack.getItem()).getMaxTransfer();
                             toReceive = Math.min(
                                     (energyItem.getMaxEnergyStored() - energyItem.getEnergyStored()),
                                     maxReceiveItem);
@@ -261,7 +261,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         tag.put("inv", this.inventory.serializeNBT());
         energy.ifPresent(h -> h.serializeNBT(tag));
 
@@ -273,8 +273,6 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
         tag.putBoolean("slot_pair_mode_5", doDischargeInstead[5]);
 
         tag.putBoolean("send_out_power", sendOutPower);
-
-        return super.save(tag);
     }
 
     private VEEnergyStorage createEnergy(){
@@ -283,7 +281,9 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

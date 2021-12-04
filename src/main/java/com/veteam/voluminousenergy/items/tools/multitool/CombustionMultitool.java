@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -21,12 +22,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
@@ -61,21 +64,30 @@ public class CombustionMultitool extends Multitool {
         });
     }
 
-    /*@Override
-    public boolean showDurabilityBar(ItemStack itemStack){
+    @Override
+    public boolean isBarVisible(ItemStack itemStack){
         return true;
-    }*/
+    }
 
-    /*@Override
-    public double getDurabilityForDisplay(ItemStack itemStack){
+    @Override
+    public int getBarWidth(ItemStack itemStack){
         AtomicInteger fluidInTank = new AtomicInteger(0);
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             fluidInTank.set(fluidStack.getAmount());
         });
 
-        return 1-(fluidInTank.get() / (double)this.tank.getTank().getTankCapacity(0));
-    }*/
+        return (int)Math.round(13 * (fluidInTank.get() / (double)this.tank.getTank().getTankCapacity(0)));
+    }
+
+    @Override
+    public int getBarColor(ItemStack itemStack) {
+        AtomicReference<Float> ratio = new AtomicReference<>(0F);
+        itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
+            ratio.set(fluid.getFluidInTank(0).getAmount() / (float)this.tank.getTank().getTankCapacity(0));
+        });
+        return Mth.hsvToRgb(ratio.get() / 3.0F, 1.0F, 1.0F);
+    }
 
     // This should initialize the FluidHandler and also allow one to get the fluidHandler from this item
     @Nullable

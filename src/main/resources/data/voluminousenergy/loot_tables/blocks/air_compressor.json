@@ -45,6 +45,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:air_compressor",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

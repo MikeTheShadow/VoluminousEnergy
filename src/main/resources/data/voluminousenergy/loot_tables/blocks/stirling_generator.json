@@ -30,6 +30,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:stirling_generator",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

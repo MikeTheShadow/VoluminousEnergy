@@ -266,7 +266,7 @@ public class SawmillTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         handler.ifPresent(h -> {
             CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
             tag.put("inv", compound);
@@ -283,13 +283,13 @@ public class SawmillTile extends VEFluidTileEntity {
         tag.put("outputTank", outputNBT);
 
         this.outputTank.writeGuiProperties(tag, "output_tank_gui");
-
-        return super.save(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable

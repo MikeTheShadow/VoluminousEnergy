@@ -50,6 +50,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:compressor",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

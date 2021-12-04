@@ -145,6 +145,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "voluminousenergy:distillation_unit",
               "entries": [
                 {
                   "type": "minecraft:dynamic",
