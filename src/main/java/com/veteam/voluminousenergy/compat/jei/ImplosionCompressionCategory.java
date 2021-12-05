@@ -1,6 +1,30 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-public class ImplosionCompressionCategory {/*implements IRecipeCategory<ImplosionCompressorRecipe> {
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.ImplosionCompressorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCompressorRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
@@ -96,4 +120,4 @@ public class ImplosionCompressionCategory {/*implements IRecipeCategory<Implosio
         itemStacks.set(1, jeiStack);
         itemStacks.set(2, new ItemStack(Items.GUNPOWDER, 1));
     }
-*/}
+}

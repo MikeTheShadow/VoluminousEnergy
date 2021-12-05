@@ -1,6 +1,28 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-public class StirlingCategory {/*implements IRecipeCategory<StirlingGeneratorRecipe> {
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
@@ -76,4 +98,4 @@ public class StirlingCategory {/*implements IRecipeCategory<StirlingGeneratorRec
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
     }
-*/}
+}

@@ -1,6 +1,33 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-public class IndustrialBlastingCategory {/*implements IRecipeCategory<IndustrialBlastingRecipe> {
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.TextUtil;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBlastingRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
@@ -138,4 +165,4 @@ public class IndustrialBlastingCategory {/*implements IRecipeCategory<Industrial
         itemStacks.set(1, jeiStack);
     }
 
-*/}
+}

@@ -1,6 +1,29 @@
 package com.veteam.voluminousenergy.compat.jei;
 
-public class DistillingCategory {/*implements IRecipeCategory<DistillationRecipe> {
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.DistillationRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
@@ -89,4 +112,4 @@ public class DistillingCategory {/*implements IRecipeCategory<DistillationRecipe
         fluidStacks.set(2, recipe.getSecondFluid());
         itemStacks.set(3, recipe.getThirdResult());
     }
-*/}
+}
