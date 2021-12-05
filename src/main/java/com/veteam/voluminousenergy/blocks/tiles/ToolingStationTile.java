@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
@@ -102,7 +103,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
 
         ItemStack fuelInput = inventory.getStackInSlot(0).copy(); // Fuel bucket insert
         ItemStack fuelOutput = inventory.getStackInSlot(1).copy(); // Fuel bucket extract
-        ItemStack mainTool = inventory.getStackInSlot(2).copy(); // Main tool slot, where the final tool would be crafted
+        ItemStack mainTool = inventory.getStackInSlot(2); // This will act like a POINTER, not a clone
         ItemStack toolBit = inventory.getStackInSlot(3).copy(); // this is where the bit would be put into
         ItemStack toolBase = inventory.getStackInSlot(4).copy(); // this is where the base of the tool would be put into
 
