@@ -16,7 +16,7 @@ apply plugin: 'maven-publish'
 version = '1.18-Experimental'
 group = 'com.veteam.voluminousenergy' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'voluminousenergy'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+//apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 // Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -132,7 +132,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18-38.0.10'
+    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
     //implementation('cpw.mods:securejarhandler') { version { strictly '0.9.45' } }
 
     // Real mod deobf dependency examples - these get remapped to your current mappings

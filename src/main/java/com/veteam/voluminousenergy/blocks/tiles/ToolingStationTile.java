@@ -117,7 +117,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
         if(fuelRecipe != null){
             // Logic for refueling the base
             if (!mainTool.isEmpty()){
-                mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(fluid -> {
+                mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                     FluidStack itemFluid = fluid.getFluidInTank(0);
                     FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
                     int tankCapacity = fluid.getTankCapacity(0);
