@@ -400,13 +400,13 @@ public class Config {
             GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
                     .define("Oil Lakes", true);
             SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
-                    .defineInRange("Surface Oil Lake Chance", 65, 10, Integer.MAX_VALUE);
+                    .defineInRange("Surface Oil Lake Chance", 144, 10, Integer.MAX_VALUE);
             UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
-                .defineInRange("Underground Oil Lake Chance", 15, 10, Integer.MAX_VALUE);
+                .defineInRange("Underground Oil Lake Chance", 16, 10, Integer.MAX_VALUE);
             GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                     .define("Oil Geysers", true);
             OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Geyser Chance", 100, 10, Integer.MAX_VALUE);
+                    .defineInRange("Oil Geyser Chance", 208, 10, Integer.MAX_VALUE);
             GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
                     .define("Generate Rice", true);
             GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
