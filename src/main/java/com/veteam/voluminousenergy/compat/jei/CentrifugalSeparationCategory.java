@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -181,4 +181,4 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
             itemStacks.set(5, new ItemStack(Items.BUCKET, recipe.needsBuckets()));
         }
     }
-}*/
+}

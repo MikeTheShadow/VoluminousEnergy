@@ -51,6 +51,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -148,14 +149,32 @@ public class ToolingStationTile extends VEFluidTileEntity {
             if(!toolBit.isEmpty() && !toolBase.isEmpty()){
                 ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromBitAndBase(level, toolBit.copy(), toolBase.copy());
                 if (toolingRecipe != null){
-                    inventory.setStackInSlot(2, new ItemStack(toolingRecipe.result.getItem(),1));
+                    ItemStack craftedTool = new ItemStack(toolingRecipe.result.getItem(),1);
+
+                    // Fill the crafted Multitool with fluid from the emptyMultitool
+                    craftedTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(
+                            fluidTool -> toolBase.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidBase ->{
+                                FluidStack baseFluid = fluidBase.getFluidInTank(0).copy();
+                                fluidTool.fill(baseFluid, IFluidHandler.FluidAction.EXECUTE);
+                            }));
+
+                    inventory.setStackInSlot(2, craftedTool);
                 }
             }
         } else if (!mainTool.isEmpty() && toolBase.isEmpty() && toolBit.isEmpty()){
             ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromResult(level, mainTool.copy());
             if (toolingRecipe != null){
                 inventory.setStackInSlot(3, new ItemStack(toolingRecipe.getBits().get(0)));
-                inventory.setStackInSlot(4, new ItemStack(toolingRecipe.getBases().get(0)));
+                ItemStack baseStack = new ItemStack(toolingRecipe.getBases().get(0));
+
+                // Fill the base with the same fluid as the mainTool
+                baseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(baseFluid ->
+                    mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(toolFluid -> {
+                        FluidStack fluidTool = toolFluid.getFluidInTank(0).copy();
+                        baseFluid.fill(fluidTool, IFluidHandler.FluidAction.EXECUTE);
+                }));
+
+                inventory.setStackInSlot(4, baseStack);
                 inventory.setStackInSlot(2, mainTool.copy());
             }
         }
