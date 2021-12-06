@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
-import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
@@ -145,7 +144,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
             }
         }
 
-        if(mainTool.isEmpty()){
+        if(mainTool.isEmpty() && inventory.getStackInSlot(2).isEmpty()){
             if(!toolBit.isEmpty() && !toolBase.isEmpty()){
                 ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromBitAndBase(level, toolBit.copy(), toolBase.copy());
                 if (toolingRecipe != null){
@@ -157,6 +156,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
             if (toolingRecipe != null){
                 inventory.setStackInSlot(3, new ItemStack(toolingRecipe.getBits().get(0)));
                 inventory.setStackInSlot(4, new ItemStack(toolingRecipe.getBases().get(0)));
+                inventory.setStackInSlot(2, mainTool.copy());
             }
         }
 
