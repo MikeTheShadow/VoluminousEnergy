@@ -9,11 +9,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Vanishable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class Multitool extends Item implements Vanishable {
+public class Multitool extends Item /*implements Vanishable*/ {
     protected MultitoolBit bit;
 
     public Multitool(MultitoolBit bit, String registryName, Item.Properties itemProperties) {

@@ -36,6 +36,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public ArrayList<Item> ingredientList = new ArrayList<>();
     public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
     public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
+    public static Map<Fluid, Integer> rawFluidWithVolumetricEnergy = new HashMap<>();
+    public static ArrayList<Fluid> rawFluidInputListStatic = new ArrayList<>();
 
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
@@ -174,6 +176,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                         FluidStack tempStack = new FluidStack(fluid, 1000);
                         recipe.fluidInputList.add(tempStack);
                         recipe.rawFluidInputList.add(tempStack.getRawFluid());
+                        if (!rawFluidInputListStatic.contains(tempStack.getRawFluid())){
+                            rawFluidWithVolumetricEnergy.put(tempStack.getRawFluid(), recipe.volumetricEnergy);
+                            rawFluidInputListStatic.add(tempStack.getRawFluid());
+                        }
+
                         recipe.inputArraySize = recipe.fluidInputList.size();
                     }
                 } else {
@@ -200,6 +207,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
             recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
+            recipe.volumetricEnergy = buffer.readInt();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
             recipe.inputArraySize = buffer.readInt();
@@ -207,10 +215,13 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 FluidStack serverFluid = buffer.readFluidStack();
                 recipe.fluidInputList.add(serverFluid.copy());
                 recipe.rawFluidInputList.add(serverFluid.getRawFluid());
+                if (!rawFluidInputListStatic.contains(serverFluid.getRawFluid())){ // TODO: Test changes on server environment
+                    rawFluidWithVolumetricEnergy.put(serverFluid.getRawFluid(), recipe.volumetricEnergy);
+                    rawFluidInputListStatic.add(serverFluid.getRawFluid());
+                }
             }
 
             recipe.result = buffer.readItem();
-            recipe.volumetricEnergy = buffer.readInt();
             return recipe;
         }
 
@@ -218,6 +229,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorFuelRecipe recipe){
             recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
+            buffer.writeInt(recipe.volumetricEnergy);
 
             // Same as the comment in read, not optimal, but necessary
             buffer.writeInt(recipe.inputArraySize);
@@ -226,7 +238,6 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             }
 
             buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.volumetricEnergy);
         }
     }
 }
