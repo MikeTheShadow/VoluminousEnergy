@@ -124,6 +124,8 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         CompoundTag invTag = tag.getCompound("inv");
         handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(invTag));
         energy.ifPresent(h -> h.deserializeNBT(tag));
+        counter = tag.getInt("counter");
+        length = tag.getInt("length");
         slotManager.read(tag, "slot_manager");
         super.load(tag);
     }
@@ -135,6 +137,8 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
             tag.put("inv",compound);
         });
         energy.ifPresent(h -> h.serializeNBT(tag));
+        tag.putInt("counter", counter);
+        tag.putInt("length", length);
         slotManager.write(tag, "slot_manager");
     }
 
@@ -226,8 +230,11 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
 
 
     public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(((counter*100)/length)))/100;
+        }
     }
 
     public int progressCounterPercent(){
