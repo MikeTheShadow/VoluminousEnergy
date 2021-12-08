@@ -50,7 +50,7 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
     protected void init(){
         super.init();
         // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, buttons ->{
 
         }));
 
@@ -125,12 +125,6 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
-        }
-
-        if (isHovering(157, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
-            int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);

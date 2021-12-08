@@ -139,6 +139,9 @@ public class ToolingStationTile extends VEFluidTileEntity {
                             toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
                             // Fill the item
                             fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+                            // Fill the fluid in the base as well
+                            inventory.getStackInSlot(4).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+                                    .ifPresent(baseFluid -> baseFluid.fill(toolingStationFluid, IFluidHandler.FluidAction.EXECUTE));
                         }
                     }
                 });
