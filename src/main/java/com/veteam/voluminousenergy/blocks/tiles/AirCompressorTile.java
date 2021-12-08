@@ -206,7 +206,6 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-        //return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override

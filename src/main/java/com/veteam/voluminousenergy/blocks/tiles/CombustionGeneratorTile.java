@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -116,8 +117,10 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
         if (oxidizerInput.copy() != null || oxidizerInput.copy() != ItemStack.EMPTY && oxidizerOutput.copy() == ItemStack.EMPTY) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
-                //FluidStack fluidStack = new FluidStack(fluid, 1000);
-                if (oxidizerTank.getTank().isEmpty() || oxidizerTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity) {
+                if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(fluid) && (
+                        oxidizerTank.getTank().isEmpty()
+                                || oxidizerTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
+                                && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {
                     oxidizerTank.getTank().fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     inventory.extractItem(0, 1, false);
                     inventory.insertItem(1, new ItemStack(Items.BUCKET, 1), false);
@@ -140,8 +143,10 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
         if (fuelInput.copy() != null || fuelInput.copy() != ItemStack.EMPTY && fuelOutput.copy() == ItemStack.EMPTY) {
             if (fuelInput.copy().getItem() instanceof BucketItem && fuelInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) fuelInput.copy().getItem()).getFluid();
-                //FluidStack fluidStack = new FluidStack(fluid, 1000);
-                if (fuelTank.getTank().isEmpty() || fuelTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && fuelTank.getTank().getFluidAmount() + 1000 <= tankCapacity) {
+                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(fluid) && (
+                        fuelTank.getTank().isEmpty()
+                                || fuelTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
+                                && fuelTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {
                     fuelTank.getTank().fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     inventory.extractItem(2, 1, false);
                     inventory.insertItem(3, new ItemStack(Items.BUCKET, 1), false);
@@ -504,8 +509,11 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
     }
 
     public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
+        if (counter == 0){
+            return 0;
+        } else {
+            return (px*(((counter*100)/length)))/100;
+        }
     }
 
     public FluidStack getFluidStackFromTank(int num){
