@@ -243,6 +243,13 @@
     "item.voluminousenergy.copper_carbonate_dust": "Copper Carbonate Dust",
     "item.voluminousenergy.titanium_sawblade": "Titanium Sawblade",
 
+    "_comment": "Multitool Items",
+    "item.voluminousenergy.empty_multitool": "Empty Multitool",
+    "item.voluminousenergy.iron_drill_multitool": "Iron Drill Multitool",
+    "item.voluminousenergy.iron_chain_multitool": "Iron Chainsaw Multitool",
+    "item.voluminousenergy.iron_scooper_multitool": "Iron Scooper Multitool",
+    "item.voluminousenergy.iron_trimmer_multitool": "Iron Trimmer Multitool",
+
     "_comment": "Biomes",
     "biome.voluminousenergy.red_desert": "Red Desert",
 
