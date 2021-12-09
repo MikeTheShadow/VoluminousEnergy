@@ -297,7 +297,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null){
             if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return inputFluidHandler.cast();
             if(outputTank.getSideStatus() && outputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())

@@ -380,8 +380,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             else if (furnaceOutputSm.getStatus() && furnaceOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return furnaceOutputHandler.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
+        if (side != null){
+            if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
                 return fluid.cast();
+            }
         }
         return super.getCapability(cap, side);
     }
