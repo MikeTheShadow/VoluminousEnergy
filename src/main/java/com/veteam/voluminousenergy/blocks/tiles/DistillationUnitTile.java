@@ -44,11 +44,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -391,7 +391,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null){ // TODO: Better Handle Null direction
             if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
                 return inputFluidHandler.cast();
             if(outputTank0.getSideStatus() && outputTank0.getSideDirection().get3DDataValue() == side.get3DDataValue())

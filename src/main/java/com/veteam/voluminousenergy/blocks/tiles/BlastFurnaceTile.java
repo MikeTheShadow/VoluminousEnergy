@@ -42,11 +42,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -371,9 +371,12 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(heatTank.getSideStatus() && heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && heatTank.getSideStatus()){
+            if (side != null){
+                if (heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue()) return inputFluidHandler.cast();
+            } else { // TODO: Consider Config/Better NULL side handling
                 return inputFluidHandler.cast();
+            }
         }
         return super.getCapability(cap, side);
     }

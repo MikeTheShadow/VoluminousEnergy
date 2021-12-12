@@ -44,11 +44,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -380,8 +380,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
             else if (furnaceOutputSm.getStatus() && furnaceOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
                 return furnaceOutputHandler.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
-                return fluid.cast();
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus()){
+            if (side != null){
+                if (fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
+                    return fluid.cast();
+                } else { // TODO: Consider Config
+                    return fluid.cast();
+                }
+            }
         }
         return super.getCapability(cap, side);
     }
