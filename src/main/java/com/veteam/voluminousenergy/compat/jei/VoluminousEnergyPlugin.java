@@ -109,6 +109,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_agitation"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/aqueoulizing"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/distilling"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.BLASTING);

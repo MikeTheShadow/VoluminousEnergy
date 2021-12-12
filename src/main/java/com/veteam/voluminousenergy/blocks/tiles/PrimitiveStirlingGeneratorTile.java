@@ -4,6 +4,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -19,6 +20,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,10 +35,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,18 +77,11 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
-                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE || stack.getItem() == Items.CHARCOAL) { //TODO: Change it to allow JSON recipes (tags) instead of static
+                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(stack), level).orElse(null);
+
+                if (recipe != null) { // TODO: Switch to Voluminous Energy's in house RecipeUtils for recipe querying
                     h.extractItem(0, 1, false);
-                    //counter = Config.PRIMITIVE_STIRLING_GENERATOR_TICKS.get();
-                    if (stack.getItem() == Items.COAL || stack.getItem() == Items.CHARCOAL){
-                        counter = 1600;
-                    } else if (stack.getItem() == Items.COAL_BLOCK){
-                        counter = 16000;
-                    } else if (stack.getItem() == VEItems.COALCOKE){
-                        counter = 3200;
-                    } else if (stack.getItem() == VEItems.PETCOKE){
-                        counter = 4000;
-                    }
+                    counter = recipe.getProcessTime();
                     length = counter;
                     setChanged();
                 }
