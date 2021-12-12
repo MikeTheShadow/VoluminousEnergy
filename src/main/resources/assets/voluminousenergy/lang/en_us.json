@@ -264,5 +264,6 @@
     "jei.voluminousenergy.electrolyzing": "Electrolyzing",
     "jei.voluminousenergy.implosion_compressing": "Implosion Compressing",
     "jei.voluminousenergy.industrial_blasting": "Industrial Blasting",
-    "jei.voluminousenergy.stirling": "Stirling"
+    "jei.voluminousenergy.stirling": "Stirling",
+    "jei.voluminousenergy.tooling": "Tooling"
 }

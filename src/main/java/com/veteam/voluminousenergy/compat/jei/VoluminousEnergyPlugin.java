@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation CENTRIFUGAL_SEPARATION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_separation");
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
+    public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -52,6 +54,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new CentrifugalSeparationCategory(guiHelper));
         registration.addRecipeCategories(new ImplosionCompressionCategory(guiHelper));
         registration.addRecipeCategories(new IndustrialBlastingCategory(guiHelper));
+        registration.addRecipeCategories(new ToolingCategory(guiHelper));
     }
 
     @Override
@@ -67,6 +70,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(CentrifugalSeparatorRecipe.RECIPE_TYPE), CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipes(getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE), IMPLOSION_COMPRESSION_UID);
         registration.addRecipes(getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE), INDUSTRIAL_BLASTING_UID);
+        registration.addRecipes(getRecipesOfType(ToolingRecipe.RECIPE_TYPE), TOOLING_UID);
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {
@@ -88,6 +92,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
         registration.addRecipeClickArea(BlastFurnaceScreen.class, 105, 32, 14, 23, INDUSTRIAL_BLASTING_UID);
+        registration.addRecipeClickArea(ToolingStationScreen.class, 78, 32, 14, 23, TOOLING_UID);
     }
 
     @Override
@@ -106,12 +111,11 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/stirling"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/combusting"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/distilling"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:smelting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:smelting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:blasting"));
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), new ResourceLocation("minecraft:blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK).copy(), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.BLASTING);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK).copy(), VanillaRecipeCategoryUid.FURNACE, VanillaRecipeCategoryUid.BLASTING);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/centrifugal_separation"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing"));
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting"));
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION_BLOCK).copy(), new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling"));
     }
 }
