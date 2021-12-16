@@ -215,7 +215,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 FluidStack serverFluid = buffer.readFluidStack();
                 recipe.fluidInputList.add(serverFluid.copy());
                 recipe.rawFluidInputList.add(serverFluid.getRawFluid());
-                if (!rawFluidInputListStatic.contains(serverFluid.getRawFluid())){ // TODO: Test changes on server environment
+                if (!rawFluidInputListStatic.contains(serverFluid.getRawFluid())){
                     rawFluidWithVolumetricEnergy.put(serverFluid.getRawFluid(), recipe.volumetricEnergy);
                     rawFluidInputListStatic.add(serverFluid.getRawFluid());
                 }

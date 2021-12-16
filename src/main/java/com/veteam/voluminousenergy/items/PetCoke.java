@@ -3,20 +3,21 @@ package com.veteam.voluminousenergy.items;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.extensions.IForgeItem;
 
-public class PetCoke extends Item
-{
-    public PetCoke()
-    {
+import javax.annotation.Nullable;
+
+public class PetCoke extends Item implements IForgeItem {
+    public PetCoke() {
         super(new Item.Properties()
         .stacksTo(64)
         .tab(VESetup.itemGroup));
         setRegistryName("petcoke");
     }
 
-    // TODO: Deal with Burn time in furnace
-    /*@Override
-    public int getBurnTime(ItemStack itemStack) {
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return 4000;
-    }*/
+    }
 }
