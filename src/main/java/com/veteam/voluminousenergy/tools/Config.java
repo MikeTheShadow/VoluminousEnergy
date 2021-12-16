@@ -61,6 +61,8 @@ public class Config {
     public static ForgeConfigSpec.IntValue OIL_GEYSER_CHANCE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE;
     public static ForgeConfigSpec.BooleanValue GENERATE_RICE_IN_OCEAN;
+    public static ForgeConfigSpec.IntValue RICE_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue RICE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_CHANCE;
 
     // Food Settings
@@ -384,6 +386,10 @@ public class Config {
                     .define("Generate Rice", true);
             GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
                     .define("Generate Rice in Oceans", false);
+            RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
+                    .defineInRange("Rice Bottom Anchor", 48, -64, 320);
+            RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
+                    .defineInRange("Rice Bottom Anchor", 320, -64, 320);
             RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
                     .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
         COMMON_BUILDER.pop();
@@ -394,8 +400,8 @@ public class Config {
             ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
                     .define("Enable Saltpeter Ore", true);
             SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
-            SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 384);
-            SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 384, -64, 384);
+            SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
+            SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
             SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
@@ -404,8 +410,8 @@ public class Config {
             ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
                 .define("Enable Bauxite Ore", true);
             BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
-            BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 384);
-            BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 384);
+            BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
+            BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
             BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
@@ -414,8 +420,8 @@ public class Config {
             ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
                 .define("Enable Cinnabar Ore", true);
             CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
-            CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 384);
-            CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 384, -64, 384);
+            CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
+            CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
             CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
@@ -424,8 +430,8 @@ public class Config {
             ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
                 .define("Enable Rutile Ore", true);
             RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
-            RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 384);
-            RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 384);
+            RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
+            RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
             RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
@@ -434,8 +440,8 @@ public class Config {
             ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
                 .define("Enable Galena Ore", true);
             GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
-            GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 384);
-            GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 384);
+            GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
+            GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
             GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
             GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
             COMMON_BUILDER.pop();
@@ -445,8 +451,8 @@ public class Config {
             ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore")
                 .define("Enable Eighzo Ore", true);
             EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
-            EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 384);
-            EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 384);
+            EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
+            EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
             EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
 
             COMMON_BUILDER.pop();

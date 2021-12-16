@@ -18,7 +18,6 @@ public class VEFeatureGeneration {
 
     public static void addFeaturesToBiomes(BiomeLoadingEvent event){
         if(event.getCategory() != Biome.BiomeCategory.NETHER && event.getCategory() != Biome.BiomeCategory.THEEND && Config.ENABLE_VE_FEATURE_GEN.get()){
-            //if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Lookout for Oil in this biome. It should generate there.");
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Will start feature registration process now.");
             // Oil Features
             addOilLake(event);
@@ -78,12 +77,8 @@ public class VEFeatureGeneration {
     public static void addRice(BiomeLoadingEvent event){
         PlacedFeature riceFeature = RiceFeature.INSTANCE
                 .configured(new BlockStateConfiguration(VEBlocks.RICE_CROP.defaultBlockState()))
-                // Place anchored to 55 through 256
-                /*.decorated(FeatureDecorator.RANGE.configured(new RangeDecoratorConfiguration(UniformHeight.of(VerticalAnchor.absolute(55), VerticalAnchor.top())))
-                        .squared()
-                        .count(Config.RICE_CHANCE.get()));*/
                 .placed(
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(384)), // TODO: Config
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RICE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RICE_TOP_ANCHOR.get())), // Default: 48 --> 320
                         InSquarePlacement.spread(),
                         CountPlacement.of(1),
                         RarityFilter.onAverageOnceEvery(Config.RICE_CHANCE.get())
