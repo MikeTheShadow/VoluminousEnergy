@@ -37,7 +37,7 @@ public class ToolingStationContainer extends VoluminousContainer {
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Fix positioning of slots
+        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEBucketSlot(h, 0, 38, 18)); // Fluid input slot
             addSlot(new VEBucketSlot(h, 1, 38, 49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool slot

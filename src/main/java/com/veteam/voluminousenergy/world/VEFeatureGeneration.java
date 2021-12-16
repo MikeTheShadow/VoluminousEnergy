@@ -7,7 +7,9 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.world.feature.CrudeOilFeature;
 import com.veteam.voluminousenergy.world.feature.GeyserFeature;
 import com.veteam.voluminousenergy.world.feature.RiceFeature;
+import com.veteam.voluminousenergy.world.feature.VEOreDepositFeature;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
@@ -25,6 +27,9 @@ public class VEFeatureGeneration {
 
             // Crop features
             addRice(event);
+
+            //TODO: Expremental, Configs
+            addOreDeposit(event);
         }
     }
 
@@ -93,5 +98,91 @@ public class VEFeatureGeneration {
                 if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Rice to generate in: " + event.getName().toString() + ". Rice generation for oceans is enabled in the config.");
             }
         }
+    }
+
+    public static void addOreDeposit(BiomeLoadingEvent event){
+        if(event.getCategory() != Biome.BiomeCategory.NETHER && event.getCategory() != Biome.BiomeCategory.THEEND){
+            // Vanilla Dposits
+            PlacedFeature copperDeposit = VEOreDepositFeature.COPPER
+                    .configured(new BlockStateConfiguration(Blocks.COPPER_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(112)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(26)
+                    );
+
+            PlacedFeature ironDeposit = VEOreDepositFeature.IRON
+                    .configured(new BlockStateConfiguration(Blocks.IRON_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.triangle(VerticalAnchor.bottom(), VerticalAnchor.absolute(74)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(20)
+                    );
+
+            PlacedFeature goldDeposit = VEOreDepositFeature.GOLD
+                    .configured(new BlockStateConfiguration(Blocks.GOLD_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-48)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(18)
+                    );
+
+
+            // Voluminous Energy Deposits
+            PlacedFeature bauxiteDeposit = VEOreDepositFeature.BAUXITE
+                    .configured(new BlockStateConfiguration(VEBlocks.BAUXITE_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(14)//24
+                    );
+
+            PlacedFeature cinnabarDeposit = VEOreDepositFeature.CINNABAR
+                    .configured(new BlockStateConfiguration(VEBlocks.CINNABAR_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(12)//24
+                    );
+
+            PlacedFeature galenaDeposit = VEOreDepositFeature.GALENA
+                    .configured(new BlockStateConfiguration(VEBlocks.GALENA_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(-48), VerticalAnchor.absolute(12)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(18)//24
+                    );
+
+            PlacedFeature rutileDeposit = VEOreDepositFeature.RUTILE
+                    .configured(new BlockStateConfiguration(VEBlocks.RUTILE_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-48)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(56)//24
+                    );
+
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, copperDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ironDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, goldDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bauxiteDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, cinnabarDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaDeposit);
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rutileDeposit);
+
+        } else if (event.getCategory() == Biome.BiomeCategory.THEEND){
+
+            PlacedFeature eighzoDeposit = VEOreDepositFeature.EIGHZO
+                    .configured(new BlockStateConfiguration(VEBlocks.EIGHZO_ORE.defaultBlockState()))
+                    .placed(
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(1), VerticalAnchor.absolute(36)),
+                            InSquarePlacement.spread(),
+                            RarityFilter.onAverageOnceEvery(56)//24
+                    );
+
+            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, eighzoDeposit);
+        }
+
+
+        //event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, veinFeature);
     }
 }

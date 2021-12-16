@@ -92,7 +92,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
         registration.addRecipeClickArea(BlastFurnaceScreen.class, 105, 32, 14, 23, INDUSTRIAL_BLASTING_UID);
-        registration.addRecipeClickArea(ToolingStationScreen.class, 78, 32, 14, 23, TOOLING_UID);
+        registration.addRecipeClickArea(ToolingStationScreen.class, 110, 32, 24, 23, TOOLING_UID);
     }
 
     @Override
