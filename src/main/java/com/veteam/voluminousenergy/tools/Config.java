@@ -36,7 +36,10 @@ public class Config {
     public static final String CATEGORY_SAWMILL = "Sawmill";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
+    public static final String SUBCATEGORY_OIL_GENERATION = "Oil Generation";
+    public static final String SUBCATEGORY_RICE_GENERATION = "Rice Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
+    public static final String SUBCATEGORY_ORE_DEPOSIT_GENERATION = "Ore Deposit Generation";
     public static final String SUBCATEGORY_SALTPETER = "Saltpeter Ore Settings";
     public static final String SUBCATEGORY_BAUXITE = "Bauxite Ore Settings";
     public static final String SUBCATEGORY_CINNABAR = "Cinnabar Ore Settings";
@@ -113,6 +116,65 @@ public class Config {
     public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
+
+    // Ore Deposit
+    public static ForgeConfigSpec.BooleanValue ENABLE_ORE_DEPOSIT;
+
+    // Copper
+    public static final String SUBCATEGORY_COPPER_ORE_DEPOSIT = "Copper Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_COPPER_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue COPPER_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue COPPER_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue COPPER_ORE_DEPOSIT_CHANCE;
+
+    // Iron
+    public static final String SUBCATEGORY_IRON_ORE_DEPOSIT = "Iron Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_IRON_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue IRON_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue IRON_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue IRON_ORE_DEPOSIT_CHANCE;
+
+    // Gold
+    public static final String SUBCATEGORY_GOLD_ORE_DEPOSIT = "Gold Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_GOLD_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue GOLD_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue GOLD_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue GOLD_ORE_DEPOSIT_CHANCE;
+
+    // Bauxite
+    public static final String SUBCATEGORY_BAUXITE_ORE_DEPOSIT = "Bauxite Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_DEPOSIT_CHANCE;
+
+    // Cinnabar
+    public static final String SUBCATEGORY_CINNABAR_ORE_DEPOSIT = "Cinnabar Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_DEPOSIT_CHANCE;
+
+    // Galena
+    public static final String SUBCATEGORY_GALENA_ORE_DEPOSIT = "Galena Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_DEPOSIT_CHANCE;
+
+    // Rutile
+    public static final String SUBCATEGORY_RUTILE_ORE_DEPOSIT = "Rutile Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_DEPOSIT_CHANCE;
+
+    // Eighzo
+    public static final String SUBCATEGORY_EIGHZO_ORE_DEPOSIT = "Eighzo Ore Deposit";
+    public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE_DEPOSIT;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_DEPOSIT_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_DEPOSIT_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_DEPOSIT_CHANCE;
 
     // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
@@ -372,92 +434,208 @@ public class Config {
             WORLD_GEN_LOGGING = COMMON_BUILDER.comment("Enable/Disable Logging of Word Generation information for " +
                     "Voluminous Energy features and Ores")
                     .define("Enable Logging", true);
-            GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
-                    .define("Oil Lakes", true);
-            SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
-                    .defineInRange("Surface Oil Lake Chance", 144, 10, Integer.MAX_VALUE);
-            UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
-                .defineInRange("Underground Oil Lake Chance", 16, 10, Integer.MAX_VALUE);
-            GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
-                    .define("Oil Geysers", true);
-            OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
-                    .defineInRange("Oil Geyser Chance", 208, 10, Integer.MAX_VALUE);
-            GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
+            COMMON_BUILDER.comment("Oil Generation").push(SUBCATEGORY_OIL_GENERATION);
+                GENERATE_OIL_LAKES = COMMON_BUILDER.comment("Enable/Disable Oil Lakes")
+                        .define("Oil Lakes", true);
+                SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
+                        .defineInRange("Surface Oil Lake Chance", 144, 10, Integer.MAX_VALUE);
+                UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
+                        .defineInRange("Underground Oil Lake Chance", 16, 10, Integer.MAX_VALUE);
+                GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
+                        .define("Oil Geysers", true);
+                OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
+                        .defineInRange("Oil Geyser Chance", 208, 10, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop();
+
+            COMMON_BUILDER.comment("Rice Generation").push(SUBCATEGORY_RICE_GENERATION);
+                GENERATE_RICE = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop")
                     .define("Generate Rice", true);
-            GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
+                GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
                     .define("Generate Rice in Oceans", false);
-            RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
+                RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 48, -64, 320);
-            RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
+                RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 320, -64, 320);
-            RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
-                    .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
-        COMMON_BUILDER.pop();
+                RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
+                        .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop();
+
+        COMMON_BUILDER.pop(); // End of Feature Generation
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
             //Saltpeter
             COMMON_BUILDER.comment("Saltpeter Ore Settings").push(SUBCATEGORY_SALTPETER);
-            ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
-                    .define("Enable Saltpeter Ore", true);
-            SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
-            SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
-            SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
-            SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
+                ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
+                        .define("Enable Saltpeter Ore", true);
+                SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
+                SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
+                SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
+                SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
             COMMON_BUILDER.comment("Bauxite Ore Settings").push(SUBCATEGORY_BAUXITE);
-            ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
-                .define("Enable Bauxite Ore", true);
-            BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
-            BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
-            BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
-            BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
-            COMMON_BUILDER.pop();
+                ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
+                        .define("Enable Bauxite Ore", true);
+                BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
+                BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
+                BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
+                BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop(); // End of Bauxite
 
             //Cinnabar
             COMMON_BUILDER.comment("Cinnabar Ore Settings").push(SUBCATEGORY_CINNABAR);
-            ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
-                .define("Enable Cinnabar Ore", true);
-            CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
-            CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
-            CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
-            CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
-            COMMON_BUILDER.pop();
+                ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
+                        .define("Enable Cinnabar Ore", true);
+                CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
+                CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
+                CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
+                CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop(); // End of Cinnabar
 
             //Rutile
             COMMON_BUILDER.comment("Rutile Ore Settings").push(SUBCATEGORY_RUTILE);
-            ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
-                .define("Enable Rutile Ore", true);
-            RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
-            RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
-            RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
-            RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
-            COMMON_BUILDER.pop();
+                ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
+                        .define("Enable Rutile Ore", true);
+                RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
+                RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
+                RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
+                RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop(); // End of Rutile
 
             //Galena
             COMMON_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
-            ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
-                .define("Enable Galena Ore", true);
-            GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
-            GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
-            GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
-            GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
-            GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
-            COMMON_BUILDER.pop();
+                ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
+                        .define("Enable Galena Ore", true);
+                GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
+                GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
+                GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
+                GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
+                GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
+            COMMON_BUILDER.pop(); // End of Galena
 
             //Eighzo
             COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
-            ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore")
-                .define("Enable Eighzo Ore", true);
-            EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
-            EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
-            EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
-            EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+                ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore")
+                        .define("Enable Eighzo Ore", true);
+                EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
+                EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
+                EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
+                EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+            COMMON_BUILDER.pop(); // End of Eighzo
 
-            COMMON_BUILDER.pop();
+            // DEPOSITS
+            COMMON_BUILDER.comment("Ore Deposits: Large cluster of ore and raw block, more compact than an ore vein, but bigger than an ore blob.").push(SUBCATEGORY_ORE_DEPOSIT_GENERATION);
+                ENABLE_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable the generation of ore deposits").define("Enable ore deposits", true);
 
-        COMMON_BUILDER.pop();
+                COMMON_BUILDER.comment("Copper Deposit Settings").push(SUBCATEGORY_COPPER_ORE_DEPOSIT);
+                    ENABLE_COPPER_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Copper Ore Deposits").define("Enable Copper Ore Deposit", true);
+                    COPPER_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Copper Ore Deposits")
+                            .defineInRange("Copper Ore Deposit Bottom Anchor", -16, -64, 320);
+                    COPPER_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Copper Ore Deposits")
+                            .defineInRange("Copper Ore Deposit Top Anchor", 112, -64, 320);
+                    COPPER_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Copper Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Copper Ore Deposit Chance", 50, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Copper Ore Deposit
+
+                COMMON_BUILDER.comment("Iron Deposit Settings").push(SUBCATEGORY_IRON_ORE_DEPOSIT);
+                    ENABLE_IRON_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Iron Ore Deposits").define("Enable Iron Ore Deposit", true);
+                    IRON_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                        .comment("Minimum y-value for Iron Ore Deposits")
+                        .defineInRange("Iron Ore Deposit Bottom Anchor", -64, -64, 320);
+                    IRON_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                        .comment("Maximum y-value for Iron Ore Deposits")
+                        .defineInRange("Iron Ore Deposit Top Anchor", 74, -64, 320);
+                    IRON_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                        .comment("Chance of generating a Iron Ore Deposits (Larger = Rarer)")
+                        .defineInRange("Iron Ore Deposit Chance", 56, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Iron Ore Deposit
+
+                COMMON_BUILDER.comment("Gold Deposit Settings").push(SUBCATEGORY_GOLD_ORE_DEPOSIT);
+                    ENABLE_GOLD_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Gold Ore Deposits").define("Enable Gold Ore Deposit", true);
+                    GOLD_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Gold Ore Deposits")
+                            .defineInRange("Gold Ore Deposit Bottom Anchor", -64, -64, 320);
+                    GOLD_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Gold Ore Deposits")
+                            .defineInRange("Gold Ore Deposit Top Anchor", -48, -64, 320);
+                    GOLD_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Gold Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Gold Ore Deposit Chance", 112, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Gold Ore Deposit
+
+
+                COMMON_BUILDER.comment("Bauxite Deposit Settings").push(SUBCATEGORY_BAUXITE_ORE_DEPOSIT);
+                    ENABLE_BAUXITE_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Bauxite Ore Deposits").define("Enable Bauxite Ore Deposit", true);
+                    BAUXITE_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Bauxite Ore Deposits")
+                            .defineInRange("Bauxite Ore Deposit Bottom Anchor", 10, -64, 320);
+                    BAUXITE_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Bauxite Ore Deposits")
+                            .defineInRange("Bauxite Ore Deposit Top Anchor", 60, -64, 320);
+                    BAUXITE_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Bauxite Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Bauxite Ore Deposit Chance", 64, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Bauxite Ore Deposit
+
+                COMMON_BUILDER.comment("Cinnabar Deposit Settings").push(SUBCATEGORY_CINNABAR_ORE_DEPOSIT);
+                    ENABLE_CINNABAR_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Cinnabar Ore Deposits").define("Enable Cinnabar Ore Deposit", true);
+                    CINNABAR_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Cinnabar Ore Deposits")
+                            .defineInRange("Cinnabar Ore Deposit Bottom Anchor", -64, -64, 320);
+                    CINNABAR_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Cinnabar Ore Deposits")
+                            .defineInRange("Cinnabar Ore Deposit Top Anchor", 320, -64, 320);
+                    CINNABAR_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Cinnabar Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Cinnabar Ore Deposit Chance", 56, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Cinnabar Ore Deposit
+
+                COMMON_BUILDER.comment("Galena Deposit Settings").push(SUBCATEGORY_GALENA_ORE_DEPOSIT);
+                    ENABLE_GALENA_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Galena Ore Deposits").define("Enable Galena Ore Deposit", true);
+                    GALENA_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Galena Ore Deposits")
+                            .defineInRange("Galena Ore Deposit Bottom Anchor", -48, -64, 320);
+                    GALENA_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Galena Ore Deposits")
+                            .defineInRange("Galena Ore Deposit Top Anchor", 12, -64, 320);
+                    GALENA_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Galena Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Galena Ore Deposit Chance", 78, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Galena Ore Deposit
+
+                COMMON_BUILDER.comment("Rutile Deposit Settings").push(SUBCATEGORY_RUTILE_ORE_DEPOSIT);
+                    ENABLE_RUTILE_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Rutile Ore Deposits").define("Enable Rutile Ore Deposit", true);
+                    RUTILE_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Rutile Ore Deposits")
+                            .defineInRange("Rutile Ore Deposit Bottom Anchor", -64, -64, 320);
+                    RUTILE_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Rutile Ore Deposits")
+                            .defineInRange("Rutile Ore Deposit Top Anchor", -48, -64, 320);
+                    RUTILE_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Rutile Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Rutile Ore Deposit Chance", 128, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Rutile Ore Deposit
+
+                COMMON_BUILDER.comment("Eighzo Deposit Settings").push(SUBCATEGORY_EIGHZO_ORE_DEPOSIT);
+                    ENABLE_EIGHZO_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Eighzo Ore Deposits").define("Enable Eighzo Ore Deposit", false);
+                    EIGHZO_ORE_DEPOSIT_BOTTOM_ANCHOR = COMMON_BUILDER
+                            .comment("Minimum y-value for Eighzo Ore Deposits")
+                            .defineInRange("Eighzo Ore Deposit Bottom Anchor", 1, -64, 320);
+                    EIGHZO_ORE_DEPOSIT_TOP_ANCHOR = COMMON_BUILDER
+                            .comment("Maximum y-value for Eighzo Ore Deposits")
+                            .defineInRange("Eighzo Ore Deposit Top Anchor", 36, -64, 320);
+                    EIGHZO_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
+                            .comment("Chance of generating a Eighzo Ore Deposits (Larger = Rarer)")
+                            .defineInRange("Eighzo Ore Deposit Chance", 192, 10, Integer.MAX_VALUE);
+                COMMON_BUILDER.pop(); // End of Eighzo Ore Deposit
+
+            COMMON_BUILDER.pop(); // End of Ore Deposit
+
+        COMMON_BUILDER.pop(); // End of Ore Generation
     }
 
     private static void setupPrimitiveStirlingGeneratorConfig(){

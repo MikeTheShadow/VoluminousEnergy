@@ -28,8 +28,9 @@ public class VEFeatureGeneration {
             // Crop features
             addRice(event);
 
-            //TODO: Expremental, Configs
-            addOreDeposit(event);
+            if (Config.ENABLE_ORE_DEPOSIT.get()) addOreDeposit(event);
+        } else if (event.getCategory().equals(Biome.BiomeCategory.THEEND)){
+            if (Config.ENABLE_ORE_DEPOSIT.get()) addOreDeposit(event);
         }
     }
 
@@ -92,39 +93,40 @@ public class VEFeatureGeneration {
         if (Config.GENERATE_RICE.get()) {
             if (event.getCategory() != Biome.BiomeCategory.OCEAN){
                 event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, riceFeature);
-                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Rice to generate in: " + event.getName().toString());
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has registered Rice to generate in: " + event.getName().toString());
             } else if (event.getCategory() == Biome.BiomeCategory.OCEAN && Config.GENERATE_RICE_IN_OCEAN.get()){
                 event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, riceFeature);
-                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Registered Rice to generate in: " + event.getName().toString() + ". Rice generation for oceans is enabled in the config.");
+                if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has registered Rice to generate in: " + event.getName().toString() + ". Rice generation for oceans is enabled in the config.");
             }
         }
     }
 
     public static void addOreDeposit(BiomeLoadingEvent event){
         if(event.getCategory() != Biome.BiomeCategory.NETHER && event.getCategory() != Biome.BiomeCategory.THEEND){
-            // Vanilla Dposits
+            if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy is now registering all enabled Ore Deposits to generate in: " + event.getName());
+            // Vanilla Deposits
             PlacedFeature copperDeposit = VEOreDepositFeature.COPPER
                     .configured(new BlockStateConfiguration(Blocks.COPPER_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.triangle(VerticalAnchor.absolute(-16), VerticalAnchor.absolute(112)),
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.COPPER_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(26)
+                            RarityFilter.onAverageOnceEvery(Config.COPPER_ORE_DEPOSIT_CHANCE.get())
                     );
 
             PlacedFeature ironDeposit = VEOreDepositFeature.IRON
                     .configured(new BlockStateConfiguration(Blocks.IRON_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.triangle(VerticalAnchor.bottom(), VerticalAnchor.absolute(74)),
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.IRON_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.IRON_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(20)
+                            RarityFilter.onAverageOnceEvery(Config.IRON_ORE_DEPOSIT_CHANCE.get())//56
                     );
 
             PlacedFeature goldDeposit = VEOreDepositFeature.GOLD
                     .configured(new BlockStateConfiguration(Blocks.GOLD_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-48)),
+                            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.GOLD_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GOLD_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(18)
+                            RarityFilter.onAverageOnceEvery(Config.GOLD_ORE_DEPOSIT_CHANCE.get())//112
                     );
 
 
@@ -132,57 +134,54 @@ public class VEFeatureGeneration {
             PlacedFeature bauxiteDeposit = VEOreDepositFeature.BAUXITE
                     .configured(new BlockStateConfiguration(VEBlocks.BAUXITE_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.BAUXITE_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(14)//24
+                            RarityFilter.onAverageOnceEvery(Config.BAUXITE_ORE_DEPOSIT_CHANCE.get())//64
                     );
 
             PlacedFeature cinnabarDeposit = VEOreDepositFeature.CINNABAR
                     .configured(new BlockStateConfiguration(VEBlocks.CINNABAR_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.CINNABAR_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_ORE_DEPOSIT_TOP_ANCHOR.get()) ),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(12)//24
+                            RarityFilter.onAverageOnceEvery(Config.CINNABAR_ORE_DEPOSIT_CHANCE.get())  //56
                     );
 
             PlacedFeature galenaDeposit = VEOreDepositFeature.GALENA
                     .configured(new BlockStateConfiguration(VEBlocks.GALENA_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(-48), VerticalAnchor.absolute(12)),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.GALENA_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(18)//24
+                            RarityFilter.onAverageOnceEvery(Config.GALENA_ORE_DEPOSIT_CHANCE.get()) // 78
                     );
 
             PlacedFeature rutileDeposit = VEOreDepositFeature.RUTILE
                     .configured(new BlockStateConfiguration(VEBlocks.RUTILE_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(-48)),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RUTILE_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(56)//24
+                            RarityFilter.onAverageOnceEvery(Config.RUTILE_ORE_DEPOSIT_CHANCE.get())//128
                     );
 
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, copperDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ironDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, goldDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bauxiteDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, cinnabarDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaDeposit);
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rutileDeposit);
+            if (Config.ENABLE_COPPER_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, copperDeposit);
+            if (Config.ENABLE_IRON_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ironDeposit);
+            if (Config.ENABLE_GOLD_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, goldDeposit);
+            if (Config.ENABLE_BAUXITE_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bauxiteDeposit);
+            if (Config.ENABLE_CINNABAR_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, cinnabarDeposit);
+            if (Config.ENABLE_GALENA_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaDeposit);
+            if (Config.ENABLE_RUTILE_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rutileDeposit);
 
         } else if (event.getCategory() == Biome.BiomeCategory.THEEND){
 
             PlacedFeature eighzoDeposit = VEOreDepositFeature.EIGHZO
                     .configured(new BlockStateConfiguration(VEBlocks.EIGHZO_ORE.defaultBlockState()))
                     .placed(
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(1), VerticalAnchor.absolute(36)),
+                            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.EIGHZO_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.EIGHZO_ORE_DEPOSIT_TOP_ANCHOR.get())),
                             InSquarePlacement.spread(),
-                            RarityFilter.onAverageOnceEvery(56)//24
+                            RarityFilter.onAverageOnceEvery(Config.EIGHZO_ORE_DEPOSIT_CHANCE.get())//192
                     );
 
-            event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, eighzoDeposit);
+            if (Config.ENABLE_EIGHZO_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, eighzoDeposit);
         }
-
-
-        //event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, veinFeature);
     }
 }
