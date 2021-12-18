@@ -119,6 +119,7 @@ public class Config {
 
     // Ore Deposit
     public static ForgeConfigSpec.BooleanValue ENABLE_ORE_DEPOSIT;
+    public static ForgeConfigSpec.BooleanValue PREVENT_SURFACE_ORE_DEPOSITS;
 
     // Copper
     public static final String SUBCATEGORY_COPPER_ORE_DEPOSIT = "Copper Ore Deposit";
@@ -527,6 +528,7 @@ public class Config {
             // DEPOSITS
             COMMON_BUILDER.comment("Ore Deposits: Large cluster of ore and raw block, more compact than an ore vein, but bigger than an ore blob.").push(SUBCATEGORY_ORE_DEPOSIT_GENERATION);
                 ENABLE_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable the generation of ore deposits").define("Enable ore deposits", true);
+                PREVENT_SURFACE_ORE_DEPOSITS = COMMON_BUILDER.comment("Prevent the generation of ore deposits with exposure to the world's surface").define("Disallow surface ore deposits", false);
 
                 COMMON_BUILDER.comment("Copper Deposit Settings").push(SUBCATEGORY_COPPER_ORE_DEPOSIT);
                     ENABLE_COPPER_ORE_DEPOSIT = COMMON_BUILDER.comment("Enable Copper Ore Deposits").define("Enable Copper Ore Deposit", true);
@@ -538,7 +540,7 @@ public class Config {
                             .defineInRange("Copper Ore Deposit Top Anchor", 112, -64, 320);
                     COPPER_ORE_DEPOSIT_CHANCE = COMMON_BUILDER
                             .comment("Chance of generating a Copper Ore Deposits (Larger = Rarer)")
-                            .defineInRange("Copper Ore Deposit Chance", 50, 10, Integer.MAX_VALUE);
+                            .defineInRange("Copper Ore Deposit Chance", 26, 10, Integer.MAX_VALUE);
                 COMMON_BUILDER.pop(); // End of Copper Ore Deposit
 
                 COMMON_BUILDER.comment("Iron Deposit Settings").push(SUBCATEGORY_IRON_ORE_DEPOSIT);

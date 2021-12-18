@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
@@ -89,7 +90,7 @@ public class VEOreDepositFeature extends Feature<BlockStateConfiguration> {
 
     // Derived from VELakes feature
     protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateConfiguration conf) {
-        //if (worldIn.canSeeSky(pos)) return false;
+        if (worldIn.canSeeSky(pos) && Config.PREVENT_SURFACE_ORE_DEPOSITS.get()) return false;
         pos = pos.below(4);
 
         boolean[] aboolean = new boolean[2048];
