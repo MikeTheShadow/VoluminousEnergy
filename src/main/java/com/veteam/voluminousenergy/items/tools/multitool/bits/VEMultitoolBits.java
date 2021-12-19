@@ -68,4 +68,6 @@ public class VEMultitoolBits {
             DESTROY_SPEED_MULTIPLIER, 1, 1);
 
     public static final MultitoolBit IRON_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, 0.9F, 1, 1);
+    public static final MultitoolBit DIAMOND_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.DIAMOND, Tiers.DIAMOND.getSpeed(), Tiers.DIAMOND.getAttackDamageBonus(), Tiers.DIAMOND.getSpeed());
+
 }

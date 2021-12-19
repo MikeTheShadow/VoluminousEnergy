@@ -403,18 +403,31 @@ public class VoluminousEnergy {
             // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
 
+            // Multitools
             itemRegisteryEvent.getRegistry().register(VEMultitools.EMPTY_MULTITOOL);
+
+            // IRON
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_MULTITOOL);
-            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_MULTITOOL);
 
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_SCOOPER_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_TRIMMER_MULTITOOL);
+
+            // Bits
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_BIT);
-            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_BIT);
+
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_TRIMMER_BIT);
+
         }
 
         @SubscribeEvent

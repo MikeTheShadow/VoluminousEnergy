@@ -28,7 +28,7 @@ public class ToolingStationContainer extends VoluminousContainer {
     private Player playerEntity;
     private IItemHandler playerInventory;
     private ToolingStationScreen screen;
-    private static final int numberOfSlots = 5;
+    private static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(TOOLING_STATION_CONTAINER, id);
@@ -43,6 +43,7 @@ public class ToolingStationContainer extends VoluminousContainer {
             addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool slot
             addSlot(new VEInsertSlot(h, 3, 134, 18)); // Bit Slot
             addSlot(new VEInsertSlot(h, 4, 134,49)); // Base Slot
+            addSlot(new VEInsertSlot(h, 5,154, -14)); // Upgrade Slot
         });
         layoutPlayerInventorySlots(8, 84);
 
@@ -94,7 +95,7 @@ public class ToolingStationContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 4, slotStack) != null)
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 4, slotStack) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {

@@ -51,7 +51,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -264,11 +263,11 @@ public class ToolingStationTile extends VEFluidTileEntity {
     }
 
     private IFluidHandler createFuelFluidHandler() {
-        return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank); // TODO: Recipe
+        return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(5) { // TODO: 2 for fluids + 1 for built tool + 2 for components
+        return new ItemStackHandler(6) {
             @Override
             protected void onContentsChanged(int slot) {
                 if(slot == 2 && this.getStackInSlot(2).isEmpty()){ // If the crafted multitool is removed, delete the components
