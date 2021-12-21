@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.aquifer;
+package com.veteam.voluminousenergy.world.non_functional.aquifer;
 
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;

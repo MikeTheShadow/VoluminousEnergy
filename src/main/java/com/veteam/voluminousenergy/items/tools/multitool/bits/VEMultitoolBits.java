@@ -67,7 +67,12 @@ public class VEMultitoolBits {
     public static final MultitoolBit SOLARIUM_SCOOPER_BIT = new MultitoolBit(ToolActions.DEFAULT_AXE_ACTIONS, VETools.SOLARIUM, BlockTags.MINEABLE_WITH_SHOVEL,
             DESTROY_SPEED_MULTIPLIER, 1, 1);
 
-    public static final MultitoolBit IRON_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, 0.9F, 1, 1);
+    // Trimmer bit
+    public static final MultitoolBit IRON_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.IRON, Tiers.IRON.getSpeed(), Tiers.IRON.getAttackDamageBonus(), 1);
     public static final MultitoolBit DIAMOND_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, Tiers.DIAMOND, Tiers.DIAMOND.getSpeed(), Tiers.DIAMOND.getAttackDamageBonus(), Tiers.DIAMOND.getSpeed());
+    public static final MultitoolBit TITANIUM_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, VETools.TITANIUM, VETools.TITANIUM.getSpeed(), VETools.TITANIUM.getAttackDamageBonus(), VETools.TITANIUM.getSpeed());
+    public static final MultitoolBit NIGHALITE_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, VETools.NIGHALITE, VETools.NIGHALITE.getSpeed(), VETools.NIGHALITE.getAttackDamageBonus(), VETools.NIGHALITE.getSpeed());
+    public static final MultitoolBit EIGHZO_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, VETools.EIGHZO, VETools.EIGHZO.getSpeed(), VETools.EIGHZO.getAttackDamageBonus(), VETools.EIGHZO.getSpeed());
+    public static final MultitoolBit SOLARIUM_TRIMMER_BIT = new TrimmerBit(ToolActions.DEFAULT_SHEARS_ACTIONS, VETools.SOLARIUM, VETools.SOLARIUM.getSpeed(), VETools.SOLARIUM.getAttackDamageBonus(), VETools.SOLARIUM.getSpeed());
 
 }

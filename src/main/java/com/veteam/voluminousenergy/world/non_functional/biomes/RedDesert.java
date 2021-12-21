@@ -1,14 +1,10 @@
-package com.veteam.voluminousenergy.world.biomes;
+package com.veteam.voluminousenergy.world.non_functional.biomes;
 
-import com.mojang.bridge.Bridge;
-import com.veteam.voluminousenergy.world.surfaceBulider.VESurfaceBuilders;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
-import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.block.Blocks;
 
 public class RedDesert extends VEBiome {
 

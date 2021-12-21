@@ -1,0 +1,13 @@
+{
+  "type": "voluminousenergy:tooling",
+  "ingredient": {
+    "item": "voluminousenergy:solarium_chain_bit",
+    "count": 1
+  },
+  "tool_base": {
+    "item": "voluminousenergy:empty_multitool"
+  },
+  "result": {
+    "item": "voluminousenergy:solarium_chain_multitool"
+  }
+}

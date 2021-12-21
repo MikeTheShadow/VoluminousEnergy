@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.noise;
+package com.veteam.voluminousenergy.world.non_functional.noise;
 
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;

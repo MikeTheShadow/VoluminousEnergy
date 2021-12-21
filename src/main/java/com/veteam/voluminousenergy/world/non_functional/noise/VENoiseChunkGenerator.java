@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.noise;
+package com.veteam.voluminousenergy.world.non_functional.noise;
 
 import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.fluids.Nitrogen;

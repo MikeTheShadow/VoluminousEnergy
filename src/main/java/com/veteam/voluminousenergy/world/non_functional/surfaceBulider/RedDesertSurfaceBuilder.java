@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.surfaceBulider;
+package com.veteam.voluminousenergy.world.non_functional.surfaceBulider;
 /*
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.state.BlockState;

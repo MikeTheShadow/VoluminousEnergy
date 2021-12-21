@@ -1,11 +1,10 @@
-package com.veteam.voluminousenergy.world.biomes;
+package com.veteam.voluminousenergy.world.non_functional.biomes;
 
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class ShallowWarmOcean extends VEBiome {
 

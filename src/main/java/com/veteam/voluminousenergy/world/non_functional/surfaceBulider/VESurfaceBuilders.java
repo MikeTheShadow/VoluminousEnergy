@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.surfaceBulider;
+package com.veteam.voluminousenergy.world.non_functional.surfaceBulider;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.resources.ResourceLocation;

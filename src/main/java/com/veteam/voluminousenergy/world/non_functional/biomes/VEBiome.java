@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.world.biomes;
+package com.veteam.voluminousenergy.world.non_functional.biomes;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;

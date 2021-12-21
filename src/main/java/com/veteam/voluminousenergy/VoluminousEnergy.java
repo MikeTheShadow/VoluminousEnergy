@@ -20,8 +20,8 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
-import com.veteam.voluminousenergy.world.biomes.RedDesert;
-import com.veteam.voluminousenergy.world.biomes.VEBiomes;
+import com.veteam.voluminousenergy.world.non_functional.biomes.RedDesert;
+import com.veteam.voluminousenergy.world.non_functional.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -403,31 +403,92 @@ public class VoluminousEnergy {
             // Foods
             itemRegisteryEvent.getRegistry().register(VEItems.COOKED_RICE);
 
-            // Multitools
+            // Register Multitools
+            multitoolItemRegistry(itemRegisteryEvent);
+        }
+
+        public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
+            /*
+             *    MULTITOOLS
+             */
+
             itemRegisteryEvent.getRegistry().register(VEMultitools.EMPTY_MULTITOOL);
 
-            // IRON
+            // Iron
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_MULTITOOL);
 
+            // Diamond
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_CHAIN_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_SCOOPER_MULTITOOL);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_TRIMMER_MULTITOOL);
 
-            // Bits
+            // Titanium
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_SCOOPER_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_TRIMMER_MULTITOOL);
+
+            // Nighalite
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_SCOOPER_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_TRIMMER_MULTITOOL);
+
+            // Eighzo
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_SCOOPER_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_TRIMMER_MULTITOOL);
+
+            // Solarium
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_DRILL_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_CHAIN_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_SCOOPER_MULTITOOL);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_TRIMMER_MULTITOOL);
+
+            /*
+             *    BITS
+             */
+
+            // Iron
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_DRILL_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_CHAIN_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_SCOOPER_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.IRON_TRIMMER_BIT);
 
+            // Diamond
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_DRILL_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_CHAIN_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_SCOOPER_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.DIAMOND_TRIMMER_BIT);
 
+            // Titanium
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.TITANIUM_TRIMMER_BIT);
+
+            // Nighalite
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.NIGHALITE_TRIMMER_BIT);
+
+            // Eighzo
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.EIGHZO_TRIMMER_BIT);
+
+            // Solarium
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_DRILL_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_CHAIN_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_SCOOPER_BIT);
+            itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_TRIMMER_BIT);
         }
 
         @SubscribeEvent
