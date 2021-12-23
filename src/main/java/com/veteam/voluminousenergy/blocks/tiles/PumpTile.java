@@ -321,7 +321,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
                 this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
                 addFluidToTank();
             }
-        } else if (lX >= 22 && lZ >= 22 && this.getBlockPos().offset(0,lY,0).getY() > 1){
+        } else if (lX >= 22 && lZ >= 22 && this.getBlockPos().offset(0,lY,0).getY() > -63){
             lY--;
             lX = -22;
             lZ = -22;
