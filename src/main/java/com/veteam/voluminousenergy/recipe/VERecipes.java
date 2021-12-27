@@ -52,14 +52,14 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> INDUSTRIAL_BLASTING = registerSerializer(RecipeConstants.INDUSTRIAL_BLASTING, () -> IndustrialBlastingRecipe.SERIALIZER);
 
     private static RegistryObject<RecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<RecipeSerializer<?>> serializer) {
-        VoluminousEnergy.LOGGER.info("RSerializing: " + name.toString());
+        VoluminousEnergy.LOGGER.info("Registering Serializer for Recipe: " + name.toString());
         return RECIPE_SERIALIZERS.register(name.getPath(), serializer);
 
         //IRecipeSerializer.register(name.toString(),serializer);
     }
 
     private static <T extends Recipe<?>> RecipeType<T> registerType(ResourceLocation name){
-        VoluminousEnergy.LOGGER.info("RType: " + name.toString());
+        VoluminousEnergy.LOGGER.info("Registering Recipe Type: " + name.toString());
         return Registry.register(Registry.RECIPE_TYPE, name, new RecipeType<T>() {
             @Override
             public String toString() {
