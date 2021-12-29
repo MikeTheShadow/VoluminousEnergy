@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "beyond_earth"
+    }
+  ],
+  "replace": false,
+  "values": [
+    "voluminousenergy:naphtha",
+    "voluminousenergy:light_fuel",
+    "voluminousenergy:gasoline",
+    "voluminousenergy:diesel",
+    "voluminousenergy:nitroglycerin"
+  ]
+}

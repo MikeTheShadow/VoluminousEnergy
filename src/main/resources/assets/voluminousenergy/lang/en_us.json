@@ -265,5 +265,10 @@
     "jei.voluminousenergy.implosion_compressing": "Implosion Compressing",
     "jei.voluminousenergy.industrial_blasting": "Industrial Blasting",
     "jei.voluminousenergy.stirling": "Stirling",
-    "jei.voluminousenergy.tooling": "Tooling"
+    "jei.voluminousenergy.tooling": "Tooling",
+
+    "_comment": "JEI UI Info",
+    "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
+    "jei.voluminousenergy.air_compressor_fluid_info": "Compressed Air can be obtained via the Air Compressor",
+    "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air"
 }

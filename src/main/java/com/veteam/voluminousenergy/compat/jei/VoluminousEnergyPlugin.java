@@ -3,11 +3,14 @@ package com.veteam.voluminousenergy.compat.jei;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.*;
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
@@ -15,7 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +76,21 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE), IMPLOSION_COMPRESSION_UID);
         registration.addRecipes(getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE), INDUSTRIAL_BLASTING_UID);
         registration.addRecipes(getRecipesOfType(ToolingRecipe.RECIPE_TYPE), TOOLING_UID);
+
+        // Register info for certain ingredients that could use additional explanation for end users
+        registerInfo(registration);
+    }
+
+    private void registerInfo(IRecipeRegistration registration){
+        registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
+
+        ArrayList<ItemStack> compressedAirInfo = new ArrayList<>();
+        compressedAirInfo.add(new ItemStack(VEBlocks.AIR_COMPRESSOR_BLOCK.asItem()));
+        compressedAirInfo.add(new ItemStack(VEFluids.COMPRESSED_AIR_BUCKET_REG.get()));
+        registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
+
+        registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
+        registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {

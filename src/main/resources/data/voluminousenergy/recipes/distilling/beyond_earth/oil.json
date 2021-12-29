@@ -1,0 +1,29 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "beyond_earth"
+    }
+  ],
+  "type": "voluminousenergy:distilling",
+  "process_time": 200,
+  "ingredient": {
+    "item": "beyond_earth:oil_bucket"
+  },
+  "input_fluid": {
+    "tag": "beyond_earth:oil",
+    "amount": 250
+  },
+  "first_result": {
+    "fluid": "beyond_earth:fuel",
+    "amount": 200
+  },
+  "second_result": {
+    "fluid": "voluminousenergy:naphtha",
+    "amount": 50
+  },
+  "third_result": {
+    "item": "voluminousenergy:petcoke",
+    "count": 1
+  }
+}
