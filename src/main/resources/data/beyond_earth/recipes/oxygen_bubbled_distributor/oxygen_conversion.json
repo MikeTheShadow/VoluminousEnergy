@@ -1,0 +1,14 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "beyond_earth"
+    }
+  ],
+  "type": "beyond_earth:oxygenbubbledistributor",
+  "input": {
+    "name": "voluminousenergy:oxygen",
+    "amount": 1000
+  },
+  "oxygen": 1000
+}
