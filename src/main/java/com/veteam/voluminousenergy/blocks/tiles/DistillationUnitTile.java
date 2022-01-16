@@ -569,37 +569,6 @@ public void updatePacketFromGui(boolean status, int slotId){
                     }
                 });
             });
-        } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getBlockPos().getX();
-            double y = this.getBlockPos().getY();
-            double z = this.getBlockPos().getZ();
-            final double radius = 16;
-            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
-            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
-
-            // Boolean Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(iTopManager.getStatus(), iTopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(iBottomManager.getStatus(), iBottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o0TopManager.getStatus(), o0TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o0BottomManager.getStatus(), o0BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o1TopManager.getStatus(), o1TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o1BottomManager.getStatus(), o1BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(o2Manager.getStatus(), o2Manager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
-
-            // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(iTopManager.getDirection().get3DDataValue(),iTopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(iBottomManager.getDirection().get3DDataValue(),iBottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o0TopManager.getDirection().get3DDataValue(),o0TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o0BottomManager.getDirection().get3DDataValue(),o0BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o1TopManager.getDirection().get3DDataValue(),o1TopManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o1BottomManager.getDirection().get3DDataValue(),o1BottomManager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(o2Manager.getDirection().get3DDataValue(),o2Manager.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank0.getSideDirection().get3DDataValue(), outputTank0.getId()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(outputTank1.getSideDirection().get3DDataValue(), outputTank1.getId()));
         }
     }
 
