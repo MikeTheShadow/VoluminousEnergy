@@ -5,11 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -22,7 +17,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -34,7 +28,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -48,7 +41,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -478,18 +470,12 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == furnaceInputSm.getSlotNum()) furnaceInputSm.setStatus(status);
-        else if (slotId == furnaceOutputSm.getSlotNum()) furnaceOutputSm.setStatus(status);
-        else if(slotId == bucketInputSm.getSlotNum()) bucketInputSm.setStatus(status);
-        else if(slotId == bucketOutputSm.getSlotNum()) bucketOutputSm.setStatus(status);
+    public void updatePacketFromGui(boolean status, int slotId){
+        processGUIPacketStatus(status,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == furnaceInputSm.getSlotNum()) furnaceInputSm.setDirection(direction);
-        else if (slotId == furnaceOutputSm.getSlotNum()) furnaceOutputSm.setDirection(direction);
-        else if(slotId == bucketInputSm.getSlotNum()) bucketInputSm.setDirection(direction);
-        else if(slotId == bucketOutputSm.getSlotNum()) bucketOutputSm.setDirection(direction);
+        processGUIPacketDirection(direction,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){
@@ -507,19 +493,8 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketInputSm.getStatus(), bucketInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketOutputSm.getStatus(), bucketOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(furnaceInputSm.getStatus(), furnaceInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(furnaceOutputSm.getStatus(), furnaceOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketInputSm.getDirection().get3DDataValue(),bucketInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketOutputSm.getDirection().get3DDataValue(),bucketOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceInputSm.getDirection().get3DDataValue(),furnaceInputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(furnaceOutputSm.getDirection().get3DDataValue(),furnaceOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(), fuelTank.getId()));
+                        bulkSendSMPacket(s, bucketInputSm,bucketOutputSm,furnaceInputSm,furnaceOutputSm);
+                        bulkSendTankPackets(s, fuelTank);
                     }
                 });
             });

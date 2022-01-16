@@ -6,9 +6,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +14,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -26,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,7 +29,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -477,22 +471,12 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == inputSm.getSlotNum()) inputSm.setStatus(status);
-        else if (slotId == bucketSm.getSlotNum()) bucketSm.setStatus(status);
-        else if(slotId == outputSm.getSlotNum()) outputSm.setStatus(status);
-        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setStatus(status);
-        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setStatus(status);
-        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setStatus(status);
+    public void updatePacketFromGui(boolean status, int slotId){
+        processGUIPacketStatus(status, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == inputSm.getSlotNum()) inputSm.setDirection(direction);
-        else if (slotId == bucketSm.getSlotNum()) bucketSm.setDirection(direction);
-        else if(slotId == outputSm.getSlotNum()) outputSm.setDirection(direction);
-        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setDirection(direction);
-        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setDirection(direction);
-        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setDirection(direction);
+        processGUIPacketDirection(direction, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
     }
 
     @Override
@@ -502,22 +486,7 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketSm.getStatus(), bucketSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngOneSm.getStatus(), rngOneSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngTwoSm.getStatus(), rngTwoSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketSm.getDirection().get3DDataValue(),bucketSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngOneSm.getDirection().get3DDataValue(),rngOneSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngTwoSm.getDirection().get3DDataValue(),rngTwoSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngThreeSm.getDirection().get3DDataValue(),rngThreeSm.getSlotNum()));
-
+                        bulkSendSMPacket(s,inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
                     }
                 });
             });
