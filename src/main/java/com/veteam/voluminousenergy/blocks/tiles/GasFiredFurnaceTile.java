@@ -523,27 +523,6 @@ public void updatePacketFromGui(boolean status, int slotId){
                     }
                 });
             });
-        } else if (!playerUuid.isEmpty()){ // Legacy solution
-            double x = this.getBlockPos().getX();
-            double y = this.getBlockPos().getY();
-            double z = this.getBlockPos().getZ();
-            final double radius = 16;
-            ResourceKey<Level> worldRegistryKey = this.getLevel().dimension();
-            PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(x,y,z,radius,worldRegistryKey);
-
-            // Boolean Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(bucketInputSm.getStatus(), bucketInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(bucketOutputSm.getStatus(), bucketOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(furnaceInputSm.getStatus(), furnaceInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new BoolButtonPacket(furnaceOutputSm.getStatus(), furnaceOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
-
-            // Direction Buttons
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketInputSm.getDirection().get3DDataValue(),bucketInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(bucketOutputSm.getDirection().get3DDataValue(),bucketOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceInputSm.getDirection().get3DDataValue(),furnaceInputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new DirectionButtonPacket(furnaceOutputSm.getDirection().get3DDataValue(),furnaceOutputSm.getSlotNum()));
-            VENetwork.channel.send(PacketDistributor.NEAR.with(() -> targetPoint), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(), fuelTank.getId()));
         }
     }
 

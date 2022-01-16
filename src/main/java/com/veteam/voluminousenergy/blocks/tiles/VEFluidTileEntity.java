@@ -2,9 +2,15 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.BucketItem;
@@ -17,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -193,6 +200,25 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    public void bulkSendTankPackets(ServerPlayer s, RelationalTank... tanks) {
+        for(RelationalTank tank : tanks) {
+            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(tank.getSideStatus(), tank.getId()));
+            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(tank.getSideDirection().get3DDataValue(), tank.getId()));
+        }
+   }
+
+    public void processGUIPacketFluidStatus(boolean status, int id, RelationalTank... tanks) {
+        for(RelationalTank tank : tanks) {
+            if(id == tank.getId()) tank.setSideStatus(status);
+        }
+    }
+
+    public void processGUIPacketFluidDirection(int direction, int id, RelationalTank... tanks) {
+        for(RelationalTank tank : tanks) {
+            if(id == tank.getId()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+        }
     }
 
 }

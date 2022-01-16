@@ -1,8 +1,13 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -135,5 +141,26 @@ public class VoluminousTileEntity extends BlockEntity {
     }
     public void updateTankPacketFromGui(int direction, int id) {
 
+    }
+
+    public void bulkSendSMPacket(ServerPlayer s, VESlotManager... slots) {
+        for(VESlotManager slot : slots) {
+            // Boolean button
+            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slot.getStatus(), slot.getSlotNum()));
+            // Slot direction
+            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slot.getDirection().get3DDataValue(),slot.getSlotNum()));
+        }
+   }
+
+   public void processGUIPacketStatus(boolean status, int slotId, VESlotManager... slots) {
+        for(VESlotManager slot : slots) {
+            if(slotId == slot.getSlotNum()) slot.setStatus(status);
+        }
+   }
+
+    public void processGUIPacketDirection(int direction, int slotId, VESlotManager... slots) {
+        for(VESlotManager slot : slots) {
+            if(slotId == slot.getSlotNum()) slot.setDirection(direction);
+        }
     }
 }
