@@ -27,6 +27,46 @@
                   "op": "replace"
                 },
                 {
+                  "source": "oxi_in_sm_enabled",
+                  "target": "BlockEntityTag.oxi_in_sm_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "oxi_in_sm_direction",
+                  "target": "BlockEntityTag.oxi_in_sm_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "oxi_out_sm_enabled",
+                  "target": "BlockEntityTag.oxi_out_sm_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "oxi_out_sm_direction",
+                  "target": "BlockEntityTag.oxi_out_sm_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_in_sm_enabled",
+                  "target": "BlockEntityTag.fuel_in_sm_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_in_sm_direction",
+                  "target": "BlockEntityTag.fuel_in_sm_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_out_sm_enabled",
+                  "target": "BlockEntityTag.fuel_out_sm_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_out_sm_direction",
+                  "target": "BlockEntityTag.fuel_out_sm_direction",
+                  "op": "replace"
+                },
+                {
                   "source": "oxidizerTank",
                   "target": "BlockEntityTag.oxidizerTank",
                   "op": "replace"
