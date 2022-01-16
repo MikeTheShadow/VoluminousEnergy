@@ -166,6 +166,17 @@ public class TankBoolPacket {
                     ((SawmillContainer) openContainer).updateStatusTank(packet.status, packet.id);
                 }
                 // End of Sawmill
+            } else if (openContainer instanceof TankContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((TankContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof TankTile) {
+                        //((TankTile) tileEntity).updateTankPacketFromGui(packet.status, packet.id); TODO: Packet handling with Tank
+                    }
+                    // End of Server side logic
+                } else {
+                    //((TankContainer) openContainer).updateStatusTank(packet.status, packet.id); TODO: Packet handling with Tank
+                }
+                // End of Tank
             } else {
                 VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
             }

@@ -251,6 +251,15 @@ public class DirectionButtonPacket {
                 } else {
                     ((SawmillContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
                 }
+            } else if (openContainer instanceof TankContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((TankContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof TankTile) {
+                        //((TankTile) tileEntity).updatePacketFromGui(packet.direction, packet.slotId); // TODO: Packet management in TankTile
+                    }
+                } else {
+                    ((TankContainer) openContainer).updateDirectionButton(packet.direction, packet.slotId);
+                }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");
             }

@@ -256,6 +256,16 @@ public class BoolButtonPacket {
                 } else {
                     ((SawmillContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
+                // Tank Block Entity
+            } else if (openContainer instanceof TankContainer) {
+                if (onServer) {
+                    BlockEntity tileEntity = ((TankContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof TankTile) {
+                        //((TankTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId); TODO: Packet handling with tank
+                    }
+                } else {
+                    ((TankContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
+                }
                 // INVALID TE/Container
             } else {
                 VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");

@@ -85,6 +85,12 @@ public class UuidPacket {
                 tileEntity = ((ImplosionCompressorContainer) openContainer).getTileEntity();
             else if (openContainer instanceof BlastFurnaceContainer)
                 tileEntity = ((BlastFurnaceContainer) openContainer).getTileEntity();
+            else if (openContainer instanceof ToolingStationContainer)
+                tileEntity = ((ToolingStationContainer) openContainer).getTileEntity();
+            else if (openContainer instanceof SawmillContainer)
+                tileEntity = ((SawmillContainer) openContainer).getTileEntity();
+            else if (openContainer instanceof TankContainer)
+                tileEntity = ((ToolingStationContainer) openContainer).getTileEntity();
 
             // When tile is set, but not null
             if(tileEntity != null) interactWithTile(packet,tileEntity);

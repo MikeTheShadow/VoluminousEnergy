@@ -165,6 +165,17 @@ public class TankDirectionPacket {
                     ((SawmillContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId);
                 }
                 // End of Sawmill
+            } else if (openContainer instanceof TankContainer){
+                if (onServer) {
+                    BlockEntity tileEntity = ((TankContainer) openContainer).getTileEntity();
+                    if (tileEntity instanceof TankTile) {
+                        //((TankTile) tileEntity).updateTankPacketFromGui(packet.direction, packet.tankId); TODO: Tank packet handling
+                    }
+                    // End of Server side logic
+                } else {
+                    //((TankContainer) openContainer).updateDirectionTank(packet.direction, packet.tankId); TODO: Tank packet handling
+                }
+                // End of Sawmill
             } else {
                 VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
             }

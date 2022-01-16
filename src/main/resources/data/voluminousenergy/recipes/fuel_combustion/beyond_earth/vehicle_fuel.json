@@ -11,6 +11,6 @@
     "volumetric_energy": 76800
   },
   "input_fluid": {
-    "tag": "beyond_earth:vehicle_fuel"
+    "fluid": "beyond_earth:fuel"
   }
 }
