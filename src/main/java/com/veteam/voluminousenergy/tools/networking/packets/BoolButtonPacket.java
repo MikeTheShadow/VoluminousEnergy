@@ -54,6 +54,28 @@ public class BoolButtonPacket {
 
     }
 
+    public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer,int overload){
+        if(openContainer != null){
+
+            if(openContainer instanceof VoluminousContainer voluminousContainer){
+                if(onServer){
+                    BlockEntity tileEntity = voluminousContainer.getTileEntity();
+                    if (tileEntity instanceof VoluminousTileEntity voluminousTileEntity){
+                        voluminousTileEntity.updatePacketFromGui(packet.status, packet.slotId);
+                    }
+                } else {
+                    voluminousContainer.updateStatusButton(packet.status, packet.slotId);
+                }
+            }
+        else {
+                VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");
+            }
+        } else {
+            VoluminousEnergy.LOGGER.warn("BoolButtonPacket: The container is null");
+        }
+    }
+
+    @Deprecated
     public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
             // CRUSHER
@@ -263,11 +285,13 @@ public class BoolButtonPacket {
                     if (tileEntity instanceof TankTile) {
                         //((TankTile) tileEntity).updatePacketFromGui(packet.status, packet.slotId); TODO: Packet handling with tank
                     }
-                } else {
+                }
+                else {
                     ((TankContainer) openContainer).updateStatusButton(packet.status, packet.slotId);
                 }
                 // INVALID TE/Container
-            } else {
+            }
+            else {
                 VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");
             }
         } else {
