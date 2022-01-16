@@ -360,7 +360,8 @@ public class ToolingStationTile extends VEFluidTileEntity {
         return this.fuelTank;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == fuelTopSlotSM.getSlotNum()){
             fuelTopSlotSM.setStatus(status);
         } else if (slotId == fuelBottomSlotSM.getSlotNum()){

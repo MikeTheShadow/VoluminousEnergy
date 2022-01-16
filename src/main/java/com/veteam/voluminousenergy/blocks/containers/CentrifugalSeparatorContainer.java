@@ -117,7 +117,8 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
     public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
 
-    public void updateStatusButton(boolean status, int slotId){
+    @Override
+public void updateStatusButton(boolean status, int slotId){
         this.screen.updateBooleanButton(status, slotId);
     }
 }

@@ -117,7 +117,8 @@ public class AirCompressorContainer extends VoluminousContainer {
         this.airCompressorScreen.updateButtonDirection(direction,slotId);
     }
 
-    public void updateStatusButton(boolean status, int slotId){
+    @Override
+public void updateStatusButton(boolean status, int slotId){
         this.airCompressorScreen.updateBooleanButton(status, slotId);
     }
 

@@ -472,7 +472,8 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
         return 0;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSm.getSlotNum()) inputSm.setStatus(status);
         else if (slotId == bucketSm.getSlotNum()) bucketSm.setStatus(status);
         else if(slotId == outputSm.getSlotNum()) outputSm.setStatus(status);

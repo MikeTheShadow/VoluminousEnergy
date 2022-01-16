@@ -123,4 +123,17 @@ public class VoluminousTileEntity extends BlockEntity {
     protected int getEnergyStored(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
+
+    public void updatePacketFromGui(boolean status, int slotId){
+
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+    }
+    public void updateTankPacketFromGui(boolean status, int id) {
+
+    }
+    public void updateTankPacketFromGui(int direction, int id) {
+
+    }
 }

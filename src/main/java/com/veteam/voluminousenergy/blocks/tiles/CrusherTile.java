@@ -345,7 +345,8 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         return 0;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSlotProp.getSlotNum()){
             inputSlotProp.setStatus(status);
         } else if (slotId == outputSlotProp.getSlotNum()){

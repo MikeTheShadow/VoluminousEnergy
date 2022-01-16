@@ -58,6 +58,7 @@ public class BatteryBoxSlotPairPacket {
                     BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if(tileEntity instanceof BatteryBoxTile){ // sanity check
                         ((BatteryBoxTile) tileEntity).updateSlotPair(packet.status, packet.id);
+                        tileEntity.setChanged();
                     }
                 } else {
                     ((BatteryBoxContainer) openContainer).updateSlotPairButton(packet.status,packet.id);

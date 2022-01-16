@@ -475,7 +475,8 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         return (int) ((getTemperatureKelvin()-273) * 1.8)+32;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
     }

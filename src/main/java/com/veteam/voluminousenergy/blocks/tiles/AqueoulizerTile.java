@@ -337,7 +337,8 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         return this.outputTank;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == input0sm.getSlotNum()){
             input0sm.setStatus(status);
         } else if (slotId == input1sm.getSlotNum()){

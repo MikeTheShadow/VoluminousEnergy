@@ -122,7 +122,8 @@ public class CrusherContainer extends VoluminousContainer {
         this.crusherScreen.updateButtonDirection(direction,slotId);
     }
 
-    public void updateStatusButton(boolean status, int slotId){
+    @Override
+public void updateStatusButton(boolean status, int slotId){
         this.crusherScreen.updateBooleanButton(status, slotId);
     }
 }

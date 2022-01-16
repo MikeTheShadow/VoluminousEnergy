@@ -341,7 +341,8 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
         return TANK_CAPACITY;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == outputSlotManager.getSlotNum()){
             outputSlotManager.setStatus(status);
         }

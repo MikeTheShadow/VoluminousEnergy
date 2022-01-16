@@ -54,6 +54,7 @@ public class BatteryBoxSendOutPowerPacket {
                     BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
                     if(tileEntity instanceof BatteryBoxTile){ // sanity check
                         ((BatteryBoxTile) tileEntity).updateSendOutPower(packet.status);
+                        tileEntity.setChanged();
                     }
                 } else {
                     ((BatteryBoxContainer) openContainer).updateSendOutPowerButton(packet.status);

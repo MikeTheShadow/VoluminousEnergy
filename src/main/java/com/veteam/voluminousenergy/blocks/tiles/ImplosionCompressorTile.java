@@ -290,7 +290,8 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
         return 0;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSlotManager.getSlotNum()){
             inputSlotManager.setStatus(status);
         } else if (slotId == gunpowderSlotManager.getSlotNum()){

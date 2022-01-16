@@ -246,7 +246,8 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         return 40;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
     }
 

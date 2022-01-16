@@ -262,7 +262,8 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements MenuP
     }
 
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
     }
 
