@@ -61,6 +61,7 @@ public class TankDirectionPacket {
                     BlockEntity tileEntity = voluminousContainer.getTileEntity();
                     if (tileEntity instanceof VoluminousTileEntity voluminousTileEntity) {
                         voluminousTileEntity.updateTankPacketFromGui(packet.direction, packet.tankId);
+                        voluminousTileEntity.setChanged();
                     }
                 } else {
                     voluminousContainer.updateDirectionTank(packet.direction, packet.tankId);
