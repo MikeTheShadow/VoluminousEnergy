@@ -1,5 +1,9 @@
 # Voluminous Energy
-<big> An energy focused tech mod for Minecraft 1.17.1 </big>
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/MikeTheShadow/VoluminousEnergy)
+![GitHub](https://img.shields.io/github/license/MikeTheShadow/VoluminousEnergy)
+
+<big> An energy focused tech mod for Minecraft 1.16.5+ </big>
 
 ## Fluids
 * Biofuel
