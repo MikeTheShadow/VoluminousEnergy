@@ -133,4 +133,7 @@ public class VoluminousTileEntity extends BlockEntity {
     public void updateTankPacketFromGui(boolean status, int id) {
 
     }
+    public void updateTankPacketFromGui(int direction, int id) {
+
+    }
 }

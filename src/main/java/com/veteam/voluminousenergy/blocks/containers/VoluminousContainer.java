@@ -92,4 +92,7 @@ public class VoluminousContainer extends AbstractContainerMenu {
     }
     public void updateStatusTank(boolean status, int id){
     }
+    public void updateDirectionTank(int direction, int id) {
+
+    }
 }
