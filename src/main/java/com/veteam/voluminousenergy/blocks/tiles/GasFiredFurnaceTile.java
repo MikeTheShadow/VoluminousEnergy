@@ -477,7 +477,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         return fuelTank;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == furnaceInputSm.getSlotNum()) furnaceInputSm.setStatus(status);
         else if (slotId == furnaceOutputSm.getSlotNum()) furnaceOutputSm.setStatus(status);
         else if(slotId == bucketInputSm.getSlotNum()) bucketInputSm.setStatus(status);

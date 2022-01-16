@@ -500,7 +500,8 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         return this.outputTank1;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == iTopManager.getSlotNum()) iTopManager.setStatus(status);
         else if (slotId == iBottomManager.getSlotNum()) iTopManager.setStatus(status);
         else if(slotId == o0TopManager.getSlotNum()) o0TopManager.setStatus(status);

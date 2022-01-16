@@ -549,7 +549,8 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
 
     public RelationalTank getFuelTank(){return fuelTank;}
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == oxiInSm.getSlotNum()){
             oxiInSm.setStatus(status);
         } else if (slotId == oxiOutSm.getSlotNum()){

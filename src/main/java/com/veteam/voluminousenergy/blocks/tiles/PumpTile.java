@@ -335,7 +335,8 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
         return this.fluidTank;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
     }
 

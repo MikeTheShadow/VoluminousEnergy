@@ -88,6 +88,6 @@ public class VoluminousContainer extends AbstractContainerMenu {
     public void updateDirectionButton(int direction, int slotId){
     }
 
-    public void updateStatusButton(boolean status, int slotId){
+    public void updateStatusButton(boolean status, int slotId) {
     }
 }

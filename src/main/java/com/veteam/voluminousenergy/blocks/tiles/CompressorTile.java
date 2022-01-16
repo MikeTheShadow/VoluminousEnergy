@@ -276,7 +276,8 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
         return 0;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSlotManager.getSlotNum()){
             inputSlotManager.setStatus(status);
         } else if (slotId == outputSlotManager.getSlotNum()){

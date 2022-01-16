@@ -339,7 +339,8 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
 
     public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == 0) topManager.setStatus(status); // ingress
         else if (slotId == 1) bottomManager.setStatus(status); // egress
     }

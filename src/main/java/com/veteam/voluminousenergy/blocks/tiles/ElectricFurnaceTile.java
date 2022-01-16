@@ -365,7 +365,8 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuPro
         return counter;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSlotManager.getSlotNum()){
             inputSlotManager.setStatus(status);
         } else if (slotId == outputSlotManager.getSlotNum()){

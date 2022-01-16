@@ -253,7 +253,8 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements M
         }
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSm.getSlotNum()){
             inputSm.setStatus(status);
         } else if (slotId == outputSm.getSlotNum()){

@@ -125,6 +125,7 @@ public class VoluminousTileEntity extends BlockEntity {
     }
 
     public void updatePacketFromGui(boolean status, int slotId){
+
     }
 
     public void updatePacketFromGui(int direction, int slotId){

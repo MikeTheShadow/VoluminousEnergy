@@ -485,7 +485,8 @@ public class SawmillTile extends VEFluidTileEntity {
         return this.outputTank;
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
+    @Override
+public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSm.getSlotNum()){
             inputSm.setStatus(status);
         } else if (slotId == plankSm.getSlotNum()){
