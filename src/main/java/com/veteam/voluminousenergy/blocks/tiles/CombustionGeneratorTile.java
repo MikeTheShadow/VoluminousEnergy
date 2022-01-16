@@ -236,6 +236,12 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
         counter = tag.getInt("counter");
         length = tag.getInt("length");
 
+        oxiInSm.read(tag, "oxi_in_sm");
+        oxiOutSm.read(tag, "oxi_out_sm");
+        fuelInSm.read(tag, "fuel_in_sm");
+        fuelOutSm.read(tag, "fuel_out_sm");
+
+        // Tanks
         CompoundTag oxidizerNBT = tag.getCompound("oxidizerTank");
         CompoundTag fuelNBT = tag.getCompound("fuelTank");
         oxidizerTank.getTank().readFromNBT(oxidizerNBT);
@@ -261,6 +267,11 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
         energy.ifPresent(h -> h.serializeNBT(tag));
         tag.putInt("counter", counter);
         tag.putInt("length", length);
+
+        oxiInSm.write(tag, "oxi_in_sm");
+        oxiOutSm.write(tag, "oxi_out_sm");
+        fuelInSm.write(tag, "fuel_in_sm");
+        fuelOutSm.write(tag, "fuel_out_sm");
 
         // Tanks
         CompoundTag oxidizerNBT = new CompoundTag();

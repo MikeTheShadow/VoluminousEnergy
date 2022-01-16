@@ -191,6 +191,11 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         counter = tag.getInt("counter");
         length = tag.getInt("length");
 
+        input0sm.read(tag,"input_0_sm");
+        input1sm.read(tag, "input_1_sm");
+        output0sm.read(tag, "output_0_sm");
+        output1sm.read(tag, "output_1_sm");
+
         // Tanks
         CompoundTag inputTank = tag.getCompound("inputTank");
         CompoundTag outputTank0 = tag.getCompound("outputTank0");
@@ -216,6 +221,11 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         energy.ifPresent(h -> h.serializeNBT(tag));
         tag.putInt("counter", counter);
         tag.putInt("length", length);
+
+        input0sm.write(tag,"input_0_sm");
+        input1sm.write(tag, "input_1_sm");
+        output0sm.write(tag, "output_0_sm");
+        output1sm.write(tag, "output_1_sm");
 
         // Tanks
         CompoundTag inputNBT = new CompoundTag();
