@@ -342,7 +342,7 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
+    public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == outputSlotManager.getSlotNum()){
             outputSlotManager.setStatus(status);
         }
@@ -377,6 +377,7 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
+
                         // Boolean Buttons
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
                         VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(airTank.getSideStatus(), airTank.getId()));

@@ -6,11 +6,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -23,7 +18,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +25,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -46,7 +39,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -486,32 +478,12 @@ public class SawmillTile extends VEFluidTileEntity {
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == inputSm.getSlotNum()){
-            inputSm.setStatus(status);
-        } else if (slotId == plankSm.getSlotNum()){
-            plankSm.setStatus(status);
-        } else if(slotId == secondOutputSm.getSlotNum()){
-            secondOutputSm.setStatus(status);
-        } else if(slotId == bucketTopSm.getSlotNum()){
-            bucketTopSm.setStatus(status);
-        }else if(slotId == bucketBottomSm.getSlotNum()){
-            bucketBottomSm.setStatus(status);
-        }
+    public void updatePacketFromGui(boolean status, int slotId){
+        processGUIPacketStatus(status,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == inputSm.getSlotNum()){
-            inputSm.setDirection(direction);
-        } else if (slotId == plankSm.getSlotNum()){
-            plankSm.setDirection(direction);
-        } else if(slotId == secondOutputSm.getSlotNum()){
-            secondOutputSm.setDirection(direction);
-        } else if(slotId == bucketTopSm.getSlotNum()){
-            bucketTopSm.setDirection(direction);
-        } else if(slotId == bucketBottomSm.getSlotNum()){
-            bucketBottomSm.setDirection(direction);
-        }
+        processGUIPacketDirection(direction,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){
@@ -533,21 +505,8 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(plankSm.getStatus(), plankSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(secondOutputSm.getStatus(), secondOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketTopSm.getStatus(), bucketTopSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketBottomSm.getStatus(), bucketBottomSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank.getSideStatus(), outputTank.getId()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(), inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(plankSm.getDirection().get3DDataValue(), plankSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(secondOutputSm.getDirection().get3DDataValue(), secondOutputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketTopSm.getDirection().get3DDataValue(), bucketTopSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketBottomSm.getDirection().get3DDataValue(), bucketBottomSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank.getSideDirection().get3DDataValue(), outputTank.getId()));
+                        bulkSendSMPacket(s, inputSm, plankSm, secondOutputSm, bucketBottomSm, bucketTopSm, bucketBottomSm);
+                        bulkSendTankPackets(s, outputTank);
                     }
                 });
             });

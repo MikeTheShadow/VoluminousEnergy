@@ -476,7 +476,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
+    public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
     }
@@ -502,26 +502,11 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Heat Tank Boolean and Tank Packets
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(heatTankItemTopManager.getStatus(), heatTankItemTopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(heatTankItemBottomManager.getStatus(), heatTankItemBottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(heatTank.getSideStatus(), heatTank.getId()));
 
-                        // Input and Output Slot boolean buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(firstInputSlotManager.getStatus(), firstInputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(secondInputSlotManager.getStatus(), secondInputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
+                        bulkSendSMPacket(s, heatTankItemTopManager,heatTankItemBottomManager,firstInputSlotManager,secondInputSlotManager,outputSlotManager);
 
-                        // Tank Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(heatTankItemTopManager.getDirection().get3DDataValue(), heatTankItemTopManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(heatTankItemBottomManager.getDirection().get3DDataValue(), heatTankItemBottomManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(heatTank.getSideDirection().get3DDataValue(), heatTank.getId()));
-
-                        // Input and Output Slot Direction buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(firstInputSlotManager.getDirection().get3DDataValue(), firstInputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(secondInputSlotManager.getDirection().get3DDataValue(), secondInputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(), outputSlotManager.getSlotNum()));
-                    }
+                        bulkSendTankPackets(s,heatTank);
+                   }
                 });
             });
         }

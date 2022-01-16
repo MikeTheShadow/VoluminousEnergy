@@ -376,47 +376,19 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     @Override
 public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == input0sm.getSlotNum()){
-            input0sm.setStatus(status);
-        } else if (slotId == input1sm.getSlotNum()){
-            input1sm.setStatus(status);
-        } else if(slotId == output0sm.getSlotNum()){
-            output0sm.setStatus(status);
-        } else if(slotId == output1sm.getSlotNum()){
-            output1sm.setStatus(status);
-        }
+        processGUIPacketStatus(status,slotId,input0sm,input1sm,output0sm,output1sm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == input0sm.getSlotNum()){
-            input0sm.setDirection(direction);
-        } else if (slotId == input1sm.getSlotNum()){
-            input1sm.setDirection(direction);
-        } else if(slotId == output0sm.getSlotNum()){
-            output0sm.setDirection(direction);
-        } else if(slotId == output1sm.getSlotNum()){
-            output1sm.setDirection(direction);
-        }
+        processGUIPacketDirection(direction,slotId,input0sm,input1sm,output0sm,output1sm);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.inputTank.getId()){
-            this.inputTank.setSideStatus(status);
-        } else if(id == this.outputTank0.getId()){
-            this.outputTank0.setSideStatus(status);
-        } else if(id == this.outputTank1.getId()){
-            this.outputTank1.setSideStatus(status);
-        }
+        processGUIPacketFluidStatus(status,id,inputTank,outputTank0,outputTank1);
     }
 
     public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.inputTank.getId()){
-            this.inputTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        } else if(id == this.outputTank0.getId()){
-            this.outputTank0.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        } else if(id == this.outputTank1.getId()){
-            this.outputTank1.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
+        processGUIPacketFluidDirection(direction,id,inputTank,outputTank0,outputTank1);
     }
 
     @Override
@@ -426,23 +398,10 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input0sm.getStatus(), input0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(input1sm.getStatus(), input1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(output0sm.getStatus(), output0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(output1sm.getStatus(), output1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(inputTank.getSideStatus(), inputTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank0.getSideStatus(), outputTank0.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(outputTank1.getSideStatus(), outputTank1.getId()));
 
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input0sm.getDirection().get3DDataValue(),input0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(input1sm.getDirection().get3DDataValue(),input1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output0sm.getDirection().get3DDataValue(),output0sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(output1sm.getDirection().get3DDataValue(),output1sm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(inputTank.getSideDirection().get3DDataValue(), inputTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank0.getSideDirection().get3DDataValue(), outputTank0.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(outputTank1.getSideDirection().get3DDataValue(), outputTank1.getId()));
+                        bulkSendSMPacket(s, input0sm,input1sm,output0sm,output1sm);
+
+                        bulkSendTankPackets(s,inputTank,outputTank0,outputTank1);
                     }
                 });
             });

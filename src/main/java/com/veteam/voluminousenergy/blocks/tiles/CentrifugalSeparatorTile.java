@@ -473,22 +473,12 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == inputSm.getSlotNum()) inputSm.setStatus(status);
-        else if (slotId == bucketSm.getSlotNum()) bucketSm.setStatus(status);
-        else if(slotId == outputSm.getSlotNum()) outputSm.setStatus(status);
-        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setStatus(status);
-        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setStatus(status);
-        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setStatus(status);
+    public void updatePacketFromGui(boolean status, int slotId){
+        processGUIPacketStatus(status,slotId,inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == inputSm.getSlotNum()) inputSm.setDirection(direction);
-        else if (slotId == bucketSm.getSlotNum()) bucketSm.setDirection(direction);
-        else if(slotId == outputSm.getSlotNum()) outputSm.setDirection(direction);
-        else if(slotId == rngOneSm.getSlotNum()) rngOneSm.setDirection(direction);
-        else if(slotId == rngTwoSm.getSlotNum()) rngTwoSm.setDirection(direction);
-        else if(slotId == rngThreeSm.getSlotNum()) rngThreeSm.setDirection(direction);
+        processGUIPacketDirection(direction,slotId,inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
     }
 
     @Override
@@ -499,21 +489,7 @@ public void updatePacketFromGui(boolean status, int slotId){
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
                         // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(inputSm.getStatus(), inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bucketSm.getStatus(), bucketSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSm.getStatus(), outputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngOneSm.getStatus(), rngOneSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngTwoSm.getStatus(), rngTwoSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(rngThreeSm.getStatus(), rngThreeSm.getSlotNum()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(inputSm.getDirection().get3DDataValue(),inputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bucketSm.getDirection().get3DDataValue(),bucketSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSm.getDirection().get3DDataValue(),outputSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngOneSm.getDirection().get3DDataValue(),rngOneSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngTwoSm.getDirection().get3DDataValue(),rngTwoSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(rngThreeSm.getDirection().get3DDataValue(),rngThreeSm.getSlotNum()));
-
+                        bulkSendSMPacket(s, inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
                     }
                 });
             });
