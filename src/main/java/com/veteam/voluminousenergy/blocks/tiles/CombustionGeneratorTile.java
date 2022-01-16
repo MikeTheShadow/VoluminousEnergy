@@ -60,7 +60,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class CombustionGeneratorTile extends VoluminousTileEntity implements MenuProvider {
+public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuProvider {
     // Handlers
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> oxiInHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
@@ -562,43 +562,19 @@ public class CombustionGeneratorTile extends VoluminousTileEntity implements Men
 
     @Override
 public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == oxiInSm.getSlotNum()){
-            oxiInSm.setStatus(status);
-        } else if (slotId == oxiOutSm.getSlotNum()){
-            oxiOutSm.setStatus(status);
-        } else if(slotId == fuelInSm.getSlotNum()){
-            fuelInSm.setStatus(status);
-        } else if(slotId == fuelOutSm.getSlotNum()){
-            fuelOutSm.setStatus(status);
-        }
+        processGUIPacketStatus(status,slotId,oxiInSm,oxiOutSm,fuelInSm,fuelOutSm);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == oxiInSm.getSlotNum()){
-            oxiInSm.setDirection(direction);
-        } else if (slotId == oxiOutSm.getSlotNum()){
-            oxiOutSm.setDirection(direction);
-        } else if(slotId == fuelInSm.getSlotNum()){
-            fuelInSm.setDirection(direction);
-        } else if(slotId == fuelOutSm.getSlotNum()){
-            fuelOutSm.setDirection(direction);
-        }
+        processGUIPacketDirection(direction,slotId,oxiInSm,oxiOutSm,fuelInSm,fuelOutSm);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.oxidizerTank.getId()){
-            this.oxidizerTank.setSideStatus(status);
-        } else if(id == this.fuelTank.getId()){
-            this.fuelTank.setSideStatus(status);
-        }
+        processGUIPacketFluidStatus(status,id,oxidizerTank,fuelTank);
     }
 
     public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.oxidizerTank.getId()){
-            this.oxidizerTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        } else if(id == this.fuelTank.getId()){
-            this.fuelTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
+        processGUIPacketFluidDirection(direction,id,oxidizerTank,fuelTank);
     }
 
     @Override
@@ -608,21 +584,8 @@ public void updatePacketFromGui(boolean status, int slotId){
             this.playerUuid.forEach(u -> {
                 level.getServer().getPlayerList().getPlayers().forEach(s -> {
                     if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(oxiInSm.getStatus(), oxiInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(oxiOutSm.getStatus(), oxiOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(fuelInSm.getStatus(), fuelInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(fuelOutSm.getStatus(), fuelOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(oxidizerTank.getSideStatus(), oxidizerTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fuelTank.getSideStatus(), fuelTank.getId()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiInSm.getDirection().get3DDataValue(),oxiInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(oxiOutSm.getDirection().get3DDataValue(),oxiOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelInSm.getDirection().get3DDataValue(),fuelInSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(fuelOutSm.getDirection().get3DDataValue(),fuelOutSm.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(oxidizerTank.getSideDirection().get3DDataValue(),oxidizerTank.getId()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fuelTank.getSideDirection().get3DDataValue(),fuelTank.getId()));
+                        bulkSendSMPacket(s, oxiInSm,oxiOutSm,fuelInSm,fuelOutSm);
+                        bulkSendTankPackets(s,oxidizerTank,fuelTank);
                     }
                 });
             });
