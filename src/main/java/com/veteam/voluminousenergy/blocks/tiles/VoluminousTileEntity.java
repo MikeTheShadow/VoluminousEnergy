@@ -5,25 +5,35 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.MultiSlotWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
-public class VoluminousTileEntity extends BlockEntity {
+public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
     protected ArrayList<UUID> playerUuid = new ArrayList<>();
 
@@ -162,5 +172,26 @@ public class VoluminousTileEntity extends BlockEntity {
         for(VESlotManager slot : slots) {
             if(slotId == slot.getSlotNum()) slot.setDirection(direction);
         }
+    }
+
+    @Nonnull
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<IItemHandler> handler, ItemStackHandler inventory , List<VESlotManager> managers) {
+        if (side == null)
+            return handler.cast();
+        List<VESlotManager> managerList = managers.stream().filter(manager -> manager.getStatus() && manager.getDirection().get3DDataValue() == side.get3DDataValue()).toList();
+        if(managerList.size() == 0) return super.getCapability(cap, side);
+        MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory,managerList);
+        return LazyOptional.of(() -> slotWrapper).cast();
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return new TextComponent(getType().getRegistryName().getPath());
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+        return null;
     }
 }
