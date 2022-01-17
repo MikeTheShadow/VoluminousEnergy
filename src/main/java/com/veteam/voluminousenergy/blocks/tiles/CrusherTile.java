@@ -314,7 +314,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
                 if (side.get3DDataValue() == inputSlotProp.getDirection().get3DDataValue() && inputSlotProp.getStatus()){
                     return inputItemHandler.cast();
                 }
-                if (side.get3DDataValue() == outputSlotProp.getDirection().get3DDataValue() && outputSlotProp.getStatus()){
+                if (side.get3DDataValue() == outputSlotProp.getDirection().get3DDataValue() && outputSlotProp.getStatus() && !inventory.getStackInSlot(1).isEmpty()){
                     return outputItemHandler.cast();
                 }
                 if (side.get3DDataValue() == rngSlotProp.getDirection().get3DDataValue() && rngSlotProp.getStatus()){
