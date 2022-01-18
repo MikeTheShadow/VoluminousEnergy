@@ -1,33 +1,21 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.common.base.Preconditions;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
     List<RelationalTank> tanks;
-    private final Level level;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks, Level level) {
-
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks) {
         Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
-        this.level = level;
         this.tanks = tanks;
         tanks.forEach(m -> tankHashMap.put(m.getId(), m));
     }
@@ -84,7 +72,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             return FluidStack.EMPTY;
         }
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() != TankType.OUTPUT) continue;
+            if(tank.getTankType() == TankType.INPUT || !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) continue;
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
                 return tank.getTank().drain(resource.copy(), action);
             }
@@ -96,7 +84,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() != TankType.OUTPUT) continue;
+            if(tank.getTankType() == TankType.INPUT || !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) continue;
             if (tank.getTank().getFluidAmount() > 0) {
                 return tank.getTank().drain(maxDrain, action);
             }

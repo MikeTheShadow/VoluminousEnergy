@@ -8,10 +8,7 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -48,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -113,6 +111,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
         ItemStack oxidizerOutput = inventory.getStackInSlot(1).copy();
         ItemStack fuelInput = inventory.getStackInSlot(2).copy();
         ItemStack fuelOutput = inventory.getStackInSlot(3).copy();
+
         /*
          *  Manipulate tanks based on input from buckets in slots
          */
@@ -127,14 +126,13 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
                                 && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {
                     oxidizerTank.getTank().fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     inventory.extractItem(0, 1, false);
-//                    if(oxidizerOutput.copy().getItem() instanceof BucketItem bucketItem) {
-//                        // TODO there has to be a better way to do the taking out of fluid
-//                        bucketItem.getFluid();
-//                    }
+
                     inventory.insertItem(1, new ItemStack(Items.BUCKET, 1), false);
                 }
             }
         }
+        //BucketInputOutputUtil.processBucketInput(oxidizerInput,oxidizerOutput,oxidizerTank,CombustionGeneratorOxidizerRecipe.rawFluidInputList,tankCapacity,inventory);
+
 
         // Extract fluid from the oxidizer tank
         if (oxidizerInput.copy().getItem() == Items.BUCKET && oxidizerOutput.copy() == ItemStack.EMPTY) {
@@ -145,7 +143,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
                 inventory.insertItem(1, bucketStack, false);
             }
         }
-
 
         // Input fluid to the fuel tank
         if (fuelInput.copy() != ItemStack.EMPTY && fuelOutput.copy() == ItemStack.EMPTY) {
@@ -501,7 +498,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (side == null) return handler.cast();
             return getCapability(cap, side, handler, inventory, slotManagers);
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();

@@ -11,26 +11,26 @@ import java.util.List;
 
 public class MultiSlotWrapper implements IItemHandlerModifiable {
 
-    private final IItemHandlerModifiable compose;
+    private final IItemHandlerModifiable inventory;
     HashMap<Integer,VESlotManager> managerHashMap = new HashMap<>();
 
-    public MultiSlotWrapper(IItemHandlerModifiable compose, List<VESlotManager> slotManager) {
+    public MultiSlotWrapper(IItemHandlerModifiable inventory, List<VESlotManager> slotManager) {
 
         Preconditions.checkArgument(!slotManager.isEmpty(), "You need to have at least one slot defined!");
-        this.compose = compose;
+        this.inventory = inventory;
         slotManager.forEach(m -> managerHashMap.put(m.getSlotNum(),m));
     }
 
     @Override
     public int getSlots() {
-        return compose.getSlots();
+        return inventory.getSlots();
     }
 
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
         if(managerHashMap.containsKey(slot)) {
-            return compose.getStackInSlot(slot);
+            return inventory.getStackInSlot(slot);
         }
         return ItemStack.EMPTY;
     }
@@ -41,7 +41,7 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
         if(managerHashMap.containsKey(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
             if(manager.getSlotType() == SlotType.OUTPUT) return stack;
-            return compose.insertItem(manager.getSlotNum(), stack, simulate);
+            return inventory.insertItem(manager.getSlotNum(), stack, simulate);
         }
         return stack;
     }
@@ -52,7 +52,7 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
         if(managerHashMap.containsKey(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
             if(manager.getSlotType() == SlotType.INPUT) return ItemStack.EMPTY;
-            return compose.extractItem(managerHashMap.get(slot).getSlotNum(), amount, simulate);
+            return inventory.extractItem(managerHashMap.get(slot).getSlotNum(), amount, simulate);
         }
         return ItemStack.EMPTY;
     }
@@ -60,23 +60,22 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         if (checkSlot(slot)) {
-            compose.setStackInSlot(slot, stack);
+            inventory.setStackInSlot(slot, stack);
         }
     }
 
     @Override
     public int getSlotLimit(int slot) {
         if (checkSlot(slot)) {
-            return compose.getSlotLimit(slot);
+            return inventory.getSlotLimit(slot);
         }
-
         return 0;
     }
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (checkSlot(slot)) {
-            return compose.isItemValid(slot, stack);
+            return inventory.isItemValid(slot, stack);
         }
         return false;
     }

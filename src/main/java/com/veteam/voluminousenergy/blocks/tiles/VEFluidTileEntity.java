@@ -232,7 +232,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
             return handler.cast();
         List<RelationalTank> relationalTanks = tanks.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == side.get3DDataValue()).toList();
         if(relationalTanks.size() == 0) return super.getCapability(cap, side);
-        MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks,level);
+        MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
         return LazyOptional.of(() -> slotWrapper).cast();
     }
 

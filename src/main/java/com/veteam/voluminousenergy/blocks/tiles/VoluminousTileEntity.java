@@ -176,8 +176,7 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<IItemHandler> handler, ItemStackHandler inventory , List<VESlotManager> managers) {
-        if (side == null)
-            return handler.cast();
+        if (side == null) return handler.cast();
         List<VESlotManager> managerList = managers.stream().filter(manager -> manager.getStatus() && manager.getDirection().get3DDataValue() == side.get3DDataValue()).toList();
         if(managerList.size() == 0) return super.getCapability(cap, side);
         MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory,managerList);
