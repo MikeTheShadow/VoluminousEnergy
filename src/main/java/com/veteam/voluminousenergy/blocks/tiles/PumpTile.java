@@ -43,17 +43,20 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PumpTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
+    // Capability is unique. Can't add new impl to this
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
 
     private final int tankCapacity = 4000;
@@ -64,9 +67,9 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
     private int lY = 0;
     private int lZ = 0;
 
-    private RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT);
+    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT);
     private Fluid pumpingFluid = Fluids.EMPTY;
-    private ItemStackHandler inventory = this.createHandler();
+    private final ItemStackHandler inventory = this.createHandler();
 
     public PumpTile(BlockPos pos, BlockState state) {
         super(VEBlocks.PUMP_TILE, pos, state);
@@ -84,7 +87,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
             ItemStack slotStack = h.getStackInSlot(0).copy();
 
             // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
-            if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) { // TODO: Consider 2 slot system like the Combustion Generator/Distillation Unit
+            if (slotStack.copy() != ItemStack.EMPTY) { // TODO: Consider 2 slot system like the Combustion Generator/Distillation Unit
                 if (slotStack.getItem() == Items.BUCKET && fluidTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
                     ItemStack bucketStack = new ItemStack(fluidTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                     fluidTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -172,7 +175,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
         super.onDataPacket(net, pkt);
     }
 
-    private IFluidHandler createFluid() {
+    private @NotNull IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -246,7 +249,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
+    private @NotNull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 

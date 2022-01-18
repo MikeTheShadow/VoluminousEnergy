@@ -227,7 +227,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
     }
 
     @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side,LazyOptional<IItemHandler> handler , List<RelationalTank> tanks) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side,LazyOptional<ItemStackHandler> handler , List<RelationalTank> tanks) {
         if (side == null)
             return handler.cast();
         List<RelationalTank> relationalTanks = tanks.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == side.get3DDataValue()).toList();

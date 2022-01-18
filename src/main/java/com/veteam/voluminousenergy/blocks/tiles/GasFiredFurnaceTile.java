@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -42,6 +44,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -59,7 +62,18 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
     public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
+    List<VESlotManager> slotManagers =  new ArrayList<>() {{
+        add(bucketInputSm);
+        add(bucketOutputSm);
+        add(furnaceInputSm);
+        add(furnaceOutputSm);
+    }};
+
     RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+        add(fuelTank);
+    }};
 
     private int fuelCounter;
     private int fuelLength;
@@ -357,28 +371,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            if (side == null)
-                return handler.cast();
-            if (bucketInputSm.getStatus() && bucketInputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bucketInputHandler.cast();
-            else if (bucketOutputSm.getStatus() && bucketOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bucketOutputHandler.cast();
-            else if (furnaceInputSm.getStatus() && furnaceInputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return furnaceInputHandler.cast();
-            else if (furnaceOutputSm.getStatus() && furnaceOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return furnaceOutputHandler.cast();
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        }else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && fuelTank.getSideStatus()){
-            if (side != null){
-                if (fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue()){
-                    return fluid.cast();
-                } else { // TODO: Consider Config
-                    return fluid.cast();
-                }
-            }
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

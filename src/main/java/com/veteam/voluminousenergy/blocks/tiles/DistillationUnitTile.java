@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -68,7 +70,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     public VESlotManager o1BottomManager = new VESlotManager(5,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
     public VESlotManager o2Manager = new VESlotManager(6,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
-    public List<VESlotManager> managerList = new ArrayList<>() {{
+    public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(iTopManager);
         add(iTopManager);
         add(iTopManager);
@@ -84,7 +86,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
     RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1);
 
-    public List<RelationalTank> tankManagers = new ArrayList<>() {{
+    public List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(inputTank);
         add(outputTank0);
         add(outputTank1);
@@ -377,35 +379,15 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null)
-                return handler.cast();
-            if(iTopManager.getStatus() && iTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return iTopHandler.cast();
-            else if(iBottomManager.getStatus() && iBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return iBottomHandler.cast();
-            else if(o0TopManager.getStatus() && o0TopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o0TopHandler.cast();
-            else if(o0BottomManager.getStatus() && o0BottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o0BottomHandler.cast();
-            else if(o1TopManager.getStatus() && o1TopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o1TopHandler.cast();
-            else if(o1BottomManager.getStatus() && o1BottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o1BottomHandler.cast();
-            else if(o2Manager.getStatus() && o2Manager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return o2Handler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            inputTank.setValidFluids(RecipeUtil.getDistillationInputFluids(level));
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null){ // TODO: Better Handle Null direction
-            if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return inputFluidHandler.cast();
-            if(outputTank0.getSideStatus() && outputTank0.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return output0FluidHandler.cast();
-            if(outputTank1.getSideStatus() && outputTank1.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return output1FluidHandler.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

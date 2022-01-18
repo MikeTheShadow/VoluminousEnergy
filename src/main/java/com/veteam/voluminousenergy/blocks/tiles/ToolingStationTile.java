@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -44,6 +45,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ToolingStationTile extends VEFluidTileEntity {
@@ -64,7 +66,19 @@ public class ToolingStationTile extends VEFluidTileEntity {
     public VESlotManager bitSlotSM = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
     public VESlotManager multitoolBaseSM = new VESlotManager(4, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
 
+    List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(fuelTopSlotSM);
+        add(fuelBottomSlotSM);
+        add(mainToolSlotSM);
+        add(bitSlotSM);
+        add(multitoolBaseSM);
+    }};
+
     RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+       add(fuelTank);
+    }};
 
     private int counter;
     private int length;
@@ -300,26 +314,15 @@ public class ToolingStationTile extends VEFluidTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null) return handler.cast();
-            if (mainToolSlotSM.getStatus() && mainToolSlotSM.getDirection().get3DDataValue() == side.get3DDataValue())
-                return mainToolSlotHandler.cast();
-            else if (bitSlotSM.getStatus() && bitSlotSM.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bitSlotHandler.cast();
-            else if (fuelTopSlotSM.getStatus() && fuelTopSlotSM.getDirection().get3DDataValue() == side.get3DDataValue())
-                return fuelTopSlotHandler.cast();
-            else if (fuelBottomSlotSM.getStatus() && fuelBottomSlotSM.getDirection().get3DDataValue() == side.get3DDataValue())
-                return fuelBottomSlotHandler.cast();
-            else if (multitoolBaseSM.getStatus() && multitoolBaseSM.getDirection().get3DDataValue() == side.get3DDataValue())
-                return multitoolBaseSlotHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            if(fuelTank.getSideStatus() && fuelTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return fuelFluidHandler.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

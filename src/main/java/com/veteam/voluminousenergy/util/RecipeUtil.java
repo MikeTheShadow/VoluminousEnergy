@@ -112,6 +112,17 @@ public class RecipeUtil {
         return null;
     }
 
+    // TODO better way to do this there has to be
+    public static List<Fluid> getDistillationInputFluids(Level world){
+        List<Fluid> fluidList = new ArrayList<>();
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof DistillationRecipe distillationRecipe){
+                fluidList.addAll(distillationRecipe.rawFluidInputList);
+            }
+        }
+        return fluidList;
+    }
+
     public static DistillationRecipe getDistillationRecipeFromResult(Level world, FluidStack resultFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
@@ -154,6 +165,16 @@ public class RecipeUtil {
             }
         }
         return null;
+    }
+
+    public static List<Fluid> getFuelCombustionInputFluids(Level world){
+        List<Fluid> fluidList = new ArrayList<>();
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
+                fluidList.addAll(combustionGeneratorFuelRecipe.rawFluidInputList);
+            }
+        }
+        return fluidList;
     }
 
     public static boolean isOxidizer(FluidStack inputFluid){

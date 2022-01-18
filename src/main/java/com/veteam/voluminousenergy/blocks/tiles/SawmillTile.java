@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.SawmillContainer;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -41,6 +43,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -55,7 +58,6 @@ public class SawmillTile extends VEFluidTileEntity {
     private LazyOptional<IItemHandlerModifiable> secondOutputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3)); // Sawdust/Second output
     private LazyOptional<IItemHandlerModifiable> topBucketSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4)); // Top bucket slot
     private LazyOptional<IItemHandlerModifiable> bottomBucketSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 4,5)); // Bottom bucket slot
-    //private LazyOptional<IItemHandlerModifiable> quartzMultiplierHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 5,6)); // Quartz Multiplier slot
 
     // Slot Managers
     public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
@@ -64,8 +66,20 @@ public class SawmillTile extends VEFluidTileEntity {
     public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
     public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
+    List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(inputSm);
+        add(plankSm);
+        add(secondOutputSm);
+        add(bucketTopSm);
+        add(bucketBottomSm);
+    }};
+
     RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,0);
     private final FluidStack configuredFluidForNoRecipe = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get()))), Config.SAWMILL_FLUID_AMOUNT.get());
+
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+        add(outputTank);
+    }};
 
     private int counter;
     private int length;
@@ -419,32 +433,14 @@ public class SawmillTile extends VEFluidTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null) return handler.cast();
-
-            if (inputSm.getStatus() && inputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return inputHandler.cast();
-            else if (plankSm.getStatus() && plankSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return plankOutputHandler.cast();
-            else if (secondOutputSm.getStatus() && secondOutputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return secondOutputHandler.cast();
-            else if (bucketTopSm.getStatus() && bucketTopSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return topBucketSlotHandler.cast();
-            else if (bucketBottomSm.getStatus() && bucketBottomSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bottomBucketSlotHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && outputTank.getSideStatus()){
-            if (side != null){
-                if(outputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                    return outputFluidHandler.cast();
-            } else { // TODO: Consider Config
-                return outputFluidHandler.cast();
-            }
-
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

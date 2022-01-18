@@ -23,6 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +32,7 @@ import java.util.UUID;
 
 public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider {
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public PrimitiveSolarPanelTile(BlockPos pos, BlockState state) {
@@ -118,7 +119,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements MenuProvider
         super.onDataPacket(net, pkt);
     }
 
-    private VEEnergyStorage createEnergy(){
+    private @NotNull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get(),Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get());
     }
 
