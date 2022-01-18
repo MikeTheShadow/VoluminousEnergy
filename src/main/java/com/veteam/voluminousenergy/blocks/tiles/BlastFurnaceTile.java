@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -12,10 +14,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacke
 import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,6 +42,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -51,10 +51,11 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BlastFurnaceTile extends VEFluidTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> iTopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
     private LazyOptional<IItemHandlerModifiable> iBottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
     private LazyOptional<IItemHandlerModifiable> firstItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
@@ -64,13 +65,29 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
 
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot");
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot");
-    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot");
-    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot");
-    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot");
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+
+    List<VESlotManager> slotManagers = new ArrayList<>() {
+        {
+            add(heatTankItemTopManager);
+            add(heatTankItemBottomManager);
+            add(firstInputSlotManager);
+            add(secondInputSlotManager);
+            add(outputSlotManager);
+        }
+    };
 
     RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+
+    List<RelationalTank> fluidManagers = new ArrayList<>() {
+        {
+            add(heatTank);
+        }
+    };
 
     private int counter;
     private int length;
@@ -354,31 +371,41 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+//        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+//            if(side == null)
+//                return handler.cast();
+//            if(heatTankItemTopManager.getStatus() && heatTankItemTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
+//                return iTopHandler.cast();
+//            else if(heatTankItemBottomManager.getStatus() && heatTankItemBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
+//                return iBottomHandler.cast();
+//            else if (firstInputSlotManager.getStatus() && firstInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+//                return firstItemInputHandler.cast();
+//            else if (secondInputSlotManager.getStatus() && secondInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+//                return secondItemInputHandler.cast();
+//            else if (outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
+//                return outputItemHandler.cast();
+//        }
+//        if (cap == CapabilityEnergy.ENERGY) {
+//            return energy.cast();
+//        }
+//        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && heatTank.getSideStatus()){
+//            if (side != null){
+//                if (heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue()) return inputFluidHandler.cast();
+//            } else { // TODO: Consider Config/Better NULL side handling
+//                return inputFluidHandler.cast();
+//            }
+//        }
+//        return super.getCapability(cap, side);
+
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null)
-                return handler.cast();
-            if(heatTankItemTopManager.getStatus() && heatTankItemTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return iTopHandler.cast();
-            else if(heatTankItemBottomManager.getStatus() && heatTankItemBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return iBottomHandler.cast();
-            else if (firstInputSlotManager.getStatus() && firstInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return firstItemInputHandler.cast();
-            else if (secondInputSlotManager.getStatus() && secondInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return secondItemInputHandler.cast();
-            else if (outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return outputItemHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && heatTank.getSideStatus()){
-            if (side != null){
-                if (heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue()) return inputFluidHandler.cast();
-            } else { // TODO: Consider Config/Better NULL side handling
-                return inputFluidHandler.cast();
-            }
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override
@@ -478,12 +505,18 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     @Override
     public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
-        else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
+        else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemBottomManager.setStatus(status);
+        else if(slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setStatus(status);
+        else if (slotId == secondInputSlotManager.getSlotNum()) secondInputSlotManager.setStatus(status);
+        else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setStatus(status);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setDirection(direction);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemBottomManager.setDirection(direction);
+        else if(slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setDirection(direction);
+        else if (slotId == secondInputSlotManager.getSlotNum()) secondInputSlotManager.setDirection(direction);
+        else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setDirection(direction);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){

@@ -17,6 +17,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -65,6 +66,16 @@ public class RecipeUtil {
         return null;
     }
 
+    public static List<Fluid> getAqueoulizerInputFluids(Level world){
+        List<Fluid> fluidList = new ArrayList<>();
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe){
+                fluidList.addAll(aqueoulizerRecipe.rawFluidInputList);
+            }
+        }
+        return fluidList;
+    }
+
     public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe){
@@ -76,6 +87,16 @@ public class RecipeUtil {
             }
         }
         return null;
+    }
+
+    public static List<Fluid> getCentrifugalAgitatorInputFluids(Level world){
+        List<Fluid> fluidList = new ArrayList<>();
+        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+            if (recipe instanceof CentrifugalAgitatorRecipe centrifugalAgitatorRecipe){
+                fluidList.addAll(centrifugalAgitatorRecipe.rawFluidInputList);
+            }
+        }
+        return fluidList;
     }
 
     public static DistillationRecipe getDistillationRecipe(Level world, FluidStack inputFluid){

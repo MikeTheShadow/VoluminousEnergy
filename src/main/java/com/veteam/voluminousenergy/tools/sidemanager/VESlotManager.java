@@ -22,14 +22,6 @@ public class VESlotManager {
         this.slotType = slotType;
     }
 
-    public VESlotManager(int slotNum, Direction direction, boolean status, String translationKey){
-        this.side.set(direction);
-        this.slot = slotNum;
-        this.enabled.set(status);
-        this.translationKey = translationKey;
-        this.slotType = SlotType.INPUT;
-    }
-
     public void setStatus(boolean bool){
         //VoluminousEnergy.LOGGER.debug("STATUS UPDATED TO: " + bool);
         this.enabled.set(bool);
