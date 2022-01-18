@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class BlastFurnaceTile extends VEFluidTileEntity {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> iTopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
     private LazyOptional<IItemHandlerModifiable> iBottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
     private LazyOptional<IItemHandlerModifiable> firstItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));

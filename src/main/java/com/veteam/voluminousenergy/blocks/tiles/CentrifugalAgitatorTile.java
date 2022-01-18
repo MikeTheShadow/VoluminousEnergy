@@ -54,7 +54,7 @@ import java.util.UUID;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> input0h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
     private LazyOptional<IItemHandlerModifiable> input1h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
     private LazyOptional<IItemHandlerModifiable> output0h = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3));

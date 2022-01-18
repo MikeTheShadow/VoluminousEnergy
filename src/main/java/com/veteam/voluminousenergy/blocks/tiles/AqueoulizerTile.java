@@ -56,7 +56,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
     private LazyOptional<IFluidHandler> outputFluidHandler = LazyOptional.of(this::createOutputFluidHandler);
     //TODO check if changing handler variable type from IITEMSTACKHANDLER TO IITEMHANDLER BREAKS ANYTHING
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<IItemHandlerModifiable> input0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
     private LazyOptional<IItemHandlerModifiable> input1Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
     private LazyOptional<IItemHandlerModifiable> output0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
