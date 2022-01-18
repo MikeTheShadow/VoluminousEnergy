@@ -31,9 +31,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,12 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
-    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
-    private LazyOptional<IItemHandlerModifiable> bucketHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IItemHandlerModifiable> rngOneHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
-    private LazyOptional<IItemHandlerModifiable> rngTwoHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
-    private LazyOptional<IItemHandlerModifiable> rngThreeHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,5,6));
 
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 

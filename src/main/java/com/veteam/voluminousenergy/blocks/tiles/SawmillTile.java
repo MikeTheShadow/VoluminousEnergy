@@ -33,9 +33,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -49,13 +47,7 @@ public class SawmillTile extends VEFluidTileEntity {
 
     // Handlers
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> outputFluidHandler = LazyOptional.of(this::createOutputFluidHandler);
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1)); // Log Input
-    private LazyOptional<IItemHandlerModifiable> plankOutputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2)); // Plank Output
-    private LazyOptional<IItemHandlerModifiable> secondOutputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3)); // Sawdust/Second output
-    private LazyOptional<IItemHandlerModifiable> topBucketSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4)); // Top bucket slot
-    private LazyOptional<IItemHandlerModifiable> bottomBucketSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 4,5)); // Bottom bucket slot
 
     // Slot Managers
     public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);

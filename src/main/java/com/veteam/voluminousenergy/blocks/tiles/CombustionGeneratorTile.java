@@ -56,8 +56,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private final LazyOptional<IFluidHandler> oxidizerHandler = LazyOptional.of(this::createOxidizerHandler);
-    private final LazyOptional<IFluidHandler> fuelHandler = LazyOptional.of(this::createFuelHandler);
 
     // Slot Managers
     public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
