@@ -6,10 +6,7 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -57,10 +54,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private LazyOptional<IItemHandlerModifiable> furnaceOutputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
-    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot");
-    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
 

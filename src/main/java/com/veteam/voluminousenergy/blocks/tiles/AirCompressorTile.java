@@ -14,6 +14,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class AirCompressorTile extends VoluminousTileEntity implements MenuProvider {
-    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT);
 
     // Handlers
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);

@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -52,8 +53,8 @@ public class CompressorTile extends VoluminousTileEntity implements MenuProvider
     private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,"slot.voluminousenergy.output_slot");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     private int counter;
     private int length;

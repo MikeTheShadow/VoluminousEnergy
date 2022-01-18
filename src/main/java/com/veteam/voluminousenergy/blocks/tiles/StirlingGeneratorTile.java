@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements MenuP
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
 
     private int counter;
     private int length;

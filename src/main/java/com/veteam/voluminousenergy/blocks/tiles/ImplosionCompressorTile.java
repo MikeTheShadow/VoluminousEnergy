@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.ImplosionCompressorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -47,9 +48,9 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
     private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,"slot.voluminousenergy.output_slot");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     private int counter;
     private int length;

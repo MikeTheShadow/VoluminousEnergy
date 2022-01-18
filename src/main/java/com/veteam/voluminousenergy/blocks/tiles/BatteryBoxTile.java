@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPa
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -46,8 +47,8 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot");
+    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();

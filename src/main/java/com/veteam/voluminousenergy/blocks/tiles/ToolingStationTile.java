@@ -12,10 +12,7 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -61,11 +58,11 @@ public class ToolingStationTile extends VEFluidTileEntity {
     private LazyOptional<IItemHandlerModifiable> multitoolBaseSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 4,5));
 
     // Slot Managers
-    public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager fuelBottomSlotSM = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot");
-    public VESlotManager mainToolSlotSM = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot");
-    public VESlotManager bitSlotSM = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager multitoolBaseSM = new VESlotManager(4, Direction.EAST, true, "slot.voluminousenergy.input_slot");
+    public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager fuelBottomSlotSM = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager mainToolSlotSM = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager bitSlotSM = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager multitoolBaseSM = new VESlotManager(4, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
 
     RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
 

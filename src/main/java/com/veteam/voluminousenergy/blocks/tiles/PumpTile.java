@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,7 +54,7 @@ public class PumpTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
 
     private final int tankCapacity = 4000;
 
