@@ -117,29 +117,28 @@ public class VEOreGeneration {
     }
 
     public static class OreWithTargetStatesToReplace {
-        public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(OreConfiguration.target(ReplacementRules.SANDS, VEBlocks.SALTPETER_ORE.defaultBlockState()));
+        public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(
+                OreConfiguration.target(new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState()), VEBlocks.SALTPETER_ORE.defaultBlockState()),
+                OreConfiguration.target(new MultiBlockStateMatchRuleTest(Blocks.RED_SAND.defaultBlockState()), VEBlocks.RED_SALTPETER_ORE.defaultBlockState())
+        );
 
         public static final List<OreConfiguration.TargetBlockState> BAUXITE_ORE_TARGETS = List.of(
                 OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.BAUXITE_ORE.defaultBlockState()),
-                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.BAUXITE_ORE.defaultBlockState()),
                 OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_BAUXITE_ORE.defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> CINNABAR_ORE_TARGETS = List.of(
                 OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.CINNABAR_ORE.defaultBlockState()),
-                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.CINNABAR_ORE.defaultBlockState()),
                 OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_CINNABAR_ORE.defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> GALENA_ORE_TARGETS = List.of(
                 OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.GALENA_ORE.defaultBlockState()),
-                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.GALENA_ORE.defaultBlockState()),
                 OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_GALENA_ORE.defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> RUTILE_ORE_TARGETS = List.of(
                 OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.RUTILE_ORE.defaultBlockState()),
-                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.RUTILE_ORE.defaultBlockState()),
                 OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_RUTILE_ORE.defaultBlockState())
         );
 
@@ -152,13 +151,8 @@ public class VEOreGeneration {
     }
 
     public static final class ReplacementRules { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
-        @Deprecated
-        public static final RuleTest OVERWORLD_SHALLOW = new TagMatchTest(BlockTags.BASE_STONE_OVERWORLD);
-        @Deprecated
-        public static final RuleTest OVERWORLD_DEEP = new MultiBlockStateMatchRuleTest(Blocks.DEEPSLATE.defaultBlockState(), Blocks.TUFF.defaultBlockState());
         public static final RuleTest REGULAR_STONE = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         public static final RuleTest DEEPSLATE_STONE = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-        public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState());
         public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
         public static final RuleTest END = new MultiBlockStateMatchRuleTest(Blocks.END_STONE.defaultBlockState());

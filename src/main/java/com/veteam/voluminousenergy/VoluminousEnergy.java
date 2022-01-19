@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxite
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
@@ -167,6 +168,9 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new DeepslateRutileOre());
             blockRegisteryEvent.getRegistry().register(new DeepslateGalenaOre());
 
+            // Red Sand ores
+            blockRegisteryEvent.getRegistry().register(new RedSaltpeterOre());
+
             //Shells and Machine Frames
             blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
             blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
@@ -249,6 +253,8 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_CINNABAR_ORE,properties).setRegistryName("deepslate_cinnabar_ore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_RUTILE_ORE,properties).setRegistryName("deepslate_rutile_ore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_GALENA_ORE,properties).setRegistryName("deepslate_galena_ore"));
+
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RED_SALTPETER_ORE,properties).setRegistryName("red_saltpeter_ore"));
 
             //Shells
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));

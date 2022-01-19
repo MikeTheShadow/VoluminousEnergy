@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxite
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
@@ -284,6 +285,9 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":deepslate_galena_ore")
     public static DeepslateGalenaOre DEEPSLATE_GALENA_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID  + ":red_saltpeter_ore")
+    public static RedSaltpeterOre RED_SALTPETER_ORE;
 
     //Crops
     //@ObjectHolder(VoluminousEnergy.MODID + ":water_crop")
