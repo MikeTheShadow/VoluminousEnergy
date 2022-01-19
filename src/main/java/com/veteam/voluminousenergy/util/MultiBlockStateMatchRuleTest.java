@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
@@ -13,10 +14,18 @@ public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
         this.stateList = states;
     }
 
+    public MultiBlockStateMatchRuleTest(ArrayList<BlockState> stateList){
+        super(stateList.get(0));
+        this.stateList = new BlockState[stateList.size()];
+        for (int i = 0; i < stateList.size(); i++){
+            this.stateList[i] = stateList.get(i);
+        }
+    }
+
     @Override
-    public boolean test(BlockState p_215181_1_, Random p_215181_2_) {
+    public boolean test(BlockState blockState, Random random) {
         for (BlockState state : stateList){
-            if (state.getBlock() == p_215181_1_.getBlock()){
+            if (state.getBlock() == blockState.getBlock()){
                 return true;
             }
         }

@@ -4,11 +4,13 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
+import com.veteam.voluminousenergy.util.TagUtil;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -16,9 +18,12 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class VEOreGeneration {
 
@@ -118,8 +123,8 @@ public class VEOreGeneration {
 
     public static class OreWithTargetStatesToReplace {
         public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(
-                OreConfiguration.target(new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState()), VEBlocks.SALTPETER_ORE.defaultBlockState()),
-                OreConfiguration.target(new MultiBlockStateMatchRuleTest(Blocks.RED_SAND.defaultBlockState()), VEBlocks.RED_SALTPETER_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.COLORLESS_SAND, VEBlocks.SALTPETER_ORE.defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.RED_SAND, VEBlocks.RED_SALTPETER_ORE.defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> BAUXITE_ORE_TARGETS = List.of(
@@ -142,7 +147,9 @@ public class VEOreGeneration {
                 OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_RUTILE_ORE.defaultBlockState())
         );
 
-        public static final List<OreConfiguration.TargetBlockState> EIGHZO_ORE_TARGETS = List.of(OreConfiguration.target(ReplacementRules.END, VEBlocks.EIGHZO_ORE.defaultBlockState()));
+        public static final List<OreConfiguration.TargetBlockState> EIGHZO_ORE_TARGETS = List.of(
+                OreConfiguration.target(ReplacementRules.END, VEBlocks.EIGHZO_ORE.defaultBlockState())
+        );
 
     }
 
@@ -153,8 +160,24 @@ public class VEOreGeneration {
     public static final class ReplacementRules { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
         public static final RuleTest REGULAR_STONE = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         public static final RuleTest DEEPSLATE_STONE = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-        public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
+
+        public static final RuleTest COLORLESS_SAND = createRuleFromTag("forge:ore_bearing_ground/colorless_sand");
+        public static final RuleTest RED_SAND = createRuleFromTag("forge:ore_bearing_ground/red_sand");
+        public static final RuleTest NETHER = createRuleFromTag("forge:ore_bearing_ground/netherrack");
+        public static final RuleTest END = createRuleFromTag("forge:ore_bearing_ground/end_stone");
+
+        // WARN: Not tag based
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
-        public static final RuleTest END = new MultiBlockStateMatchRuleTest(Blocks.END_STONE.defaultBlockState());
+
+        public static RuleTest createRuleFromTag(String blockTagLocation){ // TODO: Figure out how to bind tags properly?
+            //BlockTags.bind(blockTagLocation);
+            Tags.IOptionalNamedTag<Block> blockTag = TagUtil.getIOptionalNamedBlockTagFromResourceLocation(new ResourceLocation(blockTagLocation));
+
+            ArrayList<BlockState> taggedStateList = new ArrayList<>();
+            AtomicReference<ArrayList<BlockState>> atomicStateList = new AtomicReference<>(taggedStateList);
+            blockTag.getValues().forEach(block -> atomicStateList.get().add(block.defaultBlockState()));
+
+            return new MultiBlockStateMatchRuleTest(taggedStateList);
+        }
     }
 }
