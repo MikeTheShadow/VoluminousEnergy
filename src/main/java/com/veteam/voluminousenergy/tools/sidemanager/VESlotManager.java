@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.tools.sidemanager;
 
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
@@ -11,11 +12,14 @@ public class VESlotManager {
     private AtomicReference<Direction> side = new AtomicReference<>();
     private AtomicBoolean enabled = new AtomicBoolean();
     private final String translationKey;
-    public VESlotManager(int slotNum, Direction direction, boolean status, String translationKey){
+    private final SlotType slotType;
+
+    public VESlotManager(int slotNum, Direction direction, boolean status, String translationKey,SlotType slotType){
         this.side.set(direction);
         this.slot = slotNum;
         this.enabled.set(status);
         this.translationKey = translationKey;
+        this.slotType = slotType;
     }
 
     public void setStatus(boolean bool){
@@ -65,6 +69,10 @@ public class VESlotManager {
 
         setDirection(directionFromInt(sideInt));
         //VoluminousEnergy.LOGGER.debug("Direction set to: " + this.getDirection());
+    }
+
+    public SlotType getSlotType() {
+        return slotType;
     }
 
     public Direction directionFromInt(int sideInt){

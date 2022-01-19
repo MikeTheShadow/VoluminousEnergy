@@ -3,7 +3,11 @@ package com.veteam.voluminousenergy.util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RelationalTank {
 
@@ -14,9 +18,10 @@ public class RelationalTank {
     ItemStack input;
     ItemStack output;
     TankType tankType;
-
+    List<Fluid> validFluids = new ArrayList<>();
     private boolean sideStatus = false;
     private Direction sideDirection = Direction.DOWN;
+    private boolean allowAny = false;
 
     public RelationalTank() {
 
@@ -42,6 +47,22 @@ public class RelationalTank {
     public void setIOItemstack(ItemStack input,ItemStack output) {
         this.input = input;
         this.output = output;
+    }
+
+    public void setAllowAny(boolean allowAny) {
+        this.allowAny = allowAny;
+    }
+
+    public boolean isAllowAny() {
+        return allowAny;
+    }
+
+    public List<Fluid> getValidFluids() {
+        return validFluids;
+    }
+
+    public void setValidFluids(List<Fluid> validFluids) {
+        this.validFluids = validFluids;
     }
 
     public TankType getTankType() {

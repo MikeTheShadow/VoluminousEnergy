@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.ImplosionCompressorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,27 +30,28 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ImplosionCompressorTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0,1));
-    private LazyOptional<IItemHandlerModifiable> gunpowderItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
-    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
+    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,"slot.voluminousenergy.output_slot");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+
+    public List<VESlotManager> slotManagers = new ArrayList<>() {{
+       add(inputSlotManager);
+       add(gunpowderSlotManager);
+       add(outputSlotManager);
+    }};
 
     private int counter;
     private int length;
@@ -251,20 +253,13 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements Men
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null)
-                return handler.cast();
-            if(inputSlotManager.getStatus() && inputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return inputItemHandler.cast();
-            else if(gunpowderSlotManager.getStatus() && gunpowderSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return gunpowderItemHandler.cast();
-            else if(outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return outputItemHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else {
+            return super.getCapability(cap, side);
         }
-        return super.getCapability(cap, side);
     }
 
     @Override

@@ -24,11 +24,12 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContainer> {
 
-    private BatteryBoxTile tileEntity;
+    private final BatteryBoxTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
@@ -65,13 +66,16 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
             // Do nothing
         }));
 
+
+        boolean[] slotValues = this.tileEntity.getDoDischargeInstead();
+
         // Slot arrows
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { }));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { }));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { }));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { }));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { }));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { },slotValues[0]));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { },slotValues[1]));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { },slotValues[2]));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { },slotValues[3]));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { },slotValues[4]));
+        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { },slotValues[5]));
 
         // Send Out Power Button
         addRenderableWidget(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
@@ -123,6 +127,7 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
         }
     }
 
+    // TODO this method is literally copypasta'd everywhere replace it
     private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
         for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
@@ -130,16 +135,16 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
                     this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
-                            //informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
+                            informTileOfIOButton(true);
+                            //openedIOGui = !openedIOGui;
                         }
                     });
                 } else {
                     this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
-                            //informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
+                            informTileOfIOButton(false);
+                            //openedIOGui = !openedIOGui;
                         }
                     });
                 }
@@ -168,12 +173,11 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
 
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
+        VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
     }
 
     public void updateSlotPairButton(boolean status, int id){
+        System.out.println("receiving update");
         for(Widget widget : this.renderables){
             if(widget instanceof BatteryBoxSlotPairButton){
                 if(((BatteryBoxSlotPairButton) widget).getId() == id){

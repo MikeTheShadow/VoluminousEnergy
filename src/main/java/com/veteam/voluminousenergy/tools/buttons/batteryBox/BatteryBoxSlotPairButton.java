@@ -21,7 +21,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     private int v= 166;
 
 
-    public BatteryBoxSlotPairButton(int x, int y, int id, BatteryBoxTile batteryBoxTile, OnPress onPress) {
+    public BatteryBoxSlotPairButton(int x, int y, int id, BatteryBoxTile batteryBoxTile, OnPress onPress,boolean cycle) {
         super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
             ((BatteryBoxSlotPairButton) button).cycle();
             onPress.onPress(button);
@@ -32,6 +32,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         this.y = y;
         this.width = 18;
         this.height = 20;
+        if(cycle) cycle();
     }
 
     @Override

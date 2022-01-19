@@ -7,15 +7,10 @@ import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,14 +19,14 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -45,37 +40,52 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AqueoulizerTile extends VEFluidTileEntity {
     // Handlers
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
-    private LazyOptional<IFluidHandler> outputFluidHandler = LazyOptional.of(this::createOutputFluidHandler);
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> input0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
-    private LazyOptional<IItemHandlerModifiable> input1Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
-    private LazyOptional<IItemHandlerModifiable> output0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
-    private LazyOptional<IItemHandlerModifiable> output1Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4));
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    //TODO check if changing handler variable type from IITEMSTACKHANDLER TO IITEMHANDLER BREAKS ANYTHING
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     // Slot Managers
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.INPUT);
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT);
+    // Actually an input slot omegalul
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
+
+    List<VESlotManager> slotManagers = new ArrayList<>() {
+        {
+            add(input0sm);
+            add(input1sm);
+            add(output0sm);
+            add(output1sm);
+        }
+
+    };
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
     RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
 
+    List<RelationalTank> fluidManagers = new ArrayList<>() {
+        {
+            add(inputTank);
+            add(outputTank);
+        }
+    };
+
+
     private int counter;
     private int length;
 
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -237,7 +247,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
@@ -274,6 +284,15 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                if (slot == 0 || slot == 1) {
+                    if (!(stack.getItem() instanceof BucketItem)) return false;
+                }
+                if(slot == 3) {
+                    // NOTE: If enough people complain that they have to insert a proper fluid first. Then change this so that it only checks item
+                    VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level,inputTank.getTank().getFluid(),stack);
+                    return recipe != null;
+                }
+
                 if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
                 return true;
             }
@@ -286,7 +305,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
+    private @NotNull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
     }
 
@@ -294,26 +313,17 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null) return handler.cast();
-            if (output0sm.getStatus() && output0sm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return output0Handler.cast();
-            else if (output1sm.getStatus() && output1sm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return output1Handler.cast();
-            else if (input0sm.getStatus() && input0sm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return input0Handler.cast();
-            else if (input1sm.getStatus() && input1sm.getDirection().get3DDataValue() == side.get3DDataValue())
-                return input1Handler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            List<Fluid> inputFluids = RecipeUtil.getAqueoulizerInputFluids(level);
+            inputTank.setValidFluids(inputFluids);
+            return getCapability(cap,side,handler,fluidManagers);
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null){ // TODO: Better Null direction handling
-            if(inputTank.getSideStatus() && inputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return inputFluidHandler.cast();
-            if(outputTank.getSideStatus() && outputTank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return outputFluidHandler.cast();
-        }
-        return super.getCapability(cap, side);
+
     }
 
     @Override

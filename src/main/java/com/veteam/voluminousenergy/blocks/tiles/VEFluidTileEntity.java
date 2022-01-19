@@ -5,13 +5,13 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
+import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +19,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -26,11 +28,13 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
-public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity, MenuProvider {
+public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity {
 
     public static final int TANK_CAPACITY = 4000;
 
@@ -219,6 +223,16 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         for(RelationalTank tank : tanks) {
             if(id == tank.getId()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
         }
+    }
+
+    @Nonnull
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side,LazyOptional<ItemStackHandler> handler , List<RelationalTank> tanks) {
+        if (side == null)
+            return handler.cast();
+        List<RelationalTank> relationalTanks = tanks.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == side.get3DDataValue()).toList();
+        if(relationalTanks.size() == 0) return super.getCapability(cap, side);
+        MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
+        return LazyOptional.of(() -> slotWrapper).cast();
     }
 
 }

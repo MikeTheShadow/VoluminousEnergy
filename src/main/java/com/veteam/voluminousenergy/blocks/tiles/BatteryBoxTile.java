@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPa
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,13 +19,11 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,6 +35,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,22 +43,22 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot");
+    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
 
     // Sided Item Handlers
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
-    private LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
+    private final LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
 
     // Modes and meta stuff for the battery box
-    private boolean[] doDischargeInstead = {true,true,true,true,true,true};
+    private final boolean[] doDischargeInstead = {false,false,false,false,false,false};
     private boolean topIsIngress = true;
     private boolean sendOutPower = false;
 
@@ -275,7 +275,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
         tag.putBoolean("send_out_power", sendOutPower);
     }
 
-    private VEEnergyStorage createEnergy(){
+    private @NotNull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -340,7 +340,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
+    public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == 0) topManager.setStatus(status); // ingress
         else if (slotId == 1) bottomManager.setStatus(status); // egress
     }
@@ -397,5 +397,9 @@ public void updatePacketFromGui(boolean status, int slotId){
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    public boolean[] getDoDischargeInstead() {
+        return doDischargeInstead;
     }
 }

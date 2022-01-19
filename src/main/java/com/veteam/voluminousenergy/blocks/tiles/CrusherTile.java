@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,13 +31,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,17 +47,18 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot");
-    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot");
-    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot");
+    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot",SlotType.OUTPUT);
 
+    public List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(inputSlotProp);
+        add(outputSlotProp);
+        add(rngSlotProp);
+    }};
 
     // Sided Item Handlers
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> inputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
-    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
-    private LazyOptional<IItemHandlerModifiable> rngItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2, 3));
-
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
@@ -299,27 +300,13 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (side == null) {
-                return handler.cast();
-            } else {
-                // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
-                // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.get3DDataValue() == inputSlotProp.getDirection().get3DDataValue() && inputSlotProp.getStatus()){
-                    return inputItemHandler.cast();
-                }
-                if (side.get3DDataValue() == outputSlotProp.getDirection().get3DDataValue() && outputSlotProp.getStatus()){
-                    return outputItemHandler.cast();
-                }
-                if (side.get3DDataValue() == rngSlotProp.getDirection().get3DDataValue() && rngSlotProp.getStatus()){
-                    return rngItemHandler.cast();
-                }
-            }
-        }
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else {
+            return super.getCapability(cap, side);
         }
-        return super.getCapability(cap, side);
     }
 
     @Override

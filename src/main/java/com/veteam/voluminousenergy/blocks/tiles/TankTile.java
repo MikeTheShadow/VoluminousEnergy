@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,8 +43,8 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
     private LazyOptional<IItemHandlerModifiable> bucketTop = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
     private LazyOptional<IItemHandlerModifiable> bucketBottom = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
 
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot");
-    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot");
+    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
 
     private ItemStackHandler inventory = createHandler();
 

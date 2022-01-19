@@ -6,10 +6,8 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +15,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,15 +29,14 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -50,21 +45,25 @@ import static net.minecraft.util.Mth.abs;
 
 public class CentrifugalSeparatorTile extends VoluminousTileEntity implements MenuProvider {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
-    private LazyOptional<IItemHandlerModifiable> inputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
-    private LazyOptional<IItemHandlerModifiable> bucketHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IItemHandlerModifiable> outputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IItemHandlerModifiable> rngOneHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
-    private LazyOptional<IItemHandlerModifiable> rngTwoHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
-    private LazyOptional<IItemHandlerModifiable> rngThreeHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,5,6));
 
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager inputSm = new VESlotManager(0, Direction.UP,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot");
-    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot");
-    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot");
-    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot");
-    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot");
+    public VESlotManager inputSm = new VESlotManager(0, Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+
+    public List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(inputSm);
+        add(bucketSm);
+        add(outputSm);
+        add(rngOneSm);
+        add(rngTwoSm);
+        add(rngThreeSm);
+    }};
+
     private int counter;
     private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
@@ -431,29 +430,16 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements Me
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (side == null) {
-                return handler.cast();
-            } else {
-                // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if(inputSm.getStatus() && inputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return inputHandler.cast();
-                else if(bucketSm.getStatus() && bucketSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return bucketHandler.cast();
-                else if(outputSm.getStatus() && outputSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return outputHandler.cast();
-                else if(rngOneSm.getStatus() && rngOneSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return rngOneHandler.cast();
-                else if(rngTwoSm.getStatus() && rngTwoSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return rngTwoHandler.cast();
-                else if(rngThreeSm.getStatus() && rngThreeSm.getDirection().get3DDataValue() == side.get3DDataValue())
-                    return rngThreeHandler.cast();
-            }
-        }
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            //return getCapability(cap,side,handler,fluidManagers);
+            return super.getCapability(cap, side);
+        } else {
+            return super.getCapability(cap, side);
         }
-        return super.getCapability(cap, side);
     }
 
     @Override
