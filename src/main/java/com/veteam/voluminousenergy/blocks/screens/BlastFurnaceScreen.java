@@ -134,7 +134,7 @@ public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceCont
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
-
+    float quickAdd = 0;
     @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -165,8 +165,8 @@ public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceCont
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), 8.0F, 16.0F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i / 2F + (i/2.5F), j/2.5F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), i / 2F + (i/2.5F), j/1.5F, 16777215);
         }
 
     }
