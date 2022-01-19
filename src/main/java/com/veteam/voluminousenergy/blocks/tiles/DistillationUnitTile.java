@@ -38,9 +38,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,19 +48,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class DistillationUnitTile extends VEFluidTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> iTopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
-    private LazyOptional<IItemHandlerModifiable> iBottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IItemHandlerModifiable> o0TopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IItemHandlerModifiable> o0BottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
-    private LazyOptional<IItemHandlerModifiable> o1TopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
-    private LazyOptional<IItemHandlerModifiable> o1BottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 5,6));
-    private LazyOptional<IItemHandlerModifiable> o2Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory,6,7));
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
-    private LazyOptional<IFluidHandler> output0FluidHandler = LazyOptional.of(this::createOutput0FluidHandler);
-    private LazyOptional<IFluidHandler> output1FluidHandler = LazyOptional.of(this::createOutput1FluidHandler);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
@@ -73,15 +62,15 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(iTopManager);
-        add(iTopManager);
-        add(iTopManager);
-        add(iTopManager);
-        add(iTopManager);
-        add(iTopManager);
-        add(iTopManager);
+        add(iBottomManager);
+        add(o0TopManager);
+        add(o0BottomManager);
+        add(o1TopManager);
+        add(o1BottomManager);
+        add(o2Manager);
     }};
 
-    private int tankCapacity = 4000;
+    private final int tankCapacity = 4000;
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
     RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
@@ -148,16 +137,16 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
         // Main Fluid Processing occurs here:
         if (inputTank != null || !inputTank.getTank().isEmpty()) {
-            VEFluidRecipe recipe = RecipeUtil.getDistillationRecipe(level, inputTank.getTank().getFluid());
+            DistillationRecipe recipe = RecipeUtil.getDistillationRecipe(level, inputTank.getTank().getFluid());
 
             if (recipe != null) {
                 if (outputTank0 != null && outputTank1 != null) {
 
                     // Tank fluid amount check + tank cap checks
-                    if (thirdOutput.getCount() < ((DistillationRecipe)recipe).getThirdResult().getMaxStackSize() && inputTank.getTank().getFluidAmount()
+                    if (thirdOutput.getCount() < recipe.getThirdResult().getMaxStackSize() && inputTank.getTank().getFluidAmount()
                             >= recipe.getInputAmount() && outputTank0.getTank().getFluidAmount()
                             + recipe.getOutputAmount() <= tankCapacity && outputTank1.getTank().getFluidAmount()
-                            + ((DistillationRecipe)recipe).getSecondFluid().getAmount() <= tankCapacity){
+                            + recipe.getSecondFluid().getAmount() <= tankCapacity){
                         // Check for power
                         if (canConsumeEnergy()) {
                             if (counter == 1){
@@ -173,19 +162,19 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                                 }
 
                                 // Second Output Tank
-                                if (outputTank1.getTank().getFluid().getRawFluid() != ((DistillationRecipe)recipe).getSecondResult().getRawFluid()){
-                                    outputTank1.getTank().setFluid(((DistillationRecipe)recipe).getSecondFluid().copy());
+                                if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getSecondResult().getRawFluid()){
+                                    outputTank1.getTank().setFluid(recipe.getSecondFluid().copy());
                                 } else {
-                                    outputTank1.getTank().fill(((DistillationRecipe)recipe).getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank1.getTank().fill(recipe.getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
-                                if (thirdOutput.getItem() != ((DistillationRecipe)recipe).getThirdResult().getItem()) {
+                                if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
                                     if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                                         thirdOutput.setCount(1);
                                     }
-                                    inventory.insertItem(6,((DistillationRecipe)recipe).getThirdResult().copy(),false); // CRASH the game if this is not empty!
+                                    inventory.insertItem(6, recipe.getThirdResult().copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    inventory.insertItem(6,((DistillationRecipe)recipe).getThirdResult().copy(),false); // Place the new output stack on top of the old one
+                                    inventory.insertItem(6, recipe.getThirdResult().copy(),false); // Place the new output stack on top of the old one
                                 }
 
                                 counter--;
@@ -317,7 +306,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
@@ -366,13 +355,18 @@ public class DistillationUnitTile extends VEFluidTileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
                 return super.insertItem(slot, stack, simulate);
+            }
+
+            @NotNull
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return super.extractItem(slot, amount, simulate);
             }
         };
     }
 
-    private VEEnergyStorage createEnergy() {
+    private @NotNull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 

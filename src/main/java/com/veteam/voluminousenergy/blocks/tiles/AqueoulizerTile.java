@@ -40,6 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,22 +50,16 @@ import java.util.UUID;
 
 public class AqueoulizerTile extends VEFluidTileEntity {
     // Handlers
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
-    private LazyOptional<IFluidHandler> outputFluidHandler = LazyOptional.of(this::createOutputFluidHandler);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     //TODO check if changing handler variable type from IITEMSTACKHANDLER TO IITEMHANDLER BREAKS ANYTHING
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> input0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
-    private LazyOptional<IItemHandlerModifiable> input1Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
-    private LazyOptional<IItemHandlerModifiable> output0Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
-    private LazyOptional<IItemHandlerModifiable> output1Handler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4));
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     // Slot Managers
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.INPUT);
     public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT);
     // Actually an input slot omegalul
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.output_slot",SlotType.INPUT);
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -90,7 +85,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -252,7 +247,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
@@ -310,7 +305,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
+    private @NotNull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
     }
 
