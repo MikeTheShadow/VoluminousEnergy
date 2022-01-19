@@ -21,6 +21,7 @@ public class RelationalTank {
     List<Fluid> validFluids = new ArrayList<>();
     private boolean sideStatus = false;
     private Direction sideDirection = Direction.DOWN;
+    private boolean allowAny = false;
 
     public RelationalTank() {
 
@@ -46,6 +47,14 @@ public class RelationalTank {
     public void setIOItemstack(ItemStack input,ItemStack output) {
         this.input = input;
         this.output = output;
+    }
+
+    public void setAllowAny(boolean allowAny) {
+        this.allowAny = allowAny;
+    }
+
+    public boolean isAllowAny() {
+        return allowAny;
     }
 
     public List<Fluid> getValidFluids() {

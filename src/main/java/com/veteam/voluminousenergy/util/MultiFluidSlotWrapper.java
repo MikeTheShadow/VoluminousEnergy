@@ -48,7 +48,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         RelationalTank relationalTank = tankHashMap.get(tank);
         if (relationalTank == null) return false;
-        if(relationalTank.getValidFluids().stream().noneMatch(fluid -> fluid.isSame(stack.getFluid()))) return false;
+        if(relationalTank.getValidFluids().stream().noneMatch(fluid -> fluid.isSame(stack.getFluid())) && !relationalTank.isAllowAny()) return false;
         return relationalTank.getTank() != null && relationalTank.getTank().isFluidValid(stack);
     }
 
@@ -72,7 +72,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             return FluidStack.EMPTY;
         }
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) continue;
+            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() || !tank.isAllowAny()) continue;
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
                 return tank.getTank().drain(resource.copy(), action);
             }
@@ -84,7 +84,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) continue;
+            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() || !tank.isAllowAny()) continue;
             if (tank.getTank().getFluidAmount() > 0) {
                 return tank.getTank().drain(maxDrain, action);
             }

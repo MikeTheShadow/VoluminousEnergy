@@ -360,37 +360,12 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-//        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-//            if(side == null)
-//                return handler.cast();
-//            if(heatTankItemTopManager.getStatus() && heatTankItemTopManager.getDirection().get3DDataValue() == side.get3DDataValue())
-//                return iTopHandler.cast();
-//            else if(heatTankItemBottomManager.getStatus() && heatTankItemBottomManager.getDirection().get3DDataValue() == side.get3DDataValue())
-//                return iBottomHandler.cast();
-//            else if (firstInputSlotManager.getStatus() && firstInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-//                return firstItemInputHandler.cast();
-//            else if (secondInputSlotManager.getStatus() && secondInputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-//                return secondItemInputHandler.cast();
-//            else if (outputSlotManager.getStatus() && outputSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-//                return outputItemHandler.cast();
-//        }
-//        if (cap == CapabilityEnergy.ENERGY) {
-//            return energy.cast();
-//        }
-//        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && heatTank.getSideStatus()){
-//            if (side != null){
-//                if (heatTank.getSideDirection().get3DDataValue() == side.get3DDataValue()) return inputFluidHandler.cast();
-//            } else { // TODO: Consider Config/Better NULL side handling
-//                return inputFluidHandler.cast();
-//            }
-//        }
-//        return super.getCapability(cap, side);
-
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return getCapability(cap, side, handler, inventory, slotManagers);
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) {
+            heatTank.setAllowAny(true);
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);
