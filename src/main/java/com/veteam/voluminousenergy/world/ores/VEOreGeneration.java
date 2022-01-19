@@ -18,6 +18,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
+import java.util.List;
+
 public class VEOreGeneration {
 
     public static void OreGeneration(BiomeLoadingEvent biome){
@@ -28,7 +30,7 @@ public class VEOreGeneration {
             // End ores
             if(Config.ENABLE_EIGHZO_ORE.get()) {
                 PlacedFeature eighzoOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.END, VEBlocks.EIGHZO_ORE.defaultBlockState(), /*Size*/Config.EIGHZO_SIZE.get()))
+                        .configured(new OreConfiguration(OreWithTargetStatesToReplace.EIGHZO_ORE_TARGETS, Config.EIGHZO_SIZE.get(), (float) ((double) Config.EIGHZO_EXPOSED_DISCARD_CHANCE.get())))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.EIGHZO_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.EIGHZO_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -43,7 +45,7 @@ public class VEOreGeneration {
 
                 if (Config.ENABLE_SALTPETER_ORE.get()){
                     PlacedFeature saltpeterOre = Feature.ORE
-                            .configured(new OreConfiguration(replace.SANDS, VEBlocks.SALTPETER_ORE.defaultBlockState(), Config.SALTPETER_SIZE.get()))
+                            .configured(new OreConfiguration(OreWithTargetStatesToReplace.SALTPETER_ORE_TARGETS, Config.SALTPETER_SIZE.get(), (float) ((double) Config.SALTPETER_EXPOSED_DISCARD_CHANCE.get())))
                             .placed(
                                     HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SALTPETER_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.SALTPETER_TOP_ANCHOR.get())),
                                     InSquarePlacement.spread(),
@@ -57,7 +59,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_BAUXITE_ORE.get()){
                 PlacedFeature bauxiteOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.BAUXITE_ORE.defaultBlockState(), Config.BAUXITE_SIZE.get()))
+                        .configured(new OreConfiguration(OreWithTargetStatesToReplace.BAUXITE_ORE_TARGETS, Config.BAUXITE_SIZE.get(), (float) ((double) Config.BAUXITE_EXPOSED_DISCARD_CHANCE.get())))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.BAUXITE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -71,7 +73,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_CINNABAR_ORE.get()){
                 PlacedFeature cinnabarOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.CINNABAR_ORE.defaultBlockState(), Config.CINNABAR_SIZE.get()))
+                        .configured(new OreConfiguration(OreWithTargetStatesToReplace.CINNABAR_ORE_TARGETS, Config.CINNABAR_SIZE.get(), (float) ((double) Config.CINNABAR_EXPOSED_DISCARD_CHANCE.get())))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.CINNABAR_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -84,7 +86,7 @@ public class VEOreGeneration {
 
             if (Config.ENABLE_RUTILE_ORE.get()){
                 PlacedFeature rutileOre = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD_DEEP, VEBlocks.RUTILE_ORE.defaultBlockState(), Config.RUTILE_SIZE.get()))
+                        .configured(new OreConfiguration(OreWithTargetStatesToReplace.RUTILE_ORE_TARGETS, Config.RUTILE_SIZE.get(), (float) ((double) Config.RUTILE_EXPOSED_DISCARD_CHANCE.get())))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RUTILE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -97,8 +99,8 @@ public class VEOreGeneration {
             }
 
             if (Config.ENABLE_GALENA_ORE.get()){
-                PlacedFeature galenaOreShallow = Feature.ORE
-                        .configured(new OreConfiguration(replace.OVERWORLD_SHALLOW, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
+                PlacedFeature galenaOre = Feature.ORE
+                        .configured(new OreConfiguration(OreWithTargetStatesToReplace.GALENA_ORE_TARGETS, Config.GALENA_SIZE.get(), (float) ((double) Config.GALENA_EXPOSED_DISCARD_CHANCE.get())))
                         .placed(
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())),
                                 InSquarePlacement.spread(),
@@ -106,17 +108,7 @@ public class VEOreGeneration {
                                 CountPlacement.of(Config.GALENA_COUNT.get())
                         );
 
-                PlacedFeature galenaOreDeep = Feature.ORE // TODO: Deep ore
-                        .configured(new OreConfiguration(replace.OVERWORLD_DEEP, VEBlocks.GALENA_ORE.defaultBlockState(), Config.GALENA_SIZE.get()))
-                        .placed(
-                                HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.GALENA_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_TOP_ANCHOR.get())),
-                                InSquarePlacement.spread(),
-                                BiomeFilter.biome(),
-                                CountPlacement.of(Config.GALENA_COUNT.get())
-                        );
-
-                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOreShallow);
-                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOreDeep);
+                biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, galenaOre);
                 oreLog(VEBlocks.GALENA_ORE, biome, Config.GALENA_SIZE.get(), Config.GALENA_BOTTOM_ANCHOR.get(), Config.GALENA_TOP_ANCHOR.get(), Config.GALENA_COUNT.get());
             }
 
@@ -124,13 +116,48 @@ public class VEOreGeneration {
 
     }
 
+    public static class OreWithTargetStatesToReplace {
+        public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(OreConfiguration.target(ReplacementRules.SANDS, VEBlocks.SALTPETER_ORE.defaultBlockState()));
+
+        public static final List<OreConfiguration.TargetBlockState> BAUXITE_ORE_TARGETS = List.of(
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.BAUXITE_ORE.defaultBlockState()),
+                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.BAUXITE_ORE.defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_BAUXITE_ORE.defaultBlockState())
+        );
+
+        public static final List<OreConfiguration.TargetBlockState> CINNABAR_ORE_TARGETS = List.of(
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.CINNABAR_ORE.defaultBlockState()),
+                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.CINNABAR_ORE.defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_CINNABAR_ORE.defaultBlockState())
+        );
+
+        public static final List<OreConfiguration.TargetBlockState> GALENA_ORE_TARGETS = List.of(
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.GALENA_ORE.defaultBlockState()),
+                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.GALENA_ORE.defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_GALENA_ORE.defaultBlockState())
+        );
+
+        public static final List<OreConfiguration.TargetBlockState> RUTILE_ORE_TARGETS = List.of(
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.RUTILE_ORE.defaultBlockState()),
+                //OreConfiguration.target(ReplacementRules.OVERWORLD_SHALLOW, VEBlocks.RUTILE_ORE.defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_RUTILE_ORE.defaultBlockState())
+        );
+
+        public static final List<OreConfiguration.TargetBlockState> EIGHZO_ORE_TARGETS = List.of(OreConfiguration.target(ReplacementRules.END, VEBlocks.EIGHZO_ORE.defaultBlockState()));
+
+    }
+
     public static void oreLog(Block block, BiomeLoadingEvent biome, int size, int bottomAnchor, int topAnchor, int count){
         if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info(block.getRegistryName() + " registered to generate in: " + biome.getName() + " With Size: " + size + " Bottom Anchor: " + bottomAnchor + " Top Anchor: " + topAnchor + " Count: " + count);
     }
 
-    public static final class replace { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
+    public static final class ReplacementRules { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
+        @Deprecated
         public static final RuleTest OVERWORLD_SHALLOW = new TagMatchTest(BlockTags.BASE_STONE_OVERWORLD);
+        @Deprecated
         public static final RuleTest OVERWORLD_DEEP = new MultiBlockStateMatchRuleTest(Blocks.DEEPSLATE.defaultBlockState(), Blocks.TUFF.defaultBlockState());
+        public static final RuleTest REGULAR_STONE = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+        public static final RuleTest DEEPSLATE_STONE = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         public static final RuleTest SANDS = new MultiBlockStateMatchRuleTest(Blocks.SAND.defaultBlockState(), Blocks.RED_SAND.defaultBlockState());
         public static final RuleTest NETHER = new MultiBlockStateMatchRuleTest(Blocks.NETHERRACK.defaultBlockState(), Blocks.SOUL_SAND.defaultBlockState());
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());

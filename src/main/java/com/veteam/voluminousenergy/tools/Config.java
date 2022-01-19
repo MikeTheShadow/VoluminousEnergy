@@ -80,6 +80,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
+    public static ForgeConfigSpec.DoubleValue SALTPETER_EXPOSED_DISCARD_CHANCE;
 
     // BAUXITE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
@@ -87,6 +88,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
+    public static ForgeConfigSpec.DoubleValue BAUXITE_EXPOSED_DISCARD_CHANCE;
 
     // CINNABAR ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
@@ -94,6 +96,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
+    public static ForgeConfigSpec.DoubleValue CINNABAR_EXPOSED_DISCARD_CHANCE;
 
     // RUTILE ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
@@ -101,6 +104,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RUTILE_SIZE;
+    public static ForgeConfigSpec.DoubleValue RUTILE_EXPOSED_DISCARD_CHANCE;
 
     // GALENA ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
@@ -109,6 +113,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue GALENA_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue GALENA_SIZE;
     public static ForgeConfigSpec.IntValue GALENA_GLOW;
+    public static ForgeConfigSpec.DoubleValue GALENA_EXPOSED_DISCARD_CHANCE;
 
     // EIGHZO ORE
     public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
@@ -116,6 +121,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
+    public static ForgeConfigSpec.DoubleValue EIGHZO_EXPOSED_DISCARD_CHANCE;
 
     // Ore Deposit
     public static ForgeConfigSpec.BooleanValue ENABLE_ORE_DEPOSIT;
@@ -472,6 +478,8 @@ public class Config {
                 SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
                 SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
                 SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
+                SALTPETER_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                        .defineInRange("Saltpeter Exposed Discard Chance", 0F, 0F, 1F);
             COMMON_BUILDER.pop();
 
             //Bauxite
@@ -482,6 +490,8 @@ public class Config {
                 BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
                 BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
                 BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
+                BAUXITE_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                    .defineInRange("Bauxite Exposed Discard Chance", 0F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Bauxite
 
             //Cinnabar
@@ -492,6 +502,8 @@ public class Config {
                 CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
                 CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
                 CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
+                CINNABAR_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                    .defineInRange("Cinnabar Exposed Discard Chance", 0F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Cinnabar
 
             //Rutile
@@ -502,6 +514,8 @@ public class Config {
                 RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
                 RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
                 RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
+                RUTILE_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                    .defineInRange("Rutile Exposed Discard Chance", 0.75F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Rutile
 
             //Galena
@@ -513,6 +527,8 @@ public class Config {
                 GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
                 GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
                 GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
+                GALENA_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                    .defineInRange("Galena Exposed Discard Chance", 0F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Galena
 
             //Eighzo
@@ -523,6 +539,8 @@ public class Config {
                 EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
                 EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
                 EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+                EIGHZO_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                    .defineInRange("Eighzo Exposed Discard Chance", 1F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Eighzo
 
             // DEPOSITS

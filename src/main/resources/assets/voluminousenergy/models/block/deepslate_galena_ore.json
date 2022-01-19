@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/deepslate_galena_ore",
+    "down": "voluminousenergy:block/deepslate_galena_ore",
+    "up": "voluminousenergy:block/deepslate_galena_ore",
+    "east": "voluminousenergy:block/deepslate_galena_ore",
+    "west": "voluminousenergy:block/deepslate_galena_ore",
+    "north": "voluminousenergy:block/deepslate_galena_ore",
+    "south": "voluminousenergy:block/deepslate_galena_ore"
+  }
+}
+

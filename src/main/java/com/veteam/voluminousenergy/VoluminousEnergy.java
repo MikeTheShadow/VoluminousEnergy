@@ -3,6 +3,10 @@ package com.veteam.voluminousenergy;
 import com.veteam.voluminousenergy.blocks.blocks.*;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
@@ -157,6 +161,12 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new GalenaOre());
             blockRegisteryEvent.getRegistry().register(new EighzoOre());
 
+            // Deepslate ores
+            blockRegisteryEvent.getRegistry().register(new DeepslateBauxiteOre());
+            blockRegisteryEvent.getRegistry().register(new DeepslateCinnabarOre());
+            blockRegisteryEvent.getRegistry().register(new DeepslateRutileOre());
+            blockRegisteryEvent.getRegistry().register(new DeepslateGalenaOre());
+
             //Shells and Machine Frames
             blockRegisteryEvent.getRegistry().register(new AluminumShellBlock());
             blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
@@ -233,6 +243,12 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RUTILE_ORE,properties).setRegistryName("rutileore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.GALENA_ORE,properties).setRegistryName("galena_ore"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_ORE,properties).setRegistryName("eighzo_ore"));
+
+            //Deepslate ores
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_BAUXITE_ORE,properties).setRegistryName("deepslate_bauxite_ore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_CINNABAR_ORE,properties).setRegistryName("deepslate_cinnabar_ore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_RUTILE_ORE,properties).setRegistryName("deepslate_rutile_ore"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DEEPSLATE_GALENA_ORE,properties).setRegistryName("deepslate_galena_ore"));
 
             //Shells
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_SHELL, properties).setRegistryName("aluminum_shell"));

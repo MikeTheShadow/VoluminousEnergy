@@ -4,6 +4,10 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
+import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
@@ -267,6 +271,19 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_ore")
     public static EighzoOre EIGHZO_ORE;
+
+    // Deepslate ores
+    @ObjectHolder(VoluminousEnergy.MODID  + ":deepslate_bauxite_ore")
+    public static DeepslateBauxiteOre DEEPSLATE_BAUXITE_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":deepslate_cinnabar_ore")
+    public static DeepslateCinnabarOre DEEPSLATE_CINNABAR_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":deepslate_rutile_ore")
+    public static DeepslateRutileOre DEEPSLATE_RUTILE_ORE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":deepslate_galena_ore")
+    public static DeepslateGalenaOre DEEPSLATE_GALENA_ORE;
 
     //Crops
     //@ObjectHolder(VoluminousEnergy.MODID + ":water_crop")
