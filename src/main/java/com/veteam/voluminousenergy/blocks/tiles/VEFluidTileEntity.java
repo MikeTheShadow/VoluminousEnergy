@@ -229,7 +229,8 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side,LazyOptional<ItemStackHandler> handler , List<RelationalTank> tanks) {
         if (side == null)
             return handler.cast();
-        List<RelationalTank> relationalTanks = tanks.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == side.get3DDataValue()).toList();
+        Direction modifiedSide = normalizeDirection(side);
+        List<RelationalTank> relationalTanks = tanks.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue()).toList();
         if(relationalTanks.size() == 0) return super.getCapability(cap, side);
         MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
         return LazyOptional.of(() -> slotWrapper).cast();

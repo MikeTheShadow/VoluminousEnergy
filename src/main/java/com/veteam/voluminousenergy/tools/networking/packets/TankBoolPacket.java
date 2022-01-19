@@ -67,10 +67,10 @@ public class TankBoolPacket {
                     voluminousContainer.updateStatusTank(packet.status, packet.id);
                 }
             } else {
-                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
+//                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
             }
         } else {
-            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
+//            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
         }
     }
 }

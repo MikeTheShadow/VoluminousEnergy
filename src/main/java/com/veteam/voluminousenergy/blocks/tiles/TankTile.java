@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -29,6 +32,10 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
@@ -45,6 +52,11 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
 
     public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+
+    List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(bucketBottomSlotManager);
+        add(bucketTopSlotManager);
+    }};
 
     private ItemStackHandler inventory = createHandler();
 
@@ -196,17 +208,13 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null) return handler.cast();
-            else if (bucketTopSlotManager.getStatus() && bucketTopSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bucketTop.cast();
-            else if (bucketBottomSlotManager.getStatus() && bucketBottomSlotManager.getDirection().get3DDataValue() == side.get3DDataValue())
-                return bucketBottom.cast();
+            return getCapability(cap, side, handler, inventory, slotManagers);
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            tank.setAllowAny(true);
+            return getCapability(cap, side, handler, Collections.singletonList(tank));
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null){ // TODO: Better Null direction handling
-            if(tank.getSideStatus() && tank.getSideDirection().get3DDataValue() == side.get3DDataValue())
-                return fluidHandler.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     public RelationalTank getTank(){

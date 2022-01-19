@@ -20,7 +20,19 @@ public class TextUtil {
     }
 
     public static Component translateDirection(Direction direction){
-        return new TranslatableComponent("direction.voluminousenergy." + direction.name().toLowerCase());
+        //return new TranslatableComponent("direction.voluminousenergy." + direction.name().toLowerCase());
+        return new TranslatableComponent("direction.voluminousenergy." + directionToLocalDirection(direction));
+    }
+
+    public static String directionToLocalDirection(Direction direction) {
+        switch (direction) {
+            case UP -> {return "up";}
+            case DOWN -> {return "down";}
+            case NORTH -> {return "back";}
+            case EAST -> {return "right";}
+            case SOUTH -> {return "front";}
+            default -> {return "left";}
+        }
     }
 
     public static Component slotNameWithDirection(String slotName, Direction direction, int ordinal){
