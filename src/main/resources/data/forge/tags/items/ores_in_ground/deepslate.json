@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "voluminousenergy:deepslate_bauxite_ore",
+    "voluminousenergy:deepslate_cinnabar_ore",
+    "voluminousenergy:deepslate_galena_ore",
+    "voluminousenergy:deepslate_rutile_ore"
+  ]
+}

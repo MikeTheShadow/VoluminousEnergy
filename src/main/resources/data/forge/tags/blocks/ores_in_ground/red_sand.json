@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:saltpeterore",
     "voluminousenergy:red_saltpeter_ore"
   ]
 }

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:rutileore"
+    "voluminousenergy:rutileore",
+    "voluminousenergy:deepslate_rutile_ore"
   ]
 }

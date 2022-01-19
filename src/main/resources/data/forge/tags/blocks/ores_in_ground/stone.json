@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "voluminousenergy:bauxiteore",
+    "voluminousenergy:cinnabarore",
+    "voluminousenergy:galena_ore",
+    "voluminousenergy:rutileore"
+  ]
+}

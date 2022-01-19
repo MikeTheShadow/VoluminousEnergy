@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "voluminousenergy:galena_ore"
+    "voluminousenergy:galena_ore",
+    "voluminousenergy:deepslate_galena_ore"
   ]
 }

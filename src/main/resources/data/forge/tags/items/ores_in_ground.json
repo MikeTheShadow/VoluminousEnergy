@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:ores_in_ground/deepslate",
+    "#forge:ores_in_ground/end_stone",
+    "#forge:ores_in_ground/red_sand",
+    "#forge:ores_in_ground/colorless_sand",
+    "#forge:ores_in_ground/stone"
+  ]
+}

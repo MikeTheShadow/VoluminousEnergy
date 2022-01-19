@@ -40,7 +40,7 @@ public class VEOreGeneration {
                 oreLog(VEBlocks.EIGHZO_ORE, biome, Config.EIGHZO_SIZE.get(), Config.EIGHZO_BOTTOM_ANCHOR.get(), Config.EIGHZO_TOP_ANCHOR.get(), Config.EIGHZO_COUNT.get());
             }
         } else { // Assuming Overworld, catch all other biomes
-            if (biome.getCategory() == Biome.BiomeCategory.DESERT || biome.getName() == Biomes.BADLANDS.getRegistryName() || biome.getName() == Biomes.ERODED_BADLANDS.getRegistryName()){
+            if (biome.getCategory() == Biome.BiomeCategory.DESERT || biome.getCategory() == Biome.BiomeCategory.MESA){
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
 
                 if (Config.ENABLE_SALTPETER_ORE.get()){
