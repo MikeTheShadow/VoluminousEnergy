@@ -24,8 +24,8 @@
 
     "_comment": "Slot Names",
     "slot.voluminousenergy.rng_slot": "RNG Slot",
-    "slot.voluminousenergy.input_slot": "Input Slot",
-    "slot.voluminousenergy.output_slot": "Output Slot",
+    "slot.voluminousenergy.input_slot": "In Slot",
+    "slot.voluminousenergy.output_slot": "Out Slot",
     "slot.voluminousenergy.bucket_slot": "Bucket Slot",
 
     "_comment": "Tank Names",
