@@ -73,7 +73,7 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
     // Override this in Tile Entities, should mainly be for IO management. SUPER to this function with proper writing of Universal Update Packets
     public void sendPacketToClient(){ }
 
-    public void uuidPacket(UUID uuid, boolean connectionFlag){
+    public void uuidPacket(UUID uuid, boolean connectionFlag) {
         if(!playerUuid.isEmpty()){
             if(playerUuid.contains(uuid) && !connectionFlag){
                 playerUuid.remove(uuid);

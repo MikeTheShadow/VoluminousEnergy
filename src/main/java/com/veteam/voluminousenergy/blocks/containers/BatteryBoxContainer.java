@@ -127,7 +127,7 @@ public class BatteryBoxContainer extends VoluminousContainer {
     public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
 
     @Override
-public void updateStatusButton(boolean status, int slotId){
+    public void updateStatusButton(boolean status, int slotId){
         this.screen.updateBooleanButton(status, slotId);
     }
 

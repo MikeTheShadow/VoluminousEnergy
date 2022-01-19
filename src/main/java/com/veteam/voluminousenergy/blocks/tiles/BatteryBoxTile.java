@@ -35,6 +35,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
@@ -52,12 +53,12 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
 
     // Sided Item Handlers
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
-    private LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
+    private final LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
 
     // Modes and meta stuff for the battery box
-    private boolean[] doDischargeInstead = {true,true,true,true,true,true};
+    private final boolean[] doDischargeInstead = {false,false,false,false,false,false};
     private boolean topIsIngress = true;
     private boolean sendOutPower = false;
 
@@ -274,7 +275,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
         tag.putBoolean("send_out_power", sendOutPower);
     }
 
-    private VEEnergyStorage createEnergy(){
+    private @NotNull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -339,7 +340,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider
     public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
+    public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == 0) topManager.setStatus(status); // ingress
         else if (slotId == 1) bottomManager.setStatus(status); // egress
     }
@@ -396,5 +397,9 @@ public void updatePacketFromGui(boolean status, int slotId){
             toRemove.forEach(uuid -> playerUuid.remove(uuid));
         }
         super.uuidCleanup();
+    }
+
+    public boolean[] getDoDischargeInstead() {
+        return doDischargeInstead;
     }
 }
