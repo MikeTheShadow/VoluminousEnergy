@@ -7,11 +7,9 @@ import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -22,9 +20,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class VEOreGeneration {
 
@@ -170,20 +166,9 @@ public class VEOreGeneration {
         // WARN: Not tag based
         public static final RuleTest TERRACOTTA = new MultiBlockStateMatchRuleTest(Blocks.TERRACOTTA.defaultBlockState(), Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.ORANGE_TERRACOTTA.defaultBlockState(), Blocks.MAGENTA_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_BLUE_TERRACOTTA.defaultBlockState(), Blocks.YELLOW_TERRACOTTA.defaultBlockState(), Blocks.LIME_TERRACOTTA.defaultBlockState(), Blocks.PINK_TERRACOTTA.defaultBlockState(), Blocks.GRAY_TERRACOTTA.defaultBlockState(), Blocks.LIGHT_GRAY_TERRACOTTA.defaultBlockState(), Blocks.CYAN_TERRACOTTA.defaultBlockState(), Blocks.PURPLE_TERRACOTTA.defaultBlockState(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), Blocks.BROWN_TERRACOTTA.defaultBlockState(), Blocks.GREEN_TERRACOTTA.defaultBlockState(), Blocks.RED_TERRACOTTA.defaultBlockState(), Blocks.BLACK_TERRACOTTA.defaultBlockState());
 
-        public static RuleTest createRuleFromTag(String blockTagLocation){ // TODO: Figure out how to bind tags properly?
-            //BlockTags.bind(blockTagLocation);
+        public static RuleTest createRuleFromTag(String blockTagLocation){
             Tags.IOptionalNamedTag<Block> blockTag = TagUtil.getIOptionalNamedBlockTagFromResourceLocation(new ResourceLocation(blockTagLocation));
-
-            ArrayList<BlockState> taggedStateList = new ArrayList<>();
-            AtomicReference<ArrayList<BlockState>> atomicStateList = new AtomicReference<>(taggedStateList);
-            blockTag.getValues().forEach(block -> atomicStateList.get().add(block.defaultBlockState()));
-
-            return new MultiBlockStateMatchRuleTest(taggedStateList);
+            return new TagMatchTest(blockTag);
         }
-    }
-
-    public static class OreTags {
-        public static void init(){}
-        public static final Tag.Named<Block> COLORLESS_SAND = BlockTags.bind("forge:ore_bearing_ground/colorless_sand");
     }
 }
