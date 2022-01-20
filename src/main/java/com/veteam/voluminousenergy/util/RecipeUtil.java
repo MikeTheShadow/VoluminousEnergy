@@ -21,14 +21,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class RecipeUtil {
+public class RecipeUtil { // TODO: Remove Tag stuff from here into TagUtil
 
+
+    @Deprecated // USE TagUtil#getFluidTagFromResourceLocation INSTEAD
     public static Tag<Fluid> getTagFromResourceLocationForFluids(ResourceLocation fluidTagLocation, String friendlyRecipeNameOnError){
         return SerializationTags.getInstance().getTagOrThrow(Registry.FLUID_REGISTRY, fluidTagLocation, (tempTag) -> {
             return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
         });
     }
 
+    @Deprecated // USE TagUtil#getItemTagFromResourceLocation INSTEAD
     public static Tag<Item> getTagFromResourceLocationForItems(ResourceLocation itemTagLocation, String friendlyRecipeNameOnError){
         return SerializationTags.getInstance().getTagOrThrow(Registry.ITEM_REGISTRY, itemTagLocation, (tempTag) -> {
             return new JsonSyntaxException("Invalid item tag for second input in the " + friendlyRecipeNameOnError + " Recipe. The offending tag is: '" + tempTag + "'");
