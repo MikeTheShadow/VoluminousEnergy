@@ -49,7 +49,6 @@ public class SlotBoolButton extends VEIOButton {
         if(!render) return;
         cycle();
         this.slotManager.setStatus(enable);
-        System.out.println("BUTTON: " + this.status() + " | " + this.getAssociatedSlotId());
         VENetwork.channel.sendToServer(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()));
     }
 

@@ -17,6 +17,10 @@
     "direction.voluminousenergy.south": "South",
     "direction.voluminousenergy.east": "East",
     "direction.voluminousenergy.west": "West",
+    "direction.voluminousenergy.left": "Left",
+    "direction.voluminousenergy.right": "Right",
+    "direction.voluminousenergy.front": "Front",
+    "direction.voluminousenergy.back": "Back",
 
     "_comment": "Slot Names",
     "slot.voluminousenergy.rng_slot": "RNG Slot",

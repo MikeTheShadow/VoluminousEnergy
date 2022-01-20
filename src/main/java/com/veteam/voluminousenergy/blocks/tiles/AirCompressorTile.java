@@ -2,8 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
+import com.veteam.voluminousenergy.fluids.CompressedAir;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -49,9 +52,10 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
-public class AirCompressorTile extends VoluminousTileEntity implements MenuProvider {
+public class AirCompressorTile extends VEFluidTileEntity implements MenuProvider {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT);
 
     // Handlers
@@ -304,21 +308,15 @@ public class AirCompressorTile extends VoluminousTileEntity implements MenuProvi
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if(side == null){
-                return handler.cast();
-            } else {
-                if(side.get3DDataValue() == outputSlotManager.getDirection().get3DDataValue() && outputSlotManager.getStatus()){
-                    return outputItemHandler.cast();
-                }
-            }
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
+            return getCapability(cap, side, handler, inventory, Collections.singletonList(outputSlotManager));
+        } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
+            airTank.setValidFluids(Collections.singletonList(CompressedAir.CompressedAirFluid().getFlowing()));
+            return getCapability(cap,side,handler,Collections.singletonList(airTank));
+        } else {
+            return super.getCapability(cap, side);
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return fluid.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

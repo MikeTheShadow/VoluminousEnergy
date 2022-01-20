@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
@@ -20,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -176,7 +180,8 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<ItemStackHandler> handler, ItemStackHandler inventory , List<VESlotManager> managers) {
         if (side == null) return handler.cast();
-        List<VESlotManager> managerList = managers.stream().filter(manager -> manager.getStatus() && manager.getDirection().get3DDataValue() == side.get3DDataValue()).toList();
+        Direction modifiedSide = normalizeDirection(side);
+        List<VESlotManager> managerList = managers.stream().filter(manager -> manager.getStatus() && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue()).toList();
         if(managerList.size() == 0) return super.getCapability(cap, side);
         MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory,managerList);
         return LazyOptional.of(() -> slotWrapper).cast();
@@ -191,5 +196,18 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
     @Override
     public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
         return null;
+    }
+
+    public Direction normalizeDirection(Direction direction) {
+        Direction currentDirection = this.getBlockState().getValue(BlockStateProperties.FACING);
+        int directionInt = direction.get3DDataValue();
+        if(directionInt == 0 || directionInt == 1) return direction;
+        Direction rotated = currentDirection;
+        for(int i = 0; i < 4;i++) {
+            rotated = rotated.getClockWise();
+            direction = direction.getClockWise();
+            if(rotated.get3DDataValue() == 2) break;
+        }
+        return direction.getClockWise().getClockWise();
     }
 }
