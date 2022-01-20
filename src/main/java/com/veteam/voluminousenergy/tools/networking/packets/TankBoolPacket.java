@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.*;
-import com.veteam.voluminousenergy.blocks.tiles.*;
+import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -67,10 +67,10 @@ public class TankBoolPacket {
                     voluminousContainer.updateStatusTank(packet.status, packet.id);
                 }
             } else {
-//                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
             }
         } else {
-//            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
+            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
         }
     }
 }
