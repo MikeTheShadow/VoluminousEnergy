@@ -3,14 +3,17 @@ package com.veteam.voluminousenergy.util;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.*;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.function.Function;
 
 public class TagUtil {
 
@@ -32,10 +35,22 @@ public class TagUtil {
         });
     }
 
-    public static Tag.Named<Block> getStaticBlockTagFromResourceLocation(String blockTagLocation, String stackTraceMessageOnError){ // Doesn't work
-        StaticTagHelper<Block> staticTagHelper = StaticTags.create(Registry.BLOCK_REGISTRY, "tags/blocks");
-        Tag.Named<Block> namedBlockTag = staticTagHelper.bind(blockTagLocation);
+    public static Tag.Named<Block> getStaticBlockTagFromResourceLocation(String blockTagLocation){ // Doesn't work
+        //StaticTagHelper<Block> staticTagHelper = StaticTags.create(Registry.BLOCK_REGISTRY, blockTagLocation);
+        Tag.Named<Block> namedBlockTag = BlockTags.bind(blockTagLocation);
         return namedBlockTag;
+    }
+
+    public static <T> Tag.Named<T> tagger(Function<ResourceLocation, Tag.Named<T>> wrapperFactory, String namespace, String path) {
+        return wrapperFactory.apply(new ResourceLocation(namespace, path));
+    }
+
+    public static <T> Tag.Named<T> taggerNamespacePredefined(Function<ResourceLocation, Tag.Named<T>> wrapperFactory, String completePath) {
+        return wrapperFactory.apply(new ResourceLocation(completePath));
+    }
+
+    public static Tag.Named<Block> forgeSpaceBlockTag(String target){
+        return taggerNamespacePredefined(BlockTags::createOptional, target);
     }
 
     // Use for things like ores

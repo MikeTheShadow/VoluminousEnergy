@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -179,5 +180,10 @@ public class VEOreGeneration {
 
             return new MultiBlockStateMatchRuleTest(taggedStateList);
         }
+    }
+
+    public static class OreTags {
+        public static void init(){}
+        public static final Tag.Named<Block> COLORLESS_SAND = BlockTags.bind("forge:ore_bearing_ground/colorless_sand");
     }
 }
