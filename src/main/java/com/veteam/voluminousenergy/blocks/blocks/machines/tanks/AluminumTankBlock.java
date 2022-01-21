@@ -32,11 +32,10 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new AluminumTankTile(pos, state); // TODO: Config
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new AluminumTankTile(pos, state);
     }
 
-    // NEW TICK SYSTEM
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends AluminumTankTile> tile) {
         return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, TankTile::serverTick);

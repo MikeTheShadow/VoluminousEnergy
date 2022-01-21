@@ -74,7 +74,8 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
-        this.capacity = capacity;
+        this.capacity = capacity * 1000;
+        tank.setAllowAny(true);
         tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.OUTPUT);
     }
 
@@ -217,7 +218,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return getCapability(cap, side, handler, inventory, slotManagers);
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            tank.setAllowAny(true);
             return getCapability(cap, side, handler, Collections.singletonList(tank));
         } else {
             return super.getCapability(cap, side);
@@ -290,6 +290,11 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
         return null; //new TankContainer(i,level,this.worldPosition,playerInventory,player);
+    }
+
+    @Override
+    public int getTankCapacity(){
+        return this.tank.getTank().getCapacity();
     }
 
     @Override

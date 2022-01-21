@@ -15,6 +15,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -53,7 +54,7 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
 
         }));
 
-        // Input insert
+        // Input Bucket Slot
         addRenderableWidget(new SlotBoolButton(tileEntity.bucketTopSlotManager, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
@@ -62,7 +63,7 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
             // Do nothing
         }));
 
-        // Output Extract
+        // Output Bucket Slot
         addRenderableWidget(new SlotBoolButton(tileEntity.bucketBottomSlotManager, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
@@ -93,10 +94,10 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
             renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.SAWMILL_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
         }
 
-        if (isHovering(138, 18, 12, 50, mouseX, mouseY)){ //TODO: Tank tooltip
-            //int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            //String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
-            //renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+        if (isHovering(93, 18, 12, 50, mouseX, mouseY)){
+            int amount = tileEntity.getTank().getTank().getFluid().getAmount();
+            String name = tileEntity.getTank().getTank().getFluid().getTranslationKey();
+            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
@@ -107,10 +108,18 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
+
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
-        if(tileEntity != null){
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        if (tileEntity != null) {
+            // Tank render
+            try{
+                VERender.renderGuiTank(tileEntity.getTank().getTank(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+            } catch (Exception e){ }
+
+            // IO Rendering
+            RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen
@@ -121,14 +130,9 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
 
-            VERender.renderGuiTank(tileEntity.getTank().getTank().getFluid(), tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
-
+            //this.blit(matrixStack,i+153, j-16,0,0,18,18); // Upgrade Slot
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
-            // Upgrade slot
-            RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+153, j-16,0,0,18,18);
         }
-
     }
 
     private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
