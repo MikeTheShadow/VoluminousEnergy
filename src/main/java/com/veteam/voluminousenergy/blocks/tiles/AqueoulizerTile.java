@@ -51,7 +51,6 @@ import java.util.UUID;
 public class AqueoulizerTile extends VEFluidTileEntity {
     // Handlers
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    //TODO check if changing handler variable type from IITEMSTACKHANDLER TO IITEMHANDLER BREAKS ANYTHING
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     // Slot Managers

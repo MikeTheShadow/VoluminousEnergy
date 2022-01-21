@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;

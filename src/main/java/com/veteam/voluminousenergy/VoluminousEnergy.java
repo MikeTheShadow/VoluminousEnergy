@@ -1,7 +1,9 @@
 package com.veteam.voluminousenergy;
 
-import com.veteam.voluminousenergy.blocks.blocks.*;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
+import com.veteam.voluminousenergy.blocks.blocks.machines.*;
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.AluminumTankBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -154,7 +156,10 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new ToolingStationBlock());
             blockRegisteryEvent.getRegistry().register(new SawmillBlock());
 
-            //Ores
+            // Tanks
+            blockRegisteryEvent.getRegistry().register(new AluminumTankBlock());
+
+            // Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
             blockRegisteryEvent.getRegistry().register(new BauxiteOre());
             blockRegisteryEvent.getRegistry().register(new CinnabarOre());
@@ -234,6 +239,9 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BLAST_FURNACE_BLOCK,properties).setRegistryName("blast_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TOOLING_STATION_BLOCK,properties).setRegistryName("tooling_station"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SAWMILL_BLOCK,properties).setRegistryName("sawmill"));
+
+            // Tanks
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK,properties).setRegistryName("aluminum_tank"));
 
             // Crops
             //itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
@@ -538,6 +546,9 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK).build(null).setRegistryName("blast_furnace"));
             event.getRegistry().register(BlockEntityType.Builder.of(ToolingStationTile::new,VEBlocks.TOOLING_STATION_BLOCK).build(null).setRegistryName("tooling_station"));
             event.getRegistry().register(BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK).build(null).setRegistryName("sawmill"));
+
+            // Tanks
+            //event.getRegistry().register(BlockEntityType.Builder.of(() -> { new TankTile(VEBlocks.ALUMINUM_TANK_TILE,); },VEBlocks.ALUMINUM_TANK_TILE).build(null).setRegistryName("aluminum_tank"));
         }
 
         @SubscribeEvent
@@ -652,6 +663,11 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new SawmillContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("sawmill"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new TankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("tank")); // TODO register with different tank types
         }
 
         @SubscribeEvent

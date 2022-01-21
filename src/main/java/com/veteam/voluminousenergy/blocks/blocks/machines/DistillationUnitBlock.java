@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
+import com.veteam.voluminousenergy.blocks.tiles.DistillationUnitTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,15 +23,16 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlock {
-    public ImplosionCompressorBlock() {
-        super(Properties.of(Material.METAL)
+public class DistillationUnitBlock extends FaceableBlock implements EntityBlock {
+
+    public DistillationUnitBlock(){
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("implosion_compressor");
+        setRegistryName("distillation_unit");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -38,22 +40,22 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ImplosionCompressorTile(VEBlocks.IMPLOSION_COMPRESSOR_TILE, pos, state);
+        return new DistillationUnitTile(VEBlocks.DISTILLATION_UNIT_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends ImplosionCompressorTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ImplosionCompressorTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends DistillationUnitTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, DistillationUnitTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends ImplosionCompressorTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends DistillationUnitTile> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.IMPLOSION_COMPRESSOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.DISTILLATION_UNIT_TILE);
     }
 
     @Override
@@ -63,12 +65,10 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Implosion Compressor named container provider is missing!");
+                throw new IllegalStateException("Distillation Unit named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
-
     }
-
 }

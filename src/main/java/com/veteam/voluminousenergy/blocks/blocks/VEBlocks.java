@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.machines.*;
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.TankBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -253,6 +255,18 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
     public static MenuType<SawmillContainer> SAWMILL_CONTAINER;
+
+    // Tanks (Tile/Block)
+
+    // Aluminum Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static TankBlock ALUMINUM_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static BlockEntityType<TankTile> ALUMINUM_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static MenuType<TankContainer> ALUMINUM_TANK_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

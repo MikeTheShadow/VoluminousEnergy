@@ -1,10 +1,12 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.ToolingStationTile;
+import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -22,41 +24,40 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
+public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
 
-    public ToolingStationBlock(){
-        super(Properties.of(Material.STONE)
+    public ElectricFurnaceBlock() {
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("tooling_station");
+        setRegistryName("electric_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresDiamond(this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ToolingStationTile(VEBlocks.TOOLING_STATION_TILE, pos, state);
+        return new ElectricFurnaceTile(VEBlocks.ELECTRIC_FURNACE_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends ToolingStationTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ToolingStationTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends ElectricFurnaceTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ElectricFurnaceTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends ToolingStationTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends ElectricFurnaceTile> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.TOOLING_STATION_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.ELECTRIC_FURNACE_TILE);
     }
-
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
@@ -64,10 +65,13 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Tooling Station named container provider is missing!");
+                throw new IllegalStateException("Electric Furnace named container provider is missing!");
             }
+            player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
+
     }
+
 }

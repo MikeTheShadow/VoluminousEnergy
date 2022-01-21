@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveSolarPanelTile;
+import com.veteam.voluminousenergy.blocks.tiles.CentrifugalSeparatorTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,39 +23,41 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlock {
-    public PrimitiveSolarPanelBlock() {
-        super(Properties.of(Material.METAL)
+public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBlock {
+
+    public CentrifugalSeparatorBlock(){
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("primitive_solar_panel");
+        setRegistryName("centrifugal_separator");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresWood(this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveSolarPanelTile(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE, pos, state);
+        return new CentrifugalSeparatorTile(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends PrimitiveSolarPanelTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, PrimitiveSolarPanelTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CentrifugalSeparatorTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, CentrifugalSeparatorTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends PrimitiveSolarPanelTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CentrifugalSeparatorTile> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_SEPARATOR_TILE);
     }
+
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
@@ -62,7 +65,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Primitive Solar Panel named container provider is missing!");
+                throw new IllegalStateException("Centrifugal Separator named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }

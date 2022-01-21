@@ -1,11 +1,11 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -23,40 +23,40 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
-
-    public ElectricFurnaceBlock() {
-        super(Properties.of(Material.METAL)
+public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
+    public AirCompressorBlock(){
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("electric_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresStone(this);
+        setRegistryName("air_compressor");
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ElectricFurnaceTile(VEBlocks.ELECTRIC_FURNACE_TILE, pos, state);
+        return new AirCompressorTile(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends ElectricFurnaceTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ElectricFurnaceTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends AirCompressorTile> airCompressorTile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, airCompressorTile, AirCompressorTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends ElectricFurnaceTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends AirCompressorTile> airCompressorTile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == airCompressorTile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ELECTRIC_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.AIR_COMPRESSOR_TILE);
     }
+
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
@@ -64,13 +64,10 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Electric Furnace named container provider is missing!");
+                throw new IllegalStateException("Air Compressor named container provider is missing!");
             }
-            player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
-
     }
-
 }

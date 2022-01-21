@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,39 +23,39 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class CrusherBlock extends FaceableBlock implements EntityBlock {
+public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
 
-    public CrusherBlock(){
+    public BlastFurnaceBlock(){
         super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
-                .strength(2.0f)
+                .strength(3.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("crusher");
+        setRegistryName("blast_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
+        VETagDataGenerator.setRequiresDiamond(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CrusherTile(VEBlocks.CRUSHER_TILE, pos, state);
+        return new BlastFurnaceTile(VEBlocks.BLAST_FURNACE_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createCrusherTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CrusherTile> crusherTile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, crusherTile, CrusherTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends BlastFurnaceTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, BlastFurnaceTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CrusherTile> crusherTile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == crusherTile ? (BlockEntityTicker<T>)serverTick : null;
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends BlastFurnaceTile> tile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createCrusherTicker(level, blockEntityType, VEBlocks.CRUSHER_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.BLAST_FURNACE_TILE);
     }
 
     @Override
@@ -64,11 +65,10 @@ public class CrusherBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Crusher named container provider is missing!");
+                throw new IllegalStateException("Blast Furnace named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
-
     }
 }

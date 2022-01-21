@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.TankContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -9,8 +9,11 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,7 +23,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -29,13 +31,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
@@ -58,6 +61,10 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
         add(bucketTopSlotManager);
     }};
 
+    List<RelationalTank> fluidManagers = new ArrayList<>(){{
+        add(tank);
+    }};
+
     private ItemStackHandler inventory = createHandler();
 
     @Override
@@ -65,14 +72,14 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
         return inventory;
     }
 
-    public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state, int capacity) {
-        super(type, pos, state);
+    public TankTile(BlockEntityType<TankTile> blockEntityType, BlockPos pos, BlockState state, int capacity) {
+        super(blockEntityType, pos, state);
         this.capacity = capacity;
         tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.OUTPUT);
     }
 
-    public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public TankTile(BlockEntityType<TankTile> blockEntityType, BlockPos pos, BlockState state){
+        super(blockEntityType, pos, state);
     }
 
     @Override
@@ -221,6 +228,60 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
         return this.tank;
     }
 
+        /*
+        Read and Write on World save
+     */
+
+    @Override
+    public void load(CompoundTag tag){
+        CompoundTag inv = tag.getCompound("inv");
+        this.inventory.deserializeNBT(inv);
+
+        //  Slots
+        bucketTopSlotManager.read(tag, "bucket_top_slot");
+        bucketBottomSlotManager.read(tag, "bucket_bottom_slot");
+
+        // Tanks
+        CompoundTag tankNBT = tag.getCompound("tank");
+        this.tank.getTank().readFromNBT(tankNBT);
+        this.tank.readGuiProperties(tag,"tank_gui");
+
+        super.load(tag);
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        tag.put("inv", this.inventory.serializeNBT());
+
+        // Slots
+        bucketTopSlotManager.write(tag, "bucket_top_slot");
+        bucketBottomSlotManager.write(tag, "bucket_bottom_slot");
+
+        // Tanks
+        CompoundTag tankNBT = new CompoundTag();
+        this.tank.getTank().writeToNBT(tankNBT);
+        tag.put("tank", tankNBT);
+        this.tank.writeGuiProperties(tag, "tank_gui");
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag compoundTag = new CompoundTag();
+        this.saveAdditional(compoundTag);
+        return compoundTag;
+    }
+
+    @javax.annotation.Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
+        super.onDataPacket(net, pkt);
+    }
 
     @Override
     public Component getDisplayName() {return new TextComponent(getType().getRegistryName().getPath());}
@@ -228,7 +289,59 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-        return null; // TODO: Container Menu
+        return new TankContainer(i,level,this.worldPosition,playerInventory,player);
+    }
+
+
+    @Override
+    public void updatePacketFromGui(boolean status, int slotId){
+        processGUIPacketStatus(status,slotId,bucketTopSlotManager,bucketBottomSlotManager);
+    }
+
+    public void updatePacketFromGui(int direction, int slotId){
+        processGUIPacketDirection(direction,slotId,bucketTopSlotManager,bucketBottomSlotManager);
+    }
+
+    public void updateTankPacketFromGui(boolean status, int id){
+        processGUIPacketFluidStatus(status,id,tank);
+    }
+
+    public void updateTankPacketFromGui(int direction, int id){
+        processGUIPacketFluidDirection(direction,id,tank);
+    }
+
+    @Override
+    public void sendPacketToClient(){
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
+            this.playerUuid.forEach(u -> level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                if (s.getUUID().equals(u)){
+                    bulkSendSMPacket(s, bucketTopSlotManager,bucketBottomSlotManager);
+                    bulkSendTankPackets(s,tank);
+                }
+            }));
+        }
+    }
+
+    @Override
+    protected void uuidCleanup(){
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(player.containerMenu != null){
+                    if(!(player.containerMenu instanceof TankContainer)){
+                        toRemove.add(player.getUUID());
+                    }
+                } else if (player.containerMenu == null){
+                    toRemove.add(player.getUUID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
+        super.uuidCleanup();
     }
 
 }

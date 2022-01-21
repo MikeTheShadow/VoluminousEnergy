@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.CompressorTile;
+import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,15 +23,16 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class CompressorBlock extends FaceableBlock implements EntityBlock {
-    public CompressorBlock() {
-        super(Properties.of(Material.METAL)
+public class CrusherBlock extends FaceableBlock implements EntityBlock {
+
+    public CrusherBlock(){
+        super(Properties.of(Material.STONE)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("compressor");
+        setRegistryName("crusher");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }
@@ -38,22 +40,22 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CompressorTile(VEBlocks.COMPRESSOR_TILE, pos, state);
+        return new CrusherTile(VEBlocks.CRUSHER_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CompressorTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, CompressorTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createCrusherTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CrusherTile> crusherTile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, crusherTile, CrusherTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CompressorTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CrusherTile> crusherTile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == crusherTile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.COMPRESSOR_TILE);
+        return createCrusherTicker(level, blockEntityType, VEBlocks.CRUSHER_TILE);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Compressor named container provider is missing!");
+                throw new IllegalStateException("Crusher named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }

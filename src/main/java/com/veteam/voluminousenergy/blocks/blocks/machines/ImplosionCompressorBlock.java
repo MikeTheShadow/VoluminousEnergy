@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
+import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,38 +23,38 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
-    public AirCompressorBlock(){
-        super(Properties.of(Material.STONE)
+public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlock {
+    public ImplosionCompressorBlock() {
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
+        setRegistryName("implosion_compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresStone(this);
-        setRegistryName("air_compressor");
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new AirCompressorTile(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
+        return new ImplosionCompressorTile(VEBlocks.IMPLOSION_COMPRESSOR_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends AirCompressorTile> airCompressorTile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, airCompressorTile, AirCompressorTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends ImplosionCompressorTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ImplosionCompressorTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends AirCompressorTile> airCompressorTile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == airCompressorTile ? (BlockEntityTicker<T>)serverTick : null;
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends ImplosionCompressorTile> tile, BlockEntityTicker<E> serverTick) {
+        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.AIR_COMPRESSOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.IMPLOSION_COMPRESSOR_TILE);
     }
 
     @Override
@@ -63,10 +64,12 @@ public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Air Compressor named container provider is missing!");
+                throw new IllegalStateException("Implosion Compressor named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
+
     }
+
 }

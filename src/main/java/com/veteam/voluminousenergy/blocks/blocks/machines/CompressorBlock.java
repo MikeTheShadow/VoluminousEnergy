@@ -1,17 +1,16 @@
-package com.veteam.voluminousenergy.blocks.blocks;
+package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.CompressorTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,16 +23,15 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
-
-    public GasFiredFurnaceBlock() {
-        super(Block.Properties.of(Material.METAL)
+public class CompressorBlock extends FaceableBlock implements EntityBlock {
+    public CompressorBlock() {
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("gas_fired_furnace");
+        setRegistryName("compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }
@@ -41,23 +39,24 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new GasFiredFurnaceTile(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
+        return new CompressorTile(VEBlocks.COMPRESSOR_TILE, pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends GasFiredFurnaceTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, GasFiredFurnaceTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CompressorTile> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, CompressorTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends GasFiredFurnaceTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CompressorTile> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.GAS_FIRED_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.COMPRESSOR_TILE);
     }
+
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
@@ -65,13 +64,11 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
             if(tileEntity instanceof MenuProvider) {
                 NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("GasFiredFurnace named container provider is missing!");
+                throw new IllegalStateException("Compressor named container provider is missing!");
             }
-            player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
 
     }
-
 }
