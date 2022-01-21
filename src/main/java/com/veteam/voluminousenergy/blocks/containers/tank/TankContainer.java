@@ -1,12 +1,12 @@
-package com.veteam.voluminousenergy.blocks.containers;
+package com.veteam.voluminousenergy.blocks.containers.tank;
 
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.TankScreen;
+import com.veteam.voluminousenergy.blocks.screens.tank.TankScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,28 +18,23 @@ import javax.annotation.Nonnull;
 
 public class TankContainer extends VoluminousContainer {
 
-    private Player playerEntity;
+    //private Player playerEntity;
     private IItemHandler playerInventory;
     private TankScreen screen;
     private static final int NUMBER_OF_SLOTS = 1;
 
-    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
-        super(null,id); // TODO: Deal with block
-        this.tileEntity = world.getBlockEntity(pos);
-        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        this.playerEntity = player;
+    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
+        super(menuType,id);
+        setTileEntity(world.getBlockEntity(pos));
+        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        //this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Positions
+        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Positions
             addSlot(new VEInsertSlot(h, 0, 44, 32)); // Bucket top slot
             addSlot(new VEInsertSlot(h, 1, 80, 24)); // Bucket bottom slot
         });
         layoutPlayerInventorySlots(8, 84);
-    }
-
-    @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.STIRLING_GENERATOR_BLOCK);
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {

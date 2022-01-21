@@ -1,7 +1,7 @@
-package com.veteam.voluminousenergy.blocks.tiles;
+package com.veteam.voluminousenergy.blocks.tiles.tank;
 
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.TankContainer;
+import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -42,7 +42,7 @@ import java.util.UUID;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
-public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
+public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
     private int capacity;
     private RelationalTank tank;
@@ -72,14 +72,14 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
         return inventory;
     }
 
-    public TankTile(BlockEntityType<TankTile> blockEntityType, BlockPos pos, BlockState state, int capacity) {
+    public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
         this.capacity = capacity;
         tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.OUTPUT);
     }
 
-    public TankTile(BlockEntityType<TankTile> blockEntityType, BlockPos pos, BlockState state){
-        super(blockEntityType, pos, state);
+    public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override
@@ -289,9 +289,8 @@ public class TankTile extends VEFluidTileEntity{ // TODO: 2 items slots, 1 tank
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-        return new TankContainer(i,level,this.worldPosition,playerInventory,player);
+        return null; //new TankContainer(i,level,this.worldPosition,playerInventory,player);
     }
-
 
     @Override
     public void updatePacketFromGui(boolean status, int slotId){

@@ -1,10 +1,10 @@
-package com.veteam.voluminousenergy.blocks.screens;
+package com.veteam.voluminousenergy.blocks.screens.tank;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.TankContainer;
-import com.veteam.voluminousenergy.blocks.tiles.TankTile;
+import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
+import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
@@ -15,7 +15,6 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
-import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -84,7 +83,7 @@ public class TankScreen extends AbstractContainerScreen<TankContainer> {
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("sawmill"), 8.0F, 6.0F, 16777215);
+        //this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("tank"), 8.0F, 6.0F, 16777215);
         this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
     }
 

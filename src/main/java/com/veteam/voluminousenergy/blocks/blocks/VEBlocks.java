@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
-import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.TankBlock;
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.AluminumTankBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -14,7 +14,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.containers.tank.AluminumTankContainer;
 import com.veteam.voluminousenergy.blocks.tiles.*;
+import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ObjectHolder;
@@ -260,13 +262,13 @@ public class VEBlocks {
 
     // Aluminum Tank
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
-    public static TankBlock ALUMINUM_TANK_BLOCK;
+    public static AluminumTankBlock ALUMINUM_TANK_BLOCK;
 
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
-    public static BlockEntityType<TankTile> ALUMINUM_TANK_TILE;
+    public static BlockEntityType<AluminumTankTile> ALUMINUM_TANK_TILE;
 
     @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
-    public static MenuType<TankContainer> ALUMINUM_TANK_CONTAINER;
+    public static MenuType<AluminumTankContainer> ALUMINUM_TANK_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

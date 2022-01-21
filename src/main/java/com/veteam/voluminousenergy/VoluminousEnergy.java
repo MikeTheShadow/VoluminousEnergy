@@ -13,7 +13,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.containers.tank.AluminumTankContainer;
 import com.veteam.voluminousenergy.blocks.tiles.*;
+import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -548,7 +550,7 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK).build(null).setRegistryName("sawmill"));
 
             // Tanks
-            //event.getRegistry().register(BlockEntityType.Builder.of(() -> { new TankTile(VEBlocks.ALUMINUM_TANK_TILE,); },VEBlocks.ALUMINUM_TANK_TILE).build(null).setRegistryName("aluminum_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK).build(null).setRegistryName("aluminum_tank"));
         }
 
         @SubscribeEvent
@@ -666,8 +668,8 @@ public class VoluminousEnergy {
 
             event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
                 BlockPos pos = data.readBlockPos();
-                return new TankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-            }).setRegistryName("tank")); // TODO register with different tank types
+                return new AluminumTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("aluminum_tank"));
         }
 
         @SubscribeEvent
