@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
+import com.veteam.voluminousenergy.blocks.tiles.tank.TitaniumTankTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -16,38 +16,38 @@ import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
-public class AluminumTankBlock extends TankBlock implements EntityBlock {
+public class TitaniumTankBlock extends TankBlock implements EntityBlock {
 
-    public AluminumTankBlock(){
+    public TitaniumTankBlock(){
         super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
-                .strength(2.0f)
+                .strength(4.0f)
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("aluminum_tank");
+        setRegistryName("titanium_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresDiamond(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new AluminumTankTile(pos, state);
+        return new TitaniumTankTile(pos, state);
     }
 
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends AluminumTankTile> tile) {
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends TitaniumTankTile> tile) {
         return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, TankTile::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends AluminumTankTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends TitaniumTankTile> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.TITANIUM_TANK_TILE);
     }
 
 

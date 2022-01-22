@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
-import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.AluminumTankBlock;
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -13,9 +13,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
-import com.veteam.voluminousenergy.blocks.containers.tank.AluminumTankContainer;
+import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
-import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
+import com.veteam.voluminousenergy.blocks.tiles.tank.*;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -29,8 +29,6 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
-import com.veteam.voluminousenergy.world.non_functional.biomes.RedDesert;
-import com.veteam.voluminousenergy.world.non_functional.biomes.VEBiomes;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -46,8 +44,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
@@ -160,6 +156,11 @@ public class VoluminousEnergy {
 
             // Tanks
             blockRegisteryEvent.getRegistry().register(new AluminumTankBlock());
+            blockRegisteryEvent.getRegistry().register(new TitaniumTankBlock());
+            blockRegisteryEvent.getRegistry().register(new NetheriteTankBlock());
+            blockRegisteryEvent.getRegistry().register(new NighaliteTankBlock());
+            blockRegisteryEvent.getRegistry().register(new EighzoTankBlock());
+            blockRegisteryEvent.getRegistry().register(new SolariumTankBlock());
 
             // Ores
             blockRegisteryEvent.getRegistry().register(new SaltpeterOre());
@@ -244,6 +245,11 @@ public class VoluminousEnergy {
 
             // Tanks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK,properties).setRegistryName("aluminum_tank"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_TANK_BLOCK,properties).setRegistryName("titanium_tank"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.NETHERITE_TANK_BLOCK,properties).setRegistryName("netherite_tank"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.NIGHALITE_TANK_BLOCK,properties).setRegistryName("nighalite_tank"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.EIGHZO_TANK_BLOCK,properties).setRegistryName("eighzo_tank"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_TANK_BLOCK,properties).setRegistryName("solarium_tank"));
 
             // Crops
             //itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.LAND_CROP,properties).setRegistryName("land_crop"));
@@ -551,6 +557,11 @@ public class VoluminousEnergy {
 
             // Tanks
             event.getRegistry().register(BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK).build(null).setRegistryName("aluminum_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(TitaniumTankTile::new,VEBlocks.TITANIUM_TANK_BLOCK).build(null).setRegistryName("titanium_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(NetheriteTankTile::new,VEBlocks.NETHERITE_TANK_BLOCK).build(null).setRegistryName("netherite_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK).build(null).setRegistryName("nighalite_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK).build(null).setRegistryName("eighzo_tank"));
+            event.getRegistry().register(BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK).build(null).setRegistryName("solarium_tank"));
         }
 
         @SubscribeEvent
@@ -670,11 +681,36 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new AluminumTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("aluminum_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new TitaniumTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("titanium_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new NetheriteTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("netherite_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new NighaliteTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("nighalite_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new EighzoTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("eighzo_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new SolariumTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("solarium_tank"));
         }
 
         @SubscribeEvent
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
-            VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
+            //VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
             //VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
         }
 
