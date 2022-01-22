@@ -40,7 +40,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ToolingStationTile(VEBlocks.TOOLING_STATION_TILE, pos, state);
+        return new ToolingStationTile(pos, state);
     }
 
     // NEW TICK SYSTEM

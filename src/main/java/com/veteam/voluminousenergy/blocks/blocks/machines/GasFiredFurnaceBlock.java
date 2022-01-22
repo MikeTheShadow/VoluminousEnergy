@@ -42,7 +42,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new GasFiredFurnaceTile(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
+        return new GasFiredFurnaceTile(pos, state);
     }
 
     // NEW TICK SYSTEM

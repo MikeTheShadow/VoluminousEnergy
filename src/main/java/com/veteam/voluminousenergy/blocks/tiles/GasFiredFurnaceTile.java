@@ -25,7 +25,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -76,11 +75,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
-    }
-
-    @Deprecated
-    public GasFiredFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
     }
 
@@ -366,7 +360,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return getCapability(cap, side, handler, inventory, slotManagers);
         }else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
+            if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);

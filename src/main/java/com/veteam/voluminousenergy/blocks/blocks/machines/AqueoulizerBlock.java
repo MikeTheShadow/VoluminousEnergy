@@ -40,7 +40,7 @@ public class AqueoulizerBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new AqueoulizerTile(VEBlocks.AQUEOULIZER_TILE, pos, state);
+        return new AqueoulizerTile(pos, state);
     }
 
     // NEW TICK SYSTEM

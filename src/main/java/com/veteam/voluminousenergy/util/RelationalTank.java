@@ -151,4 +151,8 @@ public class RelationalTank {
         setSideDirection(IntToDirection.IntegerToDirection(sideInt));
     }
 
+    public boolean isValidFluidsSet(){
+        return allowAny || !this.validFluids.isEmpty();
+    }
+
 }

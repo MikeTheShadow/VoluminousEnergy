@@ -40,7 +40,7 @@ public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new BlastFurnaceTile(VEBlocks.BLAST_FURNACE_TILE, pos, state);
+        return new BlastFurnaceTile(pos, state);
     }
 
     // NEW TICK SYSTEM

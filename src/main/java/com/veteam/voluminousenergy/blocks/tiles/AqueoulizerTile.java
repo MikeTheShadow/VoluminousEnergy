@@ -24,9 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,9 +35,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -92,11 +88,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.AQUEOULIZER_TILE, pos, state);
-    }
-
-    @Deprecated
-    public AqueoulizerTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(VEBlocks.AQUEOULIZER_TILE, pos, state);
     }
 
@@ -316,8 +307,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            List<Fluid> inputFluids = RecipeUtil.getAqueoulizerInputFluids(level);
-            inputTank.setValidFluids(inputFluids);
+            if (!inputTank.isValidFluidsSet()) inputTank.setValidFluids(RecipeUtil.getAqueoulizerInputFluids(level));
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);

@@ -40,7 +40,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CentrifugalAgitatorTile(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
+        return new CentrifugalAgitatorTile(pos, state);
     }
 
     // NEW TICK SYSTEM

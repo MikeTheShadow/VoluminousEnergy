@@ -39,7 +39,7 @@ public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new AirCompressorTile(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
+        return new AirCompressorTile(pos, state);
     }
 
     // NEW TICK SYSTEM

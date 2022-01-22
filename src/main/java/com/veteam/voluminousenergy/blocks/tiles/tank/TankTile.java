@@ -75,8 +75,8 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
         this.capacity = capacity * 1000;
-        tank.setAllowAny(true);
         tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.OUTPUT);
+        tank.setAllowAny(true);
     }
 
     public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {

@@ -5,8 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.CompressedAir;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -33,7 +31,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -74,11 +71,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements MenuProvider
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
-    }
-
-    @Deprecated
-    public AirCompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
+        airTank.setValidFluids(Collections.singletonList(CompressedAir.CompressedAirFluid().getFlowing()));
     }
 
     @Override
@@ -312,7 +305,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements MenuProvider
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            airTank.setValidFluids(Collections.singletonList(CompressedAir.CompressedAirFluid().getFlowing()));
             return getCapability(cap,side,handler,Collections.singletonList(airTank));
         } else {
             return super.getCapability(cap, side);

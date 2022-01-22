@@ -39,7 +39,7 @@ public class CombustionGeneratorBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CombustionGeneratorTile(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
+        return new CombustionGeneratorTile(pos, state);
     }
 
     // NEW TICK SYSTEM

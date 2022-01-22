@@ -21,7 +21,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -92,11 +91,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.BLAST_FURNACE_TILE, pos, state);
-    }
-
-    @Deprecated
-    public BlastFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.BLAST_FURNACE_TILE, pos, state);
+        heatTank.setAllowAny(true);
     }
 
     @Override
@@ -365,7 +360,6 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) {
-            heatTank.setAllowAny(true);
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);
