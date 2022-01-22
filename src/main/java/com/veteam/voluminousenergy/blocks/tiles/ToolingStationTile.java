@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -90,11 +89,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
     }
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.TOOLING_STATION_TILE, pos, state);
-    }
-
-    @Deprecated
-    public ToolingStationTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(VEBlocks.TOOLING_STATION_TILE, pos, state);
     }
 
@@ -317,7 +311,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
+            if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);

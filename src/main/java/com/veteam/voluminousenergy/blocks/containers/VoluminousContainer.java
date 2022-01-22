@@ -85,14 +85,15 @@ public class VoluminousContainer extends AbstractContainerMenu {
         return null;
     }
 
-    public void updateDirectionButton(int direction, int slotId){
-    }
+    public void updateDirectionButton(int direction, int slotId){}
 
-    public void updateStatusButton(boolean status, int slotId) {
-    }
-    public void updateStatusTank(boolean status, int id){
-    }
-    public void updateDirectionTank(int direction, int id) {
+    public void updateStatusButton(boolean status, int slotId) {}
 
+    public void updateStatusTank(boolean status, int id){}
+
+    public void updateDirectionTank(int direction, int id) {}
+
+    public void setTileEntity(BlockEntity tileEntity){
+        this.tileEntity = tileEntity;
     }
 }

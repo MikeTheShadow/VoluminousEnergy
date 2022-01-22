@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.blocks;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
+import com.veteam.voluminousenergy.blocks.blocks.machines.*;
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -12,7 +14,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
 import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
+import com.veteam.voluminousenergy.blocks.tiles.tank.*;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ObjectHolder;
@@ -253,6 +257,68 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
     public static MenuType<SawmillContainer> SAWMILL_CONTAINER;
+
+    // Tanks (Tile/Block)
+
+    // Aluminum Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static AluminumTankBlock ALUMINUM_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static BlockEntityType<AluminumTankTile> ALUMINUM_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":aluminum_tank")
+    public static MenuType<AluminumTankContainer> ALUMINUM_TANK_CONTAINER;
+
+    // Titanium Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_tank")
+    public static TitaniumTankBlock TITANIUM_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_tank")
+    public static BlockEntityType<TitaniumTankTile> TITANIUM_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":titanium_tank")
+    public static MenuType<TitaniumTankContainer> TITANIUM_TANK_CONTAINER;
+
+    // Netherite Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":netherite_tank")
+    public static NetheriteTankBlock NETHERITE_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":netherite_tank")
+    public static BlockEntityType<NetheriteTankTile> NETHERITE_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":netherite_tank")
+    public static MenuType<NetheriteTankContainer> NETHERITE_TANK_CONTAINER;
+
+    // Netherite Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":nighalite_tank")
+    public static NighaliteTankBlock NIGHALITE_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":nighalite_tank")
+    public static BlockEntityType<NighaliteTankTile> NIGHALITE_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":nighalite_tank")
+    public static MenuType<NighaliteTankContainer> NIGHALITE_TANK_CONTAINER;
+
+    // Eighzo Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_tank")
+    public static EighzoTankBlock EIGHZO_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_tank")
+    public static BlockEntityType<EighzoTankTile> EIGHZO_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":eighzo_tank")
+    public static MenuType<EighzoTankContainer> EIGHZO_TANK_CONTAINER;
+
+    // Solarium Tank
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_tank")
+    public static SolariumTankBlock SOLARIUM_TANK_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_tank")
+    public static BlockEntityType<SolariumTankTile> SOLARIUM_TANK_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_tank")
+    public static MenuType<SolariumTankContainer> SOLARIUM_TANK_CONTAINER;
 
     //Ores
     @ObjectHolder(VoluminousEnergy.MODID  + ":saltpeterore")

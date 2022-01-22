@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.setup;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.*;
+import com.veteam.voluminousenergy.blocks.screens.tank.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +34,12 @@ public class ClientProxy implements IProxy {
         MenuScreens.register(VEBlocks.BLAST_FURNACE_CONTAINER, BlastFurnaceScreen::new);
         MenuScreens.register(VEBlocks.TOOLING_STATION_CONTAINER, ToolingStationScreen::new);
         MenuScreens.register(VEBlocks.SAWMILL_CONTAINER, SawmillScreen::new);
+        MenuScreens.register(VEBlocks.ALUMINUM_TANK_CONTAINER, AluminumTankScreen::new);
+        MenuScreens.register(VEBlocks.TITANIUM_TANK_CONTAINER, TitaniumTankScreen::new);
+        MenuScreens.register(VEBlocks.NETHERITE_TANK_CONTAINER, NetheriteTankScreen::new);
+        MenuScreens.register(VEBlocks.NIGHALITE_TANK_CONTAINER, NighaliteTankScreen::new);
+        MenuScreens.register(VEBlocks.EIGHZO_TANK_CONTAINER, EighzoTankScreen::new);
+        MenuScreens.register(VEBlocks.SOLARIUM_TANK_CONTAINER, SolariumTankScreen::new);
     }
 
     @Override

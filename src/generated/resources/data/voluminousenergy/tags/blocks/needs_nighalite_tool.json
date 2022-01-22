@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "voluminousenergy:nighalite_tank",
     "voluminousenergy:eighzo_ore",
     "voluminousenergy:eighzo_block",
     "voluminousenergy:raw_eighzo_block"

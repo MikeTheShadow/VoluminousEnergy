@@ -27,7 +27,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
@@ -94,11 +93,8 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
 
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
-    }
-
-    @Deprecated
-    public CombustionGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
+        oxidizerTank.setValidFluids(CombustionGeneratorOxidizerRecipe.rawFluidInputList);
+        fuelTank.setValidFluids(CombustionGeneratorFuelRecipe.rawFluidInputListStatic);
     }
 
     @Override
@@ -501,8 +497,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
         } else if (cap == CapabilityEnergy.ENERGY) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            oxidizerTank.setValidFluids(CombustionGeneratorOxidizerRecipe.rawFluidInputList);
-            fuelTank.setValidFluids(CombustionGeneratorFuelRecipe.rawFluidInputListStatic);
             return getCapability(cap,side,handler,fluidManagers);
         } else {
             return super.getCapability(cap, side);

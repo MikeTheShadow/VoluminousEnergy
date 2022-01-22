@@ -131,14 +131,11 @@ public class RelationalTank {
 
     public String getTranslationKey(){
         if(tankType != null){
-            switch (tankType){
-                case INPUT:
-                    return "tank.voluminousenergy.input_tank";
-                case OUTPUT:
-                    return "tank.voluminousenergy.output_tank";
-                default:
-                    return "tank.voluminousenergy.invalid";
-            }
+            return switch (tankType) {
+                case INPUT -> "tank.voluminousenergy.input_tank";
+                case OUTPUT -> "tank.voluminousenergy.output_tank";
+                default -> "tank.voluminousenergy.invalid";
+            };
         }
         return "tank.voluminousenergy.null";
     }
@@ -152,6 +149,10 @@ public class RelationalTank {
         setSideStatus(nbt.getBoolean(prefix + "_enabled"));
         int sideInt = nbt.getInt(prefix + "_direction");
         setSideDirection(IntToDirection.IntegerToDirection(sideInt));
+    }
+
+    public boolean isValidFluidsSet(){
+        return allowAny || !this.validFluids.isEmpty();
     }
 
 }

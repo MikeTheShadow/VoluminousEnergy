@@ -34,6 +34,7 @@ public class Config {
     public static final String CATEGORY_IMPLOSION_COMPRESSOR = "Implosion Compressor";
     public static final String CATEGORY_BLAST_FURNACE = "Blast Furnace";
     public static final String CATEGORY_SAWMILL = "Sawmill";
+    public static final String CATEGORY_TANK_BLOCKS = "Tank Blocks";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_OIL_GENERATION = "Oil Generation";
@@ -293,6 +294,14 @@ public class Config {
     public static ForgeConfigSpec.IntValue SAWMILL_PRIMARY_OUTPUT_COUNT;
     public static ForgeConfigSpec.IntValue SAWMILL_LOG_CONSUMPTION_RATE;
 
+    // Tank variables
+    public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
+    public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
+    public static ForgeConfigSpec.IntValue NIGHALITE_TANK_CAPACITY;
+    public static ForgeConfigSpec.IntValue NETHERITE_TANK_CAPACITY;
+    public static ForgeConfigSpec.IntValue TITANIUM_TANK_CAPACITY;
+    public static ForgeConfigSpec.IntValue ALUMINUM_TANK_CAPACITY;
+
     static {
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
@@ -405,6 +414,10 @@ public class Config {
         // Sawmill
         COMMON_BUILDER.comment("Sawmill").push(CATEGORY_SAWMILL);
         setupSawmill();
+        COMMON_BUILDER.pop();
+
+        COMMON_BUILDER.comment("Tank Blocks").push(CATEGORY_TANK_BLOCKS);
+        setupTankBlocks();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -848,6 +861,26 @@ public class Config {
                 .defineInRange("Primary output count", 6, 1, 64);
         SAWMILL_LOG_CONSUMPTION_RATE = COMMON_BUILDER.comment("Amount of the input item (typically a log) that will be consumed when finished processing a log without a recipe")
                 .defineInRange("Number of logs to consume", 1, 1, 64);
+        }
+
+        private static void setupTankBlocks(){
+            SOLARIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Solarium Tank Capacity", 1048576, 0, 2147483);
+
+            EIGHZO_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Eighzo Tank Capacity", 131072, 0, 2147483);
+
+            NIGHALITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Nighalite Tank Capacity", 16384, 0, 2147483);
+
+            NETHERITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Netherite Tank Capacity", 1024, 0, 2147483);
+
+            TITANIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Titanium Tank Capacity", 128, 0, 2147483);
+
+            ALUMINUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
+                    .defineInRange("Aluminum Tank Capacity", 16, 0, 2147483);
         }
 
         public static void loadConfig(ForgeConfigSpec spec, Path path){

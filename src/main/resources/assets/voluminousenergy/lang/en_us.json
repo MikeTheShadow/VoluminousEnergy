@@ -80,6 +80,12 @@
     "block.voluminousenergy.tooling_station": "Tooling Station",
     "block.voluminousenergy.sawmill": "Sawmill",
     "block.voluminousenergy.pressure_ladder": "Pressure Ladder",
+    "block.voluminousenergy.aluminum_tank": "Aluminum Tank",
+    "block.voluminousenergy.titanium_tank": "Titanium Tank",
+    "block.voluminousenergy.netherite_tank": "Netherite Tank",
+    "block.voluminousenergy.nighalite_tank": "Nighalite Tank",
+    "block.voluminousenergy.eighzo_tank": "Eighzo Tank",
+    "block.voluminousenergy.solarium_tank": "Solarium Tank",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",

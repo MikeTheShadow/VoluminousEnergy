@@ -181,7 +181,11 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<ItemStackHandler> handler, ItemStackHandler inventory , List<VESlotManager> managers) {
         if (side == null) return handler.cast();
         Direction modifiedSide = normalizeDirection(side);
-        List<VESlotManager> managerList = managers.stream().filter(manager -> manager.getStatus() && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue()).toList();
+        List<VESlotManager> managerList = managers
+                .stream()
+                .filter(manager -> manager.getStatus()
+                                && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue())
+                .toList();
         if(managerList.size() == 0) return super.getCapability(cap, side);
         MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory,managerList);
         return LazyOptional.of(() -> slotWrapper).cast();
@@ -194,7 +198,7 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public AbstractContainerMenu createMenu(int p_39954_, Inventory p_39955_, Player p_39956_) {
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
         return null;
     }
 

@@ -316,8 +316,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
-    {
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CrusherContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
@@ -327,7 +326,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
+    public void updatePacketFromGui(boolean status, int slotId){
         processGUIPacketStatus(status,slotId,inputSlotProp,outputSlotProp,rngSlotProp);
     }
 
