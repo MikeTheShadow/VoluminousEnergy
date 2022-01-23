@@ -248,6 +248,13 @@ public class SawmillTile extends VEFluidTileEntity {
         counter = tag.getInt("counter");
         length = tag.getInt("length");
 
+        // Slot Managers
+        this.inputSm.read(tag, "input_slot");
+        this.plankSm.read(tag, "plank_slot");
+        this.secondOutputSm.read(tag,"second_output_slot");
+        this.bucketTopSm.read(tag, "bucket_top_slot");
+        this.bucketBottomSm.read(tag, "bucket_bottom_slot");
+
         // Tanks
         CompoundTag outputTank = tag.getCompound("outputTank");
 
@@ -267,6 +274,13 @@ public class SawmillTile extends VEFluidTileEntity {
         energy.ifPresent(h -> h.serializeNBT(tag));
         tag.putInt("counter", counter);
         tag.putInt("length", length);
+
+        // Slot Managers
+        this.inputSm.write(tag, "input_slot");
+        this.plankSm.write(tag, "plank_slot");
+        this.secondOutputSm.write(tag,"second_output_slot");
+        this.bucketTopSm.write(tag, "bucket_top_slot");
+        this.bucketBottomSm.write(tag, "bucket_bottom_slot");
 
         // Tanks
         CompoundTag outputNBT = new CompoundTag();
