@@ -56,12 +56,11 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() != TankType.INPUT) continue;
+            if(tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getId(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
-
         return 0;
     }
 

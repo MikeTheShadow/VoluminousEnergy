@@ -22,6 +22,7 @@ public class RelationalTank {
     private boolean sideStatus = false;
     private Direction sideDirection = Direction.DOWN;
     private boolean allowAny = false;
+    private boolean ignoreDirection = false;
 
     public RelationalTank() {
 
@@ -47,6 +48,14 @@ public class RelationalTank {
     public void setIOItemstack(ItemStack input,ItemStack output) {
         this.input = input;
         this.output = output;
+    }
+
+    public boolean isIgnoreDirection() {
+        return ignoreDirection;
+    }
+
+    public void setIgnoreDirection(boolean ignoreDirection) {
+        this.ignoreDirection = ignoreDirection;
     }
 
     public void setAllowAny(boolean allowAny) {

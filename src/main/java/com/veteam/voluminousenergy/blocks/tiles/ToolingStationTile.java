@@ -39,6 +39,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,14 +49,8 @@ import java.util.UUID;
 
 public class ToolingStationTile extends VEFluidTileEntity {
     // Handlers
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fuelFluidHandler = LazyOptional.of(this::createFuelFluidHandler);
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> fuelTopSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
-    private LazyOptional<IItemHandlerModifiable> fuelBottomSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
-    private LazyOptional<IItemHandlerModifiable> mainToolSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 2,3));
-    private LazyOptional<IItemHandlerModifiable> bitSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 3,4));
-    private LazyOptional<IItemHandlerModifiable> multitoolBaseSlotHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 4,5));
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     // Slot Managers
     public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
@@ -299,7 +294,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
+    private @NotNull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get()); // TODO: Config
     }
 

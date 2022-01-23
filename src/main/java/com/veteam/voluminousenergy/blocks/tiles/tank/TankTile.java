@@ -46,12 +46,9 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
     private int capacity;
     private RelationalTank tank;
-    private LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(this::createInputFluidHandler);
 
     // ItemHandlers
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> bucketTop = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
-    private LazyOptional<IItemHandlerModifiable> bucketBottom = LazyOptional.of(() -> new RangedWrapper(this.inventory, 1, 2));
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
@@ -65,7 +62,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         add(tank);
     }};
 
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
     public ItemStackHandler getItemStackHandler() {
@@ -75,8 +72,9 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
         this.capacity = capacity * 1000;
-        tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.OUTPUT);
+        tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.BOTH);
         tank.setAllowAny(true);
+        tank.setIgnoreDirection(true);
     }
 
     public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -119,7 +117,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         };
     }
 
-    private IFluidHandler createInputFluidHandler() {
+    private @NotNull IFluidHandler createInputFluidHandler() {
         return this.createFluidHandler(tank);
     }
 
