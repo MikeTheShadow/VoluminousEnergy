@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#*#",
+    "303",
+    "214"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/carbon"
+    },
+    "0": {
+      "item": "voluminousenergy:carbon_shielded_aluminum_machine_frame"
+    },
+    "*": {
+      "item": "minecraft:crafting_table"
+    },
+    "1": {
+      "tag": "forge:glass_panes"
+    },
+    "2": {
+      "tag": "forge:gears/aluminum"
+    },
+    "3": {
+      "tag": "forge:plates/aluminum"
+    },
+    "4": {
+      "tag": "forge:gears/carbon"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:tooling_station"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "213",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "1": {
+      "tag": "forge:glass_panes"
+    },
+    "2": {
+      "tag": "forge:gears/aluminum"
+    },
+    "3": {
+      "tag": "forge:gears/iron"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:empty_multitool",
+    "count": 1
+  }
+}

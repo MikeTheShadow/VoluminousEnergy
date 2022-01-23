@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#*#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:diamond"
+    },
+    "*": {
+      "tag": "forge:gears/aluminum"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:diamond_scooper_bit",
+    "count": 1
+  }
+}

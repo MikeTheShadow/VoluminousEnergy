@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "*"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:ladder"
+    },
+    "*": {
+      "item": "minecraft:stone_pressure_plate"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:pressure_ladder",
+    "count": 1
+  }
+}
