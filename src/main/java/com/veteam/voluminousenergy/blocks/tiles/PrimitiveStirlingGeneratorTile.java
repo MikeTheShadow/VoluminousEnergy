@@ -205,18 +205,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
+        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
     }
 
     @Nullable

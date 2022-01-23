@@ -213,13 +213,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            return getCapability(cap, side, handler, Collections.singletonList(tank));
-        } else {
-            return super.getCapability(cap, side);
-        }
+        return getCapability(cap,side,handler,inventory,slotManagers,Collections.singletonList(tank),null);
     }
 
     public RelationalTank getTank(){
@@ -280,9 +274,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
-
-    @Override
-    public Component getDisplayName() {return new TextComponent(getType().getRegistryName().getPath());}
 
     @Nullable
     @Override

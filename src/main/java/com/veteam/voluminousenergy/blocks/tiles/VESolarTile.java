@@ -38,6 +38,9 @@ public class VESolarTile extends VoluminousTileEntity {
         return intensity;
     }
 
+    @Override
+    public void tick() {}
+
     protected boolean isClear(){
         if (level == null) return false;
         return level.canSeeSky(new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY()+1, this.getBlockPos().getZ()));

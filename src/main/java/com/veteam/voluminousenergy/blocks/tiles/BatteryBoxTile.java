@@ -322,11 +322,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         return super.getCapability(cap, side);
     }
 
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {

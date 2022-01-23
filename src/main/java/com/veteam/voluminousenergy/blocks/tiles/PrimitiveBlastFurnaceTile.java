@@ -212,16 +212,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        }else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TranslatableComponent("voluminousenergy:primitiveblastfurnace");
+        return getCapability(cap,side,handler,inventory,slotManagers,null,null);
     }
 
     @Nullable

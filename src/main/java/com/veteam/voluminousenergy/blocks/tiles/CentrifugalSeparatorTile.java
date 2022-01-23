@@ -32,6 +32,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -403,7 +404,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         }
     };
 
-    private VEEnergyStorage createEnergy(){
+    private @NotNull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get(),Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
@@ -430,21 +431,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            //return getCapability(cap,side,handler,fluidManagers);
-            return super.getCapability(cap, side);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
+        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
     }
 
     @Nullable

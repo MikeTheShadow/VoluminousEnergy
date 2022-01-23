@@ -1,11 +1,15 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
+import com.veteam.voluminousenergy.util.RelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,14 +30,18 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
+public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
     protected ArrayList<UUID> playerUuid = new ArrayList<>();
 
@@ -45,7 +53,7 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
         voluminousTile.tick();
     }
 
-    public void tick(){ }
+    public abstract void tick();
 
     protected int cleanupTick = 0;
 
@@ -174,26 +182,50 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    /**
+     *
+     * @param cap Base capability. Pass this in from the super
+     * @param side Base Direction
+     * @param handler LazyOptional<ItemStackHandler> of the inventory
+     * @param inventory The block inventory.
+     * @param itemManagers @Nullable the managers for any item stack
+     * @param fluidManagers @Nullable the managers for fluid tanks
+     * @param energy @Nullable the manager for energy
+     * @param <T> T the type of capability
+     * @return A LazyOptional of Optional of type T matching the capability passed into this
+     */
     @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<ItemStackHandler> handler, ItemStackHandler inventory , List<VESlotManager> managers) {
-        if (side == null) return handler.cast();
-        Direction modifiedSide = normalizeDirection(side);
-        List<VESlotManager> managerList = managers
-                .stream()
-                .filter(manager -> manager.getStatus()
-                                && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue())
-                .toList();
-        if(managerList.size() == 0) return super.getCapability(cap, side);
-        MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory,managerList);
-        return LazyOptional.of(() -> slotWrapper).cast();
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<ItemStackHandler> handler, ItemStackHandler inventory, @Nullable List<VESlotManager> itemManagers, @Nullable List<RelationalTank> fluidManagers, @Nullable LazyOptional<VEEnergyStorage> energy) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (side == null || itemManagers == null) return handler.cast();
+            Direction modifiedSide = normalizeDirection(side);
+            List<VESlotManager> managerList = itemManagers
+                    .stream()
+                    .filter(manager -> manager.getStatus()
+                            && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue())
+                    .toList();
+            if (managerList.size() == 0) return super.getCapability(cap, side);
+            MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
+            return LazyOptional.of(() -> slotWrapper).cast();
+        } else if (cap == CapabilityEnergy.ENERGY && energy != null) {
+            return energy.cast();
+        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null && fluidManagers != null) {
+            Direction modifiedSide = normalizeDirection(side);
+            List<RelationalTank> relationalTanks = fluidManagers.stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue() || manager.isIgnoreDirection()).toList();
+            if (relationalTanks.size() == 0) return super.getCapability(cap, side);
+            MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
+            return LazyOptional.of(() -> slotWrapper).cast();
+        } else {
+            return super.getCapability(cap, side);
+        }
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return new TextComponent(getType().getRegistryName().getPath());
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
         return null;
@@ -211,4 +243,5 @@ public class VoluminousTileEntity extends BlockEntity implements MenuProvider {
         }
         return direction.getClockWise().getClockWise();
     }
+
 }

@@ -132,11 +132,6 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
         return super.getCapability(cap, side);
     }
 
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){

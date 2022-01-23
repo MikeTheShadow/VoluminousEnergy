@@ -23,6 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,7 +120,7 @@ public class SolarPanelTile extends VESolarTile {
         super.onDataPacket(net, pkt);
     }
 
-    private VEEnergyStorage createEnergy(){
+    private @NotNull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.SOLAR_PANEL_MAX_POWER.get(),Config.SOLAR_PANEL_MAX_POWER.get()); // Config
     }
 
@@ -130,11 +131,6 @@ public class SolarPanelTile extends VESolarTile {
             return energy.cast();
         }
         return super.getCapability(cap, side);
-    }
-
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
