@@ -16,8 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,10 +31,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DistillationUnitTile extends VEFluidTileEntity {
+public class DistillationUnitTile extends VEMultiBlockTileEntity {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
@@ -103,7 +99,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         tick++;
         if (tick == 20){
             tick = 0;
-            validity = isMultiblockValid();
+            validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK);
         }
         if (!(validity)) {
             return;
@@ -394,57 +390,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return tankCapacity;
-    }
-
-    public boolean isMultiblockValid (){
-        // Get Direction
-        String direction = getDirection();
-        // Setup range to check based on direction
-        byte sX, sY, sZ, lX, lY, lZ;
-
-        if (direction == null || direction.equals("null")){
-            return false;
-        } else if (direction.equals("north")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = 1;
-            lY = 2;
-            lZ = 3;
-        } else if (direction.equals("south")){
-            sX = -1;
-            sY = 0;
-            sZ = -1;
-            lX = 1;
-            lY = 2;
-            lZ = -3;
-        } else if (direction.equals("east")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = -3;
-            lY = 2;
-            lZ = -1;
-        } else if (direction.equals("west")){
-            sX = 1;
-            sY = 0;
-            sZ = -1;
-            lX = 3;
-            lY = 2;
-            lZ = 1;
-        } else { // Invalid Direction
-            return false;
-        }
-
-        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
-        for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
-            final BlockState blockState = level.getBlockState(blockPos);
-
-            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK){ // Fails multiblock condition
-                return false;
-            }
-        }
-        return true;
     }
 
     public boolean getMultiblockValidity(){
