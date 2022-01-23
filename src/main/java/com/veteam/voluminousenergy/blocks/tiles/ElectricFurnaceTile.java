@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends VoluminousTileEntity implements MenuProvider {
+public class ElectricFurnaceTile extends VoluminousTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 

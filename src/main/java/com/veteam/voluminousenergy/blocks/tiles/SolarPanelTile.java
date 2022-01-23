@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class SolarPanelTile extends VESolarTile implements MenuProvider {
+public class SolarPanelTile extends VESolarTile {
 
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;

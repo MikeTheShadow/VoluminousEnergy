@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CentrifugalSeparatorTile extends VoluminousTileEntity implements MenuProvider {
+public class CentrifugalSeparatorTile extends VoluminousTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);

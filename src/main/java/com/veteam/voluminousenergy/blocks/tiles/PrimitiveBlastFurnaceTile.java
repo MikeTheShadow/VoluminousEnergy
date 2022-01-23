@@ -36,7 +36,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements MenuProvider {
+public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
 
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 

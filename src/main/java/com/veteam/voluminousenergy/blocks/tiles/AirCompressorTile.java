@@ -52,7 +52,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
-public class AirCompressorTile extends VEFluidTileEntity implements MenuProvider {
+public class AirCompressorTile extends VEFluidTileEntity {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT);
 
     // Handlers

@@ -50,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PumpTile extends VoluminousTileEntity implements MenuProvider {
+public class PumpTile extends VoluminousTileEntity {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);

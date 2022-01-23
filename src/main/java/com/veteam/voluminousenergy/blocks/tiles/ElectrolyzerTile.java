@@ -41,7 +41,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvider {
+public class ElectrolyzerTile extends VoluminousTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);

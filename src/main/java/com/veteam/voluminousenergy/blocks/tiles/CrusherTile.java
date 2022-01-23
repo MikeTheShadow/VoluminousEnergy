@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
+public class CrusherTile extends VoluminousTileEntity {
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers

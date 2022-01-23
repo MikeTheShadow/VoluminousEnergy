@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ImplosionCompressorTile extends VoluminousTileEntity implements MenuProvider {
+public class ImplosionCompressorTile extends VoluminousTileEntity {
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 

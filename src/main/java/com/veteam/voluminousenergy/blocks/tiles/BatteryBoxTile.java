@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class BatteryBoxTile extends VoluminousTileEntity implements MenuProvider {
+public class BatteryBoxTile extends VoluminousTileEntity {
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers

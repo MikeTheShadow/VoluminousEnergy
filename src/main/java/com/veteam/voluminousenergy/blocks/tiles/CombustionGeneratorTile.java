@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuProvider {
+public class CombustionGeneratorTile extends VEFluidTileEntity {
     // Handlers
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 

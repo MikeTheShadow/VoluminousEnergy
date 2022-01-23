@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements MenuProvider {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
