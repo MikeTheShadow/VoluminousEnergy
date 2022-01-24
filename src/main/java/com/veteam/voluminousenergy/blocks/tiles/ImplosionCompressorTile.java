@@ -266,27 +266,4 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status, slotId, inputSlotManager, gunpowderSlotManager, outputSlotManager);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction, slotId, inputSlotManager, gunpowderSlotManager, outputSlotManager);
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, inputSlotManager, gunpowderSlotManager, outputSlotManager);
-                    }
-                });
-            });
-        }
-    }
 }

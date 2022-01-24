@@ -392,7 +392,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
@@ -410,39 +410,5 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
 
     public RelationalTank getOutputTank1(){
         return this.outputTank1;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,inputTank,outputTank0,outputTank1);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,inputTank,outputTank0,outputTank1);
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        bulkSendSMPacket(s, iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-
-                        bulkSendTankPackets(s,inputTank,outputTank0,outputTank1);
-                    }
-                });
-            });
-        }
     }
 }

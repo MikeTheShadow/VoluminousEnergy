@@ -314,27 +314,4 @@ public class CrusherTile extends VoluminousTileEntity {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,inputSlotProp,outputSlotProp,rngSlotProp);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,inputSlotProp,outputSlotProp,rngSlotProp);
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)) {
-                        bulkSendSMPacket(s, inputSlotProp, outputSlotProp, rngSlotProp);
-                    }
-                });
-            });
-        }
-    }
 }

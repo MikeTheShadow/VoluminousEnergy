@@ -348,17 +348,10 @@ public class BatteryBoxTile extends VoluminousTileEntity {
 
     public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == 0) topManager.setStatus(status); // ingress
-        else if (slotId == 1) bottomManager.setStatus(status); // egress
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == 0) topManager.setDirection(direction); // ingress
-        else if (slotId == 1) bottomManager.setDirection(direction); // egress
-    }
-
+    /**
+     * Until I figure out a new way to do this we really don't have a choice for this.
+     * I assume the best way to do it involves a packet interface. It's just 1 method for now we'll let it be.
+     */
     @Override
     public void sendPacketToClient(){
         if(level == null || getLevel() == null) return;

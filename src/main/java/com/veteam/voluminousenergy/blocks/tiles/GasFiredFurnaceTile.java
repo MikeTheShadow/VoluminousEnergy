@@ -394,7 +394,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
@@ -441,37 +441,5 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public RelationalTank getFuelTank() {
         return fuelTank;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.fuelTank.getId()) this.fuelTank.setSideStatus(status);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.fuelTank.getId()) this.fuelTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, bucketInputSm,bucketOutputSm,furnaceInputSm,furnaceOutputSm);
-                        bulkSendTankPackets(s, fuelTank);
-                    }
-                });
-            });
-        }
     }
 }

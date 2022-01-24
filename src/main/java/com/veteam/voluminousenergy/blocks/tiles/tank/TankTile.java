@@ -192,37 +192,8 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,bucketTopSlotManager,bucketBottomSlotManager);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,bucketTopSlotManager,bucketBottomSlotManager);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,tank);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,tank);
-    }
-
-    @Override
-    public void sendPacketToClient() {
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                if (s.getUUID().equals(u)){
-                    bulkSendSMPacket(s, bucketTopSlotManager,bucketBottomSlotManager);
-                    bulkSendTankPackets(s,tank);
-                }
-            }));
-        }
-    }
 }

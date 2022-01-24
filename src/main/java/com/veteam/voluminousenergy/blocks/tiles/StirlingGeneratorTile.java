@@ -260,18 +260,4 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
     }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, slotManager);
-                    }
-                });
-            });
-        }
-    }
 }

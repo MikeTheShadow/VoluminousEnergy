@@ -321,47 +321,7 @@ public class ToolingStationTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM,multitoolBaseSM);
-    }
-
-    @Override
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM, multitoolBaseSM);
-    }
-
-    @Override
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.fuelTank.getId()){
-            this.fuelTank.setSideStatus(status);
-        }
-    }
-
-    @Override
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.fuelTank.getId()){
-            this.fuelTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        // Slots
-                        bulkSendSMPacket(s, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM, multitoolBaseSM);
-                        bulkSendTankPackets(s, fuelTank);
-                    }
-                });
-            });
-        }
-    }
-
-    @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 }

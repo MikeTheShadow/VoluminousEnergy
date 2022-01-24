@@ -177,7 +177,6 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
     }
 
     public void updateSlotPairButton(boolean status, int id){
-        System.out.println("receiving update");
         for(Widget widget : this.renderables){
             if(widget instanceof BatteryBoxSlotPairButton){
                 if(((BatteryBoxSlotPairButton) widget).getId() == id){

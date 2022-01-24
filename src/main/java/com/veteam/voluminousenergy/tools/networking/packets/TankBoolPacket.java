@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -59,12 +60,12 @@ public class TankBoolPacket {
             if(openContainer instanceof VoluminousContainer voluminousContainer) {
                 if (onServer) {
                     BlockEntity tileEntity = voluminousContainer.getTileEntity();
-                    if (tileEntity instanceof VoluminousTileEntity voluminousTileEntity) {
-                        voluminousTileEntity.updateTankPacketFromGui(packet.status, packet.id);
-                        voluminousTileEntity.setChanged();
+                    if (tileEntity instanceof VEFluidTileEntity veFluidTileEntity) {
+                        veFluidTileEntity.updateTankPacketFromGui(packet.status, packet.id);
+                        veFluidTileEntity.setChanged();
                     }
                 } else {
-                    voluminousContainer.updateStatusTank(packet.status, packet.id);
+                    //voluminousContainer.updateStatusTank(packet.status, packet.id);
                 }
             } else {
                 VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");

@@ -247,22 +247,4 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
     }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slotManager.getStatus(), slotManager.getSlotNum()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slotManager.getDirection().get3DDataValue(),slotManager.getSlotNum()));
-                     }
-                });
-            });
-        }
-    }
 }

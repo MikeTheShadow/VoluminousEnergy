@@ -445,43 +445,7 @@ public class SawmillTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.outputTank.getId()){
-            this.outputTank.setSideStatus(status);
-        }
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.outputTank.getId()){
-            this.outputTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, inputSm, plankSm, secondOutputSm, bucketBottomSm, bucketTopSm, bucketBottomSm);
-                        bulkSendTankPackets(s, outputTank);
-                    }
-                });
-            });
-        }
-    }
-
-    @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 }

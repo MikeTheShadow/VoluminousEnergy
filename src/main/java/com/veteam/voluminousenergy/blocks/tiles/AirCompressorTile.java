@@ -7,13 +7,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -36,8 +30,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
-import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -293,33 +285,8 @@ public class AirCompressorTile extends VEFluidTileEntity {
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @Nonnull List<RelationalTank> getRelationalTanks() {
         return Collections.singletonList(airTank);
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == outputSlotManager.getSlotNum()){
-            outputSlotManager.setStatus(status);
-        }
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == outputSlotManager.getSlotNum()){
-            outputSlotManager.setDirection(direction);
-        }
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.airTank.getId()){
-            this.airTank.setSideStatus(status);
-        }
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.airTank.getId()){
-            this.airTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
     }
 
     public RelationalTank getAirTank(){
@@ -340,26 +307,5 @@ public class AirCompressorTile extends VEFluidTileEntity {
     @Override
     public LazyOptional<VEEnergyStorage> getEnergy() {
         return this.energy;
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(outputSlotManager.getStatus(), outputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(airTank.getSideStatus(), airTank.getId()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(outputSlotManager.getDirection().get3DDataValue(),outputSlotManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(airTank.getSideDirection().get3DDataValue(), airTank.getId()));
-                    }
-                });
-            });
-        }
     }
 }

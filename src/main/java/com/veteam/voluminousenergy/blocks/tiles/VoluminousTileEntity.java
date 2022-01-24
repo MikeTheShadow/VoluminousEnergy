@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -7,6 +8,8 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
@@ -52,6 +55,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile) {
         voluminousTile.tick();
+        voluminousTile.uuidCleanup();
     }
 
     public abstract void tick();
@@ -64,12 +68,31 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public void updateClients() {
         if (level == null) return;
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1); // notifyBlockUpdate --> sendBlockUpdated
-        sendPacketToClient();
-        uuidCleanup();
     }
 
-    // Override this in Tile Entities, should mainly be for IO management. SUPER to this function with proper writing of Universal Update Packets
-    public void sendPacketToClient() {
+    public void sendPacketToClient(){
+        if(level == null || getLevel() == null) return;
+        if(getLevel().getServer() != null) {
+            this.playerUuid.forEach(u -> {
+                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+                    if (s.getUUID().equals(u)){
+
+                        for(VESlotManager manager : getSlotManagers()) {
+                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(manager.getStatus(), manager.getSlotNum()));
+                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(manager.getDirection().get3DDataValue(),manager.getSlotNum()));
+                        }
+                        // Don't really feel like looping through all the players twice, so we're doing fluids here too
+                        if(this instanceof VEFluidTileEntity veFluidTileEntity) {
+                            for(RelationalTank manager : veFluidTileEntity.getRelationalTanks()) {
+                                VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(manager.getSideStatus(), manager.getId()));
+                                VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(manager.getSideDirection().get3DDataValue(),manager.getId()));
+                            }
+
+                        }
+                    }
+                });
+            });
+        }
     }
 
     public void uuidPacket(UUID uuid, boolean connectionFlag) {
@@ -120,23 +143,21 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     public void updatePacketFromGui(boolean status, int slotId) {
+        for (VESlotManager slot : getSlotManagers()) {
+            if (slotId == slot.getSlotNum()) {
+                slot.setStatus(status);
+                return;
+            }
+        }
     }
 
     public void updatePacketFromGui(int direction, int slotId) {
-    }
+        for (VESlotManager slot : getSlotManagers()) {
+            if (slotId == slot.getSlotNum()) {
+                slot.setDirection(direction);
+                return;
+            }
 
-    public void updateTankPacketFromGui(boolean status, int id) {
-    }
-
-    public void updateTankPacketFromGui(int direction, int id) {
-    }
-
-    public void bulkSendSMPacket(ServerPlayer s, VESlotManager... slots) {
-        for (VESlotManager slot : slots) {
-            // Boolean button
-            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(slot.getStatus(), slot.getSlotNum()));
-            // Slot direction
-            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(slot.getDirection().get3DDataValue(), slot.getSlotNum()));
         }
     }
 
@@ -146,18 +167,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
-    }
-
-    public void processGUIPacketStatus(boolean status, int slotId, VESlotManager... slots) {
-        for (VESlotManager slot : slots) {
-            if (slotId == slot.getSlotNum()) slot.setStatus(status);
-        }
-    }
-
-    public void processGUIPacketDirection(int direction, int slotId, VESlotManager... slots) {
-        for (VESlotManager slot : slots) {
-            if (slotId == slot.getSlotNum()) slot.setDirection(direction);
-        }
     }
 
     /**

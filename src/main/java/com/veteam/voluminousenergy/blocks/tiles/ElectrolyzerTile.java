@@ -448,27 +448,4 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s,inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
-                    }
-                });
-            });
-        }
-    }
 }

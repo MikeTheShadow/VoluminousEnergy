@@ -23,6 +23,7 @@ public class SlotBoolButton extends VEIOButton {
             ((SlotBoolButton) button).cycle();
             onPress.onPress(button);
         });
+
         this.x = x;
         this.y = y;
         this.width = 16;

@@ -40,6 +40,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
@@ -291,7 +293,7 @@ public class PumpTile extends VEFluidTileEntity {
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return Collections.singletonList(fluidTank);
     }
 
@@ -350,33 +352,5 @@ public class PumpTile extends VEFluidTileEntity {
 
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.fluidTank.getId()) this.fluidTank.setSideStatus(status);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.fluidTank.getId()) this.fluidTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, slotManager);
-
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(fluidTank.getSideStatus(), fluidTank.getId()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(fluidTank.getSideDirection().get3DDataValue(), fluidTank.getId()));
-                    }
-                });
-            });
-        }
     }
 }

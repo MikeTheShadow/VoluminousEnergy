@@ -28,6 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -398,34 +399,8 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setDirection(direction);
     }
 
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.heatTank.getId()) this.heatTank.setSideStatus(status);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.heatTank.getId())
-            this.heatTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-    }
-
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        bulkSendSMPacket(s, heatTankItemTopManager,heatTankItemBottomManager,firstInputSlotManager,secondInputSlotManager,outputSlotManager);
-
-                        bulkSendTankPackets(s,heatTank);
-                   }
-                });
-            });
-        }
-    }
-
-    @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return Collections.singletonList(heatTank);
     }
 }

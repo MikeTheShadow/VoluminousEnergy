@@ -194,25 +194,18 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         return TANK_CAPACITY;
     }
 
-    public void bulkSendTankPackets(ServerPlayer s, RelationalTank... tanks) {
-        for(RelationalTank tank : tanks) {
-            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankBoolPacket(tank.getSideStatus(), tank.getId()));
-            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new TankDirectionPacket(tank.getSideDirection().get3DDataValue(), tank.getId()));
-        }
-   }
-
-    public void processGUIPacketFluidStatus(boolean status, int id, RelationalTank... tanks) {
-        for(RelationalTank tank : tanks) {
+    public void updateTankPacketFromGui(boolean status, int id) {
+        for(RelationalTank tank : getRelationalTanks()) {
             if(id == tank.getId()) tank.setSideStatus(status);
         }
     }
 
-    public void processGUIPacketFluidDirection(int direction, int id, RelationalTank... tanks) {
-        for(RelationalTank tank : tanks) {
+    public void updateTankPacketFromGui(int direction, int id) {
+        for(RelationalTank tank : getRelationalTanks()) {
             if(id == tank.getId()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
         }
     }
 
-    public abstract List<RelationalTank> getRelationalTanks();
+    public abstract @Nonnull List<RelationalTank> getRelationalTanks();
 
 }

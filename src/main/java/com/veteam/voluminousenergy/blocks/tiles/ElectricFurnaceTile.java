@@ -364,18 +364,4 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
             outputSlotManager.setDirection(direction);
         }
     }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)) {
-                        bulkSendSMPacket(s, inputSlotManager, outputSlotManager);
-                    }
-                });
-            });
-        }
-    }
 }

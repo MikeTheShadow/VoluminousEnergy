@@ -322,7 +322,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
@@ -336,40 +336,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     public RelationalTank getOutputTank1(){
         return this.outputTank1;
-    }
-
-    @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,inputTank,outputTank0,outputTank1);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,inputTank,outputTank0,outputTank1);
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        bulkSendSMPacket(s, input0sm,input1sm,output0sm,output1sm);
-
-                        bulkSendTankPackets(s,inputTank,outputTank0,outputTank1);
-                    }
-                });
-            });
-        }
     }
 
 }
