@@ -349,36 +349,34 @@ public class BatteryBoxTile extends VoluminousTileEntity {
     public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
 
     /**
-     * Until I figure out a new way to do this we really don't have a choice for this.
-     * I assume the best way to do it involves a packet interface. It's just 1 method for now we'll let it be.
+     * Since the new discovery this needs a hard re-look over
      */
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(topManager.getStatus(), topManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bottomManager.getStatus(), bottomManager.getSlotNum()));
-
-                        // Direction Buttons
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(topManager.getDirection().get3DDataValue(), topManager.getSlotNum()));
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bottomManager.getDirection().get3DDataValue(), bottomManager.getSlotNum()));
-
-                        // Slot status
-                        for (int i = 0; i < 6; i++) {
-                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSlotPairPacket(doDischargeInstead[i], i));
-                        }
-
-                        // Send Out Power
-                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
-                    }
-                });
-            });
-        }
-    }
+//    public void sendPacketToClient(){
+//        if(level == null || getLevel() == null) return;
+//        if(getLevel().getServer() != null) {
+//            this.playerUuid.forEach(u -> {
+//                level.getServer().getPlayerList().getPlayers().forEach(s -> {
+//                    if (s.getUUID().equals(u)){
+//                        // Boolean Buttons
+//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(topManager.getStatus(), topManager.getSlotNum()));
+//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bottomManager.getStatus(), bottomManager.getSlotNum()));
+//
+//                        // Direction Buttons
+//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(topManager.getDirection().get3DDataValue(), topManager.getSlotNum()));
+//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bottomManager.getDirection().get3DDataValue(), bottomManager.getSlotNum()));
+//
+//                        // Slot status
+//                        for (int i = 0; i < 6; i++) {
+//                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSlotPairPacket(doDischargeInstead[i], i));
+//                        }
+//
+//                        // Send Out Power
+//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
+//                    }
+//                });
+//            });
+//        }
+//    }
 
     public boolean[] getDoDischargeInstead() {
         return doDischargeInstead;

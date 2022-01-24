@@ -55,7 +55,6 @@ public class DirectionButtonPacket {
     }
 
     public static void handlePacket(DirectionButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
-        VoluminousEnergy.LOGGER.info(packet.direction + " " + packet.slotId);
         if(openContainer != null){
             if(openContainer instanceof VoluminousContainer voluminousContainer){
                 if(onServer){

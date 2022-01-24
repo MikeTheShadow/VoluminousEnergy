@@ -1,15 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
@@ -19,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,9 +29,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
-import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +38,7 @@ import java.util.UUID;
 
 public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
-    protected ArrayList<UUID> playerUuid = new ArrayList<>();
+    private ArrayList<UUID> playerUuid = new ArrayList<>();
 
     public VoluminousTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -55,7 +46,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile) {
         voluminousTile.tick();
-        voluminousTile.uuidCleanup();
     }
 
     public abstract void tick();
@@ -70,31 +60,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1); // notifyBlockUpdate --> sendBlockUpdated
     }
 
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        for(VESlotManager manager : getSlotManagers()) {
-                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(manager.getStatus(), manager.getSlotNum()));
-                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(manager.getDirection().get3DDataValue(),manager.getSlotNum()));
-                        }
-                        // Don't really feel like looping through all the players twice, so we're doing fluids here too
-                        if(this instanceof VEFluidTileEntity veFluidTileEntity) {
-                            for(RelationalTank manager : veFluidTileEntity.getRelationalTanks()) {
-                                VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(manager.getSideStatus(), manager.getId()));
-                                VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(manager.getSideDirection().get3DDataValue(),manager.getId()));
-                            }
-
-                        }
-                    }
-                });
-            });
-        }
-    }
-
     public void uuidPacket(UUID uuid, boolean connectionFlag) {
         if (!playerUuid.isEmpty()) {
             if (playerUuid.contains(uuid) && !connectionFlag) {
@@ -107,6 +72,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
                 playerUuid.add(uuid);
             }
         }
+
+        VoluminousEnergy.LOGGER.info("is empty?" + playerUuid.isEmpty());
     }
 
     protected int calculateCounter(int processTime, ItemStack upgradeStack) {
@@ -143,6 +110,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     public void updatePacketFromGui(boolean status, int slotId) {
+        VoluminousEnergy.LOGGER.debug("Receiving a packet to update a GUI Boolean");
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
                 slot.setStatus(status);
@@ -152,12 +120,12 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     public void updatePacketFromGui(int direction, int slotId) {
+        VoluminousEnergy.LOGGER.debug("Receiving a packet to update a GUI Slot");
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
                 slot.setDirection(direction);
                 return;
             }
-
         }
     }
 
@@ -246,21 +214,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if (rotated.get3DDataValue() == 2) break;
         }
         return direction.getClockWise().getClockWise();
-    }
-
-    private void uuidCleanup() {
-        if (playerUuid.isEmpty() || level == null) return;
-        if (level.getServer() == null) return;
-
-        if (cleanupTick == 20) {
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player -> {
-                if (!(player.containerMenu instanceof AqueoulizerContainer)) {
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
     }
 
 }

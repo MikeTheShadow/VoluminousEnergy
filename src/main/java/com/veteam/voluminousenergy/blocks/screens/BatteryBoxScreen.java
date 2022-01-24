@@ -110,7 +110,6 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
-            informTileOfIOButton(true);
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
@@ -135,16 +134,14 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
                     this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            //openedIOGui = !openedIOGui;
+                            openedIOGui = !openedIOGui;
                         }
                     });
                 } else {
                     this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            //openedIOGui = !openedIOGui;
+                            openedIOGui = !openedIOGui;
                         }
                     });
                 }
@@ -163,7 +160,6 @@ public class BatteryBoxScreen extends AbstractContainerScreen<BatteryBoxContaine
     public void updateBooleanButton(boolean status, int slotId){
         for(Widget widget: this.renderables){
             if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
                 ((SlotBoolButton) widget).setStatus(status);
                 ((SlotBoolButton) widget).toggleRender(false);

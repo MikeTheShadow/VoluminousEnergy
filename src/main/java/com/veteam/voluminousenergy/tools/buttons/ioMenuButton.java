@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.tools.buttons;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,8 +16,8 @@ import static net.minecraft.client.Minecraft.getInstance;
 public class ioMenuButton extends Button {
     private boolean cycled = false;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public ioMenuButton(int x, int y, OnPress onPress){
         super(x, y, 20, 18, Component.nullToEmpty(""), button -> {
@@ -29,7 +30,9 @@ public class ioMenuButton extends Button {
         this.height = 18;
     }
 
-    private void cycleMode(){ cycled = !cycled;}
+    private void cycleMode(){
+        cycled = !cycled;
+    }
 
     @Override
     public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
@@ -46,7 +49,6 @@ public class ioMenuButton extends Button {
     @Override
     public void onPress(){
         cycleMode();
-        //VoluminousEnergy.LOGGER.debug(this.cycled);
     }
 
     public boolean shouldIOBeOpen(){

@@ -130,13 +130,13 @@ public class AirCompressorScreen extends AbstractContainerScreen<AirCompressorCo
     }
 
     private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+
         for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
                     this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
                             openedIOGui = !openedIOGui;
                         }
                     });
@@ -144,7 +144,6 @@ public class AirCompressorScreen extends AbstractContainerScreen<AirCompressorCo
                     this.renderables.forEach(button ->{
                         if(button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
                             openedIOGui = !openedIOGui;
                         }
                     });
@@ -193,8 +192,6 @@ public class AirCompressorScreen extends AbstractContainerScreen<AirCompressorCo
 
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
+        VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
     }
 }
