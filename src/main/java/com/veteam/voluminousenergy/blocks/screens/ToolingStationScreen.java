@@ -157,7 +157,7 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
 
             try{
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
-            } catch (Exception e){ }
+            } catch (Exception ignored){ }
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
 

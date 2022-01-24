@@ -115,9 +115,9 @@ public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceCont
         //this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
         this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.temperature").getString() + ": " +
                 tileEntity.getTemperatureKelvin() + " K (" +
-                tileEntity.getTemperatureCelsius() + " °C) ",  8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+                tileEntity.getTemperatureCelsius() + " \u00B0C) ",  8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
 
-        this.font.drawShadow(matrixStack, tileEntity.getTemperatureFahrenheit() + " °F", 101.0F, (this.imageHeight - 103), 16777215);
+        this.font.drawShadow(matrixStack, tileEntity.getTemperatureFahrenheit() + " \u00B0F", 101.0F, (this.imageHeight - 103), 16777215);
     }
 
     @Override

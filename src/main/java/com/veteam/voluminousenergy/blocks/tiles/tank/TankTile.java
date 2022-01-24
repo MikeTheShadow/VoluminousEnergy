@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles.tank;
 
-import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -11,8 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,10 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +32,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
@@ -115,10 +108,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
                 return super.insertItem(slot, stack, simulate);
             }
         };
-    }
-
-    private @NotNull IFluidHandler createInputFluidHandler() {
-        return this.createFluidHandler(tank);
     }
 
     public IFluidHandler createFluidHandler(RelationalTank... relationalTanks) { // Derived from the Super Class

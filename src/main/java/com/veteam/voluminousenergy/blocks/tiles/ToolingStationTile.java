@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
@@ -17,8 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,17 +32,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ToolingStationTile extends VEFluidTileEntity {
     // Handlers
@@ -328,11 +321,11 @@ public class ToolingStationTile extends VEFluidTileEntity {
 
     @Override
     public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM);
+        processGUIPacketStatus(status, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM,multitoolBaseSM);
     }
 
     public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM);
+        processGUIPacketDirection(direction, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM, multitoolBaseSM);
     }
 
     public void updateTankPacketFromGui(boolean status, int id){

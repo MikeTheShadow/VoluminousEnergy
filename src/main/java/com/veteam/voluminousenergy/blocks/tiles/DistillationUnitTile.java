@@ -40,7 +40,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class DistillationUnitTile extends VEMultiBlockTileEntity {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
