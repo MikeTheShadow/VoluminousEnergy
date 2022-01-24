@@ -36,8 +36,6 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         super(type, pos, state);
     }
 
-
-
     //use for inputting a fluid
     public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput();
@@ -89,11 +87,6 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         }
         return false;
     }
-
-    public ItemStackHandler getItemStackHandler() {
-        return null;
-    }
-
 
     public IFluidHandler createFluidHandler(VEFluidRecipe veRecipe, RelationalTank... relationalTanks) {
 

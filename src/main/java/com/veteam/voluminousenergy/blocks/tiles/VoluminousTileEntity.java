@@ -66,18 +66,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         uuidCleanup();
     }
 
-    public String getDirection() {
-
-        if(!this.level.isStateAtPosition(this.getBlockPos(),e -> e == this.getBlockState())) return "null";
-        BlockState state = this.level.getBlockState(this.worldPosition);
-        Optional<Map.Entry<Property<?>, Comparable<?>>> it = state.getValues().entrySet().stream().filter(e -> e.getKey().getValueClass() == Direction.class).findFirst();
-        String direction = "null";
-        if(it.isPresent()) {
-            direction = it.get().getValue().toString();
-        }
-        return direction;
-    }
-
     // Override this in Tile Entities, should mainly be for IO management. SUPER to this function with proper writing of Universal Update Packets
     public void sendPacketToClient(){ }
 
@@ -128,18 +116,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
-    public void updatePacketFromGui(boolean status, int slotId){
-
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-    }
-    public void updateTankPacketFromGui(boolean status, int id) {
-
-    }
-    public void updateTankPacketFromGui(int direction, int id) {
-
-    }
+    public void updatePacketFromGui(boolean status, int slotId){}
+    public void updatePacketFromGui(int direction, int slotId){}
+    public void updateTankPacketFromGui(boolean status, int id) {}
+    public void updateTankPacketFromGui(int direction, int id) {}
 
     public void bulkSendSMPacket(ServerPlayer s, VESlotManager... slots) {
         for(VESlotManager slot : slots) {
@@ -176,8 +156,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, LazyOptional<ItemStackHandler> handler, ItemStackHandler inventory, @Nullable List<VESlotManager> itemManagers, @Nullable List<RelationalTank> fluidManagers, @Nullable LazyOptional<VEEnergyStorage> energy) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (side == null || itemManagers == null) return handler.cast();
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && itemManagers != null) {
+            if (side == null) return handler.cast();
             Direction modifiedSide = normalizeDirection(side);
             List<VESlotManager> managerList = itemManagers
                     .stream()
@@ -208,6 +188,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
+        return null;
+    }
+
+    public ItemStackHandler getItemStackHandler() {
         return null;
     }
 
