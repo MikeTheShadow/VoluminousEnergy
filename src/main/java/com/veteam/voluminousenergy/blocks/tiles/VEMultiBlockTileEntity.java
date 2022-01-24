@@ -1,10 +1,12 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
 
@@ -13,53 +15,28 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         super(type, pos, state);
     }
 
+    public boolean isMultiBlockValid(Block block) {
 
-    public boolean isMultiBlockValid(Block block){
 
-        // Get Direction
-        String direction = getDirection();
-        // Setup range to check based on direction
-        byte sX, sY, sZ, lX, lY, lZ;
+        int rawDirection = this.getBlockState().getValue(BlockStateProperties.FACING).get2DDataValue();
 
-        if (direction == null || direction.equals("null")){
-            return false;
-        } else if (direction.equals("north")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = 1;
-            lY = 2;
-            lZ = 3;
-        } else if (direction.equals("south")){
-            sX = -1;
-            sY = 0;
-            sZ = -1;
-            lX = 1;
-            lY = 2;
-            lZ = -3;
-        } else if (direction.equals("east")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = -3;
-            lY = 2;
-            lZ = -1;
-        } else if (direction.equals("west")){
-            sX = 1;
-            sY = 0;
-            sZ = -1;
-            lX = 3;
-            lY = 2;
-            lZ = 1;
-        } else { // Invalid Direction
-            return false;
-        }
+        int sXMultiplier = 1;
+        int sZMultiplier = 1;
+
+        int sX = (rawDirection == 1 ? 1 : -1) * sXMultiplier;
+        int sZ = (rawDirection < 2 ? -1 : 1) * sZMultiplier;
+
+        int lxMultiplier = (rawDirection == 3 ? -1 : 1);
+        int lzMultiplier = (rawDirection == 0 || rawDirection == 3 ? -1 : 1);
+
+        int lX = sX + (lxMultiplier * 2);
+        int lZ = sZ + (lzMultiplier * 2);
 
         // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
-        for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
+        for (final BlockPos blockPos : BlockPos.betweenClosed(worldPosition.offset(sX, 0, sZ), worldPosition.offset(lX, 2, lZ))) {
             final BlockState blockState = level.getBlockState(blockPos);
 
-            if (blockState.getBlock() != block){ // Fails multiblock condition
+            if (blockState.getBlock() != block) { // Fails MultiBlock condition
                 return false;
             }
         }
