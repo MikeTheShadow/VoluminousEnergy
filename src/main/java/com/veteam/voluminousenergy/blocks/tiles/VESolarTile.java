@@ -5,7 +5,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class VESolarTile extends VoluminousTileEntity {
+public abstract class VESolarTile extends VoluminousTileEntity {
 
     public VESolarTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

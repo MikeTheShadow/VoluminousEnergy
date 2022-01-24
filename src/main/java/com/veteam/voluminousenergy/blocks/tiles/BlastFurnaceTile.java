@@ -20,7 +20,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -29,11 +28,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BlastFurnaceTile extends VEMultiBlockTileEntity {
@@ -74,8 +73,19 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return this.slotManagers;
+    }
+
+    @Nonnull
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return this.energy;
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
@@ -231,13 +241,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         tag.putBoolean("validity", this.validity);
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -336,16 +339,10 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.BLAST_FURNACE_MAX_POWER.get(), Config.BLAST_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
-    }
-
+    
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -425,5 +422,10 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
                 });
             });
         }
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return Collections.singletonList(heatTank);
     }
 }

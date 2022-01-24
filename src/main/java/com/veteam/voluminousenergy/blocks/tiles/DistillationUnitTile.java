@@ -37,6 +37,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +86,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
     }
 
@@ -279,14 +281,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
 
         tag.putBoolean("validity", this.validity);
     }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -347,7 +341,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
                 return super.insertItem(slot, stack, simulate);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return super.extractItem(slot, amount, simulate);
@@ -355,14 +349,20 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     @Nullable
@@ -389,6 +389,11 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
 
     public int getTankCapacity(){
         return tankCapacity;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public boolean getMultiblockValidity(){

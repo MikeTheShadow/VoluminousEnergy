@@ -33,15 +33,17 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
@@ -75,7 +77,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
     }
 
@@ -232,13 +234,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -264,6 +259,17 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank1);
     }
 
+    @Nonnull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nonnull
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
+    }
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(5) {
@@ -285,16 +291,10 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
-    }
-
+    
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -319,6 +319,11 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public RelationalTank getInputTank(){

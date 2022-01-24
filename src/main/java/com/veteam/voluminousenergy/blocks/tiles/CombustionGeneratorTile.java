@@ -40,6 +40,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -284,13 +286,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
         fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -304,7 +299,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    private @NotNull IFluidHandler createOxidizerHandler() {
+    private @Nonnull IFluidHandler createOxidizerHandler() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -375,7 +370,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
     }
 
 
-    private @NotNull IFluidHandler createFuelHandler() {
+    private @Nonnull IFluidHandler createFuelHandler() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -471,7 +466,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
                 return super.insertItem(slot, stack, simulate);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return super.extractItem(slot, amount, simulate);
@@ -479,20 +474,31 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CombustionGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int progressCounterPX(int px) {
@@ -514,6 +520,11 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
 
     public int getTankCapacity() {
         return tankCapacity;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public int progressCounterPercent() {

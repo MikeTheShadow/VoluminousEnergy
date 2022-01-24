@@ -32,12 +32,15 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BatteryBoxTile extends VoluminousTileEntity {
+
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
@@ -51,6 +54,13 @@ public class BatteryBoxTile extends VoluminousTileEntity {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
     private final LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
+
+    List<VESlotManager> slotManagers = new ArrayList<>() {
+        {
+            add(topManager);
+            add(bottomManager);
+        }
+    };
 
     // Modes and meta stuff for the battery box
     private final boolean[] doDischargeInstead = {false,false,false,false,false,false};
@@ -270,15 +280,8 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         tag.putBoolean("send_out_power", sendOutPower);
     }
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
     }
 
     @Nullable
@@ -321,6 +324,22 @@ public class BatteryBoxTile extends VoluminousTileEntity {
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new BatteryBoxContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public void updateSlotPair(boolean mode, int pairId){

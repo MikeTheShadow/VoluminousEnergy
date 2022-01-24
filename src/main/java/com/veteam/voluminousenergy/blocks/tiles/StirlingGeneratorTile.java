@@ -30,6 +30,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,13 +147,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
         slotManager.write(tag, "slot_manager");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -204,20 +199,32 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.STIRLING_GENERATOR_MAX_POWER.get(), Config.STIRLING_GENERATOR_SEND.get()); // Max Power Storage, Max transfer
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new StirlingGeneratorContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Nullable
+    @Override
+    public ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int progressCounterPX(int px){

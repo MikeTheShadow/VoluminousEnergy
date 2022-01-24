@@ -40,12 +40,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class PumpTile extends VoluminousTileEntity {
+public class PumpTile extends VEFluidTileEntity {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
@@ -149,13 +152,6 @@ public class PumpTile extends VoluminousTileEntity {
         fluidTank.writeGuiProperties(tag, "tank_gui");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -169,7 +165,7 @@ public class PumpTile extends VoluminousTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    private @NotNull IFluidHandler createFluid() {
+    private @Nonnull IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -243,10 +239,11 @@ public class PumpTile extends VoluminousTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
     }
 
+    @Deprecated
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -268,12 +265,34 @@ public class PumpTile extends VoluminousTileEntity {
         return new PumpContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
+    @Nullable
+    @Override
+    public ItemStackHandler getInventoryHandler() {
+        return null;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return new ArrayList<>();
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
+    }
+
     public FluidStack getAirTankFluid(){
         return this.fluidTank.getTank().getFluid();
     }
 
     public int getTankCapacity(){
         return tankCapacity;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return Collections.singletonList(fluidTank);
     }
 
     public void fluidPumpMethod() {

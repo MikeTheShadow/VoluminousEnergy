@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles.tank;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
@@ -58,8 +57,20 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return null;
     }
 
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
@@ -110,101 +121,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         };
     }
 
-    public IFluidHandler createFluidHandler(RelationalTank... relationalTanks) { // Derived from the Super Class
-
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return relationalTanks.length;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
-                        return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
-                    }
-                }
-                LOGGER.warn("Invalid tankId in TankTile for getFluidInTank, id: " + tank + ", max id: " + (relationalTanks.length - 1));
-                return FluidStack.EMPTY;
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
-                        return t.getTank() == null ? 0 : t.getTank().getCapacity();
-                    }
-                }
-                LOGGER.warn("Invalid tankId in TankTile for getTankCapacity, id: " + tank + ", max id: " + (relationalTanks.length - 1));
-                return 0;
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                try {
-                    for (RelationalTank t : relationalTanks){
-                        return t.getTank() != null && t.getTank().isFluidValid(stack);
-                    }
-                } catch (Exception e){
-                    LOGGER.warn("ERROR with isFluidValid in TankTile");
-                }
-
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-
-                for(RelationalTank t : relationalTanks) {
-                    if(isFluidValid(t.getId(),resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().fill(resource, action);
-                    }
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-
-                for(RelationalTank t : relationalTanks) {
-                    if(resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().drain(resource,action);
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getTank().getFluidAmount() > 0) {
-                        if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                            return t.getTank().drain(maxDrain, action);
-                        } else if (t.getTankType() != TankType.INPUT) {
-                            return t.getTank().drain(maxDrain, action);
-                        }
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,Collections.singletonList(tank),null);
-    }
-
     public RelationalTank getTank(){
         return this.tank;
     }
@@ -246,7 +162,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
+    public @Nonnull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
@@ -267,12 +183,17 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-        return null; //new TankContainer(i,level,this.worldPosition,playerInventory,player);
+        return null;
     }
 
     @Override
     public int getTankCapacity(){
         return this.tank.getTank().getCapacity();
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     @Override
@@ -293,7 +214,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
     }
 
     @Override
-    public void sendPacketToClient(){
+    public void sendPacketToClient() {
         if(level == null || getLevel() == null) return;
         if(getLevel().getServer() != null) {
             this.playerUuid.forEach(u -> level.getServer().getPlayerList().getPlayers().forEach(s -> {

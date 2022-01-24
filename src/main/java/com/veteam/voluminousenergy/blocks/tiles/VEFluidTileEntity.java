@@ -24,6 +24,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
@@ -41,7 +42,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         ItemStack input = tank.getInput();
         ItemStack output = tank.getOutput();
         FluidTank inputTank = tank.getTank();
-        ItemStackHandler handler = getItemStackHandler();
+        ItemStackHandler handler = getInventoryHandler();
         if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
             if((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || output.copy() == ItemStack.EMPTY) {
                 Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
@@ -62,7 +63,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
-        ItemStackHandler handler = getItemStackHandler();
+        ItemStackHandler handler = getInventoryHandler();
         if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY){
             ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -77,7 +78,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
 
         ItemStack inputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
-        ItemStackHandler handler = getItemStackHandler();
+        ItemStackHandler handler = getInventoryHandler();
         if (inputSlot.copy().getItem() == Items.BUCKET && inputSlot.copy().getCount() == 1 && outputTank.getFluidAmount() >= 1000) {
             ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -211,5 +212,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
             if(id == tank.getId()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
         }
     }
+
+    public abstract List<RelationalTank> getRelationalTanks();
 
 }

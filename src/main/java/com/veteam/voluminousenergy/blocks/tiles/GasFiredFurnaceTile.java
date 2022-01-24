@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
@@ -31,17 +32,21 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
@@ -66,8 +71,8 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
@@ -76,8 +81,20 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return null;
     }
 
     @Override
@@ -226,14 +243,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         this.furnaceOutputSm.write(tag, "furnace_output_gui");
     }
 
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -349,12 +358,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         }
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,null);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -388,6 +391,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public int getFuelCounter(){return fuelCounter;}

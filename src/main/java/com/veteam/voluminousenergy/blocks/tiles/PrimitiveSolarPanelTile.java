@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveSolarPanelContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,10 +21,15 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrimitiveSolarPanelTile extends VESolarTile {
 
@@ -94,13 +100,6 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
         this.generation = tag.getInt("generation_rate");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -114,7 +113,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
         super.onDataPacket(net, pkt);
     }
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get(),Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get());
     }
 
@@ -131,6 +130,24 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
         return new PrimitiveSolarPanelContainer(i, level, worldPosition, playerInventory, playerEntity);
+    }
+
+    @Nullable
+    @Override
+    public ItemStackHandler getInventoryHandler() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return new ArrayList<>();
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int getGeneration(){

@@ -21,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -36,8 +35,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ImplosionCompressorTile extends VoluminousTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
@@ -168,13 +167,6 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         outputSlotManager.write(tag, "output_manager");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -242,14 +234,8 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.IMPLOSION_COMPRESSOR_MAX_POWER.get(), Config.IMPLOSION_COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
     }
 
     @Nullable
@@ -257,6 +243,23 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
     {
         return new ImplosionCompressorContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int progressCounterPX(int px) {

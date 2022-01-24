@@ -25,8 +25,8 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_
 
 public class AirCompressorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
+    private final Player playerEntity;
+    private final IItemHandler playerInventory;
     protected AirCompressorScreen airCompressorScreen;
     private static final int numberOfSlots = 2;
 

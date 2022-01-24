@@ -30,6 +30,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -398,17 +400,9 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         }
     };
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get(),Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -422,16 +416,27 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CentrifugalSeparatorContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int progressCounterPX(int px) {

@@ -32,7 +32,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,8 +78,19 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
@@ -232,7 +243,7 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
+    public @Nonnull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
@@ -290,14 +301,8 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
     }
 
     @Nullable
@@ -360,5 +365,10 @@ public class AqueoulizerTile extends VEFluidTileEntity {
                 });
             });
         }
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return this.fluidManagers;
     }
 }

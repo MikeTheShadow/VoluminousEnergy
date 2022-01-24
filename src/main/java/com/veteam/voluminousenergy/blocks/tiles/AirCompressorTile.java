@@ -29,39 +29,33 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
 
 public class AirCompressorTile extends VEFluidTileEntity {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT);
 
     // Handlers
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
-
-    // Sided item handlers
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 1));
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     private final int TANK_CAPACITY = 4000;
     private byte counter;
 
     //private FluidTank airTank = new FluidTank(tankCapacity);
-    private RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT);
+    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT);
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
@@ -185,13 +179,6 @@ public class AirCompressorTile extends VEFluidTileEntity {
         airTank.writeGuiProperties(tag, "air_tank_properties");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -206,7 +193,7 @@ public class AirCompressorTile extends VEFluidTileEntity {
     }
 
 
-    private IFluidHandler createFluid() {
+    private @Nonnull IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
             public int getTanks() {
@@ -260,7 +247,7 @@ public class AirCompressorTile extends VEFluidTileEntity {
         };
     }
 
-    private ItemStackHandler inventory = new ItemStackHandler(2) {
+    private final ItemStackHandler inventory = new ItemStackHandler(2) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -287,14 +274,8 @@ public class AirCompressorTile extends VEFluidTileEntity {
         }
     };
 
-    public @NotNull VEEnergyStorage createEnergy() {
+    public @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AIR_COMPRESSOR_MAX_POWER.get(), Config.AIR_COMPRESSOR_TRANSFER.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,Collections.singletonList(outputSlotManager),Collections.singletonList(airTank),energy);
     }
 
     @Nullable
@@ -309,6 +290,11 @@ public class AirCompressorTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return Collections.singletonList(airTank);
     }
 
     @Override
@@ -338,6 +324,22 @@ public class AirCompressorTile extends VEFluidTileEntity {
 
     public RelationalTank getAirTank(){
         return this.airTank;
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return this.inventory;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return Collections.singletonList(outputSlotManager);
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return this.energy;
     }
 
     @Override

@@ -31,6 +31,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +40,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ElectrolyzerTile extends VoluminousTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
@@ -402,15 +404,8 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         }
     };
 
-    private @NotNull VEEnergyStorage createEnergy(){
+    private @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
     }
 
     @Nullable
@@ -426,16 +421,27 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         super.onDataPacket(net, pkt);
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,null,energy);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new ElectrolyzerContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public int progressCounterPX(int px) {

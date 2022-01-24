@@ -34,6 +34,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +72,23 @@ public class SawmillTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public SawmillTile(BlockPos pos, BlockState state) {
@@ -274,13 +288,6 @@ public class SawmillTile extends VEFluidTileEntity {
         this.outputTank.writeGuiProperties(tag, "output_tank_gui");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -411,14 +418,8 @@ public class SawmillTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.SAWMILL_MAX_POWER.get(), Config.SAWMILL_TRANSFER.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
     }
 
     @Nullable
@@ -477,5 +478,10 @@ public class SawmillTile extends VEFluidTileEntity {
                 });
             });
         }
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 }

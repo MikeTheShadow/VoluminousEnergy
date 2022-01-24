@@ -36,6 +36,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +71,23 @@ public class ToolingStationTile extends VEFluidTileEntity {
     private int counter;
     private int length;
 
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
+    @Nullable
+    @Override
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
@@ -226,13 +240,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
         this.fuelTank.writeGuiProperties(tag,"fuel_tank_gui");
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -287,14 +294,8 @@ public class ToolingStationTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
+    private @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get()); // TODO: Config
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap,side,handler,inventory,slotManagers,fluidManagers,energy);
     }
 
     @Nullable
@@ -324,16 +325,19 @@ public class ToolingStationTile extends VEFluidTileEntity {
         processGUIPacketStatus(status, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM,multitoolBaseSM);
     }
 
+    @Override
     public void updatePacketFromGui(int direction, int slotId){
         processGUIPacketDirection(direction, slotId, fuelTopSlotSM, fuelBottomSlotSM, mainToolSlotSM, bitSlotSM, multitoolBaseSM);
     }
 
+    @Override
     public void updateTankPacketFromGui(boolean status, int id){
         if(id == this.fuelTank.getId()){
             this.fuelTank.setSideStatus(status);
         }
     }
 
+    @Override
     public void updateTankPacketFromGui(int direction, int id){
         if(id == this.fuelTank.getId()){
             this.fuelTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
@@ -354,5 +358,10 @@ public class ToolingStationTile extends VEFluidTileEntity {
                 });
             });
         }
+    }
+
+    @Override
+    public List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 }
