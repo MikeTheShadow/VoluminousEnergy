@@ -1,8 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +14,6 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
     }
 
     public boolean isMultiBlockValid(Block block) {
-
 
         int rawDirection = this.getBlockState().getValue(BlockStateProperties.FACING).get2DDataValue();
 
@@ -42,5 +39,4 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         }
         return true;
     }
-
 }

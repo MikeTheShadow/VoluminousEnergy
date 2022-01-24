@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -93,25 +94,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if(connectionFlag){
                 playerUuid.add(uuid);
             }
-        }
-    }
-
-    // Standard cookie cutter cleanup. Works on servers as a crutch, but not so much on singleplayer
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
-        if(level.getServer() == null) return;
-        if(cleanupTick == 20){
-            cleanupTick = 0;
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            this.playerUuid.forEach(u ->{
-                if(!level.getServer().getPlayerList().getPlayers().contains(u)){
-                    toRemove.add(u);
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        } else {
-            cleanupTick++;
         }
     }
 
@@ -242,6 +224,21 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if(rotated.get3DDataValue() == 2) break;
         }
         return direction.getClockWise().getClockWise();
+    }
+
+    private void uuidCleanup() {
+        if(playerUuid.isEmpty() || level == null) return;
+        if(level.getServer() == null) return;
+
+        if(cleanupTick == 20){
+            ArrayList<UUID> toRemove = new ArrayList<>();
+            level.getServer().getPlayerList().getPlayers().forEach(player ->{
+                if(!(player.containerMenu instanceof AqueoulizerContainer)){
+                    toRemove.add(player.getUUID());
+                }
+            });
+            toRemove.forEach(uuid -> playerUuid.remove(uuid));
+        }
     }
 
 }
