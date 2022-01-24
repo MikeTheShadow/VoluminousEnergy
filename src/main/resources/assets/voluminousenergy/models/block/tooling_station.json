@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/tooling_station_bottom",
+    "down": "voluminousenergy:block/tooling_station_bottom",
+    "up": "voluminousenergy:block/tooling_station_top",
+    "east": "voluminousenergy:block/tooling_station_side",
+    "west": "voluminousenergy:block/tooling_station_side",
+    "north": "voluminousenergy:block/tooling_station_side",
+    "south": "voluminousenergy:block/tooling_station_side"
+  }
+}
