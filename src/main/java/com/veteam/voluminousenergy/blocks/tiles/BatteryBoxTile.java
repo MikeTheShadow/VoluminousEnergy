@@ -262,6 +262,9 @@ public class BatteryBoxTile extends VoluminousTileEntity {
 
         sendOutPower = tag.getBoolean("send_out_power");
 
+        topManager.read(tag, "input_slot");
+        bottomManager.read(tag,"output_slot");
+
         super.load(tag);
     }
 
@@ -276,6 +279,9 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         tag.putBoolean("slot_pair_mode_3", doDischargeInstead[3]);
         tag.putBoolean("slot_pair_mode_4", doDischargeInstead[4]);
         tag.putBoolean("slot_pair_mode_5", doDischargeInstead[5]);
+
+        topManager.write(tag, "input_slot");
+        bottomManager.write(tag,"output_slot");
 
         tag.putBoolean("send_out_power", sendOutPower);
     }

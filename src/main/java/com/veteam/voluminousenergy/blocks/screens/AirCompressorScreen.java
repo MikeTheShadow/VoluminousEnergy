@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class AirCompressorScreen extends AbstractContainerScreen<AirCompressorContainer> {
+public class AirCompressorScreen extends VEContainerScreen<AirCompressorContainer> {
 
     private AirCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
@@ -127,71 +127,5 @@ public class AirCompressorScreen extends AbstractContainerScreen<AirCompressorCo
             this.blit(matrixStack,i+153, j-16,0,0,18,18);
             drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
         }
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
-                ((TankDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((TankBoolButton) widget).toggleRender(true);
-                ((TankBoolButton) widget).setStatus(status);
-                ((TankBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-        VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
     }
 }

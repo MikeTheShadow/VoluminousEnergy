@@ -50,12 +50,13 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
 
     private void cycle(){
         isTopIngress = !isTopIngress;
-        this.batteryBoxTile.updateSlotPair(isTopIngress,id);
     }
 
     @Override
     public void onPress(){
         cycle();
+        batteryBoxTile.updateSlotPair(this.isTopIngress,this.id);
+        batteryBoxTile.setChanged();
         VENetwork.channel.sendToServer(new BatteryBoxSlotPairPacket(this.isTopIngress, this.id));
     }
 
