@@ -1,0 +1,117 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "pool1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "inv",
+                  "target": "BlockEntityTag.inv",
+                  "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "BlockEntityTag.energy",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_top_slot_enabled",
+                  "target": "BlockEntityTag.fuel_top_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_top_slot_direction",
+                  "target": "BlockEntityTag.fuel_top_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_bottom_slot_enabled",
+                  "target": "BlockEntityTag.fuel_bottom_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_bottom_slot_direction",
+                  "target": "BlockEntityTag.fuel_bottom_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "main_tool_slot_enabled",
+                  "target": "BlockEntityTag.main_tool_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "main_tool_slot_direction",
+                  "target": "BlockEntityTag.main_tool_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bit_slot_enabled",
+                  "target": "BlockEntityTag.bit_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "bit_slot_direction",
+                  "target": "BlockEntityTag.bit_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "multitool_base_slot_enabled",
+                  "target": "BlockEntityTag.multitool_base_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "multitool_base_slot_direction",
+                  "target": "BlockEntityTag.multitool_base_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "fuel_tank",
+                  "target": "BlockEntityTag.fuel_tank",
+                  "op": "replace"
+                },
+                {
+                  "source": "tank_gui_enabled",
+                  "target": "BlockEntityTag.fuel_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "tank_gui_direction",
+                  "target": "BlockEntityTag.fuel_tank_gui_direction",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:set_contents",
+              "type": "voluminousenergy:tooling_station",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ]
+            }
+          ],
+          "name": "voluminousenergy:tooling_station"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

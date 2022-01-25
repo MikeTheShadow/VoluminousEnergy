@@ -1,0 +1,117 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "pool1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "inv",
+                  "target": "BlockEntityTag.inv",
+                  "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "BlockEntityTag.energy",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_slot_enabled",
+                  "target": "BlockEntityTag.input_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "input_slot_direction",
+                  "target": "BlockEntityTag.input_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "plank_slot_enabled",
+                  "target": "BlockEntityTag.plank_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "plank_slot_direction",
+                  "target": "BlockEntityTag.plank_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "second_output_slot_enabled",
+                  "target": "BlockEntityTag.second_output_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "second_output_slot_direction",
+                  "target": "BlockEntityTag.second_output_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_top_slot_enabled",
+                  "target": "BlockEntityTag.bucket_top_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_top_slot_direction",
+                  "target": "BlockEntityTag.bucket_top_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_bottom_slot_enabled",
+                  "target": "BlockEntityTag.bucket_bottom_slot_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "bucket_bottom_slot_direction",
+                  "target": "BlockEntityTag.bucket_bottom_slot_direction",
+                  "op": "replace"
+                },
+                {
+                  "source": "outputTank",
+                  "target": "BlockEntityTag.outputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_gui_enabled",
+                  "target": "BlockEntityTag.output_tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "output_tank_gui_direction",
+                  "target": "BlockEntityTag.output_tank_gui_direction",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:set_contents",
+              "type": "voluminousenergy:sawmill",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ]
+            }
+          ],
+          "name": "voluminousenergy:sawmill"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

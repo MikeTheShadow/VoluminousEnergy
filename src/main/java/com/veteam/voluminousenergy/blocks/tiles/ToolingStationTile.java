@@ -210,6 +210,13 @@ public class ToolingStationTile extends VEFluidTileEntity {
         counter = tag.getInt("counter");
         length = tag.getInt("length");
 
+        // Slot Managers
+        this.fuelTopSlotSM.read(tag, "fuel_top_slot");
+        this.fuelBottomSlotSM.read(tag, "fuel_bottom_slot");
+        this.mainToolSlotSM.read(tag, "main_tool_slot");
+        this.bitSlotSM.read(tag, "bit_slot");
+        this.multitoolBaseSM.read(tag, "multitool_base_slot");
+
         // Tanks
         CompoundTag fuelTankNBT = tag.getCompound("fuel_tank");
 
@@ -229,6 +236,13 @@ public class ToolingStationTile extends VEFluidTileEntity {
         energy.ifPresent(h -> h.serializeNBT(tag));
         tag.putInt("counter", counter);
         tag.putInt("length", length);
+
+        // Slot Managers
+        this.fuelTopSlotSM.write(tag, "fuel_top_slot");
+        this.fuelBottomSlotSM.write(tag, "fuel_bottom_slot");
+        this.mainToolSlotSM.write(tag, "main_tool_slot");
+        this.bitSlotSM.write(tag, "bit_slot");
+        this.multitoolBaseSM.write(tag, "multitool_base_slot");
 
         // Tanks
         CompoundTag fuelTankNBT = new CompoundTag();
