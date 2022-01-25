@@ -64,7 +64,7 @@ public class DirectionButtonPacket {
                         voluminousTileEntity.setChanged();
                     }
                 } else {
-                    //voluminousContainer.updateDirectionButton(packet.direction, packet.slotId);
+                    voluminousContainer.updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
                 VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container."  + openContainer.getClass().getName());

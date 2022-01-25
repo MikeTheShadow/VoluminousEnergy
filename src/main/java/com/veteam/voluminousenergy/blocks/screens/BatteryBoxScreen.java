@@ -131,6 +131,7 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
     public void updateSendOutPowerButton(boolean status){
         for(Widget widget : this.renderables){
             if(widget instanceof BatteryBoxSendOutPowerButton){
+                VoluminousEnergy.LOGGER.info("pb: " + status);
                 ((BatteryBoxSendOutPowerButton) widget).setStatus(status);
             }
         }

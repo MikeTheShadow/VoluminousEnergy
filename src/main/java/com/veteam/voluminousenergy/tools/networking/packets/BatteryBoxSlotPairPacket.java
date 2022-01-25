@@ -54,16 +54,15 @@ public class BatteryBoxSlotPairPacket {
 
     public static void handlePacket(BatteryBoxSlotPairPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
         if (openContainer != null) {
-            if (openContainer instanceof BatteryBoxContainer) {
+            if (openContainer instanceof BatteryBoxContainer batteryBoxContainer) {
                 if (onServer) {
-                    BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
-                    if (tileEntity instanceof BatteryBoxTile) {
-                        ((BatteryBoxTile) tileEntity).updateSlotPair(packet.status, packet.id);
-                        tileEntity.setChanged();
-                        VoluminousEnergy.LOGGER.info(packet.status + " " + packet.id);
+                    BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
+                    if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {
+                        batteryBoxTile.updateSlotPair(packet.status, packet.id);
+                        batteryBoxTile.setChanged();
                     }
                 } else {
-                    //((BatteryBoxContainer) openContainer).updateSlotPairButton(packet.status, packet.id);
+                    ((BatteryBoxContainer) openContainer).updateSlotPairButton(packet.status, packet.id);
                 }
             }
         }

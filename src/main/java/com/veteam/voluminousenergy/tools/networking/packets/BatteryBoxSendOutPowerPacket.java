@@ -52,7 +52,7 @@ public class BatteryBoxSendOutPowerPacket {
             if(openContainer instanceof BatteryBoxContainer){
                 if(onServer){
                     BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
-                    if(tileEntity instanceof BatteryBoxTile){ // sanity check
+                    if(tileEntity instanceof BatteryBoxTile){
                         ((BatteryBoxTile) tileEntity).updateSendOutPower(packet.status);
                         tileEntity.setChanged();
                     }

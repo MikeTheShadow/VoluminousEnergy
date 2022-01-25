@@ -350,9 +350,13 @@ public class BatteryBoxTile extends VoluminousTileEntity {
 
     public void updateSlotPair(boolean mode, int pairId){
         if(pairId <6) doDischargeInstead[pairId] = mode;
+        this.setChanged();
     }
 
-    public void updateSendOutPower(boolean sendOutPower){this.sendOutPower = sendOutPower;};
+    public void updateSendOutPower(boolean sendOutPower){
+        this.sendOutPower = sendOutPower;
+        this.setChanged();
+    }
 
     /**
      * Since the new discovery this needs a hard re-look over

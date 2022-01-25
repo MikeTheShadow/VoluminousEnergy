@@ -65,7 +65,7 @@ public class BoolButtonPacket {
                         voluminousTileEntity.setChanged();
                     }
                 } else {
-                    //voluminousContainer.updateStatusButton(packet.status, packet.slotId);
+                    voluminousContainer.updateStatusButton(packet.status, packet.slotId);
                 }
             }
         else {
