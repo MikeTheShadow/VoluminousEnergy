@@ -41,6 +41,7 @@ public class AirCompressorContainer extends VoluminousContainer {
             addSlot(new VEBucketSlot(h, 0, 70, 49)); // Air Compressor extract slot
             addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
         });
+
         layoutPlayerInventorySlots(8, 84);
 
         addDataSlot(new DataSlot() { // TrackInt is now addDataSlot

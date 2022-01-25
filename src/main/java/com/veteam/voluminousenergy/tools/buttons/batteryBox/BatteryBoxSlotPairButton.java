@@ -15,24 +15,23 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
     private int id;
-    private BatteryBoxTile batteryBoxTile;
     private boolean isTopIngress;
     private int u= 0;
     private int v= 166;
+    private final VEBatterySwitchManager  veBatterySwitchManager;
 
-
-    public BatteryBoxSlotPairButton(int x, int y, int id, BatteryBoxTile batteryBoxTile, OnPress onPress,boolean cycle) {
+    public BatteryBoxSlotPairButton(VEBatterySwitchManager veBatterySwitchManager, int x, int y, int id, OnPress onPress) {
         super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
             ((BatteryBoxSlotPairButton) button).cycle();
             onPress.onPress(button);
         });
+        this.veBatterySwitchManager = veBatterySwitchManager;
         this.id = id;
-        this.batteryBoxTile = batteryBoxTile;
         this.x = x;
         this.y = y;
         this.width = 18;
         this.height = 20;
-        if(cycle) cycle();
+        this.isTopIngress = veBatterySwitchManager.isFlipped();
     }
 
     @Override
@@ -48,16 +47,13 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         blit(matrixStack, this.x, this.y, this.u, this.v, this.width, this.height);
     }
 
-    private void cycle(){
-        isTopIngress = !isTopIngress;
-    }
+    private void cycle(){isTopIngress = !isTopIngress;}
 
     @Override
     public void onPress(){
         cycle();
-        batteryBoxTile.updateSlotPair(this.isTopIngress,this.id);
-        batteryBoxTile.setChanged();
-        VENetwork.channel.sendToServer(new BatteryBoxSlotPairPacket(this.isTopIngress, this.id));
+        veBatterySwitchManager.setFlipped(isTopIngress);
+        VENetwork.channel.sendToServer(new BatteryBoxSlotPairPacket(isTopIngress, this.id));
     }
 
     public int getId(){
@@ -66,5 +62,6 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
 
     public void setStatus(boolean status){
         isTopIngress = status;
+        this.veBatterySwitchManager.setFlipped(status);
     }
 }

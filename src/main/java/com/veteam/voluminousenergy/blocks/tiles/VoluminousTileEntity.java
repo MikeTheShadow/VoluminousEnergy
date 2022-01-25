@@ -38,8 +38,6 @@ import java.util.UUID;
 
 public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
-    private ArrayList<UUID> playerUuid = new ArrayList<>();
-
     public VoluminousTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -58,22 +56,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public void updateClients() {
         if (level == null) return;
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1); // notifyBlockUpdate --> sendBlockUpdated
-    }
-
-    public void uuidPacket(UUID uuid, boolean connectionFlag) {
-        if (!playerUuid.isEmpty()) {
-            if (playerUuid.contains(uuid) && !connectionFlag) {
-                playerUuid.remove(uuid);
-            } else if (!playerUuid.contains(uuid) && connectionFlag) {
-                playerUuid.add(uuid);
-            }
-        } else {
-            if (connectionFlag) {
-                playerUuid.add(uuid);
-            }
-        }
-
-        VoluminousEnergy.LOGGER.info("is empty?" + playerUuid.isEmpty());
     }
 
     protected int calculateCounter(int processTime, ItemStack upgradeStack) {
@@ -110,7 +92,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     public void updatePacketFromGui(boolean status, int slotId) {
-        VoluminousEnergy.LOGGER.debug("Receiving a packet to update a GUI Boolean");
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
                 slot.setStatus(status);
@@ -120,7 +101,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     public void updatePacketFromGui(int direction, int slotId) {
-        VoluminousEnergy.LOGGER.debug("Receiving a packet to update a GUI Slot");
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
                 slot.setDirection(direction);

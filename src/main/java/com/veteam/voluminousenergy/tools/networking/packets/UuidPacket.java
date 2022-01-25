@@ -50,7 +50,7 @@ public class UuidPacket {
         if (openContainer == null) return;
         if (openContainer instanceof VoluminousContainer voluminousContainer) {
             VoluminousTileEntity voluminousTileEntity = (VoluminousTileEntity) voluminousContainer.getTileEntity();
-            voluminousTileEntity.uuidPacket(packet.uuid, packet.connection);
+            //voluminousTileEntity.uuidPacket(packet.uuid, packet.connection);
             voluminousTileEntity.setChanged();
         }
     }

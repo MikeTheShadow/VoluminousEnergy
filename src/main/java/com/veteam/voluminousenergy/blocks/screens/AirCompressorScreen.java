@@ -125,7 +125,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
             this.blit(matrixStack,i+153, j-16,0,0,18,18);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
     }
 }

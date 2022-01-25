@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import net.minecraft.client.Minecraft;
@@ -62,7 +61,7 @@ public class BatteryBoxSlotPairPacket {
                         batteryBoxTile.setChanged();
                     }
                 } else {
-                    ((BatteryBoxContainer) openContainer).updateSlotPairButton(packet.status, packet.id);
+                    batteryBoxContainer.updateSlotPairButton(packet.status, packet.id);
                 }
             }
         }

@@ -6,8 +6,10 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSendOutPowerButton;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSlotPairButton;
+import com.veteam.voluminousenergy.tools.buttons.batteryBox.VEBatterySwitchManager;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
@@ -59,18 +61,18 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
         }));
 
 
-        boolean[] slotValues = this.tileEntity.getDoDischargeInstead();
-
+        VEBatterySwitchManager[] switchManagers = this.tileEntity.getSwitchManagers();
+        VEPowerIOManager vePowerIOManager = this.tileEntity.getPowerIOManager();
         // Slot arrows
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-54,topPos + 34, 0, tileEntity, button -> { },slotValues[0]));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-36,topPos + 34, 1, tileEntity, button -> { },slotValues[1]));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)-18,topPos + 34, 2, tileEntity, button -> { },slotValues[2]));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2), topPos + 34, 3, tileEntity, button -> { },slotValues[3]));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+18,topPos + 34, 4, tileEntity, button -> { },slotValues[4]));
-        addRenderableWidget(new BatteryBoxSlotPairButton((this.width/2)+36,topPos + 34, 5, tileEntity, button -> { },slotValues[5]));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[0],(this.width/2)-54,topPos + 34, 0, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[1],(this.width/2)-36,topPos + 34, 1, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[2],(this.width/2)-18,topPos + 34, 2, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[3],(this.width/2), topPos + 34, 3, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[4],(this.width/2)+18,topPos + 34, 4, button -> { }));
+        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[5],(this.width/2)+36,topPos + 34, 5, button -> { }));
 
         // Send Out Power Button
-        addRenderableWidget(new BatteryBoxSendOutPowerButton((this.width/2)-79,topPos + 3, tileEntity,button -> { }));
+        addRenderableWidget(new BatteryBoxSendOutPowerButton(vePowerIOManager,(this.width/2)-79,topPos + 3, tileEntity,button -> { }));
     }
 
     @Override
@@ -114,15 +116,19 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
              */
             //this.blit(matrixStack,i+81,j+31,176,0,progress,17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
+            for (VEBatterySwitchManager switchManager : tileEntity.getSwitchManagers()) {
+                updateSlotPairButton(switchManager.isFlipped(),switchManager.getSlot());
+            }
+            updateSendOutPowerButton(tileEntity.getPowerIOManager().isFlipped());
         }
     }
 
     public void updateSlotPairButton(boolean status, int id){
         for(Widget widget : this.renderables){
-            if(widget instanceof BatteryBoxSlotPairButton){
-                if(((BatteryBoxSlotPairButton) widget).getId() == id){
-                    ((BatteryBoxSlotPairButton) widget).setStatus(status);
+            if(widget instanceof BatteryBoxSlotPairButton batteryBoxSlotPairButton){
+                if(batteryBoxSlotPairButton.getId() == id){
+                    batteryBoxSlotPairButton.setStatus(status);
                 }
             }
         }
@@ -130,9 +136,8 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
 
     public void updateSendOutPowerButton(boolean status){
         for(Widget widget : this.renderables){
-            if(widget instanceof BatteryBoxSendOutPowerButton){
-                VoluminousEnergy.LOGGER.info("pb: " + status);
-                ((BatteryBoxSendOutPowerButton) widget).setStatus(status);
+            if(widget instanceof BatteryBoxSendOutPowerButton batteryBoxSendOutPowerButton){
+                batteryBoxSendOutPowerButton.setStatus(status);
             }
         }
     }

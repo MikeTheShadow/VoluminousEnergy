@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles.tank;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -20,9 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
@@ -168,7 +163,7 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         return compoundTag;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

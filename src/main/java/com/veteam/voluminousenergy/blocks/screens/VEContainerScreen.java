@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -25,7 +26,8 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         super(menu, inventory, component);
     }
 
-    public void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
+    /* PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
+    public void drawIOSideHelper(){
 
         for(Widget widget : this.renderables){
             if (widget instanceof ioMenuButton){
@@ -45,7 +47,6 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
             }
         }
     }
-
 
     public void updateButtonDirection(int direction, int slotId){
         for(Widget widget: this.renderables){
