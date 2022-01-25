@@ -126,6 +126,11 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "CurseMaven"
+        url = "https://cursemaven.com"
+    }
 }
 
 dependencies {
@@ -138,6 +143,7 @@ dependencies {
     // Real mod deobf dependency examples - these get remapped to your current mappings
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    //runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     // Examples using mod jars from ./libs

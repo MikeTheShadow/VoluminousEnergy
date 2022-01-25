@@ -51,7 +51,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         FluidTank inputTank = tank.getTank();
         ItemStackHandler handler = getItemStackHandler();
         if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
-            if((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || output.copy() == ItemStack.EMPTY) {
+            if((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || checkOutputSlotForEmptyOrBucket(output.copy())) {
                 Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
                 if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= TANK_CAPACITY) {
                     inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
@@ -234,6 +234,10 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         if(relationalTanks.size() == 0) return super.getCapability(cap, side);
         MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
         return LazyOptional.of(() -> slotWrapper).cast();
+    }
+
+    public static boolean checkOutputSlotForEmptyOrBucket(ItemStack slotStack){
+        return slotStack.copy() == ItemStack.EMPTY || ((slotStack.copy().getItem() == Items.BUCKET) && slotStack.copy().getCount() < 16);
     }
 
 }

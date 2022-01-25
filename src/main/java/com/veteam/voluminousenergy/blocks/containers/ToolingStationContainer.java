@@ -1,9 +1,14 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.screens.ToolingStationScreen;
+import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,8 +16,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -95,7 +103,7 @@ public class ToolingStationContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 4, slotStack) != null)
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
@@ -113,6 +121,59 @@ public class ToolingStationContainer extends VoluminousContainer {
         return returnStack;
     }
 
+    @Override
+    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack){
+        if (index < containerSlots) { // Container --> Inventory
+            if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
+                return ItemStack.EMPTY;
+            }
+        } else { // Inventory --> Container
+
+            if (slotStack.getItem() instanceof CombustionMultitool){
+                if (((CombustionMultitool) slotStack.getItem()).getBit() == null
+                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL){ // Multitool Base Slot id is 4
+                    if (!this.slots.get(2).hasItem() && !this.slots.get(4).hasItem() && !moveItemStackTo(slotStack, 4, 5, false)){
+                        return ItemStack.EMPTY;
+                    }
+                } else if (!this.slots.get(3).hasItem()
+                        && !this.slots.get(4).hasItem()
+                        && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool slot id is 2
+                    // Place the main machine in the main result slot
+                    System.out.println("This.bit: " + ((CombustionMultitool) slotStack.getItem()).getBit());
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if (slotStack.getItem() instanceof BitItem){ // Bit Slot id is 3
+                if (!this.slots.get(2).hasItem() && !this.slots.get(3).hasItem() && !moveItemStackTo(slotStack, 3, 4, false)){
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if (slotStack.getItem() instanceof BucketItem){
+                if (slotStack.getItem().equals(Items.BUCKET)){
+                    return !moveItemStackTo(slotStack, 0, 1, false) ? ItemStack.EMPTY : null;
+                }
+
+                try {
+                    // Handle bucket with fluid
+                    Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
+
+                    if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                        return ItemStack.EMPTY;
+                    }
+                } catch (Exception e){
+                    VoluminousEnergy.LOGGER.error("Item: " + slotStack.getItem().getRegistryName() + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
+                            "This may be a modded bucket that extends BucketItem, but contains no fluid. If not, here's the stacktrace: ");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+        return null;
+    }
+
     // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
     public void setScreen(ToolingStationScreen screen){
         this.screen = screen;
@@ -121,7 +182,7 @@ public class ToolingStationContainer extends VoluminousContainer {
     public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
 
     @Override
-public void updateStatusButton(boolean status, int slotId){
+    public void updateStatusButton(boolean status, int slotId){
         this.screen.updateBooleanButton(status, slotId);
     }
 
