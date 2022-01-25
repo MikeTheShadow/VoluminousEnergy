@@ -112,7 +112,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
          */
 
         // Input fluid into the oxidizer tank
-        if (oxidizerInput.copy() != ItemStack.EMPTY && oxidizerOutput.copy() == ItemStack.EMPTY) {
+        if (oxidizerInput.copy() != ItemStack.EMPTY
+                && (oxidizerOutput.copy() == ItemStack.EMPTY
+                    || oxidizerOutput.copy().getItem() == Items.BUCKET)) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
                 if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(fluid) && (
@@ -130,7 +132,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
 
 
         // Extract fluid from the oxidizer tank
-        if (oxidizerInput.copy().getItem() == Items.BUCKET && oxidizerOutput.copy() == ItemStack.EMPTY) {
+        if (oxidizerInput.copy().getItem() == Items.BUCKET
+                && (oxidizerOutput.copy() == ItemStack.EMPTY
+                    || oxidizerOutput.copy().getItem() == Items.BUCKET)) {
             if (oxidizerTank.getTank().getFluidAmount() >= 1000) {
                 ItemStack bucketStack = new ItemStack(oxidizerTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 oxidizerTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -140,7 +144,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
         }
 
         // Input fluid to the fuel tank
-        if (fuelInput.copy() != ItemStack.EMPTY && fuelOutput.copy() == ItemStack.EMPTY) {
+        if (fuelInput.copy() != ItemStack.EMPTY
+                && (fuelOutput.copy() == ItemStack.EMPTY
+                    || fuelOutput.copy().getItem() == Items.BUCKET)) {
             if (fuelInput.copy().getItem() instanceof BucketItem && fuelInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) fuelInput.copy().getItem()).getFluid();
                 if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(fluid) && (
@@ -155,7 +161,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
         }
 
         // Extract fluid from the fuel tank
-        if (fuelInput.copy().getItem() == Items.BUCKET && fuelOutput.copy() == ItemStack.EMPTY) {
+        if (fuelInput.copy().getItem() == Items.BUCKET
+                && (fuelOutput.copy() == ItemStack.EMPTY
+                    || fuelOutput.copy().getItem() == Items.BUCKET)) {
             if (fuelTank.getTank().getFluidAmount() >= 1000) {
                 ItemStack bucketStack = new ItemStack(fuelTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 fuelTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
