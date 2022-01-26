@@ -29,7 +29,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/primitivestirlinggenerator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private PrimitiveStirlingGeneratorTile tileEntity;
-    private boolean openedIOGui = false;
+    
 
     public PrimitiveStirlingGeneratorScreen(PrimitiveStirlingGeneratorContainer container, Inventory inv, Component name) {
         super(container, inv, name);

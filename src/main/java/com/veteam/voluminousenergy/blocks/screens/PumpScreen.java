@@ -31,7 +31,7 @@ public class PumpScreen extends VEContainerScreen<PumpContainer> {
 
     private PumpTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
-    private boolean openedIOGui = false;
+    
 
     public PumpScreen(PumpContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

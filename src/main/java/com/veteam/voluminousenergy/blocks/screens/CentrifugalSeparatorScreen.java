@@ -28,7 +28,7 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<CentrifugalSep
     private CentrifugalSeparatorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_separator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public CentrifugalSeparatorScreen(CentrifugalSeparatorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

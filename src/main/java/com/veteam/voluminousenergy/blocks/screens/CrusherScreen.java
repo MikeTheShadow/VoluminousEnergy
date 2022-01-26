@@ -28,7 +28,7 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public CrusherScreen(CrusherContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

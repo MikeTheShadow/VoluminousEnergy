@@ -29,7 +29,7 @@ public class ImplosionCompressorScreen  extends VEContainerScreen<ImplosionCompr
     private ImplosionCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public ImplosionCompressorScreen(ImplosionCompressorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

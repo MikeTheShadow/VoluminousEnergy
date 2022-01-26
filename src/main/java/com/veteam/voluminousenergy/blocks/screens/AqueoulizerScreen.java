@@ -31,7 +31,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     private AqueoulizerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public AqueoulizerScreen(AqueoulizerContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

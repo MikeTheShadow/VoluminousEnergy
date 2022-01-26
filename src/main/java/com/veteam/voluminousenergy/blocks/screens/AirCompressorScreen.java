@@ -32,7 +32,6 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     private AirCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
 
     public AirCompressorScreen(AirCompressorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

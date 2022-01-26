@@ -30,7 +30,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
     private BlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/blast_furnace_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public BlastFurnaceScreen(BlastFurnaceContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

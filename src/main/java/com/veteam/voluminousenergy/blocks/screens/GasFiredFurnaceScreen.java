@@ -30,7 +30,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
     private GasFiredFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/gas_fired_furnace_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public GasFiredFurnaceScreen(GasFiredFurnaceContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

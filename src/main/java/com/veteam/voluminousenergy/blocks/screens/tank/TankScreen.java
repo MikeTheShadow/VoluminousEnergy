@@ -32,7 +32,7 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     private TankTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tank_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public TankScreen(TankContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

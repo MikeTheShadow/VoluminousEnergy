@@ -28,7 +28,7 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
     private ElectrolyzerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electrolyzer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public ElectrolyzerScreen(ElectrolyzerContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

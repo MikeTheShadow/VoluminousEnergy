@@ -28,7 +28,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     private final StirlingGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/stirling_generator.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

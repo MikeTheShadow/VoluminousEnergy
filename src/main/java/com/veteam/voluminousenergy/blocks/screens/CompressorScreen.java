@@ -29,7 +29,7 @@ public class CompressorScreen extends VEContainerScreen<CompressorContainer> {
     private CompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public CompressorScreen(CompressorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

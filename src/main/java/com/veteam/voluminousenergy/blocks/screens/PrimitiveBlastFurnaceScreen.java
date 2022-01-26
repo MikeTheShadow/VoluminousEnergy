@@ -27,7 +27,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlas
     private PrimitiveBlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);

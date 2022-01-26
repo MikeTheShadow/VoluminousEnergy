@@ -31,7 +31,7 @@ public class ToolingStationScreen extends VEContainerScreen<ToolingStationContai
     private ToolingStationTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public ToolingStationScreen(ToolingStationContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

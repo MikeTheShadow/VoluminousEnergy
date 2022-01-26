@@ -31,7 +31,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
     private CombustionGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/combustion_generator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);

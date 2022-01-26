@@ -31,7 +31,7 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
     private DistillationUnitTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
