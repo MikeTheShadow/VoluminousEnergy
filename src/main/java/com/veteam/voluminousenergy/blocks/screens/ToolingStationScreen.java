@@ -118,7 +118,13 @@ public class ToolingStationScreen extends AbstractContainerScreen<ToolingStation
     @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.AQUEOULIZER_MAX_POWER.get() + " FE"), mouseX, mouseY); //  TODO: Config
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.AQUEOULIZER_MAX_POWER.get() // TODO: Config
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank

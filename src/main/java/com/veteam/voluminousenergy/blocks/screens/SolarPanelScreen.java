@@ -36,7 +36,13 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelContaine
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE / " + Config.SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.SOLAR_PANEL_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }

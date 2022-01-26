@@ -65,7 +65,13 @@ public class PrimitiveStirlingGeneratorScreen extends AbstractContainerScreen<Pr
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE / " + Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)){
             renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, "+TextUtil.translateString("text.voluminousenergy.ticks_left").getString()+": " + tileEntity.ticksLeft() + ", "+TextUtil.translateString("text.voluminousenergy.generating").getString()+": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
