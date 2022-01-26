@@ -122,12 +122,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
         super.saveAdditional(tag);
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());

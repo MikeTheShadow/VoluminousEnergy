@@ -360,12 +360,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

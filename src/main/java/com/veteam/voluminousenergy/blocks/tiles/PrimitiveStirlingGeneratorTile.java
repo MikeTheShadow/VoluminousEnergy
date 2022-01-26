@@ -103,12 +103,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
         });
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

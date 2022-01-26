@@ -126,12 +126,6 @@ public class CompressorTile extends VoluminousTileEntity {
                 > this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(), this.inventory.getStackInSlot(2).copy());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

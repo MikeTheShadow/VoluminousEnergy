@@ -36,8 +36,6 @@ import java.util.List;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity {
 
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
@@ -157,12 +155,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     private boolean canConsumeEnergy(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
                 > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

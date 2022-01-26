@@ -282,12 +282,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

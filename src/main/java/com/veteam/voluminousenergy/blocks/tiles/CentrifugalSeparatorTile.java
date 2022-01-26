@@ -356,12 +356,6 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         return new VEEnergyStorage(Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get(),Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

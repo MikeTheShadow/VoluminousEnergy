@@ -123,12 +123,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         return compoundTag;
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());

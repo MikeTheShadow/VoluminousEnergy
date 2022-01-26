@@ -197,12 +197,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
                 > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(7).copy());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

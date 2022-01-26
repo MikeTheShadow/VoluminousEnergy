@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -225,6 +226,12 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     public abstract @Nullable
     LazyOptional<VEEnergyStorage> getEnergy();
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
     public Direction normalizeDirection(Direction direction) {
         Direction currentDirection = this.getBlockState().getValue(BlockStateProperties.FACING);

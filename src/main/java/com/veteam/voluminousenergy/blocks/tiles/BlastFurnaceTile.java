@@ -198,12 +198,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         tag.putInt("length", length);
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));

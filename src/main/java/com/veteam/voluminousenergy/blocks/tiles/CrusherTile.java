@@ -239,11 +239,6 @@ public class CrusherTile extends VoluminousTileEntity {
     public @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
     }
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
 
     @Override
     public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
