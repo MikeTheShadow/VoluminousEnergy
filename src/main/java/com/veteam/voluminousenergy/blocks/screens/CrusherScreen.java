@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
+public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
     private CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
@@ -128,7 +128,7 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
              */
             this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
@@ -137,30 +137,6 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherContainer> {
 
     public static ResourceLocation getGUI() {
         return GUI;
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
     }
 
     public void updateButtonDirection(int direction, int slotId){

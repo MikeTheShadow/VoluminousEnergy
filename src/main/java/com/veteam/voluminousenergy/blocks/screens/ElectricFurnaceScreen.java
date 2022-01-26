@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class ElectricFurnaceScreen extends AbstractContainerScreen<ElectricFurnaceContainer> {
+public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceContainer> {
 
     private ElectricFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electric_furnace_gui.png");
@@ -118,35 +118,11 @@ public class ElectricFurnaceScreen extends AbstractContainerScreen<ElectricFurna
              */
             this.blit(matrixStack,i+81,j+31,176,0,progress,17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
     }
 
     public void updateButtonDirection(int direction, int slotId){

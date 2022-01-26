@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class DistillationUnitScreen extends AbstractContainerScreen<DistillationUnitContainer> {
+public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitContainer> {
     private DistillationUnitTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
@@ -218,7 +218,7 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
             try{
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 11, 0, 12, 50);
             } catch (Exception e){ }
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
@@ -227,30 +227,6 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
             this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
         }
 
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
     }
 
     public void updateButtonDirection(int direction, int slotId){

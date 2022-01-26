@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class PrimitiveBlastFurnaceScreen extends AbstractContainerScreen<PrimitiveBlastFurnaceContainer> {
+public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlastFurnaceContainer> {
     private PrimitiveBlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
@@ -106,35 +106,11 @@ public class PrimitiveBlastFurnaceScreen extends AbstractContainerScreen<Primiti
              */
             this.blit(matrixStack,i+78, j+32, 176, 0, progress, 17);
             //this.blit(i,j,180,1,progress,15);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
     }
 
     public void updateButtonDirection(int direction, int slotId){

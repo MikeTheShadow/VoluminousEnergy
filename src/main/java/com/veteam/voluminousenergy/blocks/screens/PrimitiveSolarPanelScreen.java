@@ -15,7 +15,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class PrimitiveSolarPanelScreen extends AbstractContainerScreen<PrimitiveSolarPanelContainer> {
+public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarPanelContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private PrimitiveSolarPanelTile tileEntity;

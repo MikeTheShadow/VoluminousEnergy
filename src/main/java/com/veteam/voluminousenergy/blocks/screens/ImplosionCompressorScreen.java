@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.UUID;
 
-public class ImplosionCompressorScreen  extends AbstractContainerScreen<ImplosionCompressorContainer> {
+public class ImplosionCompressorScreen  extends VEContainerScreen<ImplosionCompressorContainer> {
 
     private ImplosionCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
@@ -127,31 +127,7 @@ public class ImplosionCompressorScreen  extends AbstractContainerScreen<Implosio
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
-        drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
+        drawIOSideHelper();
     }
 
     public void updateButtonDirection(int direction, int slotId){
