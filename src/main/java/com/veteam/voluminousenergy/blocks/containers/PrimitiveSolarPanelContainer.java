@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.screens.PrimitiveSolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,16 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER;
 
 public class PrimitiveSolarPanelContainer extends VoluminousContainer {
-
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private PrimitiveSolarPanelScreen screen;
 
     public PrimitiveSolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_SOLAR_PANEL_CONTAINER, windowID);
@@ -111,10 +105,5 @@ public class PrimitiveSolarPanelContainer extends VoluminousContainer {
         int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
         return (((stored*100/max*100)/100)*px)/100;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(PrimitiveSolarPanelScreen screen){
-        this.screen = screen;
     }
 }

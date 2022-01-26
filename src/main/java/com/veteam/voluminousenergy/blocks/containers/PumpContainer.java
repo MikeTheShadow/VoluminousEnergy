@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
-import com.veteam.voluminousenergy.blocks.screens.PumpScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -24,9 +22,6 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PUMP_CONTAINER;
 
 public class PumpContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private PumpScreen screen;
     private static final int numberOfSlots = 1;
 
     public PumpContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -101,25 +96,5 @@ public class PumpContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(PumpScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
     }
 }

@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CompressorInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.blocks.screens.CompressorScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,9 +25,8 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.COMPRESSOR_CONT
 
 public class CompressorContainer extends VoluminousContainer {
 
-        private Player playerEntity;
-        private IItemHandler playerInventory;
-        private CompressorScreen screen;
+        private final Player playerEntity;
+        private final IItemHandler playerInventory;
         private static final int numberOfSlots = 3;
 
         public CompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -107,17 +105,4 @@ public class CompressorContainer extends VoluminousContainer {
             }
             return returnStack;
         }
-
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(CompressorScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
 }

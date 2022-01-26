@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.screens.SolarPanelScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,16 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.SOLAR_PANEL_CONTAINER;
 
 public class SolarPanelContainer extends VoluminousContainer {
-
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private SolarPanelScreen screen;
 
     public SolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(SOLAR_PANEL_CONTAINER, windowID);
@@ -41,12 +35,12 @@ public class SolarPanelContainer extends VoluminousContainer {
 
             @Override
             public void set(int value) {
-                tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> ((VEEnergyStorage)h).setEnergy(value));
+                tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> ((VEEnergyStorage) h).setEnergy(value));
             }
         });
     }
 
-    public int getEnergy(){
+    public int getEnergy() {
         return tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
@@ -55,13 +49,13 @@ public class SolarPanelContainer extends VoluminousContainer {
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.SOLAR_PANEL_BLOCK);
     }
 
-    private void layoutPlayerInventorySlots(int leftCol, int topRow){
+    private void layoutPlayerInventorySlots(int leftCol, int topRow) {
         //Player inventory
         addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
 
         //Hotbar
         topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9,18);
+        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
 
     }
 
@@ -103,18 +97,13 @@ public class SolarPanelContainer extends VoluminousContainer {
         return itemstack;
     }
 
-    public BlockEntity getTileEntity(){
+    public BlockEntity getTileEntity() {
         return tileEntity;
     }
 
-    public int powerScreen(int px){
+    public int powerScreen(int px) {
         int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        return (((stored*100/max*100)/100)*px)/100;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(SolarPanelScreen screen){
-        this.screen = screen;
+        return (((stored * 100 / max * 100) / 100) * px) / 100;
     }
 }

@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
-import com.veteam.voluminousenergy.blocks.screens.CombustionGeneratorScreen;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -29,9 +27,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.COMBUSTION_GENE
 
 public class CombustionGeneratorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private CombustionGeneratorScreen screen;
+
     private static final int numberOfSlots = 4;
 
     public CombustionGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -137,26 +133,6 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
             }
         }
         return null;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(CombustionGeneratorScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
     }
 
 }

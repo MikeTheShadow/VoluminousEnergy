@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers.tank;
 
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.tank.TankScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,8 +18,7 @@ import javax.annotation.Nonnull;
 public class TankContainer extends VoluminousContainer {
 
     //private Player playerEntity;
-    private IItemHandler playerInventory;
-    private TankScreen screen;
+    private final IItemHandler playerInventory;
     private static final int NUMBER_OF_SLOTS = 1;
 
     public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
@@ -68,17 +66,5 @@ public class TankContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(TankScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-    public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
     }
 }

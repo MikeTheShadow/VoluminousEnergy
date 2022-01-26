@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -25,8 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.DISTILLATION_UN
 
 public class DistillationUnitContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
+
     private DistillationUnitScreen screen;
     private static final int numberOfSlots = 8;
 
@@ -110,26 +108,5 @@ public class DistillationUnitContainer extends VoluminousContainer {
         }
         return returnStack;
     }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(DistillationUnitScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
-    }
-
 
 }
