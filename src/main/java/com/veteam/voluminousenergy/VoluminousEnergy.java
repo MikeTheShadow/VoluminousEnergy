@@ -339,6 +339,8 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.COPPER_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.COPPER_CARBONATE_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.CUPRIC_OXIDE_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.SAW_DUST);
+            itemRegisteryEvent.getRegistry().register(VEItems.ROSIN);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);

@@ -31,6 +31,9 @@
     "#forge:dusts/eighzo",
     "#forge:dusts/copper",
     "#forge:dusts/copper_carbonate",
-    "#forge:dusts/cupric_oxide"
+    "#forge:dusts/cupric_oxide",
+    "#forge:dusts/saw",
+    "#forge:dusts/sawdust",
+    "#forge:dusts/saltpeter"
   ]
 }

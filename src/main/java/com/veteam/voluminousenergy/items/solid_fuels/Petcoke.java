@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.items;
+package com.veteam.voluminousenergy.items.solid_fuels;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
@@ -8,19 +8,16 @@ import net.minecraftforge.common.extensions.IForgeItem;
 
 import javax.annotation.Nullable;
 
-public class CoalCoke extends Item implements IForgeItem {
-    public CoalCoke (){
+public class Petcoke extends Item implements IForgeItem {
+    public Petcoke() {
         super(new Item.Properties()
-            .stacksTo(64)
-            .tab(VESetup.itemGroup)
-        );
-        setRegistryName("coalcoke");
+        .stacksTo(64)
+        .tab(VESetup.itemGroup));
+        setRegistryName("petcoke");
     }
 
     @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
-        return 3200;
+        return 4000;
     }
-
-
 }
