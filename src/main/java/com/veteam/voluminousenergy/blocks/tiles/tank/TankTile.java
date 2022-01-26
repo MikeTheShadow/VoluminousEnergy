@@ -31,11 +31,7 @@ import java.util.List;
 
 public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
-    private int capacity;
-    private RelationalTank tank;
-
-    // ItemHandlers
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+    private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH);
 
     public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
     public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
@@ -70,8 +66,8 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
-        this.capacity = capacity * 1000;
-        tank = new RelationalTank(new FluidTank(this.capacity),0,null,null, TankType.BOTH);
+        capacity = capacity * 1000;
+        tank.getTank().setCapacity(capacity);
         tank.setAllowAny(true);
         tank.setIgnoreDirection(true);
     }

@@ -15,7 +15,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
-    private BatteryBoxTile batteryBoxTile;
+    private final BatteryBoxTile batteryBoxTile;
     private boolean sendOutPower;
     private int u= 0;
     private int v= 166;

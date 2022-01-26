@@ -128,7 +128,13 @@ public class CombustionGeneratorScreen extends AbstractContainerScreen<Combustio
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.COMBUSTION_GENERATOR_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank

@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +144,8 @@ public class RelationalTank {
             return switch (tankType) {
                 case INPUT -> "tank.voluminousenergy.input_tank";
                 case OUTPUT -> "tank.voluminousenergy.output_tank";
-                default -> "tank.voluminousenergy.invalid";
+                case BOTH -> "tank.voluminousenergy.both_tank";
+                default -> throw new NotImplementedException("Warning! Tank type " + tankType + " does not have a valid key!");
             };
         }
         return "tank.voluminousenergy.null";

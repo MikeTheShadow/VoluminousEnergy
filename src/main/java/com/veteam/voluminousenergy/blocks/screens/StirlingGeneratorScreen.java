@@ -25,22 +25,22 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.UUID;
 
 public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGeneratorContainer> {
-    private StirlingGeneratorTile tileEntity;
+    private final StirlingGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/stirling_generator.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private boolean openedIOGui = false;
 
-    public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, Inventory inv, Component titleIn){
-        super(screenContainer,inv,titleIn);
+    public StirlingGeneratorScreen(StirlingGeneratorContainer screenContainer, Inventory inv, Component titleIn) {
+        super(screenContainer, inv, titleIn);
         tileEntity = (StirlingGeneratorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
-        super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderTooltip(matrixStack,mouseX,mouseY);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -62,32 +62,43 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, 16777215);
 
-        drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        drawString(matrixStack, Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
+        this.font.drawShadow(matrixStack, new TranslatableComponent("container.inventory"), 8.0F, (float) (this.imageHeight - 96 + 2), 16777215);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
-        } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft() + ", "+TextUtil.translateString("text.voluminousenergy.generating").getString()+": " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
+        } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)) {
+            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil
+                    .translateString("text.voluminousenergy.percent_burned").getString()
+                    + ": " + tileEntity.progressCounterPercent()
+                    + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString()
+                    + ": " + tileEntity.ticksLeft() + ", " + TextUtil.translateString("text.voluminousenergy.generating").getString()
+                    + " : " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
         }
-        super.renderTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
             int progress = tileEntity.progressCounterPX(14);
             int power = menu.powerScreen(49);
@@ -100,27 +111,27 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
+            this.blit(matrixStack, i + 81, j + (55 + (14 - progress)), 176, (14 - progress), 14, progress); // 55 = full, 55+14 = end
+            this.blit(matrixStack, i + 11, j + (16 + (49 - power)), 176, 14 + (49 - power), 12, power);
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper(matrixStack, i, j, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
+    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks) {
+        for (Widget widget : this.renderables) {
+            if (widget instanceof ioMenuButton) {
                 if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
+                    this.renderables.forEach(button -> {
+                        if (button instanceof VEIOButton) {
                             ((VEIOButton) button).toggleRender(true);
                             informTileOfIOButton(true);
                             openedIOGui = !openedIOGui;
                         }
                     });
                 } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
+                    this.renderables.forEach(button -> {
+                        if (button instanceof VEIOButton) {
                             ((VEIOButton) button).toggleRender(false);
                             informTileOfIOButton(false);
                             openedIOGui = !openedIOGui;
@@ -131,17 +142,17 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
         }
     }
 
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
+    public void updateButtonDirection(int direction, int slotId) {
+        for (Widget widget : this.renderables) {
+            if (widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId) {
                 ((SlotDirectionButton) widget).setDirectionFromInt(direction);
             }
         }
     }
 
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
+    public void updateBooleanButton(boolean status, int slotId) {
+        for (Widget widget : this.renderables) {
+            if (widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId) {
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
                 ((SlotBoolButton) widget).toggleRender(true);
                 ((SlotBoolButton) widget).setStatus(status);
@@ -150,9 +161,9 @@ public class StirlingGeneratorScreen extends AbstractContainerScreen<StirlingGen
         }
     }
 
-    public void informTileOfIOButton(boolean connection){
+    public void informTileOfIOButton(boolean connection) {
         UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
+        if (uuid != null) {
             VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
         }
     }
