@@ -4,11 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -28,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -39,10 +34,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +48,7 @@ public class PumpTile extends VEFluidTileEntity {
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Capability is unique. Can't add new impl to this
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
 
     private final int tankCapacity = 4000;
 
@@ -66,7 +58,7 @@ public class PumpTile extends VEFluidTileEntity {
     private int lY = 0;
     private int lZ = 0;
 
-    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT);
+    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT,"tank:tank_gui");
     private Fluid pumpingFluid = Fluids.EMPTY;
     private final ItemStackHandler inventory = this.createHandler();
 
@@ -110,48 +102,26 @@ public class PumpTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-
-        CompoundTag airNBT = tag.getCompound("tank");
-        fluidTank.getTank().readFromNBT(airNBT);
-
+    public void load(CompoundTag tag) {
+        /*
+            We super first because we need to load those fluids before we get the fluid here
+         */
+        super.load(tag);
         pumpingFluid = fluidTank.getTank().getFluid().getRawFluid();
 
         lX = tag.getInt("lx");
         lY = tag.getInt("ly");
         lZ = tag.getInt("lz");
         initDone = tag.getBoolean("init_done");
-
-        slotManager.read(tag, "slot_manager");
-        fluidTank.readGuiProperties(tag, "tank_gui");
-
-        super.load(tag);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag){
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-
+    public void saveAdditional(@NotNull CompoundTag tag) {
         tag.putInt("lx", lX);
         tag.putInt("ly", lY);
         tag.putInt("lz", lZ);
         tag.putBoolean("init_done", initDone);
-
-        // Tanks
-        CompoundTag tankNBT = new CompoundTag();
-        fluidTank.getTank().writeToNBT(tankNBT);
-        tag.put("tank", tankNBT);
-
-        slotManager.write(tag, "slot_manager");
-        fluidTank.writeGuiProperties(tag, "tank_gui");
+        super.saveAdditional(tag);
     }
 
     @Nullable

@@ -25,8 +25,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +93,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         energy.ifPresent(h -> h.serializeNBT(tag));
         this.generation = tag.getInt("generation_rate");
     }

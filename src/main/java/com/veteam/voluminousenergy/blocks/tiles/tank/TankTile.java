@@ -31,10 +31,10 @@ import java.util.List;
 
 public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
-    private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH);
+    private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH,"tank:tank_gui");
 
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_top_slot");
+    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_bottom_slot");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(bucketBottomSlotManager);
@@ -114,42 +114,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
 
     public RelationalTank getTank(){
         return this.tank;
-    }
-
-        /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        this.inventory.deserializeNBT(inv);
-
-        //  Slots
-        bucketTopSlotManager.read(tag, "bucket_top_slot");
-        bucketBottomSlotManager.read(tag, "bucket_bottom_slot");
-
-        // Tanks
-        CompoundTag tankNBT = tag.getCompound("tank");
-        this.tank.getTank().readFromNBT(tankNBT);
-        this.tank.readGuiProperties(tag,"tank_gui");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        tag.put("inv", this.inventory.serializeNBT());
-
-        // Slots
-        bucketTopSlotManager.write(tag, "bucket_top_slot");
-        bucketBottomSlotManager.write(tag, "bucket_bottom_slot");
-
-        // Tanks
-        CompoundTag tankNBT = new CompoundTag();
-        this.tank.getTank().writeToNBT(tankNBT);
-        tag.put("tank", tankNBT);
-        this.tank.writeGuiProperties(tag, "tank_gui");
     }
 
     @Override

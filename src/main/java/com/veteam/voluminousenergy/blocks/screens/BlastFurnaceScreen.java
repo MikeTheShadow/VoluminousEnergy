@@ -48,6 +48,7 @@ public class BlastFurnaceScreen extends AbstractContainerScreen<BlastFurnaceCont
     @Override
     protected void init(){
         super.init();
+
         // Buttons
         addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
 

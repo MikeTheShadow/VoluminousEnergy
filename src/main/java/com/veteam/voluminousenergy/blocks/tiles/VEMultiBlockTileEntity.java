@@ -1,10 +1,12 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
 
@@ -12,6 +14,8 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
     public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
+
+    public boolean validity = false;
 
     public boolean isMultiBlockValid(Block block) {
 
@@ -38,5 +42,17 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
             }
         }
         return true;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        this.validity = tag.getBoolean("validity");
+        super.load(tag);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+        tag.putBoolean("validity", this.validity);
+        super.saveAdditional(tag);
     }
 }

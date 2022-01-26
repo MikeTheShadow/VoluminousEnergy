@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -23,18 +22,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
@@ -45,6 +44,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile) {
         voluminousTile.tick();
     }
+
+    int counter = -1;
+    int length = -1;
 
     public abstract void tick();
 
@@ -115,6 +117,43 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        CompoundTag inv = tag.getCompound("inv");
+
+        ItemStackHandler handler = getInventoryHandler();
+
+        if(handler != null) {
+            handler.deserializeNBT(inv);
+        }
+
+        LazyOptional<VEEnergyStorage> energy = getEnergy();
+        if(energy != null) energy.ifPresent(h -> h.deserializeNBT(tag));
+
+        if(tag.contains("counter")) counter = tag.getInt("counter");
+        if(tag.contains("length")) length = tag.getInt("length");
+
+        super.load(tag);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+        ItemStackHandler handler = getInventoryHandler();
+        if(handler != null) {
+            CompoundTag compound = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
+            tag.put("inv",compound);
+        }
+        LazyOptional<VEEnergyStorage> energy = getEnergy();
+        if(energy != null) energy.ifPresent(h -> h.serializeNBT(tag));
+
+        for(VESlotManager manager : getSlotManagers()) {
+            manager.write(tag);
+        }
+
+        if (counter != -1) tag.putInt("counter", counter);
+        if (length != -1) tag.putInt("length", length);
     }
 
     /**

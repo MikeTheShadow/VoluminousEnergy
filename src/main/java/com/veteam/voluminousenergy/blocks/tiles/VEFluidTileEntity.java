@@ -2,14 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -188,6 +185,32 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                 return FluidStack.EMPTY;
             }
         };
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+
+        for(RelationalTank relationalTank : getRelationalTanks()) {
+            CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
+            relationalTank.getTank().readFromNBT(compoundTag);
+            relationalTank.readGuiProperties(tag);
+        }
+
+        super.load(tag);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+
+        //Save tanks
+        for(RelationalTank relationalTank : getRelationalTanks()) {
+            CompoundTag compoundTag = new CompoundTag();
+            relationalTank.getTank().writeToNBT(compoundTag);
+            tag.put(relationalTank.getTankName(),compoundTag);
+            relationalTank.writeGuiProperties(tag);
+        }
+
+        super.saveAdditional(tag);
     }
 
     public int getTankCapacity(){

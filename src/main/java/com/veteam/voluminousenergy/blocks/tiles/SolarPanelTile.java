@@ -94,7 +94,7 @@ public class SolarPanelTile extends VESolarTile {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         energy.ifPresent(h -> h.serializeNBT(tag));
         this.generation = tag.getInt("generation_rate");
     }

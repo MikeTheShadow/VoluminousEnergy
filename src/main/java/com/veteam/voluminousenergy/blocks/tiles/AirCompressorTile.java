@@ -13,7 +13,6 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AirCompressorTile extends VEFluidTileEntity {
-    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT,"output_slot");
 
     // Handlers
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
@@ -47,7 +46,7 @@ public class AirCompressorTile extends VEFluidTileEntity {
     private byte counter;
 
     //private FluidTank airTank = new FluidTank(tankCapacity);
-    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT);
+    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"air_tank:air_tank_properties");
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
@@ -137,38 +136,6 @@ public class AirCompressorTile extends VEFluidTileEntity {
     private boolean canConsumeEnergy(){
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
                 > this.consumptionMultiplier(Config.AIR_COMPRESSOR_POWER_USAGE.get(), this.inventory.getStackInSlot(1).copy());
-    }
-
-    @Override
-    public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        this.inventory.deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-
-        fluid.ifPresent(f -> {
-            CompoundTag airNBT = tag.getCompound("air_tank");
-            airTank.getTank().readFromNBT(airNBT);
-        });
-
-        outputSlotManager.read(tag, "output_slot");
-        airTank.readGuiProperties(tag, "air_tank_properties");
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag){
-        tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> h.serializeNBT(tag));
-
-        // Tanks
-        fluid.ifPresent(f -> {
-            CompoundTag tankNBT = new CompoundTag();
-            airTank.getTank().writeToNBT(tankNBT);
-            tag.put("air_tank", tankNBT);
-        });
-
-        outputSlotManager.write(tag, "output_slot");
-        airTank.writeGuiProperties(tag, "air_tank_properties");
     }
 
     @Nullable

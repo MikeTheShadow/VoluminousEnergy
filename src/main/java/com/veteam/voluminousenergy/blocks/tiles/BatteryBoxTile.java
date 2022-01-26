@@ -28,10 +28,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +40,8 @@ public class BatteryBoxTile extends VoluminousTileEntity {
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
+    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
@@ -254,11 +254,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
 
     @Override
     public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        this.inventory.deserializeNBT(inv);
-        //createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-
         switchManagers[0].setFlipped(tag.getBoolean("slot_pair_mode_0"));
         switchManagers[1].setFlipped(tag.getBoolean("slot_pair_mode_1"));
         switchManagers[2].setFlipped(tag.getBoolean("slot_pair_mode_2"));
@@ -267,17 +262,11 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         switchManagers[5].setFlipped(tag.getBoolean("slot_pair_mode_5"));
 
         powerIOManager.setFlipped(tag.getBoolean("send_out_power"));
-
-        topManager.read(tag, "input_slot");
-        bottomManager.read(tag,"output_slot");
-
         super.load(tag);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> h.serializeNBT(tag));
+    public void saveAdditional(@NotNull CompoundTag tag) {
 
         tag.putBoolean("slot_pair_mode_0", switchManagers[0].isFlipped());
         tag.putBoolean("slot_pair_mode_1", switchManagers[1].isFlipped());
@@ -285,9 +274,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         tag.putBoolean("slot_pair_mode_3", switchManagers[3].isFlipped());
         tag.putBoolean("slot_pair_mode_4", switchManagers[4].isFlipped());
         tag.putBoolean("slot_pair_mode_5", switchManagers[5].isFlipped());
-
-        topManager.write(tag, "input_slot");
-        bottomManager.write(tag,"output_slot");
 
         tag.putBoolean("send_out_power", powerIOManager.isFlipped());
     }
@@ -361,36 +347,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
     public void updateSendOutPower(boolean sendOutPower){
         this.powerIOManager.setFlipped(sendOutPower);
     }
-
-    /**
-     * Since the new discovery this needs a hard re-look over
-     */
-//    public void sendPacketToClient(){
-//        if(level == null || getLevel() == null) return;
-//        if(getLevel().getServer() != null) {
-//            this.playerUuid.forEach(u -> {
-//                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-//                    if (s.getUUID().equals(u)){
-//                        // Boolean Buttons
-//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(topManager.getStatus(), topManager.getSlotNum()));
-//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BoolButtonPacket(bottomManager.getStatus(), bottomManager.getSlotNum()));
-//
-//                        // Direction Buttons
-//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(topManager.getDirection().get3DDataValue(), topManager.getSlotNum()));
-//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new DirectionButtonPacket(bottomManager.getDirection().get3DDataValue(), bottomManager.getSlotNum()));
-//
-//                        // Slot status
-//                        for (int i = 0; i < 6; i++) {
-//                            VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSlotPairPacket(doDischargeInstead[i], i));
-//                        }
-//
-//                        // Send Out Power
-//                        VENetwork.channel.send(PacketDistributor.PLAYER.with(() -> s), new BatteryBoxSendOutPowerPacket(this.sendOutPower));
-//                    }
-//                });
-//            });
-//        }
-//    }
 
     public VEBatterySwitchManager[] getSwitchManagers() {
         return switchManagers;

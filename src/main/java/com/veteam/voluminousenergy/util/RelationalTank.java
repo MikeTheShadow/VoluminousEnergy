@@ -24,26 +24,33 @@ public class RelationalTank {
     private Direction sideDirection = Direction.DOWN;
     private boolean allowAny = false;
     private boolean ignoreDirection = false;
+    /**
+     * nbtName follows the format TANKNAME:ENABLEDNAME
+     * //TODO switch tank name to follow the ENABLEDNAME format of snake case and remove the need for tankname
+     */
+    private String nbt;
 
     public RelationalTank() {
 
     }
 
-    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output,TankType tankType) {
+    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output,TankType tankType,String nbt) {
         this.tank = tank;
         this.id = id;
         this.input = input;
         this.output = output;
         this.tankType = tankType;
+        this.nbt = nbt;
     }
 
-    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output,TankType tankType,int outputID) {
+    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output,TankType tankType,int outputID, String nbt) {
         this.tank = tank;
         this.id = id;
         this.input = input;
         this.output = output;
         this.tankType = tankType;
         this.outputID = outputID;
+        this.nbt = nbt;
     }
 
     public void setIOItemstack(ItemStack input,ItemStack output) {
@@ -139,6 +146,14 @@ public class RelationalTank {
         sideDirection = direction;
     }
 
+    public String getTankName() {
+        return nbt.split(":")[0];
+    }
+
+    public String getNBTPrefix() {
+        return nbt.split(":")[1];
+    }
+
     public String getTranslationKey(){
         if(tankType != null){
             return switch (tankType) {
@@ -151,14 +166,14 @@ public class RelationalTank {
         return "tank.voluminousenergy.null";
     }
 
-    public void writeGuiProperties(CompoundTag nbt, String prefix){
-        nbt.putBoolean(prefix + "_enabled", getSideStatus());
-        nbt.putInt(prefix+"_direction", getSideDirection().get3DDataValue());
+    public void writeGuiProperties(CompoundTag nbt){
+        nbt.putBoolean(getNBTPrefix() + "_enabled", getSideStatus());
+        nbt.putInt(getNBTPrefix() +"_direction", getSideDirection().get3DDataValue());
     }
 
-    public void readGuiProperties(CompoundTag nbt, String prefix){
-        setSideStatus(nbt.getBoolean(prefix + "_enabled"));
-        int sideInt = nbt.getInt(prefix + "_direction");
+    public void readGuiProperties(CompoundTag nbt){
+        setSideStatus(nbt.getBoolean(getNBTPrefix()  + "_enabled"));
+        int sideInt = nbt.getInt(getNBTPrefix()  + "_direction");
         setSideDirection(IntToDirection.IntegerToDirection(sideInt));
     }
 

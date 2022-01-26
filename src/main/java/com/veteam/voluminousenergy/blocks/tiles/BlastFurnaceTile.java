@@ -7,7 +7,10 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +23,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -41,11 +43,11 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
 
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"heat_top_manager");
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"heat_bottom_manager");
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"first_input_manager");
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"second_input_manager");
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -57,7 +59,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         }
     };
 
-    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"heatTank:heat_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -69,7 +71,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
     private int counter;
     private int length;
     private byte tick = 19;
-    private boolean validity = false;
 
     public ItemStackHandler inventory = createHandler();
 
@@ -188,58 +189,15 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
 
     @Override
     public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
         counter = tag.getInt("counter");
         length = tag.getInt("length");
-
-        // Tanks
-        CompoundTag heatTank = tag.getCompound("heatTank");
-
-        this.heatTank.getTank().readFromNBT(heatTank);
-        this.heatTank.readGuiProperties(tag, "heat_tank_gui");
-
-        this.heatTankItemTopManager.read(tag, "heat_top_manager");
-        this.heatTankItemBottomManager.read(tag, "heat_bottom_manager");
-
-        this.firstInputSlotManager.read(tag, "first_input_manager");
-        this.secondInputSlotManager.read(tag, "second_input_manager");
-        this.outputSlotManager.read(tag, "output_manager");
-
-        this.validity = tag.getBoolean("validity");
-
         super.load(tag);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
+    public void saveAdditional(@NotNull CompoundTag tag) {
         tag.putInt("counter", counter);
         tag.putInt("length", length);
-
-        // Tanks
-        CompoundTag heatTankNBT = new CompoundTag();
-
-        this.heatTank.getTank().writeToNBT(heatTankNBT);
-
-        tag.put("heatTank", heatTankNBT);
-
-        this.heatTank.writeGuiProperties(tag, "heat_tank_gui");
-
-        this.heatTankItemTopManager.write(tag, "heat_top_manager");
-        this.heatTankItemBottomManager.write(tag, "heat_bottom_manager");
-
-        this.firstInputSlotManager.write(tag, "first_input_manager");
-        this.secondInputSlotManager.write(tag, "second_input_manager");
-        this.outputSlotManager.write(tag, "output_manager");
-
-        tag.putBoolean("validity", this.validity);
     }
 
     @Nullable

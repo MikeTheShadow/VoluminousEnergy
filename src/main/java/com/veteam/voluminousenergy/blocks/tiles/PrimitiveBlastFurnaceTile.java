@@ -9,7 +9,6 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
@@ -20,13 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,10 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
 
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
-    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager outputSm = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_gui");
+    public VESlotManager outputSm = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_gui");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
        add(inputSm);
@@ -49,7 +42,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
 
     private int counter;
     private int length;
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public PrimitiveBlastFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
@@ -110,38 +103,6 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
             this.counter = 0;
         }
     }
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        this.inputSm.read(tag, "input_gui");
-        this.outputSm.read(tag,"output_gui");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>)h).serializeNBT();
-            tag.put("inv",compound);
-        });
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        this.inputSm.write(tag, "input_gui");
-        this.outputSm.write(tag,"output_gui");
-    }
-
-
-    /*
-        Sync on block update
-     */
 
     @Nullable
     @Override

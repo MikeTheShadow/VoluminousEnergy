@@ -14,7 +14,6 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,8 +25,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -38,8 +35,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,10 +48,10 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT);
-    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT);
+    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"oxi_in_sm");
+    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"oxi_out_sm");
+    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"fuel_in_sm");
+    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"fuel_out_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -69,8 +64,8 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
 
     private final int tankCapacity = 4000;
 
-    private final RelationalTank oxidizerTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.INPUT);
-    private final RelationalTank fuelTank = new RelationalTank(new FluidTank(tankCapacity), 1, null, null, TankType.INPUT);
+    private final RelationalTank oxidizerTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.INPUT,"oxidizerTank:oxidizer_tank_gui");
+    private final RelationalTank fuelTank = new RelationalTank(new FluidTank(tankCapacity), 1, null, null, TankType.INPUT,"fuelTank:fuel_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -225,73 +220,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
                 }
             }
         });
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        oxiInSm.read(tag, "oxi_in_sm");
-        oxiOutSm.read(tag, "oxi_out_sm");
-        fuelInSm.read(tag, "fuel_in_sm");
-        fuelOutSm.read(tag, "fuel_out_sm");
-
-        // Tanks
-        CompoundTag oxidizerNBT = tag.getCompound("oxidizerTank");
-        CompoundTag fuelNBT = tag.getCompound("fuelTank");
-        oxidizerTank.getTank().readFromNBT(oxidizerNBT);
-        fuelTank.getTank().readFromNBT(fuelNBT);
-
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-        energyRate = tag.getInt("energy_rate");
-
-        oxidizerTank.readGuiProperties(tag, "oxidizer_tank_gui");
-        fuelTank.readGuiProperties(tag, "fuel_tank_gui");
-
-        super.load(tag);
-    }
-
-    @Nonnull
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        oxiInSm.write(tag, "oxi_in_sm");
-        oxiOutSm.write(tag, "oxi_out_sm");
-        fuelInSm.write(tag, "fuel_in_sm");
-        fuelOutSm.write(tag, "fuel_out_sm");
-
-        // Tanks
-        CompoundTag oxidizerNBT = new CompoundTag();
-        oxidizerTank.getTank().writeToNBT(oxidizerNBT);
-        tag.put("oxidizerTank", oxidizerNBT);
-
-        CompoundTag fuelNBT = new CompoundTag();
-        fuelTank.getTank().writeToNBT(fuelNBT);
-        tag.put("fuelTank", fuelNBT);
-
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-        tag.putInt("energy_rate", energyRate);
-
-        oxidizerTank.writeGuiProperties(tag, "oxidizer_tank_gui");
-        fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
     }
 
     @Nullable

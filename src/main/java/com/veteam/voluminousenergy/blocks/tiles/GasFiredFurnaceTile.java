@@ -7,7 +7,10 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,8 +28,6 @@ import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -35,23 +36,17 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
-
-    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_input_gui");
+    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_output_gui");
+    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"furnace_input_gui");
+    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"furnace_output_gui");
 
     List<VESlotManager> slotManagers =  new ArrayList<>() {{
         add(bucketInputSm);
@@ -60,7 +55,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         add(furnaceOutputSm);
     }};
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"fuel_tank:fuel_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
@@ -193,54 +188,18 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         } else counter = 0;
     }
 
-    /* Read and Write on World save */
-
     @Override
     public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-
-        // Tanks
-        CompoundTag tankNbt = tag.getCompound("fuel_tank");
-        this.fuelTank.getTank().readFromNBT(tankNbt);
-
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
         fuelCounter = tag.getInt("fuel_counter");
         fuelLength = tag.getInt("fuel_length");
-
-        this.fuelTank.readGuiProperties(tag, "fuel_tank_gui");
-        this.bucketInputSm.read(tag, "bucket_input_gui");
-        this.bucketOutputSm.read(tag, "bucket_output_gui");
-        this.furnaceInputSm.read(tag, "furnace_input_gui");
-        this.furnaceOutputSm.read(tag, "furnace_output_gui");
-
         super.load(tag);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-
-        // Tanks
-        CompoundTag tankNbt = new CompoundTag();
-        this.fuelTank.getTank().writeToNBT(tankNbt);
-        tag.put("fuel_tank", tankNbt);
-
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
+    public void saveAdditional(@NotNull CompoundTag tag) {
         tag.putInt("fuel_counter", fuelCounter);
         tag.putInt("fuel_length", fuelLength);
-
-        this.fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
-        this.bucketInputSm.write(tag, "bucket_input_gui");
-        this.bucketOutputSm.write(tag, "bucket_output_gui");
-        this.furnaceInputSm.write(tag, "furnace_input_gui");
-        this.furnaceOutputSm.write(tag, "furnace_output_gui");
+        super.saveAdditional(tag);
     }
 
     @Nullable
