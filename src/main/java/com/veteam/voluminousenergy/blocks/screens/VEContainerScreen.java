@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;

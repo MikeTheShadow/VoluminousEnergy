@@ -139,29 +139,4 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
         return GUI;
     }
 
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
-    }
 }
