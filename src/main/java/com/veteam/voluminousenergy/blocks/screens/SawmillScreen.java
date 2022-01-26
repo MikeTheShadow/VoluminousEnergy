@@ -118,7 +118,13 @@ public class SawmillScreen extends AbstractContainerScreen<SawmillContainer> {
     @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.SAWMILL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.SAWMILL_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
 
         if (isHovering(138, 18, 12, 50, mouseX, mouseY)){ // Output Tank

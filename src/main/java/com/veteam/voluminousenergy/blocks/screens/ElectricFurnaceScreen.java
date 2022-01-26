@@ -83,7 +83,13 @@ public class ElectricFurnaceScreen extends AbstractContainerScreen<ElectricFurna
     @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.ELECTRIC_FURNACE_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.ELECTRIC_FURNACE_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         } else if (isHovering(81,32,9,17,mouseX,mouseY)){
             renderTooltip(matrixStack,Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()), mouseX, mouseY);
         }
