@@ -84,7 +84,13 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.AIR_COMPRESSOR_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.AIR_COMPRESSOR_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
