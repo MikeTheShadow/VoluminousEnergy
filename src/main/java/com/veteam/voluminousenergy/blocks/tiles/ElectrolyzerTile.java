@@ -55,8 +55,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         add(rngThreeSm);
     }};
 
-    private int counter;
-    private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ElectrolyzerTile(BlockPos pos, BlockState state) {

@@ -43,8 +43,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
         add(slotManager);
     }};
 
-    private int counter;
-    private int length;
     private int energyRate;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private final ItemStackHandler inventory = this.createHandler();

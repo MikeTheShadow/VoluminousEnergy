@@ -53,8 +53,7 @@ public class CrusherTile extends VoluminousTileEntity {
 
     // Sided Item Handlers
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private int counter;
-    private int length;
+
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CrusherTile(BlockPos pos, BlockState state) {

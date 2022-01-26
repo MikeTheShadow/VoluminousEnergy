@@ -48,8 +48,6 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
        add(outputSlotManager);
     }};
 
-    private int counter;
-    private int length;
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private final AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 

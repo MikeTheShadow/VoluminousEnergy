@@ -43,8 +43,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
        add(slotManager);
     }};
 
-    private int counter;
-    private int length;
     private final ItemStackHandler inventory = this.createHandler();
 
     public PrimitiveStirlingGeneratorTile(BlockPos pos, BlockState state) {

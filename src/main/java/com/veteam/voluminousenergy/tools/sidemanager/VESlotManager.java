@@ -64,9 +64,9 @@ public class VESlotManager {
         nbt.putInt(nbtName + "_direction", getDirection().get3DDataValue());
     }
 
-    public void read(CompoundTag nbt, String prefix){
-        setStatus(nbt.getBoolean(prefix + "_enabled"));
-        int sideInt = nbt.getInt(prefix + "_direction");
+    public void read(CompoundTag nbt){
+        setStatus(nbt.getBoolean(nbtName + "_enabled"));
+        int sideInt = nbt.getInt(nbtName + "_direction");
         setDirection(directionFromInt(sideInt));
     }
 

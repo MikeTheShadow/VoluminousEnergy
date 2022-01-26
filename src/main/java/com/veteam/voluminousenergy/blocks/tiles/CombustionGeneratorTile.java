@@ -14,6 +14,7 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,7 +44,6 @@ import java.util.List;
 
 public class CombustionGeneratorTile extends VEFluidTileEntity {
     // Handlers
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
@@ -73,9 +73,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
             add(fuelTank);
         }
     };
-
-    private int counter;
-    private int length;
     private int energyRate;
 
     private final ItemStackHandler inventory = createHandler();
@@ -197,6 +194,18 @@ public class CombustionGeneratorTile extends VEFluidTileEntity {
         sendOutPower();
         // End of item handler
 
+    }
+
+    @Override
+    public void load(CompoundTag tag){
+        energyRate = tag.getInt("energy_rate");
+        super.load(tag);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        tag.putInt("energy_rate", energyRate);
+        super.saveAdditional(tag);
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {

@@ -68,8 +68,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         }
     };
 
-    private int counter;
-    private int length;
     private byte tick = 19;
 
     public ItemStackHandler inventory = createHandler();

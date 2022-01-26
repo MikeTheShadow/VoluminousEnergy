@@ -66,9 +66,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
        add(fuelTank);
     }};
 
-    private int counter;
-    private int length;
-
     private final ItemStackHandler inventory = createHandler();
 
     @Override

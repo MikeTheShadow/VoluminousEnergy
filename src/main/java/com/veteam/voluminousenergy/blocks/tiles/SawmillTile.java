@@ -66,9 +66,6 @@ public class SawmillTile extends VEFluidTileEntity {
         add(outputTank);
     }};
 
-    private int counter;
-    private int length;
-
     private final ItemStackHandler inventory = createHandler();
 
     @Override

@@ -45,8 +45,6 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
        add(outputSlotManager);
     }};
 
-    private int counter;
-    private int length;
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ImplosionCompressorTile(BlockPos pos, BlockState state) {

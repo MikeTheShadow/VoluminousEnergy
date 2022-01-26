@@ -40,8 +40,6 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity {
        add(outputSm);
     }};
 
-    private int counter;
-    private int length;
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public PrimitiveBlastFurnaceTile(BlockPos pos, BlockState state) {

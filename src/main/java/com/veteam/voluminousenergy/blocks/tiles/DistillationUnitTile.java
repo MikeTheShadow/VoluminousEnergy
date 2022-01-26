@@ -73,10 +73,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
         add(outputTank1);
     }};
 
-    private int counter;
-    private int length;
     private byte tick = 19;
-    private boolean validity = false;
 
     public ItemStackHandler inventory = createHandler();
 

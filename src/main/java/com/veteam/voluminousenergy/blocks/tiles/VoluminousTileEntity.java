@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
@@ -45,12 +47,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         voluminousTile.tick();
     }
 
-    int counter = -1;
-    int length = -1;
+    int counter = 0;
+    int length = 0;
 
     public abstract void tick();
-
-    protected int cleanupTick = 0;
 
     /**
      * If a player is within 16 blocks send them an update packet
@@ -135,6 +135,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         if(tag.contains("counter")) counter = tag.getInt("counter");
         if(tag.contains("length")) length = tag.getInt("length");
 
+        for(VESlotManager manager : getSlotManagers()) {
+            manager.read(tag);
+        }
+
         super.load(tag);
     }
 
@@ -152,8 +156,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             manager.write(tag);
         }
 
-        if (counter != -1) tag.putInt("counter", counter);
-        if (length != -1) tag.putInt("length", length);
+        if (counter > 0) tag.putInt("counter", counter);
+        if (length > 0) tag.putInt("length", length);
     }
 
     /**
