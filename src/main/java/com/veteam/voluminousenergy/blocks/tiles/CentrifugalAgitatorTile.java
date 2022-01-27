@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContaine
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -13,16 +12,11 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -34,9 +28,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalAgitatorTile extends VEFluidTileEntity {
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
     public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
@@ -64,7 +56,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
     }
 
-    public ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler(5);
 
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
@@ -142,74 +134,15 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(4).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
-    }
-
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createInputTankFluidHandler() {
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank);
-    }
-
-    private IFluidHandler createOutputTank0FluidHandler(){
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank0);
-    }
-
-    private IFluidHandler createOutputTank1FluidHandler(){
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank1);
+    public int getUpgradeSlotId() {
+        return 4;
     }
 
     @Nonnull
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(5) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                return true;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
-
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
     }
     
     @Nullable
@@ -223,6 +156,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return 0;
     }
 
+    // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return inputTank.getTank().getFluid();
@@ -255,4 +189,18 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return this.outputTank1;
     }
 
+    @Override
+    public int getMaxPower() {
+        return Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.CENTRIFUGAL_AGITATOR_TRANSFER.get();
+    }
 }

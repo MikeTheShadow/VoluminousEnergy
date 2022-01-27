@@ -35,9 +35,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatteryBoxTile extends VoluminousTileEntity {
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
@@ -278,17 +276,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         tag.putBoolean("send_out_power", powerIOManager.isFlipped());
     }
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.BATTERY_BOX_MAX_POWER.get(),Config.BATTERY_BOX_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -328,12 +315,6 @@ public class BatteryBoxTile extends VoluminousTileEntity {
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public void updateSlotPair(boolean mode, int pairId){
         switchManagers[pairId].setFlipped(mode);
     }
@@ -348,5 +329,25 @@ public class BatteryBoxTile extends VoluminousTileEntity {
 
     public VEPowerIOManager getPowerIOManager() {
         return powerIOManager;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.BATTERY_BOX_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.BATTERY_BOX_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return -1;
     }
 }

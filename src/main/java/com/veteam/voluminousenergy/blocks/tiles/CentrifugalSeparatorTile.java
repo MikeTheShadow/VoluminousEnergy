@@ -35,10 +35,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CentrifugalSeparatorTile extends VoluminousTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
+public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
     public VESlotManager inputSm = new VESlotManager(0, Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
     public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_manager");
@@ -56,7 +55,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         add(rngThreeSm);
     }};
 
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CentrifugalSeparatorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, pos, state);
@@ -202,21 +201,6 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         });
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_SEPARATOR_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(6).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CENTRIFUGAL_SEPARATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(6).copy());
-    }
-
     private boolean areSlotsFull(CentrifugalSeparatorRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
         if (one.getCount() + recipe.getOutputAmount() > one.getItem().getItemStackLimit(one.copy())){ // Main output slot
@@ -352,17 +336,6 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         }
     };
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get(),Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -380,14 +353,29 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity {
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+
+    @Override
+    public int getMaxPower() {
+        return Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.CENTRIFUGAL_SEPARATOR_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 6;
     }
 }

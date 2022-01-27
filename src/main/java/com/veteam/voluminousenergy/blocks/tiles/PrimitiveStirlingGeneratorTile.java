@@ -32,10 +32,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
 
@@ -103,13 +102,9 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
         });
     }
 
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
+    /**
+     * TODO This looks outdated update this
+     */
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(1) {
             @Override
@@ -146,10 +141,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
             }
         };
     }
-
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get());
-    }
     
     @Nullable
     @Override
@@ -168,13 +159,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
     public List<VESlotManager> getSlotManagers() {
         return this.slotManagers;
     }
-
-    @Nonnull
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return this.energy;
-    }
-
 
     public int progressCounterPX(int px) {
         if (counter == 0){
@@ -205,5 +189,25 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity {
 
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

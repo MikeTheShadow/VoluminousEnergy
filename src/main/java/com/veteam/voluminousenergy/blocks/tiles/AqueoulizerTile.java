@@ -15,8 +15,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -37,10 +35,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AqueoulizerTile extends VEFluidTileEntity {
-    // Handlers
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
@@ -48,6 +43,8 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT,"output_0_sm");
     // Actually an input slot omegalul
     public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"output_1_sm");
+
+    private final ItemStackHandler inventory = createHandler();
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -69,8 +66,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         }
     };
 
-    private final ItemStackHandler inventory = createHandler();
-
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
@@ -79,12 +74,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
@@ -159,33 +148,11 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(4).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
-    }
-
     @Override
     public @Nonnull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
     }
 
     private IFluidHandler createInputFluidHandler() {
@@ -227,10 +194,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -262,5 +225,25 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return this.fluidManagers;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.AIR_COMPRESSOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.AIR_COMPRESSOR_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.AIR_COMPRESSOR_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 3;
     }
 }

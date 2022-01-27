@@ -58,12 +58,6 @@ public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return null;
-    }
-
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
         super(blockEntityType, pos, state);
         capacity = capacity * 1000;

@@ -42,9 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PumpTile extends VEFluidTileEntity {
+public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Capability is unique. Can't add new impl to this
@@ -124,13 +123,6 @@ public class PumpTile extends VEFluidTileEntity {
         super.saveAdditional(tag);
     }
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private @Nonnull IFluidHandler createFluid() {
         return new IFluidHandler() {
             @Override
@@ -141,7 +133,7 @@ public class PumpTile extends VEFluidTileEntity {
             @Nonnull
             @Override
             public FluidStack getFluidInTank(int tank) {
-                return fluidTank == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
+                return fluidTank.getTank().getFluid();
             }
 
             @Override
@@ -151,7 +143,7 @@ public class PumpTile extends VEFluidTileEntity {
 
             @Override
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                return fluidTank != null && fluidTank.getTank().isFluidValid(stack);
+                return fluidTank.getTank().isFluidValid(stack);
             }
 
             @Override
@@ -205,11 +197,6 @@ public class PumpTile extends VEFluidTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.PUMP_MAX_POWER.get(), Config.PUMP_TRANSFER.get());
-    }
-
-    @Deprecated
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -240,12 +227,6 @@ public class PumpTile extends VEFluidTileEntity {
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return new ArrayList<>();
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public FluidStack getAirTankFluid(){
@@ -316,5 +297,25 @@ public class PumpTile extends VEFluidTileEntity {
 
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.PUMP_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.PUMP_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.PUMP_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

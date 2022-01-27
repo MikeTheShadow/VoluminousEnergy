@@ -24,6 +24,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -32,8 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ImplosionCompressorTile extends VoluminousTileEntity {
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class ImplosionCompressorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
     public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"gunpowder_manager");
@@ -116,28 +116,6 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(2).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.COMPRESSOR_POWER_USAGE.get(), this.inventory.getStackInSlot(2).copy());
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(4) {
             @Override
@@ -192,10 +170,6 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.IMPLOSION_COMPRESSOR_MAX_POWER.get(), Config.IMPLOSION_COMPRESSOR_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
@@ -214,14 +188,28 @@ public class ImplosionCompressorTile extends VoluminousTileEntity {
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.IMPLOSION_COMPRESSOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.IMPLOSION_COMPRESSOR_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.IMPLOSION_COMPRESSOR_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
         return 0;
     }
 }

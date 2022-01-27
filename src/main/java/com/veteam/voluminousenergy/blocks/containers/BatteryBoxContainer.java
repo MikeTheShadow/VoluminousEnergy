@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -112,5 +113,11 @@ public class BatteryBoxContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
+    }
+
+    public void updateSendOutPowerButton(boolean status){
+        if(this.screen instanceof BatteryBoxScreen batteryBoxScreen) {
+            batteryBoxScreen.updateSendOutPowerButton(status);
+        }
     }
 }

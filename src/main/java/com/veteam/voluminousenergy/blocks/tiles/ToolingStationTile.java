@@ -40,10 +40,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToolingStationTile extends VEFluidTileEntity {
-    // Handlers
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"fuel_top_slot");
@@ -77,12 +74,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
@@ -177,28 +168,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
 
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), // TODO: Config
-                                this.inventory.getStackInSlot(4).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy()); // TODO: Config
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private IFluidHandler createFuelFluidHandler() {
         return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
     }
@@ -240,10 +209,6 @@ public class ToolingStationTile extends VEFluidTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get()); // TODO: Config
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -269,5 +234,28 @@ public class ToolingStationTile extends VEFluidTileEntity {
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
+    }
+
+
+    // TODO: Moved from deprecated methods. Add configuration section for Tooling station
+
+    @Override
+    public int getMaxPower() {
+        return Config.AQUEOULIZER_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.AQUEOULIZER_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.AQUEOULIZER_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

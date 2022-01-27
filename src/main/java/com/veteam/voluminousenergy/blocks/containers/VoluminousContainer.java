@@ -98,8 +98,8 @@ public class VoluminousContainer extends AbstractContainerMenu {
     }
 
     // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(AirCompressorScreen airCompressorScreen){
-        screen = airCompressorScreen;
+    public void setScreen(VEContainerScreen screen){
+        this.screen = screen;
     }
 
     public void updateDirectionButton(int direction, int slotId){

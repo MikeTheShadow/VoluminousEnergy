@@ -38,10 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BlastFurnaceTile extends VEMultiBlockTileEntity {
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity {
 
     public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"heat_top_manager");
     public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"heat_bottom_manager");
@@ -80,12 +77,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return this.slotManagers;
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return this.energy;
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
@@ -166,99 +157,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
 
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(5).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(@NotNull CompoundTag tag) {
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createInputFluidHandler() {
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                return heatTank == null ? FluidStack.EMPTY : heatTank.getTank().getFluid();
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                return heatTank == null ? 0 : heatTank.getTank().getCapacity();
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                return heatTank != null && heatTank.getTank().isFluidValid(stack);
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && heatTank.getTank().isEmpty() || resource.isFluidEqual(heatTank.getTank().getFluid())) {
-                    return heatTank.getTank().fill(resource.copy(), action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-                if (resource.isFluidEqual(heatTank.getTank().getFluid())) {
-                    return heatTank.getTank().drain(resource.copy(), action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if (heatTank.getTank().getFluidAmount() > 0) {
-                    return heatTank.getTank().drain(maxDrain, action);
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -290,10 +188,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.BLAST_FURNACE_MAX_POWER.get(), Config.BLAST_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-    
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -351,6 +245,26 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity {
 
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
-        return Collections.singletonList(heatTank);
+        return fluidManagers;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.BLAST_FURNACE_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.BLAST_FURNACE_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.BLAST_FURNACE_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 5;
     }
 }

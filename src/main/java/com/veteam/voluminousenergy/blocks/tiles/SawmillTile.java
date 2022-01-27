@@ -39,10 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SawmillTile extends VEFluidTileEntity {
-
-    // Handlers
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
@@ -77,12 +74,6 @@ public class SawmillTile extends VEFluidTileEntity {
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public SawmillTile(BlockPos pos, BlockState state) {
@@ -224,111 +215,6 @@ public class SawmillTile extends VEFluidTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.SAWMILL_POWER_USAGE.get(),
-                                this.inventory.getStackInSlot(5).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.SAWMILL_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy());
-    }
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createOutputFluidHandler(){
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                return outputTank.getTank().getFluid();
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                return outputTank.getTank().getTankCapacity(0);
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (!inventory.getStackInSlot(0).isEmpty()){
-                    ItemStack logStack = inventory.getStackInSlot(0).copy();
-                    SawmillingRecipe sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromLog(level, logStack);
-
-                    if (sawmillingRecipe == null){
-                        if (!configuredFluidForNoRecipe.isFluidEqual(stack) || !Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) return false;
-                        ItemStack plankStack = RecipeUtil.getPlankFromLogParallel(level, logStack);
-                        return plankStack != null && plankStack.isEmpty();
-                    } else { // Sawmilling recipe is not null
-                        return sawmillingRecipe.getOutputFluid().isFluidEqual(stack);
-                    }
-                } else if (!inventory.getStackInSlot(1).isEmpty()){
-                    ItemStack plankStack = inventory.getStackInSlot(1).copy();
-                    SawmillingRecipe sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromPlank(level, plankStack);
-
-                    if (sawmillingRecipe == null){
-                        if (!configuredFluidForNoRecipe.isFluidEqual(stack) || !Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) return false;
-                        ArrayList<ItemStack> logList = RecipeUtil.getLogFromPlankParallel(level, plankStack);
-                        return logList == null ? false : !(logList.isEmpty());
-                    } else { // Sawmilling recipe is not null
-                        return sawmillingRecipe.getOutputFluid().isFluidEqual(stack);
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if(isFluidValid(outputTank.getId(),resource) && outputTank.getTank().isEmpty()
-                        || resource.isFluidEqual(outputTank.getTank().getFluid())) {
-                    return outputTank.getTank().fill(resource, action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-
-                if(resource.isFluidEqual(outputTank.getTank().getFluid())) {
-                    return outputTank.getTank().drain(resource,action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if(outputTank.getTank().getFluidAmount() > 0) {
-                    if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                        return outputTank.getTank().drain(maxDrain, action);
-                    } else if (outputTank.getTankType() != TankType.INPUT) {
-                        return outputTank.getTank().drain(maxDrain, action);
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -362,10 +248,6 @@ public class SawmillTile extends VEFluidTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.SAWMILL_MAX_POWER.get(), Config.SAWMILL_TRANSFER.get());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -391,5 +273,25 @@ public class SawmillTile extends VEFluidTileEntity {
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.SAWMILL_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.SAWMILL_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.SAWMILL_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

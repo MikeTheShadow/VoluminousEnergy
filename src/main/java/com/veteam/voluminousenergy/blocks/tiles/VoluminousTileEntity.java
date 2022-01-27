@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
@@ -10,9 +10,11 @@ import com.veteam.voluminousenergy.util.RelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,18 +33,24 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.logging.Logger;
 
 public abstract class VoluminousTileEntity extends BlockEntity implements MenuProvider {
 
     public VoluminousTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
+
+    /**
+     * Lazy Optional of getEnergy which cannot be null but can contain a null VEEnergyStorage
+     * for the ifpresent to fail
+     */
+    LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile) {
         voluminousTile.tick();
@@ -51,14 +59,19 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     int counter = 0;
     int length = 0;
 
+    /**
+     * Must include a call to updateClients();
+     * This message can be removed if updateClients(); is found to be useless
+     */
     public abstract void tick();
 
     /**
-     * If a player is within 16 blocks send them an update packet
+     * TODO figure out if this is actually useful or not. I imagine this is what allows the tile to update so perfectly.
+     * TODO if this is true then move updateClients() to a potential base tick method or something if necessary.
      */
     public void updateClients() {
         if (level == null) return;
-        level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1); // notifyBlockUpdate --> sendBlockUpdated
+        level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
 
     protected int calculateCounter(int processTime, ItemStack upgradeStack) {
@@ -89,11 +102,20 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         return consumption;
     }
 
-    // Simplified call to get the stored energy from the Energy Capability that a TE might have
+
+    /**
+     * Quickly get the energy stored in the tile
+     * @return int representing the stored energy of the tile entity
+     */
     protected int getEnergyStored() {
         return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
+    /**
+     * TODO another method to check if it's need along with updatePacketFromGui();
+     * @param status boolean status of the slot
+     * @param slotId int id of the slot
+     */
     public void updatePacketFromGui(boolean status, int slotId) {
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
@@ -120,6 +142,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         return compoundTag;
     }
 
+    /**
+     *  Loads inventory, energy, slot managers, counter, and length.
+     * @param tag CompoundTag
+     */
     @Override
     public void load(CompoundTag tag) {
         CompoundTag inv = tag.getCompound("inv");
@@ -130,8 +156,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             handler.deserializeNBT(inv);
         }
 
-        LazyOptional<VEEnergyStorage> energy = getEnergy();
-        if(energy != null) energy.ifPresent(h -> h.deserializeNBT(tag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         if(tag.contains("counter")) counter = tag.getInt("counter");
         if(tag.contains("length")) length = tag.getInt("length");
@@ -143,6 +168,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         super.load(tag);
     }
 
+    /**
+     * Saves inventory, energy, slot managers, counter, and length.
+     * @param tag CompoundTag
+     */
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         ItemStackHandler handler = getInventoryHandler();
@@ -150,8 +179,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             CompoundTag compound = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
             tag.put("inv",compound);
         }
-        LazyOptional<VEEnergyStorage> energy = getEnergy();
-        if(energy != null) energy.ifPresent(h -> h.serializeNBT(tag));
+        energy.ifPresent(h -> h.serializeNBT(tag));
 
         for(VESlotManager manager : getSlotManagers()) {
             manager.write(tag);
@@ -162,6 +190,60 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     /**
+     * A default ItemStackHandler creator. Passing in an int size creates it for us
+     * DO NOT USE THIS IF YOU REQUIRE EXTRA HANDLING FUNCTIONALITY!!!
+     * TODO maybe add recipe functionality to this to allow for removal of recipe ItemStackHandlers
+     * @param size the size of the inventory
+     * @return a new inventory
+     */
+    public ItemStackHandler createHandler(int size) {
+        return new ItemStackHandler(size) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+    }
+
+    public ItemStackHandler createHandler(int size, IVEPoweredTileEntity tileEntity) {
+        return new ItemStackHandler(size) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (tileEntity.getUpgradeSlotId() == slot){
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                }
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(slot == tileEntity.getUpgradeSlotId()) {
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER ? super.insertItem(slot, stack, simulate) : stack;
+                }
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+    }
+
+    /**
+     * This handles items,energy and fluids. Handling fluids could be moved to VEFluidTileEntity
      * @param cap  Base capability
      * @param side Base Direction
      * @param <T>  T the type of capability
@@ -171,7 +253,6 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 
         ItemStackHandler inventory = getInventoryHandler();
-        LazyOptional<VEEnergyStorage> energy = getEnergy();
         List<VESlotManager> itemManagers = getSlotManagers();
 
         if (inventory != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -185,7 +266,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if (managerList.size() == 0) return super.getCapability(cap, side);
             MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
             return LazyOptional.of(() -> slotWrapper).cast();
-        } else if (cap == CapabilityEnergy.ENERGY && energy != null) {
+        } else if (cap == CapabilityEnergy.ENERGY && energy.isPresent()) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
             Direction modifiedSide = normalizeDirection(side);
@@ -198,9 +279,55 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         }
     }
 
+    /**
+     * @return a VEEnergyStorage object or null if this tile is not an instance of poweredTileEntity
+     */
+    public @Nullable VEEnergyStorage createEnergy() {
+        if(this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
+            return new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
+        }
+        return null;
+    }
+
+    /**
+     * Call this to consume energy
+     * Note that tiles now require an upgrade slot and thus an inventory to properly function here
+     * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
+     * Throws an error if missing the power consumeEnergy IMPL
+     */
+    public void consumeEnergy() {
+        if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
+            energy.ifPresent(e -> e
+                    .consumeEnergy(
+                            this.consumptionMultiplier(IVEPoweredTileEntity.getPowerUsage(),
+                                    getInventoryHandler().getStackInSlot(IVEPoweredTileEntity.getUpgradeSlotId()).copy())));
+        }
+        throw new NotImplementedException("Missing implementation of IPoweredTileEntity in class: " + this.getClass().getName());
+    }
+
+    /**
+     * Like consumeEnergy this requires that the object has an inventory
+     *
+     * @return True if the object has enough energy to be able to continue
+     * Throws an error if missing the power consumeEnergy IMPL
+     */
+    public boolean canConsumeEnergy() {
+        if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
+            return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+                    > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), getInventoryHandler().getStackInSlot(IVEPoweredTileEntity.getUpgradeSlotId()).copy());
+        }
+        throw new NotImplementedException("Missing implementation of IPoweredTileEntity in class: " + this.getClass().getName());
+    }
+
+    /**
+     * Gets the display name and throws an NotImpl exception if missing registry
+     * @return Name component
+     */
     @Override
     public @Nonnull Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
+        ResourceLocation name = getType().getRegistryName();
+        if(name == null) throw new NotImplementedException("Missing registry name for class: " + this.getClass().getName());
+        return new TextComponent(name.getPath());
     }
 
     /**
@@ -212,8 +339,16 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     @Nullable
     @Override
-    public abstract AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player);
+    public abstract AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player);
 
+    /**
+     * We do a null check on inventory so this can be null. Might change though
+     * REMEMBER YOU NEED TO BUILD YOUR OWN INVENTORY HANDLER
+     * USE EITHER A NEWLY CREATED ONE ONE OF THE createHandler's defined here
+     * @see #createHandler(int)
+     * @see #createHandler(int, IVEPoweredTileEntity)
+     * @return a ItemStackHandler or null if the object lacks an inventory
+     */
     public abstract @Nullable
     ItemStackHandler getInventoryHandler();
 
@@ -224,8 +359,17 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     public abstract @Nonnull List<VESlotManager> getSlotManagers();
 
-    public abstract @Nullable
-    LazyOptional<VEEnergyStorage> getEnergy();
+    /**
+     * When a data packet is received load it.
+     * @param net Connection
+     * @param pkt ClientboundBlockEntityDataPacket
+     */
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        this.load(pkt.getTag());
+        super.onDataPacket(net, pkt);
+    }
 
     @Nullable
     @Override
@@ -244,6 +388,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if (rotated.get3DDataValue() == 2) break;
         }
         return direction.getClockWise().getClockWise();
+    }
+
+    public LazyOptional<VEEnergyStorage> getEnergy() {
+        return energy;
     }
 
 }

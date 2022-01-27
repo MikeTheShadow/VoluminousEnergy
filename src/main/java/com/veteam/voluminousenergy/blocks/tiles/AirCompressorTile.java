@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.CompressedAir;
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -13,8 +12,6 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,9 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -35,15 +29,11 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class AirCompressorTile extends VEFluidTileEntity {
+public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT,"output_slot");
 
-    // Handlers
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
-
     private final int TANK_CAPACITY = 4000;
-    private byte counter;
+    private final ItemStackHandler inventory = createHandler(2,this);
 
     //private FluidTank airTank = new FluidTank(tankCapacity);
     private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"air_tank:air_tank_properties");
@@ -60,7 +50,7 @@ public class AirCompressorTile extends VEFluidTileEntity {
         ItemStack slotStack = inventory.getStackInSlot(0).copy();
 
         // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
-        if (slotStack.copy().getItem() != null || slotStack.copy() != ItemStack.EMPTY) {
+        if (slotStack.copy() != ItemStack.EMPTY) {
             if (slotStack.getItem() == Items.BUCKET && airTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
                 ItemStack bucketStack = new ItemStack(airTank.getTank().getFluid().getRawFluid().getBucket(), 1);
                 airTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -122,111 +112,6 @@ public class AirCompressorTile extends VEFluidTileEntity {
             airTank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
         }
     }
-
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.AIR_COMPRESSOR_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(1).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.AIR_COMPRESSOR_POWER_USAGE.get(), this.inventory.getStackInSlot(1).copy());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-
-    private @Nonnull IFluidHandler createFluid() {
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                return airTank == null ? FluidStack.EMPTY : airTank.getTank().getFluid();
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                return airTank == null ? 0 : airTank.getTank().getCapacity();
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                return airTank != null && airTank.getTank().isFluidValid(stack);
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && airTank.getTank().isEmpty() || resource.isFluidEqual(airTank.getTank().getFluid())) {
-                    return airTank.getTank().fill(resource.copy(), action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-                if (resource.isFluidEqual(airTank.getTank().getFluid())) {
-                    return airTank.getTank().drain(resource.copy(), action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if (airTank.getTank().getFluidAmount() > 0) {
-                    return airTank.getTank().drain(maxDrain, action);
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
-    private final ItemStackHandler inventory = new ItemStackHandler(2) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-            if (slot == 3){
-                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
-            }
-            return true;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == 3){
-                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
-                    return super.insertItem(slot, stack, simulate);
-                }
-                return stack;
-            }
-            return super.insertItem(slot, stack, simulate);
-        }
-    };
-
     public @Nonnull VEEnergyStorage createEnergy() {
         return new VEEnergyStorage(Config.AIR_COMPRESSOR_MAX_POWER.get(), Config.AIR_COMPRESSOR_TRANSFER.get());
     }
@@ -264,9 +149,23 @@ public class AirCompressorTile extends VEFluidTileEntity {
         return Collections.singletonList(outputSlotManager);
     }
 
-    @Nullable
     @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return this.energy;
+    public int getMaxPower() {
+        return Config.AIR_COMPRESSOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.AIR_COMPRESSOR_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.AIR_COMPRESSOR_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 3;
     }
 }

@@ -33,9 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class StirlingGeneratorTile extends VoluminousTileEntity {
+public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
 
@@ -44,7 +43,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
     }};
 
     private int energyRate;
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private final ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(BlockPos pos, BlockState state) {
@@ -168,10 +167,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.STIRLING_GENERATOR_MAX_POWER.get(), Config.STIRLING_GENERATOR_SEND.get()); // Max Power Storage, Max transfer
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -188,12 +183,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public int progressCounterPX(int px){
@@ -228,5 +217,25 @@ public class StirlingGeneratorTile extends VoluminousTileEntity {
 
     public void updatePacketFromGui(int direction, int slotId){
         if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.STIRLING_GENERATOR_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.STIRLING_GENERATOR_SEND.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

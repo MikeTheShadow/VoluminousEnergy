@@ -10,8 +10,6 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,10 +32,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectrolyzerTile extends VoluminousTileEntity {
+public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
     public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_manager");
@@ -206,21 +202,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         });
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(6).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(), this.inventory.getStackInSlot(6).copy());
-    }
-
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
         if (one.getCount() + recipe.getOutputAmount() > one.getItem().getItemStackLimit(one.copy())){ // Main output slot
@@ -356,17 +337,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         }
     };
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -384,14 +354,28 @@ public class ElectrolyzerTile extends VoluminousTileEntity {
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.ELECTROLYZER_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.ELECTROLYZER_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.ELECTROLYZER_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
         return 0;
     }
 }

@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgitatorContainer> {
-    private CentrifugalAgitatorTile tileEntity;
+    private final CentrifugalAgitatorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     

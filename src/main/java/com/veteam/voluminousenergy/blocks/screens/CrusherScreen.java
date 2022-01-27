@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
-    private CrusherTile tileEntity;
+    private final CrusherTile tileEntity;
     private final static ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
@@ -25,7 +25,7 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
     public CrusherScreen(CrusherContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CrusherTile) screenContainer.getTileEntity();
-        screenContainer.setCrusherScreen(this);
+        screenContainer.setScreen(this);
     }
 
     @Override

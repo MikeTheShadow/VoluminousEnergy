@@ -4,13 +4,10 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -24,9 +21,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends VoluminousTileEntity {
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot_manager");
     public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot_manager");
@@ -131,28 +123,6 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
         } else counter = 0;
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.ELECTRIC_FURNACE_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(2).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.ELECTRIC_FURNACE_POWER_USAGE.get(), this.inventory.getStackInSlot(2).copy());
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(3) {
             @Override
@@ -242,10 +212,6 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
         }
     }
 
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.ELECTRIC_FURNACE_MAX_POWER.get(), Config.ELECTRIC_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
@@ -262,12 +228,6 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     public int progressCounterPX(int px) {
@@ -322,5 +282,25 @@ public class ElectricFurnaceTile extends VoluminousTileEntity {
         } else if (slotId == outputSlotManager.getSlotNum()){
             outputSlotManager.setDirection(direction);
         }
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.ELECTRIC_FURNACE_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.ELECTRIC_FURNACE_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.ELECTRIC_FURNACE_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

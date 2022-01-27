@@ -37,8 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CrusherTile extends VoluminousTileEntity {
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
@@ -221,30 +220,8 @@ public class CrusherTile extends VoluminousTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(3).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
-    }
-
     public @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
     }
 
     @Nullable
@@ -264,14 +241,28 @@ public class CrusherTile extends VoluminousTileEntity {
         return slotManagers;
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.CRUSHER_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.CRUSHER_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.CRUSHER_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
         return 0;
     }
 }

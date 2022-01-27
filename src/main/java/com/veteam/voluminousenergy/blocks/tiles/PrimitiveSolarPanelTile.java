@@ -29,9 +29,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveSolarPanelTile extends VESolarTile {
+public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPoweredTileEntity {
 
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public PrimitiveSolarPanelTile(BlockPos pos, BlockState state) {
@@ -98,17 +97,6 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
         this.generation = tag.getInt("generation_rate");
     }
 
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get(),Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get());
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -136,13 +124,27 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
         return new ArrayList<>();
     }
 
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public int getGeneration(){
         return (int)(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.PRIMITIVE_SOLAR_PANEL_SEND.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -38,10 +39,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DistillationUnitTile extends VEMultiBlockTileEntity {
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity {
 
     public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"i_top_manager");
     public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"i_bottom_manager");
@@ -182,28 +180,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
 
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy() {
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(7).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy() {
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(7).copy());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private IFluidHandler createInputFluidHandler() {
         return this.createFluidHandler(new DistillationRecipe(), inputTank);
     }
@@ -259,20 +235,10 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
         };
     }
 
-    private @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
     @NotNull
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Nullable
-    @Override
-    public LazyOptional<VEEnergyStorage> getEnergy() {
-        return energy;
     }
 
     @Nullable
@@ -320,5 +286,25 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity {
 
     public RelationalTank getOutputTank1(){
         return this.outputTank1;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Config.DISTILLATION_UNIT_MAX_POWER.get();
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return Config.DISTILLATION_UNIT_POWER_USAGE.get();
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.DISTILLATION_UNIT_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }
