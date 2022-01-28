@@ -1,9 +1,9 @@
 {
   "type": "voluminousenergy:stirling",
   "ingredient": {
-    "tag": "forge:petcoke",
+    "tag": "forge:rosin",
     "count": 1
   },
-  "process_time": 4000,
+  "process_time": 800,
   "energy_per_tick": 128
 }

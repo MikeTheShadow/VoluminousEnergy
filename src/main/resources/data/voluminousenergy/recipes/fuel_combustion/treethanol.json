@@ -1,0 +1,10 @@
+{
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "voluminousenergy:treethanol_bucket",
+    "volumetric_energy": 102400
+  },
+  "input_fluid": {
+    "tag": "forge:treethanol"
+  }
+}

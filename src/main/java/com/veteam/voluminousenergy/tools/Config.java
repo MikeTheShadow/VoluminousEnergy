@@ -842,17 +842,17 @@ public class Config {
         SAWMILL_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Sawmill to store")
                 .defineInRange("Maximum Power", 512_000, 0, Integer.MAX_VALUE);
         SAWMILL_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Sawmill")
-                .defineInRange("Power Consumption", 256, 0, Integer.MAX_VALUE);
+                .defineInRange("Power Consumption", 64, 0, Integer.MAX_VALUE);
         SAWMILL_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Sawmill")
                 .defineInRange("Maximum Transfer", 10_000, 0, Integer.MAX_VALUE);
         SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED = COMMON_BUILDER.comment("true/false, Allow the use of logs that don't have a proper Sawmill recipe")
                 .define("Allow logs without recipe", true);
         SAWMILL_FLUID_LOCATION = COMMON_BUILDER.comment("Resource Location of the fluid that will be generated when processing a log without a recipe")
-                .define("Fluid location", "voluminousenergy:crude_oil"); // TODO: Change defaults
+                .define("Fluid location", "voluminousenergy:tree_sap");
         SAWMILL_FLUID_AMOUNT = COMMON_BUILDER.comment("Amount of fluid that will be generated when processing a log without a recipe")
                 .defineInRange("Fluid Amount", 250, 0, 4_000);
         SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION = COMMON_BUILDER.comment("Resource Location of the second output item when processing a log without a recipe")
-                .define("Second output item resource location", "voluminousenergy:carbondust"); // TODO: Change defaults
+                .define("Second output item resource location", "voluminousenergy:saw_dust");
         SAWMILL_SECOND_OUTPUT_COUNT = COMMON_BUILDER.comment("Item count of the second output item when processing a log without a recipe")
                 .defineInRange("Second output count", 1, 0, 64);
         SAWMILL_PROCESSING_TIME = COMMON_BUILDER.comment("Processing time when processing a log without a recipe")

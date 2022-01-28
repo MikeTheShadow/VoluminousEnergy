@@ -108,6 +108,8 @@
     "fluid.voluminousenergy.red_fuming_nitric_acid": "Red Fuming Nitric Acid",
     "fluid.voluminousenergy.white_fuming_nitric_acid": "White Fuming Nitric Acid",
     "fluid.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
+    "fluid.voluminousenergy.tree_sap": "Tree Sap",
+    "fluid.voluminousenergy.treethanol": "Treethanol",
 
     "_comment": "Fluid Blocks",
     "block.voluminousenergy.crude_oil": "Crude Oil",
@@ -257,6 +259,10 @@
     "item.voluminousenergy.cupric_oxide_dust": "Cupric Oxide Dust",
     "item.voluminousenergy.copper_carbonate_dust": "Copper Carbonate Dust",
     "item.voluminousenergy.titanium_sawblade": "Titanium Sawblade",
+    "item.voluminousenergy.saw_dust": "Saw Dust",
+    "item.voluminousenergy.rosin": "Rosin",
+    "item.voluminousenergy.tree_sap_bucket": "Tree Sap Bucket",
+    "item.voluminousenergy.treethanol_bucket": "Treethanol Bucket",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",

@@ -185,4 +185,24 @@ public class VEFluids {
             LiquefiedCoke::FlowingLiquefiedCokeBlock);
     public static RegistryObject<Item> LIQUEFIED_COKE_BUCKET_REG = VE_FLUID_ITEMS.register("liquefied_coke_bucket",
             LiquefiedCoke::LiquefiedCokeBucket);
+
+    // Tree Sap
+    public static RegistryObject<FlowingFluid> TREE_SAP_REG = VE_FLUIDS.register("tree_sap",
+            TreeSap::TreeSapFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_TREE_SAP_REG = VE_FLUIDS.register("flowing_tree_sap",
+            TreeSap::FlowingTreeSapFluid);
+    public static RegistryObject<LiquidBlock> FLOWING_TREE_SAP_BLOCK_REG = VE_FLUID_BLOCKS.register("tree_sap_block",
+            TreeSap::FlowingTreeSapBlock);
+    public static RegistryObject<Item> TREE_SAP_BUCKET_REG = VE_FLUID_ITEMS.register("tree_sap_bucket",
+            TreeSap::TreeSapBucket);
+
+    // Treethanol
+    public static RegistryObject<FlowingFluid> TREETHANOL_REG = VE_FLUIDS.register("treethanol",
+            Treethanol::TreethanolFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_TREETHANOL_REG = VE_FLUIDS.register("flowing_treethanol",
+            Treethanol::FlowingTreethanolFluid);
+    public static RegistryObject<LiquidBlock> FLOWING_TREETHANOL_BLOCK_REG = VE_FLUID_BLOCKS.register("treethanol_block",
+            Treethanol::FlowingTreethanolBlock);
+    public static RegistryObject<Item> TREETHANOL_BUCKET_REG = VE_FLUID_ITEMS.register("treethanol_bucket",
+            Treethanol::TreethanolBucket);
 }

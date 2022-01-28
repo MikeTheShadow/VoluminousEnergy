@@ -14,12 +14,15 @@ import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
+import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
+import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
+import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 
 public class VEItems {
-    public static PetCoke PETCOKE = new PetCoke();
+    public static Petcoke PETCOKE = new Petcoke();
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
@@ -65,6 +68,8 @@ public class VEItems {
     public static CopperDust COPPER_DUST = new CopperDust();
     public static CopperCarbonateDust COPPER_CARBONATE_DUST = new CopperCarbonateDust();
     public static CupricOxideDust CUPRIC_OXIDE_DUST = new CupricOxideDust();
+    public static SawDust SAW_DUST = new SawDust();
+    public static Rosin ROSIN = new Rosin();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
