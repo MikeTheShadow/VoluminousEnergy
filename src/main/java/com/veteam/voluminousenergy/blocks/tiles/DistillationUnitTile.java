@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity {
+public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"i_top_manager");
     public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"i_bottom_manager");

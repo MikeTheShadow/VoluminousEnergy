@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GasFiredFurnaceTile extends VEFluidTileEntity {
+public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountable {
 
     public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_input_gui");
     public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_output_gui");
@@ -196,10 +196,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createFluid() {
-        return createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
     }
 
 

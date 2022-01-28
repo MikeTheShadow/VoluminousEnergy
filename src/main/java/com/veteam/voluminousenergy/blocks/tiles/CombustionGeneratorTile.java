@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
+public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
     // Handlers
 
     // Slot Managers

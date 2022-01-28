@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
+import com.veteam.voluminousenergy.blocks.tiles.IVECountable;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,22 +42,6 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
             addSlot(new VEInsertSlot(h, 4,154, -14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
-
-        addDataSlot(new DataSlot() {
-            @Override
-            public int get() {
-                return getEnergy();
-            }
-
-            @Override
-            public void set(int value) {
-                tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> ((VEEnergyStorage)h).setEnergy(value));
-            }
-        });
-    }
-
-    public int getEnergy(){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     @Override

@@ -113,7 +113,7 @@ public class ToolingStationScreen extends VEContainerScreen<ToolingStationContai
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, Component.nullToEmpty(
                         veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.AQUEOULIZER_MAX_POWER.get() // TODO: Config
+                                + " FE / " + tileEntity.getMaxPower()
                                 + " FE"
                 ), mouseX, mouseY);
             }));

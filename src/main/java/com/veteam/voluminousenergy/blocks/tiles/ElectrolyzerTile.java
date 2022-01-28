@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
     public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");

@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
@@ -114,11 +114,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == Items.CHARCOAL || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE){
-                    return true;
-                } else {
-                    return false;
-                }
+                return stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == Items.CHARCOAL || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE;
             }
 
             @Nonnull

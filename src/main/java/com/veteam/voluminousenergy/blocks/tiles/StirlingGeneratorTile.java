@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");

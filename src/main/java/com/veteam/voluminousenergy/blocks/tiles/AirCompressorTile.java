@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
+public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
     public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT,"output_slot");
 
     private final int TANK_CAPACITY = 4000;

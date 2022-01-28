@@ -235,7 +235,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
                 Direction opposite = dir.getOpposite();
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
-                    int smallest = Math.min(Config.BATTERY_BOX_TRANSFER.get(), energy.getEnergyStored());
+                    int smallest = Math.min(getTransferRate(), energy.getEnergyStored());
                     int received = receiveEnergy(tileEntity, opposite, smallest);
                     energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
@@ -274,6 +274,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
         tag.putBoolean("slot_pair_mode_5", switchManagers[5].isFlipped());
 
         tag.putBoolean("send_out_power", powerIOManager.isFlipped());
+        super.saveAdditional(tag);
     }
 
     @Nonnull

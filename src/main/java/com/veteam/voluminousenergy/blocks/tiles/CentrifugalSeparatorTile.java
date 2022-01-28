@@ -5,13 +5,10 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContain
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,8 +18,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
@@ -357,7 +352,6 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
-
 
     @Override
     public int getMaxPower() {

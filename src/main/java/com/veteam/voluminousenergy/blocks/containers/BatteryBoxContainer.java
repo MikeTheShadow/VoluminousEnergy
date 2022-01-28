@@ -120,4 +120,6 @@ public class BatteryBoxContainer extends VoluminousContainer {
             batteryBoxScreen.updateSendOutPowerButton(status);
         }
     }
+
+
 }

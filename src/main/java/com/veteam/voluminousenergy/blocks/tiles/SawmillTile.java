@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
+public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
     public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");

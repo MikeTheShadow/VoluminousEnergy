@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
@@ -158,8 +157,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
         energy.ifPresent(h -> h.deserializeNBT(tag));
 
-        if(tag.contains("counter")) counter = tag.getInt("counter");
-        if(tag.contains("length")) length = tag.getInt("length");
+        if(this instanceof IVECountable) {
+            counter = tag.getInt("counter");
+            length = tag.getInt("length");
+        }
 
         for(VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
@@ -185,8 +186,11 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             manager.write(tag);
         }
 
-        if (counter > 0) tag.putInt("counter", counter);
-        if (length > 0) tag.putInt("length", length);
+        if(this instanceof IVECountable) {
+            tag.putInt("counter", counter);
+            tag.putInt("length", length);
+        }
+
     }
 
     /**
@@ -301,8 +305,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
                     .consumeEnergy(
                             this.consumptionMultiplier(IVEPoweredTileEntity.getPowerUsage(),
                                     getInventoryHandler().getStackInSlot(IVEPoweredTileEntity.getUpgradeSlotId()).copy())));
+        } else {
+            throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());
         }
-        throw new NotImplementedException("Missing implementation of IPoweredTileEntity in class: " + this.getClass().getName());
     }
 
     /**
@@ -312,11 +317,12 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public boolean canConsumeEnergy() {
-        if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
+        if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
             return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                    > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), getInventoryHandler().getStackInSlot(IVEPoweredTileEntity.getUpgradeSlotId()).copy());
+                    > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
+        } else {
+            throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());
         }
-        throw new NotImplementedException("Missing implementation of IPoweredTileEntity in class: " + this.getClass().getName());
     }
 
     /**

@@ -60,8 +60,6 @@ public class BatteryBoxSlotPairPacket {
                         batteryBoxTile.updateSlotPair(packet.status, packet.id);
                         batteryBoxTile.setChanged();
                     }
-                } else {
-                    batteryBoxContainer.updateSlotPairButton(packet.status, packet.id);
                 }
             }
         }
