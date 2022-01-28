@@ -7,13 +7,13 @@ import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,38 +23,30 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
-public class SawmillTile extends VEFluidTileEntity {
-
-    // Handlers
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
-    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager plankSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager secondOutputSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
+    public VESlotManager plankSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"plank_slot");
+    public VESlotManager secondOutputSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"second_output_slot");
+    public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_top_slot");
+    public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_bottom_slot");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSm);
@@ -64,21 +56,24 @@ public class SawmillTile extends VEFluidTileEntity {
         add(bucketBottomSm);
     }};
 
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,0);
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,0,"outputTank:output_tank_gui");
     private final FluidStack configuredFluidForNoRecipe = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get()))), Config.SAWMILL_FLUID_AMOUNT.get());
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
     }};
 
-    private int counter;
-    private int length;
-
-    private ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     public SawmillTile(BlockPos pos, BlockState state) {
@@ -220,182 +215,6 @@ public class SawmillTile extends VEFluidTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.SAWMILL_POWER_USAGE.get(),
-                                this.inventory.getStackInSlot(5).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.SAWMILL_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        // Slot Managers
-        this.inputSm.read(tag, "input_slot");
-        this.plankSm.read(tag, "plank_slot");
-        this.secondOutputSm.read(tag,"second_output_slot");
-        this.bucketTopSm.read(tag, "bucket_top_slot");
-        this.bucketBottomSm.read(tag, "bucket_bottom_slot");
-
-        // Tanks
-        CompoundTag outputTank = tag.getCompound("outputTank");
-
-        this.outputTank.getTank().readFromNBT(outputTank);
-
-        this.outputTank.readGuiProperties(tag, "output_tank_gui");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        // Slot Managers
-        this.inputSm.write(tag, "input_slot");
-        this.plankSm.write(tag, "plank_slot");
-        this.secondOutputSm.write(tag,"second_output_slot");
-        this.bucketTopSm.write(tag, "bucket_top_slot");
-        this.bucketBottomSm.write(tag, "bucket_bottom_slot");
-
-        // Tanks
-        CompoundTag outputNBT = new CompoundTag();
-
-        this.outputTank.getTank().writeToNBT(outputNBT);
-
-        tag.put("outputTank", outputNBT);
-
-        this.outputTank.writeGuiProperties(tag, "output_tank_gui");
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createOutputFluidHandler(){
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                return outputTank.getTank().getFluid();
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                return outputTank.getTank().getTankCapacity(0);
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (!inventory.getStackInSlot(0).isEmpty()){
-                    ItemStack logStack = inventory.getStackInSlot(0).copy();
-                    SawmillingRecipe sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromLog(level, logStack);
-
-                    if (sawmillingRecipe == null){
-                        if (!configuredFluidForNoRecipe.isFluidEqual(stack) || !Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) return false;
-                        ItemStack plankStack = RecipeUtil.getPlankFromLogParallel(level, logStack);
-                        return plankStack != null && plankStack.isEmpty();
-                    } else { // Sawmilling recipe is not null
-                        return sawmillingRecipe.getOutputFluid().isFluidEqual(stack);
-                    }
-                } else if (!inventory.getStackInSlot(1).isEmpty()){
-                    ItemStack plankStack = inventory.getStackInSlot(1).copy();
-                    SawmillingRecipe sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromPlank(level, plankStack);
-
-                    if (sawmillingRecipe == null){
-                        if (!configuredFluidForNoRecipe.isFluidEqual(stack) || !Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) return false;
-                        ArrayList<ItemStack> logList = RecipeUtil.getLogFromPlankParallel(level, plankStack);
-                        return logList == null ? false : !(logList.isEmpty());
-                    } else { // Sawmilling recipe is not null
-                        return sawmillingRecipe.getOutputFluid().isFluidEqual(stack);
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if(isFluidValid(outputTank.getId(),resource) && outputTank.getTank().isEmpty()
-                        || resource.isFluidEqual(outputTank.getTank().getFluid())) {
-                    return outputTank.getTank().fill(resource, action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-
-                if(resource.isFluidEqual(outputTank.getTank().getFluid())) {
-                    return outputTank.getTank().drain(resource,action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if(outputTank.getTank().getFluidAmount() > 0) {
-                    if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                        return outputTank.getTank().drain(maxDrain, action);
-                    } else if (outputTank.getTankType() != TankType.INPUT) {
-                        return outputTank.getTank().drain(maxDrain, action);
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -429,29 +248,6 @@ public class SawmillTile extends VEFluidTileEntity {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.SAWMILL_MAX_POWER.get(), Config.SAWMILL_TRANSFER.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -475,59 +271,27 @@ public class SawmillTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,inputSm,plankSm,secondOutputSm,bucketTopSm,bucketBottomSm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.outputTank.getId()){
-            this.outputTank.setSideStatus(status);
-        }
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.outputTank.getId()){
-            this.outputTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-        }
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, inputSm, plankSm, secondOutputSm, bucketBottomSm, bucketTopSm, bucketBottomSm);
-                        bulkSendTankPackets(s, outputTank);
-                    }
-                });
-            });
-        }
+    public int getMaxPower() {
+        return Config.SAWMILL_MAX_POWER.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getPowerUsage() {
+        return Config.SAWMILL_POWER_USAGE.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof SawmillContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getTransferRate() {
+        return Config.SAWMILL_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
+import com.veteam.voluminousenergy.blocks.screens.AirCompressorScreen;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -14,7 +16,13 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nullable;
 
 public class VoluminousContainer extends AbstractContainerMenu {
+
     BlockEntity tileEntity;
+
+    Player playerEntity;
+    IItemHandler playerInventory;
+
+    VEContainerScreen<?> screen;
 
     protected VoluminousContainer(@Nullable MenuType<?> p_i50105_1_, int p_i50105_2_) {
         super(p_i50105_1_, p_i50105_2_);
@@ -85,15 +93,28 @@ public class VoluminousContainer extends AbstractContainerMenu {
         return null;
     }
 
-    public void updateDirectionButton(int direction, int slotId){}
-
-    public void updateStatusButton(boolean status, int slotId) {}
-
-    public void updateStatusTank(boolean status, int id){}
-
-    public void updateDirectionTank(int direction, int id) {}
-
     public void setTileEntity(BlockEntity tileEntity){
         this.tileEntity = tileEntity;
+    }
+
+    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
+    public void setScreen(VEContainerScreen screen){
+        this.screen = screen;
+    }
+
+    public void updateDirectionButton(int direction, int slotId){
+        screen.updateButtonDirection(direction,slotId);
+    }
+
+    public void updateStatusButton(boolean status, int slotId){
+        screen.updateBooleanButton(status, slotId);
+    }
+
+    public void updateStatusTank(boolean status, int id){
+        screen.updateTankStatus(status, id);
+    }
+
+    public void updateDirectionTank(int direction, int id){
+        screen.updateTankDirection(direction, id);
     }
 }

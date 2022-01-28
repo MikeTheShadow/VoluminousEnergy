@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.CrusherInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -26,9 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAIN
 
 public class CrusherContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private CrusherScreen crusherScreen;
+
     private static final int numberOfSlots = 4;
 
     public CrusherContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -111,19 +107,5 @@ public class CrusherContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setCrusherScreen(CrusherScreen crusherScreen){
-        this.crusherScreen = crusherScreen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){
-        this.crusherScreen.updateButtonDirection(direction,slotId);
-    }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.crusherScreen.updateBooleanButton(status, slotId);
     }
 }

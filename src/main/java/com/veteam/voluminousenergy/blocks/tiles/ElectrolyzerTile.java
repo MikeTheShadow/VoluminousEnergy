@@ -10,13 +10,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -25,33 +19,28 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
+public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
+    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-
-    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
+    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_manager");
+    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
+    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_one_manager");
+    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_two_manager");
+    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_three_manager");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSm);
@@ -62,8 +51,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
         add(rngThreeSm);
     }};
 
-    private int counter;
-    private int length;
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ElectrolyzerTile(BlockPos pos, BlockState state) {
@@ -215,21 +202,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
         });
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(6).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.ELECTROLYZER_POWER_USAGE.get(), this.inventory.getStackInSlot(6).copy());
-    }
-
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
         if (one.getCount() + recipe.getOutputAmount() > one.getItem().getItemStackLimit(one.copy())){ // Main output slot
@@ -287,47 +259,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
             }
         }
         return isEmpty;
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>)h).deserializeNBT(inv));
-        //createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        inputSm.read(tag, "input_manager");
-        bucketSm.read(tag, "bucket_manager");
-        outputSm.read(tag, "output_manager");
-        rngOneSm.read(tag, "rng_one_manager");
-        rngTwoSm.read(tag, "rng_two_manager");
-        rngThreeSm.read(tag, "rng_three_manager");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        inputSm.write(tag, "input_manager");
-        bucketSm.write(tag, "bucket_manager");
-        outputSm.write(tag, "output_manager");
-        rngOneSm.write(tag, "rng_one_manager");
-        rngTwoSm.write(tag, "rng_two_manager");
-        rngThreeSm.write(tag, "rng_three_manager");
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(7) {
@@ -406,51 +337,21 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
         }
     };
 
-    private VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.ELECTROLYZER_MAX_POWER.get(),Config.ELECTROLYZER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        }else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new ElectrolyzerContainer(i,level,worldPosition,playerInventory,playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     public int progressCounterPX(int px) {
@@ -459,46 +360,22 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements MenuProvid
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction, slotId, inputSm, bucketSm, outputSm, rngOneSm, rngTwoSm, rngThreeSm);
+    public int getMaxPower() {
+        return Config.ELECTROLYZER_MAX_POWER.get();
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s,inputSm,bucketSm,outputSm,rngOneSm,rngTwoSm,rngThreeSm);
-                    }
-                });
-            });
-        }
+    public int getPowerUsage() {
+        return Config.ELECTROLYZER_POWER_USAGE.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getTransferRate() {
+        return Config.ELECTROLYZER_TRANSFER.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof ElectrolyzerContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

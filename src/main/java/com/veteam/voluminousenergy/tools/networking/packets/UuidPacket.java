@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.network.FriendlyByteBuf;
@@ -41,7 +42,7 @@ public class UuidPacket {
 
     public static void handle(UuidPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
         AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
-        contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
+        //contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
         contextSupplier.get().setPacketHandled(true);
     }
 
@@ -49,7 +50,7 @@ public class UuidPacket {
         if (openContainer == null) return;
         if (openContainer instanceof VoluminousContainer voluminousContainer) {
             VoluminousTileEntity voluminousTileEntity = (VoluminousTileEntity) voluminousContainer.getTileEntity();
-            voluminousTileEntity.uuidPacket(packet.uuid, packet.connection);
+            //voluminousTileEntity.uuidPacket(packet.uuid, packet.connection);
             voluminousTileEntity.setChanged();
         }
     }

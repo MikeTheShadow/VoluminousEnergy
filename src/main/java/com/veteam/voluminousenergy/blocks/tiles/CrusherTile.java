@@ -10,13 +10,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,30 +20,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
-    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot",SlotType.OUTPUT);
+    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
+    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
+    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot",SlotType.OUTPUT,"rng_slot");
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSlotProp);
@@ -59,8 +48,7 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
 
     // Sided Item Handlers
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private int counter;
-    private int length;
+
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CrusherTile(BlockPos pos, BlockState state) {
@@ -228,90 +216,8 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(3).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CRUSHER_POWER_USAGE.get(), this.inventory.getStackInSlot(3).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag){
-        CompoundTag inv = tag.getCompound("inv");
-        this.inventory.deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        inputSlotProp.read(tag, "input_slot");
-        outputSlotProp.read(tag, "output_slot");
-        rngSlotProp.read(tag, "rng_slot");
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        tag.put("inv", this.inventory.serializeNBT());
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        inputSlotProp.write(tag, "input_slot");
-        outputSlotProp.write(tag, "output_slot");
-        rngSlotProp.write(tag, "rng_slot");
-    }
-
-    private VEEnergyStorage createEnergy(){
+    public @Nonnull VEEnergyStorage createEnergy(){
         return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
     }
 
     @Nullable
@@ -320,52 +226,39 @@ public class CrusherTile extends VoluminousTileEntity implements MenuProvider {
         return new CrusherContainer(i,level,worldPosition,playerInventory,playerEntity);
     }
 
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
+    }
+
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,inputSlotProp,outputSlotProp,rngSlotProp);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,inputSlotProp,outputSlotProp,rngSlotProp);
+    public int getMaxPower() {
+        return Config.CRUSHER_MAX_POWER.get();
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)) {
-                        bulkSendSMPacket(s, inputSlotProp, outputSlotProp, rngSlotProp);
-                    }
-                });
-            });
-        }
+    public int getPowerUsage() {
+        return Config.CRUSHER_POWER_USAGE.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getTransferRate() {
+        return Config.CRUSHER_TRANSFER.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof CrusherContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

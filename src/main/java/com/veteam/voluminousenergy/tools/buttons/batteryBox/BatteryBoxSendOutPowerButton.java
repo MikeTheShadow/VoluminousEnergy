@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
+import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
 import net.minecraft.network.chat.Component;
@@ -14,17 +15,18 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
-    private BatteryBoxTile batteryBoxTile;
+    private final BatteryBoxTile batteryBoxTile;
     private boolean sendOutPower;
     private int u= 0;
     private int v= 166;
+    private final VEPowerIOManager powerIOManager;
 
-
-    public BatteryBoxSendOutPowerButton(int x, int y, BatteryBoxTile batteryBoxTile, OnPress onPress) {
+    public BatteryBoxSendOutPowerButton(VEPowerIOManager powerIOManager, int x, int y, BatteryBoxTile batteryBoxTile, OnPress onPress) {
         super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
             ((BatteryBoxSendOutPowerButton) button).cycle();
             onPress.onPress(button);
         });
+        this.powerIOManager = powerIOManager;
         this.batteryBoxTile = batteryBoxTile;
         this.x = x;
         this.y = y;
@@ -47,6 +49,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private void cycle(){
         sendOutPower = !sendOutPower;
+        powerIOManager.setFlipped(true);
         this.batteryBoxTile.updateSendOutPower(sendOutPower);
     }
 
@@ -58,5 +61,6 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     public void setStatus(boolean status){
         sendOutPower = status;
+        powerIOManager.setFlipped(sendOutPower);
     }
 }

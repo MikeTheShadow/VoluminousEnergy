@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -15,11 +14,6 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -29,16 +23,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,19 +37,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuProvider {
+public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
     // Handlers
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
 
     // Slot Managers
-    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT);
-    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT);
+    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"oxi_in_sm");
+    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"oxi_out_sm");
+    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"fuel_in_sm");
+    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"fuel_out_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -73,8 +58,8 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
 
     private final int tankCapacity = 4000;
 
-    private final RelationalTank oxidizerTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.INPUT);
-    private final RelationalTank fuelTank = new RelationalTank(new FluidTank(tankCapacity), 1, null, null, TankType.INPUT);
+    private final RelationalTank oxidizerTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.INPUT,"oxidizerTank:oxidizer_tank_gui");
+    private final RelationalTank fuelTank = new RelationalTank(new FluidTank(tankCapacity), 1, null, null, TankType.INPUT,"fuelTank:fuel_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -82,9 +67,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
             add(fuelTank);
         }
     };
-
-    private int counter;
-    private int length;
     private int energyRate;
 
     private final ItemStackHandler inventory = createHandler();
@@ -204,6 +186,18 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
 
     }
 
+    @Override
+    public void load(CompoundTag tag){
+        energyRate = tag.getInt("energy_rate");
+        super.load(tag);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        tag.putInt("energy_rate", energyRate);
+        super.saveAdditional(tag);
+    }
+
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
@@ -226,234 +220,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
             }
         });
     }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        oxiInSm.read(tag, "oxi_in_sm");
-        oxiOutSm.read(tag, "oxi_out_sm");
-        fuelInSm.read(tag, "fuel_in_sm");
-        fuelOutSm.read(tag, "fuel_out_sm");
-
-        // Tanks
-        CompoundTag oxidizerNBT = tag.getCompound("oxidizerTank");
-        CompoundTag fuelNBT = tag.getCompound("fuelTank");
-        oxidizerTank.getTank().readFromNBT(oxidizerNBT);
-        fuelTank.getTank().readFromNBT(fuelNBT);
-
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-        energyRate = tag.getInt("energy_rate");
-
-        oxidizerTank.readGuiProperties(tag, "oxidizer_tank_gui");
-        fuelTank.readGuiProperties(tag, "fuel_tank_gui");
-
-        super.load(tag);
-    }
-
-    @Nonnull
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        oxiInSm.write(tag, "oxi_in_sm");
-        oxiOutSm.write(tag, "oxi_out_sm");
-        fuelInSm.write(tag, "fuel_in_sm");
-        fuelOutSm.write(tag, "fuel_out_sm");
-
-        // Tanks
-        CompoundTag oxidizerNBT = new CompoundTag();
-        oxidizerTank.getTank().writeToNBT(oxidizerNBT);
-        tag.put("oxidizerTank", oxidizerNBT);
-
-        CompoundTag fuelNBT = new CompoundTag();
-        fuelTank.getTank().writeToNBT(fuelNBT);
-        tag.put("fuelTank", fuelNBT);
-
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-        tag.putInt("energy_rate", energyRate);
-
-        oxidizerTank.writeGuiProperties(tag, "oxidizer_tank_gui");
-        fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private @NotNull IFluidHandler createOxidizerHandler() {
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                if (tank == 0) {
-                    return oxidizerTank.getTank() == null ? FluidStack.EMPTY : oxidizerTank.getTank().getFluid();
-                }
-                LOGGER.debug("Invalid tankId in Combustion Generator Tile for getFluidInTank");
-                return FluidStack.EMPTY;
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                if (tank == 0) {
-                    return oxidizerTank.getTank() == null ? 0 : oxidizerTank.getTank().getCapacity();
-                }
-                LOGGER.debug("Invalid tankId in Combustion Generator Tile for getTankCapacity");
-                return 0;
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (tank == 0) {
-                    ItemStack oxidizerStack = new ItemStack(stack.getFluid().getBucket(), 1);
-                    CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, stack.copy());
-                    if (oxidizerRecipe == null) {
-                        return false;
-                    }
-                    return oxidizerTank.getTank() != null && oxidizerTank.getTank().isFluidValid(stack);
-                }
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && oxidizerTank.getTank().isEmpty() || resource.isFluidEqual(oxidizerTank.getTank().getFluid())) {
-                    return oxidizerTank.getTank().fill(resource.copy(), action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-                if (resource.isFluidEqual(oxidizerTank.getTank().getFluid())) {
-                    return oxidizerTank.getTank().drain(resource.copy(), action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if (oxidizerTank.getTank().getFluidAmount() > 0) {
-                    return oxidizerTank.getTank().drain(maxDrain, action);
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
-
-    private @NotNull IFluidHandler createFuelHandler() {
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                if (tank == 0) {
-                    return fuelTank.getTank() == null ? FluidStack.EMPTY : fuelTank.getTank().getFluid();
-                }
-                LOGGER.debug("Invalid tankId in Combustion Generator Tile for getFluidInTank");
-                return FluidStack.EMPTY;
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                if (tank == 0) {
-                    return fuelTank.getTank() == null ? 0 : fuelTank.getTank().getCapacity();
-                }
-                LOGGER.debug("Invalid tankId in Combustion Generator Tile for getTankCapacity");
-                return 0;
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                if (tank == 0) {
-                    VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(level, stack.copy());
-                    if (fuelRecipe == null) {
-                        return false;
-                    }
-                    return fuelTank.getTank() != null && fuelTank.getTank().isFluidValid(stack);
-                }
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && fuelTank.getTank().isEmpty() || resource.isFluidEqual(fuelTank.getTank().getFluid())) {
-                    return fuelTank.getTank().fill(resource.copy(), action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-                if (resource.isFluidEqual(fuelTank.getTank().getFluid())) {
-                    return fuelTank.getTank().drain(resource.copy(), action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if (fuelTank.getTank().getFluidAmount() > 0) {
-                    return fuelTank.getTank().drain(maxDrain, action);
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(4) {
@@ -481,7 +247,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
                 return super.insertItem(slot, stack, simulate);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return super.extractItem(slot, amount, simulate);
@@ -489,33 +255,21 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.COMBUSTION_GENERATOR_MAX_POWER.get(), Config.COMBUSTION_GENERATOR_SEND.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new CombustionGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
+    }
+
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     public int progressCounterPX(int px) {
@@ -537,6 +291,11 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
 
     public int getTankCapacity() {
         return tankCapacity;
+    }
+
+    @Override
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public int progressCounterPercent() {
@@ -564,55 +323,22 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements MenuPr
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId) {
-        processGUIPacketStatus(status, slotId, oxiInSm, oxiOutSm, fuelInSm, fuelOutSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        processGUIPacketDirection(direction, slotId, oxiInSm, oxiOutSm, fuelInSm, fuelOutSm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id) {
-        processGUIPacketFluidStatus(status, id, oxidizerTank, fuelTank);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id) {
-        processGUIPacketFluidDirection(direction, id, oxidizerTank, fuelTank);
+    public int getMaxPower() {
+        return Config.COMBUSTION_GENERATOR_MAX_POWER.get();
     }
 
     @Override
-    public void sendPacketToClient() {
-        if (level == null || getLevel() == null) return;
-        if (getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)) {
-                        bulkSendSMPacket(s, oxiInSm, oxiOutSm, fuelInSm, fuelOutSm);
-                        bulkSendTankPackets(s, oxidizerTank, fuelTank);
-                    }
-                });
-            });
-        }
+    public int getPowerUsage() {
+        return -1;
     }
 
     @Override
-    protected void uuidCleanup() {
-        if (playerUuid.isEmpty() || level == null) return;
-        if (level.getServer() == null) return;
+    public int getTransferRate() {
+        return Config.COMBUSTION_GENERATOR_SEND.get();
+    }
 
-        if (cleanupTick == 20) {
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player -> {
-                if (player.containerMenu != null) {
-                    if (!(player.containerMenu instanceof CombustionGeneratorContainer)) {
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null) {
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getUpgradeSlotId() {
+        return -1;
     }
 }

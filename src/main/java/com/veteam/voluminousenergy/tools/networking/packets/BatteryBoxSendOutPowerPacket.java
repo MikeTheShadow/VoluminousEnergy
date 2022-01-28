@@ -49,15 +49,15 @@ public class BatteryBoxSendOutPowerPacket {
 
     public static void handlePacket(BatteryBoxSendOutPowerPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
-            if(openContainer instanceof BatteryBoxContainer){
+            if(openContainer instanceof BatteryBoxContainer batteryBoxContainer){
                 if(onServer){
-                    BlockEntity tileEntity = ((BatteryBoxContainer) openContainer).getTileEntity();
-                    if(tileEntity instanceof BatteryBoxTile){ // sanity check
-                        ((BatteryBoxTile) tileEntity).updateSendOutPower(packet.status);
-                        tileEntity.setChanged();
+                    BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
+                    if(tileEntity instanceof BatteryBoxTile batteryBoxTile){
+                        batteryBoxTile.updateSendOutPower(packet.status);
+                        batteryBoxTile.setChanged();
                     }
                 } else {
-                    ((BatteryBoxContainer) openContainer).updateSendOutPowerButton(packet.status);
+                    batteryBoxContainer.updateSendOutPowerButton(packet.status);
                 }
             }
         }

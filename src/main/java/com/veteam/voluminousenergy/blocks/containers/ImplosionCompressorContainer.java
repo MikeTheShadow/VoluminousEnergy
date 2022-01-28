@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -25,8 +24,6 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.IMPLOSION_COMPR
 
 public class ImplosionCompressorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
     private ImplosionCompressorScreen screen;
     private static final int numberOfSlots = 4;
 

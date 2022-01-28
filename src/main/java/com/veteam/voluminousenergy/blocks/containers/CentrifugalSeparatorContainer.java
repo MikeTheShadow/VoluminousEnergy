@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.blocks.screens.CentrifugalSeparatorScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,16 +15,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
 public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private CentrifugalSeparatorScreen screen;
+
     private static final int numberOfSlots = 7;
 
     public CentrifugalSeparatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -107,18 +103,5 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(CentrifugalSeparatorScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
     }
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -25,8 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_
 
 public class AirCompressorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
+
     protected AirCompressorScreen airCompressorScreen;
     private static final int numberOfSlots = 2;
 
@@ -41,6 +39,7 @@ public class AirCompressorContainer extends VoluminousContainer {
             addSlot(new VEBucketSlot(h, 0, 70, 49)); // Air Compressor extract slot
             addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
         });
+
         layoutPlayerInventorySlots(8, 84);
 
         addDataSlot(new DataSlot() { // TrackInt is now addDataSlot
@@ -106,28 +105,6 @@ public class AirCompressorContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setAirCompressorScreen(AirCompressorScreen airCompressorScreen){
-        this.airCompressorScreen = airCompressorScreen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){
-        this.airCompressorScreen.updateButtonDirection(direction,slotId);
-    }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.airCompressorScreen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.airCompressorScreen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.airCompressorScreen.updateTankDirection(direction, id);
     }
 }
 

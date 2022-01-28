@@ -7,31 +7,23 @@ import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.blocks.tiles.DistillationUnitTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.UUID;
-
-public class DistillationUnitScreen extends AbstractContainerScreen<DistillationUnitContainer> {
+public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitContainer> {
     private DistillationUnitTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
@@ -156,7 +148,13 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.DISTILLATION_UNIT_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.DISTILLATION_UNIT_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -212,7 +210,7 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
             try{
                 VERender.renderGuiTank(tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 11, 0, 12, 50);
             } catch (Exception e){ }
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
@@ -221,75 +219,6 @@ public class DistillationUnitScreen extends AbstractContainerScreen<Distillation
             this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
         }
 
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
-                ((TankDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((TankBoolButton) widget).toggleRender(true);
-                ((TankBoolButton) widget).setStatus(status);
-                ((TankBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
     }
 
 }

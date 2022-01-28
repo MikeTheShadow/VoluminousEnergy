@@ -6,31 +6,23 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.UUID;
-
-public class GasFiredFurnaceScreen extends AbstractContainerScreen<GasFiredFurnaceContainer> {
+public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceContainer> {
     private GasFiredFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/gas_fired_furnace_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public GasFiredFurnaceScreen(GasFiredFurnaceContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
@@ -147,78 +139,10 @@ public class GasFiredFurnaceScreen extends AbstractContainerScreen<GasFiredFurna
             this.blit(matrixStack,i+54,j+(54 + (flameHeight - fuelProgress)),176,24 + (flameHeight - fuelProgress),flameHeight,fuelProgress);
 
             VERender.renderGuiTank(tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
     }
 
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
-                ((TankDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((TankBoolButton) widget).toggleRender(true);
-                ((TankBoolButton) widget).setStatus(status);
-                ((TankBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
-    }
 }

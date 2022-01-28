@@ -5,29 +5,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
-import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
-import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.UUID;
-
-public class PrimitiveBlastFurnaceScreen extends AbstractContainerScreen<PrimitiveBlastFurnaceContainer> {
+public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlastFurnaceContainer> {
     private PrimitiveBlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private boolean openedIOGui = false;
+    
 
     public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
@@ -106,61 +98,11 @@ public class PrimitiveBlastFurnaceScreen extends AbstractContainerScreen<Primiti
              */
             this.blit(matrixStack,i+78, j+32, 176, 0, progress, 17);
             //this.blit(i,j,180,1,progress,15);
-            drawIOSideHelper(matrixStack,i,j,mouseX,mouseY,partialTicks);
+            drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         this.blit(matrixStack,i+153, j-16,0,0,18,18);
-    }
-
-    private void drawIOSideHelper(PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks){
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen() && !openedIOGui) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(true);
-                            informTileOfIOButton(true);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
-                            ((VEIOButton) button).toggleRender(false);
-                            informTileOfIOButton(false);
-                            openedIOGui = !openedIOGui;
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
-            }
-        }
-    }
-
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
-            }
-        }
-    }
-
-    public void informTileOfIOButton(boolean connection){
-        UUID uuid = Minecraft.getInstance().player.getUUID();
-        if(uuid != null){
-            VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
-        }
     }
 
 }

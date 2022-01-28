@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SlotDirectionButton extends VEIOButton {
-    private VESlotManager slotManager;
+    private final VESlotManager slotManager;
     private Direction direction;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
@@ -33,24 +33,13 @@ public class SlotDirectionButton extends VEIOButton {
     }
 
     private void cycle(){
-        switch(direction){
-            case UP:
-                direction = Direction.DOWN;
-                break;
-            case DOWN:
-                direction = Direction.NORTH;
-                break;
-            case NORTH:
-                direction = Direction.SOUTH;
-                break;
-            case SOUTH:
-                direction = Direction.EAST;
-                break;
-            case EAST:
-                direction = Direction.WEST;
-                break;
-            default:
-                direction = Direction.UP;
+        switch (direction) {
+            case UP -> direction = Direction.DOWN;
+            case DOWN -> direction = Direction.NORTH;
+            case NORTH -> direction = Direction.SOUTH;
+            case SOUTH -> direction = Direction.EAST;
+            case EAST -> direction = Direction.WEST;
+            default -> direction = Direction.UP;
         }
     }
 
@@ -70,7 +59,6 @@ public class SlotDirectionButton extends VEIOButton {
             blit(matrixStack, this.x, this.y, 0, 186, this.width, this.height);
         }
 
-        // Print text
         Component textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
         drawCenteredString(matrixStack, Minecraft.getInstance().font, textComponent.getString(),(this.x)+48,(this.y)+5,0xffffff);
     }

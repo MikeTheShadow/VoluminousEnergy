@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.StirlingGeneratorInputSlot;
-import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -24,9 +22,6 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.STIRLING_GENERA
 
 public class StirlingGeneratorContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private StirlingGeneratorScreen screen;
     private static final int numberOfSlots = 1;
 
     public StirlingGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -102,15 +97,4 @@ public class StirlingGeneratorContainer extends VoluminousContainer {
         return returnStack;
     }
 
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(StirlingGeneratorScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
 }

@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContaine
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -13,44 +12,28 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class CentrifugalAgitatorTile extends VEFluidTileEntity {
+public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(input0sm);
@@ -59,9 +42,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         add(output1sm);
     }};
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.OUTPUT,1);
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
+    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank0:output_tank_0_gui");
+    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.OUTPUT,1,"outputTank1:output_tank_1_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
        add(inputTank);
@@ -69,17 +52,14 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
        add(outputTank1);
     }};
 
-    private int counter;
-    private int length;
-
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
     }
 
-    public ItemStackHandler inventory = createHandler();
+    public ItemStackHandler inventory = createHandler(5);
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
     }
 
@@ -154,165 +134,17 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         }
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(4).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
     @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        input0sm.read(tag,"input_0_sm");
-        input1sm.read(tag, "input_1_sm");
-        output0sm.read(tag, "output_0_sm");
-        output1sm.read(tag, "output_1_sm");
-
-        // Tanks
-        CompoundTag inputTank = tag.getCompound("inputTank");
-        CompoundTag outputTank0 = tag.getCompound("outputTank0");
-        CompoundTag outputTank1 = tag.getCompound("outputTank1");
-
-        this.inputTank.getTank().readFromNBT(inputTank);
-        this.outputTank0.getTank().readFromNBT(outputTank0);
-        this.outputTank1.getTank().readFromNBT(outputTank1);
-
-        this.inputTank.readGuiProperties(tag,"input_tank_gui");
-        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        input0sm.write(tag,"input_0_sm");
-        input1sm.write(tag, "input_1_sm");
-        output0sm.write(tag, "output_0_sm");
-        output1sm.write(tag, "output_1_sm");
-
-        // Tanks
-        CompoundTag inputNBT = new CompoundTag();
-        CompoundTag outputNBT0 = new CompoundTag();
-        CompoundTag outputNBT1 = new CompoundTag();
-
-        this.inputTank.getTank().writeToNBT(inputNBT);
-        this.outputTank0.getTank().writeToNBT(outputNBT0);
-        this.outputTank1.getTank().writeToNBT(outputNBT1);
-
-        tag.put("inputTank", inputNBT);
-        tag.put("outputTank0", outputNBT0);
-        tag.put("outputTank1", outputNBT1);
-
-        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
-        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> ((VEEnergyStorage)e).setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createInputTankFluidHandler() {
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), inputTank);
-    }
-
-    private IFluidHandler createOutputTank0FluidHandler(){
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank0);
-    }
-
-    private IFluidHandler createOutputTank1FluidHandler(){
-        return createFluidHandler(new CentrifugalAgitatorRecipe(), outputTank1);
-    }
-
-
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(5) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                return true;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
-
-    private VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get(), Config.CENTRIFUGAL_AGITATOR_TRANSFER.get()); // Max Power Storage, Max transfer
+    public int getUpgradeSlotId() {
+        return 4;
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            if (!inputTank.isValidFluidsSet()) inputTank.setValidFluids(RecipeUtil.getCentrifugalAgitatorInputFluids(level));
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
+    
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -324,6 +156,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return 0;
     }
 
+    // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return inputTank.getTank().getFluid();
@@ -339,6 +172,11 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
         return TANK_CAPACITY;
     }
 
+    @Override
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
+    }
+
     public RelationalTank getInputTank(){
         return this.inputTank;
     }
@@ -352,58 +190,17 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity {
     }
 
     @Override
-public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,inputTank,outputTank0,outputTank1);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,inputTank,outputTank0,outputTank1);
+    public int getMaxPower() {
+        return Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get();
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        bulkSendSMPacket(s, input0sm,input1sm,output0sm,output1sm);
-
-                        bulkSendTankPackets(s,inputTank,outputTank0,outputTank1);
-                    }
-                });
-            });
-        }
+    public int getPowerUsage() {
+        return Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
-
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof CentrifugalAgitatorContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    public int getTransferRate() {
+        return Config.CENTRIFUGAL_AGITATOR_TRANSFER.get();
     }
-
 }

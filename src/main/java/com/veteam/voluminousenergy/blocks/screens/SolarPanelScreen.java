@@ -8,14 +8,13 @@ import com.veteam.voluminousenergy.blocks.tiles.SolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelContainer> {
+public class SolarPanelScreen extends VEContainerScreen<SolarPanelContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private SolarPanelTile tileEntity;
@@ -36,7 +35,13 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelContaine
     @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE / " + Config.SOLAR_PANEL_MAX_POWER.get() + " FE"), mouseX, mouseY);
+            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
+                renderTooltip(matrixStack, Component.nullToEmpty(
+                        veEnergyStorage.getEnergyStored()
+                                + " FE / " + Config.SOLAR_PANEL_MAX_POWER.get()
+                                + " FE"
+                ), mouseX, mouseY);
+            }));
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }

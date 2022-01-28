@@ -5,14 +5,12 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.SolarPanelContainer;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,15 +21,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
-public class SolarPanelTile extends VESolarTile implements MenuProvider {
+public class SolarPanelTile extends VESolarTile implements IVEPoweredTileEntity {
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
     private int generation;
 
     public SolarPanelTile(BlockPos pos, BlockState state) {
@@ -94,33 +93,9 @@ public class SolarPanelTile extends VESolarTile implements MenuProvider {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         energy.ifPresent(h -> h.serializeNBT(tag));
         this.generation = tag.getInt("generation_rate");
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt){
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.SOLAR_PANEL_MAX_POWER.get(),Config.SOLAR_PANEL_MAX_POWER.get()); // Config
     }
 
     @Nonnull
@@ -132,15 +107,22 @@ public class SolarPanelTile extends VESolarTile implements MenuProvider {
         return super.getCapability(cap, side);
     }
 
-    @Override
-    public Component getDisplayName(){
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
         return new SolarPanelContainer(i, level, worldPosition, playerInventory, playerEntity);
+    }
+
+    @Nullable
+    @Override
+    public ItemStackHandler getInventoryHandler() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return new ArrayList<>();
     }
 
     public int getGeneration(){
@@ -148,23 +130,22 @@ public class SolarPanelTile extends VESolarTile implements MenuProvider {
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getMaxPower() {
+        return Config.SOLAR_PANEL_MAX_POWER.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof SolarPanelContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Config.SOLAR_PANEL_SEND.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

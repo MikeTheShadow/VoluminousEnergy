@@ -6,13 +6,14 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
@@ -26,32 +27,24 @@ import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GasFiredFurnaceTile extends VEFluidTileEntity {
+public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountable {
 
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
-
-    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_input_gui");
+    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_output_gui");
+    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"furnace_input_gui");
+    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"furnace_output_gui");
 
     List<VESlotManager> slotManagers =  new ArrayList<>() {{
         add(bucketInputSm);
@@ -60,7 +53,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         add(furnaceOutputSm);
     }};
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"fuel_tank:fuel_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
@@ -68,11 +61,9 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     private int fuelCounter;
     private int fuelLength;
-    private int counter;
-    private int length;
 
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
-    private AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
@@ -81,8 +72,14 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     @Override
@@ -181,79 +178,24 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         } else counter = 0;
     }
 
-    /* Read and Write on World save */
-
     @Override
     public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-
-        // Tanks
-        CompoundTag tankNbt = tag.getCompound("fuel_tank");
-        this.fuelTank.getTank().readFromNBT(tankNbt);
-
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
         fuelCounter = tag.getInt("fuel_counter");
         fuelLength = tag.getInt("fuel_length");
-
-        this.fuelTank.readGuiProperties(tag, "fuel_tank_gui");
-        this.bucketInputSm.read(tag, "bucket_input_gui");
-        this.bucketOutputSm.read(tag, "bucket_output_gui");
-        this.furnaceInputSm.read(tag, "furnace_input_gui");
-        this.furnaceOutputSm.read(tag, "furnace_output_gui");
-
         super.load(tag);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-
-        // Tanks
-        CompoundTag tankNbt = new CompoundTag();
-        this.fuelTank.getTank().writeToNBT(tankNbt);
-        tag.put("fuel_tank", tankNbt);
-
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
+    public void saveAdditional(@NotNull CompoundTag tag) {
         tag.putInt("fuel_counter", fuelCounter);
         tag.putInt("fuel_length", fuelLength);
-
-        this.fuelTank.writeGuiProperties(tag, "fuel_tank_gui");
-        this.bucketInputSm.write(tag, "bucket_input_gui");
-        this.bucketOutputSm.write(tag, "bucket_output_gui");
-        this.furnaceInputSm.write(tag, "furnace_input_gui");
-        this.furnaceOutputSm.write(tag, "furnace_output_gui");
+        super.saveAdditional(tag);
     }
-
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createFluid() {
-        return createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
     }
 
 
@@ -354,24 +296,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
         }
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        }else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluids(level));
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -405,6 +329,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public int getTankCapacity(){
         return TANK_CAPACITY;
+    }
+
+    @Override
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public int getFuelCounter(){return fuelCounter;}
@@ -450,58 +379,5 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity {
 
     public RelationalTank getFuelTank() {
         return fuelTank;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,furnaceInputSm,furnaceOutputSm,bucketInputSm,bucketOutputSm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.fuelTank.getId()) this.fuelTank.setSideStatus(status);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.fuelTank.getId()) this.fuelTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
-    }
-
-    @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        bulkSendSMPacket(s, bucketInputSm,bucketOutputSm,furnaceInputSm,furnaceOutputSm);
-                        bulkSendTankPackets(s, fuelTank);
-                    }
-                });
-            });
-        }
-    }
-
-    @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
-
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof GasFiredFurnaceContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
     }
 }

@@ -15,26 +15,18 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,19 +34,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class AqueoulizerTile extends VEFluidTileEntity {
-    // Handlers
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     // Slot Managers
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.INPUT);
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT);
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.INPUT,"input_1_sm");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT,"output_0_sm");
     // Actually an input slot omegalul
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT);
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"output_1_sm");
+
+    private final ItemStackHandler inventory = createHandler();
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -66,8 +56,8 @@ public class AqueoulizerTile extends VEFluidTileEntity {
 
     };
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank:output_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -76,15 +66,14 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         }
     };
 
-
-    private int counter;
-    private int length;
-
-    private final ItemStackHandler inventory = createHandler();
+    @Override
+    public @Nonnull ItemStackHandler getInventoryHandler() {
+        return inventory;
+    }
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
-        return inventory;
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
@@ -159,101 +148,11 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(4).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.AQUEOULIZER_POWER_USAGE.get(), this.inventory.getStackInSlot(4).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
     @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        // Slot manager
-        input0sm.read(tag,"input_0_sm");
-        input1sm.read(tag, "input_1_sm");
-        output0sm.read(tag, "output_0_sm");
-        output1sm.read(tag, "output_1_sm");
-
-        // Tanks
-        CompoundTag inputTank = tag.getCompound("inputTank");
-        CompoundTag outputTank = tag.getCompound("outputTank");
-
-        this.inputTank.getTank().readFromNBT(inputTank);
-        this.outputTank.getTank().readFromNBT(outputTank);
-
-        this.inputTank.readGuiProperties(tag,"input_tank_gui");
-        this.outputTank.readGuiProperties(tag, "output_tank_gui");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        // Slot manager
-        input0sm.write(tag,"input_0_sm");
-        input1sm.write(tag, "input_1_sm");
-        output0sm.write(tag, "output_0_sm");
-        output1sm.write(tag, "output_1_sm");
-
-        // Tanks
-        CompoundTag inputNBT = new CompoundTag();
-        CompoundTag outputNBT = new CompoundTag();
-
-        this.inputTank.getTank().writeToNBT(inputNBT);
-        this.outputTank.getTank().writeToNBT(outputNBT);
-
-        tag.put("inputTank", inputNBT);
-        tag.put("outputTank", outputNBT);
-
-        this.inputTank.writeGuiProperties(tag,"input_tank_gui");
-        this.outputTank.writeGuiProperties(tag, "output_tank_gui");
-    }
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
+    public @Nonnull CompoundTag getUpdateTag() {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag);
         return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
     }
 
     private IFluidHandler createInputFluidHandler() {
@@ -295,31 +194,6 @@ public class AqueoulizerTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.AQUEOULIZER_MAX_POWER.get(), Config.AQUEOULIZER_TRANSFER.get());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            if (!inputTank.isValidFluidsSet()) inputTank.setValidFluids(RecipeUtil.getAqueoulizerInputFluids(level));
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -349,57 +223,27 @@ public class AqueoulizerTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,input0sm,input1sm,output0sm,output1sm);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,inputTank,outputTank);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,inputTank,outputTank);
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return this.fluidManagers;
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        bulkSendSMPacket(s, input0sm,input1sm,output0sm,output1sm);
-                        bulkSendTankPackets(s,inputTank,outputTank);
-
-                    }
-                });
-            });
-        }
+    public int getMaxPower() {
+        return Config.AIR_COMPRESSOR_MAX_POWER.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getPowerUsage() {
+        return Config.AIR_COMPRESSOR_POWER_USAGE.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof AqueoulizerContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getTransferRate() {
+        return Config.AIR_COMPRESSOR_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 3;
     }
 }

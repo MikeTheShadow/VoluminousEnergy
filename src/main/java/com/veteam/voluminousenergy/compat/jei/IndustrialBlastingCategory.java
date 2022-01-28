@@ -80,8 +80,8 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         slotDrawable.draw(matrixStack,5,10);
 
         Minecraft.getInstance().font.draw(matrixStack,
-                recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " °C; " +
-                        ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " °F)",
+                recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
+                        ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " \u00B0F)",
                 1,45,0x606060);
     }
 

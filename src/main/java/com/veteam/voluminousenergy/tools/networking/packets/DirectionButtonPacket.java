@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -55,7 +56,6 @@ public class DirectionButtonPacket {
 
     public static void handlePacket(DirectionButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
-
             if(openContainer instanceof VoluminousContainer voluminousContainer){
                 if(onServer){
                     BlockEntity tileEntity = voluminousContainer.getTileEntity();
@@ -67,7 +67,7 @@ public class DirectionButtonPacket {
                     voluminousContainer.updateDirectionButton(packet.direction, packet.slotId);
                 }
             } else {
-                VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container.");
+                VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container."  + openContainer.getClass().getName());
             }
         } else {
             VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: The container is null.");

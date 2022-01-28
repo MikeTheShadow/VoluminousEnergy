@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.veteam.voluminousenergy.fluids.CompressedAir.COMPRESSED_AIR;
 
 public class RecipeUtil { // TODO: Remove Tag stuff from here into TagUtil
 
@@ -187,9 +190,9 @@ public class RecipeUtil { // TODO: Remove Tag stuff from here into TagUtil
 
     public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if(recipe instanceof CombustionGeneratorOxidizerRecipe){
-                if(((CombustionGeneratorOxidizerRecipe) recipe).nsRawFluidInputList.contains(inputFluid.getRawFluid())){
-                    return (CombustionGeneratorOxidizerRecipe) recipe;
+            if(recipe instanceof CombustionGeneratorOxidizerRecipe combustionGeneratorOxidizerRecipe){
+                if(combustionGeneratorOxidizerRecipe.nsRawFluidInputList.contains(inputFluid.getRawFluid())){
+                    return combustionGeneratorOxidizerRecipe;
                 }
             }
         }

@@ -17,16 +17,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
 public class ElectrolyzerContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private ElectrolyzerScreen screen;
     private static final int numberOfSlots = 7;
 
     public ElectrolyzerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
@@ -118,7 +114,7 @@ public class ElectrolyzerContainer extends VoluminousContainer {
     public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
 
     @Override
-public void updateStatusButton(boolean status, int slotId){
+    public void updateStatusButton(boolean status, int slotId){
         this.screen.updateBooleanButton(status, slotId);
     }
 }

@@ -7,13 +7,14 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,42 +23,28 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-public class BlastFurnaceTile extends VEFluidTileEntity {
-    private LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private LazyOptional<IItemHandlerModifiable> iTopHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,0,1));
-    private LazyOptional<IItemHandlerModifiable> iBottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,1,2));
-    private LazyOptional<IItemHandlerModifiable> firstItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,2,3));
-    private LazyOptional<IItemHandlerModifiable> secondItemInputHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,3,4));
-    private LazyOptional<IItemHandlerModifiable> outputItemHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory,4,5));
+public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    private LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-    private LazyOptional<IFluidHandler> inputFluidHandler = LazyOptional.of(this::createInputFluidHandler);
-
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"heat_top_manager");
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"heat_bottom_manager");
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"first_input_manager");
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"second_input_manager");
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -69,29 +56,31 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         }
     };
 
-    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
+    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"heatTank:heat_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
             add(heatTank);
+            heatTank.setAllowAny(true);
         }
     };
 
-    private int counter;
-    private int length;
     private byte tick = 19;
-    private boolean validity = false;
 
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return this.slotManagers;
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.BLAST_FURNACE_TILE, pos, state);
-        heatTank.setAllowAny(true);
     }
 
     @Override
@@ -100,7 +89,7 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         tick++;
         if (tick == 20){
             tick = 0;
-            validity = isMultiblockValid();
+            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK);
         }
         if (!(validity)) {
             return;
@@ -168,155 +157,6 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
 
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> e
-                .consumeEnergy(this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(5).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.BLAST_FURNACE_POWER_USAGE.get(), this.inventory.getStackInSlot(5).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        // Tanks
-        CompoundTag heatTank = tag.getCompound("heatTank");
-
-        this.heatTank.getTank().readFromNBT(heatTank);
-        this.heatTank.readGuiProperties(tag, "heat_tank_gui");
-
-        this.heatTankItemTopManager.read(tag, "heat_top_manager");
-        this.heatTankItemBottomManager.read(tag, "heat_bottom_manager");
-
-        this.firstInputSlotManager.read(tag, "first_input_manager");
-        this.secondInputSlotManager.read(tag, "second_input_manager");
-        this.outputSlotManager.read(tag, "output_manager");
-
-        this.validity = tag.getBoolean("validity");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        // Tanks
-        CompoundTag heatTankNBT = new CompoundTag();
-
-        this.heatTank.getTank().writeToNBT(heatTankNBT);
-
-        tag.put("heatTank", heatTankNBT);
-
-        this.heatTank.writeGuiProperties(tag, "heat_tank_gui");
-
-        this.heatTankItemTopManager.write(tag, "heat_top_manager");
-        this.heatTankItemBottomManager.write(tag, "heat_bottom_manager");
-
-        this.firstInputSlotManager.write(tag, "first_input_manager");
-        this.secondInputSlotManager.write(tag, "second_input_manager");
-        this.outputSlotManager.write(tag, "output_manager");
-
-        tag.putBoolean("validity", this.validity);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
-    private IFluidHandler createInputFluidHandler() {
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return 1;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-                return heatTank == null ? FluidStack.EMPTY : heatTank.getTank().getFluid();
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-                return heatTank == null ? 0 : heatTank.getTank().getCapacity();
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                return heatTank != null && heatTank.getTank().isFluidValid(stack);
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-                if (isFluidValid(0, resource) && heatTank.getTank().isEmpty() || resource.isFluidEqual(heatTank.getTank().getFluid())) {
-                    return heatTank.getTank().fill(resource.copy(), action);
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-                if (resource.isFluidEqual(heatTank.getTank().getFluid())) {
-                    return heatTank.getTank().drain(resource.copy(), action);
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                if (heatTank.getTank().getFluidAmount() > 0) {
-                    return heatTank.getTank().drain(maxDrain, action);
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
@@ -348,29 +188,6 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         };
     }
 
-    private VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.BLAST_FURNACE_MAX_POWER.get(), Config.BLAST_FURNACE_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) {
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -387,57 +204,6 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
             return heatTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
-    }
-
-    public boolean isMultiblockValid (){
-        // Get Direction
-        String direction = getDirection();
-        // Setup range to check based on direction
-        byte sX, sY, sZ, lX, lY, lZ;
-
-        if (direction == null || direction.equals("null")){
-            return false;
-        } else if (direction.equals("north")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = 1;
-            lY = 2;
-            lZ = 3;
-        } else if (direction.equals("south")){
-            sX = -1;
-            sY = 0;
-            sZ = -1;
-            lX = 1;
-            lY = 2;
-            lZ = -3;
-        } else if (direction.equals("east")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = -3;
-            lY = 2;
-            lZ = -1;
-        } else if (direction.equals("west")){
-            sX = 1;
-            sY = 0;
-            sZ = -1;
-            lX = 3;
-            lY = 2;
-            lZ = 1;
-        } else { // Invalid Direction
-            return false;
-        }
-
-        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
-        for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
-            final BlockState blockState = level.getBlockState(blockPos);
-
-            if (blockState.getBlock() != VEBlocks.TITANIUM_MACHINE_CASING_BLOCK){ // Fails multiblock condition
-                return false;
-            }
-        }
-        return true;
     }
 
     public boolean getMultiblockValidity(){
@@ -477,50 +243,28 @@ public class BlastFurnaceTile extends VEFluidTileEntity {
         else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setDirection(direction);
     }
 
-    public void updateTankPacketFromGui(boolean status, int id){
-        if(id == this.heatTank.getId()) this.heatTank.setSideStatus(status);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        if(id == this.heatTank.getId())
-            this.heatTank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+    @Override
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-
-                        bulkSendSMPacket(s, heatTankItemTopManager,heatTankItemBottomManager,firstInputSlotManager,secondInputSlotManager,outputSlotManager);
-
-                        bulkSendTankPackets(s,heatTank);
-                   }
-                });
-            });
-        }
+    public int getMaxPower() {
+        return Config.BLAST_FURNACE_MAX_POWER.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getPowerUsage() {
+        return Config.BLAST_FURNACE_POWER_USAGE.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof BlastFurnaceContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getTransferRate() {
+        return Config.BLAST_FURNACE_TRANSFER.get();
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 5;
     }
 }

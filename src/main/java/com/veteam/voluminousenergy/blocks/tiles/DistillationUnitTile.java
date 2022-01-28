@@ -14,10 +14,7 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,37 +24,30 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class DistillationUnitTile extends VEFluidTileEntity {
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
+public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    private final LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
-
-    public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT);
-    public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager o0TopManager = new VESlotManager(2,Direction.UP,false,"slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager o0BottomManager = new VESlotManager(3,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager o1TopManager = new VESlotManager(4,Direction.UP,false,"slot.voluminousenergy.input_slot",SlotType.INPUT);
-    public VESlotManager o1BottomManager = new VESlotManager(5,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
-    public VESlotManager o2Manager = new VESlotManager(6,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT);
+    public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"i_top_manager");
+    public VESlotManager iBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"i_bottom_manager");
+    public VESlotManager o0TopManager = new VESlotManager(2,Direction.UP,false,"slot.voluminousenergy.input_slot",SlotType.INPUT,"o_0_top_manager");
+    public VESlotManager o0BottomManager = new VESlotManager(3,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"o_0_top_manager");
+    public VESlotManager o1TopManager = new VESlotManager(4,Direction.UP,false,"slot.voluminousenergy.input_slot",SlotType.INPUT,"0_1_top_manager");
+    public VESlotManager o1BottomManager = new VESlotManager(5,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"o_1_bottom_manager");
+    public VESlotManager o2Manager = new VESlotManager(6,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"o_2_manager");
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(iTopManager);
@@ -71,9 +61,9 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     private final int tankCapacity = 4000;
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT);
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0);
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1);
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
+    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank0:output_tank_0_gui");
+    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1,"outputTank1:output_tank_1_gui");
 
     public List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(inputTank);
@@ -81,15 +71,12 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         add(outputTank1);
     }};
 
-    private int counter;
-    private int length;
     private byte tick = 19;
-    private boolean validity = false;
 
     public ItemStackHandler inventory = createHandler();
 
     @Override
-    public ItemStackHandler getItemStackHandler() {
+    public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
     }
 
@@ -103,7 +90,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         tick++;
         if (tick == 20){
             tick = 0;
-            validity = isMultiblockValid();
+            validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK);
         }
         if (!(validity)) {
             return;
@@ -193,118 +180,6 @@ public class DistillationUnitTile extends VEFluidTileEntity {
 
     }
 
-    // Extract logic for energy management, since this is getting quite complex now.
-    private void consumeEnergy(){
-        energy.ifPresent(e -> ((VEEnergyStorage)e)
-                .consumeEnergy(this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(),
-                        this.inventory.getStackInSlot(7).copy()
-                        )
-                )
-        );
-    }
-
-    private boolean canConsumeEnergy(){
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
-                > this.consumptionMultiplier(Config.DISTILLATION_UNIT_POWER_USAGE.get(), this.inventory.getStackInSlot(7).copy());
-    }
-
-    /*
-        Read and Write on World save
-     */
-
-    @Override
-    public void load(CompoundTag tag) {
-        CompoundTag inv = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundTag>) h).deserializeNBT(inv));
-        createHandler().deserializeNBT(inv);
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-        counter = tag.getInt("counter");
-        length = tag.getInt("length");
-
-        // Tanks
-        CompoundTag inputTank = tag.getCompound("inputTank");
-        CompoundTag outputTank0 = tag.getCompound("outputTank0");
-        CompoundTag outputTank1 = tag.getCompound("outputTank1");
-
-        this.inputTank.getTank().readFromNBT(inputTank);
-        this.outputTank0.getTank().readFromNBT(outputTank0);
-        this.outputTank1.getTank().readFromNBT(outputTank1);
-
-        this.inputTank.readGuiProperties(tag, "input_tank_gui");
-        this.outputTank0.readGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.readGuiProperties(tag, "output_tank_1_gui");
-
-        this.iTopManager.read(tag, "i_top_manager");
-        this.iBottomManager.read(tag, "i_bottom_manager");
-        this.o0TopManager.read(tag, "o_0_top_manager");
-        this.o0BottomManager.read(tag, "o_0_bottom_manager");
-        this.o1TopManager.read(tag, "o_1_top_manager");
-        this.o1BottomManager.read(tag, "o_1_bottom_manager");
-        this.o2Manager.read(tag, "o_2_manager");
-
-        this.validity = tag.getBoolean("validity");
-
-        super.load(tag);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag tag) {
-        handler.ifPresent(h -> {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        energy.ifPresent(h -> h.serializeNBT(tag));
-        tag.putInt("counter", counter);
-        tag.putInt("length", length);
-
-        // Tanks
-        CompoundTag inputNBT = new CompoundTag();
-        CompoundTag outputNBT0 = new CompoundTag();
-        CompoundTag outputNBT1 = new CompoundTag();
-
-        this.inputTank.getTank().writeToNBT(inputNBT);
-        this.outputTank0.getTank().writeToNBT(outputNBT0);
-        this.outputTank1.getTank().writeToNBT(outputNBT1);
-
-        tag.put("inputTank", inputNBT);
-        tag.put("outputTank0", outputNBT0);
-        tag.put("outputTank1", outputNBT1);
-
-        this.inputTank.writeGuiProperties(tag, "input_tank_gui");
-        this.outputTank0.writeGuiProperties(tag, "output_tank_0_gui");
-        this.outputTank1.writeGuiProperties(tag, "output_tank_1_gui");
-
-        this.iTopManager.write(tag, "i_top_manager");
-        this.iBottomManager.write(tag, "i_bottom_manager");
-        this.o0TopManager.write(tag, "o_0_top_manager");
-        this.o0BottomManager.write(tag, "o_0_bottom_manager");
-        this.o1TopManager.write(tag, "o_1_top_manager");
-        this.o1BottomManager.write(tag, "o_1_bottom_manager");
-        this.o2Manager.write(tag, "o_2_manager");
-
-        tag.putBoolean("validity", this.validity);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
-    }
-
     private IFluidHandler createInputFluidHandler() {
         return this.createFluidHandler(new DistillationRecipe(), inputTank);
     }
@@ -352,7 +227,7 @@ public class DistillationUnitTile extends VEFluidTileEntity {
                 return super.insertItem(slot, stack, simulate);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return super.extractItem(slot, amount, simulate);
@@ -360,28 +235,10 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         };
     }
 
-    private @NotNull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.DISTILLATION_UNIT_MAX_POWER.get(), Config.DISTILLATION_UNIT_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return getCapability(cap, side, handler, inventory, slotManagers);
-        } else if (cap == CapabilityEnergy.ENERGY) {
-            return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null) { // TODO: Better handle Null direction
-            if (!inputTank.isValidFluidsSet()) inputTank.setValidFluids(RecipeUtil.getDistillationInputFluids(level));
-            return getCapability(cap,side,handler,fluidManagers);
-        } else {
-            return super.getCapability(cap, side);
-        }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent(getType().getRegistryName().getPath());
+    public List<VESlotManager> getSlotManagers() {
+        return slotManagers;
     }
 
     @Nullable
@@ -410,55 +267,9 @@ public class DistillationUnitTile extends VEFluidTileEntity {
         return tankCapacity;
     }
 
-    public boolean isMultiblockValid (){
-        // Get Direction
-        String direction = getDirection();
-        // Setup range to check based on direction
-        byte sX, sY, sZ, lX, lY, lZ;
-
-        if (direction == null || direction.equals("null")){
-            return false;
-        } else if (direction.equals("north")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = 1;
-            lY = 2;
-            lZ = 3;
-        } else if (direction.equals("south")){
-            sX = -1;
-            sY = 0;
-            sZ = -1;
-            lX = 1;
-            lY = 2;
-            lZ = -3;
-        } else if (direction.equals("east")){
-            sX = -1;
-            sY = 0;
-            sZ = 1;
-            lX = -3;
-            lY = 2;
-            lZ = -1;
-        } else if (direction.equals("west")){
-            sX = 1;
-            sY = 0;
-            sZ = -1;
-            lX = 3;
-            lY = 2;
-            lZ = 1;
-        } else { // Invalid Direction
-            return false;
-        }
-
-        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
-        for (final BlockPos blockPos :  BlockPos.betweenClosed(worldPosition.offset(sX,sY,sZ),worldPosition.offset(lX,lY,lZ))){
-            final BlockState blockState = level.getBlockState(blockPos);
-
-            if (blockState.getBlock() != VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK){ // Fails multiblock condition
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public @NotNull List<RelationalTank> getRelationalTanks() {
+        return fluidManagers;
     }
 
     public boolean getMultiblockValidity(){
@@ -478,57 +289,22 @@ public class DistillationUnitTile extends VEFluidTileEntity {
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        processGUIPacketStatus(status,slotId,iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        processGUIPacketDirection(direction,slotId,iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-    }
-
-    public void updateTankPacketFromGui(boolean status, int id){
-        processGUIPacketFluidStatus(status,id,inputTank,outputTank0,outputTank1);
-    }
-
-    public void updateTankPacketFromGui(int direction, int id){
-        processGUIPacketFluidDirection(direction,id,inputTank,outputTank0,outputTank1);
+    public int getMaxPower() {
+        return Config.DISTILLATION_UNIT_MAX_POWER.get();
     }
 
     @Override
-    public void sendPacketToClient(){
-        if(level == null || getLevel() == null) return;
-        if(getLevel().getServer() != null) {
-            this.playerUuid.forEach(u -> {
-                level.getServer().getPlayerList().getPlayers().forEach(s -> {
-                    if (s.getUUID().equals(u)){
-                        // Boolean Buttons
-                        bulkSendSMPacket(s, iTopManager,iBottomManager,o0TopManager,o0BottomManager,o1TopManager,o1BottomManager,o2Manager);
-
-                        bulkSendTankPackets(s,inputTank,outputTank0,outputTank1);
-                    }
-                });
-            });
-        }
+    public int getPowerUsage() {
+        return Config.DISTILLATION_UNIT_POWER_USAGE.get();
     }
 
     @Override
-    protected void uuidCleanup(){
-        if(playerUuid.isEmpty() || level == null) return;
-        if(level.getServer() == null) return;
+    public int getTransferRate() {
+        return Config.DISTILLATION_UNIT_TRANSFER.get();
+    }
 
-        if(cleanupTick == 20){
-            ArrayList<UUID> toRemove = new ArrayList<>();
-            level.getServer().getPlayerList().getPlayers().forEach(player ->{
-                if(player.containerMenu != null){
-                    if(!(player.containerMenu instanceof DistillationUnitContainer)){
-                        toRemove.add(player.getUUID());
-                    }
-                } else if (player.containerMenu == null){
-                    toRemove.add(player.getUUID());
-                }
-            });
-            toRemove.forEach(uuid -> playerUuid.remove(uuid));
-        }
-        super.uuidCleanup();
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
     }
 }

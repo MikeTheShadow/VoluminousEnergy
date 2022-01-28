@@ -24,7 +24,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -33,9 +32,6 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.TOOLING_STATION
 
 public class ToolingStationContainer extends VoluminousContainer {
 
-    private Player playerEntity;
-    private IItemHandler playerInventory;
-    private ToolingStationScreen screen;
     private static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
