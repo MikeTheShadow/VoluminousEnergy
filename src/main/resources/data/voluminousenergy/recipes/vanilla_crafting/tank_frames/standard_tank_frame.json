@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#*#",
+    "#0#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/aluminum"
+    },
+    "*": {
+      "tag": "forge:gears/aluminum"
+    },
+    "0": {
+      "item": "voluminousenergy:aluminum_machine_casing"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:standard_tank_frame"
+  }
+}

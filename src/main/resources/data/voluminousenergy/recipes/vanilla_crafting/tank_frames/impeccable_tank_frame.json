@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#*#",
+    "#0#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/solarium"
+    },
+    "*": {
+      "tag": "forge:gears/solarium"
+    },
+    "0": {
+      "tag": "forge:storage_blocks/solarium"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:impeccable_tank_frame"
+  }
+}

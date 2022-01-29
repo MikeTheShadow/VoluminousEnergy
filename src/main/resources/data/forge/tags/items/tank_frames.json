@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:tank_frames/solarium",
+    "#forge:tank_frames/titanium",
+    "#forge:tank_frames/aluminum"
+  ]
+}

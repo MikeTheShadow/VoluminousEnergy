@@ -1,14 +1,14 @@
-package com.veteam.voluminousenergy.items.ore;
+package com.veteam.voluminousenergy.items.ores;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 
-public class RawCinnabar extends Item {
-    public RawCinnabar() {
+public class RawGalena extends Item {
+    public RawGalena() {
         super(new Item.Properties()
                 .stacksTo(64)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("raw_cinnabar");
+        setRegistryName("raw_galena");
     }
 }

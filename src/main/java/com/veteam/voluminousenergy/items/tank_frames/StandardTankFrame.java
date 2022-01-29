@@ -1,15 +1,14 @@
-package com.veteam.voluminousenergy.items.ore;
+package com.veteam.voluminousenergy.items.tank_frames;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 
-public class RawRutile extends Item {
-
-    public RawRutile() {
+public class StandardTankFrame extends Item {
+    public StandardTankFrame() {
         super(new Item.Properties()
                 .stacksTo(64)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("raw_rutile");
+        setRegistryName("standard_tank_frame");
     }
 }

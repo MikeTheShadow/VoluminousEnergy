@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "***",
+    "*#*",
+    "121"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:tank_frames/solarium"
+    },
+    "*": {
+      "tag": "forge:ingots/solarium"
+    },
+    "1": {
+      "tag": "forge:plates/carbon"
+    },
+    "2": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:solarium_tank"
+  }
+}

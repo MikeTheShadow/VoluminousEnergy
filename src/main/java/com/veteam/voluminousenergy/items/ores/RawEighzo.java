@@ -1,14 +1,14 @@
-package com.veteam.voluminousenergy.items.ore;
+package com.veteam.voluminousenergy.items.ores;
 
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 
-public class RawBauxite extends Item {
-    public RawBauxite(){
+public class RawEighzo extends Item {
+    public RawEighzo() {
         super(new Item.Properties()
                 .stacksTo(64)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("raw_bauxite");
+        setRegistryName("raw_eighzo");
     }
 }

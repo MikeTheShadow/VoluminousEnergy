@@ -9,7 +9,7 @@ import com.veteam.voluminousenergy.items.gears.*;
 import com.veteam.voluminousenergy.items.ingots.*;
 import com.veteam.voluminousenergy.items.microchips.GoldMicrochip;
 import com.veteam.voluminousenergy.items.microchips.SilverMicrochip;
-import com.veteam.voluminousenergy.items.ore.*;
+import com.veteam.voluminousenergy.items.ores.*;
 import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
@@ -17,6 +17,9 @@ import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
+import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
+import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
+import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
@@ -110,6 +113,11 @@ public class VEItems {
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
 
     public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
+
+    //Tank Frames
+    public static StandardTankFrame STANDARD_TANK_FRAME = new StandardTankFrame();
+    public static RobustTankFrame ROBUST_TANK_FRAME = new RobustTankFrame();
+    public static ImpeccableTankFrame IMPECCABLE_TANK_FRAME = new ImpeccableTankFrame();
 
     //Crops
     public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class

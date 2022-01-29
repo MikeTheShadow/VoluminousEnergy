@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#*#",
+    "#0#",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:plates/titanium"
+    },
+    "*": {
+      "tag": "forge:gears/titanium"
+    },
+    "0": {
+      "item": "voluminousenergy:titanium_machine_casing"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:robust_tank_frame"
+  }
+}
