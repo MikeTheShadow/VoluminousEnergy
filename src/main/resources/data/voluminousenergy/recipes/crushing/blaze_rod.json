@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:blaze_rod",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:blaze_powder",
+    "count": 3
+  },
+  "rng": {
+    "item": "minecraft:blaze_powder",
+    "count": 3,
+    "chance": 0.25
+  }
+}

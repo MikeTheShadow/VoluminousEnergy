@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "minecraft:cobblestone",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "minecraft:gravel",
+    "count": 1
+  },
+  "rng": {
+    "item": "minecraft:gravel",
+    "count": 1,
+    "chance": 0.10
+  }
+}
