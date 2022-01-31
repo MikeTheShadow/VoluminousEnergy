@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/eighzo_tank" },
+    "facing=south": { "model": "voluminousenergy:block/eighzo_tank", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/eighzo_tank", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/eighzo_tank", "y": 90 }
+  }
+}

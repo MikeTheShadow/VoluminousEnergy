@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/solarium_block",
+    "down": "voluminousenergy:block/solarium_tank_top",
+    "up": "voluminousenergy:block/solarium_tank_top",
+    "east": "voluminousenergy:block/solarium_tank_side",
+    "west": "voluminousenergy:block/solarium_tank_side",
+    "north": "voluminousenergy:block/solarium_tank_front",
+    "south": "voluminousenergy:block/solarium_tank_side"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "voluminousenergy:block/aluminum_shell",
+    "down": "voluminousenergy:block/aluminum_tank_top",
+    "up": "voluminousenergy:block/aluminum_tank_top",
+    "east": "voluminousenergy:block/aluminum_tank_side",
+    "west": "voluminousenergy:block/aluminum_tank_side",
+    "north": "voluminousenergy:block/aluminum_tank_front",
+    "south": "voluminousenergy:block/aluminum_tank_side"
+  }
+}
