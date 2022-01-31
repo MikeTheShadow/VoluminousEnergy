@@ -49,7 +49,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      * Lazy Optional of getEnergy which cannot be null but can contain a null VEEnergyStorage
      * for the ifpresent to fail
      */
-    LazyOptional<VEEnergyStorage> energy = LazyOptional.of(this::createEnergy);
+    LazyOptional<VEEnergyStorage> energy = createEnergy();
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, VoluminousTileEntity voluminousTile) {
         voluminousTile.tick();
@@ -155,7 +155,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             handler.deserializeNBT(inv);
         }
 
-        energy.ifPresent(h -> h.deserializeNBT(tag));
+        if(energy != null) energy.ifPresent(h -> h.deserializeNBT(tag));
 
         if(this instanceof IVECountable) {
             counter = tag.getInt("counter");
@@ -180,7 +180,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             CompoundTag compound = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
             tag.put("inv",compound);
         }
-        energy.ifPresent(h -> h.serializeNBT(tag));
+
+        if(energy != null) energy.ifPresent(h -> h.serializeNBT(tag));
 
         for(VESlotManager manager : getSlotManagers()) {
             manager.write(tag);
@@ -270,7 +271,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if (managerList.size() == 0) return super.getCapability(cap, side);
             MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
             return LazyOptional.of(() -> slotWrapper).cast();
-        } else if (cap == CapabilityEnergy.ENERGY && energy.isPresent()) {
+        } else if (cap == CapabilityEnergy.ENERGY && energy != null) {
             return energy.cast();
         } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
             Direction modifiedSide = normalizeDirection(side);
@@ -286,9 +287,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     /**
      * @return a VEEnergyStorage object or null if this tile is not an instance of poweredTileEntity
      */
-    public @Nullable VEEnergyStorage createEnergy() {
+    public @Nullable LazyOptional<VEEnergyStorage> createEnergy() {
         if(this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
-            return new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
+            VEEnergyStorage storage = new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
+            return LazyOptional.of(() -> storage);
         }
         return null;
     }
@@ -372,7 +374,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        if(energy != null) energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }

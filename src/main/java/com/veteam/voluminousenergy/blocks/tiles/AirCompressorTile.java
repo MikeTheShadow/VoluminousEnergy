@@ -112,9 +112,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
             airTank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
         }
     }
-    public @Nonnull VEEnergyStorage createEnergy() {
-        return new VEEnergyStorage(Config.AIR_COMPRESSOR_MAX_POWER.get(), Config.AIR_COMPRESSOR_TRANSFER.get());
-    }
 
     @Nullable
     @Override

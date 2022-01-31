@@ -216,10 +216,6 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
         }
     }
 
-    public @Nonnull VEEnergyStorage createEnergy(){
-        return new VEEnergyStorage(Config.CRUSHER_MAX_POWER.get(),Config.CRUSHER_TRANSFER.get()); // Max Power Storage, Max transfer
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
