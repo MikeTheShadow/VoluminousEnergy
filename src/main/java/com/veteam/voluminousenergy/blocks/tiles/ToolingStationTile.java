@@ -9,7 +9,6 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -17,17 +16,12 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -236,22 +230,19 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         return fluidManagers;
     }
 
-
-    // TODO: Moved from deprecated methods. Add configuration section for Tooling station
-
     @Override
     public int getMaxPower() {
-        return Config.AQUEOULIZER_MAX_POWER.get();
+        return Config.TOOLING_STATION_MAX_POWER.get();
     }
 
     @Override
-    public int getPowerUsage() {
-        return Config.AQUEOULIZER_POWER_USAGE.get();
+    public int getPowerUsage() { // Tooling Station atm doesn't use power. Transfer to recharge electric tools (if support added) should be capped by this#getTransferRate();
+        return 0;
     }
 
     @Override
     public int getTransferRate() {
-        return Config.AQUEOULIZER_TRANSFER.get();
+        return Config.TOOLING_STATION_TRANSFER.get();
     }
 
     @Override

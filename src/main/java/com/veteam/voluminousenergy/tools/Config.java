@@ -35,6 +35,7 @@ public class Config {
     public static final String CATEGORY_BLAST_FURNACE = "Blast Furnace";
     public static final String CATEGORY_SAWMILL = "Sawmill";
     public static final String CATEGORY_TANK_BLOCKS = "Tank Blocks";
+    public static final String CATEGORY_TOOLING_STATION = "Tooling Station";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_OIL_GENERATION = "Oil Generation";
@@ -294,6 +295,10 @@ public class Config {
     public static ForgeConfigSpec.IntValue SAWMILL_PRIMARY_OUTPUT_COUNT;
     public static ForgeConfigSpec.IntValue SAWMILL_LOG_CONSUMPTION_RATE;
 
+    // Tooling Station Variables
+    public static ForgeConfigSpec.IntValue TOOLING_STATION_MAX_POWER;
+    public static ForgeConfigSpec.IntValue TOOLING_STATION_TRANSFER;
+
     // Tank variables
     public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
     public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
@@ -416,8 +421,14 @@ public class Config {
         setupSawmill();
         COMMON_BUILDER.pop();
 
+        // Tanks
         COMMON_BUILDER.comment("Tank Blocks").push(CATEGORY_TANK_BLOCKS);
         setupTankBlocks();
+        COMMON_BUILDER.pop();
+
+        // Tooling Station
+        COMMON_BUILDER.comment("Tooling Station").push(CATEGORY_TOOLING_STATION);
+        setupToolingStation();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -882,6 +893,13 @@ public class Config {
             ALUMINUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
                     .defineInRange("Aluminum Tank Capacity", 16, 0, 2147483);
         }
+
+    private static void setupToolingStation(){
+        TOOLING_STATION_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Tooling Station to store")
+                .defineInRange("Maximum Power", 5000, 0, Integer.MAX_VALUE);
+        TOOLING_STATION_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Tooling Station")
+                .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
+    }
 
         public static void loadConfig(ForgeConfigSpec spec, Path path){
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
