@@ -163,6 +163,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     @Override
     public int getUpgradeSlotId() {
-        return 3;
+        return 1;
     }
 }
