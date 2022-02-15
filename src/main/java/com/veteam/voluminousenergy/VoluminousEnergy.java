@@ -344,6 +344,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.STANDARD_TANK_FRAME);
             itemRegisteryEvent.getRegistry().register(VEItems.ROBUST_TANK_FRAME);
             itemRegisteryEvent.getRegistry().register(VEItems.IMPECCABLE_TANK_FRAME);
+            itemRegisteryEvent.getRegistry().register(VEItems.ANIMAL_FAT);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);
