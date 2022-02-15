@@ -87,6 +87,11 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     }
 
     @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+
+    }
+
+    @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY){
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

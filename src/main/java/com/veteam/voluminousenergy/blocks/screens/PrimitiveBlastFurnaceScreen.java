@@ -70,6 +70,11 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlas
     }
 
     @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+
+    }
+
+    @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX,int mouseY){
         if (isHovering(78,32,19,17,mouseX,mouseY)){
             renderTooltip(matrixStack, Component.nullToEmpty("Percent complete: " + tileEntity.progressCounterPercent() + "%, Ticks Left: " + tileEntity.getCounter()), mouseX, mouseY);

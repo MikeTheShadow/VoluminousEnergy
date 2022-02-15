@@ -9,6 +9,8 @@
     "text.voluminousenergy.percent_complete": "Percent Complete",
     "text.voluminousenergy.percent_burned": "Percent Burned",
     "text.voluminousenergy.ticks_left": "Ticks Left",
+    "text.voluminousenergy.battery_box.sending_out_power": "Sending out stored energy onto the FE grid",
+    "text.voluminousenergy.battery_box.receiving_power": "Receiving energy from the FE grid",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
@@ -34,6 +36,10 @@
     "tank.voluminousenergy.both_tank" : "Tank",
     "tank.voluminousenergy.invalid": "INVALID",
     "tank.voluminousenergy.null": "NULL",
+
+    "_comment": "IO Menu Labels (shorts)",
+    "gui.voluminousenergy.slot_short": "S",
+    "gui.voluminousenergy.tank_short": "T",
 
     "_comment": "Blocks",
     "block.voluminousenergy.primitiveblastfurnace": "Primitive Blast Furnace",
@@ -130,6 +136,8 @@
     "block.voluminousenergy.red_fuming_nitric_acid": "Red Fuming Nitric Acid",
     "block.voluminousenergy.white_fuming_nitric_acid": "White Fuming Nitric Acid",
     "block.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
+    "block.voluminousenergy.tree_sap": "Tree Sap",
+    "block.voluminousenergy.treethanol": "Treethanol",
 
     "_comment": "Items",
     "item.voluminousenergy.petcoke": "Petcoke",

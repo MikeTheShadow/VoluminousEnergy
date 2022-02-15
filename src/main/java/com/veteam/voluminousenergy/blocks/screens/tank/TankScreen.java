@@ -88,11 +88,12 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
-        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.SAWMILL_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
-        }
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){
             int amount = tileEntity.getTank().getTank().getFluid().getAmount();
             String name = tileEntity.getTank().getTank().getFluid().getTranslationKey();

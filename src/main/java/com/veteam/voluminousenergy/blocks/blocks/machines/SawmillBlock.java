@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;

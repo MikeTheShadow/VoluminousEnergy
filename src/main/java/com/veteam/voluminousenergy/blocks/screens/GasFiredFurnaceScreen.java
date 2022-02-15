@@ -100,6 +100,11 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
     }
 
     @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+
+    }
+
+    @Override
     protected void renderTooltip(PoseStack matrixStack,int mouseX,int mouseY){
         if(isHovering(31,18,12,49,mouseX,mouseY)){
             int amount = tileEntity.getFluidFromTank().getAmount();

@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
@@ -21,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.veteam.voluminousenergy.fluids.CompressedAir.COMPRESSED_AIR;
 
 public class RecipeUtil { // TODO: Remove Tag stuff from here into TagUtil
 
@@ -404,6 +401,24 @@ public class RecipeUtil { // TODO: Remove Tag stuff from here into TagUtil
             if (recipe instanceof SawmillingRecipe){
                 if (((SawmillingRecipe) recipe).result.is(plankStack.getItem())){
                     atomicRecipe.set((SawmillingRecipe) recipe);
+                }
+            }
+        });
+
+        return atomicRecipe.get();
+    }
+
+    public static StirlingGeneratorRecipe getStirlingGeneratorRecipe(Level world, ItemStack solidFuelStack){ // Parallel by default
+        if (solidFuelStack.isEmpty()) return null;
+        AtomicReference<StirlingGeneratorRecipe> atomicRecipe = new AtomicReference<>(null);
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof StirlingGeneratorRecipe){
+                for (ItemStack itemStack : ((StirlingGeneratorRecipe) recipe).ingredient.getItems()) {
+                    if (itemStack.getItem() == solidFuelStack.getItem()){
+                        atomicRecipe.set((StirlingGeneratorRecipe) recipe);
+                        break;
+                    }
                 }
             }
         });

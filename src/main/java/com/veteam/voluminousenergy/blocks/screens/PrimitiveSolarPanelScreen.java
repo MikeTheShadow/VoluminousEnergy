@@ -55,6 +55,11 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarP
     }
 
     @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+
+    }
+
+    @Override
     protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY){
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);

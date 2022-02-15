@@ -64,6 +64,11 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     }
 
     @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+
+    }
+
+    @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {

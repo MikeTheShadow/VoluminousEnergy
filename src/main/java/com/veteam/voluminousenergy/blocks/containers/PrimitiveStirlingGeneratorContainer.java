@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,7 +9,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -22,6 +20,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
 
 public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
+
+    private static final int NUMBER_OF_SLOTS = 1;
 
     public PrimitiveStirlingGeneratorContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
@@ -68,45 +68,26 @@ public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+    public ItemStack quickMoveStack(Player player, int index) {
+        ItemStack returnStack = ItemStack.EMPTY;
+        final Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
-                    return ItemStack.EMPTY;
-                }
-                slot.onQuickCraft(stack, itemstack);
-            } else {
-                if (stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == Items.CHARCOAL || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
+            final ItemStack slotStack = slot.getItem();
+            returnStack = slotStack.copy();
 
-            if (stack.isEmpty()) {
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
+
+            if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }
-
-            if (stack.getCount() == itemstack.getCount()) {
+            if (slotStack.getCount() == returnStack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
-            slot.onTake(playerIn, stack);
+            slot.onTake(player, slotStack);
         }
-
-        return itemstack;
+        return returnStack;
     }
 
     public BlockEntity getTileEntity(){

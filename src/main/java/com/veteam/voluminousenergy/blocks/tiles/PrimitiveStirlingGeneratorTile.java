@@ -3,22 +3,17 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,9 +60,9 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         } else {
             handler.ifPresent(h -> {
                 ItemStack stack = h.getStackInSlot(0);
-                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(stack), level).orElse(null);
+                StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack.copy());
 
-                if (recipe != null) { // TODO: Switch to Voluminous Energy's in house RecipeUtils for recipe querying
+                if (recipe != null) {
                     h.extractItem(0, 1, false);
                     counter = recipe.getProcessTime();
                     length = counter;
@@ -102,9 +97,6 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         });
     }
 
-    /**
-     * TODO This looks outdated update this
-     */
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(1) {
             @Override
@@ -114,26 +106,25 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == Items.COAL || stack.getItem() == Items.COAL_BLOCK || stack.getItem() == Items.CHARCOAL || stack.getItem() == VEItems.COALCOKE || stack.getItem() == VEItems.PETCOKE;
+                ItemStack referenceStack = stack.copy();
+                referenceStack.setCount(64);
+                StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
+                return slot == 0 && recipe != null && recipe.ingredient.test(referenceStack);
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-            {
-                if (stack.getItem() == Items.COAL){
-                    return super.insertItem(slot, stack, simulate);
-                } else if (stack.getItem() == Items.COAL_BLOCK){
-                    return super.insertItem(slot, stack, simulate);
-                } else if (stack.getItem() == VEItems.COALCOKE){
-                    return super.insertItem(slot, stack, simulate);
-                } else if (stack.getItem() == VEItems.PETCOKE){
-                    return super.insertItem(slot, stack, simulate);
-                } else if (stack.getItem() == Items.CHARCOAL){
-                    return super.insertItem(slot, stack, simulate);
-                } else {
-                    return stack;
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
+
+                if(slot == 0 && recipe != null) {
+                    for (ItemStack testStack : recipe.ingredient.getItems()){
+                        if(stack.getItem() == testStack.getItem()){
+                            return super.insertItem(slot, stack, simulate);
+                        }
+                    }
                 }
+                return stack;
             }
         };
     }
