@@ -103,18 +103,27 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("blast_furnace"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("blast_furnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
 
-        //this.font.drawShadow(matrixStack,new TranslationTextComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
         this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.temperature").getString() + ": " +
                 tileEntity.getTemperatureKelvin() + " K (" +
-                tileEntity.getTemperatureCelsius() + " \u00B0C) ",  8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+                tileEntity.getTemperatureCelsius() + " \u00B0C) ",  8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
 
-        this.font.drawShadow(matrixStack, tileEntity.getTemperatureFahrenheit() + " \u00B0F", 101.0F, (this.imageHeight - 103), 16777215);
+        this.font.drawShadow(matrixStack, tileEntity.getTemperatureFahrenheit() + " \u00B0F", 101.0F, (this.imageHeight - 103), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 80F, 25F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 80F, 43F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 134F, 34F, WHITE_TEXT_COLOUR);
+
+        // Tanks
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
 
     }
 
@@ -169,8 +178,8 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), 8.0F, 16.0F, 16777215);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), 8.0F, 16.0F, WHITE_TEXT_COLOUR);
         }
 
     }

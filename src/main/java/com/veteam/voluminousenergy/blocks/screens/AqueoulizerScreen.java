@@ -104,7 +104,6 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Aqueoulizer",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("aqueoulizer"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
         drawString(matrixStack,Minecraft.getInstance().font, "+", 82, 34, GREY_TEXT_COLOUR);
         this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);

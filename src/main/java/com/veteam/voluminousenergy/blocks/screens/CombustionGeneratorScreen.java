@@ -104,23 +104,31 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Combustion Generator",8,6,0xffffff);
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("combustion_generator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
 
         if (tileEntity.getEnergyRate() < 10) {
-            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 80, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 80, 18, WHITE_TEXT_COLOUR);
         } else if (tileEntity.getEnergyRate() < 100){
-            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 77, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 77, 18, WHITE_TEXT_COLOUR);
         } else {
-            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 75, 18, 0xffffff);
+            drawString(matrixStack,Minecraft.getInstance().font, tileEntity.getEnergyRate() + " FE/t", 75, 18, WHITE_TEXT_COLOUR);
         }
 
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 138F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 138F, 49F, WHITE_TEXT_COLOUR);
 
+        // Tanks
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119F, 18F, WHITE_TEXT_COLOUR);
     }
 
     @Override

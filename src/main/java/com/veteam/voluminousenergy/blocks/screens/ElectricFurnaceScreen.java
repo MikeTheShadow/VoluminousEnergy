@@ -66,14 +66,16 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Electric Furnace",8,6,0xffffff);
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("electric_furnace"), 8.0F, 6.0F, 16777215);
-
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("electric_furnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53F, 33F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 116F, 33F, WHITE_TEXT_COLOUR);
 
     }
 

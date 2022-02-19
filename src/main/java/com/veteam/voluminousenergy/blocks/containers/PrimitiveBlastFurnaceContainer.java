@@ -20,7 +20,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_BLAST
 
 public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 3;
+    private static final int NUMBER_OF_SLOTS = 3;
 
     public PrimitiveBlastFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(PRIMITIVE_BLAST_FURNACE_CONTAINER, id);
@@ -60,7 +60,7 @@ public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 2, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 2, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

@@ -56,16 +56,16 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Stirling Generator",8,6,0xffffff);
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, 16777215);
-
-        drawString(matrixStack, Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, 0xffffff);
-        this.font.drawShadow(matrixStack, new TranslatableComponent("container.inventory"), 8.0F, (float) (this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+        drawString(matrixStack, Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, new TranslatableComponent("container.inventory"), 8.0F, (float) (this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 80F, 35F, WHITE_TEXT_COLOUR);
     }
 
     @Override
