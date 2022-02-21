@@ -83,16 +83,22 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        //this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("tank"), 8.0F, 6.0F, 16777215);
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 70F, 19F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 70F, 50F, WHITE_TEXT_COLOUR);
+
+        // Tank
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93F, 18F, WHITE_TEXT_COLOUR);
     }
 
     @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
-        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(menu.getEnergy() + " FE" + " / " + Config.SAWMILL_MAX_POWER.get() + " FE"), mouseX, mouseY); // TODO: Config
-        }
-
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){
             int amount = tileEntity.getTank().getTank().getFluid().getAmount();
             String name = tileEntity.getTank().getTank().getFluid().getTranslationKey();

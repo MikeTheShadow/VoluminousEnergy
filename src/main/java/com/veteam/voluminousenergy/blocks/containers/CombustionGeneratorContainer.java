@@ -27,8 +27,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.COMBUSTION_GENE
 
 public class CombustionGeneratorContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 4;
+    private static final int NUMBER_OF_SLOTS = 4;
 
     public CombustionGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(COMBUSTION_GENERATOR_CONTAINER,id);
@@ -91,7 +90,7 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

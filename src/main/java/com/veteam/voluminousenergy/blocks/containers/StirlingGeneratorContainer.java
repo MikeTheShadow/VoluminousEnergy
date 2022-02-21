@@ -22,7 +22,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.STIRLING_GENERA
 
 public class StirlingGeneratorContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 1;
+    private static final int NUMBER_OF_SLOTS = 1;
 
     public StirlingGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(STIRLING_GENERATOR_CONTAINER,id);
@@ -82,7 +82,7 @@ public class StirlingGeneratorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

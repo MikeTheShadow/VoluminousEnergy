@@ -24,9 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_
 
 public class AirCompressorContainer extends VoluminousContainer {
 
-
-    protected AirCompressorScreen airCompressorScreen;
-    private static final int numberOfSlots = 2;
+    private static final int NUMBER_OF_SLOTS = 2;
 
     public AirCompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(AIR_COMPRESSOR_CONTAINER,id);
@@ -89,7 +87,7 @@ public class AirCompressorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 1, slotStack) != null)
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 1, slotStack) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {

@@ -27,7 +27,7 @@ public class CompressorContainer extends VoluminousContainer {
 
         private final Player playerEntity;
         private final IItemHandler playerInventory;
-        private static final int numberOfSlots = 3;
+        private static final int NUMBER_OF_SLOTS = 3;
 
         public CompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
             super(COMPRESSOR_CONTAINER,id);
@@ -91,7 +91,7 @@ public class CompressorContainer extends VoluminousContainer {
                 final ItemStack slotStack = slot.getItem();
                 returnStack = slotStack.copy();
 
-                if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 2, slotStack) != null) return ItemStack.EMPTY;
+                if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 2, slotStack) != null) return ItemStack.EMPTY;
 
                 if (slotStack.getCount() == 0) {
                     slot.set(ItemStack.EMPTY);
