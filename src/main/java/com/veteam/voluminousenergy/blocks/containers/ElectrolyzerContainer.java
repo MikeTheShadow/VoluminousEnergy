@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 public class ElectrolyzerContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 7;
+    private static final int NUMBER_OF_SLOTS = 7;
 
     public ElectrolyzerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.ELECTROLYZER_CONTAINER,id);
@@ -90,7 +90,7 @@ public class ElectrolyzerContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 6, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

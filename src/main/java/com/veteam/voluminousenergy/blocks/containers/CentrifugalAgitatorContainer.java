@@ -23,8 +23,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CENTRIFUGAL_AGI
 
 public class CentrifugalAgitatorContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 5;
+    private static final int NUMBER_OF_SLOTS = 5;
 
     public CentrifugalAgitatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(CENTRIFUGAL_AGITATOR_CONTAINER,id);
@@ -90,7 +89,7 @@ public class CentrifugalAgitatorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 4, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 4, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

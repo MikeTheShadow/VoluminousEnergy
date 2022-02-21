@@ -112,9 +112,24 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer, "Centrifugal Agitator",8,6,0xffffff);
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, 16777215);
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        // Slots
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 137F, 49F, WHITE_TEXT_COLOUR);
+
+        // Tanks
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), 157F, 18F, WHITE_TEXT_COLOUR);
+
     }
 
     @Override

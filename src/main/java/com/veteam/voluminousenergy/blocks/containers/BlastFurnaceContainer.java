@@ -21,8 +21,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.BLAST_FURNACE_C
 
 public class BlastFurnaceContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 6;
+    private static final int NUMBER_OF_SLOTS = 6;
 
     public BlastFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(BLAST_FURNACE_CONTAINER,id);
@@ -78,7 +77,7 @@ public class BlastFurnaceContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 5, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 5, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

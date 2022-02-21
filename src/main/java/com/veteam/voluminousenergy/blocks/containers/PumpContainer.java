@@ -22,7 +22,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PUMP_CONTAINER;
 
 public class PumpContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 1;
+    private static final int NUMBER_OF_SLOTS = 1;
 
     public PumpContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(PUMP_CONTAINER,id);
@@ -83,7 +83,7 @@ public class PumpContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

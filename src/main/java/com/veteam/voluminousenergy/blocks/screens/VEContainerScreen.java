@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -19,10 +20,23 @@ import java.util.UUID;
 
 public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
+    public static final int WHITE_TEXT_COLOUR = 16777215;
+    public static final int GREY_TEXT_COLOUR = 0x606060;
 
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
     }
+
+    @Override
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        this.renderables.stream().filter(widget -> widget instanceof ioMenuButton).forEach(button -> {
+            if (((ioMenuButton) button).shouldIOBeOpen()) {
+                renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
+            }
+        });
+    }
+
+    protected abstract void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY);
 
     /* PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
     public void drawIOSideHelper(){

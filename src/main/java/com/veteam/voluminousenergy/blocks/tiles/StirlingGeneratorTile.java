@@ -4,20 +4,18 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
@@ -43,7 +40,6 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
     }};
 
     private int energyRate;
-    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
     private final ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(BlockPos pos, BlockState state) {
@@ -61,13 +57,12 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
         handler.ifPresent(h -> {
             ItemStack input = h.getStackInSlot(0).copy();
 
-            StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
-            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+            StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, input.copy());
 
             if (counter > 0){
                 if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     counter--;
-                    energy.ifPresent(e -> ((VEEnergyStorage)e).addEnergy(energyRate)); //Amount of energy to add per tick
+                    energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
                 }
                 setChanged();
             } else if (!input.isEmpty()) {
@@ -138,22 +133,14 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-                //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
-
-                if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
-                }
-                return false;
+                StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
+                return slot == 0 && recipe != null && recipe.ingredient.test(referenceStack);
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                StirlingGeneratorRecipe recipe = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-                //StirlingGeneratorRecipe recipe1 = level.getRecipeManager().getRecipeFor(StirlingGeneratorRecipe.RECIPE_TYPE, new Inventory(inputItemStack.get().copy()),level).orElse(null);
+                StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
 
                 if(slot == 0 && recipe != null) {
                     for (ItemStack testStack : recipe.ingredient.getItems()){
