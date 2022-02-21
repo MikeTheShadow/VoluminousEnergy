@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TankTile extends VEFluidTileEntity { // TODO: 2 items slots, 1 tank
+public class TankTile extends VEFluidTileEntity {
 
     private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH,"tank:tank_gui");
 
