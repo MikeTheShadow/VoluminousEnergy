@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:animal_fat_from_cow",
+  "conditions": [
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.5
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/cow"
+    }
+  ],
+  "minimum_count": 1,
+  "maximum_count": 2,
+  "addition": "voluminousenergy:animal_fat"
+}
