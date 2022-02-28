@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -78,16 +81,18 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
                                 + " FE"
                 ), mouseX, mouseY);
             }));
-        } else if (isHovering(79, 53, 18, 18, mouseX, mouseY)) {
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil
-                    .translateString("text.voluminousenergy.percent_burned").getString()
-                    + ": " + tileEntity.progressCounterPercent()
-                    + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString()
-                    + ": " + tileEntity.ticksLeft() + ", " + TextUtil.translateString("text.voluminousenergy.generating").getString()
-                    + " : " + tileEntity.getEnergyRate() + " FE/t"), mouseX, mouseY);
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(79, 53, 18, 18, mouseX, mouseY)) {
+        	renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
+
+	public List<Component> getTooltips() {
+		return Arrays.asList(
+				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()),
+				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"));
+	}
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
