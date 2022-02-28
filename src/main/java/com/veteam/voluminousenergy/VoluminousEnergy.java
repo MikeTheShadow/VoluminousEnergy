@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.SimpleModelBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -209,6 +210,8 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new RawBoneBlock());
 
             blockRegisteryEvent.getRegistry().register(new PressureLadder());
+
+            blockRegisteryEvent.getRegistry().register(new SimpleModelBlock());
         }
 
         @SubscribeEvent
@@ -448,6 +451,9 @@ public class VoluminousEnergy {
 
             // Register Multitools
             multitoolItemRegistry(itemRegisteryEvent);
+
+            // Register multiblocks
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SIMPLE_MODEL_BLOCK,properties).setRegistryName("simple_model"));
         }
 
         public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
