@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.SimpleModelBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -414,4 +415,8 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":pressure_ladder")
     public static PressureLadder PRESSURE_LADDER;
+
+    // MultiBlock
+    @ObjectHolder(VoluminousEnergy.MODID + ":simple_model")
+    public static SimpleModelBlock SIMPLE_MODEL_BLOCK;
 }
