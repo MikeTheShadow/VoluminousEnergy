@@ -448,9 +448,6 @@ public class VoluminousEnergy {
 
             // Register Multitools
             multitoolItemRegistry(itemRegisteryEvent);
-
-            // Register multiblocks
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SIMPLE_MODEL_BLOCK, properties).setRegistryName("simple_model"));
         }
 
         public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
