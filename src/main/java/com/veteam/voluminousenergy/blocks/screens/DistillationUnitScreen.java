@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -171,6 +174,8 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
                                 + " FE"
                 ), mouseX, mouseY);
             }));
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(78, 32, 28, 23, mouseX, mouseY)) {
+            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
@@ -192,6 +197,12 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
+    }
+
+    public List<Component> getTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override
