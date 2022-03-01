@@ -113,6 +113,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHanlder());
         registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 11, 23, AQUEOULIZING_UID);
+        registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
         registration.addRecipeClickArea(DistillationUnitScreen.class, 78,32,11,23, DISTILLING_UID);
         registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
         registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
