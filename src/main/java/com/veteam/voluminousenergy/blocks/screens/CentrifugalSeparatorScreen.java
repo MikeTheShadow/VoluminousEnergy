@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -126,8 +129,16 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<CentrifugalSep
                                 + " FE"
                 ), mouseX, mouseY);
             }));
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(78, 32, 14, 23, mouseX, mouseY)) {
+            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
+    }
+
+    public List<Component> getTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override
