@@ -105,7 +105,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(CrusherScreen.class, 78, 32, 28, 23, CRUSHING_UID);
+        registration.addGuiContainerHandler(CrusherScreen.class, new CrusherContainerHandler());
         registration.addRecipeClickArea(ElectrolyzerScreen.class, 78, 32, 28, 23, ELECTROLYZING_UID);
         registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
         registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);

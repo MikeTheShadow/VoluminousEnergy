@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -95,6 +98,9 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
                                 + " FE"
                 ), mouseX, mouseY);
             }));
+        }
+        else if (!VoluminousEnergy.JEI_LOADED && isHovering(78, 32, 28, 23, mouseX, mouseY)) {
+            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }/* else if (isHovering(152, 4, 20, 18, mouseX, mouseY)){
             if (openedIOGui){
                 renderTooltip(matrixStack, TextUtil.translateString("voluminousenergy.ui.io_management.close"), mouseX, mouseY);
@@ -103,6 +109,12 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
             }
         }*/
         super.renderTooltip(matrixStack,mouseX, mouseY);
+    }
+
+    public List<Component> getTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override
