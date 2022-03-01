@@ -17,6 +17,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -140,7 +141,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
                                 + " FE"
                 ), mouseX, mouseY);
             }));
-        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(105, 32, 14, 23, mouseX, mouseY)) {
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
 
@@ -151,6 +152,10 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
+    }
+
+    public Rect2i getTooltipArea() {
+        return new Rect2i(109, 32, 9, 17);
     }
 
     public List<Component> getTooltips() {

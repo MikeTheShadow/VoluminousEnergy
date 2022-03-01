@@ -21,7 +21,7 @@ public class BlastFurnaceContainerHandler implements IGuiContainerHandler<BlastF
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(105, 32, 14, 23);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

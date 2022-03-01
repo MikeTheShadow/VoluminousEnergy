@@ -21,7 +21,7 @@ public class ImplosionCompressorContainerHandler implements IGuiContainerHandler
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(78, 32, 24, 23);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

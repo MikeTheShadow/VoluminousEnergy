@@ -21,7 +21,7 @@ public class DistillationUnitContainerHandler implements IGuiContainerHandler<Di
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(78, 32, 11, 23);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

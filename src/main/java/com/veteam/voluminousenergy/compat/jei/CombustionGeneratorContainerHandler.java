@@ -21,7 +21,7 @@ public class CombustionGeneratorContainerHandler implements IGuiContainerHandler
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(87, 34, 17, 18);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

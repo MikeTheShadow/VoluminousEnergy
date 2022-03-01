@@ -15,6 +15,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -81,10 +82,14 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
                                 + " FE"
                 ), mouseX, mouseY);
             }));
-        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(79, 53, 18, 18, mouseX, mouseY)) {
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
         	renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack, mouseX, mouseY);
+    }
+
+    public Rect2i getTooltipArea() {
+        return new Rect2i(81, 55, 14, 14);
     }
 
     public List<Component> getTooltips() {

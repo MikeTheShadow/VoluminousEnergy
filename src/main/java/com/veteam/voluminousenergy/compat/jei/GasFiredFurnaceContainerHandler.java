@@ -22,7 +22,7 @@ public class GasFiredFurnaceContainerHandler implements IGuiContainerHandler<Gas
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(54, 54, 16, 16);
+                return containerScreen.getFuelTooltipArea();
             }
 
             @Override
@@ -41,7 +41,7 @@ public class GasFiredFurnaceContainerHandler implements IGuiContainerHandler<Gas
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(81, 32, 9, 17);
+                return containerScreen.getCounterTooltipArea();
             }
 
             @Override

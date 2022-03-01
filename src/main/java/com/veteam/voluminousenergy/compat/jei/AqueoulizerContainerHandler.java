@@ -21,7 +21,7 @@ public class AqueoulizerContainerHandler implements IGuiContainerHandler<Aqueoul
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(123, 33, 15, 15);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

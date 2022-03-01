@@ -21,7 +21,7 @@ public class CentrifugalAgitatorContainerHanlder implements IGuiContainerHandler
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(77, 33, 15, 15);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

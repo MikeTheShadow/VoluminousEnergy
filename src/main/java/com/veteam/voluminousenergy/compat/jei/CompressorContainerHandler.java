@@ -21,7 +21,7 @@ public class CompressorContainerHandler implements IGuiContainerHandler<Compress
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(78, 32, 28, 23);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

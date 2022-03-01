@@ -22,7 +22,7 @@ public class ElectricFurnaceContainerHandler implements IGuiContainerHandler<Ele
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(81, 32, 9, 17);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

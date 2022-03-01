@@ -16,6 +16,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -118,19 +119,27 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
             int amount = tileEntity.getFluidFromTank().getAmount();
             String name = tileEntity.getFluidFromTank().getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
-        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(54,54,16,16,mouseX,mouseY)){
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(),mouseX,mouseY)){
             renderComponentTooltip(matrixStack, getFuelTooltips(), mouseX, mouseY);
-        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(81,32,9,17,mouseX,mouseY)){
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getCounterTooltipArea(),mouseX,mouseY)){
             renderComponentTooltip(matrixStack, getCounterTooltips(), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX,mouseY);
     }
-    
+
+    public Rect2i getFuelTooltipArea() {
+        return new Rect2i(54, 54, 14, 14);
+    }
+
     public List<Component> getFuelTooltips() {
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%"),
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()));
+    }
+
+    public Rect2i getCounterTooltipArea() {
+        return new Rect2i(81, 31, 9, 17);
     }
 
     public List<Component> getCounterTooltips() {

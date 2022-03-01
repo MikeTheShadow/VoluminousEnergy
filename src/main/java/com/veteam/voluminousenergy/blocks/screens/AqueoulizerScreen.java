@@ -18,6 +18,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -136,7 +137,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
                                 + " FE"
                 ), mouseX, mouseY);
             }));
-        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(123, 33, 15, 15, mouseX, mouseY)) {
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
         }
 
@@ -155,6 +156,9 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
+    public Rect2i getTooltipArea() {
+        return new Rect2i(127, 31, 9, 17);
+    }
 
     public List<Component> getTooltips() {
         return Arrays.asList(

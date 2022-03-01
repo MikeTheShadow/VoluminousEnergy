@@ -18,6 +18,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -158,11 +159,15 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
             renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (!VoluminousEnergy.JEI_LOADED && isHovering(87, 34, 17, 18, mouseX, mouseY)){ // Flame blit
+        if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)){ // Flame blit
             renderComponentTooltip(matrixStack, getTooltips(), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
+    }
+
+    public Rect2i getTooltipArea() {
+        return new Rect2i(89, 36, 14, 14);
     }
 
     public List<Component> getTooltips() {

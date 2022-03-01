@@ -21,7 +21,7 @@ public class CentrifugalSeparatorContainerHandler implements IGuiContainerHandle
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(78, 32, 14, 23);
+                return containerScreen.getTooltipArea();
             }
 
             @Override

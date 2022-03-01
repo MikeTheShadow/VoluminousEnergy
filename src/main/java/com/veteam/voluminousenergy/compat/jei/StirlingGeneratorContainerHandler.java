@@ -21,7 +21,7 @@ public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<S
         areas.add(new IGuiClickableArea() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(79, 53, 18, 18);
+                return containerScreen.getTooltipArea();
             }
 
             @Override
