@@ -209,6 +209,12 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         return new ToolingStationContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
+    public boolean hasValidRecipe(){
+        return (inventory.getStackInSlot(2) != ItemStack.EMPTY)
+                && (inventory.getStackInSlot(3) != ItemStack.EMPTY)
+                && (inventory.getStackInSlot(4) != ItemStack.EMPTY);
+    }
+
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
