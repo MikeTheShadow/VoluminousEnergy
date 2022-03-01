@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
-import com.veteam.voluminousenergy.blocks.blocks.multiblocks.SimpleModelBlock;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -17,6 +17,8 @@ import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
+import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -45,6 +47,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
@@ -89,7 +92,7 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
-
+        modEventBus.addListener(this::registerRenderers);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
@@ -104,6 +107,10 @@ public class VoluminousEnergy {
         proxy.init();
         VENetwork.init();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
@@ -211,7 +218,7 @@ public class VoluminousEnergy {
 
             blockRegisteryEvent.getRegistry().register(new PressureLadder());
 
-            blockRegisteryEvent.getRegistry().register(new SimpleModelBlock());
+            blockRegisteryEvent.getRegistry().register(new DimensionalLaserBlock());
         }
 
         @SubscribeEvent
@@ -452,8 +459,8 @@ public class VoluminousEnergy {
             // Register Multitools
             multitoolItemRegistry(itemRegisteryEvent);
 
-            // Register multiblocks
-            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SIMPLE_MODEL_BLOCK,properties).setRegistryName("simple_model"));
+            // Register custom models //TODO move elsewhere
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DIMENSIONAL_LASER_BLOCK,properties).setRegistryName("dimensional_laser"));
         }
 
         public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
@@ -573,6 +580,9 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK).build(null).setRegistryName("nighalite_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK).build(null).setRegistryName("eighzo_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK).build(null).setRegistryName("solarium_tank"));
+
+            // custom block stuff
+            event.getRegistry().register(BlockEntityType.Builder.of(DimensionalLaserTile::new,VEBlocks.DIMENSIONAL_LASER_BLOCK).build(null).setRegistryName("dimensional_laser"));
         }
 
         @SubscribeEvent
