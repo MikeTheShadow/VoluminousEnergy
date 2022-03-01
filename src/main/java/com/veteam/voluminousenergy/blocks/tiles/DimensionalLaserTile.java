@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -34,4 +32,6 @@ public class DimensionalLaserTile extends BlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, DimensionalLaserTile dimensionalLaserTile) {
         dimensionalLaserTile.tick(level,pos,state,dimensionalLaserTile);
     }
+
+
 }
