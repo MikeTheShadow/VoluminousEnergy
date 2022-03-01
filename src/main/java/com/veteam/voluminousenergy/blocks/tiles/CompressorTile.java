@@ -176,6 +176,18 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
         return 0;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+
     @Override
     public void updatePacketFromGui(boolean status, int slotId){
         if(slotId == inputSlotManager.getSlotNum()){
