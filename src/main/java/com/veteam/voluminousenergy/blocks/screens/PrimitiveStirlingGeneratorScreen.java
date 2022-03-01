@@ -74,12 +74,12 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
-	public List<Component> getTooltips() {
-		return Arrays.asList(
-				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
-				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()),
-				Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"));
-	}
+    public List<Component> getTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"));
+    }
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY){
