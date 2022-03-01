@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -115,13 +118,25 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
             int amount = tileEntity.getFluidFromTank().getAmount();
             String name = tileEntity.getFluidFromTank().getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
-        } else if (isHovering(54,54,16,16,mouseX,mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()), mouseX, mouseY);
-        } else if (isHovering(81,32,9,17,mouseX,mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%, "+ TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()), mouseX, mouseY);
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(54,54,16,16,mouseX,mouseY)){
+            renderComponentTooltip(matrixStack, getFuelTooltips(), mouseX, mouseY);
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(81,32,9,17,mouseX,mouseY)){
+            renderComponentTooltip(matrixStack, getCounterTooltips(), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX,mouseY);
+    }
+    
+    public List<Component> getFuelTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()));
+    }
+
+    public List<Component> getCounterTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()));
     }
 
     @Override
