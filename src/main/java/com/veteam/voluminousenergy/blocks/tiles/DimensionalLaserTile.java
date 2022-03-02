@@ -5,8 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class DimensionalLaserTile extends BlockEntity {
+
+    private int activationTimer = 0;
+    private static final int activationTime = 60 * 20;
+    private boolean isComplete = false;
 
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
         super(VEBlockEntities.DIMENSIONAL_LASER.get(), pos, state);
@@ -33,5 +38,32 @@ public class DimensionalLaserTile extends BlockEntity {
         dimensionalLaserTile.tick(level,pos,state,dimensionalLaserTile);
     }
 
+    @Override
+    public AABB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
+    }
 
+    public int getActivationTimer(){
+        return activationTimer;
+    }
+
+    public void setActivationTimer(int activationTimer) {
+        this.activationTimer = activationTimer;
+    }
+
+    public void addCompletion() {
+        if(this.activationTimer < activationTime) {
+            this.activationTimer += 1;
+        } else {
+            isComplete = true;
+        }
+    }
+
+    public int getActivationTime() {
+        return activationTime;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
 }
