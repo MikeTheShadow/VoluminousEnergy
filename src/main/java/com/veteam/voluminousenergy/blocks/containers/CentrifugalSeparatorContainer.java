@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 7;
+    public static final int NUMBER_OF_SLOTS = 7;
 
     public CentrifugalSeparatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER,id);

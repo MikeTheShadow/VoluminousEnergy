@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.compat.jei;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
+import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
@@ -129,6 +130,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(PrimitiveStirlingGeneratorContainer.class, STIRLING_UID, 0, 1, PrimitiveStirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(StirlingGeneratorContainer.class, STIRLING_UID, 0, 1, StirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(AqueoulizerContainer.class, AQUEOULIZING_UID, 3, 1, AqueoulizerContainer.numberOfSlots, 36);
+        registration.addRecipeTransferHandler(CentrifugalSeparatorContainer.class, CENTRIFUGAL_SEPARATION_UID, 0, 2, CentrifugalSeparatorContainer.NUMBER_OF_SLOTS, 36);
     }
 
     @Override
