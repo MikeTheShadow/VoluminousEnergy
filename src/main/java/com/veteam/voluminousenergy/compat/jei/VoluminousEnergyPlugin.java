@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContain
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
+import com.veteam.voluminousenergy.blocks.containers.ImplosionCompressorContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -131,6 +132,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(StirlingGeneratorContainer.class, STIRLING_UID, 0, 1, StirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(AqueoulizerContainer.class, AQUEOULIZING_UID, 3, 1, AqueoulizerContainer.numberOfSlots, 36);
         registration.addRecipeTransferHandler(CentrifugalSeparatorContainer.class, CENTRIFUGAL_SEPARATION_UID, 0, 2, CentrifugalSeparatorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, IMPLOSION_COMPRESSION_UID, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
     }
 
     @Override
