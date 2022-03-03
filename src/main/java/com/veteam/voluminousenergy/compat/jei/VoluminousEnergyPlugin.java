@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -119,8 +120,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        //registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 1, 3, 36);
         //registration.addRecipeTransferHandler(ElectrolyzerContainer.class, ELECTROLYZING_UID, 0, 1, 3, 36);
+        registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 1, CrusherContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(PrimitiveStirlingGeneratorContainer.class, STIRLING_UID, 0, 1, PrimitiveStirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(StirlingGeneratorContainer.class, STIRLING_UID, 0, 1, StirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
     }
