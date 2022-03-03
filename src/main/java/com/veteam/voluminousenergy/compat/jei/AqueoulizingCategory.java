@@ -103,8 +103,8 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 
-        itemStacks.init(0, false, 2, 10);
-        fluidStacks.init(1, false, 25, 11);
+        itemStacks.init(0, true, 2, 10);
+        fluidStacks.init(1, true, 25, 11);
         fluidStacks.init(2, false, 73,11);
 
         // Input
