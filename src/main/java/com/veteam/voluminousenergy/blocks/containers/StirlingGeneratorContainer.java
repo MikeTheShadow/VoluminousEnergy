@@ -22,7 +22,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.STIRLING_GENERA
 
 public class StirlingGeneratorContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 1;
+    public static final int NUMBER_OF_SLOTS = 1;
 
     public StirlingGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(STIRLING_GENERATOR_CONTAINER,id);
