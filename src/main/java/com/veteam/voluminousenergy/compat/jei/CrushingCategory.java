@@ -110,7 +110,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 11, 0);
+        itemStacks.init(0, true, 11, 0);
         itemStacks.init(1, false, 2, 45);
 
         // Should only be one ingredient...
@@ -130,7 +130,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
         // Calculate RNG stack, only if RNG stack exists
         if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(2, true, 20, 45);
+            itemStacks.init(2, false, 20, 45);
             tempStack = recipe.getRngItem();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount());
