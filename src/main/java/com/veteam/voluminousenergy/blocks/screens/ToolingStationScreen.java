@@ -150,7 +150,7 @@ public class ToolingStationScreen extends VEContainerScreen<ToolingStationContai
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(9);
+            boolean lightArrow = tileEntity.hasValidRecipe();
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
@@ -161,7 +161,7 @@ public class ToolingStationScreen extends VEContainerScreen<ToolingStationContai
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+127, j+31, 176, 0, progress, 17);
+            if (lightArrow) this.blit(matrixStack,i+109, j+18, 188, 0, 22, 47);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
