@@ -98,7 +98,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CompressorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 2, 10);
+        itemStacks.init(0, true, 2, 10);
         itemStacks.init(1, false, 48, 10);
 
         // Should only be one ingredient...
