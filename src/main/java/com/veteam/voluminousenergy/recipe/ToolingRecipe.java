@@ -5,10 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -136,11 +137,13 @@ public class ToolingRecipe extends VERecipe {
             if(toolBase.has("tag") && !toolBase.has("item")){
                 ResourceLocation toolBaseResourceLocation = ResourceLocation.of(GsonHelper.getAsString(toolBase,"tag","minecraft:air"),':');
 
-                Tag<Item> tag = RecipeUtil.getTagFromResourceLocationForItems(toolBaseResourceLocation, "Tooling Recipe");
+                TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, toolBaseResourceLocation);
 
                 if(tag != null){
-                    recipe.basesAndBits.addAll(tag.getValues());
-                    recipe.bases.addAll(tag.getValues());
+                    for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag)){// TODO: Forge use their own registry but this was not the case for tags in 18.1
+                        recipe.basesAndBits.add(itemHolder.value());
+                        recipe.bases.add(itemHolder.value());
+                    }
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                     throw new JsonSyntaxException("Bad syntax for the Tooling Recipe, the tag is null");

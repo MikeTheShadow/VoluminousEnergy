@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -163,10 +164,10 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Aqueoulizer");
-                if(tag != null){
-                    for(Fluid fluid : tag.getValues()){
-                        FluidStack tempStack = new FluidStack(fluid, recipe.inputAmount);
+                TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
+                if (tag != null){
+                    for (Holder<Fluid> fluidHolder : Registry.FLUID.getTagOrEmpty(tag)){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
+                        FluidStack tempStack = new FluidStack(fluidHolder.value(), recipe.inputAmount);
                         recipe.fluidInputList.add(tempStack);
                         recipe.rawFluidInputList.add(tempStack.getRawFluid());
                         recipe.inputArraySize = recipe.fluidInputList.size();

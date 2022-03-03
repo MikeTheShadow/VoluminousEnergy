@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -190,16 +191,17 @@ public class DistillationRecipe extends VEFluidRecipe {
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
-                if(tag != null){
-                    for(Fluid fluid : tag.getValues()){
-                        FluidStack tempStack = new FluidStack(fluid, recipe.inputAmount);
+                TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
+                if (tag != null){
+                    for (Holder<Fluid> fluidHolder : Registry.FLUID.getTagOrEmpty(tag)){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
+                        FluidStack tempStack = new FluidStack(fluidHolder.value(), recipe.inputAmount);
                         recipe.fluidInputList.add(tempStack);
                         recipe.rawFluidInputList.add(tempStack.getRawFluid());
                         recipe.inputArraySize = recipe.fluidInputList.size();
                     }
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    throw new JsonSyntaxException("Bad syntax for the Distillation Recipe, the tag is null");
                 }
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag
@@ -209,7 +211,7 @@ public class DistillationRecipe extends VEFluidRecipe {
                 recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.fluidInputList.size();
             } else {
-                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
+                throw new JsonSyntaxException("Bad syntax for the Distillation recipe, input_fluid must be tag or fluid");
             }
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');

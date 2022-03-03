@@ -6,10 +6,11 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.BucketItem;
@@ -170,10 +171,10 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
+                TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
                 if(tag != null){
-                    for(Fluid fluid : tag.getValues()){
-                        FluidStack tempStack = new FluidStack(fluid, 1000);
+                    for(Holder<Fluid> fluid : Registry.FLUID.getTagOrEmpty(tag)){
+                        FluidStack tempStack = new FluidStack(fluid.value(), 1000);
                         recipe.fluidInputList.add(tempStack);
                         recipe.rawFluidInputList.add(tempStack.getRawFluid());
                         if (!rawFluidInputListStatic.contains(tempStack.getRawFluid())){

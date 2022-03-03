@@ -6,9 +6,12 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -121,11 +124,13 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                Tag<Item> tag = RecipeUtil.getTagFromResourceLocationForItems(secondInputResourceLocation, "Industrial Blasting");
+                TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, secondInputResourceLocation);
 
                 if(tag != null){
-                    recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
-                    recipe.onlySecondInput.addAll(tag.getValues());
+                    for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag)){// TODO: Forge use their own registry but this was not the case for tags in 18.1
+                        recipe.ingredientListIncludingSeconds.add(itemHolder.value());
+                        recipe.onlySecondInput.add(itemHolder.value());
+                    }
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                     throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe the tag is null");
