@@ -120,7 +120,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(CentrifugalSeparatorScreen.class, new CentrifugalSeparatorContainerHandler());
         registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
         registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
-        registration.addRecipeClickArea(ToolingStationScreen.class, 110, 32, 24, 23, TOOLING_UID);
+        registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
     }
 
     @Override
