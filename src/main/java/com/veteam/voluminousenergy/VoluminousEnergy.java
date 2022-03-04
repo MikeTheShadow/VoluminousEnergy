@@ -29,6 +29,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
+import com.veteam.voluminousenergy.world.feature.SurfaceMattersLakesFeature;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.ores.VEOres;
@@ -744,6 +745,8 @@ public class VoluminousEnergy {
         public static void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) { // REGISTER STRAIGHT UP FEATURES HERE
             // Straight up Features
             event.getRegistry().register(VEFeatures.VE_BSC_LAKE_FEATURE.setRegistryName("ve_bsc_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_SURFACE_FEATURE.setRegistryName("ve_bsc_surface_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_UNDERGROUND_FEATURE.setRegistryName("ve_bsc_underground_lakes_feature"));
             event.getRegistry().register(VEFeatures.VE_GEYSER_FEATURE.setRegistryName("ve_geyser_feature"));
             event.getRegistry().register(VEFeatures.VE_RICE_FEATURE.setRegistryName("ve_rice_feature"));
             event.getRegistry().register(VEFeatures.VE_ORE_DEPOSIT_FEATURE.setRegistryName("ve_ore_deposit_feature"));
@@ -760,7 +763,7 @@ public class VoluminousEnergy {
         builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
 
         // Oil
-        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_LAKE_FEATURE, "oil_lake");
+        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
         builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
 
         // Rice

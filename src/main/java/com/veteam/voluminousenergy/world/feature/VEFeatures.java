@@ -20,22 +20,26 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     public static final Feature<BlockStateConfiguration> VE_GEYSER_FEATURE = new GeyserFeature(BlockStateConfiguration.CODEC); // Geyser using BlockStateConfiguration
     public static final Feature<BlockStateConfiguration> VE_RICE_FEATURE = new RiceFeature(BlockStateConfiguration.CODEC); // Rice crop using BlockStateConfiguration
     public static final Feature<VEOreDepositFeature.Configuration> VE_ORE_DEPOSIT_FEATURE = new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC);
+    public static final SurfaceMattersLakesFeature VE_BSC_LAKE_SURFACE_FEATURE = new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true);
+    public static final SurfaceMattersLakesFeature VE_BSC_LAKE_UNDERGROUND_FEATURE = new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false);
 
     /*** Configs and Placements for impls of features ***/
 
     // Oil Lake
-    public static ConfiguredFeature<?,?> OIL_LAKE_FEATURE = new ConfiguredFeature<>(VEFeatures.VE_BSC_LAKE_FEATURE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
-    public static PlacedFeature SURFACE_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(OIL_LAKE_FEATURE), List.of(
+    public static ConfiguredFeature<?,?> SURFACE_OIL_LAKE_FEATURE = new ConfiguredFeature<>(VE_BSC_LAKE_SURFACE_FEATURE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
+    public static PlacedFeature SURFACE_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(SURFACE_OIL_LAKE_FEATURE), List.of(
             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
             InSquarePlacement.spread(),
             CountPlacement.of(1),
-            RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
+            RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 144 by default
     ));
-    public static PlacedFeature UNDERGROUND_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(OIL_LAKE_FEATURE), List.of(
+
+    public static ConfiguredFeature<?,?> UNDERGROUND_OIL_LAKE_FEATURE = new ConfiguredFeature<>(VE_BSC_LAKE_UNDERGROUND_FEATURE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
+    public static PlacedFeature UNDERGROUND_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(UNDERGROUND_OIL_LAKE_FEATURE), List.of(
             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
             InSquarePlacement.spread(),
             CountPlacement.of(1),
-            RarityFilter.onAverageOnceEvery(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 15 by default
+            RarityFilter.onAverageOnceEvery(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 5 by default
     ));
 
     // Oil Geyser
@@ -44,7 +48,7 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
             InSquarePlacement.spread(),
             CountPlacement.of(1),
-            RarityFilter.onAverageOnceEvery(Config.OIL_GEYSER_CHANCE.get()) // 100 by default
+            RarityFilter.onAverageOnceEvery(Config.OIL_GEYSER_CHANCE.get()) // 208 by default
     ));
 
     // Rice

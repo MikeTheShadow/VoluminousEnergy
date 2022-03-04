@@ -9,13 +9,11 @@ import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfi
 
 import java.util.Random;
 
-public class CrudeOilFeature extends VELakesFeature {
-    public static CrudeOilFeature SURFACE_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, true);
-    public static CrudeOilFeature UNDERGROUND_INSTANCE = new CrudeOilFeature(BlockStateConfiguration.CODEC, false);
+public class SurfaceMattersLakesFeature extends VELakesFeature {
 
     private final boolean isForSurface;
 
-    public CrudeOilFeature(Codec<BlockStateConfiguration> codec, boolean forSurface) {
+    public SurfaceMattersLakesFeature(Codec<BlockStateConfiguration> codec, boolean forSurface) {
         super(codec);
         this.isForSurface = forSurface;
     }
@@ -30,6 +28,6 @@ public class CrudeOilFeature extends VELakesFeature {
 
         if (worldIn.canSeeSky(pos) && this.isForSurface) return super.place(context);
 
-        return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(32) + 16, pos.getZ()), conf); // Should place between 32 and 48
+        return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(48 + 32) - 32, pos.getZ()), conf); // Should place between -32 and 48
     }
 }
