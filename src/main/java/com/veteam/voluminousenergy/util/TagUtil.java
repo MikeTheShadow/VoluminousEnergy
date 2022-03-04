@@ -6,10 +6,45 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TagUtil {
+
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(String fluidTagLocation){
+        TagKey<Fluid> fluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(fluidTagLocation));
+        ArrayList<Fluid> fluids = new ArrayList<>();
+        AtomicReference<ArrayList<Fluid>> atomicFluids = new AtomicReference<>(fluids);
+        ForgeRegistries.FLUIDS.getKeys().forEach(fluidKey -> {
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidKey);
+            if (fluid.is(fluidTagKey)) atomicFluids.get().add(fluid);
+        });
+
+        /*for(Holder<Fluid> holder : Registry.FLUID.getTagOrEmpty(fluidTagKey)) {
+            fluids.add(holder.value());
+        }*/
+        return fluids;
+    }
+
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(ResourceLocation fluidTagLocation){
+        TagKey<Fluid> fluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
+        ArrayList<Fluid> fluids = new ArrayList<>();
+        AtomicReference<ArrayList<Fluid>> atomicFluids = new AtomicReference<>(fluids);
+        ForgeRegistries.FLUIDS.getKeys().forEach(fluidKey -> {
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidKey);
+            if (fluid.is(fluidTagKey)) atomicFluids.get().add(fluid);
+        });
+
+        /*for(Holder<Fluid> holder : Registry.FLUID.getTagOrEmpty(fluidTagKey)) {
+            fluids.add(holder.value());
+        }*/
+        return fluids;
+    }
+
+
+    // Original
 
     public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation){
         TagKey<Fluid> fluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(fluidTagLocation));
