@@ -3,7 +3,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/MikeTheShadow/VoluminousEnergy)
 ![GitHub](https://img.shields.io/github/license/MikeTheShadow/VoluminousEnergy)
 
-<big> An energy focused tech mod for Minecraft 1.18+ </big>
+<big> An energy focused tech mod for Minecraft 1.18.2+ </big>
 
 ## Fluids
 * Biofuel
