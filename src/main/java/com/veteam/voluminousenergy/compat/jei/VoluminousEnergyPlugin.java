@@ -2,6 +2,16 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
+import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
+import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
+import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
+import com.veteam.voluminousenergy.blocks.containers.ImplosionCompressorContainer;
+import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.blocks.screens.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.recipe.*;
@@ -14,6 +24,8 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,6 +51,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
     public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
+    
+    public static final Component SHOW_RECIPES = new TranslatableComponent("jei.tooltip.show.recipes");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -101,24 +115,36 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(CrusherScreen.class, 78, 32, 28, 23, CRUSHING_UID);
-        registration.addRecipeClickArea(ElectrolyzerScreen.class, 78, 32, 28, 23, ELECTROLYZING_UID);
-        registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
-        registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
-        registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
-        registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 11, 28, 23, CENTRIFUGAL_AGITATION_UID);
-        registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 11, 23, AQUEOULIZING_UID);
-        registration.addRecipeClickArea(DistillationUnitScreen.class, 78,32,11,23, DISTILLING_UID);
-        registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
-        registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
-        registration.addRecipeClickArea(BlastFurnaceScreen.class, 105, 32, 14, 23, INDUSTRIAL_BLASTING_UID);
-        registration.addRecipeClickArea(ToolingStationScreen.class, 110, 32, 24, 23, TOOLING_UID);
+        registration.addGuiContainerHandler(CrusherScreen.class, new CrusherContainerHandler());
+        registration.addGuiContainerHandler(ElectrolyzerScreen.class, new ElectrolyzingContainerHandler());
+        registration.addGuiContainerHandler(CompressorScreen.class, new CompressorContainerHandler());
+        registration.addGuiContainerHandler(CombustionGeneratorScreen.class, new CombustionGeneratorContainerHandler());
+        registration.addGuiContainerHandler(PrimitiveStirlingGeneratorScreen.class, new PrimitiveStirlingGeneratorContainerHandler());
+        registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
+        registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHanlder());
+        registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AQUEOULIZING_UID);
+        registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
+        registration.addGuiContainerHandler(DistillationUnitScreen.class, new DistillationUnitContainerHandler());
+        registration.addGuiContainerHandler(GasFiredFurnaceScreen.class, new GasFiredFurnaceContainerHandler());
+        registration.addGuiContainerHandler(ElectricFurnaceScreen.class, new ElectricFurnaceContainerHandler());
+        registration.addGuiContainerHandler(CentrifugalSeparatorScreen.class, new CentrifugalSeparatorContainerHandler());
+        registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
+        registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
+        registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        //registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 1, 3, 36);
-        //registration.addRecipeTransferHandler(ElectrolyzerContainer.class, ELECTROLYZING_UID, 0, 1, 3, 36);
+        registration.addRecipeTransferHandler(CrusherContainer.class, CRUSHING_UID, 0, 1, CrusherContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(ElectrolyzerContainer.class, ELECTROLYZING_UID, 0, 2, ElectrolyzerContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(CompressorContainer.class, COMPRESSING_UID, 0, 1, CompressorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(PrimitiveStirlingGeneratorContainer.class, STIRLING_UID, 0, 1, PrimitiveStirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(StirlingGeneratorContainer.class, STIRLING_UID, 0, 1, StirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(AqueoulizerContainer.class, AQUEOULIZING_UID, 3, 1, AqueoulizerContainer.numberOfSlots, 36);
+        registration.addRecipeTransferHandler(CentrifugalSeparatorContainer.class, CENTRIFUGAL_SEPARATION_UID, 0, 2, CentrifugalSeparatorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, IMPLOSION_COMPRESSION_UID, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(BlastFurnaceContainer.class, INDUSTRIAL_BLASTING_UID, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(ToolingStationContainer.class, TOOLING_UID, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
     }
 
     @Override

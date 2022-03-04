@@ -100,8 +100,8 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ImplosionCompressorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 2, 1);
-        itemStacks.init(2, false, 2, 19);
+        itemStacks.init(0, true, 2, 1);
+        itemStacks.init(2, true, 2, 19);
         itemStacks.init(1, false, 48, 10);
 
         // Should only be one ingredient...

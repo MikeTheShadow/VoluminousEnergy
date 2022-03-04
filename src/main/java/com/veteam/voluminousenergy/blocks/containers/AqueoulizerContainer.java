@@ -24,7 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AQUEOULIZER_CON
 public class AqueoulizerContainer extends VoluminousContainer {
 
 
-    private static final int numberOfSlots = 5;
+    public static final int numberOfSlots = 5;
 
     public AqueoulizerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(AQUEOULIZER_CONTAINER, id);

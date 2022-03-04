@@ -353,6 +353,18 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
         return 0;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+    
     @Override
     public int getMaxPower() {
         return Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get();

@@ -21,7 +21,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_STIRL
 
 public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 1;
+    public static final int NUMBER_OF_SLOTS = 1;
 
     public PrimitiveStirlingGeneratorContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
