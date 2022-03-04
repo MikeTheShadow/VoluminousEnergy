@@ -186,6 +186,18 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
         return 0;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+    
     @Override
     public int getMaxPower() {
         return Config.IMPLOSION_COMPRESSOR_MAX_POWER.get();

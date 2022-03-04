@@ -51,6 +51,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -70,6 +71,7 @@ public class VoluminousEnergy {
     public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
+    public static boolean JEI_LOADED = false;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -94,6 +96,8 @@ public class VoluminousEnergy {
 
         // Config Files to load
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
+        
+        JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
     private void setup(final FMLCommonSetupEvent event) {

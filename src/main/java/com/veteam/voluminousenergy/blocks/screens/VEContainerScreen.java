@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -99,6 +100,10 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
         VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
+    }
+
+    protected boolean isHovering(Rect2i rect, double x, double y) {
+        return this.isHovering(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), x, y);
     }
 
 }

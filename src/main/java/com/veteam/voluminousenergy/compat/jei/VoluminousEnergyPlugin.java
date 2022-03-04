@@ -14,6 +14,8 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,6 +41,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
     public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
+    
+    public static final Component SHOW_RECIPES = new TranslatableComponent("jei.tooltip.show.recipes");
 
     @Override
     public ResourceLocation getPluginUid(){
@@ -101,18 +105,22 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(CrusherScreen.class, 78, 32, 28, 23, CRUSHING_UID);
-        registration.addRecipeClickArea(ElectrolyzerScreen.class, 78, 32, 28, 23, ELECTROLYZING_UID);
-        registration.addRecipeClickArea(CompressorScreen.class, 78, 32,28,23, COMPRESSING_UID);
-        registration.addRecipeClickArea(CombustionGeneratorScreen.class, 78,12,28,23, COMBUSTING_UID);
-        registration.addRecipeClickArea(StirlingGeneratorScreen.class, 78,12,28,23, STIRLING_UID);
-        registration.addRecipeClickArea(CentrifugalAgitatorScreen.class, 78, 11, 28, 23, CENTRIFUGAL_AGITATION_UID);
-        registration.addRecipeClickArea(AqueoulizerScreen.class, 78, 32, 11, 23, AQUEOULIZING_UID);
-        registration.addRecipeClickArea(DistillationUnitScreen.class, 78,32,11,23, DISTILLING_UID);
-        registration.addRecipeClickArea(CentrifugalSeparatorScreen.class, 78, 32, 14, 23, CENTRIFUGAL_SEPARATION_UID);
-        registration.addRecipeClickArea(ImplosionCompressorScreen.class,78, 32, 24, 23, IMPLOSION_COMPRESSION_UID);
-        registration.addRecipeClickArea(BlastFurnaceScreen.class, 105, 32, 14, 23, INDUSTRIAL_BLASTING_UID);
-        registration.addRecipeClickArea(ToolingStationScreen.class, 110, 32, 24, 23, TOOLING_UID);
+        registration.addGuiContainerHandler(CrusherScreen.class, new CrusherContainerHandler());
+        registration.addGuiContainerHandler(ElectrolyzerScreen.class, new ElectrolyzingContainerHandler());
+        registration.addGuiContainerHandler(CompressorScreen.class, new CompressorContainerHandler());
+        registration.addGuiContainerHandler(CombustionGeneratorScreen.class, new CombustionGeneratorContainerHandler());
+        registration.addGuiContainerHandler(PrimitiveStirlingGeneratorScreen.class, new PrimitiveStirlingGeneratorContainerHandler());
+        registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
+        registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHanlder());
+        registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AQUEOULIZING_UID);
+        registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
+        registration.addGuiContainerHandler(DistillationUnitScreen.class, new DistillationUnitContainerHandler());
+        registration.addGuiContainerHandler(GasFiredFurnaceScreen.class, new GasFiredFurnaceContainerHandler());
+        registration.addGuiContainerHandler(ElectricFurnaceScreen.class, new ElectricFurnaceContainerHandler());
+        registration.addGuiContainerHandler(CentrifugalSeparatorScreen.class, new CentrifugalSeparatorContainerHandler());
+        registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
+        registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
+        registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
     }
 
     @Override
