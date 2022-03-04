@@ -97,8 +97,8 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     public void setRecipe(IRecipeLayout recipeLayout, ToolingRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, false, 2, 10); // This is the result / complete multitool
-        itemStacks.init(1, false, 48, 1); // This is the top which should be the bit
-        itemStacks.init(2, false, 48, 19); // This is the bottom which should be the Base
+        itemStacks.init(1, true, 48, 1); // This is the top which should be the bit
+        itemStacks.init(2, true, 48, 19); // This is the bottom which should be the Base
 
         ArrayList<ItemStack> bitList = new ArrayList<>();
         ArrayList<ItemStack> baseList = new ArrayList<>();
