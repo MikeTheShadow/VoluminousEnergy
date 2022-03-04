@@ -471,7 +471,7 @@ public class Config {
                 SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
                         .defineInRange("Surface Oil Lake Chance", 144, 10, Integer.MAX_VALUE);
                 UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
-                        .defineInRange("Underground Oil Lake Chance", 16, 10, Integer.MAX_VALUE);
+                        .defineInRange("Underground Oil Lake Chance", 5, 1, Integer.MAX_VALUE);
                 GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                         .define("Oil Geysers", true);
                 OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
