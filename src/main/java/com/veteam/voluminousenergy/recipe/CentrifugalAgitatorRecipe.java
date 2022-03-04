@@ -182,12 +182,12 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
                 recipe.fluidInputList.add(recipe.inputFluid);
                 recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.fluidInputList.size();
             } else {
-                throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
+                throw new JsonSyntaxException("Bad syntax for the Centrifugal Agitator recipe, input_fluid must be tag or fluid");
             }
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
