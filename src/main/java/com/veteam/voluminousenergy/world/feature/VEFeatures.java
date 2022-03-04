@@ -24,14 +24,16 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     /*** Configs and Placements for impls of features ***/
 
     // Oil Lake
-    public static ConfiguredFeature<?,?> OIL_LAKE_FEATURE = new ConfiguredFeature<>(VEFeatures.VE_BSC_LAKE_FEATURE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
-    public static PlacedFeature SURFACE_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(OIL_LAKE_FEATURE), List.of(
+    public static ConfiguredFeature<?,?> SURFACE_OIL_LAKE_FEATURE = new ConfiguredFeature<>(SurfaceMattersLakesFeature.SURFACE_INSTANCE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
+    public static PlacedFeature SURFACE_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(SURFACE_OIL_LAKE_FEATURE), List.of(
             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
             InSquarePlacement.spread(),
             CountPlacement.of(1),
             RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 65 by default
     ));
-    public static PlacedFeature UNDERGROUND_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(OIL_LAKE_FEATURE), List.of(
+
+    public static ConfiguredFeature<?,?> UNDERGROUND_OIL_LAKE_FEATURE = new ConfiguredFeature<>(SurfaceMattersLakesFeature.UNDERGROUND_INSTANCE, new BlockStateConfiguration(CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock()));
+    public static PlacedFeature UNDERGROUND_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(UNDERGROUND_OIL_LAKE_FEATURE), List.of(
             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
             InSquarePlacement.spread(),
             CountPlacement.of(1),
