@@ -10,8 +10,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfi
 import java.util.Random;
 
 public class SurfaceMattersLakesFeature extends VELakesFeature {
-    public static SurfaceMattersLakesFeature SURFACE_INSTANCE = new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true);
-    public static SurfaceMattersLakesFeature UNDERGROUND_INSTANCE = new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false);
 
     private final boolean isForSurface;
 

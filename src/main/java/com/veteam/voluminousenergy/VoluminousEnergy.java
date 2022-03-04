@@ -745,11 +745,11 @@ public class VoluminousEnergy {
         public static void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) { // REGISTER STRAIGHT UP FEATURES HERE
             // Straight up Features
             event.getRegistry().register(VEFeatures.VE_BSC_LAKE_FEATURE.setRegistryName("ve_bsc_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_SURFACE_FEATURE.setRegistryName("ve_bsc_surface_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_UNDERGROUND_FEATURE.setRegistryName("ve_bsc_underground_lakes_feature"));
             event.getRegistry().register(VEFeatures.VE_GEYSER_FEATURE.setRegistryName("ve_geyser_feature"));
             event.getRegistry().register(VEFeatures.VE_RICE_FEATURE.setRegistryName("ve_rice_feature"));
             event.getRegistry().register(VEFeatures.VE_ORE_DEPOSIT_FEATURE.setRegistryName("ve_ore_deposit_feature"));
-            event.getRegistry().register(SurfaceMattersLakesFeature.SURFACE_INSTANCE.setRegistryName("ve_surface_lake_feature"));
-            event.getRegistry().register(SurfaceMattersLakesFeature.UNDERGROUND_INSTANCE.setRegistryName("ve_underground_lakes_feature"));
         }
     }
 
