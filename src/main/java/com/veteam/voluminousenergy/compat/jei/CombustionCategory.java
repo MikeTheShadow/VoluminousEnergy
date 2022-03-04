@@ -121,7 +121,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, false, 12, 1);
+        fluidStacks.init(0, true, 12, 1);
 
         // Setup Oxidizers
         int j = 0;
@@ -144,7 +144,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
                         // Core / original logic
                         j = orderOxidizers(i,j);
-                        fluidStacks.init(i, false, 3 + j, 46);
+                        fluidStacks.init(i, true, 3 + j, 46);
                         ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
                         fluidStacks.set(i, oxidizerList);
                     }
@@ -154,7 +154,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
                     // Core / original logic
                     j = orderOxidizers(i,j);
-                    fluidStacks.init(i, false, 3 + j, 46);
+                    fluidStacks.init(i, true, 3 + j, 46);
                     ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
                     fluidStacks.set(i, oxidizerList);
                 }

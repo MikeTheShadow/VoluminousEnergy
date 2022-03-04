@@ -21,7 +21,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.BLAST_FURNACE_C
 
 public class BlastFurnaceContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 6;
+    public static final int NUMBER_OF_SLOTS = 6;
 
     public BlastFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(BLAST_FURNACE_CONTAINER,id);

@@ -99,7 +99,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 
-        fluidStacks.init(0, false, 3,11);
+        fluidStacks.init(0, true, 3,11);
         fluidStacks.init(1, false, 49,11);
         fluidStacks.init(2, false, 73,11);
         itemStacks.init(3,false, 96,10);

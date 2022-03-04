@@ -87,7 +87,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, StirlingGeneratorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 11, 0);
+        itemStacks.init(0, true, 11, 0);
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();

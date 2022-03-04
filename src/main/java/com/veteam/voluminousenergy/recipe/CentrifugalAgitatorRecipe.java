@@ -181,7 +181,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
+                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount);
                 recipe.fluidInputList.add(recipe.inputFluid);
                 recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.fluidInputList.size();

@@ -133,7 +133,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CentrifugalSeparatorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 5, 20);
+        itemStacks.init(0, true, 5, 20);
         itemStacks.init(1, false, 49, 2);
 
         // Should only be one ingredient...
@@ -153,7 +153,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         // Calculate RNG stack, only if RNG stack exists
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(2, true, 49, 20);
+            itemStacks.init(2, false, 49, 20);
             tempStack = recipe.getRngItemSlot0();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount0());
@@ -161,7 +161,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(3, true, 49, 38);
+            itemStacks.init(3, false, 49, 38);
             tempStack = recipe.getRngItemSlot1();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount1());
@@ -169,7 +169,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(4, true, 49, 56);
+            itemStacks.init(4, false, 49, 56);
             tempStack = recipe.getRngItemSlot2();
             Item rngItem = tempStack.getItem();
             ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount2());

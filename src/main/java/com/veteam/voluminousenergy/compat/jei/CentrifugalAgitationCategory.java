@@ -94,7 +94,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, false, 3, 11);
+        fluidStacks.init(0, true, 3, 11);
         fluidStacks.init(1, false, 49, 11);
         fluidStacks.init(2, false, 73,11);
 

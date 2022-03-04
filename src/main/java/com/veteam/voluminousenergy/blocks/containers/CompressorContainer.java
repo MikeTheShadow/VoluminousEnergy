@@ -27,7 +27,7 @@ public class CompressorContainer extends VoluminousContainer {
 
         private final Player playerEntity;
         private final IItemHandler playerInventory;
-        private static final int NUMBER_OF_SLOTS = 3;
+        public static final int NUMBER_OF_SLOTS = 3;
 
         public CompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
             super(COMPRESSOR_CONTAINER,id);

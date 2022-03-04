@@ -32,7 +32,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.TOOLING_STATION
 
 public class ToolingStationContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 6;
+    public static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(TOOLING_STATION_CONTAINER, id);

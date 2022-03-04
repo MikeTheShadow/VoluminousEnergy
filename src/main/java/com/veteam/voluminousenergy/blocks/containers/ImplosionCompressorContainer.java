@@ -25,7 +25,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.IMPLOSION_COMPR
 public class ImplosionCompressorContainer extends VoluminousContainer {
 
     private ImplosionCompressorScreen screen;
-    private static final int NUMBER_OF_SLOTS = 4;
+    public static final int NUMBER_OF_SLOTS = 4;
 
     public ImplosionCompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(IMPLOSION_COMPRESSOR_CONTAINER,id);

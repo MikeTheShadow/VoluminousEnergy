@@ -127,10 +127,10 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 
-        itemStacks.init(0, false, 30, 1);
-        itemStacks.init(2, false, 30, 19);
+        itemStacks.init(0, true, 30, 1);
+        itemStacks.init(2, true, 30, 19);
         itemStacks.init(1, false, 78, 10);
-        fluidStacks.init(3, false, 6, 11);
+        fluidStacks.init(3, true, 6, 11);
 
 
         // Should only be one ingredient...

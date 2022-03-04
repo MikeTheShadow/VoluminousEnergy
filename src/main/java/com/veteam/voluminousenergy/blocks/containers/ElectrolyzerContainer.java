@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 public class ElectrolyzerContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 7;
+    public static final int NUMBER_OF_SLOTS = 7;
 
     public ElectrolyzerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.ELECTROLYZER_CONTAINER,id);
