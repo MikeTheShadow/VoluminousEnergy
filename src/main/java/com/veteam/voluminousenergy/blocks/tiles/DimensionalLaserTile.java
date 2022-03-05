@@ -1,13 +1,19 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.TickTask;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,6 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DimensionalLaserTile extends VEFluidTileEntity {
 
@@ -40,6 +49,7 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
         updateClients();
 //        //TODO when multiblock stuff is added rewrite how this is done
         if (!complete) {
+            setChanged();
             if (!firstStageComplete) {
                 tickTimer();
                 if (tickTimer >= 20 * 20) {
@@ -49,6 +59,16 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
             } else {
                 tickTimer();
                 if (tickTimer >= 20 * 30) complete = true;
+                if(tickTimer % 12 == 0 && (new Random()).nextInt(2) == 1) {
+                    BlockPos blockPos = level.getBlockRandomPos(this.getBlockPos().getX(),0,this.getBlockPos().getZ(),5);
+
+                    blockPos = blockPos.atY(this.getBlockPos().getY());
+
+                    LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT,level);
+                    lightningBolt.setVisualOnly(true);
+                    lightningBolt.setPos(blockPos.getX(),blockPos.getY(),blockPos.getZ());
+                    level.addFreshEntity(lightningBolt);
+                }
             }
 
             if (initialized && !soundPlayed) {
@@ -90,7 +110,6 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
         firstStageComplete = tag.getBoolean("first_stage_complete");
         complete = tag.getBoolean("fully_built");
         tickTimer = tag.getInt("tick_timer");
-        VoluminousEnergy.LOGGER.info("Ticker load: " + tag.getInt("tick_timer") + " | " + tickTimer);
         super.load(tag);
     }
 
@@ -99,7 +118,6 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
         tag.putBoolean("first_stage_complete", firstStageComplete);
         tag.putBoolean("fully_built", complete);
         tag.putInt("tick_timer", tickTimer);
-        VoluminousEnergy.LOGGER.info("Ticker save: " + tag.getInt("tick_timer") + " | " + tickTimer);
         super.saveAdditional(tag);
     }
 

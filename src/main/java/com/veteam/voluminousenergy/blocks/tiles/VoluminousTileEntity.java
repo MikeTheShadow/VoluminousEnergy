@@ -67,6 +67,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     /**
      * Call this method whenever something in the tile entity has been updated.
      * If the server and client are seeing something different this is why
+     * Note calling this only updates the clients and doesn't save anything to file
+     * if you wish to save to file call setChanged();
      */
     public void updateClients() {
         if (level == null) return;
@@ -171,6 +173,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     /**
      * Saves inventory, energy, slot managers, counter, and length.
+     * To save the tile call setChanged();
      * @param tag CompoundTag
      */
     @Override
