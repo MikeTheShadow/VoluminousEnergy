@@ -29,6 +29,7 @@ import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
@@ -38,6 +39,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -733,6 +735,12 @@ public class VoluminousEnergy {
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
             //VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
             //VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
+        }
+
+        @SubscribeEvent
+        public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
+            event.getRegistry().register(VESounds.ENERGY_BEAM_ACTIVATE.setRegistryName("energy_beam_activate"));
+            event.getRegistry().register(VESounds.ENERGY_BEAM_FIRED.setRegistryName("energy_beam_fired"));
         }
 
         /*@SubscribeEvent

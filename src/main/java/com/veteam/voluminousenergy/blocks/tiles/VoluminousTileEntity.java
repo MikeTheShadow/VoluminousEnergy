@@ -65,8 +65,8 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public abstract void tick();
 
     /**
-     * TODO figure out if this is actually useful or not. I imagine this is what allows the tile to update so perfectly.
-     * TODO if this is true then move updateClients() to a potential base tick method or something if necessary.
+     * Call this method whenever something in the tile entity has been updated.
+     * If the server and client are seeing something different this is why
      */
     public void updateClients() {
         if (level == null) return;
@@ -174,7 +174,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      * @param tag CompoundTag
      */
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         ItemStackHandler handler = getInventoryHandler();
         if(handler != null) {
             CompoundTag compound = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
@@ -191,7 +191,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             tag.putInt("counter", counter);
             tag.putInt("length", length);
         }
-
+        super.saveAdditional(tag);
     }
 
     /**

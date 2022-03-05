@@ -51,7 +51,7 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         tag.putBoolean("validity", this.validity);
         super.saveAdditional(tag);
     }

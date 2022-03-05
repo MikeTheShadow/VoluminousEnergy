@@ -7,13 +7,17 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
+import com.veteam.voluminousenergy.sounds.VESounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -24,9 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class LaserBlockEntityRenderer implements BlockEntityRenderer<DimensionalLaserTile> {
@@ -41,31 +42,26 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
     public void render(DimensionalLaserTile dimensionalLaserTile, float f1, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i1, int i2) {
         long gameTime = dimensionalLaserTile.getLevel().getGameTime();
 
-        List<BeaconBlockEntity.BeaconBeamSection> list = new ArrayList<>();
         // If this float is not 1,1,1 expect a black screen. You can modify these if you want special colors
-        list.add(new BeaconBlockEntity.BeaconBeamSection(new float[]{1, 1, 1}));
-        int totalHeight = 0;
+        BeaconBlockEntity.BeaconBeamSection section = new BeaconBlockEntity.BeaconBeamSection(new float[]{1, 1, 1});
 
-        for (int listPosition = 0; listPosition < list.size(); ++listPosition) {
-            BeaconBlockEntity.BeaconBeamSection section = list.get(listPosition);
-            //renderBeaconBeam(poseStack, multiBufferSource, f1, gameTime, totalHeight, listPosition == list.size() - 1 ? 1024 : section.getHeight(), section.getColor(),335 - dimensionalLaserTile.getBlockPos().getY());
+        renderBeaconBeam(dimensionalLaserTile, poseStack, multiBufferSource, f1, gameTime, 0, 1024, section.getColor(), 335 - dimensionalLaserTile.getBlockPos().getY());
 
-            // USE FOR TESTING ONLY //TODO set y back to above y (above line of code)
-            renderBeaconBeam(dimensionalLaserTile, poseStack, multiBufferSource, f1, gameTime, totalHeight, listPosition == list.size() - 1 ? 1024 : section.getHeight(), section.getColor(), 50 - dimensionalLaserTile.getBlockPos().getY());
+    }
 
-            totalHeight += section.getHeight();
+    public void renderBeaconBeam(DimensionalLaserTile tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
+
+        height += 2;
+
+        if (!tile.isFirstStageComplete()) {
+            height = 1;
+        } else if (tile.getTickTimer() < 5) {
+            SoundManager manager = Minecraft.getInstance().getSoundManager();
+            manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
         }
-    }
-
-    public void renderBeaconBeam(DimensionalLaserTile tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float f1, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
-        renderBeaconBeam(tile, poseStack, multiBufferSource, BEAM_RESOURCE_LOCATION, f1, gameTime, totalHeight, beaconListSize, beaconColor, height);
-    }
-
-    public void renderBeaconBeam(DimensionalLaserTile tile, PoseStack poseStack, MultiBufferSource multiBufferSource, ResourceLocation resourceLocation, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
 
         // Moved from method parameters to local since they appear static
         float static02F = 0.2F;
-        float static025F = 0.25F;
         float static10F = 1.0F;
         float staticRotationNumber = -1.0F;
         //totalHeight + beaconListSize; Old height system
@@ -85,46 +81,48 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         float f12 = -static02F;
         float f15 = staticRotationNumber + downwardMovement;
         float f16 = (float) beaconListSize * static10F * (0.5F / static02F) + f15;
-        // TODO mess around with RenderTypes energyswirl looks really cool                                                                                                                                                                                                   // playing with f16,f15
-        renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(resourceLocation, 0,0)), beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+        // TODO mess around with RenderTypes energyswirl looks really cool
+        renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
         poseStack.popPose();
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
-        //Matrix3f matrix3f = pose.normal();
 
-        float portalHeight = height + 1;
+        if (!tile.isFirstStageComplete()) {
+            poseStack.popPose();
+            return;
+        }
+
 
         int xMiddle = (int) Math.ceil(arrayMap.length / 2F);
         int zMiddle = (int) Math.ceil(arrayMap[0].length / 2F);
 
-        int completion = tile.getActivationTimer() / 5;
-        tile.addCompletion();
+        int completion = tile.getTickTimer() / 5;
 
         for (int xPos = 0; xPos < arrayMap.length - 1; xPos++) {
             for (int zPos = 0; zPos < arrayMap[xPos].length - 1; zPos++) {
                 if (arrayMap[xPos][zPos] == 0) continue;
 
-                if(tile.isComplete()) {
+                if (tile.isComplete()) {
                     renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                            0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, portalHeight, portalHeight,
+                            0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
                             0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                             Direction.DOWN);
                 } else {
                     int extra = completion + 1;
-                    if(xPos < xMiddle + completion && xPos > xMiddle - completion) {
-                        if(zPos < zMiddle + completion && zPos > zMiddle - completion) {
+                    if (xPos < xMiddle + completion && xPos > xMiddle - completion) {
+                        if (zPos < zMiddle + completion && zPos > zMiddle - completion) {
                             renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, portalHeight, portalHeight,
+                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
                                     0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                                     Direction.DOWN);
                         }
                     }
-                    if(xPos < xMiddle + extra && xPos > xMiddle - extra) {
-                        if(zPos < zMiddle + extra && zPos > zMiddle - extra) {
+                    if (xPos < xMiddle + extra && xPos > xMiddle - extra) {
+                        if (zPos < zMiddle + extra && zPos > zMiddle - extra) {
                             SecureRandom random = new SecureRandom();
-                            if(random.nextInt(10) > 5) continue;
+                            if (random.nextInt(10) > 5) continue;
                             renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, portalHeight, portalHeight,
+                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
                                     0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                                     Direction.DOWN);
                         }
@@ -134,11 +132,6 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
 
             }
         }
-
-        //renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()), 0.0F, 1.0F, 5F, 5F, 0.0F, 0.0F, 1.0F, 1.0F, Direction.DOWN);
-        //renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()), 0.0F + offsetX, 1.0F + offsetX, 5F, 5F, 0.0F + offsetZ, 0.0F + offsetZ, 1.0F + offsetZ, 1.0F + offsetZ, Direction.DOWN);
-
-        //renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()), -1.0F, 1.0F, 5F, 5F, 0.0F, 0.0F, 1.0F, 1.0F, Direction.DOWN); //backup
         poseStack.popPose();
     }
 
@@ -275,11 +268,13 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         vertexConsumer.vertex(matrix4f, xPos, (float) heightOrTotalHeight, zPos).color(beaconColorR, beaconColorG, beaconColorB, staticOP3F).uv(patternRepeat, patternRepeat2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
+    static int scale = 4;
+
     private static void renderFace(Matrix4f matrix4f, VertexConsumer vertexConsumer, float xPoint1, float xPoint2, float heightOffset, float heightOffset2, float zPoint1, float zPoint2, float zPoint3, float zPoint4, Direction direction) {
-        vertexConsumer.vertex(matrix4f, xPoint1, heightOffset, zPoint1).endVertex();
-        vertexConsumer.vertex(matrix4f, xPoint2, heightOffset, zPoint2).endVertex();
-        vertexConsumer.vertex(matrix4f, xPoint2, heightOffset2, zPoint3).endVertex();
-        vertexConsumer.vertex(matrix4f, xPoint1, heightOffset2, zPoint4).endVertex();
+        vertexConsumer.vertex(matrix4f, xPoint1 * scale, heightOffset, zPoint1 * scale).endVertex();
+        vertexConsumer.vertex(matrix4f, xPoint2 * scale, heightOffset, zPoint2 * scale).endVertex();
+        vertexConsumer.vertex(matrix4f, xPoint2 * scale, heightOffset2, zPoint3 * scale).endVertex();
+        vertexConsumer.vertex(matrix4f, xPoint1 * scale, heightOffset2, zPoint4 * scale).endVertex();
     }
 
     @Override
