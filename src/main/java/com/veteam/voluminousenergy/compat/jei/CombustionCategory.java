@@ -91,7 +91,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                         j = orderOxidizers(i+1,j);
                         slotDrawable.draw(matrixStack,2 + j, 45);
                         int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-                        Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",4+j,64,0x606060);
+                        Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
                     }
 
                 } else { // Assume empty
@@ -101,7 +101,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                     j = orderOxidizers(i+1,j);
                     slotDrawable.draw(matrixStack,2 + j, 45);
                     int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-                    Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",4+j,64,0x606060);
+                    Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
                 }
             }
         }
@@ -165,15 +165,12 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         fluidStacks.set(0, recipe.fluidInputList);
     }
 
-    public int orderOxidizers(int i, int j){
-        if(i > 1){
-            switch (i) {
-                case 2:
-                    return j + i * 12;
-                default:
-                    return 2*j;
-            }
-        }
-        return j;
+    @Deprecated
+    public int orderOxidizers(int i, int j){ // TODO: Switch to j-only, verify after forge fix
+        return j == 0 ? 1 : j+24;
+    }
+
+    public int orderOxidizers(int j){
+        return j == 0 ? 1 : j+24;
     }
 }

@@ -147,8 +147,9 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                         recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
                         recipe.inputArraySize = recipe.nsFluidInputList.size();
                     }
+                    oxidizerRecipes.add(recipe);
                     // Sane add
-                    saneAdd(recipe);
+                    //saneAdd(recipe);
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
@@ -161,7 +162,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 recipe.nsFluidInputList.add(recipe.inputFluid.copy());
                 recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.nsFluidInputList.size();
-                saneAdd(recipe);
+                oxidizerRecipes.add(recipe);
+                //saneAdd(recipe);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
@@ -186,7 +188,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
-            saneAdd(recipe);
+            //saneAdd(recipe);
+            oxidizerRecipes.add(recipe);
             return recipe;
         }
 
@@ -202,9 +205,11 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
-            saneAdd(recipe);
+            oxidizerRecipes.add(recipe);
+            //saneAdd(recipe);
         }
 
+        // TODO: Rewrite after forge fix
         public void saneAdd(CombustionGeneratorOxidizerRecipe recipe){
             if(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() >= (Short.MAX_VALUE * 32)) return; // If greater than 1,048,544 don't bother to add any more
             // Sanity check to prevent multiple of the same recipes being stored in the array
