@@ -5,12 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -20,6 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -58,7 +57,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -104,11 +103,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
         public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
                     recipe.ingredientList.add(stack.getItem());
                 }
@@ -164,7 +163,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
         @Override
         public IndustrialBlastingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
 
             int ingredientListSize = buffer.readInt();
             for (int i = 0; i < ingredientListSize; i++){
@@ -187,7 +186,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, IndustrialBlastingRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
 
             buffer.writeInt(recipe.ingredientList.size());
             recipe.ingredientList.forEach(item -> {

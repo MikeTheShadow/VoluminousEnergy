@@ -837,6 +837,7 @@ public class VoluminousEnergy {
 
     }
 
+    /*
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class OnDatagenEvent {
 
@@ -848,5 +849,5 @@ public class VoluminousEnergy {
                 dataGenerator.addProvider(new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
             }
         }
-    }
+    }*/
 }

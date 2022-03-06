@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -61,7 +62,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     public int getIngredientCount(){ return ingredientCount;}
 
@@ -75,7 +76,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -155,11 +156,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.volumetricEnergy = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
                     recipe.ingredientList.add(stack.getItem());
                 }
@@ -206,7 +207,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         @Override
         public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.volumetricEnergy = buffer.readInt();
 
@@ -228,7 +229,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorFuelRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.volumetricEnergy);
 

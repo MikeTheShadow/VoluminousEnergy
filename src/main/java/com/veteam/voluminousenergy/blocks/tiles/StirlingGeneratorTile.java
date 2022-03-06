@@ -134,7 +134,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
-                return slot == 0 && recipe != null && recipe.ingredient.test(referenceStack);
+                return slot == 0 && recipe != null && recipe.getIngredient().test(referenceStack);
             }
 
             @Nonnull
@@ -143,7 +143,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getItems()){
+                    for (ItemStack testStack : recipe.getIngredient().getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }

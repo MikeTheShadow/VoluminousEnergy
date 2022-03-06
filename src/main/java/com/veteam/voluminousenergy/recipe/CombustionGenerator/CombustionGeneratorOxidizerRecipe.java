@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -63,7 +64,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     public int getIngredientCount(){ return ingredientCount;}
 
@@ -77,7 +78,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -106,17 +107,17 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         public CombustionGeneratorOxidizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",1600);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
             }
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 boolean hit = false;
                 for (OxidizerProperties oxidizerProperties : oxidizerList) {
                     ItemStack bucketStack = oxidizerProperties.getBucketItem();
@@ -147,8 +148,9 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                         recipe.nsRawFluidInputList.add(tempStack.getRawFluid());
                         recipe.inputArraySize = recipe.nsFluidInputList.size();
                     }
+                    oxidizerRecipes.add(recipe);
                     // Sane add
-                    saneAdd(recipe);
+                    //saneAdd(recipe);
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
@@ -161,7 +163,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 recipe.nsFluidInputList.add(recipe.inputFluid.copy());
                 recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.nsFluidInputList.size();
-                saneAdd(recipe);
+                oxidizerRecipes.add(recipe);
+                //saneAdd(recipe);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
@@ -174,7 +177,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         @Override
         public CombustionGeneratorOxidizerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
 
             recipe.inputArraySize = buffer.readInt();
@@ -186,13 +189,14 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
-            saneAdd(recipe);
+            //saneAdd(recipe);
+            oxidizerRecipes.add(recipe);
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorOxidizerRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
             buffer.writeInt(recipe.inputArraySize);
@@ -202,9 +206,11 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
-            saneAdd(recipe);
+            oxidizerRecipes.add(recipe);
+            //saneAdd(recipe);
         }
 
+        // TODO: Rewrite after forge fix
         public void saneAdd(CombustionGeneratorOxidizerRecipe recipe){
             if(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() >= (Short.MAX_VALUE * 32)) return; // If greater than 1,048,544 don't bother to add any more
             // Sanity check to prevent multiple of the same recipes being stored in the array

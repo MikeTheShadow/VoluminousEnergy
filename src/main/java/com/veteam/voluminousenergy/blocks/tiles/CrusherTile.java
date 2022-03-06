@@ -69,7 +69,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                return recipe.ingredient.test(stack);
+                return recipe.ingredient.get().test(stack);
             } else if (slot == 1 && recipe1 != null){
                 return stack.getItem() == recipe1.result.getItem();
             } else if (slot == 2 && recipe1 != null){
@@ -89,7 +89,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }

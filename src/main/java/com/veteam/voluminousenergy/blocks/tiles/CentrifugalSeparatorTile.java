@@ -271,7 +271,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return true;
                     }
@@ -301,7 +301,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
