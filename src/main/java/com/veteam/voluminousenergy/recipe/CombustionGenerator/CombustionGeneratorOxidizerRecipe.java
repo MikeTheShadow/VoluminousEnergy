@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public static final RecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING;
