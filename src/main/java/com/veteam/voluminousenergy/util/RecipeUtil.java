@@ -394,7 +394,7 @@ public class RecipeUtil {
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof StirlingGeneratorRecipe){
-                for (ItemStack itemStack : ((StirlingGeneratorRecipe) recipe).ingredient.getItems()) {
+                for (ItemStack itemStack : ((StirlingGeneratorRecipe) recipe).getIngredient().getItems()) {
                     if (itemStack.getItem() == solidFuelStack.getItem()){
                         atomicRecipe.set((StirlingGeneratorRecipe) recipe);
                         break;
