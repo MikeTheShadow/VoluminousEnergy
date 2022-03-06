@@ -149,8 +149,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                         recipe.inputArraySize = recipe.nsFluidInputList.size();
                     }
                     oxidizerRecipes.add(recipe);
-                    // Sane add
-                    //saneAdd(recipe);
+
                 } else {
                     VoluminousEnergy.LOGGER.debug("Tag is null!");
                 }
@@ -164,7 +163,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                 recipe.nsRawFluidInputList.add(recipe.inputFluid.getRawFluid());
                 recipe.inputArraySize = recipe.nsFluidInputList.size();
                 oxidizerRecipes.add(recipe);
-                //saneAdd(recipe);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
@@ -189,7 +187,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
-            //saneAdd(recipe);
             oxidizerRecipes.add(recipe);
             return recipe;
         }
@@ -207,47 +204,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             oxidizerRecipes.add(recipe);
-            //saneAdd(recipe);
         }
 
-        // TODO: Rewrite after forge fix
-        public void saneAdd(CombustionGeneratorOxidizerRecipe recipe){
-            if(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() >= (Short.MAX_VALUE * 32)) return; // If greater than 1,048,544 don't bother to add any more
-            // Sanity check to prevent multiple of the same recipes being stored in the array
-            ArrayList<FluidStack> sanityList = new ArrayList<>();
-            for(int i = 0; (i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() || CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() == 0); i++){
-                if(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size() == 0){
-                    sanityList.addAll(recipe.nsFluidInputList);
-
-                    oxidizerRecipes.add(recipe);
-                    continue;
-                }
-                CombustionGeneratorOxidizerRecipe referenceRecipe = CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i);
-                for(int j = 0; j < referenceRecipe.nsFluidInputList.size(); j++){
-                    if(!sanityList.isEmpty()){
-                        AtomicBoolean isInsane = new AtomicBoolean(false);
-
-                        referenceRecipe.nsFluidInputList.forEach(fluidStack -> {
-                            if(sanityList.contains(fluidStack)){
-                                isInsane.set(true);
-                            }
-                        });
-
-                        if(!isInsane.get()){
-                            sanityList.addAll(referenceRecipe.nsFluidInputList);
-
-                            // Original logic
-                            oxidizerRecipes.add(recipe);
-                        }
-                    } else { // assume sane
-                        sanityList.addAll(referenceRecipe.nsFluidInputList);
-
-                        oxidizerRecipes.add(recipe);
-                    }
-                }
-            }
-        }
     }
-
 
 }

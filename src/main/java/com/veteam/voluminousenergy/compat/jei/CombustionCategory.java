@@ -88,7 +88,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                         usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
 
                         // Core / original logic
-                        j = orderOxidizers(i+1,j);
+                        j = orderOxidizers(j);
                         slotDrawable.draw(matrixStack,2 + j, 45);
                         int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
                         Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
@@ -98,7 +98,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                     usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
 
                     // Core / original logic
-                    j = orderOxidizers(i+1,j);
+                    j = orderOxidizers(j);
                     slotDrawable.draw(matrixStack,2 + j, 45);
                     int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
                     Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
@@ -143,7 +143,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                         usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
 
                         // Core / original logic
-                        j = orderOxidizers(i,j);
+                        j = orderOxidizers(j);
                         fluidStacks.init(i, true, 3 + j, 46);
                         ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
                         fluidStacks.set(i, oxidizerList);
@@ -153,7 +153,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                     usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
 
                     // Core / original logic
-                    j = orderOxidizers(i,j);
+                    j = orderOxidizers(j);
                     fluidStacks.init(i, true, 3 + j, 46);
                     ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
                     fluidStacks.set(i, oxidizerList);
@@ -163,11 +163,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
         // Should only be one ingredient...
         fluidStacks.set(0, recipe.fluidInputList);
-    }
-
-    @Deprecated
-    public int orderOxidizers(int i, int j){ // TODO: Switch to j-only, verify after forge fix
-        return j == 0 ? 1 : j+24;
     }
 
     public int orderOxidizers(int j){
