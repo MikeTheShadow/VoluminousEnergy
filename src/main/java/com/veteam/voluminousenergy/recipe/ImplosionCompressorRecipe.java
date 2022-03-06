@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -27,7 +28,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public static final Serializer SERIALIZER = new ImplosionCompressorRecipe.Serializer();
 
     public final ResourceLocation recipeId;
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
     private int processTime;
@@ -43,7 +44,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
 
     @Override
     public Ingredient getIngredient() {
-        return ingredient;
+        return ingredient.get();
     }
 
     public int getIngredientCount() {
@@ -59,7 +60,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -110,11 +111,11 @@ public class ImplosionCompressorRecipe extends VERecipe {
 
             ImplosionCompressorRecipe recipe = new ImplosionCompressorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if (!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
@@ -132,7 +133,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
         @Override
         public ImplosionCompressorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             ImplosionCompressorRecipe recipe = new ImplosionCompressorRecipe(recipeId);
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
@@ -142,7 +143,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, ImplosionCompressorRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);

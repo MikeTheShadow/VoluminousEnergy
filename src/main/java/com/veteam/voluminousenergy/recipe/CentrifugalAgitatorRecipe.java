@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -61,7 +62,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public Ingredient getIngredient(){ return ingredient; }
+    public Ingredient getIngredient(){ return ingredient.get(); }
 
     @Override
     public int getIngredientCount(){ return ingredientCount;}
@@ -113,7 +114,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -156,7 +157,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         public CentrifugalAgitatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
 
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
@@ -207,7 +208,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         @Override
         public CentrifugalAgitatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
@@ -229,7 +230,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CentrifugalAgitatorRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
 
             buffer.writeInt(recipe.inputArraySize);

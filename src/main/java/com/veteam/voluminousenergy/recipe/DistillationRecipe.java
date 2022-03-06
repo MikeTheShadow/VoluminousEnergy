@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -58,7 +59,7 @@ public class DistillationRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     @Override
     public int getIngredientCount(){ return ingredientCount;}
@@ -101,7 +102,7 @@ public class DistillationRecipe extends VEFluidRecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -173,12 +174,12 @@ public class DistillationRecipe extends VEFluidRecipe {
         public DistillationRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             DistillationRecipe recipe = new DistillationRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.inputAmount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if(!recipe.ingredientList.contains(stack.getItem())){
                     recipe.ingredientList.add(stack.getItem());
                 }
@@ -236,7 +237,7 @@ public class DistillationRecipe extends VEFluidRecipe {
         @Override
         public DistillationRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             DistillationRecipe recipe = new DistillationRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readFluidStack();
 
@@ -259,7 +260,7 @@ public class DistillationRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, DistillationRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeFluidStack(recipe.result);
 

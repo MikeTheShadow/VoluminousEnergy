@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -28,7 +29,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
     public static final CentrifugalSeparatorRecipe.Serializer SERIALIZER = new CentrifugalSeparatorRecipe.Serializer();
 
     public final ResourceLocation recipeId;
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
     private ItemStack rngResult0;
@@ -50,7 +51,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
         this.recipeId = recipeId;
     }
 
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     public int getIngredientCount(){ return ingredientCount;}
 
@@ -72,7 +73,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -122,11 +123,11 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
         public CentrifugalSeparatorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             CentrifugalSeparatorRecipe recipe = new CentrifugalSeparatorRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
                 if(!ingredientList.contains(stack.getItem())){
                     ingredientList.add(stack.getItem());
                 }
@@ -174,7 +175,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
         @Override
         public CentrifugalSeparatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CentrifugalSeparatorRecipe recipe = new CentrifugalSeparatorRecipe(recipeId);
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
@@ -197,7 +198,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CentrifugalSeparatorRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
