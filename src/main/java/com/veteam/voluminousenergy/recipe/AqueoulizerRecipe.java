@@ -152,12 +152,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            /*
-            for (ItemStack stack : recipe.ingredient.get().getItems()){
-                if(!recipe.ingredientList.contains(stack.getItem())){
-                    recipe.ingredientList.add(stack.getItem());
-                }
-            }*/
             recipe.ingredientList = Lazy.of(() -> {
                 ArrayList<Item> items = new ArrayList<>();
                 for (ItemStack stack : recipe.ingredient.get().getItems()){
@@ -174,36 +168,12 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
                 recipe.fluidUsesTagKey = true;
                 // A tag is used instead of a manually defined fluid
-                System.out.println("AQUEOULIZER SERIALIZER HAS TAG FOR MEMBER FLUID");
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-                /*
-                TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
-
-                if (true //Registry.FLUID.isKnownTagName(tag)){
-                    HolderSet<Fluid> fluidHolderSet = Registry.FLUID.getOrCreateTag(tag);
-                    AtomicReference<ArrayList<Holder<Fluid>>> fluidSet = new AtomicReference<>(new ArrayList<>());
-                    VoluminousEnergy.LOGGER.debug("Fluid Set size: " + fluidSet.get().size());
-                    System.out.println("Fluid Set size: " + fluidSet.get().size());
-                    fluidHolderSet.stream().forEach(fluidHolder -> {
-                        fluidSet.get().add(fluidHolder);
-                        VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to Aqueoulizer list.");
-                    });
-                    for (Holder<Fluid> fluidHolder : fluidSet.get()){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
-                        FluidStack tempStack = new FluidStack(fluidHolder.value(), recipe.inputAmount);
-                        recipe.fluidInputList.add(tempStack);
-                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                        recipe.inputArraySize = recipe.fluidInputList.size();
-                    }
-                } else {
-                    System.out.println("UNKNOWN TAG IN AQUEOULIZER");
-                    VoluminousEnergy.LOGGER.debug("UNKNOWN Tag in Aqueoulizer Recipe for member Fluid!");
-                }*/
                 recipe.inputFluid = null;
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
-
 
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 recipe.fluidUsesTagKey = false;
@@ -237,22 +207,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
         @Override
         public AqueoulizerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             AqueoulizerRecipe recipe = new AqueoulizerRecipe((recipeId));
-            /*
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
-            recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readFluidStack();
-
-            // This is probably not great, but eh, what else am I supposed to do in this situation?
-            recipe.inputArraySize = buffer.readInt();
-            for (int i = 0; i < recipe.inputArraySize; i++){
-                FluidStack serverFluid = buffer.readFluidStack();
-                recipe.fluidInputList.add(serverFluid.copy());
-                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
-            }
-
-            recipe.inputAmount = buffer.readInt();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();*/
 
             // Start with usesTagKey check
             recipe.fluidUsesTagKey = buffer.readBoolean();
@@ -291,7 +245,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
-                //buffer.writeCharSequence(recipe.getKeyString, StandardCharsets.UTF_8);
                 buffer.writeComponent(new TextComponent(recipe.tagKeyString));
             } else { // does not use tags for fluid input
                 buffer.writeInt(recipe.inputArraySize.get());
@@ -300,24 +253,13 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                 }
             }
 
-            /*
-            recipe.ingredient.get().toNetwork(buffer);
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeFluidStack(recipe.result);
-
-
-            buffer.writeInt(recipe.inputArraySize);
-            for(int i = 0; i < recipe.inputArraySize; i++){
-                buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
-            }*/
-
             buffer.writeInt(recipe.ingredientCount);
             buffer.writeFluidStack(recipe.result);
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
 
-            recipe.ingredient.get().toNetwork(buffer); // TODO: likely needs rework
+            recipe.ingredient.get().toNetwork(buffer);
         }
     }
 }
