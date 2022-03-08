@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING;
@@ -163,18 +166,29 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
                 // A tag is used instead of a manually defined fluid
+                System.out.println("AQUEOULIZER SERIALIZER HAS TAG FOR MEMBER FLUID");
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
                 TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
-                if (tag != null){
-                    for (Holder<Fluid> fluidHolder : Registry.FLUID.getTagOrEmpty(tag)){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
+
+                if (true /*Registry.FLUID.isKnownTagName(tag)*/){
+                    HolderSet<Fluid> fluidHolderSet = Registry.FLUID.getOrCreateTag(tag);
+                    AtomicReference<ArrayList<Holder<Fluid>>> fluidSet = new AtomicReference<>(new ArrayList<>());
+                    VoluminousEnergy.LOGGER.debug("Fluid Set size: " + fluidSet.get().size());
+                    System.out.println("Fluid Set size: " + fluidSet.get().size());
+                    fluidHolderSet.stream().forEach(fluidHolder -> {
+                        fluidSet.get().add(fluidHolder);
+                        VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to Aqueoulizer list.");
+                    });
+                    for (Holder<Fluid> fluidHolder : fluidSet.get()){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
                         FluidStack tempStack = new FluidStack(fluidHolder.value(), recipe.inputAmount);
                         recipe.fluidInputList.add(tempStack);
                         recipe.rawFluidInputList.add(tempStack.getRawFluid());
                         recipe.inputArraySize = recipe.fluidInputList.size();
                     }
                 } else {
-                    VoluminousEnergy.LOGGER.debug("Tag is null!");
+                    System.out.println("UNKNOWN TAG IN AQUEOULIZER");
+                    VoluminousEnergy.LOGGER.debug("UNKNOWN Tag in Aqueoulizer Recipe for member Fluid!");
                 }
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag

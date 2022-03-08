@@ -49,16 +49,6 @@ public class RecipeUtil {
         return null;
     }
 
-    public static List<Fluid> getAqueoulizerInputFluids(Level world){
-        List<Fluid> fluidList = new ArrayList<>();
-        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe){
-                fluidList.addAll(aqueoulizerRecipe.rawFluidInputList);
-            }
-        }
-        return fluidList;
-    }
-
     public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe){

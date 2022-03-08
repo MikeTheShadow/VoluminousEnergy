@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ToolingRecipe extends VERecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING;
@@ -137,10 +138,10 @@ public class ToolingRecipe extends VERecipe {
             if(toolBase.has("tag") && !toolBase.has("item")){
                 ResourceLocation toolBaseResourceLocation = ResourceLocation.of(GsonHelper.getAsString(toolBase,"tag","minecraft:air"),':');
 
-                TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, toolBaseResourceLocation);
+                Optional<TagKey<Item>> tag = Optional.of(TagKey.create(Registry.ITEM_REGISTRY, toolBaseResourceLocation));
 
                 if(tag != null){
-                    for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag)){// TODO: Forge use their own registry but this was not the case for tags in 18.1
+                    for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag.get())){// TODO: Forge use their own registry but this was not the case for tags in 18.1
                         recipe.basesAndBits.add(itemHolder.value());
                         recipe.bases.add(itemHolder.value());
                     }
