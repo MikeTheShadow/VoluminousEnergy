@@ -170,6 +170,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
 
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
+                recipe.fluidUsesTagKey = false;
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
                 recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);

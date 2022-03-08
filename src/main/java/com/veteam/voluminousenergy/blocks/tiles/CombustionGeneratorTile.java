@@ -74,12 +74,17 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
-        oxidizerTank.setValidFluids(CombustionGeneratorOxidizerRecipe.rawFluidInputList);
-        fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
     }
 
     @Override
-    public void tick() {
+    public void tick() { // TODO: Find better way of handling setting valid fluids
+        if (!oxidizerTank.isValidFluidsSet()){
+            oxidizerTank.setValidFluids(RecipeUtil.getOxidizerFluids(level));
+        }
+
+        if (!fuelTank.isValidFluidsSet()){
+            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
+        }
 
         updateClients();
 
@@ -98,7 +103,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
                     || oxidizerOutput.copy().getItem() == Items.BUCKET)) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
-                if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(fluid) && (
+                if (oxidizerTank.isFluidValid(fluid) && (
                         oxidizerTank.getTank().isEmpty()
                                 || oxidizerTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
                                 && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {

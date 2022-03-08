@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -22,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
@@ -75,18 +77,18 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         ArrayList<FluidStack> usedFluids = new ArrayList<>();
         for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i);
-            for (int k = 0; k < oxidizerRecipe.nsFluidInputList.size(); k++){
+            for (int k = 0; k < oxidizerRecipe.fluidInputList.get().size(); k++){
                 if(!usedFluids.isEmpty()){
 
                     AtomicBoolean fluidStackAlreadyUsed = new AtomicBoolean(false);
-                    oxidizerRecipe.nsFluidInputList.forEach(fluidStack -> {
+                    oxidizerRecipe.fluidInputList.get().forEach(fluidStack -> {
                         if(usedFluids.contains(fluidStack)){
                             fluidStackAlreadyUsed.set(true);
                         }
                     });
 
                     if(!fluidStackAlreadyUsed.get()){
-                        usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
+                        usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
 
                         // Core / original logic
                         j = orderOxidizers(j);
@@ -96,7 +98,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                     }
 
                 } else { // Assume empty
-                    usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
+                    usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
 
                     // Core / original logic
                     j = orderOxidizers(j);
@@ -115,7 +117,10 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
         ArrayList<FluidStack> anthology = new ArrayList<>();
         anthology.addAll(recipe.fluidInputList.get());
-        anthology.addAll(CombustionGeneratorOxidizerRecipe.fluidInputList);
+        AtomicReference<ArrayList<FluidStack>> atomicAnthology = new AtomicReference<>(anthology);
+        RecipeUtil.getOxidizerFluids(Minecraft.getInstance().level).forEach(fluid -> {
+            atomicAnthology.get().add(new FluidStack(fluid, 1000));
+        });
         ingredients.setInputs(VanillaTypes.FLUID, anthology);
     }
 
@@ -130,33 +135,33 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         ArrayList<FluidStack> usedFluids = new ArrayList<>();
         for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1);
-            for (int k = 0; k < oxidizerRecipe.nsFluidInputList.size(); k++){
+            for (int k = 0; k < oxidizerRecipe.fluidInputList.get().size(); k++){
                 if(!usedFluids.isEmpty()){
 
                     AtomicBoolean fluidStackAlreadyUsed = new AtomicBoolean(false);
-                    oxidizerRecipe.nsFluidInputList.forEach(fluidStack -> {
+                    oxidizerRecipe.fluidInputList.get().forEach(fluidStack -> {
                         if(usedFluids.contains(fluidStack)){
                             fluidStackAlreadyUsed.set(true);
                         }
                     });
 
                     if(!fluidStackAlreadyUsed.get()){
-                        usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
+                        usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
 
                         // Core / original logic
                         j = orderOxidizers(j);
                         fluidStacks.init(i, true, 3 + j, 46);
-                        ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
+                        ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).fluidInputList.get());
                         fluidStacks.set(i, oxidizerList);
                     }
 
                 } else { // Assume empty
-                    usedFluids.addAll(oxidizerRecipe.nsFluidInputList);
+                    usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
 
                     // Core / original logic
                     j = orderOxidizers(j);
                     fluidStacks.init(i, true, 3 + j, 46);
-                    ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).nsFluidInputList);
+                    ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).fluidInputList.get());
                     fluidStacks.set(i, oxidizerList);
                 }
             }

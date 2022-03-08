@@ -24,9 +24,7 @@ public class TagUtil {
             AtomicReference<ArrayList<Fluid>> fluidSet = new AtomicReference<>(new ArrayList<>());
             holderSet.stream().forEach(fluidHolder -> {
                 fluidSet.get().add(fluidHolder.value());
-                VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to list.");
             });
-            VoluminousEnergy.LOGGER.debug("Size of fluids in recipe: " + fluidSet.get().size());
             return fluidSet.get();
         });
     }
@@ -38,9 +36,7 @@ public class TagUtil {
             AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
             holderSet.stream().forEach(fluidHolder -> {
                 fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
-                VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to list.");
             });
-            VoluminousEnergy.LOGGER.debug("Size of fluids in recipe: " + fluidSet.get().size());
             return fluidSet.get();
         });
     }

@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.core.BlockPos;
@@ -124,7 +123,7 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
                 // Handle bucket with fluid
                 Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                if (RecipeUtil.isOxidizer(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
                     return ItemStack.EMPTY;
                 } else if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 2, 3, false)){
                     return ItemStack.EMPTY;

@@ -143,6 +143,7 @@ public class RecipeUtil {
     }
 
     public static List<Fluid> getFuelCombustionInputFluids(Level world){
+        if (world == null) return new ArrayList<Fluid>();
         List<Fluid> fluidList = new ArrayList<>();
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
@@ -153,6 +154,7 @@ public class RecipeUtil {
     }
 
     public static List<Fluid> getFuelCombustionInputFluidsParallel(Level world){
+        if (world == null) return new ArrayList<Fluid>();
         AtomicReference<List<Fluid>> fluidList = new AtomicReference<>(new ArrayList<>());
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
@@ -185,20 +187,46 @@ public class RecipeUtil {
         return atomicInteger.get();
     }
 
-    public static boolean isOxidizer(FluidStack inputFluid){
-        if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(inputFluid.getRawFluid())) return true;
-        return false;
+    public static boolean isOxidizer(FluidStack fluidStack, Level level){
+        return isOxidizer(fluidStack.getRawFluid(), level);
+    }
+
+    public static boolean isOxidizer(Fluid fluid, Level level){
+        if (level == null) return false;
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CombustionGeneratorOxidizerRecipe oxidizerRecipe){
+                if (oxidizerRecipe.rawFluidInputList.get().contains(fluid)) {
+                    atomicBoolean.set(true);
+                }
+            }
+        });
+        return atomicBoolean.get();
     }
 
     public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(Level world, FluidStack inputFluid){
-        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+        AtomicReference<CombustionGeneratorOxidizerRecipe> recipeToReturn = new AtomicReference<>(null);
+
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if(recipe instanceof CombustionGeneratorOxidizerRecipe combustionGeneratorOxidizerRecipe){
-                if(combustionGeneratorOxidizerRecipe.nsRawFluidInputList.contains(inputFluid.getRawFluid())){
-                    return combustionGeneratorOxidizerRecipe;
+                if(combustionGeneratorOxidizerRecipe.rawFluidInputList.get().contains(inputFluid.getRawFluid())){
+                    recipeToReturn.set(combustionGeneratorOxidizerRecipe);
                 }
             }
-        }
-        return null;
+        });
+
+        return recipeToReturn.get();
+    }
+
+    public static List<Fluid> getOxidizerFluids(Level world){
+        if (world == null) return new ArrayList<Fluid>();
+        AtomicReference<List<Fluid>> fluidList = new AtomicReference<>(new ArrayList<>());
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CombustionGeneratorOxidizerRecipe oxidizerRecipe){
+                fluidList.get().addAll(oxidizerRecipe.rawFluidInputList.get());
+            }
+        });
+        return fluidList.get();
     }
 
     public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(Level world, ItemStack firstInput, ItemStack secondInput){
