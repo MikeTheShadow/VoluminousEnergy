@@ -90,7 +90,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         }
         ingredients.setInputs(VanillaTypes.ITEM, inputList);
 
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList.get());
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
@@ -118,7 +118,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
 
-        fluidStacks.set(1, recipe.fluidInputList);
+        fluidStacks.set(1, recipe.fluidInputList.get());
 
         // Calculate output
         fluidStacks.set(2, recipe.getOutputFluid());

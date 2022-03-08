@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class RecipeUtil {
     public static boolean isAqueoulizerInputFluidEqual(Level world, Fluid fluid){
         for (Recipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
             if(iRecipe instanceof AqueoulizerRecipe){
-                for (FluidStack stack : ((AqueoulizerRecipe) iRecipe).fluidInputList){
+                for (FluidStack stack : ((AqueoulizerRecipe) iRecipe).fluidInputList.get()){
                     if(stack.getFluid().isSame(fluid)) return true;
                 }
             }
@@ -30,16 +31,16 @@ public class RecipeUtil {
     }
 
     public static boolean isAqueoulizerInputFluidEqual(AqueoulizerRecipe recipe, Fluid fluid){
-        for (FluidStack stack : recipe.fluidInputList){ if(stack.getFluid().isSame(fluid)) return true; }
+        for (FluidStack stack : recipe.fluidInputList.get()){ if(stack.getFluid().isSame(fluid)) return true; }
         return false;
     }
 
     public static AqueoulizerRecipe getAqueoulizerRecipe(Level world, FluidStack inputFluid, ItemStack inputItem){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof AqueoulizerRecipe){
-                for (FluidStack recipeFluid : ((AqueoulizerRecipe) recipe).fluidInputList){
+                for (FluidStack recipeFluid : ((AqueoulizerRecipe) recipe).fluidInputList.get()){
                     if(recipeFluid.isFluidEqual(inputFluid)) {
-                        for(Item ingredient : ((AqueoulizerRecipe) recipe).ingredientList){
+                        for(Item ingredient : ((AqueoulizerRecipe) recipe).ingredientList.get()){
                             if(ingredient.equals(inputItem.getItem())) return (AqueoulizerRecipe) recipe;
                         }
                     }
@@ -394,5 +395,29 @@ public class RecipeUtil {
         });
 
         return atomicRecipe.get();
+    }
+
+    public static Lazy<ArrayList<Item>> getLazyItemsFromIngredient(VERecipe recipe){
+        return Lazy.of(() -> {
+            ArrayList<Item> items = new ArrayList<>();
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
+                if(!items.contains(stack.getItem())){
+                    items.add(stack.getItem());
+                }
+            }
+            return items;
+        });
+    }
+
+    public static Lazy<ArrayList<Item>> getLazyItemsFromIngredient(VEFluidRecipe recipe){
+        return Lazy.of(() -> {
+            ArrayList<Item> items = new ArrayList<>();
+            for (ItemStack stack : recipe.ingredient.get().getItems()){
+                if(!items.contains(stack.getItem())){
+                    items.add(stack.getItem());
+                }
+            }
+            return items;
+        });
     }
 }

@@ -1,17 +1,50 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TagUtil {
+
+    public static Lazy<ArrayList<Fluid>> getLazyFluids(ResourceLocation fluidTagLocation){
+        TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
+        return Lazy.of(() -> {
+            HolderSet<Fluid> holderSet = Registry.FLUID.getOrCreateTag(tag);
+            AtomicReference<ArrayList<Fluid>> fluidSet = new AtomicReference<>(new ArrayList<>());
+            holderSet.stream().forEach(fluidHolder -> {
+                fluidSet.get().add(fluidHolder.value());
+                VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to list.");
+            });
+            VoluminousEnergy.LOGGER.debug("Size of fluids in recipe: " + fluidSet.get().size());
+            return fluidSet.get();
+        });
+    }
+
+    public static Lazy<ArrayList<FluidStack>> getLazyFluidStacks(ResourceLocation fluidTagLocation, int amount){
+        TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
+        return Lazy.of(() -> {
+            HolderSet<Fluid> holderSet = Registry.FLUID.getOrCreateTag(tag);
+            AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
+            holderSet.stream().forEach(fluidHolder -> {
+                fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
+                VoluminousEnergy.LOGGER.debug("Added detected fluid: " + fluidHolder.value() + " to list.");
+            });
+            VoluminousEnergy.LOGGER.debug("Size of fluids in recipe: " + fluidSet.get().size());
+            return fluidSet.get();
+        });
+    }
+
 
     public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(String fluidTagLocation){
         TagKey<Fluid> fluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(fluidTagLocation));
