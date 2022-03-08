@@ -38,7 +38,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public static final Serializer SERIALIZER = new Serializer();
 
     public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
-    public static ArrayList<OxidizerProperties> oxidizerList = new ArrayList<>();
     public static ArrayList<CombustionGeneratorOxidizerRecipe> oxidizerRecipes = new ArrayList<>();
     public Lazy<ArrayList<FluidStack>> fluidInputList;
     public Lazy<ArrayList<Fluid>> rawFluidInputList;
@@ -111,21 +110,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",1600);
 
-            for (ItemStack stack : recipe.ingredient.get().getItems()){ // TODO: problemo
-                boolean hit = false;
-                for (OxidizerProperties oxidizerProperties : oxidizerList) {
-                    ItemStack bucketStack = oxidizerProperties.getBucketItem();
-                    if (bucketStack.getItem() == stack.getItem()) {
-                        hit = true;
-                        break;
-                    }
-                }
-                if (!hit){
-                    OxidizerProperties temp = new OxidizerProperties(stack,recipe.processTime);
-                    oxidizerList.add(temp);
-                }
-            }
-
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
 
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
@@ -156,11 +140,11 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                     return temp;
                 });
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
-                oxidizerRecipes.add(recipe);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
+            oxidizerRecipes.add(recipe);
             return recipe;
         }
 
@@ -203,6 +187,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
             recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
 
+            oxidizerRecipes.add(recipe);
             return recipe;
         }
 
@@ -220,7 +205,6 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
                     buffer.writeFluidStack(recipe.fluidInputList.get().get(i).copy());
                 }
             }
-
 
             recipe.ingredient.get().toNetwork(buffer);
         }
