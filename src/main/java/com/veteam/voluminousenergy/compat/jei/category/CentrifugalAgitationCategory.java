@@ -1,16 +1,16 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -21,21 +21,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> {
+public class CentrifugalAgitationCategory implements IRecipeCategory<CentrifugalAgitatorRecipe> {
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
 
-    public AqueoulizingCategory(IGuiHelper guiHelper){
+    public CentrifugalAgitationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -43,17 +42,17 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
     @Override
     public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.AQUEOULIZING_UID;
+        return VoluminousEnergyPlugin.CENTRIFUGAL_AGITATION_UID;
     }
 
     @Override
-    public Class<? extends AqueoulizerRecipe> getRecipeClass() {
-        return AqueoulizerRecipe.class;
+    public Class<? extends CentrifugalAgitatorRecipe> getRecipeClass() {
+        return CentrifugalAgitatorRecipe.class;
     }
 
     @Override
     public Component getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.aqueoulizing");
+        return TextUtil.translateString("jei.voluminousenergy.centrifugal_agitation");
     }
 
     @Override
@@ -67,60 +66,44 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     }
 
     @Override
-    public void draw(AqueoulizerRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,48, 12);
-        emptyArrow.draw(matrixStack,48,12);
+    public void draw(CentrifugalAgitatorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,24, 12);
+        emptyArrow.draw(matrixStack,24,12);
         slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,24,10);
+        slotDrawable.draw(matrixStack,48,10);
         slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().font.draw(matrixStack,"mB:", 2, 32,0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 24, 32,0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"mB:", -20,32, 0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 2, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 48, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getSecondAmount() + "", 72, 32,0x606060);
     }
 
     @Override
-    public void setIngredients(AqueoulizerRecipe recipe, IIngredients ingredients) {
+    public void setIngredients(CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
 
         // INPUT
-        List<ItemStack> inputList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(64);
-            inputList.add(testStack);
-        }
-        ingredients.setInputs(VanillaTypes.ITEM, inputList);
-
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
         outputStacks.add(recipe.getOutputFluid()); // Normal output
+        outputStacks.add(recipe.getSecondFluid()); // Second output
         ingredients.setOutputs(VanillaTypes.FLUID, outputStacks);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, AqueoulizerRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-
-        itemStacks.init(0, true, 2, 10);
-        fluidStacks.init(1, true, 25, 11);
+        fluidStacks.init(0, true, 3, 11);
+        fluidStacks.init(1, false, 49, 11);
         fluidStacks.init(2, false, 73,11);
 
         // Input
-
-        // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
-        itemStacks.set(0, inputs);
-
-        fluidStacks.set(1, recipe.fluidInputList.get());
+        fluidStacks.set(0, recipe.fluidInputList);
 
         // Calculate output
-        fluidStacks.set(2, recipe.getOutputFluid());
+        fluidStacks.set(1, recipe.getOutputFluid());
+        fluidStacks.set(2, recipe.getSecondFluid());
     }
 }

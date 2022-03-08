@@ -1,8 +1,9 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -113,7 +114,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     @Override
     public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
         ArrayList<FluidStack> anthology = new ArrayList<>();
-        anthology.addAll(recipe.fluidInputList);
+        anthology.addAll(recipe.fluidInputList.get());
         anthology.addAll(CombustionGeneratorOxidizerRecipe.fluidInputList);
         ingredients.setInputs(VanillaTypes.FLUID, anthology);
     }
@@ -162,7 +163,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         }
 
         // Should only be one ingredient...
-        fluidStacks.set(0, recipe.fluidInputList);
+        fluidStacks.set(0, recipe.fluidInputList.get());
     }
 
     public int orderOxidizers(int j){

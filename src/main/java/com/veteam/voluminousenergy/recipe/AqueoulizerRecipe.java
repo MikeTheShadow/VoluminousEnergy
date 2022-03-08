@@ -44,8 +44,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     private FluidStack result;
     private int inputAmount;
     private int outputAmount;
-    private boolean fluidUsesTagKey;
-    private String tagKeyString;
 
     public AqueoulizerRecipe() {
         recipeId = null;
@@ -152,7 +150,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            recipe.ingredientList = Lazy.of(() -> {
+            /*recipe.ingredientList = Lazy.of(() -> { // TODO: is needed?
                 ArrayList<Item> items = new ArrayList<>();
                 for (ItemStack stack : recipe.ingredient.get().getItems()){
                     if(!items.contains(stack.getItem())){
@@ -160,7 +158,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                     }
                 }
                 return items;
-            });
+            });*/
 
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
             recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);

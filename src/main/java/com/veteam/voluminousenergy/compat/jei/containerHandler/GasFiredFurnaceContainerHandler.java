@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.containerHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.GasFiredFurnaceScreen;
 
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;

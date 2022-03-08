@@ -13,6 +13,8 @@ import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorC
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.blocks.screens.*;
+import com.veteam.voluminousenergy.compat.jei.category.*;
+import com.veteam.voluminousenergy.compat.jei.containerHandler.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -121,7 +123,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(CombustionGeneratorScreen.class, new CombustionGeneratorContainerHandler());
         registration.addGuiContainerHandler(PrimitiveStirlingGeneratorScreen.class, new PrimitiveStirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
-        registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHanlder());
+        registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHandler());
         registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AQUEOULIZING_UID);
         registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
         registration.addGuiContainerHandler(DistillationUnitScreen.class, new DistillationUnitContainerHandler());

@@ -22,6 +22,9 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public int ingredientCount;
     public ItemStack result;
 
+    public boolean fluidUsesTagKey;
+    public String tagKeyString;
+
     public VEFluidRecipe() {
 
     }

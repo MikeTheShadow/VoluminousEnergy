@@ -8,8 +8,8 @@ import com.veteam.voluminousenergy.blocks.screens.ToolingStationScreen;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -155,7 +155,7 @@ public class ToolingStationContainer extends VoluminousContainer {
                     // Handle bucket with fluid
                     Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                    if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
                         return ItemStack.EMPTY;
                     }
                 } catch (Exception e){

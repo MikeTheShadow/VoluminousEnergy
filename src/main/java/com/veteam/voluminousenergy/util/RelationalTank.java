@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.util;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.NotImplementedException;
@@ -80,6 +80,11 @@ public class RelationalTank {
 
     public void setValidFluids(List<Fluid> validFluids) {
         this.validFluids = validFluids;
+    }
+
+    public boolean isFluidValid(Fluid fluid){
+        if (this.allowAny) return true;
+        return this.validFluids.contains(fluid);
     }
 
     public TankType getTankType() {

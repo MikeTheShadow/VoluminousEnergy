@@ -1,7 +1,8 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;

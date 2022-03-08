@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {
@@ -133,7 +134,7 @@ public class RecipeUtil {
     public static CombustionGeneratorFuelRecipe getFuelCombustionRecipe(Level world, FluidStack inputFluid){
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CombustionGeneratorFuelRecipe){
-                if (((CombustionGeneratorFuelRecipe) recipe).rawFluidInputList.contains(inputFluid.getRawFluid())){
+                if (((CombustionGeneratorFuelRecipe) recipe).rawFluidInputList.get().contains(inputFluid.getRawFluid())){
                     return (CombustionGeneratorFuelRecipe) recipe;
                 }
             }
@@ -145,10 +146,43 @@ public class RecipeUtil {
         List<Fluid> fluidList = new ArrayList<>();
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
-                fluidList.addAll(combustionGeneratorFuelRecipe.rawFluidInputList);
+                fluidList.addAll(combustionGeneratorFuelRecipe.rawFluidInputList.get());
             }
         }
         return fluidList;
+    }
+
+    public static List<Fluid> getFuelCombustionInputFluidsParallel(Level world){
+        AtomicReference<List<Fluid>> fluidList = new AtomicReference<>(new ArrayList<>());
+        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
+                fluidList.get().addAll(combustionGeneratorFuelRecipe.rawFluidInputList.get());
+            }
+        });
+        return fluidList.get();
+    }
+
+    public static boolean isCombustibleFuel(Fluid fluid, Level world){
+        return getFuelCombustionInputFluidsParallel(world).contains(fluid);
+    }
+
+    public static boolean isCombustibleFuel(FluidStack fluidStack, Level world){
+        return isCombustibleFuel(fluidStack.getFluid(), world);
+    }
+
+    public static int getVolumetricEnergyFromFluid(Fluid fluid, Level level){
+        if (level == null) return 0;
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe){
+                if (combustionGeneratorFuelRecipe.rawFluidInputList.get().contains(fluid)) {
+                    if (atomicInteger.get() == 0) {
+                        atomicInteger.set(combustionGeneratorFuelRecipe.getVolumetricEnergy());
+                    }
+                }
+            }
+        });
+        return atomicInteger.get();
     }
 
     public static boolean isOxidizer(FluidStack inputFluid){
