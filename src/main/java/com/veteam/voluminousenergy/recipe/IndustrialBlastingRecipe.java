@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -22,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -163,7 +163,8 @@ public class IndustrialBlastingRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
+                int sequenceLength = buffer.readInt();
+                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
                 ResourceLocation itemTagLocation = new ResourceLocation(recipe.tagKeyString);
                 recipe.onlySecondInput = TagUtil.getLazyItems(itemTagLocation);
 
@@ -205,7 +206,8 @@ public class IndustrialBlastingRecipe extends VERecipe {
         public void toNetwork(FriendlyByteBuf buffer, IndustrialBlastingRecipe recipe){
 
             if (recipe.usesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeInt(recipe.tagKeyString.length());
+                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.ingredientList.get().size());
                 recipe.ingredientList.get().forEach(item -> {

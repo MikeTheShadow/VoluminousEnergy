@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -26,6 +25,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -117,6 +117,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
+                recipe.tagKeyString = fluidTagLocation.toString();
 
                 recipe.inputFluid = null;
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
@@ -157,7 +158,9 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
+                int sequenceLength = buffer.readInt();
+                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
+
                 ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
@@ -198,7 +201,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             buffer.writeBoolean(recipe.usesTagKey);
 
             if (recipe.usesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeInt(recipe.tagKeyString.length());
+                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
             } else {
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){
