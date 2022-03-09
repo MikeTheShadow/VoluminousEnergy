@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -41,6 +42,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     @Deprecated
     private FluidStack inputFluid;
     private ItemStack result;
+
+    public static ArrayList<Lazy<Pair<ArrayList<Fluid>,Integer>>> lazyFluidsWithVolumetricEnergy = new ArrayList<>();
 
     public CombustionGeneratorFuelRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -174,6 +177,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
 
+            lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
+
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
         }
@@ -209,6 +214,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.ingredientCount = buffer.readInt();
             recipe.volumetricEnergy = buffer.readInt();
             recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+
+            lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
 
             recipe.result = new ItemStack(Items.BUCKET);
 

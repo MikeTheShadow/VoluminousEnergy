@@ -224,6 +224,19 @@ public class RecipeUtil {
         return isCombustibleFuel(fluidStack.getFluid(), world);
     }
 
+
+    public static boolean isCombustibleFuelWithoutLevel(FluidStack fluidStack){
+        return isCombustibleFuelWithoutLevel(fluidStack.getRawFluid());
+    }
+
+    public static boolean isCombustibleFuelWithoutLevel(Fluid fluid){
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
+            if (lazyPair.get().getA().contains(fluid)) atomicBoolean.set(true);
+        });
+        return atomicBoolean.get();
+    }
+
     public static int getVolumetricEnergyFromFluid(Fluid fluid, Level level){
         if (level == null) return 0;
         AtomicInteger atomicInteger = new AtomicInteger(0);
@@ -576,5 +589,13 @@ public class RecipeUtil {
             }
             return anthology;
         });
+    }
+
+    public static int getVolumetricEnergyWithoutLevel(Fluid fluid){
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
+            if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
+        });
+        return atomicInteger.get();
     }
 }

@@ -177,9 +177,11 @@ public class ToolingRecipe extends VERecipe {
                 recipe.bases = TagUtil.getLazyItems(itemTagLocation);
             } else {
                 int basesSize = buffer.readInt();
+                ArrayList<Item> tempBases = new ArrayList<>();
                 for (int i = 0; i < basesSize; i++){
-                    recipe.bases.get().add(buffer.readItem().getItem());
+                    tempBases.add(buffer.readItem().getItem());
                 }
+                recipe.bases = Lazy.of(() -> tempBases);
             }
 
             int bitsSize = buffer.readInt();
