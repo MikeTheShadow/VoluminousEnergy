@@ -1,8 +1,9 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -102,7 +103,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         //    allInputs.add(testStack);
         //   //ingredients.setInput(VanillaTypes.ITEM, testStack);
 
-        for (Item item : recipe.ingredientListIncludingSeconds){ // Grab second items
+        for (Item item : recipe.ingredientListIncludingSeconds.get()){ // Grab second items
             allInputs.add(new ItemStack(item, 64));
         }
 
@@ -143,7 +144,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         itemStacks.set(0, inputs);
 
         List<ItemStack> seconds = new ArrayList<>();
-        recipe.onlySecondInput.forEach(ingredient -> {
+        recipe.onlySecondInput.get().forEach(ingredient -> {
             seconds.add(new ItemStack(ingredient, recipe.getSecondInputAmount()));
         });
 

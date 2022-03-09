@@ -6,7 +6,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -16,7 +15,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
@@ -96,9 +94,6 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PrimitiveBlastFurnaceRecipe>{
 
-        public static ArrayList<Item> ingredientList = new ArrayList<>();
-        public static ItemStack Result;
-
         @Override
         public PrimitiveBlastFurnaceRecipe fromJson(ResourceLocation recipeId, JsonObject json){
 
@@ -108,17 +103,10 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
-                if (!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
-                }
-            }
-
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
             int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
             recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.outputAmount = itemAmount;
-            Result = recipe.result;
 
             return recipe;
         }
@@ -127,21 +115,25 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
         @Override
         public PrimitiveBlastFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             PrimitiveBlastFurnaceRecipe recipe = new PrimitiveBlastFurnaceRecipe(recipeId);
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
+
+            recipe.ingredient = Ingredient.fromNetwork(buffer);
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, PrimitiveBlastFurnaceRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
+
+            recipe.ingredient.toNetwork(buffer);
+
         }
     }
 

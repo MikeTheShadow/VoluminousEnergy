@@ -1,0 +1,16 @@
+{
+  "type": "voluminousenergy:aqueoulizing",
+  "process_time": 200,
+  "ingredient": {
+    "tag": "minecraft:coal_ores",
+    "count": 1
+  },
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 250
+  },
+  "result": {
+    "fluid": "voluminousenergy:liquefied_coal",
+    "amount": 250
+  }
+}

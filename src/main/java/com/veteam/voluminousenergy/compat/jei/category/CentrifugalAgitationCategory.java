@@ -1,8 +1,9 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
@@ -82,7 +83,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     public void setIngredients(CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
 
         // INPUT
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList.get());
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
@@ -99,7 +100,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         fluidStacks.init(2, false, 73,11);
 
         // Input
-        fluidStacks.set(0, recipe.fluidInputList);
+        fluidStacks.set(0, recipe.fluidInputList.get());
 
         // Calculate output
         fluidStacks.set(1, recipe.getOutputFluid());

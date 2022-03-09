@@ -7,7 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -18,7 +17,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -97,8 +95,6 @@ public class CrusherRecipe extends VERecipe {
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CrusherRecipe>{
 
-        public static ArrayList<Item> ingredientList = new ArrayList<>();
-
         @Override
         public CrusherRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
@@ -106,12 +102,6 @@ public class CrusherRecipe extends VERecipe {
             recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
-
-            for (ItemStack stack : recipe.ingredient.get().getItems()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
-                }
-            }
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
             int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"count",1);
@@ -133,7 +123,6 @@ public class CrusherRecipe extends VERecipe {
         @Override
         public CrusherRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CrusherRecipe recipe = new CrusherRecipe((recipeId));
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
@@ -141,12 +130,14 @@ public class CrusherRecipe extends VERecipe {
             recipe.rngResult = buffer.readItem();
             recipe.outputRngAmount = buffer.readInt();
             recipe.chance = buffer.readFloat();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CrusherRecipe recipe){
-            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
@@ -154,6 +145,9 @@ public class CrusherRecipe extends VERecipe {
             buffer.writeItem(recipe.rngResult);
             buffer.writeInt(recipe.outputRngAmount);
             buffer.writeFloat(recipe.chance);
+
+            recipe.ingredient.get().toNetwork(buffer);
+
         }
     }
 

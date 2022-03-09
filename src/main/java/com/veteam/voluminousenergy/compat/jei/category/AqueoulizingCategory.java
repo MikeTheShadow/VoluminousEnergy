@@ -1,8 +1,9 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
@@ -90,7 +91,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         }
         ingredients.setInputs(VanillaTypes.ITEM, inputList);
 
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList.get());
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
@@ -118,7 +119,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
 
-        fluidStacks.set(1, recipe.fluidInputList);
+        fluidStacks.set(1, recipe.fluidInputList.get());
 
         // Calculate output
         fluidStacks.set(2, recipe.getOutputFluid());

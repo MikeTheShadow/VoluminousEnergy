@@ -1,20 +1,22 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
+import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -22,33 +24,37 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe> {
+public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
+    private IDrawable arrow;
+    private IDrawable emptyArrow;
 
-    public StirlingCategory(IGuiHelper guiHelper){
+    public CompressingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
-        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
-        background = guiHelper.drawableBuilder(GUI, 68, 12, 40, 44).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK));
+        ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
+        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.COMPRESSOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
+        arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
+        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
     public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.STIRLING_UID;
+        return VoluminousEnergyPlugin.COMPRESSING_UID;
     }
 
     @Override
-    public Class<? extends StirlingGeneratorRecipe> getRecipeClass() {
-        return StirlingGeneratorRecipe.class;
+    public Class<? extends CompressorRecipe> getRecipeClass() {
+        return CompressorRecipe.class;
     }
 
     @Override
     public Component getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.stirling");
+        return TextUtil.translateString("jei.voluminousenergy.compressing");
     }
 
     @Override
@@ -62,15 +68,15 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        slotDrawable.draw(matrixStack,11,0);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, 0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime() + " t",-1,28, 0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime()/20 + " sec",-1,36, 0x606060);
+    public void draw(CompressorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+        arrow.draw(matrixStack,24, 12);
+        emptyArrow.draw(matrixStack,24,12);
+        slotDrawable.draw(matrixStack,2,10);
+        slotDrawable.draw(matrixStack,48,10);
     }
 
     @Override
-    public void setIngredients(StirlingGeneratorRecipe recipe, IIngredients ingredients) {
+    public void setIngredients(CompressorRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
                 .map(ingredient -> Arrays.asList(ingredient.getItems()))
                 .collect(Collectors.toList()));
@@ -82,12 +88,19 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
             testStack.setCount(64);
             ingredients.setInput(VanillaTypes.ITEM, testStack);
         }
+
+        // OUTPUT
+        List<ItemStack> outputStacks = new ArrayList<>();
+        outputStacks.add(recipe.getResultItem()); // Normal output
+
+        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, StirlingGeneratorRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, CompressorRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 11, 0);
+        itemStacks.init(0, true, 2, 10);
+        itemStacks.init(1, false, 48, 10);
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
@@ -97,5 +110,11 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
             return stack;
         }).forEach(inputs::add);
         itemStacks.set(0, inputs);
+
+        // Calculate output
+        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
+        Item outputItem = tempStack.getItem();
+        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
+        itemStacks.set(1, jeiStack);
     }
 }

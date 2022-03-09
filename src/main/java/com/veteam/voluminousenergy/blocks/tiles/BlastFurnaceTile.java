@@ -110,7 +110,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                         heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
                         recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
                         firstItemInput.getCount() >= recipe.getIngredientCount() &&
-                        recipe.ingredientListIncludingSeconds.contains(secondItemInput.getItem()) &&
+                        recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem()) &&
                         secondItemInput.getCount() >= recipe.getSecondInputAmount()){
                     // Check for power
                     if (canConsumeEnergy()) {

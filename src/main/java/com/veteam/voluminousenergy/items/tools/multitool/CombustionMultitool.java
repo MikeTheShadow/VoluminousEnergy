@@ -2,7 +2,8 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -96,16 +97,18 @@ public class CombustionMultitool extends Multitool {
     @Override
     public void setDamage(ItemStack stack, int damage){ // I don't think this fires
         CompoundTag tag = stack.getTag();
+        Level level = Minecraft.getInstance().level;
         if (tag == null) return;
         int usesLeftUntilRefuel = tag.getInt("energy");
         if (usesLeftUntilRefuel < 1){
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (!itemFluid.isEmpty() && CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(), level)){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid(), level)/50);
                     }
                 }
             });
@@ -116,16 +119,17 @@ public class CombustionMultitool extends Multitool {
     @Override
     public  <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
         CompoundTag tag = stack.getTag();
+        Level level = Minecraft.getInstance().level;
 
         if (tag == null && stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
             AtomicInteger volumetricEnergy = new AtomicInteger();
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(), level)){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid(), level)/50);
                         stack.getOrCreateTag().putInt("damage", volumetricEnergy.get()); // does nothing
                     }
                 }
@@ -144,10 +148,10 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(), level)){
                     if (fluid.getFluidInTank(0).getAmount() >= 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid(), level)/50);
                     }
                 }
 
@@ -170,13 +174,14 @@ public class CombustionMultitool extends Multitool {
     }
 
     public void onDestroyed(ItemStack itemStack){ // Doesn't seem to work, but should never fire with current design
+        Level level = Minecraft.getInstance().level;
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
             FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-            if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+            if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(), level)){
                 if (fluid.getFluidInTank(0).getAmount() > 50){
                     fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    int volumetricEnergy = CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(),0);
+                    int volumetricEnergy = RecipeUtil.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid(),level);
                     itemFluid.getOrCreateTag().putInt("energy", volumetricEnergy);
                 }
             }

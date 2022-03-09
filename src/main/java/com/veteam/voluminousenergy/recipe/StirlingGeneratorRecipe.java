@@ -8,7 +8,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,7 +18,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -102,9 +100,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StirlingGeneratorRecipe>{
-
-        public static ArrayList<Item> ingredientList = new ArrayList<>();
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StirlingGeneratorRecipe> {
 
         @Override
         public StirlingGeneratorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
@@ -115,12 +111,6 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
             recipe.energyPerTick  = GsonHelper.getAsInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
-
-            for (ItemStack stack : recipe.ingredient.get().getItems()){
-                if (!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
-                }
-            }
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
@@ -136,21 +126,25 @@ public class StirlingGeneratorRecipe extends VERecipe {
         @Override
         public StirlingGeneratorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();
             recipe.energyPerTick = buffer.readInt();
             recipe.result = buffer.readItem();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, StirlingGeneratorRecipe recipe){
-            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.energyPerTick);
             buffer.writeItem(recipe.result);
+
+            recipe.ingredient.get().toNetwork(buffer);
+
         }
     }
 }

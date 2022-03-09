@@ -1,12 +1,13 @@
-package com.veteam.voluminousenergy.compat.jei;
+package com.veteam.voluminousenergy.compat.jei.containerHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.veteam.voluminousenergy.blocks.screens.ImplosionCompressorScreen;
+import com.veteam.voluminousenergy.blocks.screens.BlastFurnaceScreen;
 
+import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
@@ -14,9 +15,9 @@ import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
-public class ImplosionCompressorContainerHandler implements IGuiContainerHandler<ImplosionCompressorScreen> {
+public class BlastFurnaceContainerHandler implements IGuiContainerHandler<BlastFurnaceScreen> {
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(ImplosionCompressorScreen containerScreen, double guiMouseX, double guiMouseY) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(BlastFurnaceScreen containerScreen, double guiMouseX, double guiMouseY) {
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override
@@ -34,7 +35,7 @@ public class ImplosionCompressorContainerHandler implements IGuiContainerHandler
 
             @Override
             public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
-                recipesGui.showCategories(Lists.newArrayList(VoluminousEnergyPlugin.IMPLOSION_COMPRESSION_UID));
+                recipesGui.showCategories(Lists.newArrayList(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID));
             }
         });
 

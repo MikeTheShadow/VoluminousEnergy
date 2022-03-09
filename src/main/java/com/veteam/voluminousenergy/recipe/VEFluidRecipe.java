@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -21,6 +22,15 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
+
+    // Fluids
+    public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
+    public Lazy<ArrayList<FluidStack>> fluidInputList;
+    public Lazy<ArrayList<Fluid>> rawFluidInputList;
+    public Lazy<Integer> inputArraySize;
+
+    public boolean fluidUsesTagKey;
+    public String tagKeyString;
 
     public VEFluidRecipe() {
 
