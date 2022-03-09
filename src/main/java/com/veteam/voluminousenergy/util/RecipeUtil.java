@@ -507,4 +507,24 @@ public class RecipeUtil {
         });
         recipe.inputArraySize = Lazy.of(() -> 1);
     }
+
+    public static Lazy<ArrayList<Item>> createLazyAnthology(Lazy<ArrayList<Item>>... toAnthologize){
+        return Lazy.of(() -> {
+            ArrayList<Item> anthology = new ArrayList<>();
+            for (Lazy<ArrayList<Item>> items : toAnthologize){
+                anthology.addAll(items.get());
+            }
+            return anthology;
+        });
+    }
+
+    public static Lazy<ArrayList<Fluid>> createLazyAnthologyFluids(Lazy<ArrayList<Fluid>>... toAnthologize){
+        return Lazy.of(() -> {
+            ArrayList<Fluid> anthology = new ArrayList<>();
+            for (Lazy<ArrayList<Fluid>> fluids : toAnthologize){
+                anthology.addAll(fluids.get());
+            }
+            return anthology;
+        });
+    }
 }

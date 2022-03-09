@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
@@ -140,12 +141,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe");
             }
             // Create Anthology of both inputs
-            recipe.ingredientListIncludingSeconds = Lazy.of(() -> {
-               ArrayList<Item> items = new ArrayList<>();
-               items.addAll(recipe.ingredientList.get());
-               items.addAll(recipe.onlySecondInput.get());
-               return items;
-            });
+            recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
@@ -200,12 +196,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
             recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
 
             // Build Anthology
-            recipe.ingredientListIncludingSeconds = Lazy.of(() -> {
-                ArrayList<Item> items = new ArrayList<>();
-                items.addAll(recipe.ingredientList.get());
-                items.addAll(recipe.onlySecondInput.get());
-                return items;
-            });
+            recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
 
             return recipe;
         }
@@ -215,7 +206,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
             if (recipe.usesTagKey){
                 buffer.writeComponent(new TextComponent(recipe.tagKeyString));
-            } else { // does not use tags for fluid input
+            } else { // does not use tags for item input
                 buffer.writeInt(recipe.ingredientList.get().size());
                 recipe.ingredientList.get().forEach(item -> {
                     buffer.writeItem(new ItemStack(item));
