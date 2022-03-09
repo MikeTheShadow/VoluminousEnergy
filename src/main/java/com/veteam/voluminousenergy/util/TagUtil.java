@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -38,6 +37,18 @@ public class TagUtil {
                 fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
             });
             return fluidSet.get();
+        });
+    }
+
+    public static Lazy<ArrayList<Item>> getLazyItems(ResourceLocation itemTagLocation){
+        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, itemTagLocation);
+        return Lazy.of(() -> {
+           HolderSet<Item> holderSet = Registry.ITEM.getOrCreateTag(tag);
+           AtomicReference<ArrayList<Item>> itemSet = new AtomicReference<>(new ArrayList<>());
+           holderSet.stream().forEach(itemHolder -> {
+               itemSet.get().add(itemHolder.value());
+           });
+           return itemSet.get();
         });
     }
 
@@ -114,32 +125,4 @@ public class TagUtil {
         }
         return items;
     }
-
-    /*
-
-    // USE: TagKey.create(Registry.<TYPE>_REGISTRY, resourceLocation);
-
-    public static Tag.Named<Block> getStaticBlockTagFromResourceLocation(String blockTagLocation){ // Doesn't work
-        //StaticTagHelper<Block> staticTagHelper = StaticTags.create(Registry.BLOCK_REGISTRY, blockTagLocation);
-        Tag.Named<Block> namedBlockTag = BlockTags.bind(blockTagLocation);
-        return namedBlockTag;
-    }
-
-    public static <T> Tag.Named<T> tagger(Function<ResourceLocation, Tag.Named<T>> wrapperFactory, String namespace, String path) {
-        return wrapperFactory.apply(new ResourceLocation(namespace, path));
-    }
-
-    public static <T> Tag.Named<T> taggerNamespacePredefined(Function<ResourceLocation, Tag.Named<T>> wrapperFactory, String completePath) {
-        return wrapperFactory.apply(new ResourceLocation(completePath));
-    }
-
-    public static Tag.Named<Block> forgeSpaceBlockTag(String target){
-        return taggerNamespacePredefined(BlockTags::createOptional, target);
-    }
-
-    // Use for things like ores
-    public static Tags.IOptionalNamedTag<Block> getIOptionalNamedBlockTagFromResourceLocation(ResourceLocation blockTagLocation){
-        return ForgeTagHandler.createOptionalTag(ForgeRegistries.BLOCKS, blockTagLocation);
-    }
-    */
 }

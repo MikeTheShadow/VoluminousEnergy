@@ -236,7 +236,7 @@ public class RecipeUtil {
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
                 if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) &&
-                        ((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())){
+                        ((IndustrialBlastingRecipe) recipe).onlySecondInput.get().contains(secondInput.getItem())){
                     return (IndustrialBlastingRecipe) recipe;
                 }
             }
@@ -258,7 +258,7 @@ public class RecipeUtil {
         if(secondInput.isEmpty()) return false;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
-                if (((IndustrialBlastingRecipe) recipe).onlySecondInput.contains(secondInput.getItem())) return true;
+                if (((IndustrialBlastingRecipe) recipe).onlySecondInput.get().contains(secondInput.getItem())) return true;
             }
         }
         return false;

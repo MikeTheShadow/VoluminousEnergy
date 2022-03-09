@@ -103,7 +103,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         //    allInputs.add(testStack);
         //   //ingredients.setInput(VanillaTypes.ITEM, testStack);
 
-        for (Item item : recipe.ingredientListIncludingSeconds){ // Grab second items
+        for (Item item : recipe.ingredientListIncludingSeconds.get()){ // Grab second items
             allInputs.add(new ItemStack(item, 64));
         }
 
@@ -144,7 +144,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         itemStacks.set(0, inputs);
 
         List<ItemStack> seconds = new ArrayList<>();
-        recipe.onlySecondInput.forEach(ingredient -> {
+        recipe.onlySecondInput.get().forEach(ingredient -> {
             seconds.add(new ItemStack(ingredient, recipe.getSecondInputAmount()));
         });
 
