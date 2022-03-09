@@ -54,6 +54,56 @@ public class RecipeUtil {
         return null;
     }
 
+    public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromItemInput(Level level, ItemStack inputStack){
+        return getAqueoulizerRecipesFromItemInput(level, inputStack.getItem());
+    }
+
+    public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, FluidStack fluidStack){
+        return getAqueoulizerRecipesFromFluidInput(level, fluidStack.getRawFluid());
+    }
+
+    public static boolean isAqueoulizerOutput(Level level, FluidStack fluidStack){
+        return isAqueoulizerOutput(level, fluidStack.getRawFluid());
+    }
+
+    public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromItemInput(Level level, Item inputItem){
+        ArrayList<AqueoulizerRecipe> validRecipes = new ArrayList<>();
+        AtomicReference<ArrayList<AqueoulizerRecipe>> atomicValidRecipes = new AtomicReference<>(validRecipes);
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
+                if (aqueoulizerRecipe.ingredientList.get().contains(inputItem)){
+                    atomicValidRecipes.get().add(aqueoulizerRecipe);
+                }
+            }
+        });
+        return atomicValidRecipes.get();
+    }
+
+    public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, Fluid fluid){
+        ArrayList<AqueoulizerRecipe> validRecipes = new ArrayList<>();
+        AtomicReference<ArrayList<AqueoulizerRecipe>> atomicValidRecipes = new AtomicReference<>(validRecipes);
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
+                if (aqueoulizerRecipe.fluidInputList.get().contains(fluid)){
+                    atomicValidRecipes.get().add(aqueoulizerRecipe);
+                }
+            }
+        });
+        return atomicValidRecipes.get();
+    }
+
+    public static boolean isAqueoulizerOutput(Level level, Fluid fluid){
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
+                if (aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(fluid)){
+                    atomicBoolean.set(true);
+                }
+            }
+        });
+        return atomicBoolean.get();
+    }
+
     public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe){
