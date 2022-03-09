@@ -83,7 +83,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     public void setIngredients(CentrifugalAgitatorRecipe recipe, IIngredients ingredients) {
 
         // INPUT
-        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList);
+        ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInputList.get());
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
@@ -100,7 +100,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         fluidStacks.init(2, false, 73,11);
 
         // Input
-        fluidStacks.set(0, recipe.fluidInputList);
+        fluidStacks.set(0, recipe.fluidInputList.get());
 
         // Calculate output
         fluidStacks.set(1, recipe.getOutputFluid());

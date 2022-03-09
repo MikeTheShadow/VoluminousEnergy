@@ -34,14 +34,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
-    public Lazy<ArrayList<FluidStack>> fluidInputList;
-    public Lazy<ArrayList<Fluid>> rawFluidInputList;
-
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
     private Lazy<Integer> inputArraySize;
 
+    @Deprecated
     private FluidStack inputFluid;
     private ItemStack result;
 
@@ -65,6 +62,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public ItemStack getResult() {return result;}
 
+    @Deprecated
     public FluidStack getInputFluid(){
         return this.inputFluid.copy();
     }
@@ -160,31 +158,18 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
 
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
-                recipe.fluidUsesTagKey = true;
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
                 recipe.inputFluid = null;
-                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
-                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
+                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, 1000);
 
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
-                recipe.fluidUsesTagKey = false;
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
                 recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
-                recipe.fluidInputList = Lazy.of(() -> {
-                    ArrayList<FluidStack> temp = new ArrayList<>();
-                    temp.add(new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1));
-                    return temp;
-                });
-                recipe.rawFluidInputList= Lazy.of(() -> {
-                    ArrayList<Fluid> temp = new ArrayList<>();
-                    temp.add(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation));
-                    return temp;
-                });
-                recipe.inputArraySize = Lazy.of(() -> 1);
+                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, 1000);
+
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }

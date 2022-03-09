@@ -32,13 +32,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
-    public Lazy<ArrayList<FluidStack>> fluidInputList;
-    public Lazy<ArrayList<Fluid>> rawFluidInputList;
-
     private final ResourceLocation recipeId;
     private int processTime;
-    private Lazy<Integer> inputArraySize;
 
     private Lazy<FluidStack> inputFluid;
     private FluidStack result;
@@ -164,31 +159,13 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
 
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
-                recipe.fluidUsesTagKey = true;
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
-
-                recipe.inputFluid = null;
-                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
-                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
-
+                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, recipe.inputAmount);
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
-                recipe.fluidUsesTagKey = false;
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                recipe.inputFluid = Lazy.of(() -> new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount));
-                recipe.fluidInputList = Lazy.of(() -> {
-                    ArrayList<FluidStack> temp = new ArrayList<>();
-                    temp.add(new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),recipe.inputAmount));
-                    return temp;
-                });
-                recipe.rawFluidInputList= Lazy.of(() -> {
-                    ArrayList<Fluid> temp = new ArrayList<>();
-                    temp.add(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation));
-                    return temp;
-                });
-                recipe.inputArraySize = Lazy.of(() -> 1);
+                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, recipe.inputAmount);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Aqueoulizer recipe, input_fluid must be tag or fluid");
             }

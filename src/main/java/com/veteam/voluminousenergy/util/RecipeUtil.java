@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -11,9 +12,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -54,7 +57,7 @@ public class RecipeUtil {
     public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe){
-                for (FluidStack recipeFluid : ((CentrifugalAgitatorRecipe) recipe).fluidInputList){
+                for (FluidStack recipeFluid : ((CentrifugalAgitatorRecipe) recipe).fluidInputList.get()){
                     if(recipeFluid.isFluidEqual(inputFluid)){
                         return (CentrifugalAgitatorRecipe) recipe;
                     }
@@ -68,7 +71,7 @@ public class RecipeUtil {
         List<Fluid> fluidList = new ArrayList<>();
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CentrifugalAgitatorRecipe centrifugalAgitatorRecipe){
-                fluidList.addAll(centrifugalAgitatorRecipe.rawFluidInputList);
+                fluidList.addAll(centrifugalAgitatorRecipe.rawFluidInputList.get());
             }
         }
         return fluidList;
@@ -481,5 +484,28 @@ public class RecipeUtil {
             }
             return items;
         });
+    }
+    
+    public static void setupFluidLazyArrayInputsUsingTags(VEFluidRecipe recipe, ResourceLocation fluidTagLocation, int fluidAmount){
+        recipe.fluidUsesTagKey = true;
+        recipe.tagKeyString = fluidTagLocation.toString();
+        recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
+        recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, fluidAmount);
+        recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
+    }
+    
+    public static void setupFluidLazyArrayInputsWithFluid(VEFluidRecipe recipe, ResourceLocation fluidResourceLocation, int fluidAmount){
+        recipe.fluidUsesTagKey = false;
+        recipe.fluidInputList = Lazy.of(() -> {
+            ArrayList<FluidStack> temp = new ArrayList<>();
+            temp.add(new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),fluidAmount));
+            return temp;
+        });
+        recipe.rawFluidInputList= Lazy.of(() -> {
+            ArrayList<Fluid> temp = new ArrayList<>();
+            temp.add(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation));
+            return temp;
+        });
+        recipe.inputArraySize = Lazy.of(() -> 1);
     }
 }
