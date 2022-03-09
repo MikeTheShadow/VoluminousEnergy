@@ -209,14 +209,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
                 recipe.rawFluidInputList = Lazy.of(() -> fluids);
             }
 
-            /* This is probably not great, but eh, what else am I supposed to do in this situation?
-            recipe.inputArraySize = buffer.readInt();
-            for (int i = 0; i < recipe.inputArraySize; i++){
-                FluidStack serverFluid = buffer.readFluidStack();
-                recipe.fluidInputList.add(serverFluid.copy());
-                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
-            }*/
-
             recipe.result = buffer.readFluidStack();
             recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();

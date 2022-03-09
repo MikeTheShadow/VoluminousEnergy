@@ -7,7 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -18,7 +17,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -117,8 +115,6 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CentrifugalSeparatorRecipe>{
 
-        public static ArrayList<Item> ingredientList = new ArrayList<>();
-
         @Override
         public CentrifugalSeparatorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             CentrifugalSeparatorRecipe recipe = new CentrifugalSeparatorRecipe(recipeId);
@@ -126,12 +122,6 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
             recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
-
-            for (ItemStack stack : recipe.ingredient.get().getItems()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
-                }
-            }
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
@@ -175,7 +165,6 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
         @Override
         public CentrifugalSeparatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CentrifugalSeparatorRecipe recipe = new CentrifugalSeparatorRecipe(recipeId);
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
@@ -193,12 +182,15 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
             recipe.rngResult2 = buffer.readItem();
             recipe.outputRngAmount2 = buffer.readInt();
             recipe.chance2 = buffer.readFloat();
+
+            // Lazies
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CentrifugalSeparatorRecipe recipe){
-            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
@@ -216,6 +208,9 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
             buffer.writeItem(recipe.rngResult2);
             buffer.writeInt(recipe.outputRngAmount2);
             buffer.writeFloat(recipe.chance2);
+
+            // Lazies
+            recipe.ingredient.get().toNetwork(buffer);
         }
     }
 
