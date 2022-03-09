@@ -145,16 +145,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            /*recipe.ingredientList = Lazy.of(() -> { // TODO: is needed?
-                ArrayList<Item> items = new ArrayList<>();
-                for (ItemStack stack : recipe.ingredient.get().getItems()){
-                    if(!items.contains(stack.getItem())){
-                        items.add(stack.getItem());
-                    }
-                }
-                return items;
-            });*/
-
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
             recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
 

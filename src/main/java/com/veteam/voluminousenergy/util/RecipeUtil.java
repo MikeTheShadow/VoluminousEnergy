@@ -80,7 +80,7 @@ public class RecipeUtil {
     public static DistillationRecipe getDistillationRecipe(Level world, FluidStack inputFluid){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
-                for (FluidStack recipeFluid : ((DistillationRecipe) recipe).fluidInputList){
+                for (FluidStack recipeFluid : ((DistillationRecipe) recipe).fluidInputList.get()){
                     if(recipeFluid.isFluidEqual(inputFluid)){
                         return (DistillationRecipe) recipe;
                     }
@@ -90,12 +90,11 @@ public class RecipeUtil {
         return null;
     }
 
-    // TODO better way to do this there has to be
     public static List<Fluid> getDistillationInputFluids(Level world){
         List<Fluid> fluidList = new ArrayList<>();
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe distillationRecipe){
-                fluidList.addAll(distillationRecipe.rawFluidInputList);
+                fluidList.addAll(distillationRecipe.rawFluidInputList.get());
             }
         }
         return fluidList;

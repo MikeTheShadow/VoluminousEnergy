@@ -2,13 +2,12 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -33,15 +32,9 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public ArrayList<Item> ingredientList = new ArrayList<>();
-    public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
-    public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
-
     private final ResourceLocation recipeId;
     private int processTime;
-    private int inputArraySize;
 
-    private FluidStack inputFluid;
     private FluidStack result;
     private FluidStack secondResult;
     private ItemStack thirdResult;
@@ -85,8 +78,9 @@ public class DistillationRecipe extends VEFluidRecipe {
         return this.result.copy();
     }
 
+    @Deprecated
     public FluidStack getInputFluid(){
-        return this.inputFluid.copy();
+        return this.fluidInputList.get().get(0);
     }
 
 
@@ -126,7 +120,7 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     @Override
     public ArrayList<Item> getIngredientList() {
-        return ingredientList;
+        return ingredientList.get();
     }
 
     @Override
@@ -179,38 +173,17 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.inputAmount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
-            for (ItemStack stack : recipe.ingredient.get().getItems()){
-                if(!recipe.ingredientList.contains(stack.getItem())){
-                    recipe.ingredientList.add(stack.getItem());
-                }
-            }
-
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
             recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
 
             if(inputFluid.has("tag") && !inputFluid.has("fluid")){
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
-
-                TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, fluidTagLocation);
-                if (tag != null){
-                    for (Holder<Fluid> fluidHolder : Registry.FLUID.getTagOrEmpty(tag)){ // TODO: Forge use their own registry but this was not the case for tags in 18.1
-                        FluidStack tempStack = new FluidStack(fluidHolder.value(), recipe.inputAmount);
-                        recipe.fluidInputList.add(tempStack);
-                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                        recipe.inputArraySize = recipe.fluidInputList.size();
-                    }
-                } else {
-                    VoluminousEnergy.LOGGER.debug("Tag is null!");
-                    throw new JsonSyntaxException("Bad syntax for the Distillation Recipe, the tag is null");
-                }
+                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, recipe.inputAmount);
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
-                recipe.fluidInputList.add(recipe.inputFluid);
-                recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                recipe.inputArraySize = recipe.fluidInputList.size();
+                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, recipe.inputAmount);
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Distillation recipe, input_fluid must be tag or fluid");
             }
@@ -237,16 +210,30 @@ public class DistillationRecipe extends VEFluidRecipe {
         @Override
         public DistillationRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             DistillationRecipe recipe = new DistillationRecipe((recipeId));
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readFluidStack();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
-            recipe.inputArraySize = buffer.readInt();
-            for (int i = 0; i < recipe.inputArraySize; i++){
-                FluidStack serverFluid = buffer.readFluidStack();
-                recipe.fluidInputList.add(serverFluid.copy());
-                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
+            recipe.fluidUsesTagKey = buffer.readBoolean();
+
+            if (recipe.fluidUsesTagKey){
+                recipe.tagKeyString = buffer.readComponent().getContents();
+                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
+                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
+                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
+            } else {
+                recipe.inputArraySize = Lazy.of(buffer::readInt);
+                ArrayList<Fluid> fluids = new ArrayList<>();
+                ArrayList<FluidStack> fluidStacks = new ArrayList<>();
+                for (int i = 0; i < recipe.inputArraySize.get(); i++){
+                    FluidStack serverFluid = buffer.readFluidStack();
+                    fluidStacks.add(serverFluid.copy());
+                    fluids.add(serverFluid.getRawFluid());
+                }
+
+                recipe.fluidInputList = Lazy.of(() -> fluidStacks);
+                recipe.rawFluidInputList = Lazy.of(() -> fluids);
             }
 
             recipe.inputAmount = buffer.readInt();
@@ -255,20 +242,28 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.secondResult = buffer.readFluidStack();
             recipe.secondAmount = buffer.readInt();
             recipe.thirdResult = buffer.readItem();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, DistillationRecipe recipe){
-            recipe.ingredient.get().toNetwork(buffer);
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeFluidStack(recipe.result);
 
             // Same as the comment in read, not optimal, but necessary
-            buffer.writeInt(recipe.inputArraySize);
-            recipe.fluidInputList.forEach(fluid -> {
-                buffer.writeFluidStack(fluid.copy());
-            });
+            buffer.writeBoolean(recipe.fluidUsesTagKey);
+
+            if (recipe.fluidUsesTagKey){
+                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+            } else { // does not use tags for fluid input
+                buffer.writeInt(recipe.inputArraySize.get());
+                for(int i = 0; i < recipe.inputArraySize.get(); i++){
+                    buffer.writeFluidStack(recipe.fluidInputList.get().get(i).copy());
+                }
+            }
 
             buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
@@ -276,6 +271,9 @@ public class DistillationRecipe extends VEFluidRecipe {
             buffer.writeFluidStack(recipe.secondResult);
             buffer.writeInt(recipe.secondAmount);
             buffer.writeItem(recipe.thirdResult);
+
+            recipe.ingredient.get().toNetwork(buffer);
+
         }
     }
 }
