@@ -4,6 +4,8 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import com.veteam.voluminousenergy.tools.Config;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -48,6 +50,11 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK_TILE);
+    }
+
+    @Override
+    public int getTankCapacity() {
+        return Config.ALUMINUM_TANK_CAPACITY.get();
     }
 
 
