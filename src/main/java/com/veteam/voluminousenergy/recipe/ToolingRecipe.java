@@ -21,7 +21,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -172,9 +171,7 @@ public class ToolingRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                int sequenceLength = buffer.readInt();
-                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
-                ResourceLocation itemTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation itemTagLocation = buffer.readResourceLocation();
                 recipe.bases = TagUtil.getLazyItems(itemTagLocation);
             } else {
                 int basesSize = buffer.readInt();
@@ -186,9 +183,11 @@ public class ToolingRecipe extends VERecipe {
             }
 
             int bitsSize = buffer.readInt();
+            ArrayList<Item> bitList = new ArrayList<>();
             for (int i = 0; i < bitsSize; i++){
-                recipe.bits.get().add(buffer.readItem().getItem());
+                bitList.add(buffer.readItem().getItem());
             }
+            recipe.bits = Lazy.of(() -> bitList);
 
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
 
@@ -201,10 +200,9 @@ public class ToolingRecipe extends VERecipe {
         @Override
         public void toNetwork(FriendlyByteBuf buffer, ToolingRecipe recipe){
 
+            buffer.writeBoolean(recipe.usesTagKey);
             if (recipe.usesTagKey){
-                if (recipe.tagKeyString == null) throw new IllegalStateException("TAG KEY USED BUT NULL IN TOOLING RECIPE!!!");
-                buffer.writeInt(recipe.tagKeyString.length());
-                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.bases.get().size());
                 recipe.bases.get().forEach(item -> {

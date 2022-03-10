@@ -25,7 +25,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -158,10 +157,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                int sequenceLength = buffer.readInt();
-                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
-
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
@@ -202,8 +198,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             buffer.writeBoolean(recipe.usesTagKey);
 
             if (recipe.usesTagKey){
-                buffer.writeInt(recipe.tagKeyString.length());
-                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else {
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){

@@ -21,7 +21,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -163,28 +162,15 @@ public class IndustrialBlastingRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                int sequenceLength = buffer.readInt();
-                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
-                ResourceLocation itemTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation itemTagLocation = buffer.readResourceLocation();
                 recipe.onlySecondInput = TagUtil.getLazyItems(itemTagLocation);
-
-                recipe.ingredientList = Lazy.of(() -> {
-                    ArrayList<Item> temp = new ArrayList<>();
-                    for (ItemStack item : recipe.ingredient.get().getItems()) {
-                        temp.add(item.getItem());
-                    }
-                    return temp;
-                });
             } else {
-                int ingredientListSize = buffer.readInt();
-                for (int i = 0; i < ingredientListSize; i++){
-                    recipe.ingredientList.get().add(buffer.readItem().getItem());
-                }
-
                 int secondListSize = buffer.readInt();
+                ArrayList<Item> secondInputs = new ArrayList<>();
                 for (int i = 0; i < secondListSize; i++){
-                    recipe.onlySecondInput.get().add(buffer.readItem().getItem());
+                    secondInputs.add(buffer.readItem().getItem());
                 }
+                recipe.onlySecondInput = Lazy.of(() -> secondInputs);
             }
 
             recipe.secondInputAmount = buffer.readInt();
@@ -197,6 +183,14 @@ public class IndustrialBlastingRecipe extends VERecipe {
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
 
+            recipe.ingredientList = Lazy.of(() -> {
+                ArrayList<Item> temp = new ArrayList<>();
+                for (ItemStack item : recipe.ingredient.get().getItems()) {
+                    temp.add(item.getItem());
+                }
+                return temp;
+            });
+
             // Build Anthology
             recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
 
@@ -206,15 +200,10 @@ public class IndustrialBlastingRecipe extends VERecipe {
         @Override
         public void toNetwork(FriendlyByteBuf buffer, IndustrialBlastingRecipe recipe){
 
+            buffer.writeBoolean(recipe.usesTagKey);
             if (recipe.usesTagKey){
-                buffer.writeInt(recipe.tagKeyString.length());
-                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
-                buffer.writeInt(recipe.ingredientList.get().size());
-                recipe.ingredientList.get().forEach(item -> {
-                    buffer.writeItem(new ItemStack(item));
-                });
-
                 buffer.writeInt(recipe.onlySecondInput.get().size());
                 recipe.onlySecondInput.get().forEach(item -> {
                     buffer.writeItem(new ItemStack(item));

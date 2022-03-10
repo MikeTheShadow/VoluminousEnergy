@@ -22,7 +22,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -190,9 +189,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             recipe.fluidUsesTagKey = buffer.readBoolean();
 
             if (recipe.fluidUsesTagKey){
-                int sequenceLength = buffer.readInt();
-                recipe.tagKeyString = buffer.readCharSequence(sequenceLength, StandardCharsets.UTF_8).toString();
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
@@ -230,8 +227,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
-                buffer.writeInt(recipe.tagKeyString.length());
-                buffer.writeCharSequence(recipe.tagKeyString, StandardCharsets.UTF_8);
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for fluid input
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){
