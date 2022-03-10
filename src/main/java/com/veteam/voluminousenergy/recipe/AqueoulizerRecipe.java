@@ -171,6 +171,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
         @Override
         public AqueoulizerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             AqueoulizerRecipe recipe = new AqueoulizerRecipe((recipeId));
+            recipe.inputAmount = buffer.readInt();
 
             // Start with usesTagKey check
             recipe.fluidUsesTagKey = buffer.readBoolean();
@@ -196,7 +197,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
             recipe.ingredientCount = buffer.readInt();
             recipe.result = buffer.readFluidStack();
-            recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
@@ -206,6 +206,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, AqueoulizerRecipe recipe){
+            buffer.writeInt(recipe.inputAmount);
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
@@ -219,7 +220,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
             buffer.writeInt(recipe.ingredientCount);
             buffer.writeFluidStack(recipe.result);
-            buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
 

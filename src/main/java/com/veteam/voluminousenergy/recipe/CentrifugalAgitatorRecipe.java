@@ -184,6 +184,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         public CentrifugalAgitatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
+            recipe.inputAmount = buffer.readInt();
 
             // Start with usesTagKey check
             recipe.fluidUsesTagKey = buffer.readBoolean();
@@ -191,7 +192,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             if (recipe.fluidUsesTagKey){
                 ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
+                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
             } else {
                 recipe.inputArraySize = Lazy.of(buffer::readInt);
@@ -208,7 +209,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             }
 
             recipe.result = buffer.readFluidStack();
-            recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.secondResult = buffer.readFluidStack();
@@ -223,6 +223,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CentrifugalAgitatorRecipe recipe){
             buffer.writeByte(recipe.getIngredientCount());
+            buffer.writeInt(recipe.inputAmount);
 
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
@@ -236,7 +237,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             }
 
             buffer.writeFluidStack(recipe.result);
-            buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeFluidStack(recipe.secondResult);
