@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -192,8 +191,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.fluidUsesTagKey = buffer.readBoolean();
 
             if (recipe.fluidUsesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
@@ -213,7 +211,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
             recipe.ingredientCount = buffer.readInt();
             recipe.volumetricEnergy = buffer.readInt();
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
 
@@ -227,7 +226,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for fluid input
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){

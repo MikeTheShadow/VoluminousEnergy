@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -212,21 +211,22 @@ public class DistillationRecipe extends VEFluidRecipe {
             DistillationRecipe recipe = new DistillationRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readFluidStack();
+            recipe.inputAmount = buffer.readInt();
 
             // This is probably not great, but eh, what else am I supposed to do in this situation?
             recipe.fluidUsesTagKey = buffer.readBoolean();
 
             if (recipe.fluidUsesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
             } else {
-                recipe.inputArraySize = Lazy.of(buffer::readInt);
+                int inputArraySize = buffer.readInt();
+                recipe.inputArraySize = Lazy.of(() -> inputArraySize);
                 ArrayList<Fluid> fluids = new ArrayList<>();
                 ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-                for (int i = 0; i < recipe.inputArraySize.get(); i++){
+                for (int i = 0; i < inputArraySize; i++){
                     FluidStack serverFluid = buffer.readFluidStack();
                     fluidStacks.add(serverFluid.copy());
                     fluids.add(serverFluid.getRawFluid());
@@ -236,14 +236,14 @@ public class DistillationRecipe extends VEFluidRecipe {
                 recipe.rawFluidInputList = Lazy.of(() -> fluids);
             }
 
-            recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.secondResult = buffer.readFluidStack();
             recipe.secondAmount = buffer.readInt();
             recipe.thirdResult = buffer.readItem();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }
@@ -252,12 +252,13 @@ public class DistillationRecipe extends VEFluidRecipe {
         public void toNetwork(FriendlyByteBuf buffer, DistillationRecipe recipe){
             buffer.writeByte(recipe.getIngredientCount());
             buffer.writeFluidStack(recipe.result);
+            buffer.writeInt(recipe.inputAmount);
 
             // Same as the comment in read, not optimal, but necessary
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for fluid input
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){
@@ -265,7 +266,6 @@ public class DistillationRecipe extends VEFluidRecipe {
                 }
             }
 
-            buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeFluidStack(recipe.secondResult);

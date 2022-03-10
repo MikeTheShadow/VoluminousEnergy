@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -185,15 +184,15 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         public CentrifugalAgitatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
+            recipe.inputAmount = buffer.readInt();
 
             // Start with usesTagKey check
             recipe.fluidUsesTagKey = buffer.readBoolean();
 
             if (recipe.fluidUsesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
+                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
             } else {
                 recipe.inputArraySize = Lazy.of(buffer::readInt);
@@ -210,13 +209,13 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             }
 
             recipe.result = buffer.readFluidStack();
-            recipe.inputAmount = buffer.readInt();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.secondResult = buffer.readFluidStack();
             recipe.secondAmount = buffer.readInt();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }
@@ -224,11 +223,12 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CentrifugalAgitatorRecipe recipe){
             buffer.writeByte(recipe.getIngredientCount());
+            buffer.writeInt(recipe.inputAmount);
 
             buffer.writeBoolean(recipe.fluidUsesTagKey);
 
             if (recipe.fluidUsesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for fluid input
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){
@@ -237,7 +237,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             }
 
             buffer.writeFluidStack(recipe.result);
-            buffer.writeInt(recipe.inputAmount);
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeFluidStack(recipe.secondResult);

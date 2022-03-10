@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -172,8 +171,7 @@ public class ToolingRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
-                ResourceLocation itemTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation itemTagLocation = buffer.readResourceLocation();
                 recipe.bases = TagUtil.getLazyItems(itemTagLocation);
             } else {
                 int basesSize = buffer.readInt();
@@ -185,22 +183,26 @@ public class ToolingRecipe extends VERecipe {
             }
 
             int bitsSize = buffer.readInt();
+            ArrayList<Item> bitList = new ArrayList<>();
             for (int i = 0; i < bitsSize; i++){
-                recipe.bits.get().add(buffer.readItem().getItem());
+                bitList.add(buffer.readItem().getItem());
             }
+            recipe.bits = Lazy.of(() -> bitList);
 
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
 
             recipe.result = buffer.readItem();
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, ToolingRecipe recipe){
 
+            buffer.writeBoolean(recipe.usesTagKey);
             if (recipe.usesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.bases.get().size());
                 recipe.bases.get().forEach(item -> {

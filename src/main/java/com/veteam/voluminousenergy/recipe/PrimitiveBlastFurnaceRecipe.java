@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -23,7 +24,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
     private int processTime;
@@ -34,7 +35,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     @Override
     public Ingredient getIngredient() {
-        return ingredient;
+        return ingredient.get();
     }
 
     public int getIngredientCount() {
@@ -50,7 +51,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -99,7 +100,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
             PrimitiveBlastFurnaceRecipe recipe = new PrimitiveBlastFurnaceRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(),"count",1);
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
@@ -120,7 +121,8 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
 
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }
@@ -132,7 +134,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
 
-            recipe.ingredient.toNetwork(buffer);
+            recipe.ingredient.get().toNetwork(buffer);
 
         }
     }

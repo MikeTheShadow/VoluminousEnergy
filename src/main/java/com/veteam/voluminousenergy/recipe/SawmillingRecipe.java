@@ -138,7 +138,8 @@ public class SawmillingRecipe extends VERecipe {
             recipe.secondAmount = buffer.readInt();
             recipe.outputFluid = buffer.readFluidStack();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }

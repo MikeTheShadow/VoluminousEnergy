@@ -25,8 +25,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBlastingRecipe> {
 
@@ -136,11 +136,10 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
 
         // Should only be one ingredient...
         List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
+        AtomicReference<List<ItemStack>> atomicInputs = new AtomicReference<>(inputs);
+        recipe.getFirstInputAsList().forEach(ingredient ->{
+            atomicInputs.get().add(new ItemStack(ingredient, recipe.ingredientCount));
+        });
         itemStacks.set(0, inputs);
 
         List<ItemStack> seconds = new ArrayList<>();

@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -117,6 +116,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
+                recipe.tagKeyString = fluidTagLocation.toString();
 
                 recipe.inputFluid = null;
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
@@ -157,8 +157,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             recipe.usesTagKey = buffer.readBoolean();
 
             if (recipe.usesTagKey){
-                recipe.tagKeyString = buffer.readComponent().getContents();
-                ResourceLocation fluidTagLocation = new ResourceLocation(recipe.tagKeyString);
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
                 recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
@@ -185,7 +184,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             //});
             if (!atomicBoolean.get()) oxidizerRecipes.add(recipe);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             oxidizerRecipes.add(recipe);
             return recipe;
@@ -198,7 +198,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             buffer.writeBoolean(recipe.usesTagKey);
 
             if (recipe.usesTagKey){
-                buffer.writeComponent(new TextComponent(recipe.tagKeyString));
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else {
                 buffer.writeInt(recipe.inputArraySize.get());
                 for(int i = 0; i < recipe.inputArraySize.get(); i++){

@@ -184,7 +184,8 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
             recipe.chance2 = buffer.readFloat();
 
             // Lazies
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }
