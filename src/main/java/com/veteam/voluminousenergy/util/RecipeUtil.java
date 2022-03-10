@@ -237,6 +237,14 @@ public class RecipeUtil {
         return atomicBoolean.get();
     }
 
+    public static ArrayList<Fluid> getCombustibleFuelsWithoutLevel(){
+        AtomicReference<ArrayList<Fluid>> fuels = new AtomicReference<>(new ArrayList<>());
+        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.forEach(lazyPair -> { // Parallelization wouldn't make sense here since all we do is writes, every thread would be blocked until they could write to the array
+            fuels.get().addAll(lazyPair.get().getA());
+        });
+        return fuels.get();
+    }
+
     public static int getVolumetricEnergyFromFluid(Fluid fluid, Level level){
         if (level == null) return 0;
         AtomicInteger atomicInteger = new AtomicInteger(0);

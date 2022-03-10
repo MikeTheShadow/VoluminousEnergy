@@ -77,14 +77,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     }
 
     @Override
-    public void tick() { // TODO: Find better way of handling setting valid fluids
-        if (!oxidizerTank.isValidFluidsSet()){
-            oxidizerTank.setValidFluids(RecipeUtil.getOxidizerFluids(level));
-        }
-
-        if (!fuelTank.isValidFluidsSet()){
-            fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
-        }
+    public void tick() {
+        if (!oxidizerTank.isValidFluidsSet()) oxidizerTank.setValidFluids(RecipeUtil.getOxidizerFluids(level));
+        if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
 
         updateClients();
 
