@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class IndustrialBlastingRecipe extends VERecipe {
 
-    public Lazy<ArrayList<Item>> ingredientList;
+    protected Lazy<ArrayList<Item>> ingredientList; // Use getFirstInputAsList, because ingredientCount can't initialize properly without it
     public Lazy<ArrayList<Item>> ingredientListIncludingSeconds;
     public Lazy<ArrayList<Item>> onlySecondInput;
     public final ResourceLocation recipeId;
@@ -38,6 +38,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     protected boolean usesTagKey;
     protected String tagKeyString;
+    Lazy<Integer> tempIngredientCount;
 
     public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING;
 
@@ -53,6 +54,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
+    @Deprecated
     @Override
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
@@ -86,7 +88,10 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public int getOutputAmount() {return outputAmount;}
 
-    public ArrayList<Item> getFirstInputAsList() { return ingredientList.get(); }
+    public ArrayList<Item> getFirstInputAsList() {
+        if (this.ingredientCount == 0) this.ingredientCount = (tempIngredientCount.get() > 0 ? tempIngredientCount.get() : 1);
+        return ingredientList.get();
+    }
 
     public ItemStack getResult(){
         return result;
@@ -103,9 +108,10 @@ public class IndustrialBlastingRecipe extends VERecipe {
         public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            final JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
+            recipe.tempIngredientCount = Lazy.of(() -> GsonHelper.getAsInt(ingredientJson, "count", 1));
 
             recipe.ingredientList = Lazy.of(() -> {
                 ArrayList<Item> temp = new ArrayList<>();
@@ -173,23 +179,24 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 recipe.onlySecondInput = Lazy.of(() -> secondInputs);
             }
 
+            ArrayList<Item> firstInputList = new ArrayList<>();
+            int firstInputSize = buffer.readInt();
+            for (int i = 0; i < firstInputSize; i++){
+                ItemStack readStack = buffer.readItem();
+                firstInputList.add(readStack.getItem());
+            }
+            recipe.ingredientList = Lazy.of(() -> firstInputList);
+
             recipe.secondInputAmount = buffer.readInt();
 
             recipe.result = buffer.readItem();
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.minimumHeat = buffer.readInt();
+            recipe.ingredientCount = buffer.readInt();
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
-
-            recipe.ingredientList = Lazy.of(() -> {
-                ArrayList<Item> temp = new ArrayList<>();
-                for (ItemStack item : recipe.ingredient.get().getItems()) {
-                    temp.add(item.getItem());
-                }
-                return temp;
-            });
 
             // Build Anthology
             recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
@@ -210,11 +217,30 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 });
             }
 
+            ArrayList<Item> firstInputList = recipe.ingredientList.get();
+            int firstInputSize = firstInputList.size();
+            buffer.writeInt(firstInputSize);
+            for (Item item : firstInputList){
+                buffer.writeItem(
+                        new ItemStack(item,
+                                recipe.ingredientCount > 0
+                                        ? recipe.ingredientCount
+                                        : (recipe.tempIngredientCount.get() > 0 ? recipe.tempIngredientCount.get() : 1)
+                        ));
+            }
+
+
             buffer.writeInt(recipe.secondInputAmount);
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeInt(recipe.minimumHeat);
+
+            // Ingredient count
+            buffer.writeInt(recipe.ingredientCount > 0
+                    ? recipe.ingredientCount
+                    : (recipe.tempIngredientCount.get() > 0 ? recipe.tempIngredientCount.get() : 1)
+            );
 
             recipe.ingredient.get().toNetwork(buffer);
 
