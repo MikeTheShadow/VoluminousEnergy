@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.CompressedAir;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;

@@ -2,7 +2,6 @@
   "replace": false,
   "values": [
     "voluminousenergy:bauxiteore",
-    "voluminousenergy:raw_bauxite",
     "voluminousenergy:deepslate_bauxite_ore"
   ]
 }

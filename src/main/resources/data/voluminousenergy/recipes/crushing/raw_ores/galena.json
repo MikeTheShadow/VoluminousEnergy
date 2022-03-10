@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "tag": "forge:raw_ores/galena",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:galena_dust",
+    "count": 2
+  },
+  "rng": {
+    "item": "voluminousenergy:sulfurdust",
+    "count": 1,
+    "chance": 0.5
+  }
+}
