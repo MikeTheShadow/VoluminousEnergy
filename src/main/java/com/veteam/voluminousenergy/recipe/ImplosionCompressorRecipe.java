@@ -128,7 +128,8 @@ public class ImplosionCompressorRecipe extends VERecipe {
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }

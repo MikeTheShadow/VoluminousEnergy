@@ -188,7 +188,8 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
             //});
             if (!atomicBoolean.get()) oxidizerRecipes.add(recipe);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             oxidizerRecipes.add(recipe);
             return recipe;

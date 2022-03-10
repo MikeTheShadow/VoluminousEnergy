@@ -183,7 +183,8 @@ public class ElectrolyzerRecipe extends VERecipe {
             recipe.outputRngAmount2 = buffer.readInt();
             recipe.chance2 = buffer.readFloat();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }

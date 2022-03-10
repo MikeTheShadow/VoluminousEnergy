@@ -244,7 +244,8 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.secondAmount = buffer.readInt();
             recipe.thirdResult = buffer.readItem();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }

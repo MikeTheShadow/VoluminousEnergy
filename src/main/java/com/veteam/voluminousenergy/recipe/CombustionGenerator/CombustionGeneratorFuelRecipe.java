@@ -214,7 +214,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
             recipe.ingredientCount = buffer.readInt();
             recipe.volumetricEnergy = buffer.readInt();
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
 

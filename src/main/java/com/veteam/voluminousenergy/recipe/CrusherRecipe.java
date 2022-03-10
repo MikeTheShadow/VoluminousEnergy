@@ -131,7 +131,8 @@ public class CrusherRecipe extends VERecipe {
             recipe.outputRngAmount = buffer.readInt();
             recipe.chance = buffer.readFloat();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }

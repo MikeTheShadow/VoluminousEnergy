@@ -193,7 +193,8 @@ public class ToolingRecipe extends VERecipe {
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
 
             recipe.result = buffer.readItem();
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
             return recipe;
         }
 

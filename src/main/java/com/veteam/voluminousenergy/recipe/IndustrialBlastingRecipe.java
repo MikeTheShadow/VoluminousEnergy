@@ -194,7 +194,8 @@ public class IndustrialBlastingRecipe extends VERecipe {
             recipe.outputAmount = buffer.readInt();
             recipe.minimumHeat = buffer.readInt();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             // Build Anthology
             recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);

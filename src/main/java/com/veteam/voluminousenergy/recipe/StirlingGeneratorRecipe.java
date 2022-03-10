@@ -131,7 +131,8 @@ public class StirlingGeneratorRecipe extends VERecipe {
             recipe.energyPerTick = buffer.readInt();
             recipe.result = buffer.readItem();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromNetwork(buffer));
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
 
             return recipe;
         }
