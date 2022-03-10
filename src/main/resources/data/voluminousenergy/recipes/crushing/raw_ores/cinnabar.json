@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "tag": "forge:raw_ores/cinnabar",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "voluminousenergy:cinnabar_dust",
+    "count": 5
+  },
+  "rng": {
+    "item": "minecraft:redstone",
+    "count": 2,
+    "chance": 0.25
+  }
+}

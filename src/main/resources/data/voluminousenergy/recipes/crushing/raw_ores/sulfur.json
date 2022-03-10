@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:ores/sulfur",
+    "tag": "forge:raw_ores/sulfur",
     "count": 1
   },
   "process_time": 200,

@@ -1,17 +1,17 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:storage_blocks/raw_eighzo",
+    "tag": "forge:raw_ores/eighzo",
     "count": 1
   },
   "process_time": 200,
   "result": {
     "item": "voluminousenergy:eighzo_dust",
-    "count": 9
+    "count": 1
   },
   "rng": {
     "item": "voluminousenergy:eighzo_dust",
-    "count": 9,
+    "count": 1,
     "chance": 0.333
   }
 }
