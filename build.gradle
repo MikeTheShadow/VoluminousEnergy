@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.18.2-Experimental'
+version = '1.18.2-0.3 Beta 3'
 group = 'com.veteam.voluminousenergy' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'voluminousenergy'
 //apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
