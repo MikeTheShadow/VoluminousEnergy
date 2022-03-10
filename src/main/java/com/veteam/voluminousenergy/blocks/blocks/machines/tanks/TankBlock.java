@@ -62,9 +62,9 @@ public class TankBlock extends FaceableBlock {
         }
         int tankCapacity = this.getTankCapacity()*1000;
         // TODO: Add config to disable simplified numbers using code by gisellevonbingen
-        String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
-        String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
-        tooltip.add(new TranslatableComponent("%1$s: %2$s / %3$s", fluid.getDisplayName(), amount, capacity));
+        //String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
+        //String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
+        //tooltip.add(new TranslatableComponent("%1$s: %2$s / %3$s", fluid.getDisplayName(), amount, capacity));
 
         tooltip.add(
                 TextUtil.translateString(fluid.getTranslationKey()).copy()
