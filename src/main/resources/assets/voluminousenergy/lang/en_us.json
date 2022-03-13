@@ -1,8 +1,9 @@
 {
     "_comment": "Text",
     "text.voluminousenergy.multiblock_warn": "Multiblock Invalid",
-    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing BEHIND the Tile Entity",
-    "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing BEHIND the Tile Entity",
+    "text.voluminousenergy.multiblock.needed_behind": "BEHIND the Machine is needed",
+    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing",
+    "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing",
     "text.voluminousenergy.temperature": "Temperature",
     "text.voluminousenergy.protective_sheath": "Protective Sheath",
     "text.voluminousenergy.generating": "Generating",
