@@ -190,6 +190,7 @@ public class Config {
     public static ForgeConfigSpec.DoubleValue ACID_DAMAGE;
     public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
     public static ForgeConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
+    public static ForgeConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
 
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -443,6 +444,8 @@ public class Config {
                 .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
         SOLARIUM_PROTECTIVE_SHEATH_HITS = COMMON_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
                 .defineInRange("Solarium Protective Sheath", 2560, 0, Integer.MAX_VALUE);
+        DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
+                .defineInRange("Decrement Speed On No Power", 5, 1, 20);
     }
 
     private static void setupFoodSettings(){

@@ -205,9 +205,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                                 : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(5).copy());// Use default values when null
                 length = counter;
             }
-        } else {
-            counter = 0;
-        }
+        } else decrementSuperCounterOnNoPower();
     }
 
     private ItemStackHandler createHandler() {

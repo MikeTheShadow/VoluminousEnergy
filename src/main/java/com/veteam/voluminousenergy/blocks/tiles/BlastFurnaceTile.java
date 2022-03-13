@@ -140,7 +140,9 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                             counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(5).copy());
                             length = counter;
                         }
-                    } // Energy Check
+                    } else { // Energy Check
+                        decrementSuperCounterOnNoPower();
+                    }
                 } else { // Set counter to zero
                     counter = 0;
                 }

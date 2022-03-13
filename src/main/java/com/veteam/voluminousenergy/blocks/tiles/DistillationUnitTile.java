@@ -165,7 +165,9 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                                 counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(7).copy());
                                 length = counter;
                             }
-                        } // Energy Check
+                        } else { // Energy Check
+                            decrementSuperCounterOnNoPower();
+                        }
                     } else { // If fluid tank empty set counter to zero
                         counter = 0;
                     }
