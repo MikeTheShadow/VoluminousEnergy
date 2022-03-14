@@ -140,8 +140,10 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
         public AqueoulizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             AqueoulizerRecipe recipe = new AqueoulizerRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
