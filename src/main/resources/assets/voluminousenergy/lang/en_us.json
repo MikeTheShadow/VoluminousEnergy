@@ -348,5 +348,12 @@
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
     "jei.voluminousenergy.air_compressor_fluid_info": "Compressed Air can be obtained via the Air Compressor",
-    "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air"
+    "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air",
+
+    "_comment": "JEI Fluid Types for Combustion",
+    "jei.voluminousenergy.fluid.fuel": "Fuel",
+    "jei.voluminousenergy.fluid.oxidizer": "Oxidizer",
+
+    "_comment": "JEI Misc",
+    "jei.voluminousenergy.volumetric_energy": "Volumetric Energy"
 }

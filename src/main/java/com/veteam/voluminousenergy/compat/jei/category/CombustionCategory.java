@@ -19,6 +19,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -40,16 +42,23 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     public CombustionCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
-        background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
+        background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
     @Override
+    public @NotNull RecipeType getRecipeType(){
+        return new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
+    }
+
+    @Deprecated
+    @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.COMBUSTING_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends CombustionGeneratorFuelRecipe> getRecipeClass() {
         return CombustionGeneratorFuelRecipe.class;
@@ -73,11 +82,26 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     @Override
     public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, PoseStack matrixStack, double mouseX, double mouseY){
 
-        Minecraft.getInstance().font.draw(matrixStack,"Volumetric Energy: ",31,4, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, VEContainerScreen.GREY_TEXT_COLOUR);
-        slotDrawable.draw(matrixStack,11,0); // Volumetric Energy
-        slotDrawable.draw(matrixStack, 11, 35); // Fuel fluid
-        slotDrawable.draw(matrixStack, 95, 35); // Oxidizer fluid
+        // Volumetric Energy label
+        Minecraft.getInstance().font.drawShadow(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
+                16,
+                4,
+                VEContainerScreen.WHITE_TEXT_COLOUR
+        );
+
+        // Actual Volumetric Energy value + FE/B units added on the end
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                recipe.getVolumetricEnergy() + " FE/B",
+                35,
+                16,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
+
+        slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
+        slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
         Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(VanillaTypes.FLUID);
 
@@ -89,19 +113,34 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             int x = 50;
             if (fePerTick < 100){
                 x = 54;
-            } else if (fePerTick > 999){
+            } else if (fePerTick > 999 && fePerTick < 10_000){
                 x = 46;
             } else if (fePerTick > 9999){
                 NumberUtil.numberToTextComponent4FE(fePerTick);
+                x = 46;
             }
 
-            Minecraft.getInstance().font.drawShadow(matrixStack, fePerTickComponent, x, 44,VEContainerScreen.WHITE_TEXT_COLOUR);
+            Minecraft.getInstance().font.draw(matrixStack, fePerTickComponent, x, 45,VEContainerScreen.GREY_TEXT_COLOUR);
         }
 
-        Minecraft.getInstance().font.drawShadow(matrixStack,"FE/t:",48,36,VEContainerScreen.WHITE_TEXT_COLOUR);
+        Minecraft.getInstance().font.drawShadow(matrixStack,"FE/t:",48,35,VEContainerScreen.WHITE_TEXT_COLOUR);
 
-        Minecraft.getInstance().font.draw(matrixStack, "Fuel:", 10, 26, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack, "Oxidizer:", 88,26, VEContainerScreen.GREY_TEXT_COLOUR);
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
+                16,
+                26,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
+
+        // Oxidizer Label
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
+                76,
+                26,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
 
     }
 
@@ -131,8 +170,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, CombustionGeneratorFuelRecipe recipe, IFocusGroup focusGroup) {
         // Init
-        IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 36);
-        IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 96, 36);
+        IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 18, 36);
+        IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 86, 36);
 
         this.ingredientHandler(recipe, fuel, oxidizer);
     }
