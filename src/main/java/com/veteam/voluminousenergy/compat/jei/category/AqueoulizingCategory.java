@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -85,9 +86,9 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         slotDrawable.draw(matrixStack,24,10);
         slotDrawable.draw(matrixStack,72,10);
 
-        Minecraft.getInstance().font.draw(matrixStack,"mB:", 2, 32,0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 24, 32,0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 72, 32,0x606060);
+        Minecraft.getInstance().font.draw(matrixStack,"mB:", 2, 32, VEContainerScreen.GREY_TEXT_COLOUR);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 24, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_COLOUR);
     }
 
 

@@ -302,6 +302,20 @@ public class RecipeUtil {
         return fluidList.get();
     }
 
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipeWithoutLevel(FluidStack fluidStack){
+        return getOxidizerCombustionRecipeWithoutLevel(fluidStack.getRawFluid());
+    }
+
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipeWithoutLevel(Fluid fluid){
+        AtomicReference<CombustionGeneratorOxidizerRecipe> recipeToReturn = new AtomicReference<>(null);
+        CombustionGeneratorOxidizerRecipe.oxidizerRecipes.parallelStream().forEach(oxidizerRecipe -> {
+            if (oxidizerRecipe.rawFluidInputList.get().contains(fluid)){
+                recipeToReturn.set(oxidizerRecipe);
+            }
+        });
+        return recipeToReturn.get();
+    }
+
     public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(Level world, ItemStack firstInput, ItemStack secondInput){
         if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){

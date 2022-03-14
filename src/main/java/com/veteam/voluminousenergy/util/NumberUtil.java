@@ -54,6 +54,26 @@ public class NumberUtil {
         }
     }
 
+    public static String numberToString4FE(double num) {
+        if (num < 1_000) {
+            String toReturn = String.valueOf(num);
+            toReturn += " FE";
+            return toReturn;
+        } else if (num >= 1_000 && num < 1_000_000d) {
+            return removeZeros(num / 1_000) + " kFE";
+        } else if (num < 1_000_000_000d) {
+            return removeZeros(num / 1_000_000d) + " MFE";
+        } else if (num < 1_000_000_000_000d) {
+            return removeZeros(num / 1_000_000_000d) + " GFE";
+        } else {
+            return removeZeros(num / 1_000_000_000_000d) + " TFE";
+        }
+    }
+
+    public static Component numberToTextComponent4FE(double num){
+        return new TextComponent(numberToString4FE(num));
+    }
+
     public static Component numberToTextComponent4Fluids(double num){
         return new TextComponent(numberToString4Fluids(num));
     }

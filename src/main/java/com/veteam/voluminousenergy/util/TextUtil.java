@@ -6,11 +6,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextUtil {
-    /*
-    *   TranslationTextComponent name = new TranslationTextComponent(fluidName);
-    *   ITextComponent textComponent = ITextComponent.getTextComponentOrEmpty(", " + amount + " mB / " + tankCapacity + " mB");
-    *   return name.append(textComponent);
-    */
+
     // Slots
     public static Component TRANSLATED_INPUT_SLOT = TextUtil.translateString("slot.voluminousenergy.input_slot");
     public static Component TRANSLATED_OUTPUT_SLOT = TextUtil.translateString("slot.voluminousenergy.output_slot");
