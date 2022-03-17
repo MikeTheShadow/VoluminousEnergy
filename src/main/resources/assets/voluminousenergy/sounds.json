@@ -1,0 +1,10 @@
+{
+  "energy_beam_activate": {
+    "subtitle": "voluminousenergy.subtitle.energy_beam_activate",
+    "sounds": [ "voluminousenergy:energy_beam_activate" ]
+  },
+  "energy_beam_fired" : {
+    "subtitle": "voluminousenergy.subtitle.energy_beam_fired",
+    "sounds": [ "voluminousenergy:energy_beam_fired" ]
+  }
+}

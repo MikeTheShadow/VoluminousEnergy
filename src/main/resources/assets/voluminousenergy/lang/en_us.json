@@ -93,6 +93,7 @@
     "block.voluminousenergy.nighalite_tank": "Nighalite Tank",
     "block.voluminousenergy.eighzo_tank": "Eighzo Tank",
     "block.voluminousenergy.solarium_tank": "Solarium Tank",
+    "block.voluminousenergy.dimensional_laser" : "Dimensional laser",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",

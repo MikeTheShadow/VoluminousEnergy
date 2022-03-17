@@ -200,7 +200,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
 
         //Save tanks
         for(RelationalTank relationalTank : getRelationalTanks()) {

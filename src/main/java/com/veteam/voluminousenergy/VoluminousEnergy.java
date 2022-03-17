@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -16,6 +17,8 @@ import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
+import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -26,6 +29,7 @@ import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
@@ -40,6 +44,7 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -52,6 +57,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
@@ -98,7 +104,7 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
-
+        modEventBus.addListener(this::registerRenderers);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
@@ -117,6 +123,10 @@ public class VoluminousEnergy {
         builtinRegisterConfiguredFeatures();
         builtinRegisterPlacedFeatures();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
@@ -223,6 +233,8 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new RawBoneBlock());
 
             blockRegisteryEvent.getRegistry().register(new PressureLadder());
+
+            blockRegisteryEvent.getRegistry().register(new DimensionalLaserBlock());
         }
 
         @SubscribeEvent
@@ -462,6 +474,9 @@ public class VoluminousEnergy {
 
             // Register Multitools
             multitoolItemRegistry(itemRegisteryEvent);
+
+            // Register custom models //TODO move elsewhere
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DIMENSIONAL_LASER_BLOCK,properties).setRegistryName("dimensional_laser"));
         }
 
         public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
@@ -581,6 +596,9 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK).build(null).setRegistryName("nighalite_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK).build(null).setRegistryName("eighzo_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK).build(null).setRegistryName("solarium_tank"));
+
+            // custom block stuff
+            event.getRegistry().register(BlockEntityType.Builder.of(DimensionalLaserTile::new,VEBlocks.DIMENSIONAL_LASER_BLOCK).build(null).setRegistryName("dimensional_laser"));
         }
 
         @SubscribeEvent
@@ -731,6 +749,12 @@ public class VoluminousEnergy {
         public static void onRegisterBiome(RegistryEvent.Register<Biome> event) {
             //VEBiomes.prepareRegistration(event, new RedDesert(), BiomeManager.BiomeType.DESERT, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.DRY, BiomeDictionary.Type.SANDY);
             //VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
+        }
+
+        @SubscribeEvent
+        public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
+            event.getRegistry().register(VESounds.ENERGY_BEAM_ACTIVATE.setRegistryName("energy_beam_activate"));
+            event.getRegistry().register(VESounds.ENERGY_BEAM_FIRED.setRegistryName("energy_beam_fired"));
         }
 
         /*@SubscribeEvent
