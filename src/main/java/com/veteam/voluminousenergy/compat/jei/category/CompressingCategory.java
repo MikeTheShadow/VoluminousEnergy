@@ -108,10 +108,10 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, CompressorRecipe recipe, IFocusGroup focusGroup) {
         // Inputs
-        IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 2, 10);
+        IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3, 11);
 
         // Output
-        IRecipeSlotBuilder itemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 48, 10);
+        IRecipeSlotBuilder itemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49, 11);
 
         itemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
         itemOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());
