@@ -1,0 +1,40 @@
+{
+  "parent": "voluminousenergy:root",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:crude_oil_bucket"
+    },
+    "title": {
+      "translate": "advancements.overworld.stuck_in_oil.title"
+    },
+    "description": {
+      "translate": "advancements.overworld.stuck_in_oil.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get_stuck_in_oil": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "stepping_on": {
+                "block": {
+                  "blocks": [
+                    "voluminousenergy:crude_oil_block"
+                  ]
+                }
+              }
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    }
+  }
+}

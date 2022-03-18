@@ -1,16 +1,15 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
-import net.minecraft.client.Minecraft;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ConstructBeaconTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -27,8 +26,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class DimensionalLaserTile extends VEFluidTileEntity {
 
@@ -59,14 +56,14 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
             } else {
                 tickTimer();
                 if (tickTimer >= 20 * 30) complete = true;
-                if(tickTimer % 12 == 0 && (new Random()).nextInt(2) == 1) {
-                    BlockPos blockPos = level.getBlockRandomPos(this.getBlockPos().getX(),0,this.getBlockPos().getZ(),5);
+                if (tickTimer % 12 == 0 && (new Random()).nextInt(2) == 1) {
+                    BlockPos blockPos = level.getBlockRandomPos(this.getBlockPos().getX(), 0, this.getBlockPos().getZ(), 5);
 
                     blockPos = blockPos.atY(this.getBlockPos().getY());
 
-                    LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT,level);
+                    LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
                     lightningBolt.setVisualOnly(true);
-                    lightningBolt.setPos(blockPos.getX(),blockPos.getY(),blockPos.getZ());
+                    lightningBolt.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
                     level.addFreshEntity(lightningBolt);
                 }
             }
@@ -81,14 +78,15 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
                 level.playSound(null, this.getBlockPos(), VESounds.ENERGY_BEAM_FIRED, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
         }
-//        TODO Create an achievement for this
-//        int i = this.getBlockPos().getX();
-//        int j = this.getBlockPos().getY();
-//        int k = this.getBlockPos().getZ();
-//
-//        for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(i, j, k, i, j - 4, k)).inflate(10.0D, 5.0D, 10.0D))) {
-//            CriteriaTriggers.CONSTRUCT_BEACON.trigger(serverplayer, 3);
-//        }
+        //TODO Create an achievement for this
+        int x = this.getBlockPos().getX();
+        int y = this.getBlockPos().getY();
+        int z = this.getBlockPos().getZ();
+        if(this.complete) {
+            for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
+                VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+            }
+        }
     }
 
     @Override

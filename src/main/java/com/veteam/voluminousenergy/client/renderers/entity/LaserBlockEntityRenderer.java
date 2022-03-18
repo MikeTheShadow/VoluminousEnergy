@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.security.SecureRandom;
+import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class LaserBlockEntityRenderer implements BlockEntityRenderer<DimensionalLaserTile> {
@@ -119,7 +120,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
                     }
                     if (xPos < xMiddle + extra && xPos > xMiddle - extra) {
                         if (zPos < zMiddle + extra && zPos > zMiddle - extra) {
-                            SecureRandom random = new SecureRandom();
+                            Random random = new Random();
                             if (random.nextInt(10) > 5) continue;
                             renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
                                     0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,

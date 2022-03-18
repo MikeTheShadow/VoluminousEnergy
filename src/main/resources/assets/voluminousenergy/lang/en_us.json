@@ -328,6 +328,14 @@
     "item.voluminousenergy.solarium_scooper_multitool": "Solarium Scooper Multitool",
     "item.voluminousenergy.solarium_trimmer_multitool": "Solarium Trimmer Multitool",
 
+    "_comment" : "Advancements",
+    "advancements.machine.activate_dimensional_laser.title": "What Have I done?",
+    "advancements.machine.activate_dimensional_laser.description": "Rip open a portal into another dimension.",
+    "advancements.overworld.stuck_in_oil.title": "It's A Lot Stickier Than It Looks",
+    "advancements.overworld.stuck_in_oil.description": "Dip your toes in some crude oil.",
+    "advancements.voluminousenergy.root.title": "Voluminous Energy",
+    "advancements.voluminousenergy.root.description": "The most energetic achievements you've seen!",
+
     "_comment": "Biomes",
     "biome.voluminousenergy.red_desert": "Red Desert",
 
