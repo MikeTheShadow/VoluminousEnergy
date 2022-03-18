@@ -7,40 +7,55 @@ import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
+    private IDrawable arrow;
+    private IDrawable arrowRotated;
 
     public ToolingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
-        background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
-        //ItemStack drawStack = new ItemStack(VEMultitools.IRON_DRILL_MULTITOOL);
-        //drawStack.getOrCreateTag();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEMultitools.IRON_DRILL_MULTITOOL));
+        ResourceLocation ToolingGUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
+        background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 50).build();
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEMultitools.IRON_DRILL_MULTITOOL));
+        arrow = guiHelper.drawableBuilder(ToolingGUI, 188, 0, 22, 47).build();
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
+    @Override
+    public @NotNull RecipeType getRecipeType(){
+        return new RecipeType(VoluminousEnergyPlugin.TOOLING_UID, ToolingRecipe.class);
+    }
+
+    @Deprecated
     @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.TOOLING_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends ToolingRecipe> getRecipeClass() {
         return ToolingRecipe.class;
@@ -62,53 +77,43 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     }
 
     @Override
-    public void draw(ToolingRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,48,1);
-        slotDrawable.draw(matrixStack,48,19);
+    public void draw(ToolingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+        slotDrawable.draw(matrixStack,2,14); // Completed Multitool
+        slotDrawable.draw(matrixStack,48,1); // Bit
+        slotDrawable.draw(matrixStack,48,29); // Base
+        arrow.draw(matrixStack,24, 0);
+    }
 
+    public void ingredientHandler(ToolingRecipe recipe,
+                                  IIngredientAcceptor completeMultitoolItemAcceptor,
+                                  IIngredientAcceptor bitItemAcceptor,
+                                  IIngredientAcceptor baseItemAcceptor) {
+
+        // Bits
+        bitItemAcceptor.addIngredients(VanillaTypes.ITEM, Arrays.asList(recipe.ingredient.get().getItems()));
+
+        // Bases
+        ArrayList<ItemStack> baseStacks = new ArrayList<>();
+        for (Item base : recipe.getBases()){
+            baseStacks.add(new ItemStack(base));
+        }
+        baseItemAcceptor.addIngredients(VanillaTypes.ITEM, baseStacks);
+
+        // Completed Multitool
+        completeMultitoolItemAcceptor.addIngredient(VanillaTypes.ITEM, recipe.result.copy());
     }
 
     @Override
-    public void setIngredients(ToolingRecipe recipe, IIngredients ingredients) {
-        /*ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getItems()))
-                .collect(Collectors.toList()));*/
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, ToolingRecipe recipe, IFocusGroup focusGroup) {
 
-        // STACK needs to be 64 for recipes that require more than 1 of the input item
-        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
-        // to save CPU cycles... but this works.
-        ArrayList<ItemStack> inputList = new ArrayList<>();
-        inputList.add(recipe.getResult().copy());
+        IRecipeSlotBuilder completeMultitoolItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 3, 15);
+        IRecipeSlotBuilder bitItem = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 2);
+        IRecipeSlotBuilder baseItem = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 30);
 
-        for (Item bitItem : recipe.getBits()){
-            inputList.add(new ItemStack(bitItem, 64));
-        }
+        completeMultitoolItem.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());
+        bitItem.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
+        baseItem.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
 
-        for (Item baseItem : recipe.getBases()){
-            inputList.add(new ItemStack(baseItem, 64));
-        }
-
-        ingredients.setInputs(VanillaTypes.ITEM, inputList);
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResult());
-
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ToolingRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, false, 2, 10); // This is the result / complete multitool
-        itemStacks.init(1, true, 48, 1); // This is the top which should be the bit
-        itemStacks.init(2, true, 48, 19); // This is the bottom which should be the Base
-
-        ArrayList<ItemStack> bitList = new ArrayList<>();
-        ArrayList<ItemStack> baseList = new ArrayList<>();
-
-        recipe.getBits().forEach(bit -> bitList.add(new ItemStack(bit)));
-        recipe.getBases().forEach(base -> baseList.add(new ItemStack(base)));
-
-        itemStacks.set(0, recipe.getResultItem().copy());
-        itemStacks.set(1, bitList);
-        itemStacks.set(2, baseList);
+        this.ingredientHandler(recipe, completeMultitoolItem, bitItem, baseItem);
     }
 }
