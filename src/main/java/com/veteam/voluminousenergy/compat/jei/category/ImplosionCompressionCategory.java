@@ -102,7 +102,7 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
         explosiveInputAcceptor.addIngredient(VanillaTypes.ITEM, new ItemStack(Items.GUNPOWDER, recipe.ingredientCount));
 
         // Output
-        ItemStack resultStack = recipe.result;
+        ItemStack resultStack = recipe.result.copy();
         resultStack.setCount(recipe.getOutputAmount());
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
     }

@@ -101,7 +101,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         firstFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid()); // seems like amount is set correctly
         secondFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getSecondFluid()); // seems like amount is set correctly
 
-        ItemStack itemStackResult = recipe.getThirdResult();
+        ItemStack itemStackResult = recipe.getThirdResult().copy();
         itemStackResult.setCount(recipe.getThirdAmount());
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM,itemStackResult);
     }

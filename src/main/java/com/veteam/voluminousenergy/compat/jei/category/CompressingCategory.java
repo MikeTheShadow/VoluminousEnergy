@@ -97,7 +97,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
 
         // Output
-        ItemStack outputStack = recipe.result;
+        ItemStack outputStack = recipe.result.copy();
         outputStack.setCount(recipe.getOutputAmount());
 
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, outputStack);

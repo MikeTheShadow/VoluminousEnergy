@@ -3,29 +3,31 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
-import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBlastingRecipe> {
@@ -40,17 +42,24 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 120, 60).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build(); // 176, 0, 23, 17
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true); // 199,0,23,17
     }
 
     @Override
+    public @NotNull RecipeType getRecipeType(){
+        return new RecipeType(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID, IndustrialBlastingRecipe.class);
+    }
+
+    @Deprecated
+    @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends IndustrialBlastingRecipe> getRecipeClass() {
         return IndustrialBlastingRecipe.class;
@@ -72,7 +81,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
     @Override
-    public void draw(IndustrialBlastingRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(IndustrialBlastingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,54, 12); // 24, 12
         emptyArrow.draw(matrixStack,54,12); // 24, 12
         slotDrawable.draw(matrixStack,30,1); // 2, 1
@@ -83,86 +92,55 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         Minecraft.getInstance().font.draw(matrixStack,
                 recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
                         ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " \u00B0F)",
-                1,45,0x606060);
+                1,45, VEContainerScreen.GREY_TEXT_COLOUR);
     }
 
-    @Override
-    public void setIngredients(IndustrialBlastingRecipe recipe, IIngredients ingredients) {
-        //ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-        //        .map(ingredient -> Arrays.asList(ingredient.getItems()))
-        //        .collect(Collectors.toList()));
-
-        // STACK needs to be 64 for recipes that require more than 1 of the input item
-        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
-        // to save CPU cycles... but this works.
-        ArrayList<ItemStack> allInputs = new ArrayList<>();
-        //allInputs.addAll()
-
-        //for (ItemStack testStack : recipe.getIngredient().getItems()) {
-        //    testStack.setCount(64);
-        //    allInputs.add(testStack);
-        //   //ingredients.setInput(VanillaTypes.ITEM, testStack);
-
-        for (Item item : recipe.ingredientListIncludingSeconds.get()){ // Grab second items
-            allInputs.add(new ItemStack(item, 64));
+    public void ingredientHandler(IndustrialBlastingRecipe recipe,
+                                  IIngredientAcceptor firstInputAcceptor,
+                                  IIngredientAcceptor secondInputAcceptor,
+                                  IIngredientAcceptor heatFluidAcceptor,
+                                  IIngredientAcceptor outputItemAcceptor) {
+        // Inputs
+        ArrayList<ItemStack> firstInputStacks = new ArrayList<>();
+        for (Item inputItem : recipe.getFirstInputAsList()) {
+            firstInputStacks.add(new ItemStack(inputItem, recipe.getIngredientCount()));
         }
+        firstInputAcceptor.addIngredients(VanillaTypes.ITEM, firstInputStacks);
 
-        ingredients.setInputs(VanillaTypes.ITEM, allInputs);
-
-        ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-        ForgeRegistries.FLUIDS.getValues().forEach(fluid -> {
-            if (fluid.getAttributes().getTemperature() > recipe.getMinimumHeat()) fluidStacks.add(new FluidStack(fluid , Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
+        AtomicReference<ArrayList<ItemStack>> atomicSecondInputStack = new AtomicReference(new ArrayList<>());
+        recipe.onlySecondInput.get().parallelStream().forEach(item -> {
+            ItemStack secondInputStack = new ItemStack(item, recipe.getSecondInputAmount());
+            atomicSecondInputStack.get().add(secondInputStack);
         });
+        secondInputAcceptor.addIngredients(VanillaTypes.ITEM, atomicSecondInputStack.get());
 
-        ingredients.setInputs(VanillaTypes.FLUID, fluidStacks);
+        heatFluidAcceptor.addIngredients(VanillaTypes.FLUID, RecipeUtil.getFluidsHotEnoughForIndustrialBlastingRecipe(recipe));
 
-        // OUTPUT
-        List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getResultItem()); // Normal output
-
-        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
+        // Output
+        ItemStack resultStack = recipe.result.copy();
+        resultStack.setCount(recipe.getOutputAmount());
+        outputItemAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IndustrialBlastingRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, IndustrialBlastingRecipe recipe, IFocusGroup focusGroup) {
+        // Inputs
+        IRecipeSlotBuilder firstItemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 31, 2);
+        IRecipeSlotBuilder secondItemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 31, 20);
 
-        itemStacks.init(0, true, 30, 1);
-        itemStacks.init(2, true, 30, 19);
-        itemStacks.init(1, false, 78, 10);
-        fluidStacks.init(3, true, 6, 11);
+        IRecipeSlotBuilder heatFluidInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 6, 11);
 
+        // Output
+        IRecipeSlotBuilder itemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 79, 11);
 
-        // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        AtomicReference<List<ItemStack>> atomicInputs = new AtomicReference<>(inputs);
-        recipe.getFirstInputAsList().forEach(ingredient ->{
-            atomicInputs.get().add(new ItemStack(ingredient, recipe.ingredientCount));
-        });
-        itemStacks.set(0, inputs);
+        firstItemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
+        secondItemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
 
-        List<ItemStack> seconds = new ArrayList<>();
-        recipe.onlySecondInput.get().forEach(ingredient -> {
-            seconds.add(new ItemStack(ingredient, recipe.getSecondInputAmount()));
-        });
+        heatFluidInput.setSlotName(TextUtil.TRANSLATED_INPUT_TANK.getString());
 
-        itemStacks.set(2, seconds);
+        itemOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());
 
-        // Valid fluid input
-        ArrayList<FluidStack> validFluidList = new ArrayList<>();
-        ForgeRegistries.FLUIDS.getValues().forEach(fluid -> {
-            if (fluid.getAttributes().getTemperature() >= recipe.getMinimumHeat()){
-                validFluidList.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
-            }
-        });
-        fluidStacks.set(3,validFluidList);
-
-        // Calculate output
-        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
-        Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
-        itemStacks.set(1, jeiStack);
+        this.ingredientHandler(recipe, firstItemInput, secondItemInput, heatFluidInput, itemOutput);
     }
 
 }

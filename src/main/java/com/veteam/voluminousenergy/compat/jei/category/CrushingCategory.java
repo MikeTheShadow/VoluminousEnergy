@@ -107,11 +107,11 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
 
         // Output
-        ItemStack resultStack = recipe.result;
+        ItemStack resultStack = recipe.result.copy();
         resultStack.setCount(recipe.getOutputAmount());
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
 
-        ItemStack rngStack = recipe.rngResult;
+        ItemStack rngStack = recipe.rngResult.copy();
         rngStack.setCount(recipe.getOutputRngAmount());
         itemRNGOutputAcceptor.addIngredient(VanillaTypes.ITEM, rngStack);
     }

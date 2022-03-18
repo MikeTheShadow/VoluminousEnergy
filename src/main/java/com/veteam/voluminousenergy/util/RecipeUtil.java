@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -619,5 +620,17 @@ public class RecipeUtil {
             if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
         });
         return atomicInteger.get();
+    }
+
+    public static ArrayList<FluidStack> getFluidsAsHotOrHotterThanIntAsFluidStacks(int minimumTemperatureKelvin, int stackAmount){
+        AtomicReference<ArrayList<FluidStack>> fluidStacks = new AtomicReference<>(new ArrayList<>());
+        ForgeRegistries.FLUIDS.getValues().parallelStream().forEach(fluid -> {
+            if (fluid.getAttributes().getTemperature() > minimumTemperatureKelvin) fluidStacks.get().add(new FluidStack(fluid, stackAmount));
+        });
+        return fluidStacks.get();
+    }
+
+    public static ArrayList<FluidStack> getFluidsHotEnoughForIndustrialBlastingRecipe(IndustrialBlastingRecipe recipe){
+        return getFluidsAsHotOrHotterThanIntAsFluidStacks(recipe.getMinimumHeat(), Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get());
     }
 }
