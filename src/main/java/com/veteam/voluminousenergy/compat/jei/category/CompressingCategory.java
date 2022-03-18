@@ -24,8 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
@@ -90,13 +88,13 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
                                   IIngredientAcceptor itemOutputAcceptor) {
 
         // Input
-        AtomicReference<ArrayList<ItemStack>> atomicInputStack = new AtomicReference<>(new ArrayList<>());
-        Arrays.stream(recipe.ingredient.get().getItems()).forEach(itemStack -> {
-         itemStack.setCount(recipe.getIngredientCount());
-         atomicInputStack.get().add(itemStack);
-        });
+        ArrayList<ItemStack> inputStacks = new ArrayList<>();
+        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
+            itemStack.setCount(recipe.ingredientCount);
+            inputStacks.add(itemStack);
+        }
 
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, atomicInputStack.get());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
 
         // Output
         ItemStack outputStack = recipe.result;
