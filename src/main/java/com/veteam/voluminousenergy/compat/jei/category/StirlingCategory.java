@@ -12,6 +12,7 @@ import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -72,7 +73,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(StirlingGeneratorRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,11,0);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getEnergyPerTick() + " FE/t",-1,20, VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getProcessTime() + " t",-1,28, VEContainerScreen.GREY_TEXT_COLOUR);
