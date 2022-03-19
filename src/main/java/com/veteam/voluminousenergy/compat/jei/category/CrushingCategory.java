@@ -35,6 +35,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
 
     public CrushingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -46,7 +47,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

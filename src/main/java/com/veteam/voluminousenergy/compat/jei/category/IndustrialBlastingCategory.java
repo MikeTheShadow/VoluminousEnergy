@@ -37,6 +37,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID, IndustrialBlastingRecipe.class);
 
     public IndustrialBlastingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -50,7 +51,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID, IndustrialBlastingRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

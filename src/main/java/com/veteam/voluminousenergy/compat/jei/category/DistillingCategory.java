@@ -31,6 +31,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.DISTILLING_UID, DistillationRecipe.class);
 
     public DistillingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -44,7 +45,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.DISTILLING_UID, DistillationRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

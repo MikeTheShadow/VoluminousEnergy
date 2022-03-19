@@ -38,6 +38,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
 
     public CombustionCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -49,7 +50,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

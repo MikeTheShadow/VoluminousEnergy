@@ -32,7 +32,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
-    private IDrawable arrowRotated;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.TOOLING_UID, ToolingRecipe.class);
 
     public ToolingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -46,7 +46,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.TOOLING_UID, ToolingRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

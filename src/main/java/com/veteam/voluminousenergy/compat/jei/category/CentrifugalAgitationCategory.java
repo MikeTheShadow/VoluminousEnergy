@@ -31,6 +31,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CENTRIFUGAL_AGITATION_UID, CentrifugalAgitatorRecipe.class);
 
     public CentrifugalAgitationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -44,7 +45,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.CENTRIFUGAL_AGITATION_UID, CentrifugalAgitatorRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

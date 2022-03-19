@@ -33,6 +33,7 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.IMPLOSION_COMPRESSION_UID, ImplosionCompressorRecipe.class);
 
     public ImplosionCompressionCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -46,7 +47,7 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.IMPLOSION_COMPRESSION_UID, ImplosionCompressorRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

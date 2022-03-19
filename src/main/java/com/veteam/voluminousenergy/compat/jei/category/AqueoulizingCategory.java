@@ -35,6 +35,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.AQUEOULIZING_UID,AqueoulizerRecipe.class);
 
     public AqueoulizingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -48,7 +49,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.AQUEOULIZING_UID,AqueoulizerRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

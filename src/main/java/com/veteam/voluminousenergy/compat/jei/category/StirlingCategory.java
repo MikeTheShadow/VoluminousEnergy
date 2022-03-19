@@ -31,6 +31,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.STIRLING_UID, StirlingGeneratorRecipe.class);
 
     public StirlingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -42,7 +43,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.STIRLING_UID, StirlingGeneratorRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

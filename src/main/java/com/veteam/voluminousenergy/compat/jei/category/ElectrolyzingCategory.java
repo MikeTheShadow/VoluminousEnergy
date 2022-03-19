@@ -35,6 +35,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.ELECTROLYZING_UID, ElectrolyzerRecipe.class);
 
     public ElectrolyzingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -49,7 +50,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.ELECTROLYZING_UID, ElectrolyzerRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

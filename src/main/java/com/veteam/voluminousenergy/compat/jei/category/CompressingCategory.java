@@ -32,6 +32,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMPRESSING_UID, CompressorRecipe.class);
 
     public CompressingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -45,7 +46,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.COMPRESSING_UID, CompressorRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated

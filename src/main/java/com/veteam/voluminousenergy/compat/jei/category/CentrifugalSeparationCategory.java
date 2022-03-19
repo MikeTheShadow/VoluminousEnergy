@@ -34,6 +34,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CENTRIFUGAL_SEPARATION_UID, CentrifugalSeparatorRecipe.class);
 
     public CentrifugalSeparationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -48,7 +49,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
     @Override
     public @NotNull RecipeType getRecipeType(){
-        return new RecipeType(VoluminousEnergyPlugin.CENTRIFUGAL_SEPARATION_UID, CentrifugalSeparatorRecipe.class);
+        return RECIPE_TYPE;
     }
 
     @Deprecated
