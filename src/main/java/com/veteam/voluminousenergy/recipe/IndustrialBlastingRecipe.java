@@ -82,6 +82,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public int getProcessTime(){ return processTime; }
 
+    @Override
+    public int getIngredientCount() {
+        return this.ingredientCount != 0 ? this.ingredientCount : (tempIngredientCount.get() > 0 ? tempIngredientCount.get() : 1);
+    }
+
     public int getMinimumHeat(){ return minimumHeat; }
 
     public int getSecondInputAmount() {return secondInputAmount;}
@@ -184,6 +189,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
             for (int i = 0; i < firstInputSize; i++){
                 ItemStack readStack = buffer.readItem();
                 firstInputList.add(readStack.getItem());
+                recipe.ingredientCount = readStack.getCount();
             }
             recipe.ingredientList = Lazy.of(() -> firstInputList);
 

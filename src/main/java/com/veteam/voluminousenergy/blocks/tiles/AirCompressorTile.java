@@ -39,7 +39,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
-        airTank.setValidFluids(Collections.singletonList(CompressedAir.CompressedAirFluid().getFlowing()));
+        airTank.setValidFluids(Collections.singletonList(VEFluids.COMPRESSED_AIR_REG.get()));
     }
 
     @Override

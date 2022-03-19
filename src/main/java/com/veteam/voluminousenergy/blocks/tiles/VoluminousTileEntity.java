@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
@@ -403,6 +404,15 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     public LazyOptional<VEEnergyStorage> getEnergy() {
         return energy;
+    }
+
+    public int decrementCounterOnNoPower(int localCounter){
+        return localCounter < this.length ? localCounter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
+    }
+
+    public void decrementSuperCounterOnNoPower(){
+        this.counter = this.counter < this.length ? this.counter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
+        this.setChanged();
     }
 
 }

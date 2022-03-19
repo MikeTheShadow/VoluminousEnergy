@@ -3,28 +3,30 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CentrifugalSeparationCategory implements IRecipeCategory<CentrifugalSeparatorRecipe> {
     private final IDrawable background;
@@ -32,12 +34,13 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CENTRIFUGAL_SEPARATION_UID, CentrifugalSeparatorRecipe.class);
 
     public CentrifugalSeparationCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -45,10 +48,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     }
 
     @Override
+    public @NotNull RecipeType getRecipeType(){
+        return RECIPE_TYPE;
+    }
+
+    @Deprecated
+    @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.CENTRIFUGAL_SEPARATION_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends CentrifugalSeparatorRecipe> getRecipeClass() {
         return CentrifugalSeparatorRecipe.class;
@@ -70,7 +80,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     }
 
     @Override
-    public void draw(CentrifugalSeparatorRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CentrifugalSeparatorRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,25, 30);
         emptyArrow.draw(matrixStack,25,30);
         slotDrawable.draw(matrixStack,5,20); // Input
@@ -82,104 +92,81 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,26,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,26, VEContainerScreen.GREY_TEXT_COLOUR);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,44,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,44,VEContainerScreen.GREY_TEXT_COLOUR);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,62,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,62,VEContainerScreen.GREY_TEXT_COLOUR);
         }
 
     }
 
-    @Override
-    public void setIngredients(CentrifugalSeparatorRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, recipe.getIngredientMap().keySet().stream()
-                .map(ingredient -> Arrays.asList(ingredient.getItems()))
-                .collect(Collectors.toList()));
+    public void ingredientHandler(CentrifugalSeparatorRecipe recipe,
+                               IIngredientAcceptor itemInputAcceptor,
+                               IIngredientAcceptor bucketInputAcceptor,
+                               IIngredientAcceptor primaryOutputAcceptor,
+                               IIngredientAcceptor rng0OutputAcceptor,
+                               IIngredientAcceptor rng1OutputAcceptor,
+                               IIngredientAcceptor rng2OutputAcceptor) {
 
-
-        // STACK needs to be 64 for recipes that require more than 1 of the input item
-        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
-        // to save CPU cycles... but this works.
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(64);
-            ingredients.setInput(VanillaTypes.ITEM, testStack);
+        // Input
+        ArrayList<ItemStack> inputStacks = new ArrayList<>();
+        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
+            itemStack.setCount(recipe.ingredientCount);
+            inputStacks.add(itemStack);
         }
 
-        // OUTPUT
-        List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getResultItem()); // Normal output
-
-        if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){ // Check RNG 0 if it's not air
-            outputStacks.add(recipe.getRngItemSlot0());
-        }
-
-        if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){ // Check RNG 1 if it's not air
-            outputStacks.add(recipe.getRngItemSlot1());
-        }
-
-        if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){ // Check RNG 2 if it's not air
-            outputStacks.add(recipe.getRngItemSlot2());
-        }
-
-        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CentrifugalSeparatorRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 5, 20);
-        itemStacks.init(1, false, 49, 2);
-
-        // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
-        itemStacks.set(0, inputs);
-
-        // Calculate output
-        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
-        Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
-        itemStacks.set(1, jeiStack);
-
-        // Calculate RNG stack, only if RNG stack exists
-        if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(2, false, 49, 20);
-            tempStack = recipe.getRngItemSlot0();
-            Item rngItem = tempStack.getItem();
-            ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount0());
-            itemStacks.set(2, rngStack);
-        }
-
-        if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(3, false, 49, 38);
-            tempStack = recipe.getRngItemSlot1();
-            Item rngItem = tempStack.getItem();
-            ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount1());
-            itemStacks.set(3, rngStack);
-        }
-
-        if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(4, false, 49, 56);
-            tempStack = recipe.getRngItemSlot2();
-            Item rngItem = tempStack.getItem();
-            ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount2());
-            itemStacks.set(4, rngStack);
-        }
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
 
         if (recipe.needsBuckets() > 0){
-            itemStacks.init(5, true, 5, 38);
-            itemStacks.set(5, new ItemStack(Items.BUCKET, recipe.needsBuckets()));
+            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.needsBuckets());
+            bucketInputAcceptor.addIngredient(VanillaTypes.ITEM, bucketStack);
         }
+
+        // Output --> ItemStacks here are not guaranteed to have correct amount; must do so manually
+        ItemStack primaryOutputStack = recipe.result.copy();
+        primaryOutputStack.setCount(recipe.getOutputAmount());
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM, primaryOutputStack);
+
+        ItemStack rng0 = recipe.getRngItemSlot0().copy();
+        rng0.setCount(recipe.getOutputRngAmount0());
+        rng0OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng0);
+
+        ItemStack rng1 = recipe.getRngItemSlot1().copy();
+        rng1.setCount(recipe.getOutputRngAmount1());
+        rng1OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng1);
+
+        ItemStack rng2 = recipe.getRngItemSlot2().copy();
+        rng2.setCount(recipe.getOutputRngAmount2());
+        rng2OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng2);
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, CentrifugalSeparatorRecipe recipe, IFocusGroup focusGroup) {
+        // Inputs
+        IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT,6,21);
+        IRecipeSlotBuilder bucketInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT,6, 39);
+
+        // Outputs
+        IRecipeSlotBuilder firstOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50,3);
+        IRecipeSlotBuilder secondOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 21); // RNG 1
+        IRecipeSlotBuilder thirdOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 39); // RNG 2
+        IRecipeSlotBuilder fourthOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 57); // RNG 3
+
+        itemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
+        bucketInput.setSlotName(TextUtil.TRANSLATED_BUCKET_SLOT.getString());
+
+        firstOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());
+        secondOutput.setSlotName(TextUtil.TRANSLATED_RNG_SLOT.getString());
+        thirdOutput.setSlotName(TextUtil.TRANSLATED_RNG_SLOT.getString());
+        fourthOutput.setSlotName(TextUtil.TRANSLATED_RNG_SLOT.getString());
+
+        this.ingredientHandler(recipe, itemInput, bucketInput, firstOutput, secondOutput, thirdOutput, fourthOutput);
     }
 }

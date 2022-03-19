@@ -3,47 +3,63 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
 
     public CombustionCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
-        background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
+        background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
+    @Override
+    public @NotNull RecipeType getRecipeType(){
+        return RECIPE_TYPE;
+    }
+
+    @Deprecated
     @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.COMBUSTING_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends CombustionGeneratorFuelRecipe> getRecipeClass() {
         return CombustionGeneratorFuelRecipe.class;
@@ -65,113 +81,99 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, PoseStack matrixStack, double mouseX, double mouseY){
 
-        Minecraft.getInstance().font.draw(matrixStack,"Volumetric Energy: ",31,4,0x606060);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getVolumetricEnergy() + " FE",42,16, 0x606060);
-        slotDrawable.draw(matrixStack,11,0);
+        // Volumetric Energy label
+        Minecraft.getInstance().font.drawShadow(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
+                16,
+                4,
+                VEContainerScreen.WHITE_TEXT_COLOUR
+        );
 
-        Minecraft.getInstance().font.draw(matrixStack,"Oxidizers: ",2,32,0x606060);
-        int j = 0;
+        // Actual Volumetric Energy value + FE/B units added on the end
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                recipe.getVolumetricEnergy() + " FE/B",
+                35,
+                16,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
 
-        ArrayList<FluidStack> usedFluids = new ArrayList<>();
-        for(int i = 0; i < CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i);
-            for (int k = 0; k < oxidizerRecipe.fluidInputList.get().size(); k++){
-                if(!usedFluids.isEmpty()){
+        slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
+        slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-                    AtomicBoolean fluidStackAlreadyUsed = new AtomicBoolean(false);
-                    oxidizerRecipe.fluidInputList.get().forEach(fluidStack -> {
-                        if(usedFluids.contains(fluidStack)){
-                            fluidStackAlreadyUsed.set(true);
-                        }
-                    });
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(VanillaTypes.FLUID);
 
-                    if(!fluidStackAlreadyUsed.get()){
-                        usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
+        if (oxiStack.isPresent()){
+            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipeWithoutLevel(oxiStack.get());
 
-                        // Core / original logic
-                        j = orderOxidizers(j);
-                        slotDrawable.draw(matrixStack,2 + j, 45);
-                        int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-                        Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
-                    }
+            int fePerTick = recipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+            TextComponent fePerTickComponent = new TextComponent(fePerTick+"");
+            int x = 50;
+            if (fePerTick < 100){
+                x = 54;
+            } else if (fePerTick > 999 && fePerTick < 10_000){
+                x = 46;
+            } else if (fePerTick > 9999){
+                NumberUtil.numberToTextComponent4FE(fePerTick);
+                x = 46;
+            }
 
-                } else { // Assume empty
-                    usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
+            Minecraft.getInstance().font.draw(matrixStack, fePerTickComponent, x, 45,VEContainerScreen.GREY_TEXT_COLOUR);
+        }
 
-                    // Core / original logic
-                    j = orderOxidizers(j);
-                    slotDrawable.draw(matrixStack,2 + j, 45);
-                    int fePerTick = recipe.getVolumetricEnergy()/CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i).getProcessTime();
-                    Minecraft.getInstance().font.draw(matrixStack,fePerTick+"",3+j,64,0x606060);
-                }
+        Minecraft.getInstance().font.drawShadow(matrixStack,"FE/t:",48,35,VEContainerScreen.WHITE_TEXT_COLOUR);
+
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
+                16,
+                26,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
+
+        // Oxidizer Label
+        Minecraft.getInstance().font.draw(
+                matrixStack,
+                TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
+                76,
+                26,
+                VEContainerScreen.GREY_TEXT_COLOUR
+        );
+
+    }
+
+    public void ingredientHandler(CombustionGeneratorFuelRecipe recipe,
+                                  IIngredientAcceptor fuelAcceptor,
+                                  IIngredientAcceptor oxidizerAcceptor) {
+
+        ArrayList<FluidStack> fuelStacks = new ArrayList<>();
+        for (Fluid fluid : recipe.rawFluidInputList.get()){
+            fuelStacks.add(new FluidStack(fluid, 1000));
+        }
+
+        fuelAcceptor.addIngredients(VanillaTypes.FLUID, fuelStacks);
+
+        ArrayList<FluidStack> oxiStacks = new ArrayList<>();
+        for (CombustionGeneratorOxidizerRecipe oxidizerRecipe : CombustionGeneratorOxidizerRecipe.oxidizerRecipes) {
+            for (Fluid fluid : oxidizerRecipe.rawFluidInputList.get()){
+                oxiStacks.add(new FluidStack(fluid, 1000));
             }
         }
 
-        Minecraft.getInstance().font.draw(matrixStack,"FE/t:",-28,64,0x606060);
+        oxidizerAcceptor.addIngredients(VanillaTypes.FLUID, oxiStacks);
+
 
     }
 
     @Override
-    public void setIngredients(CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        ArrayList<FluidStack> anthology = new ArrayList<>();
-        anthology.addAll(recipe.fluidInputList.get());
-        AtomicReference<ArrayList<FluidStack>> atomicAnthology = new AtomicReference<>(anthology);
-        RecipeUtil.getOxidizerFluids(Minecraft.getInstance().level).forEach(fluid -> {
-            atomicAnthology.get().add(new FluidStack(fluid, 1000));
-        });
-        ingredients.setInputs(VanillaTypes.FLUID, anthology);
-    }
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, CombustionGeneratorFuelRecipe recipe, IFocusGroup focusGroup) {
+        // Init
+        IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 18, 36);
+        IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 86, 36);
 
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CombustionGeneratorFuelRecipe recipe, IIngredients ingredients) {
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        fluidStacks.init(0, true, 12, 1);
-
-        // Setup Oxidizers
-        int j = 0;
-
-        ArrayList<FluidStack> usedFluids = new ArrayList<>();
-        for (int i = 1; i <= CombustionGeneratorOxidizerRecipe.oxidizerRecipes.size(); i++){
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1);
-            for (int k = 0; k < oxidizerRecipe.fluidInputList.get().size(); k++){
-                if(!usedFluids.isEmpty()){
-
-                    AtomicBoolean fluidStackAlreadyUsed = new AtomicBoolean(false);
-                    oxidizerRecipe.fluidInputList.get().forEach(fluidStack -> {
-                        if(usedFluids.contains(fluidStack)){
-                            fluidStackAlreadyUsed.set(true);
-                        }
-                    });
-
-                    if(!fluidStackAlreadyUsed.get()){
-                        usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
-
-                        // Core / original logic
-                        j = orderOxidizers(j);
-                        fluidStacks.init(i, true, 3 + j, 46);
-                        ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).fluidInputList.get());
-                        fluidStacks.set(i, oxidizerList);
-                    }
-
-                } else { // Assume empty
-                    usedFluids.addAll(oxidizerRecipe.fluidInputList.get());
-
-                    // Core / original logic
-                    j = orderOxidizers(j);
-                    fluidStacks.init(i, true, 3 + j, 46);
-                    ArrayList<FluidStack> oxidizerList = new ArrayList(CombustionGeneratorOxidizerRecipe.oxidizerRecipes.get(i-1).fluidInputList.get());
-                    fluidStacks.set(i, oxidizerList);
-                }
-            }
-        }
-
-        // Should only be one ingredient...
-        fluidStacks.set(0, recipe.fluidInputList.get());
-    }
-
-    public int orderOxidizers(int j){
-        return j == 0 ? 1 : j+24;
+        this.ingredientHandler(recipe, fuel, oxidizer);
     }
 }

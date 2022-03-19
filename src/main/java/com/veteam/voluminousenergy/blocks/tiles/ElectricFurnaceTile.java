@@ -120,7 +120,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                 }
 
             } else counter = 0;
-        } else counter = 0;
+        } else decrementSuperCounterOnNoPower();
     }
 
     private ItemStackHandler createHandler() {

@@ -23,7 +23,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.SAWMILL_CONTAIN
 
 public class SawmillContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 6;
+    public static final int NUMBER_OF_SLOTS = 6;
 
     public SawmillContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(SAWMILL_CONTAINER, id);

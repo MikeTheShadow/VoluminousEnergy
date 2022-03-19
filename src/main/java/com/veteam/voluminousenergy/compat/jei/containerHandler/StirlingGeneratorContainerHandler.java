@@ -1,19 +1,19 @@
 package com.veteam.voluminousenergy.compat.jei.containerHandler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.StirlingGeneratorScreen;
-
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
+import com.veteam.voluminousenergy.compat.jei.category.StirlingCategory;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<StirlingGeneratorScreen> {
     @Override
@@ -35,7 +35,7 @@ public class StirlingGeneratorContainerHandler implements IGuiContainerHandler<S
 
             @Override
             public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
-                recipesGui.showCategories(Lists.newArrayList(VoluminousEnergyPlugin.STIRLING_UID));
+                recipesGui.showTypes(Lists.newArrayList(StirlingCategory.RECIPE_TYPE));
             }
         });
 

@@ -3,27 +3,30 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
+import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
@@ -32,21 +35,28 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
 
     public CrushingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
-        //ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
-        icon = guiHelper.createDrawableIngredient(new ItemStack(VEBlocks.CRUSHER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.CRUSHER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override
+    public @NotNull RecipeType getRecipeType(){
+        return RECIPE_TYPE;
+    }
+
+    @Deprecated
+    @Override
     public ResourceLocation getUid(){
         return VoluminousEnergyPlugin.CRUSHING_UID;
     }
 
+    @Deprecated
     @Override
     public Class<? extends CrusherRecipe> getRecipeClass() {
         return CrusherRecipe.class;
@@ -68,7 +78,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,10, 19);
 
 
@@ -80,63 +90,47 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             } else if (chance < 10){
                 xPos += 5;
             }
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",xPos,65,0x606060);
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%",xPos,65, VEContainerScreen.GREY_TEXT_COLOUR);
         }
 
     }
 
-    @Override
-    public void setIngredients(CrusherRecipe recipe, IIngredients ingredients) {
-        // STACK needs to be 64 for recipes that require more than 1 of the input item
-        // This for loop ensures that every input can be right clicked, maybe it can just fetch the current ingredient
-        // to save CPU cycles... but this works.
+    public void ingredientHandler(CrusherRecipe recipe,
+                                  IIngredientAcceptor itemInputAcceptor,
+                                  IIngredientAcceptor itemOutputAcceptor,
+                                  IIngredientAcceptor itemRNGOutputAcceptor) {
+        // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack tempStack : recipe.getIngredient().getItems()){
-            tempStack.setCount(64);
-            inputStacks.add(tempStack.copy());
+        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
+            itemStack.setCount(recipe.ingredientCount);
+            inputStacks.add(itemStack);
         }
-        ingredients.setInputs(VanillaTypes.ITEM, inputStacks);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
 
-        // OUTPUT
-        List<ItemStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getResultItem()); // Normal output
+        // Output
+        ItemStack resultStack = recipe.result.copy();
+        resultStack.setCount(recipe.getOutputAmount());
+        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
 
-        if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Check RNG if it's not air
-            outputStacks.add(recipe.getRngItem());
-        }
-
-        ingredients.setOutputs(VanillaTypes.ITEM, outputStacks);
+        ItemStack rngStack = recipe.rngResult.copy();
+        rngStack.setCount(recipe.getOutputRngAmount());
+        itemRNGOutputAcceptor.addIngredient(VanillaTypes.ITEM, rngStack);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 11, 0);
-        itemStacks.init(1, false, 2, 45);
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, CrusherRecipe recipe, IFocusGroup focusGroup) {
+        // Input
+        IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 1);
 
-        // Should only be one ingredient...
-        List<ItemStack> inputs = new ArrayList<>();
-        Arrays.stream(recipe.getIngredient().getItems()).map(s -> {
-            ItemStack stack = s.copy();
-            stack.setCount(recipe.getIngredientCount());
-            return stack;
-        }).forEach(inputs::add);
-        itemStacks.set(0, inputs);
+        // Output
+        IRecipeSlotBuilder primaryItemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 3, 46);
+        IRecipeSlotBuilder rngItemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT,  21, 46);
 
-        // Calculate output
-        ItemStack tempStack = recipe.getResultItem(); // Get Item since amount will be wrong
-        Item outputItem = tempStack.getItem();
-        ItemStack jeiStack = new ItemStack(outputItem, recipe.getOutputAmount()); // Create new stack for JEI with correct amount
-        itemStacks.set(1, jeiStack);
+        itemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
+        primaryItemOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());
+        rngItemOutput.setSlotName(TextUtil.TRANSLATED_RNG_SLOT.getString());
 
-        // Calculate RNG stack, only if RNG stack exists
-        if (recipe.getRngItem() != null && recipe.getRngItem().getItem() != Items.AIR){ // Don't create the slot if the slot will be empty!
-            itemStacks.init(2, false, 20, 45);
-            tempStack = recipe.getRngItem();
-            Item rngItem = tempStack.getItem();
-            ItemStack rngStack = new ItemStack(rngItem, recipe.getOutputRngAmount());
-            itemStacks.set(2, rngStack);
-        }
+        this.ingredientHandler(recipe, itemInput, primaryItemOutput, rngItemOutput);
     }
 
 }

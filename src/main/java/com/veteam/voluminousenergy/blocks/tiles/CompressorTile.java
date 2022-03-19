@@ -95,8 +95,12 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                         this.counter = 0;
                     }
                 }
-            } else { // This is if we reach the maximum in the slots
-                this.counter = 0;
+            } else { // This is if we reach the maximum in the slots; or no power
+                if (!canConsumeEnergy()){ // if no power
+                    decrementSuperCounterOnNoPower();
+                } else { // zero in other cases
+                    counter = 0;
+                }
             }
         } else { // This is if the input slot is empty
             this.counter = 0;

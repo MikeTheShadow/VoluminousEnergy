@@ -146,8 +146,10 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         public CentrifugalAgitatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
 
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 

@@ -1,8 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -23,10 +20,14 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitContainer> {
     private DistillationUnitTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
     
 
     public DistillationUnitScreen(DistillationUnitContainer screenContainer, Inventory inv, Component titleIn){
@@ -143,9 +144,11 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
-        super.renderLabels(matrixStack, mouseX, mouseY);
+        if (tileEntity.getMultiblockValidity()){
+            this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        }
+         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
@@ -247,8 +250,11 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack,i+129, j-16,0,0,18,18);
         } else {
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), 8.0F, 6.0F, 16777215);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), 8.0F, 16.0F, 16777215);
+            RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
+            this.blit(matrixStack, i, j, 0, 0, 174,82);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i + 48, j + 14, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), i + 8, j + 32, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), i+8, j+48, WHITE_TEXT_COLOUR);
         }
 
     }
