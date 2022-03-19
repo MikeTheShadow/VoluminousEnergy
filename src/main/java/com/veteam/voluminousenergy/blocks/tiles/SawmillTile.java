@@ -97,7 +97,8 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
             ItemStack plankOutputStack;
             ItemStack secondOutputStack;
 
-            if (sawmillingRecipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){ // Recipe is null, use alternative method if allowed
+            if ((sawmillingRecipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())
+                    || (sawmillingRecipe != null && sawmillingRecipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())){ // Recipe is null, use alternative method if allowed, or dummy recipe
                 plankOutputStack = RecipeUtil.getPlankFromLogParallel(level, logInput.copy()); //RecipeUtil.getPlankFromLogParallel(level, logInput.copy());
                 secondOutputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get())), Config.SAWMILL_SECOND_OUTPUT_COUNT.get());
 
@@ -127,7 +128,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                     counter = 0;
                 }
 
-            } else { // Using Recipe
+            } else if (sawmillingRecipe != null && !sawmillingRecipe.isLogRecipe()){ // Using Recipe
                 plankOutputStack = sawmillingRecipe.result.copy();
                 secondOutputStack = sawmillingRecipe.secondResult.copy();
                 FluidStack outputFluid = sawmillingRecipe.getOutputFluid().copy();
