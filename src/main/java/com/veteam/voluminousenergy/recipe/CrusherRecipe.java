@@ -99,8 +99,10 @@ public class CrusherRecipe extends VERecipe {
         public CrusherRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');

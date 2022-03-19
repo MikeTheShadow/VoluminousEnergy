@@ -40,9 +40,16 @@ description='''Voluminous Energy - A Tech mod focused on resource processing and
     side="BOTH"
 
 # Here's another dependency
-[[dependencies.examplemod]]
+[[dependencies.voluminousenergy]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.18.2,1.19)"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.voluminousenergy]]
+    modId="jei"
+    mandatory=false
+    versionRange="[9.5.2.134,)"
+    ordering="NONE"
+    side="CLIENT"

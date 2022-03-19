@@ -167,8 +167,10 @@ public class DistillationRecipe extends VEFluidRecipe {
         public DistillationRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             DistillationRecipe recipe = new DistillationRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
             recipe.inputAmount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "amount", 0);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
