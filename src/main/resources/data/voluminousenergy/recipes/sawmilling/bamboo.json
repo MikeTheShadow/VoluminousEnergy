@@ -1,0 +1,19 @@
+{
+  "type": "voluminousenergy:sawmilling",
+  "ingredient": {
+    "item": "minecraft:bamboo",
+    "count": 1
+  },
+  "result": {
+    "item": "minecraft:stick",
+    "count": 1
+  },
+  "second_result": {
+    "item": "voluminousenergy:shredded_biomass",
+    "count": 1
+  },
+  "output_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 25
+  }
+}

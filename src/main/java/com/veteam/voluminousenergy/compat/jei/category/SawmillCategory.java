@@ -129,7 +129,28 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
             if (outputFluid != null){
                 fluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
             }
-        } // TODO: if there is a recipe
+        } else if (!recipe.isLogRecipe()) {
+            // Primary Input (Typically logs)
+            ArrayList<ItemStack> inputStacks = new ArrayList<>();
+            for (ItemStack itemStack : recipe.ingredient.get().getItems()){
+                itemStack.setCount(recipe.ingredientCount);
+                inputStacks.add(itemStack);
+            }
+            inputItemAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
+
+            // First Item Output (Typically Planks)
+            ItemStack resultStack = recipe.result.copy();
+            resultStack.setCount(recipe.getOutputAmount());
+            primaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
+
+            // Second Item Output
+            ItemStack secondOutputStack = recipe.secondResult.copy();
+            secondOutputStack.setCount(recipe.getSecondAmount());
+            secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM, secondOutputStack);
+
+            // Fluid Output
+            fluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid().copy());
+        }
 
     }
 
