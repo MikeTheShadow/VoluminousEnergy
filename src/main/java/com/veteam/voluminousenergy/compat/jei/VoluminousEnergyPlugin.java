@@ -142,7 +142,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
-        // TODO: Transfer handler for sawmill
+        registration.addRecipeTransferHandler(SawmillContainer.class,SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
     }
 
     @Override
