@@ -127,7 +127,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
         registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
-        // TODO: Container Gui Handler for Sawmill
+        registration.addGuiContainerHandler(SawmillScreen.class, new SawmillContainerHandler());
     }
 
     @Override

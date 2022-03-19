@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.compat.jei.containerHandler;
 
 import com.google.common.collect.Lists;
-import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
+import com.veteam.voluminousenergy.blocks.screens.SawmillScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
-import com.veteam.voluminousenergy.compat.jei.category.CrushingCategory;
+import com.veteam.voluminousenergy.compat.jei.category.SawmillCategory;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CrusherContainerHandler implements IGuiContainerHandler<CrusherScreen> {
+public class SawmillContainerHandler implements IGuiContainerHandler<SawmillScreen> {
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(CrusherScreen containerScreen, double guiMouseX, double guiMouseY) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(SawmillScreen containerScreen, double guiMouseX, double guiMouseY) {
         List<IGuiClickableArea> areas = new ArrayList<>();
         areas.add(new IGuiClickableArea() {
             @Override
@@ -35,7 +35,7 @@ public class CrusherContainerHandler implements IGuiContainerHandler<CrusherScre
 
             @Override
             public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
-                recipesGui.showTypes(Lists.newArrayList(CrushingCategory.RECIPE_TYPE));
+                recipesGui.showTypes(Lists.newArrayList(SawmillCategory.RECIPE_TYPE));
             }
         });
 

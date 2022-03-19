@@ -280,6 +280,18 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         return fluidManagers;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+
     @Override
     public int getMaxPower() {
         return Config.SAWMILL_MAX_POWER.get();
