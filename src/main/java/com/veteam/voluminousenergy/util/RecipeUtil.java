@@ -497,17 +497,16 @@ public class RecipeUtil {
     public static SawmillingRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack){ // Parallel by default
         if (logStack.isEmpty()) return null;
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
-
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if(recipe instanceof SawmillingRecipe){
-                recipe.getIngredients().forEach(ingredient -> {
-                    for (ItemStack ingredientStack : ingredient.getItems()){
-                        if (ingredientStack.is(logStack.getItem())){
-                            atomicRecipe.set((SawmillingRecipe) recipe);
+            if(recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    for (ItemStack ingredientStack : sawmillingRecipe.ingredient.get().getItems()){
+                        if (ingredientStack.getItem().equals(logStack.getItem())){
+                            atomicRecipe.set(sawmillingRecipe);
                             break;
                         }
                     }
-                });
+                }
             }
         });
 
@@ -519,13 +518,32 @@ public class RecipeUtil {
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof SawmillingRecipe){
-                if (((SawmillingRecipe) recipe).result.is(plankStack.getItem())){
-                    atomicRecipe.set((SawmillingRecipe) recipe);
+            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    if (sawmillingRecipe.result.getItem().equals(plankStack.getItem())){
+                        atomicRecipe.set((SawmillingRecipe) recipe);
+                    }
                 }
             }
         });
 
+        return atomicRecipe.get();
+    }
+
+    public static SawmillingRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack){
+        if (itemStack.isEmpty()) return null;
+        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    Item item = sawmillingRecipe.secondResult.getItem();
+                    if (itemStack.getItem().equals(item)){
+                        atomicRecipe.set(sawmillingRecipe);
+                    }
+                }
+            }
+        });
         return atomicRecipe.get();
     }
 

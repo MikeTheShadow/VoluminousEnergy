@@ -44,6 +44,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation IMPLOSION_COMPRESSION_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/implosion_compressing");
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
     public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
+    public static final ResourceLocation SAWMILL_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/sawmilling");
     
     public static final Component SHOW_RECIPES = new TranslatableComponent("jei.tooltip.show.recipes");
 
@@ -67,6 +68,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new ImplosionCompressionCategory(guiHelper));
         registration.addRecipeCategories(new IndustrialBlastingCategory(guiHelper));
         registration.addRecipeCategories(new ToolingCategory(guiHelper));
+        registration.addRecipeCategories(new SawmillCategory(guiHelper));
     }
 
     @Override
@@ -83,6 +85,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(ImplosionCompressionCategory.RECIPE_TYPE, getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE));
         registration.addRecipes(IndustrialBlastingCategory.RECIPE_TYPE, getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE));
         registration.addRecipes(ToolingCategory.RECIPE_TYPE, getRecipesOfType(ToolingRecipe.RECIPE_TYPE));
+        registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillingRecipe.RECIPE_TYPE));
 
         // Register info for certain ingredients that could use additional explanation for end users
         registerInfo(registration);
@@ -124,6 +127,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(ImplosionCompressorScreen.class, new ImplosionCompressorContainerHandler());
         registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
+        registration.addGuiContainerHandler(SawmillScreen.class, new SawmillContainerHandler());
     }
 
     @Override
@@ -138,6 +142,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(SawmillContainer.class,SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
     }
 
     @Override
@@ -157,5 +162,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).copy(), ImplosionCompressionCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION_BLOCK).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL_BLOCK).copy(), SawmillCategory.RECIPE_TYPE);
     }
 }

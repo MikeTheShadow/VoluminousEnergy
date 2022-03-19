@@ -1,8 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
