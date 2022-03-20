@@ -5,7 +5,7 @@ import net.minecraft.network.chat.TextComponent;
 
 import java.text.DecimalFormat;
 
-// Graciously provided by MikeTheShadow from his other programming adventures... Refactored for Voluminous Energy
+// Graciously provided by MikeTheShadow from his other programming endeavours... Refactored for Voluminous Energy
 public class NumberUtil {
     public static String formatNumber(String number) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");

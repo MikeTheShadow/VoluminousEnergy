@@ -5,6 +5,7 @@
   "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 アルミニウム機械ケーシングがありません。",
   "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 チタン機械ケーシングがありません。",
   "text.voluminousenergy.temperature": "温度",
+  "text.voluminousenergy.energy": "エネルギー",
 
   "_comment": "Directions",
   "direction.voluminousenergy.up": "上",
