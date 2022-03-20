@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -48,9 +49,9 @@ public class CombustionMultitool extends Multitool {
                                     + " mB"
                             )
             );
-            if (itemStack.getTag() != null){ // TODO: Make translatable
-                tooltip.add(
-                        new TranslatableComponent("").append("Energy: " + itemStack.getTag().getInt("energy"))
+            if (itemStack.getTag() != null){
+                tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+                        .append(": " + itemStack.getTag().getInt("energy"))
                 );
             }
         });
@@ -133,7 +134,7 @@ public class CombustionMultitool extends Multitool {
                 }
 
             });
-            return -(volumetricEnergy.get());
+            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1;
         } else if (tag == null){
             return 0; // Technically this should never occur
         }

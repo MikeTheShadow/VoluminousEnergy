@@ -12,6 +12,7 @@
     "text.voluminousenergy.ticks_left": "Ticks Left",
     "text.voluminousenergy.battery_box.sending_out_power": "Sending out stored energy onto the FE grid",
     "text.voluminousenergy.battery_box.receiving_power": "Receiving energy from the FE grid",
+    "text.voluminousenergy.energy": "Energy",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
