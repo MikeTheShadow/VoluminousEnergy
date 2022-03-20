@@ -187,8 +187,12 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
                             counter = 0;
                         }
                     }
-                } else { // This is if we reach the maximum in the slots
-                    counter = 0;
+                } else { // This is if we reach the maximum in the slots; or no power
+                    if (!canConsumeEnergy()){ // if no power
+                        decrementSuperCounterOnNoPower();
+                    } else { // zero in other cases
+                        counter = 0;
+                    }
                 }
             } else { // this is if the input slot is empty
                 counter = 0;

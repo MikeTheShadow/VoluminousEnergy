@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.ToolingStationScreen;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
@@ -91,7 +90,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final Player player, final int index) { // TODO: Rework for the Tooling Station
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 
@@ -135,7 +134,6 @@ public class ToolingStationContainer extends VoluminousContainer {
                         && !this.slots.get(4).hasItem()
                         && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool slot id is 2
                     // Place the main machine in the main result slot
-                    System.out.println("This.bit: " + ((CombustionMultitool) slotStack.getItem()).getBit());
                     return ItemStack.EMPTY;
                 }
             }
@@ -168,25 +166,5 @@ public class ToolingStationContainer extends VoluminousContainer {
 
         }
         return null;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(ToolingStationScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-    public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
     }
 }

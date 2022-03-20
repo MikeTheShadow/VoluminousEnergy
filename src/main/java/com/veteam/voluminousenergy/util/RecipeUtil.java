@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -302,6 +303,20 @@ public class RecipeUtil {
         return fluidList.get();
     }
 
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipeWithoutLevel(FluidStack fluidStack){
+        return getOxidizerCombustionRecipeWithoutLevel(fluidStack.getRawFluid());
+    }
+
+    public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipeWithoutLevel(Fluid fluid){
+        AtomicReference<CombustionGeneratorOxidizerRecipe> recipeToReturn = new AtomicReference<>(null);
+        CombustionGeneratorOxidizerRecipe.oxidizerRecipes.parallelStream().forEach(oxidizerRecipe -> {
+            if (oxidizerRecipe.rawFluidInputList.get().contains(fluid)){
+                recipeToReturn.set(oxidizerRecipe);
+            }
+        });
+        return recipeToReturn.get();
+    }
+
     public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(Level world, ItemStack firstInput, ItemStack secondInput){
         if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
@@ -482,17 +497,16 @@ public class RecipeUtil {
     public static SawmillingRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack){ // Parallel by default
         if (logStack.isEmpty()) return null;
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
-
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if(recipe instanceof SawmillingRecipe){
-                recipe.getIngredients().forEach(ingredient -> {
-                    for (ItemStack ingredientStack : ingredient.getItems()){
-                        if (ingredientStack.is(logStack.getItem())){
-                            atomicRecipe.set((SawmillingRecipe) recipe);
+            if(recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    for (ItemStack ingredientStack : sawmillingRecipe.ingredient.get().getItems()){
+                        if (ingredientStack.getItem().equals(logStack.getItem())){
+                            atomicRecipe.set(sawmillingRecipe);
                             break;
                         }
                     }
-                });
+                }
             }
         });
 
@@ -504,13 +518,32 @@ public class RecipeUtil {
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof SawmillingRecipe){
-                if (((SawmillingRecipe) recipe).result.is(plankStack.getItem())){
-                    atomicRecipe.set((SawmillingRecipe) recipe);
+            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    if (sawmillingRecipe.result.getItem().equals(plankStack.getItem())){
+                        atomicRecipe.set((SawmillingRecipe) recipe);
+                    }
                 }
             }
         });
 
+        return atomicRecipe.get();
+    }
+
+    public static SawmillingRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack){
+        if (itemStack.isEmpty()) return null;
+        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+                if (!sawmillingRecipe.isLogRecipe()){
+                    Item item = sawmillingRecipe.secondResult.getItem();
+                    if (itemStack.getItem().equals(item)){
+                        atomicRecipe.set(sawmillingRecipe);
+                    }
+                }
+            }
+        });
         return atomicRecipe.get();
     }
 
@@ -605,5 +638,17 @@ public class RecipeUtil {
             if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
         });
         return atomicInteger.get();
+    }
+
+    public static ArrayList<FluidStack> getFluidsAsHotOrHotterThanIntAsFluidStacks(int minimumTemperatureKelvin, int stackAmount){
+        AtomicReference<ArrayList<FluidStack>> fluidStacks = new AtomicReference<>(new ArrayList<>());
+        ForgeRegistries.FLUIDS.getValues().parallelStream().forEach(fluid -> {
+            if (fluid.getAttributes().getTemperature() > minimumTemperatureKelvin) fluidStacks.get().add(new FluidStack(fluid, stackAmount));
+        });
+        return fluidStacks.get();
+    }
+
+    public static ArrayList<FluidStack> getFluidsHotEnoughForIndustrialBlastingRecipe(IndustrialBlastingRecipe recipe){
+        return getFluidsAsHotOrHotterThanIntAsFluidStacks(recipe.getMinimumHeat(), Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get());
     }
 }

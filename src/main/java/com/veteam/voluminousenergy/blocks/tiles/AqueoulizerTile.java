@@ -135,7 +135,9 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                                 counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(4).copy());
                                 length = counter;
                             }
-                        } // Energy Check
+                        } else { // Energy Check
+                            decrementSuperCounterOnNoPower();
+                        }
                     } else { // If fluid tank empty set counter to zero
                         counter = 0;
                     }

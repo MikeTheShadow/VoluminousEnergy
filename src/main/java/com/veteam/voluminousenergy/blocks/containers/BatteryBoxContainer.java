@@ -21,8 +21,7 @@ import javax.annotation.Nonnull;
 
 public class BatteryBoxContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 12;
+    private static final int NUMBER_OF_SLOTS = 12;
 
     public BatteryBoxContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.BATTERY_BOX_CONTAINER,id);
@@ -98,7 +97,7 @@ public class BatteryBoxContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

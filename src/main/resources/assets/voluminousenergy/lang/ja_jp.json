@@ -1,6 +1,11 @@
 {
   "_comment": "Text",
+  "text.voluminousenergy.multiblock_warn": "構造は無効です。機械の後ろは",
+  "text.voluminousenergy.multiblock.needed_behind": "",
+  "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 アルミニウム機械ケーシングがありません。",
+  "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 チタン機械ケーシングがありません。",
   "text.voluminousenergy.temperature": "温度",
+  "text.voluminousenergy.energy": "エネルギー",
 
   "_comment": "Directions",
   "direction.voluminousenergy.up": "上",
@@ -333,9 +338,17 @@
   "jei.voluminousenergy.industrial_blasting": "溶鉱炉します",
   "jei.voluminousenergy.stirling": "固形燃料の燃焼",
   "jei.voluminousenergy.tooling": "ツールを作る",
+  "jei.voluminousenergy.sawmilling": "製材します",
 
   "_comment": "JEI UI Info",
   "jei.voluminousenergy.crude_oil_info": "原油は間欠泉や石油湖から供給されます。遠心分離機械でソウルサンドからも入手可能。",
   "jei.voluminousenergy.air_compressor_fluid_info": "空気コンプレッサー機械を使用して圧縮空気を取得します。",
-  "jei.voluminousenergy.air_compressor_item_info": "空気コンプレッサー機械は圧縮空気を生成します。"
+  "jei.voluminousenergy.air_compressor_item_info": "空気コンプレッサー機械は圧縮空気を生成します。",
+
+  "_comment": "JEI Fluid Types for Combustion",
+  "jei.voluminousenergy.fluid.fuel": "液体燃料",
+  "jei.voluminousenergy.fluid.oxidizer": "酸化剤",
+
+  "_comment": "JEI Misc",
+  "jei.voluminousenergy.volumetric_energy": "体積エネルギー密度"
 }

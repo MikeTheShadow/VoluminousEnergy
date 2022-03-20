@@ -37,6 +37,7 @@ public class SawmillingRecipe extends VERecipe {
     private int outputAmount;
     private int secondAmount;
     private FluidStack outputFluid;
+    private boolean isLogRecipe;
 
     private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
@@ -94,14 +95,24 @@ public class SawmillingRecipe extends VERecipe {
         return new ItemStack(VEBlocks.SAWMILL_BLOCK);
     }
 
+    public boolean isLogRecipe() {
+        return isLogRecipe;
+    }
+
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SawmillingRecipe>{
 
         @Override
         public SawmillingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             SawmillingRecipe recipe = new SawmillingRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            recipe.isLogRecipe = GsonHelper.getAsBoolean(json, "auto_log_to_plank", false);
+
+            if (recipe.isLogRecipe) return recipe;
+
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             JsonObject resultData = json.get("result").getAsJsonObject();
@@ -130,32 +141,38 @@ public class SawmillingRecipe extends VERecipe {
         @Override
         public SawmillingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             SawmillingRecipe recipe = new SawmillingRecipe((recipeId));
-            recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItem();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-            recipe.secondResult = buffer.readItem();
-            recipe.secondAmount = buffer.readInt();
-            recipe.outputFluid = buffer.readFluidStack();
 
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
+            recipe.isLogRecipe = buffer.readBoolean();
+            if (!recipe.isLogRecipe){
+                recipe.ingredientCount = buffer.readByte();
+                recipe.result = buffer.readItem();
+                recipe.processTime = buffer.readInt();
+                recipe.outputAmount = buffer.readInt();
+                recipe.secondResult = buffer.readItem();
+                recipe.secondAmount = buffer.readInt();
+                recipe.outputFluid = buffer.readFluidStack();
+
+                Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+                recipe.ingredient = Lazy.of(() -> tempIngredient);
+            }
 
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, SawmillingRecipe recipe){
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-            buffer.writeItem(recipe.secondResult);
-            buffer.writeInt(recipe.secondAmount);
-            buffer.writeFluidStack(recipe.outputFluid);
+            buffer.writeBoolean(recipe.isLogRecipe);
+            if (!recipe.isLogRecipe){
+                buffer.writeByte(recipe.getIngredientCount());
+                buffer.writeItem(recipe.getResult());
+                buffer.writeInt(recipe.processTime);
+                buffer.writeInt(recipe.outputAmount);
+                buffer.writeItem(recipe.secondResult);
+                buffer.writeInt(recipe.secondAmount);
+                buffer.writeFluidStack(recipe.outputFluid);
 
-            recipe.ingredient.get().toNetwork(buffer);
-
+                recipe.ingredient.get().toNetwork(buffer);
+            }
         }
     }
 }

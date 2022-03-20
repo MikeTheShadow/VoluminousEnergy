@@ -1,8 +1,9 @@
 {
     "_comment": "Text",
     "text.voluminousenergy.multiblock_warn": "Multiblock Invalid",
-    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing BEHIND the Tile Entity",
-    "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing BEHIND the Tile Entity",
+    "text.voluminousenergy.multiblock.needed_behind": "BEHIND the Machine is needed",
+    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 Aluminum Machine Casing",
+    "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 Titanium Machine Casing",
     "text.voluminousenergy.temperature": "Temperature",
     "text.voluminousenergy.protective_sheath": "Protective Sheath",
     "text.voluminousenergy.generating": "Generating",
@@ -11,6 +12,7 @@
     "text.voluminousenergy.ticks_left": "Ticks Left",
     "text.voluminousenergy.battery_box.sending_out_power": "Sending out stored energy onto the FE grid",
     "text.voluminousenergy.battery_box.receiving_power": "Receiving energy from the FE grid",
+    "text.voluminousenergy.energy": "Energy",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
@@ -343,9 +345,17 @@
     "jei.voluminousenergy.industrial_blasting": "Industrial Blasting",
     "jei.voluminousenergy.stirling": "Stirling",
     "jei.voluminousenergy.tooling": "Tooling",
+    "jei.voluminousenergy.sawmilling": "Sawmilling",
 
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
     "jei.voluminousenergy.air_compressor_fluid_info": "Compressed Air can be obtained via the Air Compressor",
-    "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air"
+    "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air",
+
+    "_comment": "JEI Fluid Types for Combustion",
+    "jei.voluminousenergy.fluid.fuel": "Fuel",
+    "jei.voluminousenergy.fluid.oxidizer": "Oxidizer",
+
+    "_comment": "JEI Misc",
+    "jei.voluminousenergy.volumetric_energy": "Volumetric Energy"
 }

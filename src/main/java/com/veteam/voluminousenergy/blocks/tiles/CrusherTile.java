@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -208,8 +207,12 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                         counter = 0;
                     }
                 }
-            } else { // This is if we reach the maximum in the slots
-                counter = 0;
+            } else { // This is if we reach the maximum in the slots; or no power
+                if (!canConsumeEnergy()){ // if no power
+                    decrementSuperCounterOnNoPower();
+                } else { // zero in other cases
+                    counter = 0;
+                }
             }
         } else { // this is if the input slot is empty
             counter = 0;
