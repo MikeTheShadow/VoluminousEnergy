@@ -1,16 +1,18 @@
 {
     "_comment": "Text",
     "text.voluminousenergy.multiblock_warn": "유효하지 않은 멀티블록",
-    "text.voluminousenergy.multiblock.distillation_unit.requirements": "기계 뒤에 3x3x3 알루미늄 기계 케이싱을 설치해야 합니다",
-    "text.voluminousenergy.multiblock.blast_furnace.requirements": "기계 뒤에 3x3x3 티타늄 기계 케이싱을 설치해야 합니다",
+    "text.voluminousenergy.multiblock.needed_behind": "을 기계 뒤에 설치해야 합니다",
+    "text.voluminousenergy.multiblock.distillation_unit.requirements": "3x3x3 알루미늄 기계 케이싱",
+    "text.voluminousenergy.multiblock.blast_furnace.requirements": "3x3x3 티타늄 기계 케이싱",
     "text.voluminousenergy.temperature": "온도",
-    "text.voluminousenergy.protective_sheath": "보호 덮개",
+    "text.voluminousenergy.protective_sheath": "내구도 보호",
     "text.voluminousenergy.generating": "발전량",
     "text.voluminousenergy.percent_complete": "완료 진행도",
     "text.voluminousenergy.percent_burned": "연소 진행도",
     "text.voluminousenergy.ticks_left": "남은 틱",
     "text.voluminousenergy.battery_box.sending_out_power": "주변 블록으로 에너지를 송신합니다",
     "text.voluminousenergy.battery_box.receiving_power": "주변 블록에서 에너지를 수신합니다",
+    "text.voluminousenergy.energy": "에너지",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "위",
@@ -343,9 +345,17 @@
     "jei.voluminousenergy.industrial_blasting": "용광로",
     "jei.voluminousenergy.stirling": "연로 연소",
     "jei.voluminousenergy.tooling": "도구 조립",
+    "jei.voluminousenergy.sawmilling": "제재",
 
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "원유는 원유 간헐천, 유전에서 얻을 수 있습니다, 혹은 영혼 모래를 원심분리기에 넣어서 얻을 수 있습니다",
     "jei.voluminousenergy.air_compressor_fluid_info": "압축 공기는 공기 압축기를 통해 얻을 수 있습니다",
-    "jei.voluminousenergy.air_compressor_item_info": "압축 공기는 공기 압축기를 통해 얻을 수 있습니다"
+    "jei.voluminousenergy.air_compressor_item_info": "압축 공기는 공기 압축기를 통해 얻을 수 있습니다",
+
+    "_comment": "JEI Fluid Types for Combustion",
+    "jei.voluminousenergy.fluid.fuel": "연소",
+    "jei.voluminousenergy.fluid.oxidizer": "산화제",
+
+    "_comment": "JEI Misc",
+    "jei.voluminousenergy.volumetric_energy": "체적 에너지"
 }

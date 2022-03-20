@@ -82,11 +82,11 @@ public class VoluminousContainer extends AbstractContainerMenu {
     }
 
     public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack){
-        if (index < containerSlots) {
+        if (index < containerSlots) { // Container --> Inventory
             if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
+        } else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) { // Inventory --> Container
             return ItemStack.EMPTY;
         }
         return null;

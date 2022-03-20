@@ -19,7 +19,18 @@ public class TextUtil {
     public static Component TRANSLATED_BOTH_TANK = TextUtil.translateString("tank.voluminousenergy.both_tank");
 
     public static Component tankTooltip(String fluidName, int amount, int tankCapacity){
-        return new TranslatableComponent(fluidName).append(Component.nullToEmpty(", " + amount + " mB / " + tankCapacity + " mB"));
+        String stringAmount = String.valueOf(amount);
+        String stringTankCapacity = String.valueOf(tankCapacity);
+
+        // Assume mB units
+        if (amount >= 1_000) {
+            stringAmount = NumberUtil.formatNumber(stringAmount);
+        }
+        if (tankCapacity >= 1_000) {
+            stringTankCapacity = NumberUtil.formatNumber(stringTankCapacity);
+        }
+
+        return new TranslatableComponent(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
     }
 
     public static Component slotName(String slotName){

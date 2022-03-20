@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -43,15 +44,15 @@ public class CombustionMultitool extends Multitool {
             tooltip.add(
                     new TranslatableComponent(fluidStack.getTranslationKey())
                             .append(": "
-                                    + fluidStack.getAmount()
+                                    + NumberUtil.formatNumber(fluidStack.getAmount())
                                     + " mB / "
-                                    + this.TANK_CAPACITY
+                                    + NumberUtil.formatNumber(this.TANK_CAPACITY)
                                     + " mB"
                             )
             );
             if (itemStack.getTag() != null){
                 tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
-                        .append(": " + itemStack.getTag().getInt("energy"))
+                        .append(": " + NumberUtil.formatNumber(itemStack.getTag().getInt("energy")))
                 );
             }
         });
