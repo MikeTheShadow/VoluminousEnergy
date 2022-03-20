@@ -561,6 +561,10 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_CHAIN_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_SCOOPER_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_TRIMMER_BIT);
+
+            // Scanner
+            itemRegisteryEvent.getRegistry().register(VEItems.FLUID_SCANNER);
+            itemRegisteryEvent.getRegistry().register(VEItems.RFID_CHIP);
         }
 
         @SubscribeEvent
@@ -755,6 +759,13 @@ public class VoluminousEnergy {
         public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
             event.getRegistry().register(VESounds.ENERGY_BEAM_ACTIVATE.setRegistryName("energy_beam_activate"));
             event.getRegistry().register(VESounds.ENERGY_BEAM_FIRED.setRegistryName("energy_beam_fired"));
+            event.getRegistry().register(VESounds.AIR_COMPRESSOR.setRegistryName("air_compressor_active"));
+            event.getRegistry().register(VESounds.AQUEOULIZER.setRegistryName("aqueoulizer_active"));
+            event.getRegistry().register(VESounds.COMPRESSOR.setRegistryName("compressor_active"));
+            event.getRegistry().register(VESounds.CRUSHER.setRegistryName("crusher_active"));
+            event.getRegistry().register(VESounds.FURNACE.setRegistryName("furnace_active"));
+            event.getRegistry().register(VESounds.GENERAL_MACHINE_NOISE.setRegistryName("general_machine_noise"));
+            event.getRegistry().register(VESounds.IMPLOSION_COMPRESSOR.setRegistryName("implosion_compressor_active"));
         }
 
         /*@SubscribeEvent

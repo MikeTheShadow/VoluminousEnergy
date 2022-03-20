@@ -12,7 +12,7 @@ public class VESounds {
     public static SoundEvent COMPRESSOR = new SoundEvent(new ResourceLocation("voluminousenergy:compressor_active"));
     public static SoundEvent CRUSHER = new SoundEvent(new ResourceLocation("voluminousenergy:crusher_active"));
     public static SoundEvent FURNACE = new SoundEvent(new ResourceLocation("voluminousenergy:furnace_active"));
-    public static SoundEvent GENERAL_MACHINE_NOISE = new SoundEvent(new ResourceLocation("voluminousenergy:general_machine_active"));
+    public static SoundEvent GENERAL_MACHINE_NOISE = new SoundEvent(new ResourceLocation("voluminousenergy:general_machine_noise"));
     public static SoundEvent IMPLOSION_COMPRESSOR = new SoundEvent(new ResourceLocation("voluminousenergy:implosion_compressor_active"));
     // TODO decide what a distillation unit sounds like. I think a hissing sound as it involves water/liquid moving through it
 

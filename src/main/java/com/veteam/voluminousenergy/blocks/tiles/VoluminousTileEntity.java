@@ -58,6 +58,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     int counter = 0;
     int length = 0;
+    int sound_tick = 0;
 
     /**
      * Must include a call to updateClients();
@@ -356,7 +357,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     /**
      * We do a null check on inventory so this can be null. Might change though
      * REMEMBER YOU NEED TO BUILD YOUR OWN INVENTORY HANDLER
-     * USE EITHER A NEWLY CREATED ONE ONE OF THE createHandler's defined here
+     * USE EITHER A NEWLY CREATED ONE OR ONE OF THE createHandler's defined here
      * @see #createHandler(int)
      * @see #createHandler(int, IVEPoweredTileEntity)
      * @return a ItemStackHandler or null if the object lacks an inventory

@@ -20,6 +20,8 @@ import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
 import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
+import com.veteam.voluminousenergy.items.tools.FluidScanner;
+import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
@@ -123,6 +125,9 @@ public class VEItems {
     public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
     public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)).setRegistryName("cooked_rice");
 
+    //Scanner
+    public static FluidScanner FLUID_SCANNER = new FluidScanner();
+    public static RFIDChip RFID_CHIP = new RFIDChip();
     // Tools
     //public static Multitool MULTITOOL = new Multitool(new Item.Properties().tab(VESetup.itemGroup).stacksTo(1));
 }

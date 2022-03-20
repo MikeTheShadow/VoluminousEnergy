@@ -328,6 +328,8 @@
     "item.voluminousenergy.solarium_drill_multitool": "Solarium Drill Multitool",
     "item.voluminousenergy.solarium_scooper_multitool": "Solarium Scooper Multitool",
     "item.voluminousenergy.solarium_trimmer_multitool": "Solarium Trimmer Multitool",
+    "item.voluminousenergy.fluid_scanner": "Fluid Scanner",
+    "item.voluminousenergy.rfid_chip": "RFID Chip",
 
     "_comment" : "Advancements",
     "advancements.machine.activate_dimensional_laser.title": "What Have I done?",
