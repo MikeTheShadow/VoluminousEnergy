@@ -24,7 +24,6 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAIN
 
 public class CrusherContainer extends VoluminousContainer {
 
-
     public static final int NUMBER_OF_SLOTS = 4;
 
     public CrusherContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
-import com.veteam.voluminousenergy.blocks.screens.AirCompressorScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.items.VEItems;
 import net.minecraft.world.entity.player.Player;
