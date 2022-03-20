@@ -91,7 +91,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final Player player, final int index) { // TODO: Rework for the Tooling Station
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 
@@ -135,7 +135,6 @@ public class ToolingStationContainer extends VoluminousContainer {
                         && !this.slots.get(4).hasItem()
                         && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool slot id is 2
                     // Place the main machine in the main result slot
-                    System.out.println("This.bit: " + ((CombustionMultitool) slotStack.getItem()).getBit());
                     return ItemStack.EMPTY;
                 }
             }
