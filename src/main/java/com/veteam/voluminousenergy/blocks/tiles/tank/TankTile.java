@@ -125,7 +125,7 @@ public class TankTile extends VEFluidTileEntity {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player player) {
         return null;
     }
 
