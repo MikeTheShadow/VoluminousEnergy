@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.ElectrolyzerInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.blocks.screens.ElectrolyzerScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -103,18 +102,5 @@ public class ElectrolyzerContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(ElectrolyzerScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-    public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
     }
 }

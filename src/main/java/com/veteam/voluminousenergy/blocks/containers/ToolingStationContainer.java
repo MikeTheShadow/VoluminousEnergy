@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.ToolingStationScreen;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
@@ -167,25 +166,5 @@ public class ToolingStationContainer extends VoluminousContainer {
 
         }
         return null;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(ToolingStationScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-    public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
     }
 }
