@@ -12,11 +12,13 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.Random;
 
 public class WorldUtil {
 
@@ -77,7 +79,7 @@ public class WorldUtil {
         return climateMap;
     }
 
-    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){ // TODO:
+    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){
         AtomicReference<ArrayList<Pair<Fluid,Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
 
         HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
@@ -92,7 +94,30 @@ public class WorldUtil {
             }
         });
 
+
+        // Add a fluid to the location if no other fluids exist. Can make this if it's only 1 add a pair
+        if(fluidsAtLocation.get().size() == 0) {
+
+            Random random = new Random(randomSeedFromClimate(sampledClimate));
+
+            if(random.nextInt(10) > 4) {
+                fluidsAtLocation.get().add(new Pair<>(Fluids.WATER,2000)); // create the modify thingy later
+            }
+            else  {
+                fluidsAtLocation.get().add(new Pair<>(Fluids.LAVA,2000)); // create the modify thingy later
+            }
+        }
+
         return fluidsAtLocation.get();
+    }
+
+
+    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) { // Generated seed for choosing between water and lava when no fluid present
+        return (int) (10000 * (sampledClimate.get(WorldUtil.ClimateParameters.CONTINENTALNESS) +
+                sampledClimate.get(WorldUtil.ClimateParameters.EROSION) +
+                sampledClimate.get(WorldUtil.ClimateParameters.HUMIDITY) +
+                sampledClimate.get(WorldUtil.ClimateParameters.TEMPERATURE)));
+
     }
 
 }

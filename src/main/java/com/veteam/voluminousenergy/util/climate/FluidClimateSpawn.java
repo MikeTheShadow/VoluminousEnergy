@@ -3,10 +3,8 @@ package com.veteam.voluminousenergy.util.climate;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.material.Fluid;
 import oshi.util.tuples.Pair;
-
 
 import java.util.HashMap;
 
