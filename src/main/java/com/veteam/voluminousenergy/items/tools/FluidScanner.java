@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.items.tools;
 
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -17,11 +19,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static net.minecraft.world.level.material.Fluids.LAVA;
+import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class FluidScanner extends Item {
 
@@ -51,21 +57,13 @@ public class FluidScanner extends Item {
         BlockState blockstate = level.getBlockState(blockpos);
         ChunkAccess chunkAccess = level.getChunk(blockpos);
 
+
         Player player = useOnContext.getPlayer();
 
         if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
 
-        /*
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
-        ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
-        ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
-        Climate.Sampler climateSampler = chunkgenerator.climateSampler();
-        Climate.TargetPoint targetPoint = climateSampler.sample(blockpos.getX(), blockpos.getY(), blockpos.getZ());
-        double continentalness = targetPoint.continentalness();
-        double erosion = Climate.unquantizeCoord(targetPoint.erosion());
-        double humidity = Climate.unquantizeCoord(targetPoint.humidity());
-        double temperature = Climate.unquantizeCoord(targetPoint.temperature());
-
+        /*
         String message = "C: " + continentalness
                 + " E: " + erosion
                 + " H: " + humidity
@@ -75,31 +73,62 @@ public class FluidScanner extends Item {
 
         BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
 
-        HashMap<WorldUtil.ClimateParameters,Double> climateMap = WorldUtil.sampleClimate(level, pos);
+        HashMap<WorldUtil.ClimateParameters, Double> climateMap = WorldUtil.sampleClimate(level, pos);
         StringBuilder climateString = new StringBuilder();
         climateString.append("\nC: " + climateMap.get(WorldUtil.ClimateParameters.CONTINENTALNESS));
         climateString.append("\nE: " + climateMap.get(WorldUtil.ClimateParameters.EROSION));
         climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
+//        chunkFluids = serverLevel.getDataStorage().computeIfAbsent((compoundTag)
+//                -> ChunkFluids.load(serverLevel, compoundTag),
+//                () -> new ChunkFluids(serverLevel),
+//                ChunkFluids.getFileId(serverLevel.dimensionTypeRegistration()));
 
         player.sendMessage(new TextComponent("Scanning..."), player.getUUID());
         //player.sendMessage(new TextComponent(message), player.getUUID());
         player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
 
-        ArrayList<Pair<Fluid,Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
+        ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
         StringBuilder message = new StringBuilder();
-        for (Pair<Fluid,Integer> pair : fluidsList){
+        for (Pair<Fluid, Integer> pair : fluidsList) {
             message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
         }
         player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
 
+        StringBuilder builder = new StringBuilder("______________MAP______________\n");
 
-//        chunkFluids = serverLevel.getDataStorage().computeIfAbsent((compoundTag)
-//                -> ChunkFluids.load(serverLevel, compoundTag),
-//                () -> new ChunkFluids(serverLevel),
-//                ChunkFluids.getFileId(serverLevel.dimensionTypeRegistration()));
-//
+        int mapSize = 16;
+        int middle = mapSize / 2;
+
+        for (int x = 1; x < mapSize; x++) {
+            for (int z = 1; z < mapSize; z++) {
+                pos = new BlockPos(
+                        16 * (chunkAccess.getPos().x - middle + x),
+                        320,
+                        16 * (chunkAccess.getPos().z - middle + z));
+                var items = WorldUtil.queryForFluids(level, pos);
+                if (items.size() > 0) {
+
+                    Fluid fluid = items.get(0).getA();
+                    if(fluid.isSame(VEFluids.CRUDE_OIL_REG.get().getFlowing())) {
+                        builder.append(" C |");
+                    } else if(fluid.isSame(WATER.getFlowing())) {
+                        builder.append(" W |");
+                    } else if(fluid.isSame(LAVA.getFlowing())) {
+                        builder.append(" L |");
+                    } else {
+                        builder.append(" ? |");
+                    }
+                } else {
+                    builder.append(" 0 |");
+                }
+            }
+            builder.append("\n");
+        }
+
+        player.sendMessage(new TextComponent(builder.toString()), player.getUUID());
+
 //        ChunkFluid chunkFluid = chunkFluids.getOrCreateChunkFluid(serverLevel,new ChunkPos(blockpos));
 //
 //        FluidStack fluid = chunkFluid.getFluid();
