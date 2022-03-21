@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,11 +27,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class DimensionalLaserRecipe extends VEFluidRecipe {
+
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING;
 
-    public static final Serializer SERIALIZER = new DimensionalLaserRecipe.Serializer();
+    public static final DimensionalLaserRecipe.Serializer SERIALIZER = new DimensionalLaserRecipe.Serializer();
 
     private final ResourceLocation recipeId;
+
+    private FluidStack result;
 
     private Fluid fluid;
 
@@ -46,23 +48,12 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     private FluidClimateSpawn fluidClimateSpawn;
 
+    public DimensionalLaserRecipe() {
+        recipeId = null;
+    }
+
     public DimensionalLaserRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    @Override
-    public RecipeType<VEFluidRecipe> getType() {
-        return RECIPE_TYPE;
-    }
-
-    @Override
-    public ArrayList<Item> getIngredientList() {
-        return null;
     }
 
     @Override
@@ -76,6 +67,15 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     // use getOutputFluid instead
     public ItemStack getResult() {return new ItemStack(this.fluid.getBucket());}
 
+    @Override
+    public FluidStack getOutputFluid(){
+        return new FluidStack(this.fluid, 1000);
+    }
+
+    @Override
+    public List<Integer> getAmounts() {
+        return List.of(this.minimumAmount, this.maximumAmount);
+    }
 
     public FluidStack getInputFluid(){
         return new FluidStack(this.fluid, 1000);
@@ -95,6 +95,25 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
+    @Deprecated
+    // Use getResult instead
+    public ItemStack getResultItem(){return this.getResult();}
+
+    @Override
+    public ResourceLocation getId(){return recipeId;}
+
+    @Override
+    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+
+    @Override
+    public RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+
+    @Override
+    public ArrayList<Item> getIngredientList() {
+        return null;
+    }
+
+    @Override
     public List<FluidStack> getFluids() {
         return List.of(new FluidStack(this.fluid, 1000));
     }
@@ -110,27 +129,13 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public int getInputAmount() {
-        return 0;
-    }
+    public int getOutputAmount() {return 0;}
 
     @Override
-    public int getOutputAmount() {
-        return 0;
-    }
+    public int getProcessTime() { return 0; }
 
     @Override
-    public FluidStack getOutputFluid() {
-        return new FluidStack(this.fluid, 1000);
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return List.of(this.minimumAmount, this.maximumAmount);
-    }
-
-    @Override
-    public int getProcessTime() {
+    public int getInputAmount(){
         return 0;
     }
 
@@ -140,7 +145,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK);
+        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<DimensionalLaserRecipe> {
@@ -148,18 +153,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
         public DimensionalLaserRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
 
-            /*
-            if(json.has("tag") && !json.has("fluid")){
-                // A tag is used instead of a manually defined fluid
-                throw new JsonSyntaxException("Dimesional Laser Recipe: Usage of tags is not permitted for this recipe type! Offending tag in recipe: " + json.getAsJsonObject("tag").getAsString());
-                //ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(chunkFluidJson,"tag","minecraft:air"),':');
-                //RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, 1000);
-            } else if (json.has("fluid") && !json.has("tag")){
-                // In here, a manually defined fluid is used instead of a tag
-
-            } else {
-                throw new JsonSyntaxException("Bad syntax for the Dimensional Laser recipe, no fluid found in JSON");
-            }*/
             ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json,"fluid","minecraft:air"),':');
             recipe.fluid = ForgeRegistries.FLUIDS.getValue(fluidResourceLocation);
 
@@ -204,7 +197,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
             );
 
             recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
-            recipe.result = new ItemStack(Objects.requireNonNull(Items.BUCKET), 1);
+            recipe.result = new FluidStack(Objects.requireNonNull(recipe.fluid), 1000);
 
             return recipe;
         }
@@ -213,7 +206,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
         @Override
         public DimensionalLaserRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
-            System.out.println("From Network called");
             recipe.fluid = buffer.readFluidStack().getRawFluid();
 
             recipe.minimumAmount = buffer.readInt();
@@ -252,16 +244,14 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
             );
 
             recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
-            recipe.result = new ItemStack(Objects.requireNonNull(Items.BUCKET), 1);
+            recipe.result = new FluidStack(recipe.fluid, 1000);
 
-            System.out.println("Finished serializing Dimensional Lasing recipe");
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, DimensionalLaserRecipe recipe){
             buffer.writeFluidStack(new FluidStack(recipe.fluid, 1000));
-            System.out.println("To network called");
             buffer.writeInt(recipe.minimumAmount);
             buffer.writeInt(recipe.maximumAmount);
 
@@ -276,7 +266,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
             buffer.writeFloat(recipe.temperatureRange.getA());
             buffer.writeFloat(recipe.temperatureRange.getB());
-
         }
     }
 }
