@@ -1,32 +1,27 @@
 package com.veteam.voluminousenergy.items.tools;
 
-import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.raid.Raids;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import oshi.util.tuples.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FluidScanner extends Item {
 
@@ -60,6 +55,7 @@ public class FluidScanner extends Item {
 
         if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
 
+        /*
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
         ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
         ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
@@ -75,8 +71,28 @@ public class FluidScanner extends Item {
                 + " H: " + humidity
                 + " T: " + temperature;
 
+        */
+
+        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
+
+        HashMap<WorldUtil.ClimateParameters,Double> climateMap = WorldUtil.sampleClimate(level, pos);
+        StringBuilder climateString = new StringBuilder();
+        climateString.append("\nC: " + climateMap.get(WorldUtil.ClimateParameters.CONTINENTALNESS));
+        climateString.append("\nE: " + climateMap.get(WorldUtil.ClimateParameters.EROSION));
+        climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
+        climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
+
+
         player.sendMessage(new TextComponent("Scanning..."), player.getUUID());
-        player.sendMessage(new TextComponent(message), player.getUUID());
+        //player.sendMessage(new TextComponent(message), player.getUUID());
+        player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
+
+        ArrayList<Pair<Fluid,Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
+        StringBuilder message = new StringBuilder();
+        for (Pair<Fluid,Integer> pair : fluidsList){
+            message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
+        }
+        player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
 
 
 //        chunkFluids = serverLevel.getDataStorage().computeIfAbsent((compoundTag)
