@@ -12,18 +12,20 @@ import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class WorldUtil {
 
     public static FluidClimateSpawn HOT_CRUDE_OIL_SPAWN = new FluidClimateSpawn(
-            new Pair<Float, Float>(0F, 2F),                 // Continentalness
-            new Pair<Float, Float>(-0.25F, 0.765F),         // Erosion
-            new Pair<Float, Float>(0.05F, 0.415F),          // Humidity
-            new Pair<Float, Float>(0.5F, 2F),               // Temperature
+            new Pair<>(0F, 2F),                 // Continentalness
+            new Pair<>(-0.25F, 0.765F),         // Erosion
+            new Pair<>(0.05F, 0.415F),          // Humidity
+            new Pair<>(0.5F, 2F),               // Temperature
             VEFluids.CRUDE_OIL_REG.get(),
             262_144,
             1_048_576
@@ -86,7 +88,30 @@ public class WorldUtil {
             fluidsAtLocation.add(new Pair<>(HOT_CRUDE_OIL_SPAWN.getFluid(), HOT_CRUDE_OIL_SPAWN.calculateDepositAmount(sampledClimate)));
         }
 
+
+        // Add a fluid to the location if no other fluids exist. Can make this if it's only 1 add a pair
+        if(fluidsAtLocation.size() == 0) {
+
+            Random random = new Random(randomSeedFromClimate(sampledClimate));
+
+            if(random.nextInt(10) > 4) {
+                fluidsAtLocation.add(new Pair<>(Fluids.WATER,2000)); // create the modify thingy later
+            }
+            else  {
+                fluidsAtLocation.add(new Pair<>(Fluids.LAVA,2000)); // create the modify thingy later
+            }
+        }
+
         return fluidsAtLocation;
+    }
+
+
+    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) {
+        return (int) (10000 * (sampledClimate.get(WorldUtil.ClimateParameters.CONTINENTALNESS) +
+                sampledClimate.get(WorldUtil.ClimateParameters.EROSION) +
+                sampledClimate.get(WorldUtil.ClimateParameters.HUMIDITY) +
+                sampledClimate.get(WorldUtil.ClimateParameters.TEMPERATURE)));
+
     }
 
 }
