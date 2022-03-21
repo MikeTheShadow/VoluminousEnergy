@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
@@ -16,10 +16,11 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldUtil {
 
-    public static FluidClimateSpawn HOT_CRUDE_OIL_SPAWN = new FluidClimateSpawn(
+    /*public static FluidClimateSpawn HOT_CRUDE_OIL_SPAWN = new FluidClimateSpawn(
             new Pair<Float, Float>(0F, 2F),                 // Continentalness
             new Pair<Float, Float>(-0.25F, 0.765F),         // Erosion
             new Pair<Float, Float>(0.05F, 0.415F),          // Humidity
@@ -27,7 +28,7 @@ public class WorldUtil {
             VEFluids.CRUDE_OIL_REG.get(),
             262_144,
             1_048_576
-    );
+    );*/
 
     public enum ClimateParameters {
         CONTINENTALNESS,
@@ -77,16 +78,21 @@ public class WorldUtil {
     }
 
     public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){ // TODO:
-        ArrayList<Pair<Fluid,Integer>> fluidsAtLocation = new ArrayList<>();
+        AtomicReference<ArrayList<Pair<Fluid,Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
 
         HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
-        if (sampledClimate.isEmpty()) return fluidsAtLocation; // Return empty as well; Likely client side if this is the case
-        // TODO: Make this dynamic when I add recipe for this
-        if (HOT_CRUDE_OIL_SPAWN.checkValidity(sampledClimate)){
-            fluidsAtLocation.add(new Pair<>(HOT_CRUDE_OIL_SPAWN.getFluid(), HOT_CRUDE_OIL_SPAWN.calculateDepositAmount(sampledClimate)));
-        }
+        if (sampledClimate.isEmpty()) return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
 
-        return fluidsAtLocation;
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
+                FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
+                if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
+                    fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate)));
+                }
+            }
+        });
+
+        return fluidsAtLocation.get();
     }
 
 }
