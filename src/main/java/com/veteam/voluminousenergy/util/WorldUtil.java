@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
@@ -17,19 +17,20 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.Random;
 
 public class WorldUtil {
 
-    public static FluidClimateSpawn HOT_CRUDE_OIL_SPAWN = new FluidClimateSpawn(
-            new Pair<>(0F, 2F),                 // Continentalness
-            new Pair<>(-0.25F, 0.765F),         // Erosion
-            new Pair<>(0.05F, 0.415F),          // Humidity
-            new Pair<>(0.5F, 2F),               // Temperature
+    /*public static FluidClimateSpawn HOT_CRUDE_OIL_SPAWN = new FluidClimateSpawn(
+            new Pair<Float, Float>(0F, 2F),                 // Continentalness
+            new Pair<Float, Float>(-0.25F, 0.765F),         // Erosion
+            new Pair<Float, Float>(0.05F, 0.415F),          // Humidity
+            new Pair<Float, Float>(0.5F, 2F),               // Temperature
             VEFluids.CRUDE_OIL_REG.get(),
             262_144,
             1_048_576
-    );
+    );*/
 
     public enum ClimateParameters {
         CONTINENTALNESS,
@@ -78,35 +79,40 @@ public class WorldUtil {
         return climateMap;
     }
 
-    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){ // TODO:
-        ArrayList<Pair<Fluid,Integer>> fluidsAtLocation = new ArrayList<>();
+    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){
+        AtomicReference<ArrayList<Pair<Fluid,Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
 
         HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
-        if (sampledClimate.isEmpty()) return fluidsAtLocation; // Return empty as well; Likely client side if this is the case
-        // TODO: Make this dynamic when I add recipe for this
-        if (HOT_CRUDE_OIL_SPAWN.checkValidity(sampledClimate)){
-            fluidsAtLocation.add(new Pair<>(HOT_CRUDE_OIL_SPAWN.getFluid(), HOT_CRUDE_OIL_SPAWN.calculateDepositAmount(sampledClimate)));
-        }
+        if (sampledClimate.isEmpty()) return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
+
+        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
+                FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
+                if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
+                    fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate)));
+                }
+            }
+        });
 
 
         // Add a fluid to the location if no other fluids exist. Can make this if it's only 1 add a pair
-        if(fluidsAtLocation.size() == 0) {
+        if(fluidsAtLocation.get().size() == 0) {
 
             Random random = new Random(randomSeedFromClimate(sampledClimate));
 
             if(random.nextInt(10) > 4) {
-                fluidsAtLocation.add(new Pair<>(Fluids.WATER,2000)); // create the modify thingy later
+                fluidsAtLocation.get().add(new Pair<>(Fluids.WATER,2000)); // create the modify thingy later
             }
             else  {
-                fluidsAtLocation.add(new Pair<>(Fluids.LAVA,2000)); // create the modify thingy later
+                fluidsAtLocation.get().add(new Pair<>(Fluids.LAVA,2000)); // create the modify thingy later
             }
         }
 
-        return fluidsAtLocation;
+        return fluidsAtLocation.get();
     }
 
 
-    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) {
+    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) { // Generated seed for choosing between water and lava when no fluid present
         return (int) (10000 * (sampledClimate.get(WorldUtil.ClimateParameters.CONTINENTALNESS) +
                 sampledClimate.get(WorldUtil.ClimateParameters.EROSION) +
                 sampledClimate.get(WorldUtil.ClimateParameters.HUMIDITY) +

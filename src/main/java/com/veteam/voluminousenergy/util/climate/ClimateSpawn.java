@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.util.climate;
 
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.WorldUtil;
-import net.minecraft.world.level.material.Fluids;
 import oshi.util.tuples.Pair;
 
 import java.util.HashMap;
@@ -66,12 +66,15 @@ public class ClimateSpawn {
 
     public boolean checkValidity(double continentalness, double erosion, double humidity, double temperature) {
 
-        double specialValue = continentalness + erosion + humidity + temperature;
+        if (Config.PUNCH_HOLES_IN_CLIMATE_SPAWNS.get()){
+            double cumulativeClimateValue = continentalness + erosion + humidity + temperature;
 
-        Random random = new Random((int) (specialValue * 10000));
+            Random random = new Random((int) (cumulativeClimateValue * Config.CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER.get()));
 
-        //Add a 20% randomness on top of it using the values as a seed to produce non-random random numbers
-        if (random.nextInt(100) > 4) return false;
+            //Add a 20% randomness on top of it using the values as a seed to produce non-random random numbers
+            if (random.nextInt(Config.CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING.get()) > Config.CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER.get())
+                return false;
+        }
 
         return this.isWithinContinentalnessRange(continentalness)
                 && this.isWithinErosionRange(erosion)
