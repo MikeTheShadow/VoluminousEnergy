@@ -79,7 +79,7 @@ public class WorldUtil {
         return climateMap;
     }
 
-    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){ // TODO:
+    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){
         AtomicReference<ArrayList<Pair<Fluid,Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
 
         HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
@@ -112,7 +112,7 @@ public class WorldUtil {
     }
 
 
-    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) {
+    public static int randomSeedFromClimate(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate) { // Generated seed for choosing between water and lava when no fluid present
         return (int) (10000 * (sampledClimate.get(WorldUtil.ClimateParameters.CONTINENTALNESS) +
                 sampledClimate.get(WorldUtil.ClimateParameters.EROSION) +
                 sampledClimate.get(WorldUtil.ClimateParameters.HUMIDITY) +
