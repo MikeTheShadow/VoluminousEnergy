@@ -10,7 +10,7 @@
     "description": {
       "translate": "advancements.machine.activate_dimensional_laser.description"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
