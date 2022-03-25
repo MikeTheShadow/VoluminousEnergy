@@ -4,12 +4,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.ToolingStationScreen;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +31,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.TOOLING_STATION
 
 public class ToolingStationContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 6;
+    public static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(TOOLING_STATION_CONTAINER, id);
@@ -91,7 +90,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final Player player, final int index) { // TODO: Rework for the Tooling Station
+    public ItemStack quickMoveStack(final Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 
@@ -135,7 +134,6 @@ public class ToolingStationContainer extends VoluminousContainer {
                         && !this.slots.get(4).hasItem()
                         && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool slot id is 2
                     // Place the main machine in the main result slot
-                    System.out.println("This.bit: " + ((CombustionMultitool) slotStack.getItem()).getBit());
                     return ItemStack.EMPTY;
                 }
             }
@@ -155,7 +153,7 @@ public class ToolingStationContainer extends VoluminousContainer {
                     // Handle bucket with fluid
                     Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                    if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
                         return ItemStack.EMPTY;
                     }
                 } catch (Exception e){
@@ -168,25 +166,5 @@ public class ToolingStationContainer extends VoluminousContainer {
 
         }
         return null;
-    }
-
-    // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(ToolingStationScreen screen){
-        this.screen = screen;
-    }
-
-    public void updateDirectionButton(int direction, int slotId){ this.screen.updateButtonDirection(direction,slotId); }
-
-    @Override
-    public void updateStatusButton(boolean status, int slotId){
-        this.screen.updateBooleanButton(status, slotId);
-    }
-
-    public void updateStatusTank(boolean status, int id){
-        this.screen.updateTankStatus(status, id);
-    }
-
-    public void updateDirectionTank(int direction, int id){
-        this.screen.updateTankDirection(direction, id);
     }
 }

@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.SawmillContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -13,8 +12,6 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,9 +20,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -78,6 +72,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
 
     public SawmillTile(BlockPos pos, BlockState state) {
         super(VEBlocks.SAWMILL_TILE, pos, state);
+        outputTank.setAllowAny(true);
     }
 
     @Override
@@ -102,7 +97,8 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
             ItemStack plankOutputStack;
             ItemStack secondOutputStack;
 
-            if (sawmillingRecipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){ // Recipe is null, use alternative method if allowed
+            if ((sawmillingRecipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())
+                    || (sawmillingRecipe != null && sawmillingRecipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())){ // Recipe is null, use alternative method if allowed, or dummy recipe
                 plankOutputStack = RecipeUtil.getPlankFromLogParallel(level, logInput.copy()); //RecipeUtil.getPlankFromLogParallel(level, logInput.copy());
                 secondOutputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get())), Config.SAWMILL_SECOND_OUTPUT_COUNT.get());
 
@@ -132,7 +128,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                     counter = 0;
                 }
 
-            } else { // Using Recipe
+            } else if (sawmillingRecipe != null && !sawmillingRecipe.isLogRecipe()){ // Using Recipe
                 plankOutputStack = sawmillingRecipe.result.copy();
                 secondOutputStack = sawmillingRecipe.secondResult.copy();
                 FluidStack outputFluid = sawmillingRecipe.getOutputFluid().copy();
@@ -210,9 +206,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                                 : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(5).copy());// Use default values when null
                 length = counter;
             }
-        } else {
-            counter = 0;
-        }
+        } else decrementSuperCounterOnNoPower();
     }
 
     private ItemStackHandler createHandler() {
@@ -225,13 +219,24 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if(slot == 0){ // Log inputted into the input slot
-                    ItemStack altPlankStack = RecipeUtil.getPlankFromLogParallel(level, stack.copy());
-                    return (altPlankStack != null);
+                    SawmillingRecipe recipe = RecipeUtil.getSawmillingRecipeFromLog(level, stack);
+                    if (recipe != null) return true;
+                    if (Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){
+                        ItemStack altPlankStack = RecipeUtil.getPlankFromLogParallel(level, stack.copy());
+                        if (altPlankStack != null) return true;
+                    }
+                    return false;
                 } else if (slot == 1){
-                    ArrayList<ItemStack> plankList = RecipeUtil.getLogFromPlankParallel(level, stack.copy());
-                    return plankList != null && !plankList.isEmpty();
+                    SawmillingRecipe recipe = RecipeUtil.getSawmillingRecipeFromPlank(level, stack);
+                    if (recipe != null) return true;
+                    if (Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){
+                        ArrayList<ItemStack> plankList = RecipeUtil.getLogFromPlankParallel(level, stack.copy());
+                        return plankList != null && !plankList.isEmpty();
+                    }
+                    return false;
                 } else if (slot == 2){
-                    return true; // TODO: better than this
+                    SawmillingRecipe recipe = RecipeUtil.getSawmillingRecipeFromSecondOutput(level, stack.copy());
+                    return recipe != null;
                 } else if (slot == 3 || slot == 4) {
                     return stack.getItem() instanceof BucketItem;
                 } else if (slot == 5){
@@ -273,6 +278,18 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     @Override

@@ -8,16 +8,17 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 
 public class VERecipe  implements Recipe<Container> {
 
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
 
 
     public Ingredient getIngredient() {
-        return ingredient;
+        return ingredient.get();
     }
 
     public int getIngredientCount() {
@@ -30,7 +31,7 @@ public class VERecipe  implements Recipe<Container> {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
     @Override
     public ItemStack assemble(Container inv){

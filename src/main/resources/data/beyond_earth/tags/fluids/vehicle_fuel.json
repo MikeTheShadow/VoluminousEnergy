@@ -11,6 +11,7 @@
     "voluminousenergy:light_fuel",
     "voluminousenergy:gasoline",
     "voluminousenergy:diesel",
-    "voluminousenergy:nitroglycerin"
+    "voluminousenergy:nitroglycerin",
+    "voluminousenergy:treethanol"
   ]
 }

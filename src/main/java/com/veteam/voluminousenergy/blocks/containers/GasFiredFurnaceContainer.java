@@ -3,19 +3,13 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
-import com.veteam.voluminousenergy.blocks.tiles.IVECountable;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -25,7 +19,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.GAS_FIRED_FURNA
 
 public class GasFiredFurnaceContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 5;
+    private static final int NUMBER_OF_SLOTS = 5;
 
     public GasFiredFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(GAS_FIRED_FURNACE_CONTAINER,id);
@@ -67,7 +61,7 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 4, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 4, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

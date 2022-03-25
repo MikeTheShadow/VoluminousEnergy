@@ -62,7 +62,8 @@ public class VERender {
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;
-        RenderSystem.setShaderFogColor(r, g, b); // TODO: Unsure
+        float a = ((color >> 24) & 0xFF) / 255f;
+        RenderSystem.setShaderColor(r, g, b, a);
 
         RenderSystem.enableBlend();
         for (int i = 0; i < width; i += 16) {
@@ -89,7 +90,7 @@ public class VERender {
             }
         }
         RenderSystem.disableBlend();
-        RenderSystem.setShaderFogColor(1, 1, 1); // TODO: Unsure
+        RenderSystem.setShaderColor(1f, 1f, 1f,  1f);
     }
 
     @Nullable

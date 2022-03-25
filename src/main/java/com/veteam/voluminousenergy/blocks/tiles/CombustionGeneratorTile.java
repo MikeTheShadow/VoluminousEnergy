@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -75,12 +74,12 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
-        oxidizerTank.setValidFluids(CombustionGeneratorOxidizerRecipe.rawFluidInputList);
-        fuelTank.setValidFluids(CombustionGeneratorFuelRecipe.rawFluidInputListStatic);
     }
 
     @Override
     public void tick() {
+        if (!oxidizerTank.isValidFluidsSet()) oxidizerTank.setValidFluids(RecipeUtil.getOxidizerFluids(level));
+        if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
 
         updateClients();
 
@@ -99,7 +98,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
                     || oxidizerOutput.copy().getItem() == Items.BUCKET)) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
-                if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(fluid) && (
+                if (oxidizerTank.isFluidValid(fluid) && (
                         oxidizerTank.getTank().isEmpty()
                                 || oxidizerTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
                                 && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {
@@ -129,7 +128,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
         if (fuelInput.copy() != ItemStack.EMPTY && checkOutputSlotForEmptyOrBucket(fuelOutput.copy())) {
             if (fuelInput.copy().getItem() instanceof BucketItem && fuelInput.getCount() == 1) {
                 Fluid fluid = ((BucketItem) fuelInput.copy().getItem()).getFluid();
-                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(fluid) && (
+                if (fuelTank.isFluidValid(fluid) && (
                         fuelTank.getTank().isEmpty()
                                 || fuelTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
                                 && fuelTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {

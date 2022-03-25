@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -16,43 +17,62 @@ import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
+import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.persistence.ChunkFluid;
+import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
 import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.VEFeatureGeneration;
+import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
+import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -72,6 +92,7 @@ public class VoluminousEnergy {
     public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
+    public static boolean JEI_LOADED = false;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -90,12 +111,14 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
-
+        modEventBus.addListener(this::registerRenderers);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
         // Config Files to load
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
+
+        JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -104,7 +127,13 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
+        builtinRegisterConfiguredFeatures();
+        builtinRegisterPlacedFeatures();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
@@ -211,6 +240,8 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new RawBoneBlock());
 
             blockRegisteryEvent.getRegistry().register(new PressureLadder());
+
+            blockRegisteryEvent.getRegistry().register(new DimensionalLaserBlock());
         }
 
         @SubscribeEvent
@@ -451,6 +482,9 @@ public class VoluminousEnergy {
 
             // Register Multitools
             multitoolItemRegistry(itemRegisteryEvent);
+
+            // Register custom models //TODO move elsewhere
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.DIMENSIONAL_LASER_BLOCK,properties).setRegistryName("dimensional_laser"));
         }
 
         public static void multitoolItemRegistry(final RegistryEvent.Register<Item> itemRegisteryEvent){
@@ -535,6 +569,10 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_CHAIN_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_SCOOPER_BIT);
             itemRegisteryEvent.getRegistry().register(VEMultitools.SOLARIUM_TRIMMER_BIT);
+
+            // Scanner
+            itemRegisteryEvent.getRegistry().register(VEItems.FLUID_SCANNER);
+            itemRegisteryEvent.getRegistry().register(VEItems.RFID_CHIP);
         }
 
         @SubscribeEvent
@@ -570,6 +608,9 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK).build(null).setRegistryName("nighalite_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK).build(null).setRegistryName("eighzo_tank"));
             event.getRegistry().register(BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK).build(null).setRegistryName("solarium_tank"));
+
+            // custom block stuff
+            event.getRegistry().register(BlockEntityType.Builder.of(DimensionalLaserTile::new,VEBlocks.DIMENSIONAL_LASER_BLOCK).build(null).setRegistryName("dimensional_laser"));
         }
 
         @SubscribeEvent
@@ -722,6 +763,19 @@ public class VoluminousEnergy {
             //VEBiomes.prepareRegistration(event, new ShallowWarmOcean(), BiomeManager.BiomeType.WARM, 5, BiomeDictionary.Type.HOT, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.WATER, BiomeDictionary.Type.WET);
         }
 
+        @SubscribeEvent
+        public static void onRegisterSound(RegistryEvent.Register<SoundEvent> event) {
+            event.getRegistry().register(VESounds.ENERGY_BEAM_ACTIVATE.setRegistryName("energy_beam_activate"));
+            event.getRegistry().register(VESounds.ENERGY_BEAM_FIRED.setRegistryName("energy_beam_fired"));
+            event.getRegistry().register(VESounds.AIR_COMPRESSOR.setRegistryName("air_compressor_active"));
+            event.getRegistry().register(VESounds.AQUEOULIZER.setRegistryName("aqueoulizer_active"));
+            event.getRegistry().register(VESounds.COMPRESSOR.setRegistryName("compressor_active"));
+            event.getRegistry().register(VESounds.CRUSHER.setRegistryName("crusher_active"));
+            event.getRegistry().register(VESounds.FURNACE.setRegistryName("furnace_active"));
+            event.getRegistry().register(VESounds.GENERAL_MACHINE_NOISE.setRegistryName("general_machine_noise"));
+            event.getRegistry().register(VESounds.IMPLOSION_COMPRESSOR.setRegistryName("implosion_compressor_active"));
+        }
+
         /*@SubscribeEvent
         public static void onRegisterSurfaceBuilder(RegistryEvent.Register<SurfaceBuilder<?>> event){
             VESurfaceBuilders.init();
@@ -734,6 +788,83 @@ public class VoluminousEnergy {
             event.getRegistry().register(new AnimalFatLootModifier.Serializer().setRegistryName("animal_fat_from_cow"));
             event.getRegistry().register(new AnimalFatLootModifier.Serializer().setRegistryName("animal_fat_from_pig"));
         }
+
+
+        @SubscribeEvent
+        public static void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) { // REGISTER STRAIGHT UP FEATURES HERE
+            // Straight up Features
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_FEATURE.setRegistryName("ve_bsc_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_SURFACE_FEATURE.setRegistryName("ve_bsc_surface_lake_feature"));
+            event.getRegistry().register(VEFeatures.VE_BSC_LAKE_UNDERGROUND_FEATURE.setRegistryName("ve_bsc_underground_lakes_feature"));
+            event.getRegistry().register(VEFeatures.VE_GEYSER_FEATURE.setRegistryName("ve_geyser_feature"));
+            event.getRegistry().register(VEFeatures.VE_RICE_FEATURE.setRegistryName("ve_rice_feature"));
+            event.getRegistry().register(VEFeatures.VE_ORE_DEPOSIT_FEATURE.setRegistryName("ve_ore_deposit_feature"));
+        }
+    }
+
+    public static void builtinRegisterConfiguredFeatures(){
+        // Ore Blobs
+        builtinConfiguredFeaturesRegistry(VEOres.EIGHZO_ORE_BLOB, "eighzo_ore_blob");
+        builtinConfiguredFeaturesRegistry(VEOres.SALTPETER_ORE_BLOB, "saltpeter_ore_blob");
+        builtinConfiguredFeaturesRegistry(VEOres.BAUXITE_ORE_BLOB, "bauxite_ore_blob");
+        builtinConfiguredFeaturesRegistry(VEOres.CINNABAR_ORE_BLOB, "cinnabar_ore_blob");
+        builtinConfiguredFeaturesRegistry(VEOres.RUTILE_ORE_BLOB, "rutile_ore_blob");
+        builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
+
+        // Oil
+        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
+        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
+
+        // Rice
+        builtinConfiguredFeaturesRegistry(VEFeatures.RICE_FEATURE_CONFIG, "rice_crop");
+
+        // Ore Deposits
+        builtinConfiguredFeaturesRegistry(VEFeatures.COPPER_ORE_DEPOSIT_CONFIG, "copper_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.IRON_ORE_DEPOSIT_CONFIG, "iron_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.GOLD_ORE_DEPOSIT_CONFIG, "gold_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_CONFIG, "bauxite_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_CONFIG, "cinnabar_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.GALENA_ORE_DEPOSIT_CONFIG, "galena_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_CONFIG, "rutile_ore_deposit");
+        builtinConfiguredFeaturesRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_CONFIG, "eighzo_ore_deposit");
+    }
+
+    public static void builtinRegisterPlacedFeatures(){
+        // Ore Blobs
+        builtinFeaturePlacementRegistry(VEOres.EIGHZO_ORE_BLOB_PLACEMENT, "eighzo_ore_blob");
+        builtinFeaturePlacementRegistry(VEOres.SALTPETER_ORE_BLOB_PLACEMENT, "saltpeter_ore_blob");
+        builtinFeaturePlacementRegistry(VEOres.BAUXITE_ORE_BLOB_PLACEMENT, "bauxite_ore_blob");
+        builtinFeaturePlacementRegistry(VEOres.CINNABAR_ORE_BLOB_PLACEMENT, "cinnabar_ore_blob");
+        builtinFeaturePlacementRegistry(VEOres.RUTILE_ORE_BLOB_PLACEMENT, "rutile_ore_blob");
+        builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
+
+        // Oil
+        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
+        builtinFeaturePlacementRegistry(VEFeatures.UNDERGROUND_OIL_LAKE_PLACEMENT, "underground_oil_lake");
+        builtinFeaturePlacementRegistry(VEFeatures.OIL_GEYSER_PLACEMENT, "oil_geyser");
+
+        // Rice
+        builtinFeaturePlacementRegistry(VEFeatures.RICE_FEATURE_PLACEMENT, "rice_crop");
+
+        // Ore Deposits
+        builtinFeaturePlacementRegistry(VEFeatures.COPPER_ORE_DEPOSIT_PLACEMENT, "copper_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.IRON_ORE_DEPOSIT_PLACEMENT, "iron_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.GOLD_ORE_DEPOSIT_PLACEMENT, "gold_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_PLACEMENT, "bauxite_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_PLACEMENT, "cinnabar_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.GALENA_ORE_DEPOSIT_PLACEMENT, "galena_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_PLACEMENT, "rutile_ore_deposit");
+        builtinFeaturePlacementRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_PLACEMENT, "eighzo_ore_deposit");
+    }
+
+    public static void builtinConfiguredFeaturesRegistry(ConfiguredFeature<?,?> configuredFeature, String setRegistryName){
+        Registry<ConfiguredFeature<?,?>> registry = BuiltinRegistries.CONFIGURED_FEATURE;
+        Registry.register(registry, new ResourceLocation(VoluminousEnergy.MODID, setRegistryName), configuredFeature);
+    }
+
+    public static void builtinFeaturePlacementRegistry(PlacedFeature placedFeature, String setRegistryName){
+        Registry<PlacedFeature> registry = BuiltinRegistries.PLACED_FEATURE;
+        Registry.register(registry, new ResourceLocation(VoluminousEnergy.MODID, setRegistryName), placedFeature);
     }
 
     @Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)

@@ -24,8 +24,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.CRUSHER_CONTAIN
 
 public class CrusherContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 4;
+    public static final int NUMBER_OF_SLOTS = 4;
 
     public CrusherContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(CRUSHER_CONTAINER,id);
@@ -92,7 +91,7 @@ public class CrusherContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 3, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 3, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);

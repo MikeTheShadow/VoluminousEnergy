@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
@@ -57,6 +58,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     int counter = 0;
     int length = 0;
+    int sound_tick = 0;
 
     /**
      * Must include a call to updateClients();
@@ -65,8 +67,10 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public abstract void tick();
 
     /**
-     * TODO figure out if this is actually useful or not. I imagine this is what allows the tile to update so perfectly.
-     * TODO if this is true then move updateClients() to a potential base tick method or something if necessary.
+     * Call this method whenever something in the tile entity has been updated.
+     * If the server and client are seeing something different this is why
+     * Note calling this only updates the clients and doesn't save anything to file
+     * if you wish to save to file call setChanged();
      */
     public void updateClients() {
         if (level == null) return;
@@ -171,10 +175,11 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     /**
      * Saves inventory, energy, slot managers, counter, and length.
+     * To save the tile call setChanged();
      * @param tag CompoundTag
      */
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         ItemStackHandler handler = getInventoryHandler();
         if(handler != null) {
             CompoundTag compound = ((INBTSerializable<CompoundTag>)handler).serializeNBT();
@@ -191,7 +196,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             tag.putInt("counter", counter);
             tag.putInt("length", length);
         }
-
+        super.saveAdditional(tag);
     }
 
     /**
@@ -352,7 +357,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     /**
      * We do a null check on inventory so this can be null. Might change though
      * REMEMBER YOU NEED TO BUILD YOUR OWN INVENTORY HANDLER
-     * USE EITHER A NEWLY CREATED ONE ONE OF THE createHandler's defined here
+     * USE EITHER A NEWLY CREATED ONE OR ONE OF THE createHandler's defined here
      * @see #createHandler(int)
      * @see #createHandler(int, IVEPoweredTileEntity)
      * @return a ItemStackHandler or null if the object lacks an inventory
@@ -400,6 +405,15 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
 
     public LazyOptional<VEEnergyStorage> getEnergy() {
         return energy;
+    }
+
+    public int decrementCounterOnNoPower(int localCounter){
+        return localCounter < this.length ? localCounter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
+    }
+
+    public void decrementSuperCounterOnNoPower(){
+        this.counter = this.counter < this.length ? this.counter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
+        this.setChanged();
     }
 
 }

@@ -23,7 +23,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Supplier;
-
+/*
 public class VENoiseChunkGenerator extends NoiseBasedChunkGenerator {
     protected Aquifer.FluidPicker globalFluidPicker;
     protected SurfaceSystem surfaceSystem;
@@ -93,3 +93,4 @@ public class VENoiseChunkGenerator extends NoiseBasedChunkGenerator {
 
 
 }
+*/

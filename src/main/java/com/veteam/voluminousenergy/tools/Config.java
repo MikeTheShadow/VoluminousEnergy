@@ -38,6 +38,7 @@ public class Config {
     public static final String CATEGORY_TOOLING_STATION = "Tooling Station";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
+    public static final String SUBCATEGORY_CLIMATE_SPAWNS = "Climate Spawns";
     public static final String SUBCATEGORY_OIL_GENERATION = "Oil Generation";
     public static final String SUBCATEGORY_RICE_GENERATION = "Rice Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
@@ -69,6 +70,12 @@ public class Config {
     public static ForgeConfigSpec.IntValue RICE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_CHANCE;
+
+    // Climate Spawn Settings
+    public static ForgeConfigSpec.BooleanValue PUNCH_HOLES_IN_CLIMATE_SPAWNS;
+    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING;
+    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER;
 
     // Food Settings
     public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
@@ -190,6 +197,7 @@ public class Config {
     public static ForgeConfigSpec.DoubleValue ACID_DAMAGE;
     public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
     public static ForgeConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
+    public static ForgeConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
 
     // Primitive Stirling Generator Variables
     public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
@@ -443,6 +451,8 @@ public class Config {
                 .defineInRange("Acid Fire Duration", 4, 0, Integer.MAX_VALUE);
         SOLARIUM_PROTECTIVE_SHEATH_HITS = COMMON_BUILDER.comment("How many uses a Solarium tool can have before the protective sheath is depleted")
                 .defineInRange("Solarium Protective Sheath", 2560, 0, Integer.MAX_VALUE);
+        DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
+                .defineInRange("Decrement Speed On No Power", 5, 1, 20);
     }
 
     private static void setupFoodSettings(){
@@ -455,8 +465,8 @@ public class Config {
     }
 
     private static void setupWorldGen(){
-        GENERATE_VE_BIOMES = COMMON_BUILDER.comment("Enable/Disable Voluminous Energy biomes")
-                .define("Enable VE Biomes", true);
+        //GENERATE_VE_BIOMES = COMMON_BUILDER.comment("Enable/Disable Voluminous Energy biomes")
+        //      .define("Enable VE Biomes", true);
 
         ENABLE_VE_FEATURE_GEN = COMMON_BUILDER.comment("Enable/Disable all Voluminous Energy changes to feature generation")
                 .define("World Generation", true);
@@ -471,7 +481,7 @@ public class Config {
                 SURFACE_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Surface Oil Lake Chance (Lower = Higher chance)")
                         .defineInRange("Surface Oil Lake Chance", 144, 10, Integer.MAX_VALUE);
                 UNDERGROUND_OIL_LAKE_CHANCE = COMMON_BUILDER.comment("Underground Oil Lake Chance (Lower = Higher chance)")
-                        .defineInRange("Underground Oil Lake Chance", 16, 10, Integer.MAX_VALUE);
+                        .defineInRange("Underground Oil Lake Chance", 5, 1, Integer.MAX_VALUE);
                 GENERATE_OIL_GEYSER = COMMON_BUILDER.comment("Enable/Disable Oil Geysers")
                         .define("Oil Geysers", true);
                 OIL_GEYSER_CHANCE = COMMON_BUILDER.comment("Oil Geyser Chance (Lower = Higher chance)")
@@ -492,6 +502,17 @@ public class Config {
             COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop(); // End of Feature Generation
+
+        COMMON_BUILDER.comment("Climate Spawns").push(SUBCATEGORY_CLIMATE_SPAWNS);
+            PUNCH_HOLES_IN_CLIMATE_SPAWNS = COMMON_BUILDER.comment("To prevent continuous valid chunks, 'punch holes' by removing spawns from valid chunks (Ex: Reduce non-water or lava appearances for the Dimensional Laser)")
+                .define("Punch Holes in Climate Spawns", true);
+            CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER = COMMON_BUILDER.comment("Multiply cumulative climate value by this multiplier ")
+                    .defineInRange("Climate Spawns Hole Punch Multiplier", 10_000, 1, Integer.MAX_VALUE);
+            CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING = COMMON_BUILDER.comment("Value to be used for binding the RNG ")
+                .defineInRange("Climate Spawns Hole Punch Bounding", 100, 10, 10_000);
+            CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER = COMMON_BUILDER.comment("If generated number is smaller than this value, the chunk will be 'hole punched'.")
+                .defineInRange("Climate Spawns Hole Punch Number Must Be Larger Than", 4, 1, 10_000);
+        COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
             //Saltpeter

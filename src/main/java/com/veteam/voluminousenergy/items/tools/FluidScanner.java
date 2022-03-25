@@ -1,0 +1,199 @@
+package com.veteam.voluminousenergy.items.tools;
+
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.persistence.ChunkFluid;
+import com.veteam.voluminousenergy.persistence.ChunkFluids;
+import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
+import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.ToolUtil;
+import com.veteam.voluminousenergy.util.WorldUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+public class FluidScanner extends Item {
+
+    public FluidScanner() {
+        super(new Item.Properties()
+                .stacksTo(1)
+                .tab(VESetup.itemGroup)
+                .rarity(Rarity.UNCOMMON)
+        );
+        setRegistryName("fluid_scanner");
+    }
+
+    public int getUseDuration(ItemStack p_40680_) {
+        return 72000;
+    }
+
+    public @NotNull UseAnim getUseAnimation(ItemStack p_40678_) {
+        return UseAnim.CROSSBOW;
+    }
+
+    public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
+
+        Level level = useOnContext.getLevel();
+        BlockPos blockpos = useOnContext.getClickedPos();
+        BlockState blockstate = level.getBlockState(blockpos);
+        ChunkAccess chunkAccess = level.getChunk(blockpos);
+
+
+        Player player = useOnContext.getPlayer();
+
+        if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
+
+        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
+
+        BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
+
+        HashMap<WorldUtil.ClimateParameters, Double> climateMap = WorldUtil.sampleClimate(level, pos);
+        StringBuilder climateString = new StringBuilder();
+        climateString.append("\nC: " + climateMap.get(WorldUtil.ClimateParameters.CONTINENTALNESS));
+        climateString.append("\nE: " + climateMap.get(WorldUtil.ClimateParameters.EROSION));
+        climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
+        climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
+
+        player.sendMessage(new TextComponent("Scanning..."), player.getUUID());
+        player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
+
+        ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
+        StringBuilder message = new StringBuilder();
+
+        Fluid fluid = Fluids.EMPTY;
+
+        for (Pair<Fluid, Integer> pair : fluidsList) {
+            fluid = pair.getA();
+            message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
+        }
+        player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
+
+        VoluminousEnergy.LOGGER.info("pre name: " + fluid.getRegistryName());
+
+        ChunkFluids chunkFluids = ChunkFluids.getInstance();
+
+        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(serverLevel,
+                chunkAccess.getPos(),
+                fluidsList
+        ));
+
+        if(!chunkFluids.hasChunkFluid(chunkFluid)) {
+            VoluminousEnergy.LOGGER.info("Writing new chunk!");
+            chunkFluids.setDirty();
+            chunkFluids.add(chunkFluid);
+            serverLevel.getDataStorage().set("chunk_fluids",chunkFluids);
+        } else {
+            VoluminousEnergy.LOGGER.info("Chunk has already been written!");
+        }
+
+        ItemStack hand = useOnContext.getItemInHand();
+
+        CompoundTag tag = hand.getOrCreateTag();
+
+        if(tag.contains("ve_x")) {
+            tag.remove("ve_x");
+            tag.remove("ve_z");
+        }
+        tag.putInt("ve_x",chunkAccess.getPos().x);
+        tag.putInt("ve_z",chunkAccess.getPos().z);
+
+        hand.setTag(tag);
+
+//        StringBuilder builder = new StringBuilder("______________MAP______________\n");
+//
+//        int mapSize = 16;
+//        int middle = mapSize / 2;
+//
+//        for (int x = 1; x < mapSize; x++) {
+//            for (int z = 1; z < mapSize; z++) {
+//                pos = new BlockPos(
+//                        16 * (chunkAccess.getPos().x - middle + x),
+//                        320,
+//                        16 * (chunkAccess.getPos().z - middle + z));
+//                var items = WorldUtil.queryForFluids(level, pos);
+//                if (items.size() > 0) {
+//
+//                    Fluid fluid = items.get(0).getA();
+//                    if(fluid.isSame(VEFluids.CRUDE_OIL_REG.get().getFlowing())) {
+//                        builder.append(" C |");
+//                    } else if(fluid.isSame(WATER.getFlowing())) {
+//                        builder.append(" W |");
+//                    } else if(fluid.isSame(LAVA.getFlowing())) {
+//                        builder.append(" L |");
+//                    } else {
+//                        builder.append(" ? |");
+//                    }
+//                } else {
+//                    builder.append(" 0 |");
+//                }
+//            }
+//            builder.append("\n");
+//        }
+//
+//        player.sendMessage(new TextComponent(builder.toString()), player.getUUID());
+
+//        ChunkFluid chunkFluid = chunkFluids.getOrCreateChunkFluid(serverLevel,new ChunkPos(blockpos));
+//
+//        FluidStack fluid = chunkFluid.getFluid();
+
+        return InteractionResult.sidedSuccess(false);
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
+        CompoundTag tag = itemStack.getOrCreateTag();
+
+        if(tag.contains("ve_x")) {
+
+            int x = tag.getInt("ve_x");
+            int z = tag.getInt("ve_z");
+
+            ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
+            if(fluid == null) {
+                throw new RuntimeException("ChunkFluid is somehow null in appendHoverText!");
+            }
+            fluid.getFluids().forEach(f -> {
+                Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
+                String translatedString = translatedComponent.getString();
+                Component textComponent = new TextComponent(translatedString + ": " + f.getAmount());
+                componentList.add(textComponent);
+            });
+        }
+
+        super.appendHoverText(itemStack, level, componentList, tooltipFlag);
+    }
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
+        return true;
+    }
+}

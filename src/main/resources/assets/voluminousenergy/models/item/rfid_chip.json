@@ -1,0 +1,27 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "voluminousenergy:item/rfid_chip",
+		"particle": "voluminousenergy:item/rfid_chip"
+	},
+	"elements": [
+		{
+			"from": [3, 2, -1],
+			"to": [11, 16, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 7], "texture": "#0"},
+				"east": {"uv": [0, 7, 0.5, 14], "texture": "#0"},
+				"south": {"uv": [4, 0, 8, 7], "texture": "#0"},
+				"west": {"uv": [0.5, 7, 1, 14], "texture": "#0"},
+				"up": {"uv": [5, 7.5, 1, 7], "texture": "#0"},
+				"down": {"uv": [9, 7, 5, 7.5], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [2, 2, 8]
+		}
+	}
+}

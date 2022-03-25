@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "hexerei"
+    }
+  ],
+  "type": "voluminousenergy:fuel_combustion",
+  "ingredient": {
+    "item": "hexerei:tallow_bucket",
+    "volumetric_energy": 12800
+  },
+  "input_fluid": {
+    "fluid": "hexerei:tallow_fluid"
+  }
+}

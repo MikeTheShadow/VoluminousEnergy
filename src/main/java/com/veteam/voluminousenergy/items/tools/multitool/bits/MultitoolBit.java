@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.items.tools.multitool.bits;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -19,13 +19,13 @@ import java.util.UUID;
 public class MultitoolBit {
     private Set<ToolAction> action;
     private Tier tier;
-    private Tag.Named<Block> mineableBlocks;
+    private TagKey<Block> mineableBlocks;
     private float destroySpeed;
     private float attackDamage;
     private float attackSpeed;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    public MultitoolBit(Set<ToolAction> action, Tier bitTier, Tag.Named<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed){
+    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed){
         this.action = action;
         this.tier = bitTier;
         this.mineableBlocks = mineableBlockTag;
@@ -48,7 +48,7 @@ public class MultitoolBit {
     }*/
 
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
-        return this.mineableBlocks.contains(blockState.getBlock()) ? this.destroySpeed : 1.0F;
+        return blockState.is(this.mineableBlocks) ? this.destroySpeed : 1.0F;
     }
 
     public float getAttackDamage(){

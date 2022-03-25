@@ -95,8 +95,12 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                         this.counter = 0;
                     }
                 }
-            } else { // This is if we reach the maximum in the slots
-                this.counter = 0;
+            } else { // This is if we reach the maximum in the slots; or no power
+                if (!canConsumeEnergy()){ // if no power
+                    decrementSuperCounterOnNoPower();
+                } else { // zero in other cases
+                    counter = 0;
+                }
             }
         } else { // This is if the input slot is empty
             this.counter = 0;
@@ -118,7 +122,7 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                 CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
+                    return recipe.ingredient.get().test(stack);
                 } else if (slot == 1 && recipe1 != null){
                     return stack.getItem() == recipe1.result.getItem();
                 } else if (slot == 2){
@@ -136,7 +140,7 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                 CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getItems()){
+                    for (ItemStack testStack : recipe.ingredient.get().getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -174,6 +178,18 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     @Override

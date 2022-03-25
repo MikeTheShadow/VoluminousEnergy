@@ -2,7 +2,9 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -42,15 +44,15 @@ public class CombustionMultitool extends Multitool {
             tooltip.add(
                     new TranslatableComponent(fluidStack.getTranslationKey())
                             .append(": "
-                                    + fluidStack.getAmount()
+                                    + NumberUtil.formatNumber(fluidStack.getAmount())
                                     + " mB / "
-                                    + this.TANK_CAPACITY
+                                    + NumberUtil.formatNumber(this.TANK_CAPACITY)
                                     + " mB"
                             )
             );
-            if (itemStack.getTag() != null){ // TODO: Make translatable
-                tooltip.add(
-                        new TranslatableComponent("").append("Energy: " + itemStack.getTag().getInt("energy"))
+            if (itemStack.getTag() != null){
+                tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+                        .append(": " + NumberUtil.formatNumber(itemStack.getTag().getInt("energy")))
                 );
             }
         });
@@ -96,16 +98,18 @@ public class CombustionMultitool extends Multitool {
     @Override
     public void setDamage(ItemStack stack, int damage){ // I don't think this fires
         CompoundTag tag = stack.getTag();
+
         if (tag == null) return;
         int usesLeftUntilRefuel = tag.getInt("energy");
         if (usesLeftUntilRefuel < 1){
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (!itemFluid.isEmpty() && CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid())/50);
                     }
                 }
             });
@@ -122,16 +126,16 @@ public class CombustionMultitool extends Multitool {
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid())/50);
                         stack.getOrCreateTag().putInt("damage", volumetricEnergy.get()); // does nothing
                     }
                 }
 
             });
-            return -(volumetricEnergy.get());
+            return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1;
         } else if (tag == null){
             return 0; // Technically this should never occur
         }
@@ -144,10 +148,10 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() >= 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                        volumetricEnergy.set(RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid())/50);
                     }
                 }
 
@@ -173,10 +177,10 @@ public class CombustionMultitool extends Multitool {
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
             FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-            if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(itemFluid.getRawFluid())){
+            if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                 if (fluid.getFluidInTank(0).getAmount() > 50){
                     fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    int volumetricEnergy = CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(),0);
+                    int volumetricEnergy = RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid());
                     itemFluid.getOrCreateTag().putInt("energy", volumetricEnergy);
                 }
             }

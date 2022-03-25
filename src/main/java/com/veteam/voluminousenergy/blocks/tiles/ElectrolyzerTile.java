@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -20,8 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -193,8 +190,12 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
                             counter = 0;
                         }
                     }
-                } else { // This is if we reach the maximum in the slots
-                    counter = 0;
+                } else { // This is if we reach the maximum in the slots; or no power
+                    if (!canConsumeEnergy()){ // if no power
+                        decrementSuperCounterOnNoPower();
+                    } else { // zero in other cases
+                        counter = 0;
+                    }
                 }
             } else { // this is if the input slot is empty
                 counter = 0;
@@ -277,7 +278,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
             ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return true;
                     }
@@ -307,7 +308,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
             ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
@@ -357,6 +358,18 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     @Override

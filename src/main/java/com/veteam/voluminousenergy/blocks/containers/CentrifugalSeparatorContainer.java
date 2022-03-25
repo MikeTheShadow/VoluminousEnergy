@@ -21,8 +21,7 @@ import javax.annotation.Nonnull;
 
 public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 7;
+    public static final int NUMBER_OF_SLOTS = 7;
 
     public CentrifugalSeparatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER,id);
@@ -90,7 +89,7 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 6, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

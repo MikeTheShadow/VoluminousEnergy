@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -13,9 +12,6 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,9 +19,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -35,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
@@ -118,7 +110,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                         heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
                         recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
                         firstItemInput.getCount() >= recipe.getIngredientCount() &&
-                        recipe.ingredientListIncludingSeconds.contains(secondItemInput.getItem()) &&
+                        recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem()) &&
                         secondItemInput.getCount() >= recipe.getSecondInputAmount()){
                     // Check for power
                     if (canConsumeEnergy()) {
@@ -148,7 +140,9 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                             counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(5).copy());
                             length = counter;
                         }
-                    } // Energy Check
+                    } else { // Energy Check
+                        decrementSuperCounterOnNoPower();
+                    }
                 } else { // Set counter to zero
                     counter = 0;
                 }
@@ -197,6 +191,18 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     public FluidStack getFluidStackFromTank(int num){

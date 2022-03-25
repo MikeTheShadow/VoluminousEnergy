@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.screens.DistillationUnitScreen;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,9 +23,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.DISTILLATION_UN
 
 public class DistillationUnitContainer extends VoluminousContainer {
 
-
-    private DistillationUnitScreen screen;
-    private static final int numberOfSlots = 8;
+    private static final int NUMBER_OF_SLOTS = 8;
 
     public DistillationUnitContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(DISTILLATION_UNIT_CONTAINER,id);
@@ -94,7 +91,7 @@ public class DistillationUnitContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 7, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 7, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

@@ -2,7 +2,6 @@
   "replace": false,
   "values": [
     "#forge:ore_bearing_ground/end_stone",
-    "#forge:ore_bearing_ground/red_sand",
-    "#forge:ore_bearing_ground/colorless_sand"
+    "#forge:ore_bearing_ground/sand"
   ]
 }

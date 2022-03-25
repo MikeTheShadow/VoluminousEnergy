@@ -119,7 +119,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                 PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
+                    return recipe.ingredient.get().test(stack);
                 } else if (slot == 1 && recipeOutput != null){
                     return stack.getItem() == recipeOutput.result.getItem();
                 } else if (slot == 2){
@@ -137,7 +137,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                 PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getItems()){
+                    for (ItemStack testStack : recipe.ingredient.get().getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }

@@ -187,8 +187,12 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
                             counter = 0;
                         }
                     }
-                } else { // This is if we reach the maximum in the slots
-                    counter = 0;
+                } else { // This is if we reach the maximum in the slots; or no power
+                    if (!canConsumeEnergy()){ // if no power
+                        decrementSuperCounterOnNoPower();
+                    } else { // zero in other cases
+                        counter = 0;
+                    }
                 }
             } else { // this is if the input slot is empty
                 counter = 0;
@@ -271,7 +275,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return true;
                     }
@@ -301,7 +305,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.getItems()){
+                for (ItemStack testStack : recipe.ingredient.get().getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
@@ -353,6 +357,18 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
         return 0;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+    
     @Override
     public int getMaxPower() {
         return Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get();

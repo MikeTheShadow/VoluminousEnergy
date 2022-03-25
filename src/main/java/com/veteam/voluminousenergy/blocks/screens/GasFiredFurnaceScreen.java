@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -13,6 +16,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -93,15 +97,20 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX,int mouseY){
-        //drawString(matrixStack,Minecraft.getInstance().fontRenderer,"Gas Fired Furnace",8,6,0xffffff);
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("gas_fired_furnace"), 8.0F, 6.0F, 16777215);
-
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), 16777215);
+        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("gas_fired_furnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 8F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 8F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 53F, 33F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 116F, 33F, WHITE_TEXT_COLOUR);
 
+        // Tanks
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 31F, 18F, WHITE_TEXT_COLOUR);
     }
 
     @Override
@@ -110,13 +119,33 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
             int amount = tileEntity.getFluidFromTank().getAmount();
             String name = tileEntity.getFluidFromTank().getTranslationKey();
             renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
-        } else if (isHovering(54,54,16,16,mouseX,mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%, " + TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()), mouseX, mouseY);
-        } else if (isHovering(81,32,9,17,mouseX,mouseY)){
-            renderTooltip(matrixStack, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%, "+ TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()), mouseX, mouseY);
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(),mouseX,mouseY)){
+            renderComponentTooltip(matrixStack, getFuelTooltips(), mouseX, mouseY);
+        } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getCounterTooltipArea(),mouseX,mouseY)){
+            renderComponentTooltip(matrixStack, getCounterTooltips(), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX,mouseY);
+    }
+
+    public Rect2i getFuelTooltipArea() {
+        return new Rect2i(54, 54, 14, 14);
+    }
+
+    public List<Component> getFuelTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressFuelCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getFuelCounter()));
+    }
+
+    public Rect2i getCounterTooltipArea() {
+        return new Rect2i(81, 31, 9, 17);
+    }
+
+    public List<Component> getCounterTooltips() {
+        return Arrays.asList(
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getCounter()));
     }
 
     @Override

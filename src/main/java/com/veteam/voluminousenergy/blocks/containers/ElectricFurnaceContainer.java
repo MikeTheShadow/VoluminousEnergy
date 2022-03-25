@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 
 public class ElectricFurnaceContainer extends VoluminousContainer {
 
-    private static final int numberOfSlots = 3;
+    private static final int NUMBER_OF_SLOTS = 3;
 
     public ElectricFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.ELECTRIC_FURNACE_CONTAINER,id);
@@ -83,7 +83,7 @@ public class ElectricFurnaceContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, numberOfSlots, 2, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 2, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);

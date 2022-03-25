@@ -2,9 +2,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,8 +26,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.COMBUSTION_GENE
 
 public class CombustionGeneratorContainer extends VoluminousContainer {
 
-
-    private static final int numberOfSlots = 4;
+    private static final int NUMBER_OF_SLOTS = 4;
 
     public CombustionGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(COMBUSTION_GENERATOR_CONTAINER,id);
@@ -91,7 +89,7 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogic(index, numberOfSlots, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogic(index, NUMBER_OF_SLOTS, slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
@@ -125,9 +123,9 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
                 // Handle bucket with fluid
                 Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                if (CombustionGeneratorOxidizerRecipe.rawFluidInputList.contains(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                if (RecipeUtil.isOxidizer(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
                     return ItemStack.EMPTY;
-                } else if (CombustionGeneratorFuelRecipe.rawFluidInputListStatic.contains(slotFluid) && !moveItemStackTo(slotStack, 2, 3, false)){
+                } else if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 2, 3, false)){
                     return ItemStack.EMPTY;
                 }
             }

@@ -7,18 +7,17 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +29,7 @@ public class SawmillingRecipe extends VERecipe {
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
     public ItemStack secondResult;
@@ -38,6 +37,7 @@ public class SawmillingRecipe extends VERecipe {
     private int outputAmount;
     private int secondAmount;
     private FluidStack outputFluid;
+    private boolean isLogRecipe;
 
     private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
@@ -45,7 +45,7 @@ public class SawmillingRecipe extends VERecipe {
         this.recipeId = recipeId;
     }
 
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     public int getIngredientCount(){ return ingredientCount;}
 
@@ -57,7 +57,7 @@ public class SawmillingRecipe extends VERecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -95,23 +95,25 @@ public class SawmillingRecipe extends VERecipe {
         return new ItemStack(VEBlocks.SAWMILL_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SawmillingRecipe>{
+    public boolean isLogRecipe() {
+        return isLogRecipe;
+    }
 
-        public static ArrayList<Item> ingredientList = new ArrayList<>();
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SawmillingRecipe>{
 
         @Override
         public SawmillingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             SawmillingRecipe recipe = new SawmillingRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
-            recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
+            recipe.isLogRecipe = GsonHelper.getAsBoolean(json, "auto_log_to_plank", false);
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
-                if(!ingredientList.contains(stack.getItem())){
-                    ingredientList.add(stack.getItem());
-                }
-            }
+            if (recipe.isLogRecipe) return recipe;
+
+            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
+            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             JsonObject resultData = json.get("result").getAsJsonObject();
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(resultData,"item","minecraft:air"),':');
@@ -139,27 +141,38 @@ public class SawmillingRecipe extends VERecipe {
         @Override
         public SawmillingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             SawmillingRecipe recipe = new SawmillingRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItem();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-            recipe.secondResult = buffer.readItem();
-            recipe.secondAmount = buffer.readInt();
-            recipe.outputFluid = buffer.readFluidStack();
+
+            recipe.isLogRecipe = buffer.readBoolean();
+            if (!recipe.isLogRecipe){
+                recipe.ingredientCount = buffer.readByte();
+                recipe.result = buffer.readItem();
+                recipe.processTime = buffer.readInt();
+                recipe.outputAmount = buffer.readInt();
+                recipe.secondResult = buffer.readItem();
+                recipe.secondAmount = buffer.readInt();
+                recipe.outputFluid = buffer.readFluidStack();
+
+                Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+                recipe.ingredient = Lazy.of(() -> tempIngredient);
+            }
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, SawmillingRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-            buffer.writeItem(recipe.secondResult);
-            buffer.writeInt(recipe.secondAmount);
-            buffer.writeFluidStack(recipe.outputFluid);
+            buffer.writeBoolean(recipe.isLogRecipe);
+            if (!recipe.isLogRecipe){
+                buffer.writeByte(recipe.getIngredientCount());
+                buffer.writeItem(recipe.getResult());
+                buffer.writeInt(recipe.processTime);
+                buffer.writeInt(recipe.outputAmount);
+                buffer.writeItem(recipe.secondResult);
+                buffer.writeInt(recipe.secondAmount);
+                buffer.writeFluidStack(recipe.outputFluid);
+
+                recipe.ingredient.get().toNetwork(buffer);
+            }
         }
     }
 }

@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -21,9 +20,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -34,6 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
@@ -78,6 +76,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AQUEOULIZER_TILE, pos, state);
+        inputTank.setAllowAny(true);
     }
 
     @Override
@@ -136,7 +135,9 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                                 counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(4).copy());
                                 length = counter;
                             }
-                        } // Energy Check
+                        } else { // Energy Check
+                            decrementSuperCounterOnNoPower();
+                        }
                     } else { // If fluid tank empty set counter to zero
                         counter = 0;
                     }
@@ -156,7 +157,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     }
 
     private IFluidHandler createInputFluidHandler() {
-        return this.createFluidHandler(new AqueoulizerRecipe(), inputTank);
+        return this.createInputFluidHandler(/*new AqueoulizerRecipe(),*/ inputTank);
     }
 
     private IFluidHandler createOutputFluidHandler(){
@@ -177,9 +178,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                     if (!(stack.getItem() instanceof BucketItem)) return false;
                 }
                 if(slot == 3) {
-                    // NOTE: If enough people complain that they have to insert a proper fluid first. Then change this so that it only checks item
-                    VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level,inputTank.getTank().getFluid(),stack);
-                    return recipe != null;
+                    ArrayList<AqueoulizerRecipe> recipe = RecipeUtil.getAqueoulizerRecipesFromItemInput(level, stack);
+                    return !recipe.isEmpty();
                 }
 
                 if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
@@ -194,6 +194,101 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         };
     }
 
+    public IFluidHandler createInputFluidHandler(/*AqueoulizerRecipe aqueoulizerRecipe,*/ RelationalTank... relationalTanks) {
+
+        return new IFluidHandler() {
+            @Override
+            public int getTanks() {
+                return relationalTanks.length;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack getFluidInTank(int tank) {
+
+                for(RelationalTank t : relationalTanks) {
+                    if(t.getId() == tank) {
+                        return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
+                    }
+                }
+                LOGGER.debug("Invalid tankId in Aqueoulizer Tile for getFluidInTank");
+                return FluidStack.EMPTY;
+            }
+
+            @Override
+            public int getTankCapacity(int tank) {
+
+                for(RelationalTank t : relationalTanks) {
+                    if(t.getId() == tank) {
+                        return t.getTank() == null ? 0 : t.getTank().getCapacity();
+                    }
+                }
+                LOGGER.debug("Invalid tankId in Aqueoulizer Tile for getTankCapacity");
+                return 0;
+            }
+
+            @Override
+            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+                try {
+                    for (RelationalTank t : relationalTanks) {
+                        if (t.getTankType() == TankType.INPUT) {
+                            ArrayList<AqueoulizerRecipe> recipes = RecipeUtil.getAqueoulizerRecipesFromFluidInput(level, stack);
+                            return !recipes.isEmpty() && t.getTank() != null && t.getTank().isFluidValid(stack);
+                            //return aqueoulizerRecipe.rawFluidInputList.get().contains(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
+                        } else {
+                            return RecipeUtil.isAqueoulizerOutput(level, stack) && t.getTank() != null && t.getTank().isFluidValid(stack);
+                            //return aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
+                        }
+                    }
+                } catch (Exception e){
+                    LOGGER.debug("ERROR with isFluidValid in Aqueoulizer Tile input fluid handler");
+                }
+                return false;
+            }
+
+            @Override
+            public int fill(FluidStack resource, FluidAction action) {
+
+                for(RelationalTank t : relationalTanks) {
+                    if(isFluidValid(t.getId(),resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
+                        return t.getTank().fill(resource, action);
+                    }
+                }
+                return 0;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack drain(FluidStack resource, FluidAction action) {
+                if (resource.isEmpty()) {
+                    return FluidStack.EMPTY;
+                }
+
+                for(RelationalTank t : relationalTanks) {
+                    if(resource.isFluidEqual(t.getTank().getFluid())) {
+                        return t.getTank().drain(resource,action);
+                    }
+                }
+                return FluidStack.EMPTY;
+            }
+
+            @Nonnull
+            @Override
+            public FluidStack drain(int maxDrain, FluidAction action) {
+                for(RelationalTank t : relationalTanks) {
+                    if(t.getTank().getFluidAmount() > 0) {
+                        if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                            return t.getTank().drain(maxDrain, action);
+                        } else if (t.getTankType() != TankType.INPUT) {
+                            return t.getTank().drain(maxDrain, action);
+                        }
+                    }
+                }
+                return FluidStack.EMPTY;
+            }
+        };
+    }
+
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -203,6 +298,18 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     public FluidStack getFluidStackFromTank(int num){
@@ -229,17 +336,17 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     @Override
     public int getMaxPower() {
-        return Config.AIR_COMPRESSOR_MAX_POWER.get();
+        return Config.AQUEOULIZER_MAX_POWER.get();
     }
 
     @Override
     public int getPowerUsage() {
-        return Config.AIR_COMPRESSOR_POWER_USAGE.get();
+        return Config.AQUEOULIZER_POWER_USAGE.get();
     }
 
     @Override
     public int getTransferRate() {
-        return Config.AIR_COMPRESSOR_TRANSFER.get();
+        return Config.AQUEOULIZER_TRANSFER.get();
     }
 
     @Override

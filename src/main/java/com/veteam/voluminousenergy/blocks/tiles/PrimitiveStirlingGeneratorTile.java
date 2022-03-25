@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -109,7 +110,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
-                return slot == 0 && recipe != null && recipe.ingredient.test(referenceStack);
+                return slot == 0 && recipe != null && recipe.getIngredient().test(referenceStack);
             }
 
             @Nonnull
@@ -118,7 +119,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getItems()){
+                    for (ItemStack testStack : recipe.getIngredient().getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -131,7 +132,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity){
         return new PrimitiveStirlingGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 

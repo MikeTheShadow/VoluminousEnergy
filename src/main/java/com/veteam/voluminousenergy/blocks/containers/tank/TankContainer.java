@@ -19,7 +19,7 @@ public class TankContainer extends VoluminousContainer {
 
     //private Player playerEntity;
     private final IItemHandler playerInventory;
-    private static final int NUMBER_OF_SLOTS = 1;
+    private static final int NUMBER_OF_SLOTS = 2;
 
     public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
         super(menuType,id);
@@ -28,7 +28,7 @@ public class TankContainer extends VoluminousContainer {
         //this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Positions
+        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top slot
             addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom slot
         });

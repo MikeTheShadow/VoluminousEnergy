@@ -54,6 +54,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
 
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
+        inputTank.setAllowAny(true);
+        outputTank0.setAllowAny(true);
+        outputTank1.setAllowAny(true);
     }
 
     public ItemStackHandler inventory = createHandler(5);
@@ -125,7 +128,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
                                 counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(4));
                                 length = counter;
                             }
-                        } // Energy Check
+                        } else { // Energy Check
+                            decrementSuperCounterOnNoPower();
+                        }
                     } else { // If fluid tank empty set counter to zero
                         counter = 0;
                     }
@@ -154,6 +159,18 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
     public int progressCounterPX(int px) {
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
+    }
+
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
     }
 
     // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that

@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.world.non_functional.aquifer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Aquifer;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.material.FluidState;
 
 import javax.annotation.Nullable;
@@ -19,8 +20,8 @@ public class VEAquifer implements Aquifer {
 
     @Nullable
     @Override
-    public BlockState computeSubstance(int computeValue0, int someSortOfY, int computeValue1, double d0, double d1) { // See Aquifer#createDisabled
-        return someSortOfY < this.fluidLevel ? this.fluid.createLegacyBlock() : Blocks.AIR.defaultBlockState();
+    public BlockState computeSubstance(DensityFunction.FunctionContext context, double d0) { // See Aquifer#createDisabled
+        return context.blockY() < this.fluidLevel ? this.fluid.createLegacyBlock() : Blocks.AIR.defaultBlockState();
     }
 
     @Override

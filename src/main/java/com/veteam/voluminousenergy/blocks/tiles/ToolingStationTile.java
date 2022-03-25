@@ -72,6 +72,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
         super(VEBlocks.TOOLING_STATION_TILE, pos, state);
+        fuelTank.setValidFluids(RecipeUtil.getCombustibleFuelsWithoutLevel());
     }
 
     @Override
@@ -207,6 +208,12 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new ToolingStationContainer(i, level, worldPosition, playerInventory, playerEntity);
+    }
+
+    public boolean hasValidRecipe(){
+        return (inventory.getStackInSlot(2) != ItemStack.EMPTY)
+                && (inventory.getStackInSlot(3) != ItemStack.EMPTY)
+                && (inventory.getStackInSlot(4) != ItemStack.EMPTY);
     }
 
     public int progressCounterPX(int px) {

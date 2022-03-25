@@ -205,4 +205,24 @@ public class VEFluids {
             Treethanol::FlowingTreethanolBlock);
     public static RegistryObject<Item> TREETHANOL_BUCKET_REG = VE_FLUID_ITEMS.register("treethanol_bucket",
             Treethanol::TreethanolBucket);
+
+    // Ammonia
+    public static RegistryObject<FlowingFluid> AMMONIA_REG = VE_FLUIDS.register("ammonia",
+            Ammonia::AmmoniaFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_AMMONIA_REG = VE_FLUIDS.register("flowing_ammonia",
+            Ammonia::FlowingAmmoniaFluid);
+    public static RegistryObject<LiquidBlock> FLOWING_AMMONIA_BLOCK_REG = VE_FLUID_BLOCKS.register("ammonia_block",
+            Ammonia::FlowingAmmoniaBlock);
+    public static RegistryObject<Item> AMMONIA_BUCKET_REG = VE_FLUID_ITEMS.register("ammonia_bucket",
+            Ammonia::AmmoniaBucket);
+
+    // AmmoniumNitrateSolution
+    public static RegistryObject<FlowingFluid> AMMONIUM_NITRATE_SOLUTION_REG = VE_FLUIDS.register("ammonium_nitrate_solution",
+            AmmoniumNitrateSolution::AmmoniumNitrateSolutionFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_AMMONIUM_NITRATE_SOLUTION_REG = VE_FLUIDS.register("flowing_ammonium_nitrate_solution",
+            AmmoniumNitrateSolution::FlowingAmmoniumNitrateSolutionFluid);
+    public static RegistryObject<LiquidBlock> FLOWING_AMMONIUM_NITRATE_SOLUTION_BLOCK_REG = VE_FLUID_BLOCKS.register("ammonium_nitrate_solution_block",
+            AmmoniumNitrateSolution::FlowingAmmoniumNitrateSolutionBlock);
+    public static RegistryObject<Item> AMMONIUM_NITRATE_SOLUTION_BUCKET_REG = VE_FLUID_ITEMS.register("ammonium_nitrate_solution_bucket",
+            AmmoniumNitrateSolution::AmmoniumNitrateSolutionBucket);
 }

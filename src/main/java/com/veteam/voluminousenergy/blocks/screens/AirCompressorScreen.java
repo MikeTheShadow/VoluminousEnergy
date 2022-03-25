@@ -67,7 +67,6 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
 
     @Override
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        //drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Air Compressor",8,6,0xffffff);
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
         super.renderLabels(matrixStack, mouseX, mouseY);

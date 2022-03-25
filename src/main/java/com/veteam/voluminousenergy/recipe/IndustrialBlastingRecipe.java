@@ -3,12 +3,11 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -27,15 +27,18 @@ import java.util.Map;
 
 public class IndustrialBlastingRecipe extends VERecipe {
 
-    public ArrayList<Item> ingredientList = new ArrayList<>();
-    public ArrayList<Item> ingredientListIncludingSeconds = new ArrayList<>();
-    public ArrayList<Item> onlySecondInput = new ArrayList<>();
+    protected Lazy<ArrayList<Item>> ingredientList; // Use getFirstInputAsList, because ingredientCount can't initialize properly without it
+    public Lazy<ArrayList<Item>> ingredientListIncludingSeconds;
+    public Lazy<ArrayList<Item>> onlySecondInput;
     public final ResourceLocation recipeId;
     private int processTime;
     private int minimumHeat;
     private int secondInputAmount;
     private int outputAmount;
-    private ItemStack secondInputStack;
+
+    protected boolean usesTagKey;
+    protected String tagKeyString;
+    Lazy<Integer> tempIngredientCount;
 
     public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING;
 
@@ -51,11 +54,12 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
+    @Deprecated
     @Override
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -78,13 +82,21 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public int getProcessTime(){ return processTime; }
 
+    @Override
+    public int getIngredientCount() {
+        return this.ingredientCount != 0 ? this.ingredientCount : (tempIngredientCount.get() > 0 ? tempIngredientCount.get() : 1);
+    }
+
     public int getMinimumHeat(){ return minimumHeat; }
 
     public int getSecondInputAmount() {return secondInputAmount;}
 
     public int getOutputAmount() {return outputAmount;}
 
-    public ArrayList<Item> getFirstInputAsList() { return ingredientList; }
+    public ArrayList<Item> getFirstInputAsList() {
+        if (this.ingredientCount == 0) this.ingredientCount = (tempIngredientCount.get() > 0 ? tempIngredientCount.get() : 1);
+        return ingredientList.get();
+    }
 
     public ItemStack getResult(){
         return result;
@@ -101,18 +113,18 @@ public class IndustrialBlastingRecipe extends VERecipe {
         public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
-            recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
+            final JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
+            recipe.tempIngredientCount = Lazy.of(() -> GsonHelper.getAsInt(ingredientJson, "count", 1));
 
-            for (ItemStack stack : recipe.ingredient.getItems()){
-                if(!recipe.ingredientList.contains(stack.getItem())){
-                    recipe.ingredientList.add(stack.getItem());
+            recipe.ingredientList = Lazy.of(() -> {
+                ArrayList<Item> temp = new ArrayList<>();
+                for (ItemStack item : recipe.ingredient.get().getItems()) {
+                    temp.add(item.getItem());
                 }
-                if(!recipe.ingredientListIncludingSeconds.contains(stack.getItem())){
-                    recipe.ingredientListIncludingSeconds.add(stack.getItem());
-                }
-            }
+                return temp;
+            });
 
             JsonObject secondInput = json.get("second_input").getAsJsonObject();
 
@@ -121,28 +133,25 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
                 recipe.secondInputAmount = secondInputAmount;
 
-                Tag<Item> tag = RecipeUtil.getTagFromResourceLocationForItems(secondInputResourceLocation, "Industrial Blasting");
+                recipe.usesTagKey = true;
+                recipe.tagKeyString = secondInputResourceLocation.toString();
 
-                if(tag != null){
-                    recipe.ingredientListIncludingSeconds.addAll(tag.getValues());
-                    recipe.onlySecondInput.addAll(tag.getValues());
-                } else {
-                    VoluminousEnergy.LOGGER.debug("Tag is null!");
-                    throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe the tag is null");
-                }
+                recipe.onlySecondInput = TagUtil.getLazyItems(secondInputResourceLocation);
             } else if(!secondInput.has("tag") && secondInput.has("item")){
+                recipe.usesTagKey = false;
                 ResourceLocation secondInputResourceLocation = ResourceLocation.of(GsonHelper.getAsString(secondInput,"item","minecraft:air"),':');
                 int secondInputAmount = GsonHelper.getAsInt(secondInput,"count",1);
-                recipe.secondInputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation));
                 recipe.secondInputAmount = secondInputAmount;
-
-                if(!recipe.ingredientListIncludingSeconds.contains(recipe.secondInputStack.getItem()))
-                    recipe.ingredientListIncludingSeconds.add(recipe.secondInputStack.getItem());
-                if(!recipe.onlySecondInput.contains(recipe.secondInputStack.getItem()))
-                    recipe.onlySecondInput.add(recipe.secondInputStack.getItem());
+                recipe.onlySecondInput = Lazy.of(() -> {
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.add((new ItemStack(ForgeRegistries.ITEMS.getValue(secondInputResourceLocation))).getItem());
+                    return items;
+                });
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Industrial Blasting Recipe");
             }
+            // Create Anthology of both inputs
+            recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
 
             // Main Output Slot
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
@@ -159,17 +168,30 @@ public class IndustrialBlastingRecipe extends VERecipe {
         @Override
         public IndustrialBlastingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
 
-            int ingredientListSize = buffer.readInt();
-            for (int i = 0; i < ingredientListSize; i++){
-                recipe.ingredientList.add(buffer.readItem().getItem());
+            // Start with usesTagKey check
+            recipe.usesTagKey = buffer.readBoolean();
+
+            if (recipe.usesTagKey){
+                ResourceLocation itemTagLocation = buffer.readResourceLocation();
+                recipe.onlySecondInput = TagUtil.getLazyItems(itemTagLocation);
+            } else {
+                int secondListSize = buffer.readInt();
+                ArrayList<Item> secondInputs = new ArrayList<>();
+                for (int i = 0; i < secondListSize; i++){
+                    secondInputs.add(buffer.readItem().getItem());
+                }
+                recipe.onlySecondInput = Lazy.of(() -> secondInputs);
             }
 
-            int secondListSize = buffer.readInt();
-            for (int i = 0; i < secondListSize; i++){
-                recipe.onlySecondInput.add(buffer.readItem().getItem());
+            ArrayList<Item> firstInputList = new ArrayList<>();
+            int firstInputSize = buffer.readInt();
+            for (int i = 0; i < firstInputSize; i++){
+                ItemStack readStack = buffer.readItem();
+                firstInputList.add(readStack.getItem());
+                recipe.ingredientCount = readStack.getCount();
             }
+            recipe.ingredientList = Lazy.of(() -> firstInputList);
 
             recipe.secondInputAmount = buffer.readInt();
 
@@ -177,28 +199,57 @@ public class IndustrialBlastingRecipe extends VERecipe {
             recipe.processTime = buffer.readInt();
             recipe.outputAmount = buffer.readInt();
             recipe.minimumHeat = buffer.readInt();
+            recipe.ingredientCount = buffer.readInt();
+
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
+
+            // Build Anthology
+            recipe.ingredientListIncludingSeconds = RecipeUtil.createLazyAnthology(recipe.ingredientList, recipe.onlySecondInput);
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, IndustrialBlastingRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
 
-            buffer.writeInt(recipe.ingredientList.size());
-            recipe.ingredientList.forEach(item -> {
-                buffer.writeItem(new ItemStack(item));
-            });
+            buffer.writeBoolean(recipe.usesTagKey);
+            if (recipe.usesTagKey){
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
+            } else { // does not use tags for item input
+                buffer.writeInt(recipe.onlySecondInput.get().size());
+                recipe.onlySecondInput.get().forEach(item -> {
+                    buffer.writeItem(new ItemStack(item));
+                });
+            }
 
-            buffer.writeInt(recipe.onlySecondInput.size());
-            recipe.onlySecondInput.forEach(item -> {
-                buffer.writeItem(new ItemStack(item));
-            });
+            ArrayList<Item> firstInputList = recipe.ingredientList.get();
+            int firstInputSize = firstInputList.size();
+            buffer.writeInt(firstInputSize);
+            for (Item item : firstInputList){
+                buffer.writeItem(
+                        new ItemStack(item,
+                                recipe.ingredientCount > 0
+                                        ? recipe.ingredientCount
+                                        : (recipe.tempIngredientCount.get() > 0 ? recipe.tempIngredientCount.get() : 1)
+                        ));
+            }
+
 
             buffer.writeInt(recipe.secondInputAmount);
             buffer.writeItem(recipe.getResult());
             buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             buffer.writeInt(recipe.minimumHeat);
+
+            // Ingredient count
+            buffer.writeInt(recipe.ingredientCount > 0
+                    ? recipe.ingredientCount
+                    : (recipe.tempIngredientCount.get() > 0 ? recipe.tempIngredientCount.get() : 1)
+            );
+
+            recipe.ingredient.get().toNetwork(buffer);
+
         }
     }
 }

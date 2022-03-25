@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "hexerei"
+    }
+  ],
+  "type": "voluminousenergy:aqueoulizing",
+  "process_time": 200,
+  "ingredient": {
+    "item": "hexerei:animal_fat",
+    "count": 1
+  },
+  "input_fluid": {
+    "fluid": "minecraft:water",
+    "amount": 250
+  },
+  "result": {
+    "fluid": "hexerei:tallow_fluid",
+    "amount": 250
+  }
+}

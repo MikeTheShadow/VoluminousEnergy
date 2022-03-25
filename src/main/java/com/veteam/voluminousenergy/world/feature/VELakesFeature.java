@@ -2,9 +2,11 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -98,8 +100,8 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
                         if (aboolean[(i2 * 16 + j3) * 8 + j4]) {
                             BlockPos blockpos = pos.offset(i2, j4 - 1, j3);
                             if (isDirt(worldIn.getBlockState(blockpos)) && worldIn.getBrightness(LightLayer.SKY, pos.offset(i2, j4, j3)) > 0) {
-                                Biome biome = worldIn.getBiome(blockpos);
-                                if (biome.getBiomeCategory() == Biome.BiomeCategory.MUSHROOM) {
+                                Holder<Biome> biome = worldIn.getBiome(blockpos);
+                                if (biome.is(Biomes.MUSHROOM_FIELDS)) {
                                     worldIn.setBlock(blockpos, Blocks.MYCELIUM.defaultBlockState(), 2);
                                 } else {
                                     worldIn.setBlock(blockpos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);

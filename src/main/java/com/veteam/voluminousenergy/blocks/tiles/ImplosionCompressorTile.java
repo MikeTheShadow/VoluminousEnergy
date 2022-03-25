@@ -101,8 +101,12 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                         this.counter = 0;
                     }
                 }
-            } else { // This is if we reach the maximum in the slots
-                this.counter = 0;
+            } else { // This is if we reach the maximum in the slots; or no power
+                if (!canConsumeEnergy()){ // if no power
+                    decrementSuperCounterOnNoPower();
+                } else { // zero in other cases
+                    counter = 0;
+                }
             }
         } else { // This is if the input slot is empty
             this.counter = 0;
@@ -124,7 +128,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                 ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.test(stack);
+                    return recipe.ingredient.get().test(stack);
                 } else if (slot == 1) {
                     return stack.getItem() == Items.GUNPOWDER;
                 } else if (slot == 2 && recipe1 != null){
@@ -144,7 +148,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                 ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.getItems()) {
+                    for (ItemStack testStack : recipe.ingredient.get().getItems()) {
                         if (stack.getItem() == testStack.getItem()) {
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -186,6 +190,18 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
         return 0;
     }
 
+    public int progressCounterPercent(){
+        if (length != 0){
+            return (int)(100-(((float)counter/(float)length)*100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int ticksLeft(){
+        return counter;
+    }
+    
     @Override
     public int getMaxPower() {
         return Config.IMPLOSION_COMPRESSOR_MAX_POWER.get();

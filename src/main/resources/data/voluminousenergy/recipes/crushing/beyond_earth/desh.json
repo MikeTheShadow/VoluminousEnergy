@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "beyond_earth"
+    }
+  ],
+  "type": "voluminousenergy:crushing",
+  "ingredient": {
+    "item": "beyond_earth:moon_desh_ore",
+    "count": 1
+  },
+  "process_time": 200,
+  "result": {
+    "item": "beyond_earth:raw_desh",
+    "count": 2
+  },
+  "rng": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}

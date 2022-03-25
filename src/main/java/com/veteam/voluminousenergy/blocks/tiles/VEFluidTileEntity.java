@@ -43,7 +43,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
         if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
             if((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || checkOutputSlotForEmptyOrBucket(output.copy())) {
                 Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
-                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= TANK_CAPACITY) {
+                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
                     inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
@@ -200,7 +200,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
 
         //Save tanks
         for(RelationalTank relationalTank : getRelationalTanks()) {

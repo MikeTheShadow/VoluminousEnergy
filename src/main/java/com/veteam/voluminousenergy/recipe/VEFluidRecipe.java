@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -17,16 +19,25 @@ import java.util.List;
 
 public abstract class VEFluidRecipe implements Recipe<Container> {
 
-    public Ingredient ingredient;
+    public Lazy<Ingredient> ingredient;
     public int ingredientCount;
     public ItemStack result;
+
+    // Fluids
+    public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
+    public Lazy<ArrayList<FluidStack>> fluidInputList;
+    public Lazy<ArrayList<Fluid>> rawFluidInputList;
+    public Lazy<Integer> inputArraySize;
+
+    public boolean fluidUsesTagKey;
+    public String tagKeyString;
 
     public VEFluidRecipe() {
 
     }
 
     public Ingredient getIngredient() {
-        return ingredient;
+        return ingredient.get();
     }
 
     public int getIngredientCount() {
@@ -39,7 +50,7 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
     @Override
     public ItemStack assemble(Container inv){

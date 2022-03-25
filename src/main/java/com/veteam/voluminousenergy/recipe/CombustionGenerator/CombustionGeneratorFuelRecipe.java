@@ -3,13 +3,12 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.BucketItem;
@@ -21,9 +20,11 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -33,18 +34,15 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public static final Serializer SERIALIZER = new Serializer();
 
-    public ArrayList<Item> ingredientList = new ArrayList<>();
-    public ArrayList<FluidStack> fluidInputList = new ArrayList<>();
-    public ArrayList<Fluid> rawFluidInputList = new ArrayList<>();
-    public static Map<Fluid, Integer> rawFluidWithVolumetricEnergy = new HashMap<>();
-    public static ArrayList<Fluid> rawFluidInputListStatic = new ArrayList<>();
-
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
-    private int inputArraySize;
+    private Lazy<Integer> inputArraySize;
 
+    @Deprecated
     private FluidStack inputFluid;
     private ItemStack result;
+
+    public static ArrayList<Lazy<Pair<ArrayList<Fluid>,Integer>>> lazyFluidsWithVolumetricEnergy = new ArrayList<>();
 
     public CombustionGeneratorFuelRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -60,12 +58,13 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
-    public Ingredient getIngredient(){ return ingredient;}
+    public Ingredient getIngredient(){ return ingredient.get();}
 
     public int getIngredientCount(){ return ingredientCount;}
 
     public ItemStack getResult() {return result;}
 
+    @Deprecated
     public FluidStack getInputFluid(){
         return this.inputFluid.copy();
     }
@@ -74,7 +73,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public boolean matches(Container inv, Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
-        return ingredient.test(stack) && count >= ingredientCount;
+        return ingredient.get().test(stack) && count >= ingredientCount;
     }
 
     @Override
@@ -97,7 +96,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     @Override
     public ArrayList<Item> getIngredientList() {
-        return ingredientList;
+        return ingredientList.get();
     }
 
     @Override
@@ -154,15 +153,9 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);
 
-            recipe.ingredient = Ingredient.fromJson(json.get("ingredient"));
+            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
             recipe.ingredientCount = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "count", 1);
             recipe.volumetricEnergy = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
-
-            for (ItemStack stack : recipe.ingredient.getItems()){
-                if(!recipe.ingredientList.contains(stack.getItem())){
-                    recipe.ingredientList.add(stack.getItem());
-                }
-            }
 
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
 
@@ -170,32 +163,20 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 // A tag is used instead of a manually defined fluid
                 ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
 
-                Tag<Fluid> tag = RecipeUtil.getTagFromResourceLocationForFluids(fluidTagLocation, "Fuel Combustion");
-                if(tag != null){
-                    for(Fluid fluid : tag.getValues()){
-                        FluidStack tempStack = new FluidStack(fluid, 1000);
-                        recipe.fluidInputList.add(tempStack);
-                        recipe.rawFluidInputList.add(tempStack.getRawFluid());
-                        if (!rawFluidInputListStatic.contains(tempStack.getRawFluid())){
-                            rawFluidWithVolumetricEnergy.put(tempStack.getRawFluid(), recipe.volumetricEnergy);
-                            rawFluidInputListStatic.add(tempStack.getRawFluid());
-                        }
+                recipe.inputFluid = null;
+                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, 1000);
 
-                        recipe.inputArraySize = recipe.fluidInputList.size();
-                    }
-                } else {
-                    VoluminousEnergy.LOGGER.debug("Tag is null!");
-                }
             } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
                 // In here, a manually defined fluid is used instead of a tag
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
                 recipe.inputFluid = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(fluidResourceLocation)),1000);
-                recipe.fluidInputList.add(recipe.inputFluid);
-                recipe.rawFluidInputList.add(recipe.inputFluid.getRawFluid());
-                recipe.inputArraySize = recipe.fluidInputList.size();
+                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, 1000);
+
             } else {
                 throw new JsonSyntaxException("Bad syntax for the Combustion Fuel recipe, input_fluid must be tag or fluid");
             }
+
+            lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
 
             recipe.result = new ItemStack(Items.BUCKET); // REQUIRED TO PREVENT JEI OR VANILLA RECIPE BOOK TO RETURN A NULL POINTER
             return recipe;
@@ -205,39 +186,58 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         @Override
         public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
-            recipe.ingredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredientCount = buffer.readByte();
-            recipe.volumetricEnergy = buffer.readInt();
 
-            // This is probably not great, but eh, what else am I supposed to do in this situation?
-            recipe.inputArraySize = buffer.readInt();
-            for (int i = 0; i < recipe.inputArraySize; i++){
-                FluidStack serverFluid = buffer.readFluidStack();
-                recipe.fluidInputList.add(serverFluid.copy());
-                recipe.rawFluidInputList.add(serverFluid.getRawFluid());
-                if (!rawFluidInputListStatic.contains(serverFluid.getRawFluid())){
-                    rawFluidWithVolumetricEnergy.put(serverFluid.getRawFluid(), recipe.volumetricEnergy);
-                    rawFluidInputListStatic.add(serverFluid.getRawFluid());
+            // Start with usesTagKey check
+            recipe.fluidUsesTagKey = buffer.readBoolean();
+
+            if (recipe.fluidUsesTagKey){
+                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
+                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
+                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
+                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
+            } else {
+                recipe.inputArraySize = Lazy.of(buffer::readInt);
+                ArrayList<Fluid> fluids = new ArrayList<>();
+                ArrayList<FluidStack> fluidStacks = new ArrayList<>();
+                for (int i = 0; i < recipe.inputArraySize.get(); i++){
+                    FluidStack serverFluid = buffer.readFluidStack();
+                    fluidStacks.add(serverFluid.copy());
+                    fluids.add(serverFluid.getRawFluid());
                 }
+
+                recipe.fluidInputList = Lazy.of(() -> fluidStacks);
+                recipe.rawFluidInputList = Lazy.of(() -> fluids);
             }
 
-            recipe.result = buffer.readItem();
+            recipe.ingredientCount = buffer.readInt();
+            recipe.volumetricEnergy = buffer.readInt();
+            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
+            recipe.ingredient = Lazy.of(() -> tempIngredient);
+
+            lazyFluidsWithVolumetricEnergy.add(Lazy.of(() -> new Pair<>(recipe.rawFluidInputList.get(), recipe.volumetricEnergy)));
+
+            recipe.result = new ItemStack(Items.BUCKET);
+
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CombustionGeneratorFuelRecipe recipe){
-            recipe.ingredient.toNetwork(buffer);
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeInt(recipe.volumetricEnergy);
+            buffer.writeBoolean(recipe.fluidUsesTagKey);
 
-            // Same as the comment in read, not optimal, but necessary
-            buffer.writeInt(recipe.inputArraySize);
-            for(int i = 0; i < recipe.inputArraySize; i++){
-                buffer.writeFluidStack(recipe.fluidInputList.get(i).copy());
+            if (recipe.fluidUsesTagKey){
+                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
+            } else { // does not use tags for fluid input
+                buffer.writeInt(recipe.inputArraySize.get());
+                for(int i = 0; i < recipe.inputArraySize.get(); i++){
+                    buffer.writeFluidStack(recipe.fluidInputList.get().get(i).copy());
+                }
             }
 
-            buffer.writeItem(recipe.getResult());
+            buffer.writeInt(recipe.ingredientCount);
+            buffer.writeInt(recipe.volumetricEnergy);
+
+            recipe.ingredient.get().toNetwork(buffer);
         }
     }
 }

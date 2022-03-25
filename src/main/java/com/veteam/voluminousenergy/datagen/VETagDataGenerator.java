@@ -1,12 +1,13 @@
 package com.veteam.voluminousenergy.datagen;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.ArrayList;
@@ -33,11 +34,11 @@ public class VETagDataGenerator extends BlockTagsProvider {
     @Override
     protected void addTags(){
         // Setup Forge tags
-        final Tags.IOptionalNamedTag<Block> NEEDS_WOOD_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_wood_tool"));
-        final Tags.IOptionalNamedTag<Block> NEEDS_NETHERITE_TOOL = BlockTags.createOptional(new ResourceLocation("forge", "needs_netherite_tool"));
-        final Tags.IOptionalNamedTag<Block> NEEDS_NIGHALITE_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"));
-        final Tags.IOptionalNamedTag<Block> NEEDS_EIGHZO_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"));
-        final Tags.IOptionalNamedTag<Block> NEEDS_SOLARIUM_TOOL = BlockTags.createOptional(new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
+        final TagKey<Block> NEEDS_WOOD_TOOL = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "needs_wood_tool"));
+        final TagKey<Block> NEEDS_NETHERITE_TOOL = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("forge", "needs_netherite_tool"));
+        final TagKey<Block> NEEDS_NIGHALITE_TOOL = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(VoluminousEnergy.MODID, "needs_nighalite_tool"));
+        final TagKey<Block> NEEDS_EIGHZO_TOOL = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(VoluminousEnergy.MODID, "needs_eighzo_tool"));
+        final TagKey<Block> NEEDS_SOLARIUM_TOOL = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(VoluminousEnergy.MODID, "needs_solarium_tool"));
 
         // To Mine With Tool
         mineableWithAxe.forEach(toMineWithAxe -> tag(BlockTags.MINEABLE_WITH_AXE).add(toMineWithAxe));
