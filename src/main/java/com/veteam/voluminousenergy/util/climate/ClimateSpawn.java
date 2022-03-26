@@ -70,9 +70,11 @@ public class ClimateSpawn {
             double cumulativeClimateValue = continentalness + erosion + humidity + temperature;
 
             Random random = new Random((int) (cumulativeClimateValue * Config.CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER.get()));
-
+            int inty = random.nextInt(Config.CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING.get());
+            System.out.println("CuumulativeValue: " + cumulativeClimateValue + " nextInt: " + inty + " Greater than " + Config.CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER.get() + "? " +
+                    (inty > Config.CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER.get() ? " Yes " : " No "));
             //Add a 20% randomness on top of it using the values as a seed to produce non-random random numbers
-            if (random.nextInt(Config.CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING.get()) > Config.CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER.get())
+            if (inty > Config.CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER.get())
                 return false;
         }
 

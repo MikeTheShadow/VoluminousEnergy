@@ -56,6 +56,7 @@
     "voluminousenergy:raw_eighzo_block",
     "voluminousenergy:raw_galena_block",
     "voluminousenergy:raw_rutile_block",
-    "voluminousenergy:raw_bone_block"
+    "voluminousenergy:raw_bone_block",
+    "voluminousenergy:dimensional_laser"
   ]
 }
