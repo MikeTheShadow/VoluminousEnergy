@@ -11,4 +11,7 @@ public class VECriteriaTriggers {
         return CriteriaTriggers.register(p_10596_);
     }
 
+    public static void init() {
+
+    }
 }

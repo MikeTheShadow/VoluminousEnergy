@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
@@ -10,6 +11,7 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.ToolUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -31,15 +34,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.event.sound.SoundEvent;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+import static net.minecraft.ChatFormatting.*;
 
 public class FluidScanner extends Item {
 
@@ -83,21 +87,49 @@ public class FluidScanner extends Item {
         climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
-        player.sendMessage(new TextComponent("Scanning..."), player.getUUID());
+
+        if(player.isShiftKeyDown()) {
+            PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
+
+            ItemStack stack = new ItemStack(VEItems.RFID_CHIP,1);
+
+            int freeSlot = player.getInventory().getFreeSlot();
+
+            if(freeSlot == -1) {
+                // TODO translations
+                player.sendMessage(new TextComponent(RED + "Inventory full! Unable to save item!"),player.getUUID());
+            } else {
+                for(int slot = 0; slot < inventory.getSlots(); slot++) {
+                    ItemStack itemStack = inventory.getStackInSlot(slot);
+                    if(itemStack.getItem() instanceof RFIDChip) {
+                        if(stack.hasTag()) continue;
+                        if(stack.getOrCreateTag().contains("ve_x")) continue;
+                        itemStack.setCount(itemStack.getCount() - 1);
+                        ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);
+                        CompoundTag data = dataStack.getOrCreateTag();
+                        data.putInt("ve_x",chunkAccess.getPos().x);
+                        data.putInt("ve_z",chunkAccess.getPos().z);
+                        dataStack.setTag(data);
+                        inventory.insertItem(freeSlot,dataStack,false);
+                        player.sendMessage(new TextComponent(GREEN + "Written to a RFID Chip!"),player.getUUID());
+                        return InteractionResult.sidedSuccess(false);
+                    }
+                }
+            }
+            player.sendMessage(new TextComponent(RED + "You need a RFID Chip to save fluid data!"),player.getUUID());
+            return InteractionResult.sidedSuccess(false);
+        }
+
+        player.sendMessage(new TextComponent(ChatFormatting.YELLOW + "Scanning..."), player.getUUID());
         player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
 
         ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
         StringBuilder message = new StringBuilder();
 
-        Fluid fluid = Fluids.EMPTY;
-
         for (Pair<Fluid, Integer> pair : fluidsList) {
-            fluid = pair.getA();
             message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
         }
         player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
-
-        VoluminousEnergy.LOGGER.info("pre name: " + fluid.getRegistryName());
 
         ChunkFluids chunkFluids = ChunkFluids.getInstance();
 
@@ -108,8 +140,8 @@ public class FluidScanner extends Item {
 
         if(!chunkFluids.hasChunkFluid(chunkFluid)) {
             VoluminousEnergy.LOGGER.info("Writing new chunk!");
-            chunkFluids.setDirty();
             chunkFluids.add(chunkFluid);
+            chunkFluids.setDirty();
             serverLevel.getDataStorage().set("chunk_fluids",chunkFluids);
         } else {
             VoluminousEnergy.LOGGER.info("Chunk has already been written!");
@@ -179,14 +211,18 @@ public class FluidScanner extends Item {
 
             ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
             if(fluid == null) {
-                throw new RuntimeException("ChunkFluid is somehow null in appendHoverText!");
+                componentList.add(new TextComponent("Error chunk data is null / not saved!"));
+            } else {
+                componentList.add(new TextComponent(""));
+                fluid.getFluids().forEach(f -> {
+                    Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
+                    String translatedString = translatedComponent.getString();
+                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + f.getAmount());
+                    componentList.add(textComponent);
+                });
             }
-            fluid.getFluids().forEach(f -> {
-                Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
-                String translatedString = translatedComponent.getString();
-                Component textComponent = new TextComponent(translatedString + ": " + f.getAmount());
-                componentList.add(textComponent);
-            });
+
+            componentList.add(new TextComponent("Chunk X: " + x + " | Chunk Z: " + z));
         }
 
         super.appendHoverText(itemStack, level, componentList, tooltipFlag);
