@@ -104,14 +104,16 @@ public class FluidScanner extends Item {
                     if(itemStack.getItem() instanceof RFIDChip) {
                         if(stack.hasTag()) continue;
                         if(stack.getOrCreateTag().contains("ve_x")) continue;
-                        itemStack.setCount(itemStack.getCount() - 1);
-                        ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);
-                        CompoundTag data = dataStack.getOrCreateTag();
-                        data.putInt("ve_x",chunkAccess.getPos().x);
-                        data.putInt("ve_z",chunkAccess.getPos().z);
-                        dataStack.setTag(data);
-                        inventory.insertItem(freeSlot,dataStack,false);
-                        player.sendMessage(new TextComponent(GREEN + "Written to a RFID Chip!"),player.getUUID());
+                        if(!stack.getOrCreateTag().contains("ve_x")) {
+                            itemStack.setCount(itemStack.getCount() - 1);
+                            ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);
+                            CompoundTag data = dataStack.getOrCreateTag();
+                            data.putInt("ve_x",chunkAccess.getPos().x);
+                            data.putInt("ve_z",chunkAccess.getPos().z);
+                            dataStack.setTag(data);
+                            inventory.insertItem(freeSlot,dataStack,false);
+                            player.sendMessage(new TextComponent(GREEN + "Written to a RFID Chip!"),player.getUUID());
+                        }
                         return InteractionResult.sidedSuccess(false);
                     }
                 }
