@@ -20,6 +20,7 @@ import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
 import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
+import com.veteam.voluminousenergy.items.tools.CreativeFluidScanner;
 import com.veteam.voluminousenergy.items.tools.FluidScanner;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
@@ -127,6 +128,7 @@ public class VEItems {
 
     //Scanner
     public static FluidScanner FLUID_SCANNER = new FluidScanner();
+    public static CreativeFluidScanner CREATIVE_FLUID_SCANNER = new CreativeFluidScanner();
     public static RFIDChip RFID_CHIP = new RFIDChip();
     // Tools
     //public static Multitool MULTITOOL = new Multitool(new Item.Properties().tab(VESetup.itemGroup).stacksTo(1));
