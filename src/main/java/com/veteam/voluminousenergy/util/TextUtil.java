@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -61,6 +62,10 @@ public class TextUtil {
 
     public static Component translateString(String toTranslate){
         return new TranslatableComponent(toTranslate);
+    }
+
+    public static Component translateString(ChatFormatting chatFormatting, String toTranslate){
+        return new TranslatableComponent(toTranslate).withStyle(chatFormatting);
     }
 
     public static Component translateVEBlock(String block){

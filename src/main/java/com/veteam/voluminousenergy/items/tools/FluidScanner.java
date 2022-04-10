@@ -1,15 +1,11 @@
 package com.veteam.voluminousenergy.items.tools;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
-import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.ToolUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -17,14 +13,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -33,17 +23,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.event.sound.SoundEvent;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-import java.util.*;
-
-import static net.minecraft.ChatFormatting.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class FluidScanner extends Item {
 
@@ -90,21 +77,23 @@ public class FluidScanner extends Item {
 
         if(player.isShiftKeyDown()) {
             PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
-
-            ItemStack stack = new ItemStack(VEItems.RFID_CHIP,1);
-
             int freeSlot = player.getInventory().getFreeSlot();
 
             if(freeSlot == -1) {
                 // TODO translations
-                player.sendMessage(new TextComponent(RED + "Inventory full! Unable to save item!"),player.getUUID());
+                player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.inventory_full"), player.getUUID());
             } else {
                 for(int slot = 0; slot < inventory.getSlots(); slot++) {
                     ItemStack itemStack = inventory.getStackInSlot(slot);
                     if(itemStack.getItem() instanceof RFIDChip) {
-                        if(stack.hasTag()) continue;
-                        if(stack.getOrCreateTag().contains("ve_x")) continue;
-                        if(!stack.getOrCreateTag().contains("ve_x")) {
+                        if(itemStack.hasTag()) {
+                            continue;
+                        }
+                        if(itemStack.getOrCreateTag().contains("ve_x")){
+                            continue;
+                        }
+                        System.out.println(itemStack.getOrCreateTag().toString());
+                        if(!itemStack.getOrCreateTag().contains("ve_x")) {
                             itemStack.setCount(itemStack.getCount() - 1);
                             ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);
                             CompoundTag data = dataStack.getOrCreateTag();
@@ -112,17 +101,24 @@ public class FluidScanner extends Item {
                             data.putInt("ve_z",chunkAccess.getPos().z);
                             dataStack.setTag(data);
                             inventory.insertItem(freeSlot,dataStack,false);
-                            player.sendMessage(new TextComponent(GREEN + "Written to a RFID Chip!"),player.getUUID());
+                            //player.sendMessage(new TextComponent(ChatFormatting.GREEN + "Written to a RFID Chip!"),player.getUUID());
+                            player.sendMessage(TextUtil.translateString(ChatFormatting.GREEN, "text.voluminousenergy.rfid.write_success"), player.getUUID());
                         }
                         return InteractionResult.sidedSuccess(false);
                     }
                 }
             }
-            player.sendMessage(new TextComponent(RED + "You need a RFID Chip to save fluid data!"),player.getUUID());
+            player.sendMessage(TextUtil.translateString(ChatFormatting.RED,"text.voluminousenergy.fluid_scanner.needs_empty_rfid" ), player.getUUID());
             return InteractionResult.sidedSuccess(false);
         }
 
         player.sendMessage(new TextComponent(ChatFormatting.YELLOW + "Scanning..."), player.getUUID());
+        player.sendMessage(TextUtil.translateString(ChatFormatting.YELLOW, "text.voluminousenergy.fluid_scanner.scanning")
+                .copy()
+                .append(new TextComponent("...").withStyle(ChatFormatting.YELLOW)),
+                player.getUUID()
+        );
+
         player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
 
         ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);

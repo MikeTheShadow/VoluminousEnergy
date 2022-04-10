@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -41,7 +42,7 @@ public class RFIDChip extends Item {
 
             ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
             if(fluid == null) {
-                componentList.add(new TextComponent("Error chunk data is null / not saved!"));
+                componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));
             } else {
                 componentList.add(new TextComponent(""));
                 fluid.getFluids().forEach(f -> {
@@ -53,7 +54,10 @@ public class RFIDChip extends Item {
             }
 
 
-            componentList.add(new TextComponent("Chunk X: " + x + " | Chunk Z: " + z));
+            componentList.add(
+                    TextUtil.translateString("text.voluminousenergy.chunk").copy()
+                            .append(" X: " + x + " | ")
+                            .append(TextUtil.translateString("text.voluminousenergy.chunk").copy().append(" Z: " + z)));
         }
         super.appendHoverText(itemStack, level, componentList, tooltipFlag);
     }
