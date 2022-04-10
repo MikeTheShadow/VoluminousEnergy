@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.items.tools;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
+import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -22,13 +21,10 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,12 +54,9 @@ public class FluidScanner extends Item {
         BlockState blockstate = level.getBlockState(blockpos);
         ChunkAccess chunkAccess = level.getChunk(blockpos);
 
-
         Player player = useOnContext.getPlayer();
 
         if (player == null || level.isClientSide) return InteractionResult.sidedSuccess(level.isClientSide);
-
-        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
 
         BlockPos pos = new BlockPos(16 * chunkAccess.getPos().x, 320, 16 * chunkAccess.getPos().z);
 
@@ -121,29 +114,12 @@ public class FluidScanner extends Item {
 
         player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
 
-        ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
         StringBuilder message = new StringBuilder();
-
-        for (Pair<Fluid, Integer> pair : fluidsList) {
-            message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
+        ChunkFluid fluid = WorldUtil.getFluidFromPosition(level,pos);
+        for (SingleChunkFluid singleChunkFluid : fluid.getFluids()) {
+            message.append("\nFound Fluid: ").append(singleChunkFluid.getFluid().getRegistryName()).append(" Amount: ").append(singleChunkFluid.getAmount());
         }
         player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
-
-        ChunkFluids chunkFluids = ChunkFluids.getInstance();
-
-        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(serverLevel,
-                chunkAccess.getPos(),
-                fluidsList
-        ));
-
-        if(!chunkFluids.hasChunkFluid(chunkFluid)) {
-            VoluminousEnergy.LOGGER.info("Writing new chunk!");
-            chunkFluids.add(chunkFluid);
-            chunkFluids.setDirty();
-            serverLevel.getDataStorage().set("chunk_fluids",chunkFluids);
-        } else {
-            VoluminousEnergy.LOGGER.info("Chunk has already been written!");
-        }
 
         ItemStack hand = useOnContext.getItemInHand();
 
