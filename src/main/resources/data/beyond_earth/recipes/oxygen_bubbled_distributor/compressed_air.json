@@ -5,10 +5,10 @@
       "modid": "beyond_earth"
     }
   ],
-  "type": "beyond_earth:oxygenbubbledistributor",
+  "type": "beyond_earth:oxygen_bubble_distributor",
   "input": {
     "name": "voluminousenergy:compressed_air",
-    "amount": 500
+    "amount": 1
   },
-  "oxygen": 125
+  "oxygen": 4
 }

@@ -53,3 +53,10 @@ description='''Voluminous Energy - A Tech mod focused on resource processing and
     versionRange="[9.5.2.134,)"
     ordering="NONE"
     side="CLIENT"
+
+[[dependencies.voluminousenergy]]
+    modId="beyond_earth"
+    mandatory=false
+    versionRange="[6.1,)"
+    ordering="NONE"
+    side="BOTH"
