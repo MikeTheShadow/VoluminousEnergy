@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 public class Nitrogen {
     public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_still");
     public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_flowing");
+    public static final int NITROGEN_FLUID_WIDTH = 4;
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
@@ -25,12 +26,12 @@ public class Nitrogen {
     public static Item NITROGEN_BUCKET;
 
     public static FlowingFluid NitrogenFluid(){
-        NITROGEN = new ForgeFlowingFluid.Source(Nitrogen.properties);
+        NITROGEN = new VEFlowingFluid.Source(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return NITROGEN;
     }
 
     public static FlowingFluid FlowingNitrogenFluid(){
-        FLOWING_NITROGEN = new ForgeFlowingFluid.Flowing(Nitrogen.properties);
+        FLOWING_NITROGEN = new VEFlowingFluid.Flowing(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return FLOWING_NITROGEN;
     }
 
