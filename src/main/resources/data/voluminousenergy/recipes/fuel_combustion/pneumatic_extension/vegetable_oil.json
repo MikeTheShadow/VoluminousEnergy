@@ -11,6 +11,6 @@
     "volumetric_energy": 57600
   },
   "input_fluid": {
-    "fluid": "pneumaticcraft:vegetable_oil"
+    "tag": "forge:plantoil"
   }
 }
