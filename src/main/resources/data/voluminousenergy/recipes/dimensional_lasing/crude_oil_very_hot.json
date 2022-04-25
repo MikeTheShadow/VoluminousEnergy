@@ -15,7 +15,7 @@
       "maximum": 0.3
     },
     "humidity": {
-      "minimum": 0,
+      "minimum": -0.3,
       "maximum": 0.3
     },
     "temperature": {
