@@ -6,14 +6,11 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.VEBatterySwitchManager;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -179,7 +176,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
                                     maxReceiveItem);
                             toReceive = Math.min(toReceive, POWER_MAX_TX);
                             toReceive = Math.min(toReceive, teEnergy.getEnergyStored());
-                        } else toReceive = Math.min(energyItem.getEnergyStored(), POWER_MAX_TX);
+                        } else toReceive = Math.min((energyItem.getMaxEnergyStored() - energyItem.getEnergyStored()), POWER_MAX_TX);
 
                         if(toReceive + teEnergy.getEnergyStored() <= energyItem.getMaxEnergyStored()){
                             teEnergy.extractEnergy(toReceive, false);

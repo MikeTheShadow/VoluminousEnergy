@@ -29,7 +29,7 @@ public class DimensionalLaserBlock extends Block implements EntityBlock {
                 .noOcclusion()
         );
         setRegistryName("dimensional_laser");
-        VETagDataGenerator.setRequiresIron(this);
+        VETagDataGenerator.setRequiresSolarium(this);
         VETagDataGenerator.setRequiresPickaxe(this);
     }
 

@@ -511,7 +511,7 @@ public class Config {
             CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING = COMMON_BUILDER.comment("Value to be used for binding the RNG ")
                 .defineInRange("Climate Spawns Hole Punch Bounding", 100, 10, 10_000);
             CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER = COMMON_BUILDER.comment("If generated number is smaller than this value, the chunk will be 'hole punched'.")
-                .defineInRange("Climate Spawns Hole Punch Number Must Be Larger Than", 4, 1, 10_000);
+                .defineInRange("Climate Spawns Hole Punch Number Must Be Larger Than", 47, 1, 10_000);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);

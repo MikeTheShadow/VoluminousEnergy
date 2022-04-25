@@ -1,18 +1,25 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.persistence.ChunkFluid;
+import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -77,6 +84,27 @@ public class WorldUtil {
         climateMap.put(ClimateParameters.HUMIDITY,humidity);
         climateMap.put(ClimateParameters.TEMPERATURE,temperature);
         return climateMap;
+    }
+
+    public static ChunkFluid getFluidFromPosition(Level level,BlockPos pos) {
+        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
+        ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
+        ChunkAccess chunkAccess = level.getChunk(pos);
+        ChunkFluids chunkFluids = ChunkFluids.getInstance();
+
+        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(serverLevel,
+                chunkAccess.getPos(),
+                fluidsList
+        ));
+
+        if(!chunkFluids.hasChunkFluid(chunkFluid)) {
+            chunkFluids.add(chunkFluid);
+            chunkFluids.setDirty();
+            DimensionDataStorage storage = serverLevel.getDataStorage();
+            storage.set("chunk_fluids",chunkFluids);
+            storage.save();
+        }
+        return chunkFluid;
     }
 
     public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){

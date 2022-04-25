@@ -17,7 +17,7 @@
   },
   "criteria": {
     "laser": {
-      "trigger": "minecraft:construct_beacon",
+      "trigger": "voluminousenergy:construct_dimensional_laser",
       "conditions": {
         "level": {
           "min": 1
@@ -26,3 +26,4 @@
     }
   }
 }
+

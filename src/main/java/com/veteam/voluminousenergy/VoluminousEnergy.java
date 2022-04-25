@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy;
 
+import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
@@ -47,12 +48,10 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -67,7 +66,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -114,6 +112,9 @@ public class VoluminousEnergy {
         modEventBus.addListener(this::registerRenderers);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
+
+        //Register triggers
+        VECriteriaTriggers.init();
 
         // Config Files to load
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
@@ -572,6 +573,7 @@ public class VoluminousEnergy {
 
             // Scanner
             itemRegisteryEvent.getRegistry().register(VEItems.FLUID_SCANNER);
+            itemRegisteryEvent.getRegistry().register(VEItems.CREATIVE_FLUID_SCANNER);
             itemRegisteryEvent.getRegistry().register(VEItems.RFID_CHIP);
         }
 
