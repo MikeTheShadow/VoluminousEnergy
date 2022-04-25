@@ -196,10 +196,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
                 recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, 1000);
                 recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
             } else {
-                recipe.inputArraySize = Lazy.of(buffer::readInt);
+                int inputArraySize = buffer.readInt();
+                recipe.inputArraySize = Lazy.of(() -> inputArraySize);
                 ArrayList<Fluid> fluids = new ArrayList<>();
                 ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-                for (int i = 0; i < recipe.inputArraySize.get(); i++){
+                for (int i = 0; i < inputArraySize; i++){
                     FluidStack serverFluid = buffer.readFluidStack();
                     fluidStacks.add(serverFluid.copy());
                     fluids.add(serverFluid.getRawFluid());

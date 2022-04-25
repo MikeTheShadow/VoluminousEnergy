@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "*",
+    "1"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:tallow"
+    },
+    "*": {
+      "item": "minecraft:stick"
+    },
+    "1": {
+      "tag": "minecraft:soul_fire_base_blocks"
+    }
+  },
+  "result": {
+    "item": "minecraft:soul_torch",
+    "count": 4
+  }
+}

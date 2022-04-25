@@ -25,6 +25,9 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.persistence.ChunkFluid;
+import com.veteam.voluminousenergy.persistence.ChunkFluids;
+import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -61,6 +64,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -374,6 +378,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.STANDARD_TANK_FRAME);
             itemRegisteryEvent.getRegistry().register(VEItems.ROBUST_TANK_FRAME);
             itemRegisteryEvent.getRegistry().register(VEItems.IMPECCABLE_TANK_FRAME);
+            itemRegisteryEvent.getRegistry().register(VEItems.ANIMAL_FAT);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);
@@ -778,6 +783,13 @@ public class VoluminousEnergy {
             VESurfaceBuilders.init();
             VESurfaceBuilders.surfaceBuilders.forEach(surfaceBuilder -> event.getRegistry().register(surfaceBuilder));
         }*/
+
+        @SubscribeEvent
+        public static void onRegisterModifiers(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event){
+            // Animal Fat
+            event.getRegistry().register(new AnimalFatLootModifier.Serializer().setRegistryName("animal_fat_from_cow"));
+            event.getRegistry().register(new AnimalFatLootModifier.Serializer().setRegistryName("animal_fat_from_pig"));
+        }
 
 
         @SubscribeEvent

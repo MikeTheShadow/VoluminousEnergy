@@ -14,6 +14,7 @@ import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
+import com.veteam.voluminousenergy.items.solid_fuels.AnimalFat;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
@@ -76,6 +77,7 @@ public class VEItems {
     public static CupricOxideDust CUPRIC_OXIDE_DUST = new CupricOxideDust();
     public static SawDust SAW_DUST = new SawDust();
     public static Rosin ROSIN = new Rosin();
+    public static AnimalFat ANIMAL_FAT = new AnimalFat();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();

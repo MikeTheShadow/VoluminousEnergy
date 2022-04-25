@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "entries": [
+    "voluminousenergy:animal_fat_from_cow",
+    "voluminousenergy:animal_fat_from_sheep",
+    "voluminousenergy:animal_fat_from_pig"
+  ]
+}

@@ -5,10 +5,10 @@
       "modid": "beyond_earth"
     }
   ],
-  "type": "beyond_earth:oxygenloader",
+  "type": "beyond_earth:oxygen_loader",
   "input": {
     "name": "voluminousenergy:oxygen",
-    "amount": 1000
+    "amount": 1
   },
-  "oxygen": 1000
+  "oxygen": 1
 }
