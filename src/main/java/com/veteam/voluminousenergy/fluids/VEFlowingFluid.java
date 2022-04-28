@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -48,6 +50,25 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
     }
 
     // DANGEROUS CODE GOING HERE
+    public void tick(Level level, BlockPos blockPos, FluidState fluidState) {
+        if (!fluidState.isSource()) {
+            FluidState fluidstate = this.getNewLiquid(level, blockPos, level.getBlockState(blockPos));
+            int i = this.getSpreadDelay(level, blockPos, fluidState, fluidstate);
+            if (fluidstate.isEmpty()) {
+                fluidState = fluidstate;
+                level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+            } else if (!fluidstate.equals(fluidState)) {
+                fluidState = fluidstate;
+                BlockState blockstate = fluidstate.createLegacyBlock();
+                level.setBlock(blockPos, blockstate, 2);
+                level.scheduleTick(blockPos, fluidstate.getType(), i);
+                level.updateNeighborsAt(blockPos, blockstate.getBlock());
+            }
+        }
+
+        this.spread(level, blockPos, fluidState);
+    }
+
     protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> stateDefinitionBuilder) {
         super.createFluidStateDefinition(stateDefinitionBuilder);
         stateDefinitionBuilder.add(LEVEL);
@@ -67,7 +88,7 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                 float f1 = 0.0F;
                 if (f == 0.0F) {
                     if (!getter.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
-                        BlockPos blockpos = blockpos$mutableblockpos.below();
+                        BlockPos blockpos = blockpos$mutableblockpos.above(); // flipped
                         FluidState fluidstate1 = getter.getFluidState(blockpos);
                         if (this.affectsFlow(fluidstate1)) {
                             f = fluidstate1.getOwnHeight();
@@ -92,7 +113,7 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
             for(Direction direction1 : Direction.Plane.HORIZONTAL) {
                 blockpos$mutableblockpos.setWithOffset(pos, direction1);
                 if (this.isSolidFace(getter, blockpos$mutableblockpos, direction1) || this.isSolidFace(getter, blockpos$mutableblockpos.above(), direction1)) {
-                    vec3 = vec3.normalize().add(0.0D, -6.0D, 0.0D);
+                    vec3 = vec3.normalize().subtract(0.0D, -6.0D, 0.0D);
                     break;
                 }
             }
@@ -101,8 +122,8 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
         return vec3.normalize();
     }
 
-    private boolean affectsFlow(FluidState p_76095_) {
-        return p_76095_.isEmpty() || p_76095_.getType().isSame(this);
+    private boolean affectsFlow(FluidState fluidState) {
+        return fluidState.isEmpty() || fluidState.getType().isSame(this);
     }
 
     protected void spread(LevelAccessor levelAccessor, BlockPos blockPos, FluidState fluidState) {
@@ -117,7 +138,8 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
             if (this.canSpreadTo(levelAccessor, blockPos, blockstate, Direction.UP, blockpos, blockstate1, levelAccessor.getFluidState(blockpos), fluidstate.getType())) {
                 System.out.println("CAN SPREAD FIRST IF PASS");
                 this.spreadTo(levelAccessor, blockpos, blockstate1, Direction.UP, fluidstate);
-                if (this.sourceNeighborCount(levelAccessor, blockPos) >= 3) {
+                if (this.sourceNeighborCount(levelAccessor, blockPos) >= 3 || this.isSource(fluidState)) {
+                    System.out.println("CAN SPREAD: SPREAD TO SIDES");
                     this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
                 }
             } else if (fluidState.isSource() || !this.isWaterHole(levelAccessor, fluidstate.getType(), blockPos, blockstate, blockpos, blockstate1)) {
@@ -227,19 +249,63 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
         }
     }
 
+
     @Override
     protected void spreadTo(LevelAccessor accessor, BlockPos pos, BlockState blockStateInQuestion, Direction p_76008_, FluidState fluidState) {
         if (blockStateInQuestion.getBlock() instanceof LiquidBlockContainer) {
+            System.out.println("spreadTo: instanceof LiquidBlockContainer for pos: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
             ((LiquidBlockContainer)blockStateInQuestion.getBlock()).placeLiquid(accessor, pos, blockStateInQuestion, fluidState);
         } else {
+            System.out.println("spreadTo: else hit ");
+
             if (!blockStateInQuestion.isAir()) {
                 this.beforeDestroyingBlock(accessor, pos, blockStateInQuestion);
+                System.out.println("spreadTo: before destroying block ");
+
             }
 
             accessor.setBlock(pos, fluidState.createLegacyBlock(), 3);
         }
 
     }
+
+    /*
+    @Override
+    protected FluidState getNewLiquid(LevelReader levelReader, BlockPos pos, BlockState blockState) {
+        int i = 0;
+        int j = 0;
+
+        for(Direction direction : Direction.Plane.HORIZONTAL) {
+            BlockPos blockpos = pos.relative(direction);
+            BlockState blockstate = levelReader.getBlockState(blockpos);
+            FluidState fluidstate = blockstate.getFluidState();
+            if (fluidstate.getType().isSame(this) && this.canPassThroughWall(direction, levelReader, pos, blockState, blockpos, blockstate)) {
+                if (fluidstate.isSource() && net.minecraftforge.event.ForgeEventFactory.canCreateFluidSource(levelReader, blockpos, blockstate, this.canConvertToSource())) {
+                    ++j;
+                }
+
+                i = Math.max(i, fluidstate.getAmount());
+            }
+        }
+
+        if (j >= 2) {
+            BlockState blockstate1 = levelReader.getBlockState(pos.above());//flipped
+            FluidState fluidstate1 = blockstate1.getFluidState();
+            if (blockstate1.getMaterial().isSolid() || this.isSourceBlockOfThisType(fluidstate1)) {
+                return this.getSource(false);
+            }
+        }
+
+        BlockPos blockpos1 = pos.below();//flipped
+        BlockState blockstate2 = levelReader.getBlockState(blockpos1);
+        FluidState fluidstate2 = blockstate2.getFluidState();
+        if (!fluidstate2.isEmpty() && fluidstate2.getType().isSame(this) && this.canPassThroughWall(Direction.DOWN, levelReader, pos, blockState, blockpos1, blockstate2)) { // Direction.UP ORIGNIAL
+            return this.getFlowing(8, true);
+        } else {
+            int k = i - this.getDropOff(levelReader);
+            return k <= 0 ? Fluids.EMPTY.defaultFluidState() : this.getFlowing(k, false);
+        }
+    }*/
 
     //
 
