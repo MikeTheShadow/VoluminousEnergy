@@ -6,12 +6,12 @@
   },
   "process_time": 200,
   "result": {
-    "item": "voluminousenergy:shredded_biomass",
-    "count": 2
+    "item": "voluminousenergy:flour_dust",
+    "count": 1
   },
   "rng": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
+    "item": "minecraft:wheat_seeds",
+    "count": 1,
+    "chance": 0.15
   }
 }

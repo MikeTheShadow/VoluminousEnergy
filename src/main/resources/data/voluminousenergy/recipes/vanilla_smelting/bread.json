@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "forge:dough"
+  },
+  "result": "minecraft:bread",
+  "experience": 1.0,
+  "cookingtime": 200
+}

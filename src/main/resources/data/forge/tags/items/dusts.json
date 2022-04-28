@@ -34,6 +34,7 @@
     "#forge:dusts/cupric_oxide",
     "#forge:dusts/saw",
     "#forge:dusts/sawdust",
-    "#forge:dusts/saltpeter"
+    "#forge:dusts/saltpeter",
+    "#forge:dusts/flour"
   ]
 }

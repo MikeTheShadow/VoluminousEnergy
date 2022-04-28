@@ -25,8 +25,6 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
-import com.veteam.voluminousenergy.persistence.ChunkFluid;
-import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
@@ -340,6 +338,12 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.SILICON);
             itemRegisteryEvent.getRegistry().register(VEItems.SHREDDED_BIOMASS);
             itemRegisteryEvent.getRegistry().register(VEItems.TITANIUM_SAWBLADE);
+            itemRegisteryEvent.getRegistry().register(VEItems.ROSIN);
+            itemRegisteryEvent.getRegistry().register(VEItems.STANDARD_TANK_FRAME);
+            itemRegisteryEvent.getRegistry().register(VEItems.ROBUST_TANK_FRAME);
+            itemRegisteryEvent.getRegistry().register(VEItems.IMPECCABLE_TANK_FRAME);
+            itemRegisteryEvent.getRegistry().register(VEItems.ANIMAL_FAT);
+            itemRegisteryEvent.getRegistry().register(VEItems.DOUGH);
 
             //Dusts
             itemRegisteryEvent.getRegistry().register(VEItems.COALDUST);
@@ -374,11 +378,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.COPPER_CARBONATE_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.CUPRIC_OXIDE_DUST);
             itemRegisteryEvent.getRegistry().register(VEItems.SAW_DUST);
-            itemRegisteryEvent.getRegistry().register(VEItems.ROSIN);
-            itemRegisteryEvent.getRegistry().register(VEItems.STANDARD_TANK_FRAME);
-            itemRegisteryEvent.getRegistry().register(VEItems.ROBUST_TANK_FRAME);
-            itemRegisteryEvent.getRegistry().register(VEItems.IMPECCABLE_TANK_FRAME);
-            itemRegisteryEvent.getRegistry().register(VEItems.ANIMAL_FAT);
+            itemRegisteryEvent.getRegistry().register(VEItems.FLOUR_DUST);
 
             //Raw ore
             itemRegisteryEvent.getRegistry().register(VEItems.RAW_BAUXITE);

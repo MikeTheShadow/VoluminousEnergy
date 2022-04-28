@@ -284,6 +284,7 @@
     "item.voluminousenergy.standard_tank_frame": "Standard Tank Frame",
     "item.voluminousenergy.robust_tank_frame": "Robust Tank Frame",
     "item.voluminousenergy.impeccable_tank_frame": "Impeccable Tank Frame",
+    "item.voluminousenergy.flour_dust": "Flour Dust",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",

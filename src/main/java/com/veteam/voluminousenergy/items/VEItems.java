@@ -29,11 +29,16 @@ import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 
 public class VEItems {
+    // Misc
     public static Petcoke PETCOKE = new Petcoke();
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
     public static ShreddedBiomass SHREDDED_BIOMASS = new ShreddedBiomass();
+    public static Rosin ROSIN = new Rosin();
+    public static AnimalFat ANIMAL_FAT = new AnimalFat();
+    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
+    public static Dough DOUGH = new Dough();
 
     // Raw Ore
     public static RawBauxite RAW_BAUXITE = new RawBauxite();
@@ -76,8 +81,7 @@ public class VEItems {
     public static CopperCarbonateDust COPPER_CARBONATE_DUST = new CopperCarbonateDust();
     public static CupricOxideDust CUPRIC_OXIDE_DUST = new CupricOxideDust();
     public static SawDust SAW_DUST = new SawDust();
-    public static Rosin ROSIN = new Rosin();
-    public static AnimalFat ANIMAL_FAT = new AnimalFat();
+    public static FlourDust FLOUR_DUST = new FlourDust();
 
     //Ingots and Bricks
     public static CarbonBrick CARBON_BRICK = new CarbonBrick();
@@ -116,8 +120,6 @@ public class VEItems {
     //Batteries
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
-
-    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
 
     //Tank Frames
     public static StandardTankFrame STANDARD_TANK_FRAME = new StandardTankFrame();
