@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -129,6 +128,65 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
     protected void spread(LevelAccessor levelAccessor, BlockPos blockPos, FluidState fluidState) {
         if (!fluidState.isEmpty()) {
             if (!(blockPos.getY() < 320)) return;
+
+            // Preliminary check if not source
+            if (!fluidState.isSource()){
+                BlockState belowState = levelAccessor.getBlockState(blockPos.below());
+                FluidState belowFluidState = levelAccessor.getFluidState(blockPos.below());
+
+                /*if (belowState.isAir() || (!belowFluidState.isSource() && !belowFluidState.is(this))){
+                    levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+                } else if (belowFluidState.isSource()) {
+
+                } else if (!belowFluidState.isSource() && belowFluidState.is(this)){
+
+                } else if (){
+
+                }*/
+
+                /*if (belowState.isAir()){
+                    levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+                } else*/
+                if (!belowFluidState.isSource() && !belowFluidState.is(this)) {
+                    boolean foundSource = false;
+
+                    FluidState fluidStateNorth = levelAccessor.getFluidState(blockPos.north());
+                    FluidState fluidStateSouth = levelAccessor.getFluidState(blockPos.south());
+                    FluidState fluidStateEast = levelAccessor.getFluidState(blockPos.east());
+                    FluidState fluidStateWest = levelAccessor.getFluidState(blockPos.west());
+
+                    // immediate neighbours
+                    if (fluidStateNorth.is(this) && fluidStateNorth.isSource()){
+                        foundSource = true;
+                    } else if (fluidStateSouth.is(this) && fluidStateSouth.isSource()){
+                        foundSource = true;
+                    } else if (fluidStateEast.is(this) && fluidStateEast.isSource()){
+                        foundSource = true;
+                    } else if (fluidStateWest.is(this) && fluidStateWest.isSource()){
+                        foundSource = true;
+                    }
+
+                    // Find directly North, South, East, West
+                    for (Direction direction : Direction.Plane.HORIZONTAL){
+                        if (foundSource) break;
+                        for (int i = 1; i <= this.flowWidth; i++){
+                            BlockPos dirPos = blockPos.relative(direction, i);
+                            FluidState foundFluidState = levelAccessor.getFluidState(dirPos);
+                            if (!fluidState.isEmpty() && fluidState.is(this) && fluidState.isSource()){
+                                foundSource = true;
+                                break;
+                            }
+                        }
+                    }
+                    // End of find directly NSEW
+
+
+                    if (!foundSource){
+                        levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+                    }
+                }
+
+            }
 
             BlockState blockstate = levelAccessor.getBlockState(blockPos);
             BlockPos blockpos = blockPos.above();
