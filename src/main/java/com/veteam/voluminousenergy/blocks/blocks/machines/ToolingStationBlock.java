@@ -34,7 +34,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
         );
         setRegistryName("tooling_station");
         VETagDataGenerator.setRequiresPickaxe(this);
-        VETagDataGenerator.setRequiresDiamond(this);
+        VETagDataGenerator.setRequiresIron(this);
     }
 
     @Nullable
