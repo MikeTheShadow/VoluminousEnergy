@@ -134,19 +134,6 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                 BlockState belowState = levelAccessor.getBlockState(blockPos.below());
                 FluidState belowFluidState = levelAccessor.getFluidState(blockPos.below());
 
-                /*if (belowState.isAir() || (!belowFluidState.isSource() && !belowFluidState.is(this))){
-                    levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
-                } else if (belowFluidState.isSource()) {
-
-                } else if (!belowFluidState.isSource() && belowFluidState.is(this)){
-
-                } else if (){
-
-                }*/
-
-                /*if (belowState.isAir()){
-                    levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
-                } else*/
                 if (!belowFluidState.isSource() && !belowFluidState.is(this)) {
                     boolean foundSource = false;
 
@@ -155,15 +142,25 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                     FluidState fluidStateEast = levelAccessor.getFluidState(blockPos.east());
                     FluidState fluidStateWest = levelAccessor.getFluidState(blockPos.west());
 
-                    // immediate neighbours
+                    /***
+                     *          Immediate Neighbours
+                     *          This seems to work for the main stem/pillar of the gas flowing upwards
+                     *          Still need a solution for the bottom though
+                    ***/
                     if (fluidStateNorth.is(this) && fluidStateNorth.isSource()){
-                        foundSource = true;
+                        //System.out.println("FluidStateNorth pass  for " + blockPos);
+                        return;
                     } else if (fluidStateSouth.is(this) && fluidStateSouth.isSource()){
-                        foundSource = true;
+                        //System.out.println("FluidStateSouth pass  for " + blockPos);
+                        return;
                     } else if (fluidStateEast.is(this) && fluidStateEast.isSource()){
-                        foundSource = true;
+                        //System.out.println("FluidStateEast pass  for" + blockPos);
+                        return;
                     } else if (fluidStateWest.is(this) && fluidStateWest.isSource()){
-                        foundSource = true;
+                        //System.out.println("FluidStateWest pass for " + blockPos);
+                        return;
+                    } else {
+                        //System.out.println("No direct source neighbours for " + blockPos);
                     }
 
                     // Find directly North, South, East, West
@@ -171,8 +168,9 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                         if (foundSource) break;
                         for (int i = 1; i <= this.flowWidth; i++){
                             BlockPos dirPos = blockPos.relative(direction, i);
+                            dirPos = dirPos.below();
                             FluidState foundFluidState = levelAccessor.getFluidState(dirPos);
-                            if (!fluidState.isEmpty() && fluidState.is(this) && fluidState.isSource()){
+                            if (!foundFluidState.isEmpty() && foundFluidState.is(this) /*&& fluidState.isSource()*/){
                                 foundSource = true;
                                 break;
                             }
@@ -188,24 +186,26 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
 
             }
 
+            // "Traditional" Spread code
             BlockState blockstate = levelAccessor.getBlockState(blockPos);
             BlockPos blockpos = blockPos.above();
             BlockState blockstate1 = levelAccessor.getBlockState(blockpos);
             FluidState fluidstate = this.getNewLiquid(levelAccessor, blockpos.below(), blockstate1); // may Need to be reworked
-            System.out.println("SPREAD CALLED");
+            //System.out.println("SPREAD CALLED");
             if (this.canSpreadTo(levelAccessor, blockPos, blockstate, Direction.UP, blockpos, blockstate1, levelAccessor.getFluidState(blockpos), fluidstate.getType())) {
-                System.out.println("CAN SPREAD FIRST IF PASS");
+                //System.out.println("CAN SPREAD FIRST IF PASS");
                 this.spreadTo(levelAccessor, blockpos, blockstate1, Direction.UP, fluidstate);
                 if (this.sourceNeighborCount(levelAccessor, blockPos) >= 3 || this.isSource(fluidState)) {
-                    System.out.println("CAN SPREAD: SPREAD TO SIDES");
+                    //System.out.println("CAN SPREAD: SPREAD TO SIDES");
                     this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
                 }
             } else if (fluidState.isSource() || !this.isWaterHole(levelAccessor, fluidstate.getType(), blockPos, blockstate, blockpos, blockstate1)) {
-                System.out.println("SECOND IF PASS FOR SPREAD CHECK");
+                //System.out.println("SECOND IF PASS FOR SPREAD CHECK");
                 this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
             } else {
-                System.out.println("TOTAL FAILURE FOR SPREAD CHECKS");
+                //System.out.println("TOTAL FAILURE FOR SPREAD CHECKS");
             }
+            // End of "Traditional" spread code
 
         }
     }
@@ -311,14 +311,14 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
     @Override
     protected void spreadTo(LevelAccessor accessor, BlockPos pos, BlockState blockStateInQuestion, Direction p_76008_, FluidState fluidState) {
         if (blockStateInQuestion.getBlock() instanceof LiquidBlockContainer) {
-            System.out.println("spreadTo: instanceof LiquidBlockContainer for pos: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+            //System.out.println("spreadTo: instanceof LiquidBlockContainer for pos: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
             ((LiquidBlockContainer)blockStateInQuestion.getBlock()).placeLiquid(accessor, pos, blockStateInQuestion, fluidState);
         } else {
-            System.out.println("spreadTo: else hit ");
+            //System.out.println("spreadTo: else hit ");
 
             if (!blockStateInQuestion.isAir()) {
                 this.beforeDestroyingBlock(accessor, pos, blockStateInQuestion);
-                System.out.println("spreadTo: before destroying block ");
+                //System.out.println("spreadTo: before destroying block ");
 
             }
 
