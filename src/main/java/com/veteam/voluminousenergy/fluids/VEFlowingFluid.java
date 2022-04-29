@@ -8,10 +8,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -24,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import org.checkerframework.common.returnsreceiver.qual.This;
 
 import java.util.Map;
 
@@ -170,10 +168,42 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                             BlockPos dirPos = blockPos.relative(direction, i);
                             dirPos = dirPos.below();
                             FluidState foundFluidState = levelAccessor.getFluidState(dirPos);
-                            if (!foundFluidState.isEmpty() && foundFluidState.is(this) /*&& fluidState.isSource()*/){
+                            /*
+                            if (!foundFluidState.isEmpty() && foundFluidState.is(this)){
                                 foundSource = true;
                                 break;
+                            }*/
+
+                            if (!foundFluidState.isEmpty() && foundFluidState.is(this)){
+                                foundSource = true;
+                                break;
+
+                                // Next else if will only fire at the very bottom of the gas pillar
+                            } else if (!(belowState.getBlock() instanceof BucketPickup) && !(belowState.getBlock() instanceof LiquidBlock) && !(belowState.isAir()) && !(belowState.getFluidState() == this.defaultFluidState())){
+                                // Plus shaped check
+                                BlockPos xPlusOne = blockPos.offset(1, 0, 0);
+                                BlockPos xMinusOne = blockPos.offset(-1, 0, 0);
+                                BlockPos zPlusOne = blockPos.offset(0,0,1);
+                                BlockPos zMinusOne = blockPos.offset(0,0,-1);
+
+                                FluidState fluidStateXP1 = levelAccessor.getFluidState(xPlusOne);
+                                FluidState fluidStateXM1 = levelAccessor.getFluidState(xMinusOne);
+                                FluidState fluidStateZP1 = levelAccessor.getFluidState(zPlusOne);
+                                FluidState fluidStateZM1 = levelAccessor.getFluidState(zMinusOne);
+
+                                if (       (fluidStateXP1.getType().isSame(this.getSource()) || fluidStateXP1.getType().isSame(this.getFlowing()))
+                                        || (fluidStateXM1.getType().isSame(this.getSource()) || fluidStateXM1.getType().isSame(this.getFlowing()))
+                                        || (fluidStateZP1.getType().isSame(this.getSource()) || fluidStateZP1.getType().isSame(this.getFlowing()))
+                                        || (fluidStateZM1.getType().isSame(this.getSource()) || fluidStateZM1.getType().isSame(this.getFlowing()))
+                                ) {
+                                    foundSource = true;
+                                    break;
+                                }
+                                //foundSource = true;
+                                //break;
                             }
+
+                            // end of for loop
                         }
                     }
                     // End of find directly NSEW
