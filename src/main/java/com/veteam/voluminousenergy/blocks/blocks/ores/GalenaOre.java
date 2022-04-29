@@ -12,7 +12,7 @@ public class GalenaOre extends VEOreBlock {
     public GalenaOre(){
         super(Properties.of(Material.STONE)
                 .sound(SoundType.STONE)
-                .lightLevel(l -> Config.GALENA_GLOW.get())
+                .lightLevel(l -> Config.GALENA_ORE_BLOCK_LIGHT_LEVEL.get())
                 .requiresCorrectToolForDrops()
                 .strength(2.0f)
         );
