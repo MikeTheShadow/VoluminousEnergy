@@ -25,12 +25,12 @@ public class LightFuel {
     public static Item LIGHT_FUEL_BUCKET;
 
     public static FlowingFluid LightFuelFluid(){
-        LIGHT_FUEL = new ForgeFlowingFluid.Source(LightFuel.properties);
+        LIGHT_FUEL = new VEFlowingGasFluid.Source(LightFuel.properties,4);
         return LIGHT_FUEL;
     }
 
     public static FlowingFluid FlowingLightFuelFluid(){
-        FLOWING_LIGHT_FUEL = new ForgeFlowingFluid.Flowing(LightFuel.properties);
+        FLOWING_LIGHT_FUEL = new VEFlowingGasFluid.Flowing(LightFuel.properties,4);
         return FLOWING_LIGHT_FUEL;
     }
 

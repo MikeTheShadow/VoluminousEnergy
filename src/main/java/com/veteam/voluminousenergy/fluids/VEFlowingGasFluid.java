@@ -21,13 +21,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import org.checkerframework.common.returnsreceiver.qual.This;
 
 import java.util.Map;
 
-public class VEFlowingFluid extends ForgeFlowingFluid {
+public class VEFlowingGasFluid extends ForgeFlowingFluid {
     private int flowWidth;
-    private Properties fluidProperties;
     // DANGER
     public static final BooleanProperty FALLING = BlockStateProperties.FALLING;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL_FLOWING;
@@ -41,7 +39,7 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
     });
     //
 
-    protected VEFlowingFluid(Properties properties, int blocksToFlowOutWide) {
+    protected VEFlowingGasFluid(Properties properties, int blocksToFlowOutWide) {
         super(properties);
         this.flowWidth = blocksToFlowOutWide;
     }
@@ -141,24 +139,21 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
                     FluidState fluidStateWest = levelAccessor.getFluidState(blockPos.west());
 
                     /***
-                     *          Immediate Neighbours
+                     *          This is for Immediate Neighbours.
                      *          This seems to work for the main stem/pillar of the gas flowing upwards
-                     *          Still need a solution for the bottom though
+                     *          For some reason, the core of the pillar is considered a Source block I think
+                     *          based on the observed behaviour I saw in testing? Even though I would imagine
+                     *          a source block should be one that can be picked up with a bucket
+                     *          (technically, I believe that's considered a liquid block).
                     ***/
                     if (fluidStateNorth.is(this) && fluidStateNorth.isSource()){
-                        //System.out.println("FluidStateNorth pass  for " + blockPos);
                         return;
                     } else if (fluidStateSouth.is(this) && fluidStateSouth.isSource()){
-                        //System.out.println("FluidStateSouth pass  for " + blockPos);
                         return;
                     } else if (fluidStateEast.is(this) && fluidStateEast.isSource()){
-                        //System.out.println("FluidStateEast pass  for" + blockPos);
                         return;
                     } else if (fluidStateWest.is(this) && fluidStateWest.isSource()){
-                        //System.out.println("FluidStateWest pass for " + blockPos);
                         return;
-                    } else {
-                        //System.out.println("No direct source neighbours for " + blockPos);
                     }
 
                     // Find directly North, South, East, West
@@ -220,20 +215,15 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
             BlockState blockstate = levelAccessor.getBlockState(blockPos);
             BlockPos blockpos = blockPos.above();
             BlockState blockstate1 = levelAccessor.getBlockState(blockpos);
-            FluidState fluidstate = this.getNewLiquid(levelAccessor, blockpos.below(), blockstate1); // may Need to be reworked
-            //System.out.println("SPREAD CALLED");
+            FluidState fluidstate = this.getNewLiquid(levelAccessor, blockpos.below(), blockstate1);
+            // Directions on the two lines below have been flipped
             if (this.canSpreadTo(levelAccessor, blockPos, blockstate, Direction.UP, blockpos, blockstate1, levelAccessor.getFluidState(blockpos), fluidstate.getType())) {
-                //System.out.println("CAN SPREAD FIRST IF PASS");
                 this.spreadTo(levelAccessor, blockpos, blockstate1, Direction.UP, fluidstate);
                 if (this.sourceNeighborCount(levelAccessor, blockPos) >= 3 || this.isSource(fluidState)) {
-                    //System.out.println("CAN SPREAD: SPREAD TO SIDES");
                     this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
                 }
             } else if (fluidState.isSource() || !this.isWaterHole(levelAccessor, fluidstate.getType(), blockPos, blockstate, blockpos, blockstate1)) {
-                //System.out.println("SECOND IF PASS FOR SPREAD CHECK");
                 this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
-            } else {
-                //System.out.println("TOTAL FAILURE FOR SPREAD CHECKS");
             }
             // End of "Traditional" spread code
 
@@ -356,45 +346,6 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
         }
 
     }
-
-    /*
-    @Override
-    protected FluidState getNewLiquid(LevelReader levelReader, BlockPos pos, BlockState blockState) {
-        int i = 0;
-        int j = 0;
-
-        for(Direction direction : Direction.Plane.HORIZONTAL) {
-            BlockPos blockpos = pos.relative(direction);
-            BlockState blockstate = levelReader.getBlockState(blockpos);
-            FluidState fluidstate = blockstate.getFluidState();
-            if (fluidstate.getType().isSame(this) && this.canPassThroughWall(direction, levelReader, pos, blockState, blockpos, blockstate)) {
-                if (fluidstate.isSource() && net.minecraftforge.event.ForgeEventFactory.canCreateFluidSource(levelReader, blockpos, blockstate, this.canConvertToSource())) {
-                    ++j;
-                }
-
-                i = Math.max(i, fluidstate.getAmount());
-            }
-        }
-
-        if (j >= 2) {
-            BlockState blockstate1 = levelReader.getBlockState(pos.above());//flipped
-            FluidState fluidstate1 = blockstate1.getFluidState();
-            if (blockstate1.getMaterial().isSolid() || this.isSourceBlockOfThisType(fluidstate1)) {
-                return this.getSource(false);
-            }
-        }
-
-        BlockPos blockpos1 = pos.below();//flipped
-        BlockState blockstate2 = levelReader.getBlockState(blockpos1);
-        FluidState fluidstate2 = blockstate2.getFluidState();
-        if (!fluidstate2.isEmpty() && fluidstate2.getType().isSame(this) && this.canPassThroughWall(Direction.DOWN, levelReader, pos, blockState, blockpos1, blockstate2)) { // Direction.UP ORIGNIAL
-            return this.getFlowing(8, true);
-        } else {
-            int k = i - this.getDropOff(levelReader);
-            return k <= 0 ? Fluids.EMPTY.defaultFluidState() : this.getFlowing(k, false);
-        }
-    }*/
-
     //
 
     @Override
@@ -407,7 +358,7 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
         return this.flowWidth;
     }
 
-    public static class Flowing extends VEFlowingFluid {
+    public static class Flowing extends VEFlowingGasFluid {
 
         protected Flowing(Properties properties, int blocksToFlowOutWide) {
             super(properties, blocksToFlowOutWide);
@@ -424,7 +375,7 @@ public class VEFlowingFluid extends ForgeFlowingFluid {
         }
     }
 
-    public static class Source extends VEFlowingFluid {
+    public static class Source extends VEFlowingGasFluid {
         private final int flowWidth;
 
         protected Source(Properties properties, int blocksToFlowOutWide) {

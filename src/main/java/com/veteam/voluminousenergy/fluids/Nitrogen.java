@@ -26,12 +26,12 @@ public class Nitrogen {
     public static Item NITROGEN_BUCKET;
 
     public static FlowingFluid NitrogenFluid(){
-        NITROGEN = new VEFlowingFluid.Source(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
+        NITROGEN = new VEFlowingGasFluid.Source(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return NITROGEN;
     }
 
     public static FlowingFluid FlowingNitrogenFluid(){
-        FLOWING_NITROGEN = new VEFlowingFluid.Flowing(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
+        FLOWING_NITROGEN = new VEFlowingGasFluid.Flowing(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return FLOWING_NITROGEN;
     }
 
