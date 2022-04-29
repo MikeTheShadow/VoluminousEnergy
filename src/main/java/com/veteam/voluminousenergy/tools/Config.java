@@ -69,6 +69,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue RICE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_CHANCE;
+    public static ForgeConfigSpec.IntValue RICE_COUNT;
 
     // Food Settings
     public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
@@ -495,12 +496,13 @@ public class Config {
                     .define("Generate Rice", true);
                 GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
                     .define("Generate Rice in Oceans", false);
+                RICE_COUNT = COMMON_BUILDER.defineInRange("Rice Count", 192, 1, Integer.MAX_VALUE);
                 RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 48, -64, 320);
                 RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 320, -64, 320);
                 RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
-                        .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
+                        .defineInRange("Rice Chance", 32, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop(); // End of Feature Generation
@@ -510,7 +512,7 @@ public class Config {
             COMMON_BUILDER.comment("Saltpeter Ore Blob Settings").push(SUBCATEGORY_SALTPETER);
                 ENABLE_SALTPETER_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore Blobs")
                         .define("Enable Saltpeter Ore", true);
-                SALTPETER_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
+                SALTPETER_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Count",4,1, Integer.MAX_VALUE);
                 SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
                 SALTPETER_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
                 SALTPETER_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
@@ -524,7 +526,7 @@ public class Config {
             COMMON_BUILDER.comment("Bauxite Ore Settings").push(SUBCATEGORY_BAUXITE);
                 ENABLE_BAUXITE_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore Blobs")
                         .define("Enable Bauxite Ore", true);
-                BAUXITE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
+                BAUXITE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Bauxite Count",16,1, Integer.MAX_VALUE);
                 BAUXITE_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
                 BAUXITE_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
                 BAUXITE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
@@ -538,7 +540,7 @@ public class Config {
             COMMON_BUILDER.comment("Cinnabar Ore Settings").push(SUBCATEGORY_CINNABAR);
                 ENABLE_CINNABAR_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore Blobs")
                         .define("Enable Cinnabar Ore", true);
-                CINNABAR_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
+                CINNABAR_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Count",9,1, Integer.MAX_VALUE);
                 CINNABAR_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
                 CINNABAR_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
                 CINNABAR_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
@@ -552,7 +554,7 @@ public class Config {
             COMMON_BUILDER.comment("Rutile Ore Settings").push(SUBCATEGORY_RUTILE);
                 ENABLE_RUTILE_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore Blobs")
                         .define("Enable Rutile Ore", true);
-                RUTILE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
+                RUTILE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Rutile Count",3,1, Integer.MAX_VALUE);
                 RUTILE_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
                 RUTILE_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
                 RUTILE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
@@ -566,7 +568,7 @@ public class Config {
             COMMON_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
                 ENABLE_GALENA_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore Blobs")
                         .define("Enable Galena Ore", true);
-                GALENA_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
+                GALENA_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Galena Count",3,1, Integer.MAX_VALUE);
                 GALENA_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
                 GALENA_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
                 GALENA_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
@@ -581,7 +583,7 @@ public class Config {
             COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
                 ENABLE_EIGHZO_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore Blobs")
                         .define("Enable Eighzo Ore", true);
-                EIGHZO_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
+                EIGHZO_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Eighzo Count",1,1, Integer.MAX_VALUE);
                 EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
                 EIGHZO_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
                 EIGHZO_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);

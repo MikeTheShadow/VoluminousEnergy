@@ -56,7 +56,7 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     public static PlacedFeature RICE_FEATURE_PLACEMENT = new PlacedFeature(Holder.direct(RICE_FEATURE_CONFIG), List.of(
             HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RICE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RICE_TOP_ANCHOR.get())), // Default: 48 --> 320
             InSquarePlacement.spread(),
-            CountPlacement.of(1),
+            CountPlacement.of(Config.RICE_COUNT.get()),
             RarityFilter.onAverageOnceEvery(Config.RICE_CHANCE.get())
     ));
 
