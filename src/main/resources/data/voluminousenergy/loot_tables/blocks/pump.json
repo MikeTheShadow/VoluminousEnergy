@@ -25,6 +25,21 @@
                   "source": "energy",
                   "target": "BlockEntityTag.energy",
                   "op": "replace"
+                },
+                {
+                  "source": "tank",
+                  "target": "BlockEntityTag.tank",
+                  "op": "replace"
+                },
+                {
+                  "source": "tank_gui_enabled",
+                  "target": "BlockEntityTag.tank_gui_enabled",
+                  "op": "replace"
+                },
+                {
+                  "source": "tank_gui_direction",
+                  "target": "BlockEntityTag.tank_gui_direction",
+                  "op": "replace"
                 }
               ]
             },
