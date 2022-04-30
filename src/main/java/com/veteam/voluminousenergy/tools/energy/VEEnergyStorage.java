@@ -46,6 +46,10 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         setEnergy(tag.getInt("energy"));
     }
 
+    public void setMaxReceive(int amount) {
+        this.maxReceive = amount;
+    }
+
     @Override
     public void deserializeNBT(Tag nbt) {
         if (!(nbt instanceof IntTag intNbt))
