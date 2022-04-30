@@ -85,7 +85,9 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
             }
 
             if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
-                fluidPumpMethod();
+                for(int i = 0; i < 50; i++) {
+                    if(fluidPumpMethod()) break;
+                }
                 setChanged();
             }
         });
@@ -240,7 +242,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
         return Collections.singletonList(fluidTank);
     }
 
-    public void fluidPumpMethod() {
+    public boolean fluidPumpMethod() {
         if (!(initDone)) {
             lX = -22;
             lY = -1;
@@ -250,13 +252,13 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
                 this.pumpingFluid = this.level.getBlockState(this.getBlockPos().offset(0, -1, 0)).getFluidState().getType();
                 initDone = true;
             } catch (Exception e){
-                return;
+                return false;
             }
         }
 
         if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isSame(Fluids.EMPTY) || this.pumpingFluid == null){ // Sanity check to prevent mass destruction
             initDone = false;
-            return;
+            return false;
         }
 
         if (lX < 22){
@@ -264,24 +266,28 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
             if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
                 this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState()); // setBlockAndUpdate is the replacement for setBlockState in MCP mappings. This is obvious because of the flag of 3.
                 addFluidToTank();
+                return true;
             }
 
-        } else if (lX >= 22 && lZ < 22){
+        } else if (lZ < 22){
             lZ++;
             lX = -22;
             if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
                 this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
                 addFluidToTank();
+                return true;
             }
-        } else if (lX >= 22 && lZ >= 22 && this.getBlockPos().offset(0,lY,0).getY() > -63){
+        } else if (this.getBlockPos().offset(0, lY, 0).getY() > -63){
             lY--;
             lX = -22;
             lZ = -22;
             if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
                 this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
                 addFluidToTank();
+                return true;
             }
         }
+        return false;
     }
 
     public RelationalTank getTank(){
