@@ -50,7 +50,6 @@ public class ElectrolyzerContainer extends VoluminousContainer {
 
             @Override
             public void set(int value) {
-                tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> ((VEEnergyStorage)h).setEnergy(value));
             }
         });
     }
