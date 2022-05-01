@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
@@ -22,7 +23,7 @@ public class Nitrogen {
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
-    public static LiquidBlock NITROGEN_BLOCK;
+    public static VEFlowingFluidBlock NITROGEN_BLOCK;
     public static Item NITROGEN_BUCKET;
 
     public static FlowingFluid NitrogenFluid(){
@@ -35,8 +36,8 @@ public class Nitrogen {
         return FLOWING_NITROGEN;
     }
 
-    public static LiquidBlock FlowingNitrogenBlock(){
-        NITROGEN_BLOCK = new LiquidBlock(() -> NITROGEN, stdProp);
+    public static VEFlowingFluidBlock FlowingNitrogenBlock(){
+        NITROGEN_BLOCK = new VEFlowingFluidBlock(() -> NITROGEN, stdProp);
         return NITROGEN_BLOCK;
     }
 

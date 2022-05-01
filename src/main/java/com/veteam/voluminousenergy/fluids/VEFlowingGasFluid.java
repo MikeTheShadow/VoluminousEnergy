@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import java.util.Map;
 
 public class VEFlowingGasFluid extends ForgeFlowingFluid {
-    private int flowWidth;
+    private final int flowWidth;
     // DANGER
     public static final BooleanProperty FALLING = BlockStateProperties.FALLING;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL_FLOWING;

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
@@ -21,7 +22,7 @@ public class LightFuel {
 
     public static FlowingFluid LIGHT_FUEL;
     public static FlowingFluid FLOWING_LIGHT_FUEL;
-    public static LiquidBlock LIGHT_FUEL_BLOCK;
+    public static VEFlowingFluidBlock LIGHT_FUEL_BLOCK;
     public static Item LIGHT_FUEL_BUCKET;
 
     public static FlowingFluid LightFuelFluid(){
@@ -34,8 +35,8 @@ public class LightFuel {
         return FLOWING_LIGHT_FUEL;
     }
 
-    public static LiquidBlock FlowingLightFuelBlock(){
-        LIGHT_FUEL_BLOCK = new LiquidBlock(() -> LIGHT_FUEL, stdProp);
+    public static VEFlowingFluidBlock FlowingLightFuelBlock(){
+        LIGHT_FUEL_BLOCK = new VEFlowingFluidBlock(() -> LIGHT_FUEL, stdProp);
         return LIGHT_FUEL_BLOCK;
     }
 
