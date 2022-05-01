@@ -319,6 +319,11 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
 
     public void updateSendOutPower(boolean sendOutPower){
         this.powerIOManager.setFlipped(sendOutPower);
+        if(sendOutPower) {
+            this.energy.ifPresent(e -> e.setMaxReceive(0));
+        } else {
+            this.energy.ifPresent(e -> e.setMaxReceive(getTransferRate()));
+        }
     }
 
     public VEBatterySwitchManager[] getSwitchManagers() {

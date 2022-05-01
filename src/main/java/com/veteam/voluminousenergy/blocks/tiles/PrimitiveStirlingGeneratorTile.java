@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPowerGenerator,IVECountable {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
@@ -74,7 +74,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         sendOutPower();
     }
 
-    public static int recieveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -87,7 +87,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    int received = receiveEnergy(tileEntity, opposite, smallest);
                     energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
