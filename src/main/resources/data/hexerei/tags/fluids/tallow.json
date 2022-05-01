@@ -1,0 +1,12 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "hexerei"
+    }
+  ],
+  "replace": false,
+  "values": [
+    "hexerei:tallow_fluid"
+  ]
+}
