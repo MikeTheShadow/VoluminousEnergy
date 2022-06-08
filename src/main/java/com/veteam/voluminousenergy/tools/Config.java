@@ -902,22 +902,22 @@ public class Config {
 
         private static void setupTankBlocks(){
             SOLARIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Solarium Tank Capacity", 1048576, 0, 2147483);
+                    .defineInRange("Solarium Tank Capacity", 2_147_483, 0, 2_147_483);
 
             EIGHZO_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Eighzo Tank Capacity", 131072, 0, 2147483);
+                    .defineInRange("Eighzo Tank Capacity", 536_870, 0, 2_147_483);
 
             NIGHALITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Nighalite Tank Capacity", 16384, 0, 2147483);
+                    .defineInRange("Nighalite Tank Capacity", 67_108, 0, 2_147_483);
 
             NETHERITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Netherite Tank Capacity", 1024, 0, 2147483);
+                    .defineInRange("Netherite Tank Capacity", 8_388, 0, 2_147_483);
 
             TITANIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Titanium Tank Capacity", 128, 0, 2147483);
+                    .defineInRange("Titanium Tank Capacity", 524, 0, 2_147_483);
 
             ALUMINUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Aluminum Tank Capacity", 16, 0, 2147483);
+                    .defineInRange("Aluminum Tank Capacity", 64, 0, 2_147_483);
         }
 
     private static void setupToolingStation(){
