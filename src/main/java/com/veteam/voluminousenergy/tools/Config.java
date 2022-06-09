@@ -69,61 +69,71 @@ public class Config {
     public static ForgeConfigSpec.IntValue RICE_BOTTOM_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_TOP_ANCHOR;
     public static ForgeConfigSpec.IntValue RICE_CHANCE;
+    public static ForgeConfigSpec.IntValue RICE_COUNT;
 
     // Food Settings
     public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
     public static ForgeConfigSpec.DoubleValue COOKED_RICE_SATURATION;
     public static ForgeConfigSpec.DoubleValue RICE_TICK_CHANCE;
 
-    // Ore Settings
+    // Ore Blob Settings
     // SALTPETER ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE;
-    public static ForgeConfigSpec.IntValue SALTPETER_COUNT;
-    public static ForgeConfigSpec.IntValue SALTPETER_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue SALTPETER_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue SALTPETER_SIZE;
-    public static ForgeConfigSpec.DoubleValue SALTPETER_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_SALTPETER_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.DoubleValue SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_CHANCE;
 
     // BAUXITE ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE;
-    public static ForgeConfigSpec.IntValue BAUXITE_COUNT;
-    public static ForgeConfigSpec.IntValue BAUXITE_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue BAUXITE_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue BAUXITE_SIZE;
-    public static ForgeConfigSpec.DoubleValue BAUXITE_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_BAUXITE_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.DoubleValue BAUXITE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_CHANCE;
+
 
     // CINNABAR ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE;
-    public static ForgeConfigSpec.IntValue CINNABAR_COUNT;
-    public static ForgeConfigSpec.IntValue CINNABAR_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue CINNABAR_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue CINNABAR_SIZE;
-    public static ForgeConfigSpec.DoubleValue CINNABAR_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_CINNABAR_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.DoubleValue CINNABAR_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_CHANCE;
+
 
     // RUTILE ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE;
-    public static ForgeConfigSpec.IntValue RUTILE_COUNT;
-    public static ForgeConfigSpec.IntValue RUTILE_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue RUTILE_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue RUTILE_SIZE;
-    public static ForgeConfigSpec.DoubleValue RUTILE_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_RUTILE_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.DoubleValue RUTILE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_CHANCE;
+
 
     // GALENA ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE;
-    public static ForgeConfigSpec.IntValue GALENA_COUNT;
-    public static ForgeConfigSpec.IntValue GALENA_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue GALENA_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue GALENA_SIZE;
-    public static ForgeConfigSpec.IntValue GALENA_GLOW;
-    public static ForgeConfigSpec.DoubleValue GALENA_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_GALENA_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOCK_LIGHT_LEVEL;
+    public static ForgeConfigSpec.DoubleValue GALENA_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_CHANCE;
 
     // EIGHZO ORE
-    public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE;
-    public static ForgeConfigSpec.IntValue EIGHZO_COUNT;
-    public static ForgeConfigSpec.IntValue EIGHZO_BOTTOM_ANCHOR;
-    public static ForgeConfigSpec.IntValue EIGHZO_TOP_ANCHOR;
-    public static ForgeConfigSpec.IntValue EIGHZO_SIZE;
-    public static ForgeConfigSpec.DoubleValue EIGHZO_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.BooleanValue ENABLE_EIGHZO_ORE_BLOBS;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_COUNT;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_TOP_ANCHOR;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_SIZE;
+    public static ForgeConfigSpec.DoubleValue EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_CHANCE;
 
     // Ore Deposit
     public static ForgeConfigSpec.BooleanValue ENABLE_ORE_DEPOSIT;
@@ -486,88 +496,101 @@ public class Config {
                     .define("Generate Rice", true);
                 GENERATE_RICE_IN_OCEAN = COMMON_BUILDER.comment("Enable/Disable Generation of Rice Crop in Oceans")
                     .define("Generate Rice in Oceans", false);
+                RICE_COUNT = COMMON_BUILDER.defineInRange("Rice Count", 192, 1, Integer.MAX_VALUE);
                 RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 48, -64, 320);
                 RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 320, -64, 320);
                 RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
-                        .defineInRange("Rice Chance", 32, 10, Integer.MAX_VALUE);
+                        .defineInRange("Rice Chance", 32, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop(); // End of Feature Generation
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
             //Saltpeter
-            COMMON_BUILDER.comment("Saltpeter Ore Settings").push(SUBCATEGORY_SALTPETER);
-                ENABLE_SALTPETER_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore")
+            COMMON_BUILDER.comment("Saltpeter Ore Blob Settings").push(SUBCATEGORY_SALTPETER);
+                ENABLE_SALTPETER_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Saltpeter Ore Blobs")
                         .define("Enable Saltpeter Ore", true);
-                SALTPETER_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Weight",4,1, Integer.MAX_VALUE);
-                SALTPETER_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
-                SALTPETER_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
-                SALTPETER_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
-                SALTPETER_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                SALTPETER_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Saltpeter Count",4,1, Integer.MAX_VALUE);
+                SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Bottom Anchor", 55, -64, 320);
+                SALTPETER_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Saltpeter Top Anchor", 320, -64, 320);
+                SALTPETER_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
+                SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                         .defineInRange("Saltpeter Exposed Discard Chance", 0F, 0F, 1F);
+                SALTPETER_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                        .defineInRange("Saltpeter Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
 
             //Bauxite
             COMMON_BUILDER.comment("Bauxite Ore Settings").push(SUBCATEGORY_BAUXITE);
-                ENABLE_BAUXITE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore")
+                ENABLE_BAUXITE_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Bauxite Ore Blobs")
                         .define("Enable Bauxite Ore", true);
-                BAUXITE_COUNT = COMMON_BUILDER.defineInRange("Bauxite Weight",16,1, Integer.MAX_VALUE);
-                BAUXITE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
-                BAUXITE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
-                BAUXITE_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
-                BAUXITE_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                BAUXITE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Bauxite Count",16,1, Integer.MAX_VALUE);
+                BAUXITE_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Bottom Anchor", 10, -64, 320);
+                BAUXITE_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Bauxite Top Anchor", 60, -64, 320);
+                BAUXITE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
+                BAUXITE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                     .defineInRange("Bauxite Exposed Discard Chance", 0F, 0F, 1F);
+                BAUXITE_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                    .defineInRange("Bauxite Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Bauxite
 
             //Cinnabar
             COMMON_BUILDER.comment("Cinnabar Ore Settings").push(SUBCATEGORY_CINNABAR);
-                ENABLE_CINNABAR_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore")
+                ENABLE_CINNABAR_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Cinnabar Ore Blobs")
                         .define("Enable Cinnabar Ore", true);
-                CINNABAR_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Weight",9,1, Integer.MAX_VALUE);
-                CINNABAR_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
-                CINNABAR_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
-                CINNABAR_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
-                CINNABAR_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                CINNABAR_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Cinnabar Count",9,1, Integer.MAX_VALUE);
+                CINNABAR_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Bottom Anchor", 1, -64, 320);
+                CINNABAR_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Cinnabar Top Anchor", 320, -64, 320);
+                CINNABAR_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
+                CINNABAR_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                     .defineInRange("Cinnabar Exposed Discard Chance", 0F, 0F, 1F);
+                CINNABAR_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                    .defineInRange("Cinnabar Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Cinnabar
 
             //Rutile
             COMMON_BUILDER.comment("Rutile Ore Settings").push(SUBCATEGORY_RUTILE);
-                ENABLE_RUTILE_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore")
+                ENABLE_RUTILE_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Rutile Ore Blobs")
                         .define("Enable Rutile Ore", true);
-                RUTILE_COUNT = COMMON_BUILDER.defineInRange("Rutile Weight",3,1, Integer.MAX_VALUE);
-                RUTILE_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
-                RUTILE_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
-                RUTILE_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
-                RUTILE_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                RUTILE_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Rutile Count",3,1, Integer.MAX_VALUE);
+                RUTILE_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Bottom Anchor", -64, -64, 320);
+                RUTILE_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Rutile Top Anchor", -32, -64, 320);
+                RUTILE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
+                RUTILE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                     .defineInRange("Rutile Exposed Discard Chance", 0.75F, 0F, 1F);
+                RUTILE_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                    .defineInRange("Rutile Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Rutile
 
             //Galena
             COMMON_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
-                ENABLE_GALENA_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore")
+                ENABLE_GALENA_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Galena Ore Blobs")
                         .define("Enable Galena Ore", true);
-                GALENA_COUNT = COMMON_BUILDER.defineInRange("Galena Weight",3,1, Integer.MAX_VALUE);
-                GALENA_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
-                GALENA_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
-                GALENA_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
-                GALENA_GLOW = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
-                GALENA_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                GALENA_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Galena Count",3,1, Integer.MAX_VALUE);
+                GALENA_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Galena Bottom Anchor", -48, -64, 320);
+                GALENA_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Galena Top Anchor", 12, -64, 320);
+                GALENA_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
+                GALENA_ORE_BLOCK_LIGHT_LEVEL = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
+                GALENA_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                     .defineInRange("Galena Exposed Discard Chance", 0F, 0F, 1F);
+                GALENA_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                    .defineInRange("Galena Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Galena
 
             //Eighzo
             COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
-                ENABLE_EIGHZO_ORE = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore")
+                ENABLE_EIGHZO_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore Blobs")
                         .define("Enable Eighzo Ore", true);
-                EIGHZO_COUNT = COMMON_BUILDER.defineInRange("Eighzo Weight",1,1, Integer.MAX_VALUE);
-                EIGHZO_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
-                EIGHZO_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
-                EIGHZO_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
-                EIGHZO_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated vein will be discarded (ungenerated) if exposed to air")
+                EIGHZO_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Eighzo Count",1,1, Integer.MAX_VALUE);
+                EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
+                EIGHZO_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
+                EIGHZO_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
+                EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
                     .defineInRange("Eighzo Exposed Discard Chance", 1F, 0F, 1F);
+                EIGHZO_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
+                    .defineInRange("Eighzo Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Eighzo
 
             // DEPOSITS
@@ -879,22 +902,22 @@ public class Config {
 
         private static void setupTankBlocks(){
             SOLARIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Solarium Tank Capacity", 1048576, 0, 2147483);
+                    .defineInRange("Solarium Tank Capacity", 2_147_483, 0, 2_147_483);
 
             EIGHZO_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Eighzo Tank Capacity", 131072, 0, 2147483);
+                    .defineInRange("Eighzo Tank Capacity", 536_870, 0, 2_147_483);
 
             NIGHALITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Nighalite Tank Capacity", 16384, 0, 2147483);
+                    .defineInRange("Nighalite Tank Capacity", 67_108, 0, 2_147_483);
 
             NETHERITE_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Netherite Tank Capacity", 1024, 0, 2147483);
+                    .defineInRange("Netherite Tank Capacity", 8_388, 0, 2_147_483);
 
             TITANIUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Titanium Tank Capacity", 128, 0, 2147483);
+                    .defineInRange("Titanium Tank Capacity", 524, 0, 2_147_483);
 
             ALUMINUM_TANK_CAPACITY = COMMON_BUILDER.comment("Maximum tank capacity in Buckets")
-                    .defineInRange("Aluminum Tank Capacity", 16, 0, 2147483);
+                    .defineInRange("Aluminum Tank Capacity", 64, 0, 2_147_483);
         }
 
     private static void setupToolingStation(){
