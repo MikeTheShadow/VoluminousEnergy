@@ -17,6 +17,7 @@ import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
+import com.veteam.voluminousenergy.items.solid_fuels.tiny.*;
 import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
@@ -122,6 +123,13 @@ public class VEItems {
     //Crops
     public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
     public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)).setRegistryName("cooked_rice");
+
+    //Tiny fuels
+    public static TinyCharcoal TINY_CHARCOAL = new TinyCharcoal();
+    public static TinyCoal TINY_COAL = new TinyCoal();
+    public static TinyCoalCoke TINY_COAL_COKE = new TinyCoalCoke();
+    public static TinyPetcoke TINY_PETCOKE = new TinyPetcoke();
+    public static TinyRosin TINY_ROSIN = new TinyRosin();
 
     // Tools
     //public static Multitool MULTITOOL = new Multitool(new Item.Properties().tab(VESetup.itemGroup).stacksTo(1));

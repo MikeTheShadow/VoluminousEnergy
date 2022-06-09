@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
@@ -16,26 +17,27 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 public class Nitrogen {
     public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_still");
     public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/nitrogen_flowing");
+    public static final int NITROGEN_FLUID_WIDTH = 4;
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
-    public static LiquidBlock NITROGEN_BLOCK;
+    public static VEFlowingFluidBlock NITROGEN_BLOCK;
     public static Item NITROGEN_BUCKET;
 
     public static FlowingFluid NitrogenFluid(){
-        NITROGEN = new ForgeFlowingFluid.Source(Nitrogen.properties);
+        NITROGEN = new VEFlowingGasFluid.Source(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return NITROGEN;
     }
 
     public static FlowingFluid FlowingNitrogenFluid(){
-        FLOWING_NITROGEN = new ForgeFlowingFluid.Flowing(Nitrogen.properties);
+        FLOWING_NITROGEN = new VEFlowingGasFluid.Flowing(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return FLOWING_NITROGEN;
     }
 
-    public static LiquidBlock FlowingNitrogenBlock(){
-        NITROGEN_BLOCK = new LiquidBlock(() -> NITROGEN, stdProp);
+    public static VEFlowingFluidBlock FlowingNitrogenBlock(){
+        NITROGEN_BLOCK = new VEFlowingFluidBlock(() -> NITROGEN, stdProp);
         return NITROGEN_BLOCK;
     }
 

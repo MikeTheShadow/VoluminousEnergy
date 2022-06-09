@@ -405,6 +405,13 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(VEItems.MERCURY_BATTERY);
             itemRegisteryEvent.getRegistry().register(VEItems.LEAD_ACID_BATTERY);
 
+            //Tiny Fuels
+            itemRegisteryEvent.getRegistry().register(VEItems.TINY_CHARCOAL);
+            itemRegisteryEvent.getRegistry().register(VEItems.TINY_COAL);
+            itemRegisteryEvent.getRegistry().register(VEItems.TINY_COAL_COKE);
+            itemRegisteryEvent.getRegistry().register(VEItems.TINY_PETCOKE);
+            itemRegisteryEvent.getRegistry().register(VEItems.TINY_ROSIN);
+
             // TOOLS
 
             // Pickaxe

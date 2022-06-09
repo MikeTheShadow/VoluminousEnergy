@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
-import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -14,14 +13,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 import java.util.List;
@@ -33,38 +27,38 @@ public class VEOreGeneration {
             // Nether ores
         } else if (biome.getCategory() == Biome.BiomeCategory.THEEND){
             // End ores
-            if(Config.ENABLE_EIGHZO_ORE.get()) {
+            if(Config.ENABLE_EIGHZO_ORE_BLOBS.get()) {
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.EIGHZO_ORE_BLOB_PLACEMENT));
-                oreLog(VEBlocks.EIGHZO_ORE, biome, Config.EIGHZO_SIZE.get(), Config.EIGHZO_BOTTOM_ANCHOR.get(), Config.EIGHZO_TOP_ANCHOR.get(), Config.EIGHZO_COUNT.get());
+                oreLog(VEBlocks.EIGHZO_ORE, biome, Config.EIGHZO_ORE_BLOBS_SIZE.get(), Config.EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.EIGHZO_ORE_BLOBS_TOP_ANCHOR.get(), Config.EIGHZO_ORE_BLOBS_COUNT.get());
             }
         } else { // Assuming Overworld, catch all other biomes
 
             if (biome.getCategory() == Biome.BiomeCategory.DESERT || biome.getCategory() == Biome.BiomeCategory.MESA){
                 // Desert and other non-Beach Sandy Biome Oregen goes here, generally for Sand-based ores
-                if (Config.ENABLE_SALTPETER_ORE.get()){
+                if (Config.ENABLE_SALTPETER_ORE_BLOBS.get()){
                     biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.SALTPETER_ORE_BLOB_PLACEMENT));
-                    oreLog(VEBlocks.SALTPETER_ORE, biome, Config.SALTPETER_SIZE.get(), Config.SALTPETER_BOTTOM_ANCHOR.get(), Config.SALTPETER_TOP_ANCHOR.get(), Config.BAUXITE_COUNT.get());
+                    oreLog(VEBlocks.SALTPETER_ORE, biome, Config.SALTPETER_ORE_BLOBS_SIZE.get(), Config.SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.SALTPETER_ORE_BLOBS_TOP_ANCHOR.get(), Config.BAUXITE_ORE_BLOBS_COUNT.get());
                 }
             }
 
-            if (Config.ENABLE_BAUXITE_ORE.get()){
+            if (Config.ENABLE_BAUXITE_ORE_BLOBS.get()){
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.BAUXITE_ORE_BLOB_PLACEMENT));
-                oreLog(VEBlocks.BAUXITE_ORE, biome, Config.BAUXITE_SIZE.get(), Config.BAUXITE_BOTTOM_ANCHOR.get(), Config.BAUXITE_TOP_ANCHOR.get(), Config.BAUXITE_COUNT.get());
+                oreLog(VEBlocks.BAUXITE_ORE, biome, Config.BAUXITE_ORE_BLOBS_SIZE.get(), Config.BAUXITE_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.BAUXITE_ORE_BLOBS_TOP_ANCHOR.get(), Config.BAUXITE_ORE_BLOBS_COUNT.get());
             }
 
-            if (Config.ENABLE_CINNABAR_ORE.get()){
+            if (Config.ENABLE_CINNABAR_ORE_BLOBS.get()){
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.CINNABAR_ORE_BLOB_PLACEMENT));
-                oreLog(VEBlocks.CINNABAR_ORE, biome, Config.CINNABAR_SIZE.get(), Config.CINNABAR_BOTTOM_ANCHOR.get(), Config.CINNABAR_TOP_ANCHOR.get(), Config.CINNABAR_COUNT.get());
+                oreLog(VEBlocks.CINNABAR_ORE, biome, Config.CINNABAR_ORE_BLOBS_SIZE.get(), Config.CINNABAR_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.CINNABAR_ORE_BLOBS_TOP_ANCHOR.get(), Config.CINNABAR_ORE_BLOBS_COUNT.get());
             }
 
-            if (Config.ENABLE_RUTILE_ORE.get()){
+            if (Config.ENABLE_RUTILE_ORE_BLOBS.get()){
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.RUTILE_ORE_BLOB_PLACEMENT));
-                oreLog(VEBlocks.RUTILE_ORE, biome, Config.RUTILE_SIZE.get(), Config.RUTILE_BOTTOM_ANCHOR.get(), Config.RUTILE_TOP_ANCHOR.get(), Config.RUTILE_COUNT.get());
+                oreLog(VEBlocks.RUTILE_ORE, biome, Config.RUTILE_ORE_BLOBS_SIZE.get(), Config.RUTILE_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.RUTILE_ORE_BLOBS_TOP_ANCHOR.get(), Config.RUTILE_ORE_BLOBS_COUNT.get());
             }
 
-            if (Config.ENABLE_GALENA_ORE.get()){
+            if (Config.ENABLE_GALENA_ORE_BLOBS.get()){
                 biome.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEOres.GALENA_ORE_BLOB_PLACEMENT));
-                oreLog(VEBlocks.GALENA_ORE, biome, Config.GALENA_SIZE.get(), Config.GALENA_BOTTOM_ANCHOR.get(), Config.GALENA_TOP_ANCHOR.get(), Config.GALENA_COUNT.get());
+                oreLog(VEBlocks.GALENA_ORE, biome, Config.GALENA_ORE_BLOBS_SIZE.get(), Config.GALENA_ORE_BLOBS_BOTTOM_ANCHOR.get(), Config.GALENA_ORE_BLOBS_TOP_ANCHOR.get(), Config.GALENA_ORE_BLOBS_COUNT.get());
             }
 
         }
