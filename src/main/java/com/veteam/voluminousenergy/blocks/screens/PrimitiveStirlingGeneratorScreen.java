@@ -1,8 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -17,9 +14,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<PrimitiveStirlingGeneratorContainer> {
 
@@ -94,7 +93,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
         if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
         else generationRate = 0;
         drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + generationRate + " FE/t", 50, 18, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
 
         super.renderLabels(matrixStack, mouseX, mouseY);
     }

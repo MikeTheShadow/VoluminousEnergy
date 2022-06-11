@@ -1,7 +1,7 @@
 
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[40,)" #mandatory (37 is forge 1.17.1)
+loaderVersion="[41,)" #mandatory (37 is forge 1.17.1)
 # License is manditory starting in 1.16
 license="GPLv3"
 # A URL to refer people to when problems occur with this mod
@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/MikeTheShadow/VoluminousEnergy/issues" #opti
 # The modid of the mod
 modId="voluminousenergy" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="1.18.2-Experimental" #mandatory
+version="1.19-Experimental" #mandatory
  # A display name for the mod
 displayName="Voluminous Energy" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
@@ -33,7 +33,7 @@ description='''Voluminous Energy - A Tech mod focused on resource processing and
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[40.0.3,)" #mandatory
+    versionRange="[41.0.0,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -43,20 +43,6 @@ description='''Voluminous Energy - A Tech mod focused on resource processing and
 [[dependencies.voluminousenergy]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,1.19)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.voluminousenergy]]
-    modId="jei"
-    mandatory=false
-    versionRange="[9.5.2.134,)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.voluminousenergy]]
-    modId="beyond_earth"
-    mandatory=false
-    versionRange="[6.1,)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"

@@ -2,8 +2,6 @@ package com.veteam.voluminousenergy.util;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextUtil {
 
@@ -30,16 +28,16 @@ public class TextUtil {
             stringTankCapacity = NumberUtil.formatNumber(stringTankCapacity);
         }
 
-        return new TranslatableComponent(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
+        return Component.translatable(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
     }
 
     public static Component slotName(String slotName){
-        return new TranslatableComponent(slotName);
+        return Component.translatable(slotName);
     }
 
     public static Component translateDirection(Direction direction){
         //return new TranslatableComponent("direction.voluminousenergy." + direction.name().toLowerCase());
-        return new TranslatableComponent("direction.voluminousenergy." + directionToLocalDirection(direction));
+        return Component.translatable("direction.voluminousenergy." + directionToLocalDirection(direction));
     }
 
     public static String directionToLocalDirection(Direction direction) {
@@ -56,14 +54,14 @@ public class TextUtil {
     public static Component slotNameWithDirection(String slotName, Direction direction, int ordinal){
         Component translatedSlot = slotName(slotName);
         Component translatedDirection = translateDirection(direction);
-        return new TextComponent(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
+        return Component.nullToEmpty(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
     }
 
     public static Component translateString(String toTranslate){
-        return new TranslatableComponent(toTranslate);
+        return Component.translatable(toTranslate);
     }
 
     public static Component translateVEBlock(String block){
-        return new TranslatableComponent("block.voluminousenergy." + block);
+        return Component.translatable("block.voluminousenergy." + block);
     }
 }

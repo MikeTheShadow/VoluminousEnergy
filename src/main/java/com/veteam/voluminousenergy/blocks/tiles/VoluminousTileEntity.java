@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
@@ -337,9 +336,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     @Override
     public @Nonnull Component getDisplayName() {
-        ResourceLocation name = getType().getRegistryName();
+        ResourceLocation name = BlockEntityType.getKey(this.getType());
         if(name == null) throw new NotImplementedException("Missing registry name for class: " + this.getClass().getName());
-        return new TextComponent(name.getPath());
+        return Component.nullToEmpty(name.getPath());
     }
 
     /**

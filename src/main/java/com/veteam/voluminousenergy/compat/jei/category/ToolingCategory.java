@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -117,3 +117,4 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
         this.ingredientHandler(recipe, completeMultitoolItem, bitItem, baseItem);
     }
 }
+ */

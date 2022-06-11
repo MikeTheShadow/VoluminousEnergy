@@ -16,7 +16,6 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -146,7 +145,7 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
     protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
         if (tileEntity.getMultiblockValidity()){
             this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack,new TranslatableComponent("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
         }
          super.renderLabels(matrixStack, mouseX, mouseY);
     }

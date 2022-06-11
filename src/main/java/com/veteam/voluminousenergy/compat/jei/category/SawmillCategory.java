@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -166,48 +167,5 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
         this.ingredientHandler(recipe, inputItem, primaryOutputItem, secondaryOutputItem, fluidOutput);
     }
 
-    /* Can't really control the pairing so this is useless
-    public static void buildLogPlankPairListCache(){
-        if (!logPlankPairList.isEmpty()) return;
-
-        AtomicReference<ArrayList<Pair<ItemStack, ItemStack>>> cacheReference = new AtomicReference<>(logPlankPairList);
-        AtomicReference<Integer> logAmount = new AtomicReference<>(Config.SAWMILL_LOG_CONSUMPTION_RATE.get());
-        AtomicReference<Integer> plankAmount = new AtomicReference<>(Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get());
-
-        ForgeRegistries.ITEMS.getValues().parallelStream().forEach(registeredLogItem -> {
-
-            AtomicReference<String> atomicLogNamespace = new AtomicReference<>(registeredLogItem.getRegistryName().getNamespace());
-            AtomicReference<String> atomicLogName = new AtomicReference<>(registeredLogItem.getRegistryName().getPath());
-
-            if (atomicLogName.get().contains("log") || atomicLogName.get().contains("wood")){
-                AtomicReference<Item> atomicLogItem = new AtomicReference<>(registeredLogItem);
-
-                ForgeRegistries.ITEMS.getValues().parallelStream().forEach(registeredPlankItem -> {
-                    String plankNamespace = registeredPlankItem.getRegistryName().getNamespace();
-                    String plankName = registeredPlankItem.getRegistryName().getPath();
-                    if (plankName.contains("plank") && plankNamespace.equals(atomicLogNamespace.get())){
-                        List<String> processingLogWood;
-                        List<String> processingPlank;
-
-                        processingLogWood = Arrays.asList(atomicLogName.get().split("_"));
-                        processingPlank = Arrays.asList(plankName.split("_"));
-
-                        processingLogWood.remove("log");
-                        processingLogWood.remove("wood");
-                        processingPlank.remove("plank");
-
-                        boolean hit = false;
-                        for (String s : processingLogWood){
-                            if (processingPlank.contains(s)) {
-                                hit = true;
-                                break;
-                            }
-                        }
-                        cacheReference.get().add(new Pair<ItemStack, ItemStack>(new ItemStack(atomicLogItem.get(), logAmount.get()), new ItemStack(registeredPlankItem, plankAmount.get())));
-                    }
-                });
-            }
-        });
-    }*/
-
 }
+*/

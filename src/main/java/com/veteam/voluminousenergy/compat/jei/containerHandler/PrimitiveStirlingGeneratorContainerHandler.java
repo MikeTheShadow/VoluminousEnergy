@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.containerHandler;
-
+/*
 import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.PrimitiveStirlingGeneratorScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -42,3 +42,4 @@ public class PrimitiveStirlingGeneratorContainerHandler implements IGuiContainer
         return areas;
     }
 }
+*/

@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import java.text.DecimalFormat;
 
@@ -71,15 +70,15 @@ public class NumberUtil {
     }
 
     public static Component numberToTextComponent4FE(double num){
-        return new TextComponent(numberToString4FE(num));
+        return Component.nullToEmpty(numberToString4FE(num));
     }
 
     public static Component numberToTextComponent4Fluids(double num){
-        return new TextComponent(numberToString4Fluids(num));
+        return Component.nullToEmpty(numberToString4Fluids(num));
     }
 
     public static Component numberToTextComponent(double num){
-        return new TextComponent(numberToString(num));
+        return Component.nullToEmpty(numberToString(num));
     }
 
     public static String numberToString(String numString) {
