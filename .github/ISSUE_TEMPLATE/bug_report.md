@@ -25,7 +25,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
 - OS (Windows, Mac, Linux)
- - Mod Version [e.g. 22]
+- Mod Version [e.g. v1.18.2-0.3.1.0]
+- Forge Version [e.g. 40.1.51]
 
 **Additional context**
 Add any other context about the problem here.
