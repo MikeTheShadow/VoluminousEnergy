@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.foods.VEFoods;
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
@@ -24,9 +25,14 @@ import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class VEItems {
-    public static Petcoke PETCOKE = new Petcoke();
+    public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
+
+    public static RegistryObject<Item> PETCOKE = VE_ITEM_REGISTRY.register("petcoke", () -> new Petcoke());
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
