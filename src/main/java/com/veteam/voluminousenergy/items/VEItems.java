@@ -35,119 +35,108 @@ import java.lang.reflect.Field;
 public class VEItems {
     public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
 
-    public static Petcoke PETCOKE = new Petcoke();
-    public static CoalCoke COALCOKE = new CoalCoke();
-    public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
-    public static Silicon SILICON = new Silicon();
-    public static ShreddedBiomass SHREDDED_BIOMASS = new ShreddedBiomass();
+    public static RegistryObject<Item> PETCOKE = VE_ITEM_REGISTRY.register("petcoke", Petcoke::new);
+    public static RegistryObject<Item> COALCOKE = VE_ITEM_REGISTRY.register("coalcoke",CoalCoke::new);
+    public static RegistryObject<Item> SALTPETERCHUNK = VE_ITEM_REGISTRY.register("saltpeterchunk",SaltpeterChunk::new);
+    public static RegistryObject<Item> SILICON = VE_ITEM_REGISTRY.register("silicon",Silicon::new);
+    public static RegistryObject<Item> SHREDDED_BIOMASS = VE_ITEM_REGISTRY.register("shredded_biomass",ShreddedBiomass::new);
 
     // Raw Ore
-    public static RawBauxite RAW_BAUXITE = new RawBauxite();
-    public static RawCinnabar RAW_CINNABAR = new RawCinnabar();
-    public static RawGalena RAW_GALENA = new RawGalena();
-    public static RawRutile RAW_RUTILE = new RawRutile();
-    public static RawSulfur RAW_SULFUR = new RawSulfur();
-    public static RawEighzo RAW_EIGHZO = new RawEighzo();
+    public static RegistryObject<Item> RAW_BAUXITE = VE_ITEM_REGISTRY.register("raw_bauxite",RawBauxite::new);
+    public static RegistryObject<Item> RAW_CINNABAR = VE_ITEM_REGISTRY.register("raw_cinnabar",RawCinnabar::new);
+    public static RegistryObject<Item> RAW_GALENA = VE_ITEM_REGISTRY.register("raw_galena",RawGalena::new);
+    public static RegistryObject<Item> RAW_RUTILE = VE_ITEM_REGISTRY.register("raw_rutile",RawRutile::new);
+    public static RegistryObject<Item> RAW_SULFUR = VE_ITEM_REGISTRY.register("raw_sulfur",RawSulfur::new);
+    public static RegistryObject<Item> RAW_EIGHZO = VE_ITEM_REGISTRY.register("raw_eighzo",RawEighzo::new);
 
     //Dusts
-    public static CoalDust COALDUST = new CoalDust();
-    public static CokeDust COKEDUST = new CokeDust();
-    public static LapisDust LAPISDUST = new LapisDust();
-    public static SulfurDust SULFURDUST = new SulfurDust();
-    public static CarbonDust CARBONDUST = new CarbonDust();
-    public static SaltpeterDust SALTPETERDUST = new SaltpeterDust();
-    public static AluminumDust ALUMINUM_DUST = new AluminumDust();
-    public static BauxiteDust BAUXITE_DUST = new BauxiteDust();
-    public static CinnabarDust CINNABAR_DUST = new CinnabarDust();
-    public static IronDust IRON_DUST = new IronDust();
-    public static QuartzDust QUARTZ_DUST = new QuartzDust();
-    public static SandDust SAND_DUST = new SandDust();
-    public static SoulsandDust SOULSAND_DUST = new SoulsandDust();
-    public static TitaniumDust TITANIUM_DUST = new TitaniumDust();
-    public static RutileDust RUTILE_DUST = new RutileDust();
-    public static GalenaDust GALENA_DUST = new GalenaDust();
-    public static LeadDust LEAD_DUST = new LeadDust();
-    public static SilverDust SILVER_DUST = new SilverDust();
-    public static GoldDust GOLD_DUST = new GoldDust();
-    public static PhotovoltaicDust PHOTOVOLTAIC_DUST = new PhotovoltaicDust();
-    public static EndStoneDust END_STONE_DUST = new EndStoneDust();
-    public static BasaltDust BASALT_DUST = new BasaltDust();
-    public static FlintDust FLINT_DUST = new FlintDust();
-    public static NetherrackDust NETHERRACK_DUST = new NetherrackDust();
-    public static NetheriteDust NETHERITE_DUST = new NetheriteDust();
-    public static TungstenDust TUNGSTEN_DUST = new TungstenDust();
-    public static EighzoDust EIGHZO_DUST = new EighzoDust();
-    public static SolariumDust SOLARIUM_DUST = new SolariumDust();
-    public static CopperDust COPPER_DUST = new CopperDust();
-    public static CopperCarbonateDust COPPER_CARBONATE_DUST = new CopperCarbonateDust();
-    public static CupricOxideDust CUPRIC_OXIDE_DUST = new CupricOxideDust();
-    public static SawDust SAW_DUST = new SawDust();
-    public static Rosin ROSIN = new Rosin();
+    public static RegistryObject<Item> COALDUST = VE_ITEM_REGISTRY.register("coaldust",CoalDust::new);
+    public static RegistryObject<Item> COKEDUST = VE_ITEM_REGISTRY.register("cokedust",CokeDust::new);
+    public static RegistryObject<Item> LAPISDUST = VE_ITEM_REGISTRY.register("lapisdust",LapisDust::new);
+    public static RegistryObject<Item> SULFURDUST = VE_ITEM_REGISTRY.register("sulfurdust",SulfurDust::new);
+    public static RegistryObject<Item> CARBONDUST = VE_ITEM_REGISTRY.register("carbondust",CarbonDust::new);
+    public static RegistryObject<Item> SALTPETERDUST = VE_ITEM_REGISTRY.register("saltpeterdust",SaltpeterDust::new);
+    public static RegistryObject<Item> ALUMINUM_DUST = VE_ITEM_REGISTRY.register("aluminum_dust",AluminumDust::new);
+    public static RegistryObject<Item> BAUXITE_DUST = VE_ITEM_REGISTRY.register("bauxite_dust",BauxiteDust::new);
+    public static RegistryObject<Item> CINNABAR_DUST = VE_ITEM_REGISTRY.register("cinnabar_dust",CinnabarDust::new);
+    public static RegistryObject<Item> IRON_DUST = VE_ITEM_REGISTRY.register("iron_dust",IronDust::new);
+    public static RegistryObject<Item> QUARTZ_DUST = VE_ITEM_REGISTRY.register("quartz_dust",QuartzDust::new);
+    public static RegistryObject<Item> SAND_DUST = VE_ITEM_REGISTRY.register("sand_dust",SandDust::new);
+    public static RegistryObject<Item> SOULSAND_DUST = VE_ITEM_REGISTRY.register("soulsand_dust",SoulsandDust::new);
+    public static RegistryObject<Item> TITANIUM_DUST = VE_ITEM_REGISTRY.register("titanium_dust",TitaniumDust::new);
+    public static RegistryObject<Item> RUTILE_DUST = VE_ITEM_REGISTRY.register("rutile_dust",RutileDust::new);
+    public static RegistryObject<Item> GALENA_DUST = VE_ITEM_REGISTRY.register("galena_dust",GalenaDust::new);
+    public static RegistryObject<Item> LEAD_DUST = VE_ITEM_REGISTRY.register("lead_dust",LeadDust::new);
+    public static RegistryObject<Item> SILVER_DUST = VE_ITEM_REGISTRY.register("silver_dust",SilverDust::new);
+    public static RegistryObject<Item> GOLD_DUST = VE_ITEM_REGISTRY.register("gold_dust",GoldDust::new);
+    public static RegistryObject<Item> PHOTOVOLTAIC_DUST = VE_ITEM_REGISTRY.register("photovoltaic_dust",PhotovoltaicDust::new);
+    public static RegistryObject<Item> END_STONE_DUST = VE_ITEM_REGISTRY.register("end_stone_dust",EndStoneDust::new);
+    public static RegistryObject<Item> BASALT_DUST = VE_ITEM_REGISTRY.register("basalt_dust",BasaltDust::new);
+    public static RegistryObject<Item> FLINT_DUST = VE_ITEM_REGISTRY.register("flint_dust",FlintDust::new);
+    public static RegistryObject<Item> NETHERRACK_DUST = VE_ITEM_REGISTRY.register("netherrack_dust",NetherrackDust::new);
+    public static RegistryObject<Item> NETHERITE_DUST = VE_ITEM_REGISTRY.register("netherite_dust",NetheriteDust::new);
+    public static RegistryObject<Item> TUNGSTEN_DUST = VE_ITEM_REGISTRY.register("tungsten_dust",TungstenDust::new);
+    public static RegistryObject<Item> EIGHZO_DUST = VE_ITEM_REGISTRY.register("eighzo_dust",EighzoDust::new);
+    public static RegistryObject<Item> SOLARIUM_DUST = VE_ITEM_REGISTRY.register("solarium_dust",SolariumDust::new);
+    public static RegistryObject<Item> COPPER_DUST = VE_ITEM_REGISTRY.register("copper_dust",CopperDust::new);
+    public static RegistryObject<Item> COPPER_CARBONATE_DUST = VE_ITEM_REGISTRY.register("copper_carbonate_dust",CopperCarbonateDust::new);
+    public static RegistryObject<Item> CUPRIC_OXIDE_DUST = VE_ITEM_REGISTRY.register("cupric_oxide_dust",CupricOxideDust::new);
+    public static RegistryObject<Item> SAW_DUST = VE_ITEM_REGISTRY.register("saw_dust",SawDust::new);
+    public static RegistryObject<Item> ROSIN = VE_ITEM_REGISTRY.register("rosin",Rosin::new);
 
     //Ingots and Bricks
-    public static CarbonBrick CARBON_BRICK = new CarbonBrick();
-    public static AluminumIngot ALUMINUM_INGOT = new AluminumIngot();
-    public static TitaniumIngot TITANIUM_INGOT = new TitaniumIngot();
-    public static LeadIngot LEAD_INGOT = new LeadIngot();
-    public static SilverIngot SILVER_INGOT = new SilverIngot();
-    public static SteelIngot STEEL_INGOT = new SteelIngot();
-    public static TungstenIngot TUNGSTEN_INGOT = new TungstenIngot();
-    public static TungstenSteelIngot TUNGSTEN_STEEL_INGOT = new TungstenSteelIngot();
-    public static NighaliteIngot NIGHALITE_INGOT = new NighaliteIngot();
-    public static EighzoIngot EIGHZO_INGOT = new EighzoIngot();
-    public static SolariumIngot SOLARIUM_INGOT = new SolariumIngot();
+    public static RegistryObject<Item> CARBON_BRICK = VE_ITEM_REGISTRY.register("carbonbrick",CarbonBrick::new);
+    public static RegistryObject<Item> ALUMINUM_INGOT = VE_ITEM_REGISTRY.register("aluminum_ingot",AluminumIngot::new);
+    public static RegistryObject<Item> TITANIUM_INGOT = VE_ITEM_REGISTRY.register("titanium_ingot",TitaniumIngot::new);
+    public static RegistryObject<Item> LEAD_INGOT = VE_ITEM_REGISTRY.register("lead_ingot",LeadIngot::new);
+    public static RegistryObject<Item> SILVER_INGOT = VE_ITEM_REGISTRY.register("silver_ingot",SilverIngot::new);
+    public static RegistryObject<Item> STEEL_INGOT = VE_ITEM_REGISTRY.register("steel_ingot",SteelIngot::new);
+    public static RegistryObject<Item> TUNGSTEN_INGOT = VE_ITEM_REGISTRY.register("tungsten_ingot",TungstenIngot::new);
+    public static RegistryObject<Item> TUNGSTEN_STEEL_INGOT = VE_ITEM_REGISTRY.register("tungsten_steel_ingot",TungstenSteelIngot::new);
+    public static RegistryObject<Item> NIGHALITE_INGOT = VE_ITEM_REGISTRY.register("nighalite_ingot",NighaliteIngot::new);
+    public static RegistryObject<Item> EIGHZO_INGOT = VE_ITEM_REGISTRY.register("eighzo_ingot",EighzoIngot::new);
+    public static RegistryObject<Item> SOLARIUM_INGOT = VE_ITEM_REGISTRY.register("solarium_ingot",SolariumIngot::new);
 
     //Gears
-    public static StoneGear STONE_GEAR = new StoneGear();
-    public static IronGear IRON_GEAR = new IronGear();
-    public static CarbonGear CARBON_GEAR = new CarbonGear();
-    public static AluminumGear ALUMINUM_GEAR = new AluminumGear();
-    public static TitaniumGear TITANIUM_GEAR = new TitaniumGear();
-    public static SolariumGear SOLARIUM_GEAR = new SolariumGear();
+    public static RegistryObject<Item> STONE_GEAR = VE_ITEM_REGISTRY.register("stonegear",StoneGear::new);
+    public static RegistryObject<Item> IRON_GEAR = VE_ITEM_REGISTRY.register("irongear",IronGear::new);
+    public static RegistryObject<Item> CARBON_GEAR = VE_ITEM_REGISTRY.register("carbongear",CarbonGear::new);
+    public static RegistryObject<Item> ALUMINUM_GEAR = VE_ITEM_REGISTRY.register("aluminum_gear",AluminumGear::new);
+    public static RegistryObject<Item> TITANIUM_GEAR = VE_ITEM_REGISTRY.register("titanium_gear",TitaniumGear::new);
+    public static RegistryObject<Item> SOLARIUM_GEAR = VE_ITEM_REGISTRY.register("solarium_gear",SolariumGear::new);
 
     //Plates
-    public static AluminumPlate ALUMINUM_PLATE = new AluminumPlate();
-    public static CarbonPlate CARBON_PLATE = new CarbonPlate();
-    public static TitaniumPlate TITANIUM_PLATE = new TitaniumPlate();
-    public static SolariumPlate SOLARIUM_PLATE = new SolariumPlate();
+    public static RegistryObject<Item> ALUMINUM_PLATE = VE_ITEM_REGISTRY.register("aluminum_plate",AluminumPlate::new);
+    public static RegistryObject<Item> CARBON_PLATE = VE_ITEM_REGISTRY.register("carbon_plate",CarbonPlate::new);
+    public static RegistryObject<Item> TITANIUM_PLATE = VE_ITEM_REGISTRY.register("titanium_plate",TitaniumPlate::new);
+    public static RegistryObject<Item> SOLARIUM_PLATE = VE_ITEM_REGISTRY.register("solarium_plate",SolariumPlate::new);
 
     //Microchips
-    public static GoldMicrochip GOLD_MICROCHIP = new GoldMicrochip();
-    public static SilverMicrochip SILVER_MICROCHIP = new SilverMicrochip();
+    public static RegistryObject<Item> GOLD_MICROCHIP = VE_ITEM_REGISTRY.register("gold_microchip",GoldMicrochip::new);
+    public static RegistryObject<Item> SILVER_MICROCHIP = VE_ITEM_REGISTRY.register("silver_microchip",SilverMicrochip::new);
 
     //Upgrades
-    public static QuartzMultiplier QUARTZ_MULTIPLIER = new QuartzMultiplier();
+    public static RegistryObject<Item> QUARTZ_MULTIPLIER = VE_ITEM_REGISTRY.register("quartz_multiplier",QuartzMultiplier::new);
 
     //Batteries
-    public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
-    public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
+    public static RegistryObject<Item> MERCURY_BATTERY = VE_ITEM_REGISTRY.register("mercury_battery",MercuryBattery::new);
+    public static RegistryObject<Item> LEAD_ACID_BATTERY = VE_ITEM_REGISTRY.register("lead_acid_battery",LeadAcidBattery::new);
 
-    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
+    public static RegistryObject<Item> TITANIUM_SAWBLADE = VE_ITEM_REGISTRY.register("titanium_sawblade",TitaniumSawblade::new);
 
     //Tank Frames
-    public static StandardTankFrame STANDARD_TANK_FRAME = new StandardTankFrame();
-    public static RobustTankFrame ROBUST_TANK_FRAME = new RobustTankFrame();
-    public static ImpeccableTankFrame IMPECCABLE_TANK_FRAME = new ImpeccableTankFrame();
+    public static RegistryObject<Item> STANDARD_TANK_FRAME = VE_ITEM_REGISTRY.register("standard_tank_frame",StandardTankFrame::new);
+    public static RegistryObject<Item> ROBUST_TANK_FRAME = VE_ITEM_REGISTRY.register("robust_tank_frame",RobustTankFrame::new);
+    public static RegistryObject<Item> IMPECCABLE_TANK_FRAME = VE_ITEM_REGISTRY.register("impeccable_tank_frame",ImpeccableTankFrame::new);
 
     //Crops
-    public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
-    public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE));
+    public static RegistryObject<Item> RICE_GRAIN = VE_ITEM_REGISTRY.register("rice",() -> new RiceItem(new Item.Properties().tab(VESetup.itemGroup))); // Can refactor to call the block here or in the item's class
+    public static RegistryObject<Item> COOKED_RICE = VE_ITEM_REGISTRY.register("cooked_rice",() -> new Item(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)));
 
     //Tiny fuels
-    public static TinyCharcoal TINY_CHARCOAL = new TinyCharcoal();
-    public static TinyCoal TINY_COAL = new TinyCoal();
-    public static TinyCoalCoke TINY_COAL_COKE = new TinyCoalCoke();
-    public static TinyPetcoke TINY_PETCOKE = new TinyPetcoke();
-    public static TinyRosin TINY_ROSIN = new TinyRosin();
-    public static void register() {
-
-        for(Field field : VEItems.class.getFields()) {
-            try {
-                VEItem item = (VEItem) field.get(VEItem.class);
-                VE_ITEM_REGISTRY.register(item.getRegistryName(), () -> item);
-            } catch (Exception e) {
-                VoluminousEnergy.LOGGER.error("Unable to register item: " + e.getMessage());
-            }
-        }
-    }
+    public static RegistryObject<Item> TINY_CHARCOAL = VE_ITEM_REGISTRY.register("tiny_charcoal",TinyCharcoal::new);
+    public static RegistryObject<Item> TINY_COAL = VE_ITEM_REGISTRY.register("tiny_coal",TinyCoal::new);
+    public static RegistryObject<Item> TINY_COAL_COKE = VE_ITEM_REGISTRY.register("tiny_coal_coke",TinyCoalCoke::new);
+    public static RegistryObject<Item> TINY_PETCOKE = VE_ITEM_REGISTRY.register("tiny_petcoke",TinyPetcoke::new);
+    public static RegistryObject<Item> TINY_ROSIN = VE_ITEM_REGISTRY.register("tiny_rosin",TinyRosin::new);
 }

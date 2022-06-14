@@ -9,7 +9,6 @@ public class RiceItem extends WaterCropItem {
 
     public RiceItem(Properties properties) {
         super(VEBlocks.RICE_CROP, properties);
-        setRegistryName("rice_grain");
     }
 
     @Override
