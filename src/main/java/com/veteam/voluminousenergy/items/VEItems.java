@@ -25,14 +25,17 @@ import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.lang.reflect.Field;
+
 public class VEItems {
     public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
 
-    public static RegistryObject<Item> PETCOKE = VE_ITEM_REGISTRY.register("petcoke", () -> new Petcoke());
+    public static Petcoke PETCOKE = new Petcoke();
     public static CoalCoke COALCOKE = new CoalCoke();
     public static SaltpeterChunk SALTPETERCHUNK = new SaltpeterChunk();
     public static Silicon SILICON = new Silicon();
@@ -128,7 +131,7 @@ public class VEItems {
 
     //Crops
     public static RiceItem RICE_GRAIN = new RiceItem(new Item.Properties().tab(VESetup.itemGroup)); // Can refactor to call the block here or in the item's class
-    public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)).setRegistryName("cooked_rice");
+    public static Item COOKED_RICE = new Item((new Item.Properties()).tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE));
 
     //Tiny fuels
     public static TinyCharcoal TINY_CHARCOAL = new TinyCharcoal();
@@ -136,7 +139,15 @@ public class VEItems {
     public static TinyCoalCoke TINY_COAL_COKE = new TinyCoalCoke();
     public static TinyPetcoke TINY_PETCOKE = new TinyPetcoke();
     public static TinyRosin TINY_ROSIN = new TinyRosin();
+    public static void register() {
 
-    // Tools
-    //public static Multitool MULTITOOL = new Multitool(new Item.Properties().tab(VESetup.itemGroup).stacksTo(1));
+        for(Field field : VEItems.class.getFields()) {
+            try {
+                VEItem item = (VEItem) field.get(VEItem.class);
+                VE_ITEM_REGISTRY.register(item.getRegistryName(), () -> item);
+            } catch (Exception e) {
+                VoluminousEnergy.LOGGER.error("Unable to register item: " + e.getMessage());
+            }
+        }
+    }
 }
