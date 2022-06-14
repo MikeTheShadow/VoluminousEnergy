@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -29,9 +30,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleWaterloggedBlock{
+
+    private String registryName;
 
     public VEWaterCrop(Properties properties) {
         super(properties);
@@ -121,7 +123,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     // On a random tick, increment the age of the crop to the next state
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random){
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random){
         int age = state.getValue(BlockStateProperties.AGE_2);
 
         if (age < 2 && worldIn.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock() && worldIn.getRawBrightness(pos.above(), 0) > 12){ // light level may need tweaking
@@ -158,12 +160,12 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     }
 
     @Override
-    public boolean isBonemealSuccess(Level world, Random random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel serverWorld, Random random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
         int age = state.getValue(BlockStateProperties.AGE_2);
         if(age < 2 && serverWorld.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             age++;
@@ -189,5 +191,14 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return super.use(state, world, pos, player, handIn, hit);
+    }
+
+    // Voluminous Energy 1.19 port
+    public void setRegistryName(String registryName) {
+        this.registryName = registryName;
+    }
+
+    public String getRegistryName() {
+        return registryName;
     }
 }

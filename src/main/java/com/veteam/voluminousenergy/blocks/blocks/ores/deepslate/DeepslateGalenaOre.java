@@ -4,10 +4,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.VEOreBlock;
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
-
-import java.util.Random;
 
 public class DeepslateGalenaOre extends VEOreBlock {
     public DeepslateGalenaOre(){
@@ -23,7 +22,7 @@ public class DeepslateGalenaOre extends VEOreBlock {
     }
 
     @Override
-    protected int xpOnDrop(Random rand) {
+    protected int xpOnDrop(RandomSource rand) {
         return 0;
     }
 }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 public class PressureLadder extends LadderBlock {
+    private String registryName; // Voluminous Energy 1.19 port
     protected static final AABB TOUCH_AABB = new AABB(0.125D, 0.0D, 0.125D, 0.875D, 0.25D, 0.875D);
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     private final PressurePlateBlock.Sensitivity sensitivity = PressurePlateBlock.Sensitivity.MOBS;
@@ -148,10 +149,10 @@ public class PressureLadder extends LadderBlock {
 
         if (!flag1 && flag) {
             this.playOffSound(level, blockPos);
-            level.gameEvent(entity, GameEvent.BLOCK_UNPRESS, blockPos);
+            level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, blockPos);
         } else if (flag1 && !flag) {
             this.playOnSound(level, blockPos);
-            level.gameEvent(entity, GameEvent.BLOCK_PRESS, blockPos);
+            level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
         }
 
         if (flag1) {
@@ -200,4 +201,12 @@ public class PressureLadder extends LadderBlock {
         return PushReaction.DESTROY;
     }
 
+    // Voluminous Energy 1.19 port
+    public void setRegistryName(String registryName) {
+        this.registryName = registryName;
+    }
+
+    public String getRegistryName() {
+        return registryName;
+    }
 }

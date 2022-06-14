@@ -13,6 +13,7 @@ public class BauxiteOre extends VEOreBlock {
             .strength(2.0f)
             .requiresCorrectToolForDrops()
         );
+        setRegistryName("bauxiteore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setBauxiteTier(this);
     }

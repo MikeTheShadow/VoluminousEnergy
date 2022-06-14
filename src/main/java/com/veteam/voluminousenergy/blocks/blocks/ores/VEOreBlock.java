@@ -1,14 +1,14 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeBlock;
 
-public class VEOreBlock extends Block implements IForgeBlock {
+public class VEOreBlock extends VEBlock implements IForgeBlock {
     public VEOreBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }

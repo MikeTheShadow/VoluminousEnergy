@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
@@ -20,7 +21,7 @@ public class EighzoOre extends VEOreBlock {
     }
 
     @Override
-    protected int xpOnDrop(Random rand) {
+    protected int xpOnDrop(RandomSource rand) {
         return 0;
     }
 }

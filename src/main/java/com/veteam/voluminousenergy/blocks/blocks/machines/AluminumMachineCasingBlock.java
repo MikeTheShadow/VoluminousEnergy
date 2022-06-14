@@ -1,11 +1,12 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-public class AluminumMachineCasingBlock extends Block {
+public class AluminumMachineCasingBlock extends VEBlock {
     public AluminumMachineCasingBlock() {
         super(Block.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)

@@ -1,32 +1,30 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-
-import java.util.Random;
-
-// Land Crops are crops that can be grown on land rather than on tilled soil.
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class VELandCrop extends BushBlock implements BonemealableBlock {
+
+    private String registryName;
 
     public VELandCrop(Properties properties) {
         super(properties);
@@ -50,7 +48,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random){
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random){
         //VoluminousEnergy.LOGGER.debug("LAND CROP TICK RANDOMLY!");
 
         int age = state.getValue(BlockStateProperties.AGE_2);
@@ -75,12 +73,12 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public boolean isBonemealSuccess(Level world, Random random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel serverWorld, Random random, BlockPos pos, BlockState state) {
+    public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
         int age = state.getValue(BlockStateProperties.AGE_2);
         if(age < 2) {
             age++;
@@ -101,5 +99,14 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return super.use(state, world, pos, player, handIn, hit);
+    }
+
+    // Voluminous Energy 1.19 port
+    public void setRegistryName(String registryName) {
+        this.registryName = registryName;
+    }
+
+    public String getRegistryName() {
+        return registryName;
     }
 }

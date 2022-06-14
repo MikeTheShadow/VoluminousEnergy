@@ -4,14 +4,12 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
-public class SaltpeterOre extends FallingBlock {
+public class SaltpeterOre extends VEOreBlock implements Fallable {
     public SaltpeterOre(){
         super(Properties.of(Material.SAND)
             .sound(SoundType.SAND)

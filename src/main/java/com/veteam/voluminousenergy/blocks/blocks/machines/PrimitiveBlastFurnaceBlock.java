@@ -11,6 +11,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -27,7 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityBlock {
 
@@ -79,7 +79,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
     }
 
     @Override
-    public void animateTick(BlockState blockState, Level level, BlockPos pos, Random random) {
+    public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource random) {
         if (blockState.getValue(LIT)) {
             double d0 = (double)pos.getX() + 0.5D;
             double d1 = pos.getY();

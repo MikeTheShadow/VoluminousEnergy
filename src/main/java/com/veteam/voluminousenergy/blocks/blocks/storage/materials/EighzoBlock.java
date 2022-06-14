@@ -1,12 +1,13 @@
 package com.veteam.voluminousenergy.blocks.blocks.storage.materials;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-public class EighzoBlock extends Block {
+public class EighzoBlock extends VEBlock {
     public EighzoBlock() {
         super(Block.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
