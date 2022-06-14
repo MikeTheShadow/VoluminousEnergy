@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,7 +41,7 @@ public class CombustionMultitool extends Multitool {
         itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             tooltip.add(
-                    new TranslatableComponent(fluidStack.getTranslationKey())
+                    TextUtil.translateString(fluidStack.getTranslationKey()).copy()
                             .append(": "
                                     + NumberUtil.formatNumber(fluidStack.getAmount())
                                     + " mB / "

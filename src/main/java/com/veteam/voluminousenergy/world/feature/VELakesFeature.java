@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.world.feature;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -30,7 +31,7 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
         return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config());
     }
 
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, BlockStateConfiguration conf) {
+    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, BlockStateConfiguration conf) {
         while(pos.getY() > 5 && worldIn.isEmptyBlock(pos)) {
             pos = pos.below();
         }

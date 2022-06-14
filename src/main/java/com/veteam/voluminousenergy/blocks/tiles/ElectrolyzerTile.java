@@ -294,7 +294,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
             } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
                 return stack.getItem() == recipe1.getRngItemSlot2().getItem();
             } else if (slot == 6){
-                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
             }
             return false;
         }
@@ -331,7 +331,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
                 if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 6 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+            } else if (slot == 6 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                 return super.insertItem(slot, stack, simulate);
             }
             return stack;

@@ -134,7 +134,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                 } else if (slot == 2 && recipe1 != null){
                     return stack.getItem() == recipe1.result.getItem();
                 } else if (slot == 3){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
                 }
                 return false;
             }
@@ -159,7 +159,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                     if (stack.getItem() == recipe1.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
-                } else if (slot == 3 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 3 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

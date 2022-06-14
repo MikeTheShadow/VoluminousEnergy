@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.fluids.CrudeOil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -33,7 +34,7 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
     public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
         BlockPos pos = context.origin();
         WorldGenLevel worldIn = context.level();
-        Random rand = context.random();
+        RandomSource rand = context.random();
 
         ///int base = worldIn.getChunk(pos).getTopFilledSegment();
         int base = 40;

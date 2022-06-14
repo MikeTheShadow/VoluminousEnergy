@@ -6,10 +6,9 @@ import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class VEFeatureGeneration {
-
+    /* TODO: Look at replacement for BiomeLoadingEvent
     public static void addFeaturesToBiomes(BiomeLoadingEvent event){
         if(event.getCategory() != Biome.BiomeCategory.NETHER && event.getCategory() != Biome.BiomeCategory.THEEND && Config.ENABLE_VE_FEATURE_GEN.get()){
             if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info("Voluminous Energy has received a BiomeLoadingEvent for " + event.getName().toString() + ". Will start feature registration process now.");
@@ -71,5 +70,5 @@ public class VEFeatureGeneration {
         } else if (event.getCategory() == Biome.BiomeCategory.THEEND){
             if (Config.ENABLE_EIGHZO_ORE_DEPOSIT.get()) event.getGeneration().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, Holder.direct(VEFeatures.EIGHZO_ORE_DEPOSIT_PLACEMENT));
         }
-    }
+    }*/
 }

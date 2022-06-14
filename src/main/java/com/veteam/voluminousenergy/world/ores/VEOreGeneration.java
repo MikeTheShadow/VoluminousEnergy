@@ -1,27 +1,21 @@
 package com.veteam.voluminousenergy.world.ores;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.MultiBlockStateMatchRuleTest;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 import java.util.List;
 
 public class VEOreGeneration {
-
+    /* TODO: Look at replacement for BiomeLoadingEvent
     public static void OreGeneration(BiomeLoadingEvent biome){
         if (biome.getCategory() == Biome.BiomeCategory.NETHER){
             // Nether ores
@@ -63,7 +57,7 @@ public class VEOreGeneration {
 
         }
 
-    }
+    }*/
 
     public static class OreWithTargetStatesToReplace {
         public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(
@@ -97,9 +91,9 @@ public class VEOreGeneration {
 
     }
 
-    public static void oreLog(Block block, BiomeLoadingEvent biome, int size, int bottomAnchor, int topAnchor, int count){
-        if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info(block.getRegistryName() + " registered to generate in: " + biome.getName() + " With Size: " + size + " Bottom Anchor: " + bottomAnchor + " Top Anchor: " + topAnchor + " Count: " + count);
-    }
+    //public static void oreLog(Block block, BiomeLoadingEvent biome, int size, int bottomAnchor, int topAnchor, int count){
+    //    if (Config.WORLD_GEN_LOGGING.get()) VoluminousEnergy.LOGGER.info(block.getRegistryName() + " registered to generate in: " + biome.getName() + " With Size: " + size + " Bottom Anchor: " + bottomAnchor + " Top Anchor: " + topAnchor + " Count: " + count);
+    //}
 
     public static final class ReplacementRules { // These are rule tests to see if the block in the world (inside the biome) is valid to be replaced with the generated ore
         public static final RuleTest REGULAR_STONE = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);

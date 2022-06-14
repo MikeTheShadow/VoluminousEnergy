@@ -74,7 +74,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     protected int calculateCounter(int processTime, ItemStack upgradeStack) {
-        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER) {
+        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
                 return 5;
@@ -86,7 +86,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     }
 
     protected int consumptionMultiplier(int consumption, ItemStack upgradeStack) {
-        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER) {
+        if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
                 return consumption * 16;
@@ -231,7 +231,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if (tileEntity.getUpgradeSlotId() == slot){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
                 }
                 return true;
             }
@@ -240,7 +240,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
                 if(slot == tileEntity.getUpgradeSlotId()) {
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER ? super.insertItem(slot, stack, simulate) : stack;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get() ? super.insertItem(slot, stack, simulate) : stack;
                 }
                 return super.insertItem(slot, stack, simulate);
             }

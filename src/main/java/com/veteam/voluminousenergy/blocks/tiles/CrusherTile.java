@@ -75,7 +75,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             } else if (slot == 2 && recipe1 != null){
                 return stack.getItem() == recipe1.getRngItem().getItem();
             } else if (slot == 3){
-                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
             }
             return false;
         }
@@ -103,7 +103,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 3){
-                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                     return super.insertItem(slot, stack, simulate);
                 }
             }
@@ -116,15 +116,15 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             if(level != null){
                 Random rand = new Random();
                 JavaRandomSource javaRandomSource = new JavaRandomSource(rand.nextLong());
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST)
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST.get())
                     level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(javaRandomSource, 1, 3)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST)
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST.get())
                     level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(javaRandomSource, 1, 3)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST)
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST.get())
                     level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(javaRandomSource, 2, 5)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST)
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST.get())
                     level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(javaRandomSource, 5, 7)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK)
+                if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK.get())
                     level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(javaRandomSource, 1, 3)));
             }
             

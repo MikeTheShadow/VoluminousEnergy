@@ -6,10 +6,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -62,14 +60,14 @@ public class VEEnergyItem extends VEItem {
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
         if(CapabilityEnergy.ENERGY == null) return; // sanity check
         itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
-            Component textComponent = new TextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
+            Component textComponent = Component.nullToEmpty("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
             tooltip.add(textComponent);
         });
     }
 
     @Override
     public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
-        if (this.allowdedIn(itemGroup)){
+        if (this.allowedIn(itemGroup)){
             itemStacks.add(new ItemStack(this));
             ItemStack chargedStack = new ItemStack(this);
             chargedStack.getOrCreateTag().putInt("energy",this.maxEnergy);

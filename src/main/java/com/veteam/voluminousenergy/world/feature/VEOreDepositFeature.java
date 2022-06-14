@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -15,12 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.material.Material;
-
-import java.util.Random;
 
 public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configuration> {
     /*
@@ -105,7 +102,7 @@ public class VEOreDepositFeature extends Feature<VEOreDepositFeature.Configurati
     }
 
     // Derived from VELakes feature
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, Configuration conf) { // Classic layout of inputs
+    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, Configuration conf) { // Classic layout of inputs
         if (worldIn.canSeeSky(pos) && Config.PREVENT_SURFACE_ORE_DEPOSITS.get()) return false;
 
         // Get states from the configuration codec

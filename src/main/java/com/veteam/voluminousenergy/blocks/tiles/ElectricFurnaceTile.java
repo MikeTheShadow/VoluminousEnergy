@@ -148,7 +148,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
                     return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 2){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
                 }
                 return false;
             }
@@ -168,7 +168,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
                 } else if (slot == 1){
                     return super.insertItem(slot, stack, simulate);
-                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
