@@ -70,11 +70,11 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
         } else { // Inventory --> Container
-            if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
+            if(slotStack.is(VEItems.QUARTZ_MULTIPLIER.get()) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (!slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
+            if (!slotStack.is(VEItems.QUARTZ_MULTIPLIER.get()) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
                 return ItemStack.EMPTY;
             }
         }

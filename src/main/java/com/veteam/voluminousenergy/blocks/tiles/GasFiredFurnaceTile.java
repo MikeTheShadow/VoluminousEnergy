@@ -165,7 +165,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
                         fuelCounter = recipe.getProcessTime()/4;
-                        if(inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER){
+                        if(inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                             fuelCounter = fuelCounter/(inventory.getStackInSlot(4).getCount()^2);
                         }
                         fuelLength = fuelCounter;
@@ -228,7 +228,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
 
                     return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 4){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
                 }
                 return false;
             }
@@ -253,7 +253,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
 
                 } else if (slot == 3){
                     return super.insertItem(slot, stack, simulate);
-                } else if (slot == 4 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 4 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

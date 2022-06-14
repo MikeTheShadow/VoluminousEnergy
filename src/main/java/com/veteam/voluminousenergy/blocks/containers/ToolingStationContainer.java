@@ -9,7 +9,9 @@ import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -24,6 +26,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -157,7 +160,7 @@ public class ToolingStationContainer extends VoluminousContainer {
                         return ItemStack.EMPTY;
                     }
                 } catch (Exception e){
-                    VoluminousEnergy.LOGGER.error("Item: " + slotStack.getItem().getRegistryName() + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
+                    VoluminousEnergy.LOGGER.error("Item: " + RegistryLookups.lookupItem(slotStack) + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
                             "This may be a modded bucket that extends BucketItem, but contains no fluid. If not, here's the stacktrace: ");
                     e.printStackTrace();
                 }

@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -336,7 +337,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     @Override
     public @Nonnull Component getDisplayName() {
-        ResourceLocation name = BlockEntityType.getKey(this.getType());
+        ResourceLocation name = RegistryLookups.getBlockEntityTypeKey(this);
         if(name == null) throw new NotImplementedException("Missing registry name for class: " + this.getClass().getName());
         return Component.nullToEmpty(name.getPath());
     }

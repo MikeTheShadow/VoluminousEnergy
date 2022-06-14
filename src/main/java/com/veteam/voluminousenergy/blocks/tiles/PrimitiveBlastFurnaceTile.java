@@ -123,7 +123,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                 } else if (slot == 1 && recipeOutput != null){
                     return stack.getItem() == recipeOutput.result.getItem();
                 } else if (slot == 2){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
                 }
                 return false;
             }
@@ -146,7 +146,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                     if (stack.getItem() == recipeOut.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
-                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                     return super.insertItem(slot,stack,simulate);
                 }
                 return stack;

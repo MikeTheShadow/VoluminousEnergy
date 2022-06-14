@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
@@ -29,7 +30,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class SawmillBlock extends Block implements EntityBlock { // Based on the Stonecutter
+public class SawmillBlock extends VEBlock implements EntityBlock { // Based on the Stonecutter
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
