@@ -1,10 +1,9 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ToolUtil {
 
         Component translatedComponent = TextUtil.translateString("text.voluminousenergy.protective_sheath");
         String translatedString = translatedComponent.getString();
-        Component textComponent = new TextComponent(translatedString + ": " + bonus);
+        Component textComponent = Component.nullToEmpty(translatedString + ": " + bonus);
         tooltip.add(textComponent);
     }
     
