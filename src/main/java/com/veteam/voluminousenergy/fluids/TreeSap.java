@@ -17,7 +17,7 @@ public class TreeSap {
     public static final ResourceLocation TREE_SAP_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/tree_sap_still");
     public static final ResourceLocation TREE_SAP_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/tree_sap_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
     public static FlowingFluid TREE_SAP;
     public static FlowingFluid FLOWING_TREE_SAP;

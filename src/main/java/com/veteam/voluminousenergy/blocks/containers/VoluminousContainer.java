@@ -14,7 +14,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public class VoluminousContainer extends AbstractContainerMenu {
+public abstract class VoluminousContainer extends AbstractContainerMenu {
 
     BlockEntity tileEntity;
 

@@ -17,7 +17,7 @@ public class WhiteFumingNitricAcid {
     public static final ResourceLocation WFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/wfna_still");
     public static final ResourceLocation WFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/wfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_WHITE_FUMING_NITRIC_ACID;

@@ -17,7 +17,7 @@ public class Treethanol {
     public static final ResourceLocation TREETHANOL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/treethanol_still");
     public static final ResourceLocation TREETHANOL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/treethanol_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
     public static FlowingFluid TREETHANOL;
     public static FlowingFluid FLOWING_TREETHANOL;

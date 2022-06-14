@@ -17,7 +17,7 @@ public class DinitrogenTetroxide {
     public static final ResourceLocation DINITROGEN_TETROXIDE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/dinitrogen_tetroxide_still");
     public static final ResourceLocation DINITROGEN_TETROXIDE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/dinitrogen_tetroxide_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops();
+    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
     public static FlowingFluid DINITROGEN_TETROXIDE;
     public static FlowingFluid FLOWING_DINITROGEN_TETROXIDE;
