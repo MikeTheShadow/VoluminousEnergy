@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items.batteries;
 
+import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -22,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class VEEnergyItem extends Item {
+public class VEEnergyItem extends VEItem {
     private final int maxEnergy;
     private final int maxTransfer;
 

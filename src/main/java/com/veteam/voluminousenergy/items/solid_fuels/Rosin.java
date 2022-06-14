@@ -8,7 +8,7 @@ import net.minecraftforge.common.extensions.IForgeItem;
 
 import javax.annotation.Nullable;
 
-public class Rosin extends Item implements IForgeItem {
+public class Rosin extends VEItem implements IForgeItem {
     public Rosin() {
         super(new Item.Properties()
                 .stacksTo(64)

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.google.common.collect.Multimap;
+import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class Multitool extends Item /*implements Vanishable*/ {
+public class Multitool extends VEItem /*implements Vanishable*/ {
     protected MultitoolBit bit;
 
     public Multitool(MultitoolBit bit, String registryName, Item.Properties itemProperties) {

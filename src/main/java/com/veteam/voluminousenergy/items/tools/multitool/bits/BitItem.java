@@ -1,8 +1,9 @@
 package com.veteam.voluminousenergy.items.tools.multitool.bits;
 
+import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
-public class BitItem extends Item {
+public class BitItem extends VEItem {
     private MultitoolBit multitoolBit;
 
     public BitItem(MultitoolBit bit, String registryName, Item.Properties itemProperties) {
