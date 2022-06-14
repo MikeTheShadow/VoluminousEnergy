@@ -19,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -162,7 +161,7 @@ public class DistillationRecipe extends VEFluidRecipe {
     public int getProcessTime() { return processTime; }
 
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<DistillationRecipe> {
+    public static class Serializer implements RecipeSerializer<DistillationRecipe> {
         @Override
         public DistillationRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             DistillationRecipe recipe = new DistillationRecipe(recipeId);

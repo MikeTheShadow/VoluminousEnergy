@@ -14,7 +14,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -113,7 +112,7 @@ public class ElectrolyzerRecipe extends VERecipe {
         return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ElectrolyzerRecipe>{
+    public static class Serializer implements RecipeSerializer<ElectrolyzerRecipe>{
 
         @Override
         public ElectrolyzerRecipe fromJson(ResourceLocation recipeId, JsonObject json){

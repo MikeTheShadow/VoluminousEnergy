@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -107,7 +106,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<IndustrialBlastingRecipe>{
+    public static class Serializer implements RecipeSerializer<IndustrialBlastingRecipe>{
 
         @Override
         public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){

@@ -23,7 +23,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -148,7 +147,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public int getVolumetricEnergy() {return volumetricEnergy;}
 
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CombustionGeneratorFuelRecipe> {
+    public static class Serializer implements RecipeSerializer<CombustionGeneratorFuelRecipe> {
         @Override
         public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);

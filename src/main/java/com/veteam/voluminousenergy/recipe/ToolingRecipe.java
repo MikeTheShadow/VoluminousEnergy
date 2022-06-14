@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -115,7 +114,7 @@ public class ToolingRecipe extends VERecipe {
         return this.bases.get();
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ToolingRecipe>{
+    public static class Serializer implements RecipeSerializer<ToolingRecipe>{
 
         @Override
         public ToolingRecipe fromJson(ResourceLocation recipeId, JsonObject json){

@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -99,7 +98,7 @@ public class SawmillingRecipe extends VERecipe {
         return isLogRecipe;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SawmillingRecipe>{
+    public static class Serializer implements RecipeSerializer<SawmillingRecipe>{
 
         @Override
         public SawmillingRecipe fromJson(ResourceLocation recipeId, JsonObject json){

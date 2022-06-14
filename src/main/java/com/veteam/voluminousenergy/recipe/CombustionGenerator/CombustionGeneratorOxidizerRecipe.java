@@ -22,7 +22,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -100,7 +99,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
     public int getProcessTime(){return processTime;}
 
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CombustionGeneratorOxidizerRecipe> {
+    public static class Serializer implements RecipeSerializer<CombustionGeneratorOxidizerRecipe> {
         @Override
         public CombustionGeneratorOxidizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);

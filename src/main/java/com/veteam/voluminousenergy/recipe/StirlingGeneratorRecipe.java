@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -100,7 +99,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StirlingGeneratorRecipe> {
+    public static class Serializer implements RecipeSerializer<StirlingGeneratorRecipe> {
 
         @Override
         public StirlingGeneratorRecipe fromJson(ResourceLocation recipeId, JsonObject json){

@@ -19,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -141,7 +140,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         return new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CentrifugalAgitatorRecipe> {
+    public static class Serializer implements RecipeSerializer<CentrifugalAgitatorRecipe> {
         @Override
         public CentrifugalAgitatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe(recipeId);

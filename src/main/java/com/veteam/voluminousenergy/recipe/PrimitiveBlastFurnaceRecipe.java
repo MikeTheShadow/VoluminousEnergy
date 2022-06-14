@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
@@ -93,7 +92,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
         return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<PrimitiveBlastFurnaceRecipe>{
+    public static class Serializer implements RecipeSerializer<PrimitiveBlastFurnaceRecipe>{
 
         @Override
         public PrimitiveBlastFurnaceRecipe fromJson(ResourceLocation recipeId, JsonObject json){
