@@ -11,10 +11,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeTier;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 
 public class VETools {
+
+    public static final DeferredRegister<Item> VE_TOOL_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
 
     // Tool Constants
     final static int SWORD_1 = 3;
@@ -101,52 +106,52 @@ public class VETools {
     public static final Item.Properties SOLARIUM_PROP = (new Item.Properties().tab(VESetup.itemGroup)).durability(SOLARIUM.getUses());
 
     // Swords
-    public static Item CARBON_SWORD = new SwordItem(CARBON, SWORD_1, SWORD_2, CARBON_PROP).setRegistryName("carbon_sword");
-    public static Item ALUMINUM_SWORD = new SwordItem(ALUMINUM, SWORD_1, SWORD_2, ALUMINUM_PROP).setRegistryName("aluminum_sword");
-    public static Item TITANIUM_SWORD = new SwordItem(TITANIUM, SWORD_1, SWORD_2, TITANIUM_PROP).setRegistryName("titanium_sword");
-    public static Item TUNGSTEN_SWORD = new SwordItem(TUNGSTEN, SWORD_1, SWORD_2, TUNGSTEN_PROP).setRegistryName("tungsten_sword");
-    public static Item TUNGSTEN_STEEL_SWORD = new SwordItem(TUNGSTEN_STEEL, SWORD_1, SWORD_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_sword");
-    public static Item NIGHALITE_SWORD = new SwordItem(NIGHALITE, SWORD_1, SWORD_2, NIGHALITE_PROP).setRegistryName("nighalite_sword");
-    public static Item EIGHZO_SWORD = new SwordItem(EIGHZO, SWORD_1, SWORD_2, EIGHZO_PROP).setRegistryName("eighzo_sword");
-    public static Item SOLARIUM_SWORD = new VESwordItem(SOLARIUM, SWORD_1, SWORD_2, SOLARIUM_PROP).setRegistryName("solarium_sword");
+    public static RegistryObject<Item> CARBON_SWORD = VE_TOOL_REGISTRY.register("carbon_sword",() -> new SwordItem(CARBON, SWORD_1, SWORD_2, CARBON_PROP));
+    public static RegistryObject<Item> ALUMINUM_SWORD = VE_TOOL_REGISTRY.register("aluminum_sword",() -> new SwordItem(ALUMINUM, SWORD_1, SWORD_2, ALUMINUM_PROP));
+    public static RegistryObject<Item> TITANIUM_SWORD = VE_TOOL_REGISTRY.register("titanium_sword",() -> new SwordItem(TITANIUM, SWORD_1, SWORD_2, TITANIUM_PROP));
+    public static RegistryObject<Item> TUNGSTEN_SWORD = VE_TOOL_REGISTRY.register("tungsten_sword",() -> new SwordItem(TUNGSTEN, SWORD_1, SWORD_2, TUNGSTEN_PROP));
+    public static RegistryObject<Item> TUNGSTEN_STEEL_SWORD = VE_TOOL_REGISTRY.register("tungsten_steel_sword",() -> new SwordItem(TUNGSTEN_STEEL, SWORD_1, SWORD_2, TUNGSTEN_STEEL_PROP));
+    public static RegistryObject<Item> NIGHALITE_SWORD = VE_TOOL_REGISTRY.register("nighalite_sword",() -> new SwordItem(NIGHALITE, SWORD_1, SWORD_2, NIGHALITE_PROP));
+    public static RegistryObject<Item> EIGHZO_SWORD = VE_TOOL_REGISTRY.register("eighzo_sword",() -> new SwordItem(EIGHZO, SWORD_1, SWORD_2, EIGHZO_PROP));
+    public static RegistryObject<Item> SOLARIUM_SWORD = VE_TOOL_REGISTRY.register("solarium_sword",() -> new VESwordItem(SOLARIUM, SWORD_1, SWORD_2, SOLARIUM_PROP));
 
     // Shovels
-    public static Item CARBON_SHOVEL = new ShovelItem(CARBON, SHOVEL_1, SHOVEL_2, CARBON_PROP).setRegistryName("carbon_shovel");
-    public static Item ALUMINUM_SHOVEL = new ShovelItem(ALUMINUM, SHOVEL_1, SHOVEL_2, ALUMINUM_PROP).setRegistryName("aluminum_shovel");
-    public static Item TITANIUM_SHOVEL = new ShovelItem(TITANIUM, SHOVEL_1, SHOVEL_2, TITANIUM_PROP).setRegistryName("titanium_shovel");
-    public static Item TUNGSTEN_SHOVEL = new ShovelItem(TUNGSTEN, SHOVEL_1, SHOVEL_2, TUNGSTEN_PROP).setRegistryName("tungsten_shovel");
-    public static Item TUNGSTEN_STEEL_SHOVEL = new ShovelItem(TUNGSTEN_STEEL, SHOVEL_1, SHOVEL_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_shovel");
-    public static Item NIGHALITE_SHOVEL = new ShovelItem(NIGHALITE, SHOVEL_1, SHOVEL_2, NIGHALITE_PROP).setRegistryName("nighalite_shovel");
-    public static Item EIGHZO_SHOVEL = new ShovelItem(EIGHZO, SHOVEL_1, SHOVEL_2, EIGHZO_PROP).setRegistryName("eighzo_shovel");
-    public static Item SOLARIUM_SHOVEL = new VEShovelItem(SOLARIUM, SHOVEL_1, SHOVEL_2, SOLARIUM_PROP).setRegistryName("solarium_shovel");
+    public static RegistryObject<Item> CARBON_SHOVEL = VE_TOOL_REGISTRY.register("carbon_shovel",() -> new ShovelItem(CARBON, SHOVEL_1, SHOVEL_2, CARBON_PROP));
+    public static RegistryObject<Item> ALUMINUM_SHOVEL = VE_TOOL_REGISTRY.register("aluminum_shovel",() -> new ShovelItem(ALUMINUM, SHOVEL_1, SHOVEL_2, ALUMINUM_PROP));
+    public static RegistryObject<Item> TITANIUM_SHOVEL = VE_TOOL_REGISTRY.register("titanium_shovel",() -> new ShovelItem(TITANIUM, SHOVEL_1, SHOVEL_2, TITANIUM_PROP));
+    public static RegistryObject<Item> TUNGSTEN_SHOVEL = VE_TOOL_REGISTRY.register("tungsten_shovel",() -> new ShovelItem(TUNGSTEN, SHOVEL_1, SHOVEL_2, TUNGSTEN_PROP));
+    public static RegistryObject<Item> TUNGSTEN_STEEL_SHOVEL = VE_TOOL_REGISTRY.register("tungsten_steel_shovel",() -> new ShovelItem(TUNGSTEN_STEEL, SHOVEL_1, SHOVEL_2, TUNGSTEN_STEEL_PROP));
+    public static RegistryObject<Item> NIGHALITE_SHOVEL = VE_TOOL_REGISTRY.register("nighalite_shovel",() -> new ShovelItem(NIGHALITE, SHOVEL_1, SHOVEL_2, NIGHALITE_PROP));
+    public static RegistryObject<Item> EIGHZO_SHOVEL = VE_TOOL_REGISTRY.register("eighzo_shovel",() -> new ShovelItem(EIGHZO, SHOVEL_1, SHOVEL_2, EIGHZO_PROP));
+    public static RegistryObject<Item> SOLARIUM_SHOVEL = VE_TOOL_REGISTRY.register("solarium_shovel",() -> new VEShovelItem(SOLARIUM, SHOVEL_1, SHOVEL_2, SOLARIUM_PROP));
 
     // Pickaxes
-    public static Item CARBON_PICKAXE = new PickaxeItem(CARBON, PICKAXE_1, PICKAXE_2, CARBON_PROP).setRegistryName("carbon_pickaxe");
-    public static Item ALUMINUM_PICKAXE = new PickaxeItem(ALUMINUM, PICKAXE_1, PICKAXE_2, ALUMINUM_PROP).setRegistryName("aluminum_pickaxe");
-    public static Item TITANIUM_PICKAXE = new PickaxeItem(TITANIUM, PICKAXE_1, PICKAXE_2, TITANIUM_PROP).setRegistryName("titanium_pickaxe");
-    public static Item TUNGSTEN_PICKAXE = new PickaxeItem(TUNGSTEN, PICKAXE_1, PICKAXE_2, TUNGSTEN_PROP).setRegistryName("tungsten_pickaxe");
-    public static Item TUNGSTEN_STEEL_PICKAXE = new PickaxeItem(TUNGSTEN_STEEL, PICKAXE_1, PICKAXE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_pickaxe");
-    public static Item NIGHALITE_PICKAXE = new PickaxeItem(NIGHALITE, PICKAXE_1, PICKAXE_2, NIGHALITE_PROP).setRegistryName("nighalite_pickaxe");
-    public static Item EIGHZO_PICKAXE = new PickaxeItem(EIGHZO, PICKAXE_1, PICKAXE_2, EIGHZO_PROP).setRegistryName("eighzo_pickaxe");
-    public static Item SOLARIUM_PICKAXE = new VEPickaxeItem(SOLARIUM, PICKAXE_1, PICKAXE_2, SOLARIUM_PROP).setRegistryName("solarium_pickaxe");
+    public static RegistryObject<Item> CARBON_PICKAXE = VE_TOOL_REGISTRY.register("carbon_pickaxe",() -> new PickaxeItem(CARBON, PICKAXE_1, PICKAXE_2, CARBON_PROP));
+    public static RegistryObject<Item> ALUMINUM_PICKAXE = VE_TOOL_REGISTRY.register("aluminum_pickaxe",() -> new PickaxeItem(ALUMINUM, PICKAXE_1, PICKAXE_2, ALUMINUM_PROP));
+    public static RegistryObject<Item> TITANIUM_PICKAXE = VE_TOOL_REGISTRY.register("titanium_pickaxe",() -> new PickaxeItem(TITANIUM, PICKAXE_1, PICKAXE_2, TITANIUM_PROP));
+    public static RegistryObject<Item> TUNGSTEN_PICKAXE = VE_TOOL_REGISTRY.register("tungsten_pickaxe",() -> new PickaxeItem(TUNGSTEN, PICKAXE_1, PICKAXE_2, TUNGSTEN_PROP));
+    public static RegistryObject<Item> TUNGSTEN_STEEL_PICKAXE = VE_TOOL_REGISTRY.register("tungsten_steel_pickaxe",() -> new PickaxeItem(TUNGSTEN_STEEL, PICKAXE_1, PICKAXE_2, TUNGSTEN_STEEL_PROP));
+    public static RegistryObject<Item> NIGHALITE_PICKAXE = VE_TOOL_REGISTRY.register("nighalite_pickaxe",() -> new PickaxeItem(NIGHALITE, PICKAXE_1, PICKAXE_2, NIGHALITE_PROP));
+    public static RegistryObject<Item> EIGHZO_PICKAXE = VE_TOOL_REGISTRY.register("eighzo_pickaxe",() -> new PickaxeItem(EIGHZO, PICKAXE_1, PICKAXE_2, EIGHZO_PROP));
+    public static RegistryObject<Item> SOLARIUM_PICKAXE = VE_TOOL_REGISTRY.register("solarium_pickaxe",() -> new VEPickaxeItem(SOLARIUM, PICKAXE_1, PICKAXE_2, SOLARIUM_PROP));
 
     // Axes
-    public static Item CARBON_AXE = new AxeItem(CARBON, AXE_1, AXE_2, CARBON_PROP).setRegistryName("carbon_axe");
-    public static Item ALUMINUM_AXE = new AxeItem(ALUMINUM, AXE_1, AXE_2, ALUMINUM_PROP).setRegistryName("aluminum_axe");
-    public static Item TITANIUM_AXE = new AxeItem(TITANIUM, AXE_1, AXE_2, TITANIUM_PROP).setRegistryName("titanium_axe");
-    public static Item TUNGSTEN_AXE = new AxeItem(TUNGSTEN, AXE_1, AXE_2, TUNGSTEN_PROP).setRegistryName("tungsten_axe");
-    public static Item TUNGSTEN_STEEL_AXE = new AxeItem(TUNGSTEN_STEEL, AXE_1, AXE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_axe");
-    public static Item NIGHALITE_AXE = new AxeItem(NIGHALITE, AXE_1, AXE_2, NIGHALITE_PROP).setRegistryName("nighalite_axe");
-    public static Item EIGHZO_AXE = new AxeItem(EIGHZO, AXE_1, AXE_2, EIGHZO_PROP).setRegistryName("eighzo_axe");
-    public static Item SOLARIUM_AXE = new VEAxeItem(SOLARIUM, AXE_1, AXE_2, SOLARIUM_PROP).setRegistryName("solarium_axe");
+    public static RegistryObject<Item> CARBON_AXE = VE_TOOL_REGISTRY.register("carbon_axe",() -> new AxeItem(CARBON, AXE_1, AXE_2, CARBON_PROP));
+    public static RegistryObject<Item> ALUMINUM_AXE = VE_TOOL_REGISTRY.register("aluminum_axe",() -> new AxeItem(ALUMINUM, AXE_1, AXE_2, ALUMINUM_PROP));
+    public static RegistryObject<Item> TITANIUM_AXE = VE_TOOL_REGISTRY.register("titanium_axe",() -> new AxeItem(TITANIUM, AXE_1, AXE_2, TITANIUM_PROP));
+    public static RegistryObject<Item> TUNGSTEN_AXE = VE_TOOL_REGISTRY.register("tungsten_axe",() -> new AxeItem(TUNGSTEN, AXE_1, AXE_2, TUNGSTEN_PROP));
+    public static RegistryObject<Item> TUNGSTEN_STEEL_AXE = VE_TOOL_REGISTRY.register("tungsten_steel_axe",() -> new AxeItem(TUNGSTEN_STEEL, AXE_1, AXE_2, TUNGSTEN_STEEL_PROP));
+    public static RegistryObject<Item> NIGHALITE_AXE = VE_TOOL_REGISTRY.register("nighalite_axe",() -> new AxeItem(NIGHALITE, AXE_1, AXE_2, NIGHALITE_PROP));
+    public static RegistryObject<Item> EIGHZO_AXE = VE_TOOL_REGISTRY.register("eighzo_axe",() -> new AxeItem(EIGHZO, AXE_1, AXE_2, EIGHZO_PROP));
+    public static RegistryObject<Item> SOLARIUM_AXE = VE_TOOL_REGISTRY.register("solarium_axe",() -> new VEAxeItem(SOLARIUM, AXE_1, AXE_2, SOLARIUM_PROP));
 
     // Hoes
-    public static Item CARBON_HOE = new HoeItem(CARBON, HOE_1, HOE_2, CARBON_PROP).setRegistryName("carbon_hoe");
-    public static Item ALUMINUM_HOE = new HoeItem(ALUMINUM, HOE_1, HOE_2, ALUMINUM_PROP).setRegistryName("aluminum_hoe");
-    public static Item TITANIUM_HOE = new HoeItem(TITANIUM, HOE_1, HOE_2, TITANIUM_PROP).setRegistryName("titanium_hoe");
-    public static Item TUNGSTEN_HOE = new HoeItem(TUNGSTEN, HOE_1, HOE_2, TUNGSTEN_PROP).setRegistryName("tungsten_hoe");
-    public static Item TUNGSTEN_STEEL_HOE = new HoeItem(TUNGSTEN_STEEL, HOE_1, HOE_2, TUNGSTEN_STEEL_PROP).setRegistryName("tungsten_steel_hoe");
-    public static Item NIGHALITE_HOE = new HoeItem(NIGHALITE, HOE_1, HOE_2, NIGHALITE_PROP).setRegistryName("nighalite_hoe");
-    public static Item EIGHZO_HOE = new HoeItem(EIGHZO, HOE_1, HOE_2, EIGHZO_PROP).setRegistryName("eighzo_hoe");
-    public static Item SOLARIUM_HOE = new VEHoeItem(SOLARIUM, HOE_1, HOE_2, SOLARIUM_PROP).setRegistryName("solarium_hoe");
+    public static RegistryObject<Item> CARBON_HOE = VE_TOOL_REGISTRY.register("carbon_hoe",() -> new HoeItem(CARBON, HOE_1, HOE_2, CARBON_PROP));
+    public static RegistryObject<Item> ALUMINUM_HOE = VE_TOOL_REGISTRY.register("aluminum_hoe",() -> new HoeItem(ALUMINUM, HOE_1, HOE_2, ALUMINUM_PROP));
+    public static RegistryObject<Item> TITANIUM_HOE = VE_TOOL_REGISTRY.register("titanium_hoe",() -> new HoeItem(TITANIUM, HOE_1, HOE_2, TITANIUM_PROP));
+    public static RegistryObject<Item> TUNGSTEN_HOE = VE_TOOL_REGISTRY.register("tungsten_hoe",() -> new HoeItem(TUNGSTEN, HOE_1, HOE_2, TUNGSTEN_PROP));
+    public static RegistryObject<Item> TUNGSTEN_STEEL_HOE = VE_TOOL_REGISTRY.register("tungsten_steel_hoe",() -> new HoeItem(TUNGSTEN_STEEL, HOE_1, HOE_2, TUNGSTEN_STEEL_PROP));
+    public static RegistryObject<Item> NIGHALITE_HOE = VE_TOOL_REGISTRY.register("nighalite_hoe",() -> new HoeItem(NIGHALITE, HOE_1, HOE_2, NIGHALITE_PROP));
+    public static RegistryObject<Item> EIGHZO_HOE = VE_TOOL_REGISTRY.register("eighzo_hoe",() -> new HoeItem(EIGHZO, HOE_1, HOE_2, EIGHZO_PROP));
+    public static RegistryObject<Item> SOLARIUM_HOE = VE_TOOL_REGISTRY.register("solarium_hoe",() -> new VEHoeItem(SOLARIUM, HOE_1, HOE_2, SOLARIUM_PROP));
 }

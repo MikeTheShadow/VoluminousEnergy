@@ -99,6 +99,7 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
         VEItems.VE_ITEM_REGISTRY.register(modEventBus);
+        VETools.VE_TOOL_REGISTRY.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
