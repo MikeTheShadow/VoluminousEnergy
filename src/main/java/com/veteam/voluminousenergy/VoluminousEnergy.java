@@ -2,21 +2,8 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
-import com.veteam.voluminousenergy.blocks.blocks.machines.*;
-import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
-import com.veteam.voluminousenergy.blocks.blocks.ores.*;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
-import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
+import com.veteam.voluminousenergy.blocks.blocks.machines.PressureLadder;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
-import com.veteam.voluminousenergy.blocks.containers.*;
-import com.veteam.voluminousenergy.blocks.containers.tank.*;
-import com.veteam.voluminousenergy.blocks.tiles.*;
-import com.veteam.voluminousenergy.blocks.tiles.tank.*;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -32,21 +19,16 @@ import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -64,6 +46,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.*;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy {
@@ -141,82 +125,82 @@ public class VoluminousEnergy {
         public static void onBlocksRegistry(final RegisterEvent blockRegisteryEvent) {
             LOGGER.info("Voluminous Energy is now registering Blocks");
             //Tile Entities
-            registerBlock(blockRegisteryEvent,new PrimitiveBlastFurnaceBlock());
-            registerBlock(blockRegisteryEvent,new PrimitiveStirlingGeneratorBlock());
-            registerBlock(blockRegisteryEvent,new CrusherBlock());
-            registerBlock(blockRegisteryEvent,new ElectrolyzerBlock());
-            registerBlock(blockRegisteryEvent,new CentrifugalAgitatorBlock());
-            registerBlock(blockRegisteryEvent,new CompressorBlock());
-            registerBlock(blockRegisteryEvent,new StirlingGeneratorBlock());
-            registerBlock(blockRegisteryEvent,new CombustionGeneratorBlock());
-            registerBlock(blockRegisteryEvent,new AqueoulizerBlock());
-            registerBlock(blockRegisteryEvent,new AirCompressorBlock());
-            registerBlock(blockRegisteryEvent,new DistillationUnitBlock());
-            registerBlock(blockRegisteryEvent,new PumpBlock());
-            registerBlock(blockRegisteryEvent,new GasFiredFurnaceBlock());
-            registerBlock(blockRegisteryEvent,new ElectricFurnaceBlock());
-            registerBlock(blockRegisteryEvent,new BatteryBoxBlock());
-            registerBlock(blockRegisteryEvent,new PrimitiveSolarPanelBlock());
-            registerBlock(blockRegisteryEvent,new SolarPanelBlock());
-            registerBlock(blockRegisteryEvent,new CentrifugalSeparatorBlock());
-            registerBlock(blockRegisteryEvent,new ImplosionCompressorBlock());
-            registerBlock(blockRegisteryEvent,new BlastFurnaceBlock());
-            registerBlock(blockRegisteryEvent,new ToolingStationBlock());
-            registerBlock(blockRegisteryEvent,new SawmillBlock());
+            registerBlock(blockRegisteryEvent,PRIMITIVE_BLAST_FURNACE_BLOCK);
+            registerBlock(blockRegisteryEvent,PRIMITIVE_STIRLING_GENERATOR_BLOCK);
+            registerBlock(blockRegisteryEvent,CRUSHER_BLOCK);
+            registerBlock(blockRegisteryEvent,ELECTROLYZER_BLOCK);
+            registerBlock(blockRegisteryEvent,CENTRIFUGAL_AGITATOR_BLOCK);
+            registerBlock(blockRegisteryEvent,COMPRESSOR_BLOCK);
+            registerBlock(blockRegisteryEvent,STIRLING_GENERATOR_BLOCK);
+            registerBlock(blockRegisteryEvent,COMBUSTION_GENERATOR_BLOCK);
+            registerBlock(blockRegisteryEvent,AQUEOULIZER_BLOCK);
+            registerBlock(blockRegisteryEvent,AIR_COMPRESSOR_BLOCK);
+            registerBlock(blockRegisteryEvent,DISTILLATION_UNIT_BLOCK);
+            registerBlock(blockRegisteryEvent,PUMP_BLOCK);
+            registerBlock(blockRegisteryEvent,GAS_FIRED_FURNACE_BLOCK);
+            registerBlock(blockRegisteryEvent,ELECTRIC_FURNACE_BLOCK);
+            registerBlock(blockRegisteryEvent,BATTERY_BOX_BLOCK);
+            registerBlock(blockRegisteryEvent,PRIMITIVE_SOLAR_PANEL_BLOCK);
+            registerBlock(blockRegisteryEvent,SOLAR_PANEL_BLOCK);
+            registerBlock(blockRegisteryEvent,CENTRIFUGAL_SEPARATOR_BLOCK);
+            registerBlock(blockRegisteryEvent,IMPLOSION_COMPRESSOR_BLOCK);
+            registerBlock(blockRegisteryEvent,BLAST_FURNACE_BLOCK);
+            registerBlock(blockRegisteryEvent,TOOLING_STATION_BLOCK);
+            registerBlock(blockRegisteryEvent,SAWMILL_BLOCK);
 
             // Tanks
-            registerBlock(blockRegisteryEvent,new AluminumTankBlock());
-            registerBlock(blockRegisteryEvent,new TitaniumTankBlock());
-            registerBlock(blockRegisteryEvent,new NetheriteTankBlock());
-            registerBlock(blockRegisteryEvent,new NighaliteTankBlock());
-            registerBlock(blockRegisteryEvent,new EighzoTankBlock());
-            registerBlock(blockRegisteryEvent,new SolariumTankBlock());
+            registerBlock(blockRegisteryEvent,ALUMINUM_TANK_BLOCK);
+            registerBlock(blockRegisteryEvent,TITANIUM_TANK_BLOCK);
+            registerBlock(blockRegisteryEvent,NETHERITE_TANK_BLOCK);
+            registerBlock(blockRegisteryEvent,NIGHALITE_TANK_BLOCK);
+            registerBlock(blockRegisteryEvent,EIGHZO_TANK_BLOCK);
+            registerBlock(blockRegisteryEvent,SOLARIUM_TANK_BLOCK);
 
             // Ores
-            registerBlock(blockRegisteryEvent,new SaltpeterOre());
-            registerBlock(blockRegisteryEvent,new BauxiteOre());
-            registerBlock(blockRegisteryEvent,new CinnabarOre());
-            registerBlock(blockRegisteryEvent,new RutileOre());
-            registerBlock(blockRegisteryEvent,new GalenaOre());
-            registerBlock(blockRegisteryEvent,new EighzoOre());
+            registerBlock(blockRegisteryEvent,SALTPETER_ORE);
+            registerBlock(blockRegisteryEvent,BAUXITE_ORE);
+            registerBlock(blockRegisteryEvent,CINNABAR_ORE);
+            registerBlock(blockRegisteryEvent,RUTILE_ORE);
+            registerBlock(blockRegisteryEvent,GALENA_ORE);
+            registerBlock(blockRegisteryEvent,EIGHZO_ORE);
 
             // Deepslate ores
-            registerBlock(blockRegisteryEvent,new DeepslateBauxiteOre());
-            registerBlock(blockRegisteryEvent,new DeepslateCinnabarOre());
-            registerBlock(blockRegisteryEvent,new DeepslateRutileOre());
-            registerBlock(blockRegisteryEvent,new DeepslateGalenaOre());
+            registerBlock(blockRegisteryEvent,DEEPSLATE_BAUXITE_ORE);
+            registerBlock(blockRegisteryEvent,DEEPSLATE_CINNABAR_ORE);
+            registerBlock(blockRegisteryEvent,DEEPSLATE_RUTILE_ORE);
+            registerBlock(blockRegisteryEvent,DEEPSLATE_GALENA_ORE);
 
             // Red Sand ores
-            registerBlock(blockRegisteryEvent,new RedSaltpeterOre());
+            registerBlock(blockRegisteryEvent,RED_SALTPETER_ORE);
 
             //Shells and Machine Frames
-            registerBlock(blockRegisteryEvent,new AluminumShellBlock());
-            registerBlock(blockRegisteryEvent,new CarbonShieldedAluminumMachineFrame());
-            registerBlock(blockRegisteryEvent,new AluminumMachineCasingBlock());
-            registerBlock(blockRegisteryEvent,new TitaniumMachineCasingBlock());
+            registerBlock(blockRegisteryEvent,ALUMINUM_SHELL);
+            registerBlock(blockRegisteryEvent,CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME);
+            registerBlock(blockRegisteryEvent,ALUMINUM_MACHINE_CASING_BLOCK);
+            registerBlock(blockRegisteryEvent,TITANIUM_MACHINE_CASING_BLOCK);
 
             //Crops
             //registerBlock(blockRegisteryEvent,new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
-            registerBlock(blockRegisteryEvent,new RiceCrop(BlockBehaviour.Properties.copy(Blocks.ALLIUM)),new RiceCrop(null).getRegistryName()); // TODO: better properties
+            registerBlock(blockRegisteryEvent,RICE_CROP,RICE_CROP.getRegistryName());
 
             // Material Blocks
-            registerBlock(blockRegisteryEvent,new SolariumBlock());
-            registerBlock(blockRegisteryEvent,new AluminumBlock());
-            registerBlock(blockRegisteryEvent,new CarbonBlock());
-            registerBlock(blockRegisteryEvent,new EighzoBlock());
-            registerBlock(blockRegisteryEvent,new NighaliteBlock());
-            registerBlock(blockRegisteryEvent,new SaltpeterBlock());
-            registerBlock(blockRegisteryEvent,new TitaniumBlock());
-            registerBlock(blockRegisteryEvent,new TungstenBlock());
-            registerBlock(blockRegisteryEvent,new TungstenSteelBlock());
+            registerBlock(blockRegisteryEvent,SOLARIUM_BLOCK);
+            registerBlock(blockRegisteryEvent,ALUMINUM_BLOCK);
+            registerBlock(blockRegisteryEvent,CARBON_BLOCK);
+            registerBlock(blockRegisteryEvent,EIGHZO_BLOCK);
+            registerBlock(blockRegisteryEvent,NIGHALITE_BLOCK);
+            registerBlock(blockRegisteryEvent,SALTPETER_BLOCK);
+            registerBlock(blockRegisteryEvent,TITANIUM_BLOCK);
+            registerBlock(blockRegisteryEvent,TUNGSTEN_BLOCK);
+            registerBlock(blockRegisteryEvent,TUNGSTEN_STEEL_BLOCK);
 
             // Raw Material Blocks
-            registerBlock(blockRegisteryEvent,new RawBauxiteBlock());
-            registerBlock(blockRegisteryEvent,new RawCinnabarBlock());
-            registerBlock(blockRegisteryEvent,new RawEighzoBlock());
-            registerBlock(blockRegisteryEvent,new RawGalenaBlock());
-            registerBlock(blockRegisteryEvent,new RawRutileBlock());
-            registerBlock(blockRegisteryEvent,new RawBoneBlock());
+            registerBlock(blockRegisteryEvent,RAW_BAUXITE_BLOCK);
+            registerBlock(blockRegisteryEvent,RAW_CINNABAR_BLOCK);
+            registerBlock(blockRegisteryEvent,RAW_EIGHZO_BLOCK);
+            registerBlock(blockRegisteryEvent,RAW_GALENA_BLOCK);
+            registerBlock(blockRegisteryEvent,RAW_RUTILE_BLOCK);
+            registerBlock(blockRegisteryEvent,RAW_BONE_BLOCK);
 
             registerBlock(blockRegisteryEvent,new PressureLadder(),new PressureLadder().getRegistryName());
         }
@@ -565,291 +549,151 @@ public class VoluminousEnergy {
 
 
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitiveblastfurnace"),
-                            BlockEntityType.Builder.of(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitiveblastfurnace"), VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"primitivestirlinggenerator"),
-                            BlockEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"primitivestirlinggenerator"), VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"crusher"),
-                            BlockEntityType.Builder.of(CrusherTile::new,VEBlocks.CRUSHER_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"crusher"), VEBlocks.CRUSHER_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"electrolyzer"),
-                            BlockEntityType.Builder.of(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"electrolyzer"), VEBlocks.ELECTROLYZER_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"centrifugal_agitator"),
-                            BlockEntityType.Builder.of(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"centrifugal_agitator"), VEBlocks.CENTRIFUGAL_AGITATOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"compressor"),
-                            BlockEntityType.Builder.of(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"compressor"), VEBlocks.COMPRESSOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"stirling_generator"),
-                            BlockEntityType.Builder.of(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"stirling_generator"), VEBlocks.STIRLING_GENERATOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"combustion_generator"),
-                            BlockEntityType.Builder.of(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"combustion_generator"), VEBlocks.COMBUSTION_GENERATOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"aqueoulizer"),
-                            BlockEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"aqueoulizer"), VEBlocks.AQUEOULIZER_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"air_compressor"),
-                            BlockEntityType.Builder.of(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"air_compressor"), VEBlocks.AIR_COMPRESSOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"distillation_unit"),
-                            BlockEntityType.Builder.of(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"distillation_unit"), VEBlocks.DISTILLATION_UNIT_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"pump"),
-                            BlockEntityType.Builder.of(PumpTile::new,VEBlocks.PUMP_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"pump"), VEBlocks.PUMP_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"gas_fired_furnace"),
-                            BlockEntityType.Builder.of(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"gas_fired_furnace"), VEBlocks.GAS_FIRED_FURNACE_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"electric_furnace"),
-                            BlockEntityType.Builder.of(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"electric_furnace"), VEBlocks.ELECTRIC_FURNACE_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"battery_box"),
-                            BlockEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"battery_box"), VEBlocks.BATTERY_BOX_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"primitive_solar_panel"),
-                            BlockEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"primitive_solar_panel"), VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"solar_panel"),
-                            BlockEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"solar_panel"), VEBlocks.SOLAR_PANEL_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"centrifugal_separator"),
-                            BlockEntityType.Builder.of(CentrifugalSeparatorTile::new,VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"centrifugal_separator"), VEBlocks.CENTRIFUGAL_SEPARATOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"implosion_compressor"),
-                            BlockEntityType.Builder.of(ImplosionCompressorTile::new,VEBlocks.IMPLOSION_COMPRESSOR_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"implosion_compressor"), VEBlocks.IMPLOSION_COMPRESSOR_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"blast_furnace"),
-                            BlockEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"blast_furnace"), VEBlocks.BLAST_FURNACE_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"tooling_station"),
-                            BlockEntityType.Builder.of(ToolingStationTile::new,VEBlocks.TOOLING_STATION_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"tooling_station"), VEBlocks.TOOLING_STATION_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"sawmill"),
-                            BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"sawmill"), VEBlocks.SAWMILL_TILE));
 
             // Tanks
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"aluminum_tank"),
-                            BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"aluminum_tank"), VEBlocks.ALUMINUM_TANK_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"titanium_tank"),
-                            BlockEntityType.Builder.of(TitaniumTankTile::new,VEBlocks.TITANIUM_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"titanium_tank"), VEBlocks.TITANIUM_TANK_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"netherite_tank"),
-                            BlockEntityType.Builder.of(NetheriteTankTile::new,VEBlocks.NETHERITE_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"netherite_tank"), VEBlocks.NETHERITE_TANK_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"nighalite_tank"),
-                            BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"nighalite_tank"), VEBlocks.NIGHALITE_TANK_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"eighzo_tank"),
-                            BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"eighzo_tank"), VEBlocks.EIGHZO_TANK_TILE));
             event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"solarium_tank"),
-                            BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK).build(null)));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID,"solarium_tank"), VEBlocks.SOLARIUM_TANK_TILE));
         }
 
         @SubscribeEvent
         public static void onContainerRegistry(final RegisterEvent event){
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitiveblastfurnace"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new PrimitiveBlastFurnaceContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitiveblastfurnace"), VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitivestirlinggenerator"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new PrimitiveStirlingGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitivestirlinggenerator"), VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "crusher"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new CrusherContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "crusher"), VEBlocks.CRUSHER_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "electrolyzer"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new ElectrolyzerContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "electrolyzer"), VEBlocks.ELECTROLYZER_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_agitator"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new CentrifugalAgitatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_agitator"), VEBlocks.CENTRIFUGAL_AGITATOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "compressor"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new CompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "compressor"), VEBlocks.COMPRESSOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "stirling_generator"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new StirlingGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "stirling_generator"), VEBlocks.STIRLING_GENERATOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "combustion_generator"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new CombustionGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "combustion_generator"), VEBlocks.COMBUSTION_GENERATOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "aqueoulizer"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new AqueoulizerContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "aqueoulizer"), VEBlocks.AQUEOULIZER_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "air_compressor"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new AirCompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "air_compressor"), VEBlocks.AIR_COMPRESSOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "distillation_unit"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new DistillationUnitContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "distillation_unit"), VEBlocks.DISTILLATION_UNIT_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "pump"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new PumpContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "pump"), VEBlocks.PUMP_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "gas_fired_furnace"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new GasFiredFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "gas_fired_furnace"), VEBlocks.GAS_FIRED_FURNACE_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "electric_furnace"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new ElectricFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "electric_furnace"), VEBlocks.ELECTRIC_FURNACE_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "battery_box"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new BatteryBoxContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "battery_box"), VEBlocks.BATTERY_BOX_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitive_solar_panel"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new PrimitiveSolarPanelContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "primitive_solar_panel"), VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "solar_panel"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new SolarPanelContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "solar_panel"), VEBlocks.SOLAR_PANEL_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_separator"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new CentrifugalSeparatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "centrifugal_separator"), VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "implosion_compressor"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new ImplosionCompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "implosion_compressor"), VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "blast_furnace"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new BlastFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "blast_furnace"), VEBlocks.BLAST_FURNACE_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "tooling_station"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new ToolingStationContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "tooling_station"), VEBlocks.TOOLING_STATION_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "sawmill"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new SawmillContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "sawmill"), VEBlocks.SAWMILL_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "aluminum_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new AluminumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "aluminum_tank"), VEBlocks.ALUMINUM_TANK_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "titanium_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new TitaniumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "titanium_tank"), VEBlocks.TITANIUM_TANK_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "netherite_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new NetheriteTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "netherite_tank"), VEBlocks.NETHERITE_TANK_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "nighalite_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new NighaliteTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "nighalite_tank"), VEBlocks.NIGHALITE_TANK_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "eighzo_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new EighzoTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "eighzo_tank"), VEBlocks.EIGHZO_TANK_CONTAINER));
 
             event.register(ForgeRegistries.Keys.CONTAINER_TYPES, helper ->
-                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "solarium_tank"),
-                            IForgeMenuType.create((id, inv, data)-> {
-                                BlockPos pos = data.readBlockPos();
-                                return new SolariumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
-                            })));
+                    helper.register(new ResourceLocation(VoluminousEnergy.MODID, "solarium_tank"), VEBlocks.SOLARIUM_TANK_CONTAINER));
         }
 
         //@SubscribeEvent

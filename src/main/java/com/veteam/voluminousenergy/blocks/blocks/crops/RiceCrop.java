@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.blocks.crops;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.Item;
 import net.minecraft.core.BlockPos;
@@ -14,8 +16,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class RiceCrop extends VEWaterCrop {
 
-    public RiceCrop(Properties properties) {
-        super(properties);
+    public RiceCrop() {
+        super(BlockBehaviour.Properties.copy(Blocks.ALLIUM)); // TODO: Rice Properties
     }
 
     @Override
