@@ -2,10 +2,9 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
-
-import java.util.Random;
 
 public class BauxiteOre extends VEOreBlock {
     public BauxiteOre(){
@@ -14,13 +13,12 @@ public class BauxiteOre extends VEOreBlock {
             .strength(2.0f)
             .requiresCorrectToolForDrops()
         );
-        setRegistryName("bauxiteore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setBauxiteTier(this);
     }
 
     @Override
-    protected int xpOnDrop(Random rand) {
+    protected int xpOnDrop(RandomSource rand) {
         return 0;
     }
 }
