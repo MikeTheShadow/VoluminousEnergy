@@ -1,23 +1,22 @@
 package com.veteam.voluminousenergy.blocks.blocks.ores.red_sand;
 
-import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Fallable;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-public class RedSaltpeterOre extends VEBlock implements Fallable { // TODO: Check falling mechanics
+public class RedSaltpeterOre extends FallingBlock implements Fallable {
     public RedSaltpeterOre(){
         super(Properties.of(Material.SAND)
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()
         );
-        setRName("red_saltpeter_ore");
         VETagDataGenerator.setRequiresShovel(this);
         VETagDataGenerator.setRequiresWood(this);
     }

@@ -12,12 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class VERecipes {
 
-    /* TODO: Verify recipe registration
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = create(ForgeRegistries.RECIPE_SERIALIZERS);
-
-    private static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> create(IForgeRegistry<T> registry) {
-        return DeferredRegister.create(registry, VoluminousEnergy.MODID);
-    }*/
     public static final DeferredRegister<RecipeSerializer<?>> VE_RECIPE_SERIALIZERS_REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, VoluminousEnergy.MODID);
 
     public static final class VERecipeTypes{
@@ -42,7 +36,7 @@ public class VERecipes {
                 VE_RECIPE_TYPES_REGISTRY.register("stirling", () -> new VERecipeType<>(RecipeConstants.STIRLING));
 
         public static final RegistryObject<RecipeType<CombustionGeneratorOxidizerRecipe>> OXIDIZING =
-                VE_RECIPE_TYPES_REGISTRY.register("oxidizing", () -> new VERecipeType<>(RecipeConstants.OXIDIZING));
+                VE_RECIPE_TYPES_REGISTRY.register("oxidizer_combustion", () -> new VERecipeType<>(RecipeConstants.OXIDIZING));
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> FUEL_COMBUSTION =
                 VE_RECIPE_TYPES_REGISTRY.register("fuel_combustion", () -> new VERecipeType<>(RecipeConstants.FUEL_COMBUSTION));
@@ -82,7 +76,7 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> STIRLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("stirling", () -> StirlingGeneratorRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> OXIDIZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("oxidizing", () -> CombustionGeneratorOxidizerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("oxidizer_combustion", () -> CombustionGeneratorOxidizerRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> FUEL_COMBUSTION =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("fuel_combustion", () -> CombustionGeneratorFuelRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> AQUEOULIZING =
@@ -100,29 +94,4 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> SAWMILLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> SawmillingRecipe.SERIALIZER);
 
-//    @Deprecated
-//    private static RegistryObject<RecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<RecipeSerializer<?>> serializer) {
-//        VoluminousEnergy.LOGGER.info("Registering Serializer for Recipe: " + name.toString());
-//        return VE_RECIPE_SERIALIZERS_REGISTRY.register(name.getPath(), serializer);
-//
-//        //IRecipeSerializer.register(name.toString(),serializer);
-//    }
-//
-//    @Deprecated
-//    private static <T extends Recipe<?>> RegistryObject<RecipeType<T>> /*<T extends Recipe<?>> RecipeType<T>*/ registerType(ResourceLocation name){
-//        VoluminousEnergy.LOGGER.info("Registering Recipe Type: " + name.toString());
-//        /*return Registry.register(Registry.RECIPE_TYPE, name, new RecipeType<T>() {
-//            @Override
-//            public String toString() {
-//                return name.toString();
-//            }
-//        });*/
-//        return VE_RECIPE_TYPES_REGISTRY.register(name.toString(), () -> new RecipeType<T>(){
-//            @Override
-//            public String toString(){
-//                return name.toString();
-//            }
-//        });
-//        //Registry.register(Registry.RECIPE_TYPE, name, recipeType);
-//    }
 }

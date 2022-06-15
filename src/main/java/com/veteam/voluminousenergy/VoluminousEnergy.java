@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
+import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -81,8 +82,9 @@ public class VoluminousEnergy {
 
         // Deferred Item registration
         VEItems.VE_ITEM_REGISTRY.register(modEventBus);
-        VETools.VE_TOOL_REGISTRY.register(modEventBus);
         VEBlockItems.VE_BLOCK_ITEM_REGISTRY.register(modEventBus);
+        VEMultitools.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
+        VETools.VE_TOOL_REGISTRY.register(modEventBus);
 
         // TODO: Adding features due to BiomeLoadEvent being replaced
         // TODO: Port registering of Features to use Deferred register

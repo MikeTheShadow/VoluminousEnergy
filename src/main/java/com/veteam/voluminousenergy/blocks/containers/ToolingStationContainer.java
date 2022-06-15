@@ -129,7 +129,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
             if (slotStack.getItem() instanceof CombustionMultitool){
                 if (((CombustionMultitool) slotStack.getItem()).getBit() == null
-                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL){ // Multitool Base Slot id is 4
+                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()){ // Multitool Base Slot id is 4
                     if (!this.slots.get(2).hasItem() && !this.slots.get(4).hasItem() && !moveItemStackTo(slotStack, 4, 5, false)){
                         return ItemStack.EMPTY;
                     }
