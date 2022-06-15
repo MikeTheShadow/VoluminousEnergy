@@ -86,6 +86,9 @@ public class VoluminousEnergy {
         VEMultitools.VE_MULTITOOL_ITEM_REGISTRY.register(modEventBus);
         VETools.VE_TOOL_REGISTRY.register(modEventBus);
 
+        // Register features
+        VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
+
         // TODO: Adding features due to BiomeLoadEvent being replaced
         // TODO: Port registering of Features to use Deferred register
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
@@ -710,10 +713,10 @@ public class VoluminousEnergy {
         }*/
 
 
-        @SubscribeEvent
-        public static void onRegisterFeature(RegisterEvent event) { // REGISTER STRAIGHT UP FEATURES HERE
-            // Straight up Features
 
+//        public static void onRegisterFeature(RegisterEvent event) { // REGISTER STRAIGHT UP FEATURES HERE
+//            // Straight up Features
+//
 //            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
 //                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_lake_feature"),VEFeatures.VE_BSC_LAKE_FEATURE));
 //
@@ -727,71 +730,72 @@ public class VoluminousEnergy {
 //
 //            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
 //                    new ResourceLocation(VoluminousEnergy.MODID, "ve_geyser_feature"),VEFeatures.VE_GEYSER_FEATURE));
-
-
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_rice_feature"),VEFeatures.VE_RICE_FEATURE));
-
-
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_ore_deposit_feature"),VEFeatures.VE_ORE_DEPOSIT_FEATURE));
-        }
+//
+//
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_rice_feature"),VEFeatures.VE_RICE_FEATURE));
+//
+//
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_ore_deposit_feature"),VEFeatures.VE_ORE_DEPOSIT_FEATURE));
+//        }
     }
 
-    public static void builtinRegisterConfiguredFeatures(){
-        // Ore Blobs
-        builtinConfiguredFeaturesRegistry(VEOres.EIGHZO_ORE_BLOB, "eighzo_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.SALTPETER_ORE_BLOB, "saltpeter_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.BAUXITE_ORE_BLOB, "bauxite_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.CINNABAR_ORE_BLOB, "cinnabar_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.RUTILE_ORE_BLOB, "rutile_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
-
-        // Oil
-//        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
-//        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
-
-        // Rice
-        builtinConfiguredFeaturesRegistry(VEFeatures.RICE_FEATURE_CONFIG, "rice_crop");
-
-        // Ore Deposits
-        builtinConfiguredFeaturesRegistry(VEFeatures.COPPER_ORE_DEPOSIT_CONFIG, "copper_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.IRON_ORE_DEPOSIT_CONFIG, "iron_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.GOLD_ORE_DEPOSIT_CONFIG, "gold_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_CONFIG, "bauxite_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_CONFIG, "cinnabar_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.GALENA_ORE_DEPOSIT_CONFIG, "galena_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_CONFIG, "rutile_ore_deposit");
-        builtinConfiguredFeaturesRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_CONFIG, "eighzo_ore_deposit");
-    }
-
-    public static void builtinRegisterPlacedFeatures(){
-        // Ore Blobs
-        builtinFeaturePlacementRegistry(VEOres.EIGHZO_ORE_BLOB_PLACEMENT, "eighzo_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.SALTPETER_ORE_BLOB_PLACEMENT, "saltpeter_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.BAUXITE_ORE_BLOB_PLACEMENT, "bauxite_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.CINNABAR_ORE_BLOB_PLACEMENT, "cinnabar_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.RUTILE_ORE_BLOB_PLACEMENT, "rutile_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
-
-        // Oil
-//        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
-//        builtinFeaturePlacementRegistry(VEFeatures.UNDERGROUND_OIL_LAKE_PLACEMENT, "underground_oil_lake");
-//        builtinFeaturePlacementRegistry(VEFeatures.OIL_GEYSER_PLACEMENT, "oil_geyser");
-
-        // Rice
-        builtinFeaturePlacementRegistry(VEFeatures.RICE_FEATURE_PLACEMENT, "rice_crop");
-
-        // Ore Deposits
-        builtinFeaturePlacementRegistry(VEFeatures.COPPER_ORE_DEPOSIT_PLACEMENT, "copper_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.IRON_ORE_DEPOSIT_PLACEMENT, "iron_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.GOLD_ORE_DEPOSIT_PLACEMENT, "gold_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_PLACEMENT, "bauxite_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_PLACEMENT, "cinnabar_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.GALENA_ORE_DEPOSIT_PLACEMENT, "galena_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_PLACEMENT, "rutile_ore_deposit");
-        builtinFeaturePlacementRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_PLACEMENT, "eighzo_ore_deposit");
-    }
+    // TODO: Register Configurations and placements
+//    public static void builtinRegisterConfiguredFeatures(){
+//        // Ore Blobs
+//        builtinConfiguredFeaturesRegistry(VEOres.EIGHZO_ORE_BLOB, "eighzo_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.SALTPETER_ORE_BLOB, "saltpeter_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.BAUXITE_ORE_BLOB, "bauxite_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.CINNABAR_ORE_BLOB, "cinnabar_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.RUTILE_ORE_BLOB, "rutile_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
+//
+//        // Oil
+////        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
+////        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
+//
+//        // Rice
+//        builtinConfiguredFeaturesRegistry(VEFeatures.RICE_FEATURE_CONFIG, "rice_crop");
+//
+//        // Ore Deposits
+//        builtinConfiguredFeaturesRegistry(VEFeatures.COPPER_ORE_DEPOSIT_CONFIG, "copper_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.IRON_ORE_DEPOSIT_CONFIG, "iron_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.GOLD_ORE_DEPOSIT_CONFIG, "gold_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_CONFIG, "bauxite_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_CONFIG, "cinnabar_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.GALENA_ORE_DEPOSIT_CONFIG, "galena_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_CONFIG, "rutile_ore_deposit");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_CONFIG, "eighzo_ore_deposit");
+//    }
+//
+//    public static void builtinRegisterPlacedFeatures(){
+//        // Ore Blobs
+//        builtinFeaturePlacementRegistry(VEOres.EIGHZO_ORE_BLOB_PLACEMENT, "eighzo_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.SALTPETER_ORE_BLOB_PLACEMENT, "saltpeter_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.BAUXITE_ORE_BLOB_PLACEMENT, "bauxite_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.CINNABAR_ORE_BLOB_PLACEMENT, "cinnabar_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.RUTILE_ORE_BLOB_PLACEMENT, "rutile_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
+//
+//        // Oil
+////        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
+////        builtinFeaturePlacementRegistry(VEFeatures.UNDERGROUND_OIL_LAKE_PLACEMENT, "underground_oil_lake");
+////        builtinFeaturePlacementRegistry(VEFeatures.OIL_GEYSER_PLACEMENT, "oil_geyser");
+//
+//        // Rice
+//        builtinFeaturePlacementRegistry(VEFeatures.RICE_FEATURE_PLACEMENT, "rice_crop");
+//
+//        // Ore Deposits
+//        builtinFeaturePlacementRegistry(VEFeatures.COPPER_ORE_DEPOSIT_PLACEMENT, "copper_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.IRON_ORE_DEPOSIT_PLACEMENT, "iron_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.GOLD_ORE_DEPOSIT_PLACEMENT, "gold_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.BAUXITE_ORE_DEPOSIT_PLACEMENT, "bauxite_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.CINNABAR_ORE_DEPOSIT_PLACEMENT, "cinnabar_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.GALENA_ORE_DEPOSIT_PLACEMENT, "galena_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.RUTILE_ORE_DEPOSIT_PLACEMENT, "rutile_ore_deposit");
+//        builtinFeaturePlacementRegistry(VEFeatures.EIGHZO_ORE_DEPOSIT_PLACEMENT, "eighzo_ore_deposit");
+//    }
 
     public static void builtinConfiguredFeaturesRegistry(ConfiguredFeature<?,?> configuredFeature, String setRegistryName){
         Registry<ConfiguredFeature<?,?>> registry = BuiltinRegistries.CONFIGURED_FEATURE;
