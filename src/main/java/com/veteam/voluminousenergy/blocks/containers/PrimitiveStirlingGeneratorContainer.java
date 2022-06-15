@@ -24,7 +24,7 @@ public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
     public static final int NUMBER_OF_SLOTS = 1;
 
     public PrimitiveStirlingGeneratorContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
-        super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER, windowID);
+        super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), windowID);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -53,7 +53,7 @@ public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow){

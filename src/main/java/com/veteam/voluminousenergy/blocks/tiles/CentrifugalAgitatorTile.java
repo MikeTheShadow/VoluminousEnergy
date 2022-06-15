@@ -53,7 +53,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
     }};
 
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE, pos, state);
+        super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE.get(), pos, state);
         inputTank.setAllowAny(true);
         outputTank0.setAllowAny(true);
         outputTank1.setAllowAny(true);

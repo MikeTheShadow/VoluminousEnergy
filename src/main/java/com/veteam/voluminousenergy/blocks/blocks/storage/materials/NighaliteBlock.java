@@ -13,7 +13,7 @@ public class NighaliteBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("nighalite_block");
+        setRName("nighalite_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(4, this);
     }

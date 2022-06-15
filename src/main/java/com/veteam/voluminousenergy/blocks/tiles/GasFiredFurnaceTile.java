@@ -66,7 +66,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
     private final AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.GAS_FIRED_FURNACE_TILE, pos, state);
+        super(VEBlocks.GAS_FIRED_FURNACE_TILE.get(), pos, state);
         this.fuelTank.setValidFluids(RecipeUtil.getCombustibleFuelsWithoutLevel());
     }
 

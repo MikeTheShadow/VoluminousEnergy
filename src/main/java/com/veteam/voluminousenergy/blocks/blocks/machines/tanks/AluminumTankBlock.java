@@ -27,7 +27,7 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("aluminum_tank");
+        setRName("aluminum_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -49,7 +49,7 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK_TILE.get());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class NetheriteTankBlock extends TankBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("netherite_tank");
+        setRName("netherite_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresNetherite(this);
     }
@@ -49,7 +49,7 @@ public class NetheriteTankBlock extends TankBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.NETHERITE_TANK_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.NETHERITE_TANK_TILE.get());
     }
 
     @Override

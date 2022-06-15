@@ -14,7 +14,7 @@ public class EighzoBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("eighzo_block");
+        setRName("eighzo_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setEighzoTier(this);
     }

@@ -32,7 +32,7 @@ public class ElectrolyzerBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("electrolyzer");
+        setRName("electrolyzer");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }
@@ -40,7 +40,7 @@ public class ElectrolyzerBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ElectrolyzerTile(VEBlocks.ELECTROLYZER_TILE, pos, state);
+        return new ElectrolyzerTile(VEBlocks.ELECTROLYZER_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -55,7 +55,7 @@ public class ElectrolyzerBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ELECTROLYZER_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.ELECTROLYZER_TILE.get());
     }
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){

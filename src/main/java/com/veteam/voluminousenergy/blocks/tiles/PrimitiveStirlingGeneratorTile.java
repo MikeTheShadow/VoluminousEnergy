@@ -40,12 +40,12 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     private final ItemStackHandler inventory = this.createHandler();
 
     public PrimitiveStirlingGeneratorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
     }
 
     @Deprecated
     public PrimitiveStirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
     }
 
     @Override

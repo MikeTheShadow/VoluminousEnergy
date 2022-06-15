@@ -51,12 +51,12 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ElectrolyzerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.ELECTROLYZER_TILE, pos, state);
+        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state);
     }
 
     @Deprecated
     public ElectrolyzerTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.ELECTROLYZER_TILE, pos, state);
+        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state);
     }
 
     @Override

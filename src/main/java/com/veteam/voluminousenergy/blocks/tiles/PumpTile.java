@@ -59,13 +59,13 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final ItemStackHandler inventory = this.createHandler();
 
     public PumpTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE, pos, state);
+        super(VEBlocks.PUMP_TILE.get(), pos, state);
         fluidTank.setAllowAny(true);
     }
 
     @Deprecated
     public PumpTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE, pos, state);
+        super(VEBlocks.PUMP_TILE.get(), pos, state);
     }
 
     @Override

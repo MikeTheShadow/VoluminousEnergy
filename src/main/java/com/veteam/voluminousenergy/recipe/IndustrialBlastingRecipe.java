@@ -39,7 +39,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     protected String tagKeyString;
     Lazy<Integer> tempIngredientCount;
 
-    public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING;
+    public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -103,7 +103,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK);
+        return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<IndustrialBlastingRecipe>{

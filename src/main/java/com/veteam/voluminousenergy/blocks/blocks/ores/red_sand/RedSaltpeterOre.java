@@ -17,7 +17,7 @@ public class RedSaltpeterOre extends VEBlock implements Fallable { // TODO: Chec
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("red_saltpeter_ore");
+        setRName("red_saltpeter_ore");
         VETagDataGenerator.setRequiresShovel(this);
         VETagDataGenerator.setRequiresWood(this);
     }

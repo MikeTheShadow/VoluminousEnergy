@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 

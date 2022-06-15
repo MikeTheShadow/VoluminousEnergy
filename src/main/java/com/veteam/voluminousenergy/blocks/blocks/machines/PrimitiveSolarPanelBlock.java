@@ -31,7 +31,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("primitive_solar_panel");
+        setRName("primitive_solar_panel");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresWood(this);
     }
@@ -39,7 +39,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveSolarPanelTile(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE, pos, state);
+        return new PrimitiveSolarPanelTile(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -54,7 +54,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE.get());
     }
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){

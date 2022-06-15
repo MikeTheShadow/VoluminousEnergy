@@ -14,7 +14,7 @@ public class RawBoneBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("raw_bone_block");
+        setRName("raw_bone_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(1, this);
     }

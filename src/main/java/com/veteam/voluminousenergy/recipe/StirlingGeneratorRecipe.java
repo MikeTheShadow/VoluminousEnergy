@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class StirlingGeneratorRecipe extends VERecipe {
 
-    public static final RecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING;
+    public static final RecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
@@ -96,7 +96,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK);
+        return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<StirlingGeneratorRecipe> {

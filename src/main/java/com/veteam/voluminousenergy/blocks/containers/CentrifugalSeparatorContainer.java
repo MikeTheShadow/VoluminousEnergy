@@ -24,7 +24,7 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
     public static final int NUMBER_OF_SLOTS = 7;
 
     public CentrifugalSeparatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER,id);
+        super(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(),id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -66,7 +66,7 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {

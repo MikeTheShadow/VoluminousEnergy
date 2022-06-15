@@ -32,7 +32,7 @@ public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("blast_furnace");
+        setRName("blast_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresDiamond(this);
     }
@@ -55,7 +55,7 @@ public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.BLAST_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.BLAST_FURNACE_TILE.get());
     }
 
     @Override

@@ -43,12 +43,12 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
     private final ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.STIRLING_GENERATOR_TILE, pos, state);
+        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state);
     }
 
     @Deprecated
     public StirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.STIRLING_GENERATOR_TILE, pos, state);
+        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("implosion_compressor");
+        setRName("implosion_compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -39,7 +39,7 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ImplosionCompressorTile(VEBlocks.IMPLOSION_COMPRESSOR_TILE, pos, state);
+        return new ImplosionCompressorTile(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -54,7 +54,7 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.IMPLOSION_COMPRESSOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.IMPLOSION_COMPRESSOR_TILE.get());
     }
 
     @Override

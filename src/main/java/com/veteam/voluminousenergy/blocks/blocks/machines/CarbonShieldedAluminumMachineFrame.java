@@ -12,7 +12,7 @@ public class CarbonShieldedAluminumMachineFrame extends VEBlock {
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("carbon_shielded_aluminum_machine_frame");
+        setRName("carbon_shielded_aluminum_machine_frame");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }

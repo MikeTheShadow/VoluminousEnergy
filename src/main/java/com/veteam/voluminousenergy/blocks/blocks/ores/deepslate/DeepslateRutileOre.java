@@ -7,8 +7,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
 public class DeepslateRutileOre extends VEOreBlock {
     public DeepslateRutileOre(){
         super(Properties.of(Material.STONE)
@@ -16,7 +14,7 @@ public class DeepslateRutileOre extends VEOreBlock {
                 .strength(4.0f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("deepslate_rutile_ore");
+        setRName("deepslate_rutile_ore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setRutileTier(this);
     }

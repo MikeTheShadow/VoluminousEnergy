@@ -32,7 +32,7 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("centrifugal_separator");
+        setRName("centrifugal_separator");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -40,7 +40,7 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CentrifugalSeparatorTile(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, pos, state);
+        return new CentrifugalSeparatorTile(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -55,7 +55,7 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_SEPARATOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get());
     }
 
     @Override

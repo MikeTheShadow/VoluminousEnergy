@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ImplosionCompressorRecipe extends VERecipe {
-    public static final RecipeType<ImplosionCompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.IMPLOSION_COMPRESSING;
+    public static final RecipeType<ImplosionCompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.IMPLOSION_COMPRESSING.get();
 
     public static final Serializer SERIALIZER = new ImplosionCompressorRecipe.Serializer();
 
@@ -96,7 +96,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK);
+        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<ImplosionCompressorRecipe> {

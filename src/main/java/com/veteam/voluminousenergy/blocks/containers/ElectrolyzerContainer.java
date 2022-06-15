@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.ElectrolyzerInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +24,7 @@ public class ElectrolyzerContainer extends VoluminousContainer {
     public static final int NUMBER_OF_SLOTS = 7;
 
     public ElectrolyzerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
-        super(VEBlocks.ELECTROLYZER_CONTAINER,id);
+        super(VEBlocks.ELECTROLYZER_CONTAINER.get(),id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -67,7 +66,7 @@ public class ElectrolyzerContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.ELECTROLYZER_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.ELECTROLYZER_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {

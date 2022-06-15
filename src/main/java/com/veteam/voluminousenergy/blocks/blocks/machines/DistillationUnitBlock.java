@@ -32,7 +32,7 @@ public class DistillationUnitBlock extends FaceableBlock implements EntityBlock 
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("distillation_unit");
+        setRName("distillation_unit");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -55,7 +55,7 @@ public class DistillationUnitBlock extends FaceableBlock implements EntityBlock 
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.DISTILLATION_UNIT_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.DISTILLATION_UNIT_TILE.get());
     }
 
     @Override

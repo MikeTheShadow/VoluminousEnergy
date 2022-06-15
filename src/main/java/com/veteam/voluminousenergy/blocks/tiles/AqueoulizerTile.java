@@ -75,7 +75,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.AQUEOULIZER_TILE, pos, state);
+        super(VEBlocks.AQUEOULIZER_TILE.get(), pos, state);
         inputTank.setAllowAny(true);
     }
 

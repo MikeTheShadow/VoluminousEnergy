@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -131,7 +131,7 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
+        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<AqueoulizerRecipe> {

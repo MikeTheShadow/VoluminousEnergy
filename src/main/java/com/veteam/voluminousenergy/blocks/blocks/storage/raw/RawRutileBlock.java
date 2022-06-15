@@ -14,7 +14,7 @@ public class RawRutileBlock extends VEBlock {
                 .strength(4F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("raw_rutile_block");
+        setRName("raw_rutile_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setRutileTier(this);
     }

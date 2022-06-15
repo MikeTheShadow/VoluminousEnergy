@@ -72,7 +72,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BLAST_FURNACE_TILE, pos, state);
+        super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         tick++;
         if (tick == 20){
             tick = 0;
-            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK);
+            //validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK); TODO: UNDO Comment
         }
         if (!(validity)) {
             return;

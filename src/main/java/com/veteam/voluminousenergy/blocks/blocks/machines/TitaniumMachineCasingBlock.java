@@ -13,7 +13,7 @@ public class TitaniumMachineCasingBlock extends VEBlock {
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("titanium_machine_casing");
+        setRName("titanium_machine_casing");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresDiamond(this);
     }

@@ -14,7 +14,7 @@ public class RawCinnabarBlock extends VEBlock {
                 .strength(1.5f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("raw_cinnabar_block");
+        setRName("raw_cinnabar_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setCinnabarTier(this);
     }

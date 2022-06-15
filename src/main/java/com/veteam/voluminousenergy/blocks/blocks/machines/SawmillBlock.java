@@ -42,7 +42,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("sawmill");
+        setRName("sawmill");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
@@ -91,7 +91,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.SAWMILL_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.SAWMILL_TILE.get());
     }
 
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {

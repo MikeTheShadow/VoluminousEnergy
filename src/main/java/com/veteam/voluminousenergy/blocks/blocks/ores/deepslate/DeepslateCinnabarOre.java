@@ -8,8 +8,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
 public class DeepslateCinnabarOre extends VEOreBlock {
     public DeepslateCinnabarOre(){
         super(BlockBehaviour.Properties.of(Material.STONE)
@@ -17,7 +15,7 @@ public class DeepslateCinnabarOre extends VEOreBlock {
                 .strength(1.5f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("deepslate_cinnabar_ore");
+        setRName("deepslate_cinnabar_ore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setCinnabarTier(this);
     }

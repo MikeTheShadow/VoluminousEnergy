@@ -13,7 +13,7 @@ public class TungstenBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("tungsten_block");
+        setRName("tungsten_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(3, this);
     }

@@ -61,32 +61,32 @@ public class VEOreGeneration {
 
     public static class OreWithTargetStatesToReplace {
         public static final List<OreConfiguration.TargetBlockState> SALTPETER_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.COLORLESS_SAND, VEBlocks.SALTPETER_ORE.defaultBlockState()),
-                OreConfiguration.target(ReplacementRules.RED_SAND, VEBlocks.RED_SALTPETER_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.COLORLESS_SAND, VEBlocks.SALTPETER_ORE.get().defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.RED_SAND, VEBlocks.RED_SALTPETER_ORE.get().defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> BAUXITE_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.BAUXITE_ORE.defaultBlockState()),
-                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_BAUXITE_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.BAUXITE_ORE.get().defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_BAUXITE_ORE.get().defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> CINNABAR_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.CINNABAR_ORE.defaultBlockState()),
-                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_CINNABAR_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.CINNABAR_ORE.get().defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_CINNABAR_ORE.get().defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> GALENA_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.GALENA_ORE.defaultBlockState()),
-                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_GALENA_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.GALENA_ORE.get().defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_GALENA_ORE.get().defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> RUTILE_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.RUTILE_ORE.defaultBlockState()),
-                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_RUTILE_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.REGULAR_STONE, VEBlocks.RUTILE_ORE.get().defaultBlockState()),
+                OreConfiguration.target(ReplacementRules.DEEPSLATE_STONE, VEBlocks.DEEPSLATE_RUTILE_ORE.get().defaultBlockState())
         );
 
         public static final List<OreConfiguration.TargetBlockState> EIGHZO_ORE_TARGETS = List.of(
-                OreConfiguration.target(ReplacementRules.END, VEBlocks.EIGHZO_ORE.defaultBlockState())
+                OreConfiguration.target(ReplacementRules.END, VEBlocks.EIGHZO_ORE.get().defaultBlockState())
         );
 
     }

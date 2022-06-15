@@ -71,7 +71,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     }
 
     public SawmillTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.SAWMILL_TILE, pos, state);
+        super(VEBlocks.SAWMILL_TILE.get(), pos, state);
         outputTank.setAllowAny(true);
     }
 

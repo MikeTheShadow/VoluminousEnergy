@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CompressorRecipe extends VERecipe {
-    public static final RecipeType<CompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING;
+    public static final RecipeType<CompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -96,7 +96,7 @@ public class CompressorRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK);
+        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<CompressorRecipe>{

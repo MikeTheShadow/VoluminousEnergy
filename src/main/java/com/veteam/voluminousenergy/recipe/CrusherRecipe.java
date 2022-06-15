@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class CrusherRecipe extends VERecipe {
 
-    public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING;
+    public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -89,7 +89,7 @@ public class CrusherRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.CRUSHER_BLOCK);
+        return new ItemStack(VEBlocks.CRUSHER_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<CrusherRecipe>{

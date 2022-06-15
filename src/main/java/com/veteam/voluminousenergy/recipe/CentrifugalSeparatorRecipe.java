@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class CentrifugalSeparatorRecipe extends VERecipe{
 
-    public static final RecipeType<CentrifugalSeparatorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION;
+    public static final RecipeType<CentrifugalSeparatorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
 
     public static final CentrifugalSeparatorRecipe.Serializer SERIALIZER = new CentrifugalSeparatorRecipe.Serializer();
 
@@ -109,7 +109,7 @@ public class CentrifugalSeparatorRecipe extends VERecipe{
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK);
+        return new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<CentrifugalSeparatorRecipe>{

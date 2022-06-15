@@ -13,7 +13,7 @@ public class SolariumBlock extends VEBlock {
                 .strength(25.0F, 1200.0F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("solarium_block");
+        setRName("solarium_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(7, this);
     }

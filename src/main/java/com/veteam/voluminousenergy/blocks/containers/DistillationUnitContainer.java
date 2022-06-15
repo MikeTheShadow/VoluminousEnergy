@@ -26,7 +26,7 @@ public class DistillationUnitContainer extends VoluminousContainer {
     private static final int NUMBER_OF_SLOTS = 8;
 
     public DistillationUnitContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
-        super(DISTILLATION_UNIT_CONTAINER,id);
+        super(DISTILLATION_UNIT_CONTAINER.get(),id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -69,7 +69,7 @@ public class DistillationUnitContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.DISTILLATION_UNIT_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.DISTILLATION_UNIT_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {

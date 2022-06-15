@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.fluids.CrudeOil;
+import com.veteam.voluminousenergy.fluids.VEFluids;
+import cpw.mods.util.Lazy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -23,7 +25,7 @@ import static java.lang.StrictMath.abs;
 public class GeyserFeature extends Feature<BlockStateConfiguration> {
     public static GeyserFeature INSTANCE = new GeyserFeature(BlockStateConfiguration.CODEC);
 
-    private final BlockState crudeOil = CrudeOil.CRUDE_OIL.defaultFluidState().createLegacyBlock();
+    private final BlockState crudeOil = VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock();
     public GeyserFeature(Codec<BlockStateConfiguration> p_i231962_1_) {
         super(p_i231962_1_);
     }

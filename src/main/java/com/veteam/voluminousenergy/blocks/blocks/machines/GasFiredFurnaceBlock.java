@@ -34,7 +34,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("gas_fired_furnace");
+        setRName("gas_fired_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }
@@ -57,7 +57,7 @@ public class GasFiredFurnaceBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.GAS_FIRED_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.GAS_FIRED_FURNACE_TILE.get());
     }
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){

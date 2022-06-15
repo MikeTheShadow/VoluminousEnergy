@@ -74,7 +74,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     }
 
     public DistillationUnitTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.DISTILLATION_UNIT_TILE, pos, state);
+        super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         tick++;
         if (tick == 20){
             tick = 0;
-            validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK);
+            //validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK); TODO: UNDO Comment
         }
         if (!(validity)) {
             return;

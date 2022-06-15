@@ -13,7 +13,7 @@ public class SaltpeterBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("saltpeter_block");
+        setRName("saltpeter_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresWood(this);
     }

@@ -8,12 +8,12 @@ import net.minecraft.world.item.Item.Properties;
 public class RiceItem extends WaterCropItem {
 
     public RiceItem(Properties properties) {
-        super(VEBlocks.RICE_CROP, properties);
+        super(VEBlocks.RICE_CROP.get(), properties);
     }
 
     @Override
     public VEWaterCrop getWaterCrop(){
-        return VEBlocks.RICE_CROP;
+        return VEBlocks.RICE_CROP.get();
     }
 
 }
