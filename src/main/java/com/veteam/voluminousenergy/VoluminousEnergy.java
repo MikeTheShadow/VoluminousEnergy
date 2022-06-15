@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.blocks.machines.PressureLadder;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
@@ -22,7 +21,6 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.api.distmarker.Dist;
@@ -67,8 +65,8 @@ public class VoluminousEnergy {
 
         /** Deferred registration **/
         // Recipes
-        //VERecipes.VE_RECIPE_SERIALIZERS_REGISTRY.register(modEventBus);
-        //VERecipes.VE_RECIPE_TYPES_REGISTRY.register(modEventBus);
+        VERecipes.VE_RECIPE_SERIALIZERS_REGISTRY.register(modEventBus);
+        VERecipes.VERecipeTypes.VE_RECIPE_TYPES_REGISTRY.register(modEventBus);
 
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);
@@ -711,19 +709,19 @@ public class VoluminousEnergy {
         public static void onRegisterFeature(RegisterEvent event) { // REGISTER STRAIGHT UP FEATURES HERE
             // Straight up Features
 
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_lake_feature"),VEFeatures.VE_BSC_LAKE_FEATURE));
-
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_surface_lake_feature"),VEFeatures.VE_BSC_LAKE_SURFACE_FEATURE));
-
-
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_underground_lakes_feature"),VEFeatures.VE_BSC_LAKE_UNDERGROUND_FEATURE));
-
-
-            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
-                    new ResourceLocation(VoluminousEnergy.MODID, "ve_geyser_feature"),VEFeatures.VE_GEYSER_FEATURE));
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_lake_feature"),VEFeatures.VE_BSC_LAKE_FEATURE));
+//
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_surface_lake_feature"),VEFeatures.VE_BSC_LAKE_SURFACE_FEATURE));
+//
+//
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_bsc_underground_lakes_feature"),VEFeatures.VE_BSC_LAKE_UNDERGROUND_FEATURE));
+//
+//
+//            event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
+//                    new ResourceLocation(VoluminousEnergy.MODID, "ve_geyser_feature"),VEFeatures.VE_GEYSER_FEATURE));
 
 
             event.register(ForgeRegistries.Keys.FEATURES, helper -> helper.register(
@@ -745,8 +743,8 @@ public class VoluminousEnergy {
         builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
 
         // Oil
-        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
-        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
+//        builtinConfiguredFeaturesRegistry(VEFeatures.OIL_GEYSER_FEATURE, "oil_geyser");
 
         // Rice
         builtinConfiguredFeaturesRegistry(VEFeatures.RICE_FEATURE_CONFIG, "rice_crop");
@@ -772,9 +770,9 @@ public class VoluminousEnergy {
         builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
 
         // Oil
-        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
-        builtinFeaturePlacementRegistry(VEFeatures.UNDERGROUND_OIL_LAKE_PLACEMENT, "underground_oil_lake");
-        builtinFeaturePlacementRegistry(VEFeatures.OIL_GEYSER_PLACEMENT, "oil_geyser");
+//        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
+//        builtinFeaturePlacementRegistry(VEFeatures.UNDERGROUND_OIL_LAKE_PLACEMENT, "underground_oil_lake");
+//        builtinFeaturePlacementRegistry(VEFeatures.OIL_GEYSER_PLACEMENT, "oil_geyser");
 
         // Rice
         builtinFeaturePlacementRegistry(VEFeatures.RICE_FEATURE_PLACEMENT, "rice_crop");
