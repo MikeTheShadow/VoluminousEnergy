@@ -127,7 +127,7 @@ public class VEItems {
     public static RegistryObject<Item> IMPECCABLE_TANK_FRAME = VE_ITEM_REGISTRY.register("impeccable_tank_frame",ImpeccableTankFrame::new);
 
     //Crops
-    public static RegistryObject<Item> RICE_GRAIN = VE_ITEM_REGISTRY.register("rice",() -> new RiceItem(new Item.Properties().tab(VESetup.itemGroup))); // Can refactor to call the block here or in the item's class
+    public static RegistryObject<Item> RICE_GRAIN = VE_ITEM_REGISTRY.register("rice_grain",() -> new RiceItem(new Item.Properties().tab(VESetup.itemGroup))); // Can refactor to call the block here or in the item's class
     public static RegistryObject<Item> COOKED_RICE = VE_ITEM_REGISTRY.register("cooked_rice",() -> new Item(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)));
 
     //Tiny fuels

@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.recipe.VERecipes;
@@ -81,8 +82,10 @@ public class VoluminousEnergy {
         // Deferred Item registration
         VEItems.VE_ITEM_REGISTRY.register(modEventBus);
         VETools.VE_TOOL_REGISTRY.register(modEventBus);
+        VEBlockItems.VE_BLOCK_ITEM_REGISTRY.register(modEventBus);
 
         // TODO: Adding features due to BiomeLoadEvent being replaced
+        // TODO: Port registering of Features to use Deferred register
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
@@ -98,8 +101,8 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
-        builtinRegisterConfiguredFeatures();
-        builtinRegisterPlacedFeatures();
+//        builtinRegisterConfiguredFeatures();
+//        builtinRegisterPlacedFeatures();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
