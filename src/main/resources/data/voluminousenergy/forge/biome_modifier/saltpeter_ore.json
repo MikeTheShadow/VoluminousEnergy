@@ -1,0 +1,5 @@
+{
+  "type": "voluminousenergy:ore_biome_modifier",
+  "biomes": ["minecraft:desert"],
+  "feature": "voluminousenergy:saltpeter_ore_blob"
+}
