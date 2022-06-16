@@ -90,6 +90,7 @@ public class VoluminousEnergy {
         VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
 
         // Register modifiers
+        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
 
         // TODO: Adding features due to BiomeLoadEvent being replaced
@@ -109,8 +110,8 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
-        builtinRegisterConfiguredFeatures();
-        builtinRegisterPlacedFeatures();
+//        builtinRegisterConfiguredFeatures();
+//        builtinRegisterPlacedFeatures();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
@@ -747,12 +748,12 @@ public class VoluminousEnergy {
     // TODO: Register Configurations and placements
     public static void builtinRegisterConfiguredFeatures(){
         // Ore Blobs
-        builtinConfiguredFeaturesRegistry(VEOres.EIGHZO_ORE_BLOB, "eighzo_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.SALTPETER_ORE_BLOB, "saltpeter_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.BAUXITE_ORE_BLOB, "bauxite_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.CINNABAR_ORE_BLOB, "cinnabar_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.RUTILE_ORE_BLOB, "rutile_ore_blob");
-        builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.EIGHZO_ORE_BLOB, "eighzo_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.SALTPETER_ORE_BLOB, "saltpeter_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.BAUXITE_ORE_BLOB, "bauxite_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.CINNABAR_ORE_BLOB, "cinnabar_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.RUTILE_ORE_BLOB, "rutile_ore_blob");
+//        builtinConfiguredFeaturesRegistry(VEOres.GALENA_ORE_BLOB, "galena_ore_blob");
 
 //        // Oil
 ////        builtinConfiguredFeaturesRegistry(VEFeatures.SURFACE_OIL_LAKE_FEATURE, "oil_lake");
@@ -774,12 +775,12 @@ public class VoluminousEnergy {
 
     public static void builtinRegisterPlacedFeatures(){
         // Ore Blobs
-        builtinFeaturePlacementRegistry(VEOres.EIGHZO_ORE_BLOB_PLACEMENT, "eighzo_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.SALTPETER_ORE_BLOB_PLACEMENT, "saltpeter_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.BAUXITE_ORE_BLOB_PLACEMENT, "bauxite_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.CINNABAR_ORE_BLOB_PLACEMENT, "cinnabar_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.RUTILE_ORE_BLOB_PLACEMENT, "rutile_ore_blob");
-        builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.EIGHZO_ORE_BLOB_PLACEMENT, "eighzo_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.SALTPETER_ORE_BLOB_PLACEMENT, "saltpeter_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.BAUXITE_ORE_BLOB_PLACEMENT, "bauxite_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.CINNABAR_ORE_BLOB_PLACEMENT, "cinnabar_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.RUTILE_ORE_BLOB_PLACEMENT, "rutile_ore_blob");
+//        builtinFeaturePlacementRegistry(VEOres.GALENA_ORE_BLOB_PLACEMENT, "galena_ore_blob");
 
 //        // Oil
 ////        builtinFeaturePlacementRegistry(VEFeatures.SURFACE_OIL_LAKE_PLACEMENT, "surface_oil_lake");
