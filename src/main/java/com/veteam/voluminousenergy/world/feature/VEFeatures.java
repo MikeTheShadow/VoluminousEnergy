@@ -22,15 +22,15 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 
 public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLACE` as seen in LakeFeature.java
-//    public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, VoluminousEnergy.MODID);
-//
-//    // "High Level" Features
-//    public static final RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
-//    public static final RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(BlockStateConfiguration.CODEC)); // Geyser using BlockStateConfiguration
-//    public static final RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
-//    public static final RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
-//    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true));
-//    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false));
+    public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, VoluminousEnergy.MODID);
+
+    // "High Level" Features
+    public static final RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
+    public static final RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(BlockStateConfiguration.CODEC)); // Geyser using BlockStateConfiguration
+    public static final RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
+    public static final RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
+    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true));
+    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false));
 
     /*** Configs and Placements for impls of features ***/
 //
