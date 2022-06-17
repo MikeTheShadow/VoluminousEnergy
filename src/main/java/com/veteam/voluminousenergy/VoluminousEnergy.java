@@ -88,11 +88,11 @@ public class VoluminousEnergy {
         VETools.VE_TOOL_REGISTRY.register(modEventBus);
 
         // Register features
-        VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
+//        VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
 
         // Register modifiers
-        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
-        VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
+//        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
+//        VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
 
         // TODO: Adding features due to BiomeLoadEvent being replaced
         // TODO: Port registering of Features to use Deferred register
