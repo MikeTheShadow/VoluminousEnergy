@@ -13,6 +13,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,9 @@ import java.util.List;
 public class VEOres {
     public static final DeferredRegister<PlacedFeature> VE_PLACED_ORE_BLOBS_REGISTRY = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
     public static final DeferredRegister<ConfiguredFeature<?,?>> VE_CONFIGURED_ORE_BLOBS_REGISTRY = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
+
+    //Note Eelt if it's not working it's not public static. You're welcome
+    public static RegistryObject<PlacedFeature> SALTPETER_ORE_BLOB_PLACED_REG = VE_PLACED_ORE_BLOBS_REGISTRY.register("saltpeter_ore_blob", () -> createSaltpeterOre().get());
 
 //    public static Holder<PlacedFeature> saltpeterOreBlobPlacement;
 
@@ -52,8 +56,6 @@ public class VEOres {
                 InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.SALTPETER_ORE_BLOBS_TOP_ANCHOR.get())));
     }
-
-    RegistryObject<PlacedFeature> SALTPETER_ORE_BLOB_PLACED_REG = VE_PLACED_ORE_BLOBS_REGISTRY.register("saltpeter_ore_blob", () -> createSaltpeterOre().get());
 
 //    // Eighzo
 //    public static Holder<ConfiguredFeature<?,?>> EIGHZO_ORE_BLOB = Holder.direct(new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(VEOreGeneration.OreWithTargetStatesToReplace.EIGHZO_ORE_TARGETS, Config.EIGHZO_ORE_BLOBS_SIZE.get(), (float) ((double) Config.EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE.get()))));

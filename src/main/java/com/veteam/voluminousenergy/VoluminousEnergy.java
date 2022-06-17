@@ -57,7 +57,13 @@ public class VoluminousEnergy {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public VoluminousEnergy() {
+    static {
+        System.out.println("Hello World!");
+        LOGGER.info("Hello World!");
+        VoluminousEnergy voluminousEnergy = new VoluminousEnergy();
+        voluminousEnergy.init();
+    }
+    public void init() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
