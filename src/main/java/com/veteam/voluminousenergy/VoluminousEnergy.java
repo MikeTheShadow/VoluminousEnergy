@@ -16,6 +16,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
+import com.veteam.voluminousenergy.world.ores.VEOreGeneration;
 import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -110,6 +111,10 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
+
+//        event.enqueueWork(() -> {
+//           VEOres.registerConfiguredFeatures();
+//        });
 //        builtinRegisterConfiguredFeatures();
 //        builtinRegisterPlacedFeatures();
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
