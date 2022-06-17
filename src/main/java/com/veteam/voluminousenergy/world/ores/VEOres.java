@@ -50,7 +50,7 @@ public class VEOres {
     }*/
     @NotNull
     public static Holder<PlacedFeature> createSaltpeterOre(){
-        OreConfiguration overworldConfig = new OreConfiguration(OreFeatures.STONE_ORE_REPLACEABLES, VEBlocks.SALTPETER_ORE.get().defaultBlockState(), Config.SALTPETER_ORE_BLOBS_SIZE.get());
+        OreConfiguration overworldConfig = new OreConfiguration(VEOreGeneration.OreWithTargetStatesToReplace.SALTPETER_ORE_TARGETS, Config.SALTPETER_ORE_BLOBS_SIZE.get(), (float) ((double) Config.SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE.get()));
         return registerPlacedFeature("saltpeter_ore_blob", new ConfiguredFeature<>(Feature.ORE, overworldConfig),
                 CountPlacement.of(Config.SALTPETER_ORE_BLOBS_COUNT.get()),
                 InSquarePlacement.spread(),
