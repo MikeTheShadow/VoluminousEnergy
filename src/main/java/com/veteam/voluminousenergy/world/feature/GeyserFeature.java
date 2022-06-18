@@ -1,9 +1,7 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
-import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import cpw.mods.util.Lazy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -30,7 +28,13 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
         super(p_i231962_1_);
     }
 
-    public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(Blocks.SNOW,Blocks.ICE,Blocks.PACKED_ICE,Blocks.SANDSTONE,Blocks.SAND,Blocks.RED_SAND,Blocks.GRAVEL,Blocks.WATER,Blocks.LAVA));
+    public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(
+            Blocks.SNOW,Blocks.ICE,Blocks.PACKED_ICE,Blocks.SANDSTONE,Blocks.SAND,Blocks.RED_SAND,Blocks.GRAVEL,
+            Blocks.WATER,Blocks.LAVA,Blocks.CLAY,Blocks.MOSS_BLOCK,Blocks.MOSS_CARPET,Blocks.FLOWERING_AZALEA,
+            Blocks.AZALEA,Blocks.GRASS_BLOCK,Blocks.GRASS,Blocks.BIG_DRIPLEAF,Blocks.BIG_DRIPLEAF_STEM,
+            Blocks.SMALL_DRIPLEAF,Blocks.CAVE_VINES,Blocks.CAVE_VINES_PLANT,Blocks.SCULK,Blocks.SCULK_VEIN,
+            Blocks.SCULK_CATALYST
+    ));
 
     @Override
     public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {

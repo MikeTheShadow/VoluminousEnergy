@@ -1,36 +1,72 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.fluids.CrudeOil;
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLACE` as seen in LakeFeature.java
     public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, VoluminousEnergy.MODID);
+    public static final DeferredRegister<PlacedFeature> VE_PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
 
     // "High Level" Features
-    public static final RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
-    public static final RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(BlockStateConfiguration.CODEC)); // Geyser using BlockStateConfiguration
-    public static final RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
-    public static final RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
-    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true));
-    public static final RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false));
+    public static RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
+    public static RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(BlockStateConfiguration.CODEC)); // Geyser using BlockStateConfiguration
+    public static RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
+    public static RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
+    public static RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true));
+    public static RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, false));
+
+    protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
+
+    // PlacedFeatures created by methods below
+    public static RegistryObject<PlacedFeature> VE_SURFACE_OIL_LAKE_PLACED = VE_PLACED_FEATURES.register("surface_oil_lake", () -> createSurfaceOilLake().get());
+    public static RegistryObject<PlacedFeature> VE_UNDERGROUND_OIL_LAKE_PLACED = VE_PLACED_FEATURES.register("underground_oil_lake", () -> createUndergroundOilLake().get());
+    public static RegistryObject<PlacedFeature> VE_OIL_GEYSER_PLACED = VE_PLACED_FEATURES.register("oil_geyser", () -> createOilGeyser().get());
+
+    @NotNull
+    public static Holder<PlacedFeature> createSurfaceOilLake(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(
+                VE_BSC_LAKE_SURFACE_FEATURE.get(),
+                new BlockStateConfiguration(
+                        VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()
+                ));
+        return registerPlacedFeature("surface_oil_lake", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createUndergroundOilLake(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(
+                VE_BSC_LAKE_UNDERGROUND_FEATURE.get(),
+                new BlockStateConfiguration(
+                        VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()
+                ));
+        return registerPlacedFeature("underground_oil_lake", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createOilGeyser(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(
+                VE_GEYSER_FEATURE.get(),
+                new BlockStateConfiguration(
+                        VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()
+                ));
+        return registerPlacedFeature("oil_geyser", configuredFeature, noPlacement);
+    }
+
+    private static <C extends FeatureConfiguration, F extends Feature<C>> Holder<PlacedFeature> registerPlacedFeature(String registryName, ConfiguredFeature<C, F> feature, PlacementModifier... placementModifiers) {
+        return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
+    }
 
     /*** Configs and Placements for impls of features ***/
 //

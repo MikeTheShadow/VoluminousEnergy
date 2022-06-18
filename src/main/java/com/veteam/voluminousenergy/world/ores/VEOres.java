@@ -88,7 +88,7 @@ public class VEOres {
         return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
     }
 
-    protected static class NoPlacement extends PlacementFilter{
+    public static class NoPlacement extends PlacementFilter{
         public NoPlacement(){}
 
         @Override
