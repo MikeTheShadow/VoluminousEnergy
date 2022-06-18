@@ -1,12 +1,11 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_hot,forge:is_sandy",
+  "whitelisted_biomes": "forge:is_badland",
   "blacklisted_biomes": "forge:is_beach,forge:is_water",
   "feature": "voluminousenergy:saltpeter_ore_blob",
-  "discard": 0.0,
-  "count": 4,
-  "size": 33,
+  "triangular_placement": true,
+  "count": 1,
   "bottom_anchor": 55,
-  "top_anchor": 320,
-  "rarity": 0
+  "top_anchor": 77,
+  "rarity": 10
 }

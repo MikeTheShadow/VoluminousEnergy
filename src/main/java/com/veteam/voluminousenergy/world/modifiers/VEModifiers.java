@@ -29,9 +29,8 @@ public class VEModifiers {
                         Codec.STRING.fieldOf("whitelisted_biomes").forGetter(VEAndedMultiBiomeModifier::getWhitelistedBiome),
                         Codec.STRING.fieldOf("blacklisted_biomes").forGetter(VEAndedMultiBiomeModifier::getBlacklistedBiome),
                         PlacedFeature.CODEC.fieldOf("feature").forGetter(VEAndedMultiBiomeModifier::getFeature),
-                        Codec.FLOAT.fieldOf("discard").forGetter(VEAndedMultiBiomeModifier::getDiscard),
+                        Codec.BOOL.fieldOf("triangular_placement").forGetter(VEAndedMultiBiomeModifier::getIsTriangular),
                         Codec.INT.fieldOf("count").forGetter(VEAndedMultiBiomeModifier::getCount),
-                        Codec.INT.fieldOf("size").forGetter(VEAndedMultiBiomeModifier::getSize),
                         Codec.INT.fieldOf("bottom_anchor").forGetter(VEAndedMultiBiomeModifier::getBottomAnchor),
                         Codec.INT.fieldOf("top_anchor").forGetter(VEAndedMultiBiomeModifier::getTopAnchor),
                         Codec.INT.fieldOf("rarity").forGetter(VEAndedMultiBiomeModifier::getRarity)
