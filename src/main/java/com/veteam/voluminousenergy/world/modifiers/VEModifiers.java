@@ -23,4 +23,20 @@ public class VEModifiers {
                     // declare constructor
             ).apply(builder, VEOreBiomeModifier::new)));
 
+    public static RegistryObject<Codec<VEAndedMultiBiomeModifier>> VE_ANDED_MULTI_BIOME_MODIFIER = VE_BIOME_MODIFIER_REGISTRY.register("anded_biome_modifier", () ->
+            RecordCodecBuilder.create((test) -> {
+                return test.group(
+                        Codec.STRING.fieldOf("whitelisted_biomes").forGetter(VEAndedMultiBiomeModifier::getWhitelistedBiome),
+                        Codec.STRING.fieldOf("blacklisted_biomes").forGetter(VEAndedMultiBiomeModifier::getBlacklistedBiome),
+                        PlacedFeature.CODEC.fieldOf("feature").forGetter(VEAndedMultiBiomeModifier::getFeature),
+                        Codec.FLOAT.fieldOf("discard").forGetter(VEAndedMultiBiomeModifier::getDiscard),
+                        Codec.INT.fieldOf("count").forGetter(VEAndedMultiBiomeModifier::getCount),
+                        Codec.INT.fieldOf("size").forGetter(VEAndedMultiBiomeModifier::getSize),
+                        Codec.INT.fieldOf("bottom_anchor").forGetter(VEAndedMultiBiomeModifier::getBottomAnchor),
+                        Codec.INT.fieldOf("top_anchor").forGetter(VEAndedMultiBiomeModifier::getTopAnchor),
+                        Codec.INT.fieldOf("rarity").forGetter(VEAndedMultiBiomeModifier::getRarity)
+                ).apply(test, VEAndedMultiBiomeModifier::new);
+            }));
+
+
 }
