@@ -11,12 +11,12 @@ public class TitaniumTankContainer extends TankContainer {
     private Player playerEntity;
 
     public TitaniumTankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(id, world, pos, inventory, player, VEBlocks.TITANIUM_TANK_CONTAINER);
+        super(id, world, pos, inventory, player, VEBlocks.TITANIUM_TANK_CONTAINER.get());
         this.playerEntity = player;
     }
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(getTileEntity().getLevel(),getTileEntity().getBlockPos()),playerEntity, VEBlocks.TITANIUM_TANK_BLOCK);
+        return stillValid(ContainerLevelAccess.create(getTileEntity().getLevel(),getTileEntity().getBlockPos()),playerEntity, VEBlocks.TITANIUM_TANK_BLOCK.get());
     }
 }

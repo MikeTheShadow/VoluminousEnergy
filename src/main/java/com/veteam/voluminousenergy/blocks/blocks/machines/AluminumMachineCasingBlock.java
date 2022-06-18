@@ -13,7 +13,7 @@ public class AluminumMachineCasingBlock extends VEBlock {
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("aluminum_machine_casing");
+        setRName("aluminum_machine_casing");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }

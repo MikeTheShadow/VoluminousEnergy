@@ -12,7 +12,7 @@ public class AluminumShellBlock extends VEBlock {
             .strength(2.0f)
             .requiresCorrectToolForDrops()
         );
-        setRegistryName("aluminum_shell");
+        setRName("aluminum_shell");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }

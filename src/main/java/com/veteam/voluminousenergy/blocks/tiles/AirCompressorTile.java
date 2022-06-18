@@ -38,7 +38,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
     private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"air_tank:air_tank_properties");
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.AIR_COMPRESSOR_TILE, pos, state);
+        super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state);
         airTank.setValidFluids(Collections.singletonList(VEFluids.COMPRESSED_AIR_REG.get()));
     }
 

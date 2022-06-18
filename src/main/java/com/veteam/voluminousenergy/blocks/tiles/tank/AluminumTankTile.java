@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class AluminumTankTile extends TankTile {
 
     public AluminumTankTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.ALUMINUM_TANK_TILE, pos, state, Config.ALUMINUM_TANK_CAPACITY.get());
+        super(VEBlocks.ALUMINUM_TANK_TILE.get(), pos, state, Config.ALUMINUM_TANK_CAPACITY.get());
     }
 
     @Nullable

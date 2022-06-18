@@ -6,8 +6,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
 public class CinnabarOre extends VEOreBlock {
     public CinnabarOre(){
         super(Properties.of(Material.STONE)
@@ -15,7 +13,7 @@ public class CinnabarOre extends VEOreBlock {
             .strength(1.5f)
             .requiresCorrectToolForDrops()
         );
-        setRegistryName("cinnabarore");
+        setRName("cinnabarore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setCinnabarTier(this);
     }

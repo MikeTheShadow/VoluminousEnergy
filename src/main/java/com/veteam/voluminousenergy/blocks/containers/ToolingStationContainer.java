@@ -37,7 +37,7 @@ public class ToolingStationContainer extends VoluminousContainer {
     public static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(TOOLING_STATION_CONTAINER, id);
+        super(TOOLING_STATION_CONTAINER.get(), id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -79,7 +79,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.TOOLING_STATION_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
@@ -129,7 +129,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
             if (slotStack.getItem() instanceof CombustionMultitool){
                 if (((CombustionMultitool) slotStack.getItem()).getBit() == null
-                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL){ // Multitool Base Slot id is 4
+                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()){ // Multitool Base Slot id is 4
                     if (!this.slots.get(2).hasItem() && !this.slots.get(4).hasItem() && !moveItemStackTo(slotStack, 4, 5, false)){
                         return ItemStack.EMPTY;
                     }

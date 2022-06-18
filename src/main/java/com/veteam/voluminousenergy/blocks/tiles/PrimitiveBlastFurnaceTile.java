@@ -43,12 +43,12 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public PrimitiveBlastFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
     }
 
     @Deprecated
     public PrimitiveBlastFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
     }
 
     private ItemStackHandler inventory = createHandler();

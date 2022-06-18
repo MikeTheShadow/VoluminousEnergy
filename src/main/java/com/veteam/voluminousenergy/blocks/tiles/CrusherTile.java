@@ -52,12 +52,12 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CrusherTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.CRUSHER_TILE, pos, state);
+        super(VEBlocks.CRUSHER_TILE.get(), pos, state);
     }
 
     @Deprecated
     public CrusherTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.CRUSHER_TILE, pos, state);
+        super(VEBlocks.CRUSHER_TILE.get(), pos, state);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(4) {

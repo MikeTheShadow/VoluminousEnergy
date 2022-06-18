@@ -38,7 +38,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
                     .lightLevel(l -> 0)
                     .requiresCorrectToolForDrops()
             );
-        setRegistryName("primitiveblastfurnace");
+        setRName("primitiveblastfurnace");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresWood(this);
     }
@@ -46,7 +46,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveBlastFurnaceTile(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, pos, state);
+        return new PrimitiveBlastFurnaceTile(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -61,7 +61,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get());
     }
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit)

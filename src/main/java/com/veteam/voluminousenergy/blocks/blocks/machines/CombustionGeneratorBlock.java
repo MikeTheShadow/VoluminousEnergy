@@ -31,7 +31,7 @@ public class CombustionGeneratorBlock extends FaceableBlock implements EntityBlo
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("combustion_generator");
+        setRName("combustion_generator");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -54,7 +54,7 @@ public class CombustionGeneratorBlock extends FaceableBlock implements EntityBlo
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.COMBUSTION_GENERATOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.COMBUSTION_GENERATOR_TILE.get());
     }
 
     @Override

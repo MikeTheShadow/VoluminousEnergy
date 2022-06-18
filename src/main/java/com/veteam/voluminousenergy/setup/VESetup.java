@@ -8,7 +8,7 @@ public class VESetup {
 
     public static CreativeModeTab itemGroup = new CreativeModeTab("voluminousenergy"){
         @Override
-        public ItemStack makeIcon(){ return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK); }
+        public ItemStack makeIcon(){ return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()); }
     };
 
     public void init(){}

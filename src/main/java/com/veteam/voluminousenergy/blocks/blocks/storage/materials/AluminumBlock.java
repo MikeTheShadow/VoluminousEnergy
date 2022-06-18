@@ -13,7 +13,7 @@ public class AluminumBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("aluminum_block");
+        setRName("aluminum_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }

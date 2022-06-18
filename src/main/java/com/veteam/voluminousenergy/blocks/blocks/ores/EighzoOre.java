@@ -6,8 +6,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
 public class EighzoOre extends VEOreBlock {
     public EighzoOre(){
         super(Properties.of(Material.STONE)
@@ -15,7 +13,7 @@ public class EighzoOre extends VEOreBlock {
                 .strength(30F, 1200F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("eighzo_ore");
+        setRName("eighzo_ore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setEighzoTier(this);
     }

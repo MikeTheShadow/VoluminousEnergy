@@ -32,12 +32,12 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
         return false;
     }
 
-    public void generateRice(WorldGenLevel worldIn, BlockPos pos){
+    public void generateRice(WorldGenLevel worldIn, BlockPos pos){ // TODO: Doesn't worked since 1.18
 
-        worldIn.setBlock(pos, VEBlocks.RICE_CROP.defaultBlockState(), 2);
+        worldIn.setBlock(pos, VEBlocks.RICE_CROP.get().defaultBlockState(), 2);
         worldIn.setBlock(
                 pos.below(),
-                VEBlocks.RICE_CROP.defaultBlockState()
+                VEBlocks.RICE_CROP.get().defaultBlockState()
                         .setValue(BlockStateProperties.WATERLOGGED, true)
                         .setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER),
                 2);

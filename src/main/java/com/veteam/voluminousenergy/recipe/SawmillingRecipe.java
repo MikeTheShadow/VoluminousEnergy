@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class SawmillingRecipe extends VERecipe {
 
-    public static final RecipeType<SawmillingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.SAWMILLING;
+    public static final RecipeType<SawmillingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.SAWMILLING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -91,7 +91,7 @@ public class SawmillingRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.SAWMILL_BLOCK);
+        return new ItemStack(VEBlocks.SAWMILL_BLOCK.get());
     }
 
     public boolean isLogRecipe() {

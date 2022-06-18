@@ -53,12 +53,12 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CentrifugalSeparatorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, pos, state);
+        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
     }
 
     @Deprecated
     public CentrifugalSeparatorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, pos, state);
+        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
     }
 
     @Override

@@ -4,17 +4,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public abstract class VEBlock extends Block {
-    private String registryName;
+    private String rName;
 
     public VEBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
-    public void setRegistryName(String registryName) {
-        this.registryName = registryName;
+    public void setRName(String rName) {
+        this.rName = rName;
     }
 
-    public String getRegistryName() {
-        return registryName;
+    public String getRName() {
+        return rName;
     }
 }

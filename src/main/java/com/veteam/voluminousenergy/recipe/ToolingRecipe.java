@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ToolingRecipe extends VERecipe {
-    public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING;
+    public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -99,7 +99,7 @@ public class ToolingRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK);
+        return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
     public ArrayList<Item> getBits(){

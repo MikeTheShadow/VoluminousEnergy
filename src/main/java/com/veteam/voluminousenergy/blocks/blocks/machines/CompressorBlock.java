@@ -31,7 +31,7 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("compressor");
+        setRName("compressor");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
     }
@@ -39,7 +39,7 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CompressorTile(VEBlocks.COMPRESSOR_TILE, pos, state);
+        return new CompressorTile(pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -54,7 +54,7 @@ public class CompressorBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.COMPRESSOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.COMPRESSOR_TILE.get());
     }
 
     @Override

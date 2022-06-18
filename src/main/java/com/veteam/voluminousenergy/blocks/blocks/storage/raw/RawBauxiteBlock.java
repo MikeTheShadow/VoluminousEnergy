@@ -14,7 +14,7 @@ public class RawBauxiteBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("raw_bauxite_block");
+        setRName("raw_bauxite_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setBauxiteTier(this);
     }

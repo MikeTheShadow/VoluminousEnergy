@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ElectrolyzerRecipe extends VERecipe {
 
-    public static final RecipeType<ElectrolyzerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.ELECTROLYZING;
+    public static final RecipeType<ElectrolyzerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.ELECTROLYZING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -109,7 +109,7 @@ public class ElectrolyzerRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK);
+        return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<ElectrolyzerRecipe>{

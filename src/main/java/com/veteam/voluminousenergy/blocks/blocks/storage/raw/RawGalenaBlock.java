@@ -14,7 +14,7 @@ public class RawGalenaBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("raw_galena_block");
+        setRName("raw_galena_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setGalenaTier(this);
     }

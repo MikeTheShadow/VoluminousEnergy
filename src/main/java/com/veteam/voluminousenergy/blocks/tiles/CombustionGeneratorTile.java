@@ -73,7 +73,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     private static final Logger LOGGER = LogManager.getLogger();
 
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.COMBUSTION_GENERATOR_TILE, pos, state);
+        super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state);
     }
 
     @Override

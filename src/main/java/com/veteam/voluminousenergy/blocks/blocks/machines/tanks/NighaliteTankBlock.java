@@ -27,7 +27,7 @@ public class NighaliteTankBlock extends TankBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("nighalite_tank");
+        setRName("nighalite_tank");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresNighalite(this);
     }
@@ -49,7 +49,7 @@ public class NighaliteTankBlock extends TankBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.NIGHALITE_TANK_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.NIGHALITE_TANK_TILE.get());
     }
 
     @Override

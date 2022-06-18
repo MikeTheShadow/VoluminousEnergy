@@ -30,7 +30,7 @@ public class CompressorContainer extends VoluminousContainer {
         public static final int NUMBER_OF_SLOTS = 3;
 
         public CompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
-            super(COMPRESSOR_CONTAINER,id);
+            super(COMPRESSOR_CONTAINER.get(),id);
             this.tileEntity = world.getBlockEntity(pos);
             this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
             this.playerEntity = player;
@@ -68,7 +68,7 @@ public class CompressorContainer extends VoluminousContainer {
 
         @Override
         public boolean stillValid(Player playerIn) {
-            return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.COMPRESSOR_BLOCK);
+            return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.COMPRESSOR_BLOCK.get());
         }
 
         private void layoutPlayerInventorySlots(int leftCol, int topRow) {

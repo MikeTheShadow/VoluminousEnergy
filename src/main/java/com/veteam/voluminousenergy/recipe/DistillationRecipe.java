@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DistillationRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -65,7 +65,7 @@ public class DistillationRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK);
+        return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get());
     }
 
     public FluidStack getSecondFluid(){

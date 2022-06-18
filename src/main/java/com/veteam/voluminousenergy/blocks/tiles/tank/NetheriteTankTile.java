@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class NetheriteTankTile extends TankTile{
 
     public NetheriteTankTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.NETHERITE_TANK_TILE, pos, state, Config.NETHERITE_TANK_CAPACITY.get());
+        super(VEBlocks.NETHERITE_TANK_TILE.get(), pos, state, Config.NETHERITE_TANK_CAPACITY.get());
     }
 
     @Nullable

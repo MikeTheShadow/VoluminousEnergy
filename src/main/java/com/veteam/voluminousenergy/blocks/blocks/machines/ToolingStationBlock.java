@@ -32,7 +32,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("tooling_station");
+        setRName("tooling_station");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -55,7 +55,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.TOOLING_STATION_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.TOOLING_STATION_TILE.get());
     }
 
     @Override

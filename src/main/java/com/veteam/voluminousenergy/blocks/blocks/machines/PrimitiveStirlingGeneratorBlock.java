@@ -34,14 +34,14 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
                 .requiresCorrectToolForDrops()
         );
 
-        setRegistryName("primitivestirlinggenerator");
+        setRName("primitivestirlinggenerator");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresWood(this);
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveStirlingGeneratorTile(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, pos, state);
+        return new PrimitiveStirlingGeneratorTile(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -56,7 +56,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get());
     }
 
     @Override

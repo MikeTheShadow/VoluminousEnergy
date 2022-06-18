@@ -32,7 +32,7 @@ public class BatteryBoxBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("battery_box");
+        setRName("battery_box");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -40,7 +40,7 @@ public class BatteryBoxBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new BatteryBoxTile(VEBlocks.BATTERY_BOX_TILE, pos, state);
+        return new BatteryBoxTile(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -55,7 +55,7 @@ public class BatteryBoxBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.BATTERY_BOX_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.BATTERY_BOX_TILE.get());
     }
 
     @Override

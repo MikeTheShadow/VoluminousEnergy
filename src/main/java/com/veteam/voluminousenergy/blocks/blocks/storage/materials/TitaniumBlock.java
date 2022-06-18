@@ -13,7 +13,7 @@ public class TitaniumBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("titanium_block");
+        setRName("titanium_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresDiamond(this);
     }

@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final RecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING;
+    public static final RecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -89,7 +89,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK);
+        return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<PrimitiveBlastFurnaceRecipe>{

@@ -34,12 +34,12 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPowerGene
     private int generation;
 
     public PrimitiveSolarPanelTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE.get(), pos, state);
     }
 
     @Deprecated
     public PrimitiveSolarPanelTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE, pos, state);
+        super(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE.get(), pos, state);
     }
 
     @Override

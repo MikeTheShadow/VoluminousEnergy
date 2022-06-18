@@ -1,8 +1,10 @@
 package com.veteam.voluminousenergy.util;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -31,5 +33,13 @@ public class RegistryLookups {
 
     public static ResourceLocation lookupBlockEntityType(BlockEntityType<?> blockEntityType){
         return ForgeRegistries.BLOCK_ENTITIES.getKey(blockEntityType);
+    }
+
+    public static ResourceLocation lookupBiome(Biome biome){
+        return ForgeRegistries.BIOMES.getKey(biome);
+    }
+
+    public static ResourceLocation lookupBiome(Holder<Biome> biomeHolder){
+        return lookupBiome(biomeHolder.get());
     }
 }

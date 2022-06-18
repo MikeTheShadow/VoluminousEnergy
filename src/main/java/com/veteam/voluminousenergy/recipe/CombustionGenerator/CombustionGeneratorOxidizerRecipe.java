@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CombustionGeneratorOxidizerRecipe extends VERecipe {
-    public static final RecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING;
+    public static final RecipeType<CombustionGeneratorOxidizerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 

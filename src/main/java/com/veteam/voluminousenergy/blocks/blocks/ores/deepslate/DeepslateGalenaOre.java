@@ -16,7 +16,7 @@ public class DeepslateGalenaOre extends VEOreBlock {
                 .requiresCorrectToolForDrops()
                 .strength(2.0f)
         );
-        setRegistryName("deepslate_galena_ore");
+        setRName("deepslate_galena_ore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setGalenaTier(this);
     }

@@ -26,7 +26,7 @@ public class AqueoulizerContainer extends VoluminousContainer {
     public static final int NUMBER_OF_SLOTS = 5;
 
     public AqueoulizerContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(AQUEOULIZER_CONTAINER, id);
+        super(AQUEOULIZER_CONTAINER.get(), id);
         this.tileEntity = world.getBlockEntity(pos);
         this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
         this.playerEntity = player;
@@ -67,7 +67,7 @@ public class AqueoulizerContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.AQUEOULIZER_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.AQUEOULIZER_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {

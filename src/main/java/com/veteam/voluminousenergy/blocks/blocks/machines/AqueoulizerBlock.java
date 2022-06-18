@@ -32,7 +32,7 @@ public class AqueoulizerBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("aqueoulizer");
+        setRName("aqueoulizer");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -55,7 +55,7 @@ public class AqueoulizerBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.AQUEOULIZER_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.AQUEOULIZER_TILE.get());
     }
 
     @Override

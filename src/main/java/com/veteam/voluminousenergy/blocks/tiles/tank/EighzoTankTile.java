@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class EighzoTankTile extends TankTile{
 
     public EighzoTankTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.EIGHZO_TANK_TILE, pos, state, Config.EIGHZO_TANK_CAPACITY.get());
+        super(VEBlocks.EIGHZO_TANK_TILE.get(), pos, state, Config.EIGHZO_TANK_CAPACITY.get());
     }
 
     @Nullable

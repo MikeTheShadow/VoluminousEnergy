@@ -32,7 +32,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock implements EntityBlo
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("centrifugal_agitator");
+        setRName("centrifugal_agitator");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -55,7 +55,7 @@ public class CentrifugalAgitatorBlock extends FaceableBlock implements EntityBlo
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_AGITATOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_AGITATOR_TILE.get());
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("electric_furnace");
+        setRName("electric_furnace");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -41,7 +41,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ElectricFurnaceTile(VEBlocks.ELECTRIC_FURNACE_TILE, pos, state);
+        return new ElectricFurnaceTile(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state);
     }
 
     // NEW TICK SYSTEM
@@ -56,7 +56,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ELECTRIC_FURNACE_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.ELECTRIC_FURNACE_TILE.get());
     }
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){

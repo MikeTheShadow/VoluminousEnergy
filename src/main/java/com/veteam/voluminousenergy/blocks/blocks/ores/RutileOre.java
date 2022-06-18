@@ -6,8 +6,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
 public class RutileOre extends VEOreBlock {
     public RutileOre(){
         super(Properties.of(Material.STONE)
@@ -15,7 +13,7 @@ public class RutileOre extends VEOreBlock {
             .strength(4.0f)
             .requiresCorrectToolForDrops()
         );
-        setRegistryName("rutileore");
+        setRName("rutileore");
         VETagDataGenerator.setRequiresPickaxe(this);
         MaterialConstants.setRutileTier(this);
     }

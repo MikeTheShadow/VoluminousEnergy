@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.blocks;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
-import com.veteam.voluminousenergy.blocks.blocks.crops.VELandCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
@@ -17,403 +16,379 @@ import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod(VoluminousEnergy.MODID)
 public class VEBlocks {
 
+    public static final DeferredRegister<Block> VE_BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> VE_TILE_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, VoluminousEnergy.MODID);
+    public static final DeferredRegister<MenuType<?>> VE_CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, VoluminousEnergy.MODID);
+
     // Shells
-    @ObjectHolder(registryName = "block", value = "aluminum_shell")
-    public static AluminumShellBlock ALUMINUM_SHELL;
+    public static RegistryObject<AluminumShellBlock> ALUMINUM_SHELL = VE_BLOCKS_REGISTRY.register("aluminum_shell", AluminumShellBlock::new);
 
     // Machine Frames
-    @ObjectHolder(registryName = "block", value = "carbon_shielded_aluminum_machine_frame")
-    public static CarbonShieldedAluminumMachineFrame CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME;
+    public static RegistryObject<CarbonShieldedAluminumMachineFrame> CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME = VE_BLOCKS_REGISTRY.register("carbon_shielded_aluminum_machine_frame", CarbonShieldedAluminumMachineFrame::new);
 
     // Casings (For multiblocks)
-    @ObjectHolder(registryName = "block", value = "aluminum_machine_casing")
-    public static AluminumMachineCasingBlock ALUMINUM_MACHINE_CASING_BLOCK;
+    public static RegistryObject<AluminumMachineCasingBlock> ALUMINUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("aluminum_machine_casing", AluminumMachineCasingBlock::new);
 
-    @ObjectHolder(registryName = "block", value = "titanium_machine_casing")
-    public static TitaniumMachineCasingBlock TITANIUM_MACHINE_CASING_BLOCK;
+    public static RegistryObject<TitaniumMachineCasingBlock> TITANIUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_machine_casing", TitaniumMachineCasingBlock::new);
 
     //Primitive Blast
-    @ObjectHolder(registryName = "block", value = "primitiveblastfurnace")
-    public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value = "primitiveblastfurnace")
-    public static BlockEntityType<PrimitiveBlastFurnaceTile> PRIMITIVE_BLAST_FURNACE_TILE;
-
-    @ObjectHolder(registryName = "menu", value = "primitiveblastfurnace")
-    public static MenuType<PrimitiveBlastFurnaceContainer> PRIMITIVE_BLAST_FURNACE_CONTAINER;
+    public static RegistryObject<PrimitiveBlastFurnaceBlock> PRIMITIVE_BLAST_FURNACE_BLOCK = VE_BLOCKS_REGISTRY.register("primitiveblastfurnace", PrimitiveBlastFurnaceBlock::new);
+    public static RegistryObject<BlockEntityType<PrimitiveBlastFurnaceTile>> PRIMITIVE_BLAST_FURNACE_TILE = VE_TILE_REGISTRY.register("primitiveblastfurnace",
+            () -> BlockEntityType.Builder.of(PrimitiveBlastFurnaceTile::new,VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()).build(null) );
+    public static RegistryObject<MenuType<PrimitiveBlastFurnaceContainer>> PRIMITIVE_BLAST_FURNACE_CONTAINER = VE_CONTAINER_REGISTRY.register("primitiveblastfurnace", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveBlastFurnaceContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     //Primitive Stirling
-    @ObjectHolder(registryName = "block", value =  "primitivestirlinggenerator")
-    public static PrimitiveStirlingGeneratorBlock PRIMITIVE_STIRLING_GENERATOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "primitivestirlinggenerator")
-    public static BlockEntityType<PrimitiveStirlingGeneratorTile> PRIMITIVE_STIRLING_GENERATOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "primitivestirlinggenerator")
-    public static MenuType<PrimitiveStirlingGeneratorContainer> PRIMITIVE_STIRLING_GENERATOR_CONTAINER;
+    public static RegistryObject<PrimitiveStirlingGeneratorBlock> PRIMITIVE_STIRLING_GENERATOR_BLOCK = VE_BLOCKS_REGISTRY.register("primitivestirlinggenerator", PrimitiveStirlingGeneratorBlock::new);
+    public static RegistryObject<BlockEntityType<PrimitiveStirlingGeneratorTile>> PRIMITIVE_STIRLING_GENERATOR_TILE = VE_TILE_REGISTRY.register("primitivestirlinggenerator",
+            () -> BlockEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<PrimitiveStirlingGeneratorContainer>> PRIMITIVE_STIRLING_GENERATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("primitivestirlinggenerator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveStirlingGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     //Crusher
-    @ObjectHolder(registryName = "block", value =  "crusher")
-    public static CrusherBlock CRUSHER_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "crusher")
-    public static BlockEntityType<CrusherTile> CRUSHER_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "crusher")
-    public static MenuType<CrusherContainer> CRUSHER_CONTAINER;
+    public static RegistryObject<CrusherBlock> CRUSHER_BLOCK = VE_BLOCKS_REGISTRY.register("crusher", CrusherBlock::new);
+    public static RegistryObject<BlockEntityType<CrusherTile>> CRUSHER_TILE = VE_TILE_REGISTRY.register("crusher",
+            () -> BlockEntityType.Builder.of(CrusherTile::new,VEBlocks.CRUSHER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<CrusherContainer>> CRUSHER_CONTAINER = VE_CONTAINER_REGISTRY.register("crusher", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CrusherContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     //Electrolyzer
-    @ObjectHolder(registryName = "block", value =  "electrolyzer")
-    public static ElectrolyzerBlock ELECTROLYZER_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "electrolyzer")
-    public static BlockEntityType<ElectrolyzerTile> ELECTROLYZER_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "electrolyzer")
-    public static MenuType<ElectrolyzerContainer> ELECTROLYZER_CONTAINER;
+    public static RegistryObject<ElectrolyzerBlock> ELECTROLYZER_BLOCK = VE_BLOCKS_REGISTRY.register("electrolyzer", ElectrolyzerBlock::new);
+    public static RegistryObject<BlockEntityType<ElectrolyzerTile>> ELECTROLYZER_TILE = VE_TILE_REGISTRY.register("electrolyzer",
+            () -> BlockEntityType.Builder.of(ElectrolyzerTile::new,VEBlocks.ELECTROLYZER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<ElectrolyzerContainer>> ELECTROLYZER_CONTAINER = VE_CONTAINER_REGISTRY.register("electrolyzer", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new ElectrolyzerContainer(id,VoluminousEnergy.proxy.getClientWorld(),pos,inv,VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Centrifugal Agitator
-    @ObjectHolder(registryName = "block", value =  "centrifugal_agitator")
-    public static CentrifugalAgitatorBlock CENTRIFUGAL_AGITATOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "centrifugal_agitator")
-    public static BlockEntityType<CentrifugalAgitatorTile> CENTRIFUGAL_AGITATOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "centrifugal_agitator")
-    public static MenuType<CentrifugalAgitatorContainer> CENTRIFUGAL_AGITATOR_CONTAINER;
+    public static RegistryObject<CentrifugalAgitatorBlock> CENTRIFUGAL_AGITATOR_BLOCK = VE_BLOCKS_REGISTRY.register("centrifugal_agitator", CentrifugalAgitatorBlock::new);
+    public static RegistryObject<BlockEntityType<CentrifugalAgitatorTile>> CENTRIFUGAL_AGITATOR_TILE = VE_TILE_REGISTRY.register("centrifugal_agitator",
+            () -> BlockEntityType.Builder.of(CentrifugalAgitatorTile::new,VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<CentrifugalAgitatorContainer>> CENTRIFUGAL_AGITATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("centrifugal_agitator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CentrifugalAgitatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Compressor
-    @ObjectHolder(registryName = "block", value =  "compressor")
-    public static CompressorBlock COMPRESSOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "compressor")
-    public static BlockEntityType<CompressorTile> COMPRESSOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "compressor")
-    public static MenuType<CompressorContainer> COMPRESSOR_CONTAINER;
+    public static RegistryObject<CompressorBlock> COMPRESSOR_BLOCK = VE_BLOCKS_REGISTRY.register("compressor", CompressorBlock::new);
+    public static RegistryObject<BlockEntityType<CompressorTile>> COMPRESSOR_TILE = VE_TILE_REGISTRY.register("compressor",
+            () -> BlockEntityType.Builder.of(CompressorTile::new,VEBlocks.COMPRESSOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<CompressorContainer>> COMPRESSOR_CONTAINER = VE_CONTAINER_REGISTRY.register("compressor", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Stirling Generator
-    @ObjectHolder(registryName = "block", value =  "stirling_generator")
-    public static StirlingGeneratorBlock STIRLING_GENERATOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "stirling_generator")
-    public static BlockEntityType<StirlingGeneratorTile> STIRLING_GENERATOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "stirling_generator")
-    public static MenuType<StirlingGeneratorContainer> STIRLING_GENERATOR_CONTAINER;
+    public static RegistryObject<StirlingGeneratorBlock> STIRLING_GENERATOR_BLOCK = VE_BLOCKS_REGISTRY.register("stirling_generator", StirlingGeneratorBlock::new);
+    public static RegistryObject<BlockEntityType<StirlingGeneratorTile>> STIRLING_GENERATOR_TILE = VE_TILE_REGISTRY.register("stirling_generator",
+            () -> BlockEntityType.Builder.of(StirlingGeneratorTile::new,VEBlocks.STIRLING_GENERATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<StirlingGeneratorContainer>> STIRLING_GENERATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("stirling_generator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new StirlingGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Combustion Generator
-    @ObjectHolder(registryName = "block", value =  "combustion_generator")
-    public static CombustionGeneratorBlock COMBUSTION_GENERATOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "combustion_generator")
-    public static BlockEntityType<CombustionGeneratorTile> COMBUSTION_GENERATOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "combustion_generator")
-    public static MenuType<CombustionGeneratorContainer> COMBUSTION_GENERATOR_CONTAINER;
+    public static RegistryObject<CombustionGeneratorBlock> COMBUSTION_GENERATOR_BLOCK = VE_BLOCKS_REGISTRY.register("combustion_generator", CombustionGeneratorBlock::new);
+    public static RegistryObject<BlockEntityType<CombustionGeneratorTile>> COMBUSTION_GENERATOR_TILE = VE_TILE_REGISTRY.register("combustion_generator",
+            () -> BlockEntityType.Builder.of(CombustionGeneratorTile::new,VEBlocks.COMBUSTION_GENERATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<CombustionGeneratorContainer>> COMBUSTION_GENERATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("combustion_generator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CombustionGeneratorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Aqueoulizer
-    @ObjectHolder(registryName = "block", value =  "aqueoulizer")
-    public static AqueoulizerBlock AQUEOULIZER_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "aqueoulizer")
-    public static BlockEntityType<AqueoulizerTile> AQUEOULIZER_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "aqueoulizer")
-    public static MenuType<AqueoulizerContainer> AQUEOULIZER_CONTAINER;
+    public static RegistryObject<AqueoulizerBlock> AQUEOULIZER_BLOCK = VE_BLOCKS_REGISTRY.register("aqueoulizer", AqueoulizerBlock::new);
+    public static RegistryObject<BlockEntityType<AqueoulizerTile>> AQUEOULIZER_TILE = VE_TILE_REGISTRY.register("aqueoulizer",
+            () -> BlockEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<AqueoulizerContainer>> AQUEOULIZER_CONTAINER = VE_CONTAINER_REGISTRY.register("aqueoulizer", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new AqueoulizerContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Air Compressor
-    @ObjectHolder(registryName = "block", value =  "air_compressor")
-    public static AirCompressorBlock AIR_COMPRESSOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "air_compressor")
-    public static BlockEntityType<AirCompressorTile> AIR_COMPRESSOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "air_compressor")
-    public static MenuType<AirCompressorContainer> AIR_COMPRESSOR_CONTAINER;
+    public static RegistryObject<AirCompressorBlock> AIR_COMPRESSOR_BLOCK = VE_BLOCKS_REGISTRY.register("air_compressor", AirCompressorBlock::new);
+    public static RegistryObject<BlockEntityType<AirCompressorTile>> AIR_COMPRESSOR_TILE = VE_TILE_REGISTRY.register("air_compressor",
+            () -> BlockEntityType.Builder.of(AirCompressorTile::new,VEBlocks.AIR_COMPRESSOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<AirCompressorContainer>> AIR_COMPRESSOR_CONTAINER = VE_CONTAINER_REGISTRY.register("air_compressor", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new AirCompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Distillation Unit
-    @ObjectHolder(registryName = "block", value =  "distillation_unit")
-    public static DistillationUnitBlock DISTILLATION_UNIT_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "distillation_unit")
-    public static BlockEntityType<DistillationUnitTile> DISTILLATION_UNIT_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "distillation_unit")
-    public static MenuType<DistillationUnitContainer> DISTILLATION_UNIT_CONTAINER;
+    public static RegistryObject<DistillationUnitBlock> DISTILLATION_UNIT_BLOCK = VE_BLOCKS_REGISTRY.register("distillation_unit", DistillationUnitBlock::new);
+    public static RegistryObject<BlockEntityType<DistillationUnitTile>> DISTILLATION_UNIT_TILE = VE_TILE_REGISTRY.register("distillation_unit",
+            () -> BlockEntityType.Builder.of(DistillationUnitTile::new,VEBlocks.DISTILLATION_UNIT_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<DistillationUnitContainer>> DISTILLATION_UNIT_CONTAINER = VE_CONTAINER_REGISTRY.register("distillation_unit", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new DistillationUnitContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Pump
-    @ObjectHolder(registryName = "block", value =  "pump")
-    public static PumpBlock PUMP_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "pump")
-    public static BlockEntityType<PumpTile> PUMP_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "pump")
-    public static MenuType<PumpContainer> PUMP_CONTAINER;
+    public static RegistryObject<PumpBlock> PUMP_BLOCK = VE_BLOCKS_REGISTRY.register("pump", PumpBlock::new);
+    public static RegistryObject<BlockEntityType<PumpTile>> PUMP_TILE = VE_TILE_REGISTRY.register("pump",
+            () -> BlockEntityType.Builder.of(PumpTile::new,VEBlocks.PUMP_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<PumpContainer>> PUMP_CONTAINER = VE_CONTAINER_REGISTRY.register("pump", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PumpContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Gas Fired Furnace
-    @ObjectHolder(registryName = "block", value =  "gas_fired_furnace")
-    public static GasFiredFurnaceBlock GAS_FIRED_FURNACE_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "gas_fired_furnace")
-    public static BlockEntityType<GasFiredFurnaceTile> GAS_FIRED_FURNACE_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "gas_fired_furnace")
-    public static MenuType<GasFiredFurnaceContainer> GAS_FIRED_FURNACE_CONTAINER;
+    public static RegistryObject<GasFiredFurnaceBlock> GAS_FIRED_FURNACE_BLOCK = VE_BLOCKS_REGISTRY.register("gas_fired_furnace", GasFiredFurnaceBlock::new);
+    public static RegistryObject<BlockEntityType<GasFiredFurnaceTile>> GAS_FIRED_FURNACE_TILE = VE_TILE_REGISTRY.register("gas_fired_furnace",
+            () -> BlockEntityType.Builder.of(GasFiredFurnaceTile::new,VEBlocks.GAS_FIRED_FURNACE_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<GasFiredFurnaceContainer>> GAS_FIRED_FURNACE_CONTAINER = VE_CONTAINER_REGISTRY.register("gas_fired_furnace", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new GasFiredFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Electric Furnace
-    @ObjectHolder(registryName = "block", value =  "electric_furnace")
-    public static ElectricFurnaceBlock ELECTRIC_FURNACE_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "electric_furnace")
-    public static BlockEntityType<ElectricFurnaceTile> ELECTRIC_FURNACE_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "electric_furnace")
-    public static MenuType<ElectricFurnaceContainer> ELECTRIC_FURNACE_CONTAINER;
+    public static RegistryObject<ElectricFurnaceBlock> ELECTRIC_FURNACE_BLOCK = VE_BLOCKS_REGISTRY.register("electric_furnace", ElectricFurnaceBlock::new);
+    public static RegistryObject<BlockEntityType<ElectricFurnaceTile>> ELECTRIC_FURNACE_TILE = VE_TILE_REGISTRY.register("electric_furnace",
+            () -> BlockEntityType.Builder.of(ElectricFurnaceTile::new,VEBlocks.ELECTRIC_FURNACE_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<ElectricFurnaceContainer>> ELECTRIC_FURNACE_CONTAINER = VE_CONTAINER_REGISTRY.register("electric_furnace", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new ElectricFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Battery Box
-    @ObjectHolder(registryName = "block", value =  "battery_box")
-    public static BatteryBoxBlock BATTERY_BOX_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "battery_box")
-    public static BlockEntityType<BatteryBoxTile> BATTERY_BOX_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "battery_box")
-    public static MenuType<BatteryBoxContainer> BATTERY_BOX_CONTAINER;
+    public static RegistryObject<BatteryBoxBlock> BATTERY_BOX_BLOCK = VE_BLOCKS_REGISTRY.register("battery_box", BatteryBoxBlock::new);
+    public static RegistryObject<BlockEntityType<BatteryBoxTile>> BATTERY_BOX_TILE = VE_TILE_REGISTRY.register("battery_box",
+            () -> BlockEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<BatteryBoxContainer>> BATTERY_BOX_CONTAINER = VE_CONTAINER_REGISTRY.register("battery_box", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new BatteryBoxContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Primitive Solar Panel
-    @ObjectHolder(registryName = "block", value =  "primitive_solar_panel")
-    public static PrimitiveSolarPanelBlock PRIMITIVE_SOLAR_PANEL_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "primitive_solar_panel")
-    public static BlockEntityType<PrimitiveSolarPanelTile> PRIMITIVE_SOLAR_PANEL_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "primitive_solar_panel")
-    public static MenuType<PrimitiveSolarPanelContainer> PRIMITIVE_SOLAR_PANEL_CONTAINER;
+    public static RegistryObject<PrimitiveSolarPanelBlock> PRIMITIVE_SOLAR_PANEL_BLOCK = VE_BLOCKS_REGISTRY.register("primitive_solar_panel", PrimitiveSolarPanelBlock::new);
+    public static RegistryObject<BlockEntityType<PrimitiveSolarPanelTile>> PRIMITIVE_SOLAR_PANEL_TILE = VE_TILE_REGISTRY.register("primitive_solar_panel",
+            () -> BlockEntityType.Builder.of(PrimitiveSolarPanelTile::new,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<PrimitiveSolarPanelContainer>> PRIMITIVE_SOLAR_PANEL_CONTAINER = VE_CONTAINER_REGISTRY.register("primitive_solar_panel", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new PrimitiveSolarPanelContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Solar Panel
-    @ObjectHolder(registryName = "block", value =  "solar_panel")
-    public static SolarPanelBlock SOLAR_PANEL_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "solar_panel")
-    public static BlockEntityType<SolarPanelTile> SOLAR_PANEL_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "solar_panel")
-    public static MenuType<SolarPanelContainer> SOLAR_PANEL_CONTAINER;
+    public static RegistryObject<SolarPanelBlock> SOLAR_PANEL_BLOCK = VE_BLOCKS_REGISTRY.register("solar_panel", SolarPanelBlock::new);
+    public static RegistryObject<BlockEntityType<SolarPanelTile>> SOLAR_PANEL_TILE = VE_TILE_REGISTRY.register("solar_panel",
+            () -> BlockEntityType.Builder.of(SolarPanelTile::new,VEBlocks.SOLAR_PANEL_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<SolarPanelContainer>> SOLAR_PANEL_CONTAINER = VE_CONTAINER_REGISTRY.register("solar_panel", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new SolarPanelContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Centrifugal Separator
-    @ObjectHolder(registryName = "block", value =  "centrifugal_separator")
-    public static CentrifugalSeparatorBlock CENTRIFUGAL_SEPARATOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "centrifugal_separator")
-    public static BlockEntityType<CentrifugalSeparatorTile> CENTRIFUGAL_SEPARATOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "centrifugal_separator")
-    public static MenuType<CentrifugalSeparatorContainer> CENTRIFUGAL_SEPARATOR_CONTAINER;
+    public static RegistryObject<CentrifugalSeparatorBlock> CENTRIFUGAL_SEPARATOR_BLOCK = VE_BLOCKS_REGISTRY.register("centrifugal_separator", CentrifugalSeparatorBlock::new);
+    public static RegistryObject<BlockEntityType<CentrifugalSeparatorTile>> CENTRIFUGAL_SEPARATOR_TILE = VE_TILE_REGISTRY.register("centrifugal_separator",
+            () -> BlockEntityType.Builder.of(CentrifugalSeparatorTile::new,VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<CentrifugalSeparatorContainer>> CENTRIFUGAL_SEPARATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("centrifugal_separator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new CentrifugalSeparatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Implosion Compressor
-    @ObjectHolder(registryName = "block", value =  "implosion_compressor")
-    public static ImplosionCompressorBlock IMPLOSION_COMPRESSOR_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "implosion_compressor")
-    public static BlockEntityType<ImplosionCompressorTile> IMPLOSION_COMPRESSOR_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "implosion_compressor")
-    public static MenuType<ImplosionCompressorContainer> IMPLOSION_COMPRESSOR_CONTAINER;
+    public static RegistryObject<ImplosionCompressorBlock> IMPLOSION_COMPRESSOR_BLOCK = VE_BLOCKS_REGISTRY.register("implosion_compressor", ImplosionCompressorBlock::new);
+    public static RegistryObject<BlockEntityType<ImplosionCompressorTile>> IMPLOSION_COMPRESSOR_TILE = VE_TILE_REGISTRY.register("implosion_compressor",
+            () -> BlockEntityType.Builder.of(ImplosionCompressorTile::new,VEBlocks.IMPLOSION_COMPRESSOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<ImplosionCompressorContainer>> IMPLOSION_COMPRESSOR_CONTAINER = VE_CONTAINER_REGISTRY.register("implosion_compressor", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new ImplosionCompressorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Blast Furnace
-    @ObjectHolder(registryName = "block", value =  "blast_furnace")
-    public static BlastFurnaceBlock BLAST_FURNACE_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "blast_furnace")
-    public static BlockEntityType<BlastFurnaceTile> BLAST_FURNACE_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "blast_furnace")
-    public static MenuType<BlastFurnaceContainer> BLAST_FURNACE_CONTAINER;
+    public static RegistryObject<BlastFurnaceBlock> BLAST_FURNACE_BLOCK = VE_BLOCKS_REGISTRY.register("blast_furnace", BlastFurnaceBlock::new);
+    public static RegistryObject<BlockEntityType<BlastFurnaceTile>> BLAST_FURNACE_TILE = VE_TILE_REGISTRY.register("blast_furnace",
+            () -> BlockEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<BlastFurnaceContainer>> BLAST_FURNACE_CONTAINER = VE_CONTAINER_REGISTRY.register("blast_furnace", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new BlastFurnaceContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Tooling Station
-    @ObjectHolder(registryName = "block", value =  "tooling_station")
-    public static ToolingStationBlock TOOLING_STATION_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "tooling_station")
-    public static BlockEntityType<ToolingStationTile> TOOLING_STATION_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "tooling_station")
-    public static MenuType<ToolingStationContainer> TOOLING_STATION_CONTAINER;
+    public static RegistryObject<ToolingStationBlock> TOOLING_STATION_BLOCK = VE_BLOCKS_REGISTRY.register("tooling_station", ToolingStationBlock::new);
+    public static RegistryObject<BlockEntityType<ToolingStationTile>> TOOLING_STATION_TILE = VE_TILE_REGISTRY.register("tooling_station",
+            () -> BlockEntityType.Builder.of(ToolingStationTile::new,VEBlocks.TOOLING_STATION_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<ToolingStationContainer>> TOOLING_STATION_CONTAINER = VE_CONTAINER_REGISTRY.register("tooling_station", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new ToolingStationContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Sawmill
-    @ObjectHolder(registryName = "block", value =  "sawmill")
-    public static SawmillBlock SAWMILL_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "sawmill")
-    public static BlockEntityType<SawmillTile> SAWMILL_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "sawmill")
-    public static MenuType<SawmillContainer> SAWMILL_CONTAINER;
+    public static RegistryObject<SawmillBlock> SAWMILL_BLOCK = VE_BLOCKS_REGISTRY.register("sawmill", SawmillBlock::new);
+    public static RegistryObject<BlockEntityType<SawmillTile>> SAWMILL_TILE = VE_TILE_REGISTRY.register("sawmill",
+            () -> BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<SawmillContainer>> SAWMILL_CONTAINER = VE_CONTAINER_REGISTRY.register("sawmill", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new SawmillContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Tanks (Tile/Block)
 
     // Aluminum Tank
-    @ObjectHolder(registryName = "block", value =  "aluminum_tank")
-    public static AluminumTankBlock ALUMINUM_TANK_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "aluminum_tank")
-    public static BlockEntityType<AluminumTankTile> ALUMINUM_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "aluminum_tank")
-    public static MenuType<AluminumTankContainer> ALUMINUM_TANK_CONTAINER;
+    public static RegistryObject<AluminumTankBlock> ALUMINUM_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("aluminum_tank", AluminumTankBlock::new);
+    public static RegistryObject<BlockEntityType<AluminumTankTile>> ALUMINUM_TANK_TILE = VE_TILE_REGISTRY.register("aluminum_tank",
+            () -> BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<AluminumTankContainer>> ALUMINUM_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("aluminum_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new AluminumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Titanium Tank
-    @ObjectHolder(registryName = "block", value =  "titanium_tank")
-    public static TitaniumTankBlock TITANIUM_TANK_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "titanium_tank")
-    public static BlockEntityType<TitaniumTankTile> TITANIUM_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "titanium_tank")
-    public static MenuType<TitaniumTankContainer> TITANIUM_TANK_CONTAINER;
-
-    // Netherite Tank
-    @ObjectHolder(registryName = "block", value =  "netherite_tank")
-    public static NetheriteTankBlock NETHERITE_TANK_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "netherite_tank")
-    public static BlockEntityType<NetheriteTankTile> NETHERITE_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "netherite_tank")
-    public static MenuType<NetheriteTankContainer> NETHERITE_TANK_CONTAINER;
+    public static RegistryObject<TitaniumTankBlock> TITANIUM_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_tank", TitaniumTankBlock::new);
+    public static RegistryObject<BlockEntityType<TitaniumTankTile>> TITANIUM_TANK_TILE = VE_TILE_REGISTRY.register("titanium_tank",
+            () -> BlockEntityType.Builder.of(TitaniumTankTile::new,VEBlocks.TITANIUM_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<TitaniumTankContainer>> TITANIUM_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("titanium_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new TitaniumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Netherite Tank
-    @ObjectHolder(registryName = "block", value =  "nighalite_tank")
-    public static NighaliteTankBlock NIGHALITE_TANK_BLOCK;
+    public static RegistryObject<NetheriteTankBlock> NETHERITE_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("netherite_tank", NetheriteTankBlock::new);
+    public static RegistryObject<BlockEntityType<NetheriteTankTile>> NETHERITE_TANK_TILE = VE_TILE_REGISTRY.register("netherite_tank",
+            () -> BlockEntityType.Builder.of(NetheriteTankTile::new,VEBlocks.NETHERITE_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<NetheriteTankContainer>> NETHERITE_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("netherite_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new NetheriteTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
-    @ObjectHolder(registryName = "block_entity_type", value =  "nighalite_tank")
-    public static BlockEntityType<NighaliteTankTile> NIGHALITE_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "nighalite_tank")
-    public static MenuType<NighaliteTankContainer> NIGHALITE_TANK_CONTAINER;
+    // Nighalite Tank
+    public static RegistryObject<NighaliteTankBlock> NIGHALITE_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("nighalite_tank", NighaliteTankBlock::new);
+    public static RegistryObject<BlockEntityType<NighaliteTankTile>> NIGHALITE_TANK_TILE = VE_TILE_REGISTRY.register("nighalite_tank",
+            () -> BlockEntityType.Builder.of(NighaliteTankTile::new,VEBlocks.NIGHALITE_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<NighaliteTankContainer>> NIGHALITE_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("nighalite_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new NighaliteTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Eighzo Tank
-    @ObjectHolder(registryName = "block", value =  "eighzo_tank")
-    public static EighzoTankBlock EIGHZO_TANK_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "eighzo_tank")
-    public static BlockEntityType<EighzoTankTile> EIGHZO_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "eighzo_tank")
-    public static MenuType<EighzoTankContainer> EIGHZO_TANK_CONTAINER;
+    public static RegistryObject<EighzoTankBlock> EIGHZO_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("eighzo_tank", EighzoTankBlock::new);
+    public static RegistryObject<BlockEntityType<EighzoTankTile>> EIGHZO_TANK_TILE = VE_TILE_REGISTRY.register("eighzo_tank",
+            () -> BlockEntityType.Builder.of(EighzoTankTile::new,VEBlocks.EIGHZO_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<EighzoTankContainer>> EIGHZO_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("eighzo_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new EighzoTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Solarium Tank
-    @ObjectHolder(registryName = "block", value =  "solarium_tank")
-    public static SolariumTankBlock SOLARIUM_TANK_BLOCK;
-
-    @ObjectHolder(registryName = "block_entity_type", value =  "solarium_tank")
-    public static BlockEntityType<SolariumTankTile> SOLARIUM_TANK_TILE;
-
-    @ObjectHolder(registryName = "menu", value =  "solarium_tank")
-    public static MenuType<SolariumTankContainer> SOLARIUM_TANK_CONTAINER;
+    public static RegistryObject<SolariumTankBlock> SOLARIUM_TANK_BLOCK = VE_BLOCKS_REGISTRY.register("solarium_tank", SolariumTankBlock::new);
+    public static RegistryObject<BlockEntityType<SolariumTankTile>> SOLARIUM_TANK_TILE = VE_TILE_REGISTRY.register("solarium_tank",
+            () -> BlockEntityType.Builder.of(SolariumTankTile::new,VEBlocks.SOLARIUM_TANK_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<SolariumTankContainer>> SOLARIUM_TANK_CONTAINER = VE_CONTAINER_REGISTRY.register("solarium_tank", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new SolariumTankContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     //Ores
-    @ObjectHolder(registryName = "block", value =  "saltpeterore")
-    public static SaltpeterOre SALTPETER_ORE;
+    public static RegistryObject<SaltpeterOre> SALTPETER_ORE = VE_BLOCKS_REGISTRY.register("saltpeterore", SaltpeterOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "bauxiteore")
-    public static BauxiteOre BAUXITE_ORE;
+    public static RegistryObject<BauxiteOre> BAUXITE_ORE = VE_BLOCKS_REGISTRY.register("bauxiteore", BauxiteOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "cinnabarore")
-    public static CinnabarOre CINNABAR_ORE;
+    public static RegistryObject<CinnabarOre> CINNABAR_ORE = VE_BLOCKS_REGISTRY.register("cinnabarore", CinnabarOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "rutileore")
-    public static RutileOre RUTILE_ORE;
+    public static RegistryObject<RutileOre> RUTILE_ORE = VE_BLOCKS_REGISTRY.register("rutileore", RutileOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "galena_ore")
-    public static GalenaOre GALENA_ORE;
+    public static RegistryObject<GalenaOre> GALENA_ORE = VE_BLOCKS_REGISTRY.register("galena_ore", GalenaOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "eighzo_ore")
-    public static EighzoOre EIGHZO_ORE;
+    public static RegistryObject<EighzoOre> EIGHZO_ORE = VE_BLOCKS_REGISTRY.register("eighzo_ore", EighzoOre::new);
 
     // Deepslate ores
-    @ObjectHolder(registryName = "block", value =  "deepslate_bauxite_ore")
-    public static DeepslateBauxiteOre DEEPSLATE_BAUXITE_ORE;
+    public static RegistryObject<DeepslateBauxiteOre> DEEPSLATE_BAUXITE_ORE = VE_BLOCKS_REGISTRY.register("deepslate_bauxite_ore", DeepslateBauxiteOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "deepslate_cinnabar_ore")
-    public static DeepslateCinnabarOre DEEPSLATE_CINNABAR_ORE;
+    public static RegistryObject<DeepslateCinnabarOre> DEEPSLATE_CINNABAR_ORE = VE_BLOCKS_REGISTRY.register("deepslate_cinnabar_ore", DeepslateCinnabarOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "deepslate_rutile_ore")
-    public static DeepslateRutileOre DEEPSLATE_RUTILE_ORE;
+    public static RegistryObject<DeepslateRutileOre> DEEPSLATE_RUTILE_ORE = VE_BLOCKS_REGISTRY.register("deepslate_rutile_ore", DeepslateRutileOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "deepslate_galena_ore")
-    public static DeepslateGalenaOre DEEPSLATE_GALENA_ORE;
+    public static RegistryObject<DeepslateGalenaOre> DEEPSLATE_GALENA_ORE = VE_BLOCKS_REGISTRY.register("deepslate_galena_ore", DeepslateGalenaOre::new);
 
-    @ObjectHolder(registryName = "block", value =  "red_saltpeter_ore")
-    public static RedSaltpeterOre RED_SALTPETER_ORE;
+    public static RegistryObject<RedSaltpeterOre> RED_SALTPETER_ORE = VE_BLOCKS_REGISTRY.register("red_saltpeter_ore", RedSaltpeterOre::new);
 
     //Crops
-    //@ObjectHolder(registryName = "", value =  "water_crop")
     //public static VEWaterCrop WATER_CROP;
 
-    @ObjectHolder(registryName = "block", value =  "land_crop")
-    public static VELandCrop LAND_CROP;
+    //public static VELandCrop LAND_CROP;
 
-    @ObjectHolder(registryName = "block", value =  "rice_crop")
-    public static RiceCrop RICE_CROP;
+    public static RegistryObject<RiceCrop> RICE_CROP = VE_BLOCKS_REGISTRY.register("rice_crop", RiceCrop::new);
 
     // Material Storage Blocks
-    @ObjectHolder(registryName = "block", value =  "solarium_block")
-    public static SolariumBlock SOLARIUM_BLOCK;
+    public static RegistryObject<SolariumBlock> SOLARIUM_BLOCK = VE_BLOCKS_REGISTRY.register("solarium_block", SolariumBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "aluminum_block")
-    public static AluminumBlock ALUMINUM_BLOCK;
+    public static RegistryObject<AluminumBlock> ALUMINUM_BLOCK = VE_BLOCKS_REGISTRY.register("aluminum_block", AluminumBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "carbon_block")
-    public static CarbonBlock CARBON_BLOCK;
+    public static RegistryObject<CarbonBlock> CARBON_BLOCK = VE_BLOCKS_REGISTRY.register("carbon_block", CarbonBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "eighzo_block")
-    public static EighzoBlock EIGHZO_BLOCK;
+    public static RegistryObject<EighzoBlock> EIGHZO_BLOCK = VE_BLOCKS_REGISTRY.register("eighzo_block", EighzoBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "nighalite_block")
-    public static NighaliteBlock NIGHALITE_BLOCK;
+    public static RegistryObject<NighaliteBlock> NIGHALITE_BLOCK = VE_BLOCKS_REGISTRY.register("nighalite_block", NighaliteBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "saltpeter_block")
-    public static SaltpeterBlock SALTPETER_BLOCK;
+    public static RegistryObject<SaltpeterBlock> SALTPETER_BLOCK = VE_BLOCKS_REGISTRY.register("saltpeter_block", SaltpeterBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "titanium_block")
-    public static TitaniumBlock TITANIUM_BLOCK;
+    public static RegistryObject<TitaniumBlock> TITANIUM_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_block", TitaniumBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "tungsten_block")
-    public static TungstenBlock TUNGSTEN_BLOCK;
+    public static RegistryObject<TungstenBlock> TUNGSTEN_BLOCK = VE_BLOCKS_REGISTRY.register("tungsten_block", TungstenBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "tungsten_steel_block")
-    public static TungstenSteelBlock TUNGSTEN_STEEL_BLOCK;
+    public static RegistryObject<TungstenSteelBlock> TUNGSTEN_STEEL_BLOCK = VE_BLOCKS_REGISTRY.register("tungsten_steel_block", TungstenSteelBlock::new);
 
     // Raw Material Storage Blocks
-    @ObjectHolder(registryName = "block", value =  "raw_bauxite_block")
-    public static RawBauxiteBlock RAW_BAUXITE_BLOCK;
+    public static RegistryObject<RawBauxiteBlock> RAW_BAUXITE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bauxite_block", RawBauxiteBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "raw_cinnabar_block")
-    public static RawCinnabarBlock RAW_CINNABAR_BLOCK;
+    public static RegistryObject<RawCinnabarBlock> RAW_CINNABAR_BLOCK = VE_BLOCKS_REGISTRY.register("raw_cinnabar_block", RawCinnabarBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "raw_eighzo_block")
-    public static RawEighzoBlock RAW_EIGHZO_BLOCK;
+    public static RegistryObject<RawEighzoBlock> RAW_EIGHZO_BLOCK = VE_BLOCKS_REGISTRY.register("raw_eighzo_block", RawEighzoBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "raw_galena_block")
-    public static RawGalenaBlock RAW_GALENA_BLOCK;
+    public static RegistryObject<RawGalenaBlock> RAW_GALENA_BLOCK = VE_BLOCKS_REGISTRY.register("raw_galena_block", RawGalenaBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "raw_rutile_block")
-    public static RawRutileBlock RAW_RUTILE_BLOCK;
+    public static RegistryObject<RawRutileBlock> RAW_RUTILE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_rutile_block", RawRutileBlock::new);
 
-    @ObjectHolder(registryName = "block", value =  "raw_bone_block")
-    public static RawBoneBlock RAW_BONE_BLOCK;
+    @Deprecated
+    public static RegistryObject<RawBoneBlock> RAW_BONE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bone_block", RawBoneBlock::new); // Unused
 
-    @ObjectHolder(registryName = "block", value =  "pressure_ladder")
-    public static PressureLadder PRESSURE_LADDER;
+    public static RegistryObject<PressureLadder> PRESSURE_LADDER = VE_BLOCKS_REGISTRY.register("pressure_ladder", PressureLadder::new);;
 }

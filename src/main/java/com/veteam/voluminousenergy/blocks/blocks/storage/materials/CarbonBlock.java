@@ -13,7 +13,7 @@ public class CarbonBlock extends VEBlock {
                 .strength(2F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("carbon_block");
+        setRName("carbon_block");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.addTierBasedOnInt(0, this);
     }

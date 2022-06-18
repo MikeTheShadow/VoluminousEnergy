@@ -33,7 +33,7 @@ public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
         );
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresStone(this);
-        setRegistryName("air_compressor");
+        setRName("air_compressor");
     }
 
     @Nullable
@@ -54,7 +54,7 @@ public class AirCompressorBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.AIR_COMPRESSOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.AIR_COMPRESSOR_TILE.get());
     }
 
     @Override

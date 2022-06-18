@@ -20,7 +20,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR
 public class PrimitiveSolarPanelContainer extends VoluminousContainer {
 
     public PrimitiveSolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
-        super(PRIMITIVE_SOLAR_PANEL_CONTAINER, windowID);
+        super(PRIMITIVE_SOLAR_PANEL_CONTAINER.get(), windowID);
         this.tileEntity = world.getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
@@ -45,7 +45,7 @@ public class PrimitiveSolarPanelContainer extends VoluminousContainer {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK);
+        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK.get());
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow){
