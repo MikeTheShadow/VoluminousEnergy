@@ -5,7 +5,7 @@
   "feature": "voluminousenergy:eighzo_ore_blob",
   "triangular_placement": false,
   "count": 3,
-  "bottom_anchor": 0,
+  "bottom_anchor": 10,
   "top_anchor": 36,
   "rarity": 0
 }
