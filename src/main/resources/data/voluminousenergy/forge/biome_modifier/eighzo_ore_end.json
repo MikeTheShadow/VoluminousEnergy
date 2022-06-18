@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:anded_biome_modifier",
+  "whitelisted_biomes": "forge:is_end",
+  "blacklisted_biomes": "",
+  "feature": "voluminousenergy:eighzo_ore_blob",
+  "triangular_placement": false,
+  "count": 3,
+  "bottom_anchor": 0,
+  "top_anchor": 36,
+  "rarity": 0
+}

@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:anded_biome_modifier",
+  "whitelisted_biomes": "forge:is_mountain",
+  "blacklisted_biomes": "forge:is_snowy",
+  "feature": "voluminousenergy:bauxite_ore_blob",
+  "triangular_placement": true,
+  "count": 10,
+  "bottom_anchor": 96,
+  "top_anchor": 140,
+  "rarity": 0
+}

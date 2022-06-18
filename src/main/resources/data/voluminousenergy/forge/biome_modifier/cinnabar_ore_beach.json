@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:anded_biome_modifier",
+  "whitelisted_biomes": "forge:is_beach",
+  "blacklisted_biomes": "",
+  "feature": "voluminousenergy:cinnabar_ore_blob",
+  "triangular_placement": true,
+  "count": 2,
+  "bottom_anchor": 62,
+  "top_anchor": 92,
+  "rarity": 1
+}

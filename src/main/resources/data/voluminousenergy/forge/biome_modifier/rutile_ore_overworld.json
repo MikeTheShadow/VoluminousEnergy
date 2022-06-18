@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:anded_biome_modifier",
+  "whitelisted_biomes": "forge:is_overworld",
+  "blacklisted_biomes": "",
+  "feature": "voluminousenergy:rutile_ore_blob",
+  "triangular_placement": false,
+  "count": 3,
+  "bottom_anchor": -64,
+  "top_anchor": -32,
+  "rarity": 0
+}
