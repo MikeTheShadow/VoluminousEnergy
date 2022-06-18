@@ -7,7 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
 
@@ -69,7 +71,36 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         if (biome.getTagKeys().anyMatch(b -> blacklistedBiomeKeycache.get().contains(b))) return;
 
         System.out.println("Voluminous Energy has received a successful biome modify event. ");
-        builder.getGenerationSettings().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, feature);
+        System.out.println("Biome Keys of biome in question: ");
+        biome.getTagKeys().forEach(key -> System.out.print(key.toString()  + ", "));
+        System.out.println("\nWhitelisted Keys for this AND rule: ");
+        whitelistedBiomeKeycache.get().forEach(key -> System.out.print(key.toString() + ", "));
+
+//        Holder<PlacedFeature> modifiedFeature = this.feature;
+//
+//        modifiedFeature.get().placement().addAll(List.of(
+//                HeightRangePlacement.uniform(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
+//                CountPlacement.of(count),
+//                RarityFilter.onAverageOnceEvery(rarity)
+//        ));
+
+        List<ConfiguredFeature<?,?>> oreConfiguration = feature.get().getFeatures().toList();
+        Holder<PlacedFeature> modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)),List.of(
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
+                CountPlacement.of(count),
+                RarityFilter.onAverageOnceEvery(rarity),
+                InSquarePlacement.spread()
+        )));
+
+
+        System.out.println("\nChecking if features are unique. Start with modified: ");
+        modifiedFeature.get().placement().forEach(rule -> System.out.print(rule.toString() + ", "));
+        System.out.println("\n");
+        feature.get().placement().forEach(rule -> System.out.print(rule.toString() + ", "));
+        System.out.println("");
+
+
+        builder.getGenerationSettings().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, modifiedFeature);
     }
 
     public void whitelistCacheBuilder(){

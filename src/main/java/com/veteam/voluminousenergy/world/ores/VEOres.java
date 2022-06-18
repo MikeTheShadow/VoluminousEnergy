@@ -3,10 +3,12 @@ package com.veteam.voluminousenergy.world.ores;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -27,6 +29,7 @@ public class VEOres {
     //Note Eelt if it's not working it's not public static. You're welcome
     public static RegistryObject<PlacedFeature> SALTPETER_ORE_BLOB_PLACED_REG = VE_PLACED_ORE_BLOBS_REGISTRY.register("saltpeter_ore_blob", () -> createSaltpeterOre().get());
 
+    protected static NoPlacement noPlacement = new NoPlacement();
 //    public static Holder<PlacedFeature> saltpeterOreBlobPlacement;
 
 //    public static void registerConfiguredFeatures(){
@@ -52,9 +55,9 @@ public class VEOres {
     public static Holder<PlacedFeature> createSaltpeterOre(){
         OreConfiguration overworldConfig = new OreConfiguration(VEOreGeneration.OreWithTargetStatesToReplace.SALTPETER_ORE_TARGETS, Config.SALTPETER_ORE_BLOBS_SIZE.get(), (float) ((double) Config.SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE.get()));
         return registerPlacedFeature("saltpeter_ore_blob", new ConfiguredFeature<>(Feature.ORE, overworldConfig),
-                CountPlacement.of(Config.SALTPETER_ORE_BLOBS_COUNT.get()),
                 InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.SALTPETER_ORE_BLOBS_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.SALTPETER_ORE_BLOBS_TOP_ANCHOR.get())));
+                noPlacement
+        );
     }
 
 //    // Eighzo
@@ -200,5 +203,19 @@ public class VEOres {
     ){
         return createOre(registryName, targetBlockStates, size, (float) discard, bottomAnchor, topAnchor, count, chance);
     }*/
+
+    protected static class NoPlacement extends PlacementFilter{
+        public NoPlacement(){}
+
+        @Override
+        protected boolean shouldPlace(PlacementContext p_226382_, RandomSource p_226383_, BlockPos p_226384_) {
+            return false;
+        }
+
+        @Override
+        public PlacementModifierType<?> type() {
+            return PlacementModifierType.BIOME_FILTER;
+        }
+    }
 
 }
