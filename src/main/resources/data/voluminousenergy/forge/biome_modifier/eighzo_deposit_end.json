@@ -1,0 +1,11 @@
+{
+  "type": "voluminousenergy:anded_biome_modifier",
+  "whitelisted_biomes": "forge:is_end",
+  "blacklisted_biomes": "",
+  "feature": "voluminousenergy:eighzo_deposit",
+  "triangular_placement": true,
+  "count": 1,
+  "bottom_anchor": 10,
+  "top_anchor": 36,
+  "rarity": 192
+}

@@ -24,7 +24,7 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
 
         if(!worldIn.canSeeSky(pos)) return false;
 
-        if (worldIn.isWaterAt(pos.below()) && worldIn.isEmptyBlock(pos)){
+        if (worldIn.isWaterAt(pos.below()) && worldIn.getBlockState(pos).isAir()){
             generateRice(worldIn, pos);
             return true;
         }
@@ -32,7 +32,7 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
         return false;
     }
 
-    public void generateRice(WorldGenLevel worldIn, BlockPos pos){ // TODO: Doesn't worked since 1.18
+    public void generateRice(WorldGenLevel worldIn, BlockPos pos){
 
         worldIn.setBlock(pos, VEBlocks.RICE_CROP.get().defaultBlockState(), 2);
         worldIn.setBlock(

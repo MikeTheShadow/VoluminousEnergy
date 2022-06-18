@@ -1,15 +1,18 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraftforge.registries.DeferredRegister;
@@ -20,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLACE` as seen in LakeFeature.java
     public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, VoluminousEnergy.MODID);
     public static final DeferredRegister<PlacedFeature> VE_PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
+
+    /** REG OBJECTS **/
 
     // "High Level" Features
     public static RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
@@ -32,10 +37,27 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
 
     // PlacedFeatures created by methods below
+    // Oil stuff
     public static RegistryObject<PlacedFeature> VE_SURFACE_OIL_LAKE_PLACED = VE_PLACED_FEATURES.register("surface_oil_lake", () -> createSurfaceOilLake().get());
     public static RegistryObject<PlacedFeature> VE_UNDERGROUND_OIL_LAKE_PLACED = VE_PLACED_FEATURES.register("underground_oil_lake", () -> createUndergroundOilLake().get());
     public static RegistryObject<PlacedFeature> VE_OIL_GEYSER_PLACED = VE_PLACED_FEATURES.register("oil_geyser", () -> createOilGeyser().get());
 
+    // Deposits
+    public static RegistryObject<PlacedFeature> VE_COPPER_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("copper_deposit", () -> createCopperDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_IRON_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("iron_deposit", () -> createIronDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_GOLD_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("gold_deposit", () -> createGoldDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_BAUXITE_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("bauxite_deposit", () -> createBauxiteDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_CINNABAR_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("cinnabar_deposit", () -> createCinnabarDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_RUTILE_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("rutile_deposit", () -> createRutileDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_GALENA_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("galena_deposit", () -> createGalenaDeposit().get());
+    public static RegistryObject<PlacedFeature> VE_EIGHZO_DEPOSIT_PLACED = VE_PLACED_FEATURES.register("eighzo_deposit", () -> createEighzoDeposit().get());
+
+    // Misc
+    public static RegistryObject<PlacedFeature> VE_RICE_CROP_PLACED = VE_PLACED_FEATURES.register("rice_crop", () -> createRiceCrop().get());
+
+    /** ACTUAL FEATURE PLACEMENT CODE **/
+
+    // Oil PlacedFeatures
     @NotNull
     public static Holder<PlacedFeature> createSurfaceOilLake(){
         ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(
@@ -64,143 +86,87 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
         return registerPlacedFeature("oil_geyser", configuredFeature, noPlacement);
     }
 
+    // Deposits
+    public static Holder<PlacedFeature> createCopperDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(Blocks.COPPER_ORE.defaultBlockState()),
+                        BlockStateProvider.simple(Blocks.RAW_COPPER_BLOCK.defaultBlockState())
+                ));
+        return registerPlacedFeature("copper_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createIronDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(Blocks.IRON_ORE.defaultBlockState()),
+                        BlockStateProvider.simple(Blocks.RAW_IRON_BLOCK.defaultBlockState())
+                ));
+        return registerPlacedFeature("iron_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createGoldDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(Blocks.GOLD_ORE.defaultBlockState()),
+                        BlockStateProvider.simple(Blocks.RAW_GOLD_BLOCK.defaultBlockState())
+                ));
+        return registerPlacedFeature("gold_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createBauxiteDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(VEBlocks.BAUXITE_ORE.get().defaultBlockState()),
+                        BlockStateProvider.simple(VEBlocks.RAW_BAUXITE_BLOCK.get().defaultBlockState())
+                ));
+        return registerPlacedFeature("bauxite_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createCinnabarDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(VEBlocks.CINNABAR_ORE.get().defaultBlockState()),
+                        BlockStateProvider.simple(VEBlocks.RAW_CINNABAR_BLOCK.get().defaultBlockState())
+                ));
+        return registerPlacedFeature("cinnabar_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createRutileDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(VEBlocks.RUTILE_ORE.get().defaultBlockState()),
+                        BlockStateProvider.simple(VEBlocks.RAW_RUTILE_BLOCK.get().defaultBlockState())
+                ));
+        return registerPlacedFeature("rutile_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createGalenaDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(VEBlocks.GALENA_ORE.get().defaultBlockState()),
+                        BlockStateProvider.simple(VEBlocks.RAW_GALENA_BLOCK.get().defaultBlockState())
+                ));
+        return registerPlacedFeature("galena_deposit", configuredFeature, noPlacement);
+    }
+
+    public static Holder<PlacedFeature> createEighzoDeposit(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VE_ORE_DEPOSIT_FEATURE.get(),
+                new VEOreDepositFeature.Configuration(
+                        BlockStateProvider.simple(VEBlocks.EIGHZO_ORE.get().defaultBlockState()),
+                        BlockStateProvider.simple(VEBlocks.RAW_EIGHZO_BLOCK.get().defaultBlockState())
+                ));
+        return registerPlacedFeature("eighzo_deposit", configuredFeature, noPlacement);
+    }
+
+    // Misc
+    public static Holder<PlacedFeature> createRiceCrop(){
+        ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(VEFeatures.VE_RICE_FEATURE.get(), new BlockStateConfiguration(VEBlocks.RICE_CROP.get().defaultBlockState()));
+        return registerPlacedFeature("rice_crop", configuredFeature, noPlacement);
+    }
+
+
     private static <C extends FeatureConfiguration, F extends Feature<C>> Holder<PlacedFeature> registerPlacedFeature(String registryName, ConfiguredFeature<C, F> feature, PlacementModifier... placementModifiers) {
         return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
     }
-
-    /*** Configs and Placements for impls of features ***/
-//
-//    // Oil Lake
-//    public static ConfiguredFeature<?,?> SURFACE_OIL_LAKE_FEATURE = new ConfiguredFeature<>(VE_BSC_LAKE_SURFACE_FEATURE.get(), new BlockStateConfiguration(VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()));
-//    public static PlacedFeature SURFACE_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(SURFACE_OIL_LAKE_FEATURE), List.of(
-//            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
-//            InSquarePlacement.spread(),
-//            CountPlacement.of(1),
-//            RarityFilter.onAverageOnceEvery(Config.SURFACE_OIL_LAKE_CHANCE.get()) // 144 by default
-//    ));
-//
-//    public static ConfiguredFeature<?,?> UNDERGROUND_OIL_LAKE_FEATURE = new ConfiguredFeature<>(VE_BSC_LAKE_UNDERGROUND_FEATURE.get(), new BlockStateConfiguration(VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()));
-//    public static PlacedFeature UNDERGROUND_OIL_LAKE_PLACEMENT = new PlacedFeature(Holder.direct(UNDERGROUND_OIL_LAKE_FEATURE), List.of(
-//            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
-//            InSquarePlacement.spread(),
-//            CountPlacement.of(1),
-//            RarityFilter.onAverageOnceEvery(Config.UNDERGROUND_OIL_LAKE_CHANCE.get()) // 5 by default
-//    ));
-//
-//    // Oil Geyser
-//    public static ConfiguredFeature<?,?> OIL_GEYSER_FEATURE = new ConfiguredFeature<>(VEFeatures.VE_GEYSER_FEATURE.get(), new BlockStateConfiguration(VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()));
-//    public static PlacedFeature OIL_GEYSER_PLACEMENT = new PlacedFeature(Holder.direct(OIL_GEYSER_FEATURE), List.of(
-//            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.top()), // TODO: Config
-//            InSquarePlacement.spread(),
-//            CountPlacement.of(1),
-//            RarityFilter.onAverageOnceEvery(Config.OIL_GEYSER_CHANCE.get()) // 208 by default
-//    ));
-//
-//    // Rice
-//    public static ConfiguredFeature<?,?> RICE_FEATURE_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_RICE_FEATURE.get(), new BlockStateConfiguration(VEBlocks.RICE_CROP.get().defaultBlockState()));
-//    public static PlacedFeature RICE_FEATURE_PLACEMENT = new PlacedFeature(Holder.direct(RICE_FEATURE_CONFIG), List.of(
-//            HeightRangePlacement.uniform(VerticalAnchor.absolute(Config.RICE_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RICE_TOP_ANCHOR.get())), // Default: 48 --> 320
-//            InSquarePlacement.spread(),
-//            CountPlacement.of(Config.RICE_COUNT.get()),
-//            RarityFilter.onAverageOnceEvery(Config.RICE_CHANCE.get())
-//    ));
-//
-//    /*** ORE DEPOSITS ***/
-//    /* Vanilla Deposits */
-//            // Copper
-//    public static ConfiguredFeature<?,?> COPPER_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(Blocks.COPPER_ORE.defaultBlockState()),
-//                    BlockStateProvider.simple(Blocks.RAW_COPPER_BLOCK.defaultBlockState())
-//            ));
-//    public static PlacedFeature COPPER_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(COPPER_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.COPPER_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.COPPER_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.COPPER_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Iron
-//    public static ConfiguredFeature<?,?> IRON_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(Blocks.IRON_ORE.defaultBlockState()),
-//                    BlockStateProvider.simple(Blocks.RAW_IRON_BLOCK.defaultBlockState())
-//            ));
-//    public static PlacedFeature IRON_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(IRON_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.IRON_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.IRON_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.IRON_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Gold
-//    public static ConfiguredFeature<?,?> GOLD_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(Blocks.GOLD_ORE.defaultBlockState()),
-//                    BlockStateProvider.simple(Blocks.RAW_GOLD_BLOCK.defaultBlockState())
-//            ));
-//    public static PlacedFeature GOLD_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(GOLD_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.GOLD_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GOLD_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.GOLD_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    /* Voluminous Energy Deposits */
-//    // Bauxite
-//    public static ConfiguredFeature<?,?> BAUXITE_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(VEBlocks.BAUXITE_ORE.get().defaultBlockState()),
-//                    BlockStateProvider.simple(VEBlocks.RAW_BAUXITE_BLOCK.get().defaultBlockState())
-//            ));
-//    public static PlacedFeature BAUXITE_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(BAUXITE_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.BAUXITE_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.BAUXITE_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.BAUXITE_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Cinnabar
-//    public static ConfiguredFeature<?,?> CINNABAR_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(VEBlocks.CINNABAR_ORE.get().defaultBlockState()),
-//                    BlockStateProvider.simple(VEBlocks.RAW_CINNABAR_BLOCK.get().defaultBlockState())
-//            ));
-//    public static PlacedFeature CINNABAR_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(CINNABAR_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.CINNABAR_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.CINNABAR_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.CINNABAR_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Rutile
-//    public static ConfiguredFeature<?,?> RUTILE_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(VEBlocks.RUTILE_ORE.get().defaultBlockState()),
-//                    BlockStateProvider.simple(VEBlocks.RAW_RUTILE_BLOCK.get().defaultBlockState())
-//            ));
-//    public static PlacedFeature RUTILE_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(RUTILE_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.RUTILE_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.RUTILE_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.RUTILE_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Galena
-//    public static ConfiguredFeature<?,?> GALENA_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(VEBlocks.GALENA_ORE.get().defaultBlockState()),
-//                    BlockStateProvider.simple(VEBlocks.RAW_GALENA_BLOCK.get().defaultBlockState())
-//            ));
-//    public static PlacedFeature GALENA_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(GALENA_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.GALENA_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.GALENA_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.GALENA_ORE_DEPOSIT_CHANCE.get())
-//    ));
-//
-//    // Eighzo
-//    public static ConfiguredFeature<?,?> EIGHZO_ORE_DEPOSIT_CONFIG = new ConfiguredFeature<>(VEFeatures.VE_ORE_DEPOSIT_FEATURE.get(),
-//            new VEOreDepositFeature.Configuration(
-//                    BlockStateProvider.simple(VEBlocks.EIGHZO_ORE.get().defaultBlockState()),
-//                    BlockStateProvider.simple(VEBlocks.RAW_EIGHZO_BLOCK.get().defaultBlockState())
-//            ));
-//    public static PlacedFeature EIGHZO_ORE_DEPOSIT_PLACEMENT = new PlacedFeature(Holder.direct(EIGHZO_ORE_DEPOSIT_CONFIG), List.of(
-//            HeightRangePlacement.triangle(VerticalAnchor.absolute(Config.EIGHZO_ORE_DEPOSIT_BOTTOM_ANCHOR.get()), VerticalAnchor.absolute(Config.EIGHZO_ORE_DEPOSIT_TOP_ANCHOR.get())),
-//            InSquarePlacement.spread(),
-//            RarityFilter.onAverageOnceEvery(Config.EIGHZO_ORE_DEPOSIT_CHANCE.get())
-//    ));
 }
