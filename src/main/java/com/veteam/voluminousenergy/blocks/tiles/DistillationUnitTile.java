@@ -87,7 +87,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         tick++;
         if (tick == 20){
             tick = 0;
-            //validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK); TODO: UNDO Comment
+            validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.get());
         }
         if (!(validity)) {
             return;

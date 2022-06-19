@@ -81,7 +81,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         tick++;
         if (tick == 20){
             tick = 0;
-            //validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK); TODO: UNDO Comment
+            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get());
         }
         if (!(validity)) {
             return;
