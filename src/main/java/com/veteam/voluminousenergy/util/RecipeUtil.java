@@ -643,7 +643,7 @@ public class RecipeUtil {
     public static ArrayList<FluidStack> getFluidsAsHotOrHotterThanIntAsFluidStacks(int minimumTemperatureKelvin, int stackAmount){
         AtomicReference<ArrayList<FluidStack>> fluidStacks = new AtomicReference<>(new ArrayList<>());
         ForgeRegistries.FLUIDS.getValues().parallelStream().forEach(fluid -> {
-            if (fluid.getAttributes().getTemperature() > minimumTemperatureKelvin) fluidStacks.get().add(new FluidStack(fluid, stackAmount));
+            if (fluid.getFluidType().getTemperature() > minimumTemperatureKelvin) fluidStacks.get().add(new FluidStack(fluid, stackAmount));
         });
         return fluidStacks.get();
     }

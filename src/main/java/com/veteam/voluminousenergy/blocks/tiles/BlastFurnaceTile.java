@@ -107,7 +107,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                 // Tank fluid amount check + capacity and recipe checks
                 if (itemOutput.getCount() < recipe.getResult().getMaxStackSize() &&
                         heatTank.getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get() &&
-                        heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature() >= recipe.getMinimumHeat() &&
+                        heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature() >= recipe.getMinimumHeat() &&
                         recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
                         firstItemInput.getCount() >= recipe.getIngredientCount() &&
                         recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem()) &&
@@ -221,7 +221,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     }
 
     public int getTemperatureKelvin(){
-        return this.heatTank.getTank().getFluid().getRawFluid().getAttributes().getTemperature();
+        return this.heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature();
     }
 
     public int getTemperatureCelsius(){

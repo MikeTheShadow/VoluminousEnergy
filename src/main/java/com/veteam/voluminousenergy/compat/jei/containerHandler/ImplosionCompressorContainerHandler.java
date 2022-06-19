@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.containerHandler;
-/*
+
 import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.ImplosionCompressorScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -42,4 +42,3 @@ public class ImplosionCompressorContainerHandler implements IGuiContainerHandler
         return areas;
     }
 }
-*/

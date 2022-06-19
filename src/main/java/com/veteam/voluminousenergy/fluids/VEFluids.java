@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -15,6 +16,7 @@ public class VEFluids {
     public static DeferredRegister<Fluid> VE_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, VoluminousEnergy.MODID);
     public static DeferredRegister<Item> VE_FLUID_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
     public static DeferredRegister<Block> VE_FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
+    public static DeferredRegister<FluidType> VE_FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, VoluminousEnergy.MODID);
 
     // Oxygen
     public static RegistryObject<FlowingFluid> OXYGEN_REG = VE_FLUIDS.register("oxygen",
@@ -25,6 +27,8 @@ public class VEFluids {
             Oxygen::FlowingOxygenBlock);
     public static RegistryObject<Item> OXYGEN_BUCKET_REG = VE_FLUID_ITEMS.register("oxygen_bucket",
             Oxygen::OxygenBucket);
+    public static RegistryObject<FluidType> OXYGEN_FLUID_TYPE_REG = VE_FLUID_TYPES.register("oxygen",
+            () -> Oxygen.OXYGEN_FLUID_TYPE);
 
     // Crude Oil
     public static RegistryObject<FlowingFluid> CRUDE_OIL_REG = VE_FLUIDS.register("crude_oil",
@@ -35,6 +39,8 @@ public class VEFluids {
             CrudeOil::FlowingCrudeOilBlock);
     public static RegistryObject<Item> CRUDE_OIL_BUCKET_REG = VE_FLUID_ITEMS.register("crude_oil_bucket",
             CrudeOil::CrudeOilBucket);
+    public static RegistryObject<FluidType> CRUDE_OIL_FLUID_TYPE_REG = VE_FLUID_TYPES.register("crude_oil",
+            () -> CrudeOil.CRUDE_OIL_FLUID_TYPE);
 
     // Naphtha
     public static RegistryObject<FlowingFluid> NAPHTHA_REG = VE_FLUIDS.register("naphtha",
@@ -45,6 +51,8 @@ public class VEFluids {
             Naphtha::FlowingNaphthaBlock);
     public static RegistryObject<Item> NAPHTHA_BUCKET_REG = VE_FLUID_ITEMS.register("naphtha_bucket",
             Naphtha::NaphthaBucket);
+    public static RegistryObject<FluidType> NAPHTHA_FLUID_TYPE_REG = VE_FLUID_TYPES.register("naphtha",
+            () -> Naphtha.NAPHTHA_FLUID_TYPE);
 
     // Red Fuming Nitric Acid (Shortened to RFNA)
     public static RegistryObject<FlowingFluid> RFNA_REG = VE_FLUIDS.register("red_fuming_nitric_acid",
@@ -55,6 +63,8 @@ public class VEFluids {
             RedFumingNitricAcid::FlowingRedFumingNitricAcidBlock);
     public static RegistryObject<Item> RFNA_BUCKET_REG = VE_FLUID_ITEMS.register("red_fuming_nitric_acid_bucket",
             RedFumingNitricAcid::RedFumingNitricAcidBucket);
+    public static RegistryObject<FluidType> RFNA_FLUID_TYPE_REG = VE_FLUID_TYPES.register("red_fuming_nitric_acid",
+            () -> RedFumingNitricAcid.RFNA_FLUID_TYPE);
 
     // White Fuming Nitric Acid (Shortened to WFNA)
     public static RegistryObject<FlowingFluid> WFNA_REG = VE_FLUIDS.register("white_fuming_nitric_acid",
@@ -65,6 +75,8 @@ public class VEFluids {
             WhiteFumingNitricAcid::FlowingWhiteFumingNitricAcidBlock);
     public static RegistryObject<Item> WFNA_BUCKET_REG = VE_FLUID_ITEMS.register("white_fuming_nitric_acid_bucket",
             WhiteFumingNitricAcid::WhiteFumingNitricAcidBucket);
+    public static RegistryObject<FluidType> WFNA_FLUID_TYPE_REG = VE_FLUID_TYPES.register("white_fuming_nitric_acid",
+            () -> WhiteFumingNitricAcid.WFNA_FLUID_TYPE);
 
     // Mercury
     public static RegistryObject<FlowingFluid> MERCURY_REG = VE_FLUIDS.register("mercury",
@@ -75,6 +87,8 @@ public class VEFluids {
             Mercury::FlowingMercuryBlock);
     public static RegistryObject<Item> MERCURY_BUCKET_REG = VE_FLUID_ITEMS.register("mercury_bucket",
             Mercury::MercuryBucket);
+    public static RegistryObject<FluidType> MERCURY_FLUID_TYPE_REG = VE_FLUID_TYPES.register("mercury",
+            () -> Mercury.MERCURY_FLUID_TYPE);
 
     // Sulfuric Acid
     public static RegistryObject<FlowingFluid> SULFURIC_ACID_REG = VE_FLUIDS.register("sulfuric_acid",
@@ -85,6 +99,8 @@ public class VEFluids {
             SulfuricAcid::FlowingSulfuricAcidBlock);
     public static RegistryObject<Item> SULFURIC_ACID_BUCKET_REG = VE_FLUID_ITEMS.register("sulfuric_acid_bucket",
             SulfuricAcid::SulfuricAcidBucket);
+    public static RegistryObject<FluidType> SULFURIC_ACID_FLUID_TYPE_REG = VE_FLUID_TYPES.register("sulfuric_acid",
+            () -> SulfuricAcid.SULFURIC_ACID_FLUID_TYPE);
 
     // Dinitrogen Tetroxide
     public static RegistryObject<FlowingFluid> DINITROGEN_TETROXIDE_REG = VE_FLUIDS.register("dinitrogen_tetroxide",
@@ -95,6 +111,8 @@ public class VEFluids {
             DinitrogenTetroxide::FlowingDinitrogenTetroxideBlock);
     public static RegistryObject<Item> DINITROGEN_TETROXIDE_BUCKET_REG = VE_FLUID_ITEMS.register("dinitrogen_tetroxide_bucket",
             DinitrogenTetroxide::DinitrogenTetroxideBucket);
+    public static RegistryObject<FluidType> DINITROGEN_TETROXIDE_FLUID_TYPE_REG = VE_FLUID_TYPES.register("dinitrogen_tetroxide",
+            () -> DinitrogenTetroxide.DINITROGEN_TETROXIDE_FLUID_TYPE);
 
     // Compressed Air
     public static RegistryObject<FlowingFluid> COMPRESSED_AIR_REG = VE_FLUIDS.register("compressed_air",
@@ -105,6 +123,8 @@ public class VEFluids {
             CompressedAir::FlowingCompressedAirBlock);
     public static RegistryObject<Item> COMPRESSED_AIR_BUCKET_REG = VE_FLUID_ITEMS.register("compressed_air_bucket",
             CompressedAir::CompressedAirBucket);
+    public static RegistryObject<FluidType> COMPRESSED_AIR_FLUID_TYPE_REG = VE_FLUID_TYPES.register("compressed_air",
+            () -> CompressedAir.COMPRESSED_AIR_FLUID_TYPE);
 
     // Nitrogen
     public static RegistryObject<FlowingFluid> NITROGEN_REG = VE_FLUIDS.register("nitrogen",
@@ -115,6 +135,8 @@ public class VEFluids {
             Nitrogen::FlowingNitrogenBlock);
     public static RegistryObject<Item> NITROGEN_BUCKET_REG = VE_FLUID_ITEMS.register("nitrogen_bucket",
             Nitrogen::NitrogenBucket);
+    public static RegistryObject<FluidType> NITROGEN_FLUID_TYPE_REG = VE_FLUID_TYPES.register("nitrogen",
+            () -> Nitrogen.NITROGEN_FLUID_TYPE);
 
     // Biofuel
     public static RegistryObject<FlowingFluid> BIOFUEL_REG = VE_FLUIDS.register("biofuel",
@@ -125,6 +147,8 @@ public class VEFluids {
             Biofuel::FlowingBiofuelBlock);
     public static RegistryObject<Item> BIOFUEL_BUCKET_REG = VE_FLUID_ITEMS.register("biofuel_bucket",
             Biofuel::BiofuelBucket);
+    public static RegistryObject<FluidType> BIOFUEL_FLUID_TYPE_REG = VE_FLUID_TYPES.register("biofuel",
+            () -> Biofuel.BIOFUEL_FLUID_TYPE);
 
     // Diesel
     public static RegistryObject<FlowingFluid> DIESEL_REG = VE_FLUIDS.register("diesel",
@@ -135,6 +159,8 @@ public class VEFluids {
             Diesel::FlowingDieselBlock);
     public static RegistryObject<Item> DIESEL_BUCKET_REG = VE_FLUID_ITEMS.register("diesel_bucket",
             Diesel::DieselBucket);
+    public static RegistryObject<FluidType> DIESEL_FLUID_TYPE_REG = VE_FLUID_TYPES.register("diesel",
+            () -> Diesel.DIESEL_FLUID_TYPE);
 
     // Gasoline
     public static RegistryObject<FlowingFluid> GASOLINE_REG = VE_FLUIDS.register("gasoline",
@@ -145,6 +171,8 @@ public class VEFluids {
             Gasoline::FlowingGasolineBlock);
     public static RegistryObject<Item> GASOLINE_BUCKET_REG = VE_FLUID_ITEMS.register("gasoline_bucket",
             Gasoline::GasolineBucket);
+    public static RegistryObject<FluidType> GASOLINE_FLUID_TYPE_REG = VE_FLUID_TYPES.register("gasoline",
+            () -> Gasoline.GASOLINE_FLUID_TYPE);
 
     // Nitroglycerin
     public static RegistryObject<FlowingFluid> NITROGLYCERIN_REG = VE_FLUIDS.register("nitroglycerin",
@@ -155,6 +183,8 @@ public class VEFluids {
             Nitroglycerin::FlowingNitroglycerinBlock);
     public static RegistryObject<Item> NITROGLYCERIN_BUCKET_REG = VE_FLUID_ITEMS.register("nitroglycerin_bucket",
             Nitroglycerin::NitroglycerinBucket);
+    public static RegistryObject<FluidType> NITROGLYCERIN_FLUID_TYPE_REG = VE_FLUID_TYPES.register("nitroglycerin",
+            () -> Nitroglycerin.NITROGLYCERIN_FLUID_TYPE);
 
     // Light Fuel
     public static RegistryObject<FlowingFluid> LIGHT_FUEL_REG = VE_FLUIDS.register("light_fuel",
@@ -165,6 +195,8 @@ public class VEFluids {
             LightFuel::FlowingLightFuelBlock);
     public static RegistryObject<Item> LIGHT_FUEL_BUCKET_REG = VE_FLUID_ITEMS.register("light_fuel_bucket",
             LightFuel::LightFuelBucket);
+    public static RegistryObject<FluidType> LIGHT_FUEL_FLUID_TYPE_REG = VE_FLUID_TYPES.register("light_fuel",
+            () -> LightFuel.LIGHT_FUEL_FLUID_TYPE);
 
     // Liquefied Coal
     public static RegistryObject<FlowingFluid> LIQUEFIED_COAL_REG = VE_FLUIDS.register("liquefied_coal",
@@ -175,6 +207,8 @@ public class VEFluids {
             LiquefiedCoal::FlowingLiquefiedCoalBlock);
     public static RegistryObject<Item> LIQUEFIED_COAL_BUCKET_REG = VE_FLUID_ITEMS.register("liquefied_coal_bucket",
             LiquefiedCoal::LiquefiedCoalBucket);
+    public static RegistryObject<FluidType> LIQUEFIED_COAL_TYPE_REG = VE_FLUID_TYPES.register("liquefied_coal",
+            () -> LiquefiedCoal.LIQUEFIED_COAL_FLUID_TYPE);
 
     // Liquefied Coke
     public static RegistryObject<FlowingFluid> LIQUEFIED_COKE_REG = VE_FLUIDS.register("liquefied_coke",
@@ -185,6 +219,8 @@ public class VEFluids {
             LiquefiedCoke::FlowingLiquefiedCokeBlock);
     public static RegistryObject<Item> LIQUEFIED_COKE_BUCKET_REG = VE_FLUID_ITEMS.register("liquefied_coke_bucket",
             LiquefiedCoke::LiquefiedCokeBucket);
+    public static RegistryObject<FluidType> LIQUEFIED_COKE_FLUID_TYPE_REG = VE_FLUID_TYPES.register("liquefied_coke",
+            () -> LiquefiedCoke.LIQUEFIED_COKE_FLUID_TYPE);
 
     // Tree Sap
     public static RegistryObject<FlowingFluid> TREE_SAP_REG = VE_FLUIDS.register("tree_sap",
@@ -195,6 +231,8 @@ public class VEFluids {
             TreeSap::FlowingTreeSapBlock);
     public static RegistryObject<Item> TREE_SAP_BUCKET_REG = VE_FLUID_ITEMS.register("tree_sap_bucket",
             TreeSap::TreeSapBucket);
+    public static RegistryObject<FluidType> TREE_SAP_FLUID_TYPE_REG = VE_FLUID_TYPES.register("tree_sap",
+            () -> TreeSap.TREE_SAP_FLUID_TYPE);
 
     // Treethanol
     public static RegistryObject<FlowingFluid> TREETHANOL_REG = VE_FLUIDS.register("treethanol",
@@ -205,4 +243,6 @@ public class VEFluids {
             Treethanol::FlowingTreethanolBlock);
     public static RegistryObject<Item> TREETHANOL_BUCKET_REG = VE_FLUID_ITEMS.register("treethanol_bucket",
             Treethanol::TreethanolBucket);
+    public static RegistryObject<FluidType> TREETHANOL_FLUID_TYPE_REG = VE_FLUID_TYPES.register("treethanol",
+            () -> Treethanol.TREETHANOL_FLUID_TYPE);
 }

@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -41,7 +42,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.AQUEOULIZER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -50,18 +51,6 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid() {
-        return VoluminousEnergyPlugin.AQUEOULIZING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends AqueoulizerRecipe> getRecipeClass() {
-        return AqueoulizerRecipe.class;
     }
 
     @Override
@@ -106,14 +95,14 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
             testStack.setCount(recipe.getIngredientCount());
             inputList.add(testStack);
         }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputList);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputList);
 
-        fluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
         // OUTPUT
         List<FluidStack> outputStacks = new ArrayList<>();
         outputStacks.add(recipe.getOutputFluid()); // Normal output
-        fluidOutputAcceptor.addIngredients(VanillaTypes.FLUID, outputStacks);
+        fluidOutputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, outputStacks);
     }
 
     @Override
@@ -136,4 +125,3 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         fluidOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_TANK.getString());
     }
 }
-*/

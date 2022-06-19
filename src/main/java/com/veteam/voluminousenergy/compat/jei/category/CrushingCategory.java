@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
@@ -21,7 +21,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +39,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     public CrushingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.CRUSHER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CRUSHER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }
@@ -48,18 +47,6 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.CRUSHING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends CrusherRecipe> getRecipeClass() {
-        return CrusherRecipe.class;
     }
 
     @Override
@@ -105,16 +92,16 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             itemStack.setCount(recipe.ingredientCount);
             inputStacks.add(itemStack);
         }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         // Output
         ItemStack resultStack = recipe.result.copy();
         resultStack.setCount(recipe.getOutputAmount());
-        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
+        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
 
         ItemStack rngStack = recipe.rngResult.copy();
         rngStack.setCount(recipe.getOutputRngAmount());
-        itemRNGOutputAcceptor.addIngredient(VanillaTypes.ITEM, rngStack);
+        itemRNGOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rngStack);
     }
 
     @Override
@@ -134,4 +121,3 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
 }
- */

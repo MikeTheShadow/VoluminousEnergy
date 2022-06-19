@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -23,7 +24,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -44,25 +44,13 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.COMBUSTING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends CombustionGeneratorFuelRecipe> getRecipeClass() {
-        return CombustionGeneratorFuelRecipe.class;
     }
 
     @Override
@@ -104,13 +92,13 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
         slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(VanillaTypes.FLUID);
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
 
         if (oxiStack.isPresent()){
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipeWithoutLevel(oxiStack.get());
 
             int fePerTick = recipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
-            TextComponent fePerTickComponent = new TextComponent(fePerTick+"");
+            Component fePerTickComponent = Component.nullToEmpty(fePerTick+"");
             int x = 50;
             if (fePerTick < 100){
                 x = 54;
@@ -154,7 +142,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             fuelStacks.add(new FluidStack(fluid, 1000));
         }
 
-        fuelAcceptor.addIngredients(VanillaTypes.FLUID, fuelStacks);
+        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, fuelStacks);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
         for (CombustionGeneratorOxidizerRecipe oxidizerRecipe : CombustionGeneratorOxidizerRecipe.oxidizerRecipes) {
@@ -163,7 +151,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             }
         }
 
-        oxidizerAcceptor.addIngredients(VanillaTypes.FLUID, oxiStacks);
+        oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);
 
 
     }
@@ -177,4 +165,3 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         this.ingredientHandler(recipe, fuel, oxidizer);
     }
 }
- */

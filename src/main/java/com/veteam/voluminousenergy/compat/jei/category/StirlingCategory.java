@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -37,25 +37,13 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 40, 44).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.STIRLING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends StirlingGeneratorRecipe> getRecipeClass() {
-        return StirlingGeneratorRecipe.class;
     }
 
     @Override
@@ -82,7 +70,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, Arrays.stream(recipe.ingredient.get().getItems()).toList());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.ingredient.get().getItems()).toList());
     }
 
     @Override
@@ -94,4 +82,3 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
         this.ingredientHandler(recipe, itemInput);
     }
 }
- */

@@ -4,13 +4,17 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Treethanol {
@@ -44,7 +48,28 @@ public class Treethanol {
         return TREETHANOL_BUCKET;
     }
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> TREETHANOL, () -> FLOWING_TREETHANOL, FluidAttributes.builder(TREETHANOL_STILL_TEXTURE, TREETHANOL_FLOWING_TEXTURE).gaseous())
-                    .bucket(() -> TREETHANOL_BUCKET).block( () -> TREETHANOL_BLOCK);
+    public static final FluidType TREETHANOL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(true)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(false)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            TREETHANOL_STILL_TEXTURE,
+            TREETHANOL_FLOWING_TEXTURE
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> TREETHANOL_FLUID_TYPE, () -> TREETHANOL, () -> FLOWING_TREETHANOL)
+            .block(() -> TREETHANOL_BLOCK).bucket(() -> TREETHANOL_BUCKET);
 }

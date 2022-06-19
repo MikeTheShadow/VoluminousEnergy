@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -43,7 +44,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 120, 60).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build(); // 176, 0, 23, 17
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true); // 199,0,23,17
@@ -52,18 +53,6 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends IndustrialBlastingRecipe> getRecipeClass() {
-        return IndustrialBlastingRecipe.class;
     }
 
     @Override
@@ -106,21 +95,21 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         for (Item inputItem : recipe.getFirstInputAsList()) {
             firstInputStacks.add(new ItemStack(inputItem, recipe.getIngredientCount()));
         }
-        firstInputAcceptor.addIngredients(VanillaTypes.ITEM, firstInputStacks);
+        firstInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, firstInputStacks);
 
         AtomicReference<ArrayList<ItemStack>> atomicSecondInputStack = new AtomicReference(new ArrayList<>());
         recipe.onlySecondInput.get().parallelStream().forEach(item -> {
             ItemStack secondInputStack = new ItemStack(item, recipe.getSecondInputAmount());
             atomicSecondInputStack.get().add(secondInputStack);
         });
-        secondInputAcceptor.addIngredients(VanillaTypes.ITEM, atomicSecondInputStack.get());
+        secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicSecondInputStack.get());
 
-        heatFluidAcceptor.addIngredients(VanillaTypes.FLUID, RecipeUtil.getFluidsHotEnoughForIndustrialBlastingRecipe(recipe));
+        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, RecipeUtil.getFluidsHotEnoughForIndustrialBlastingRecipe(recipe));
 
         // Output
         ItemStack resultStack = recipe.result.copy();
         resultStack.setCount(recipe.getOutputAmount());
-        outputItemAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
+        outputItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
     }
 
     @Override
@@ -145,4 +134,3 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
 }
- */

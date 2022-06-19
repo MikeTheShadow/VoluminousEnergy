@@ -75,6 +75,7 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUIDS.register(modEventBus);
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
+        VEFluids.VE_FLUID_TYPES.register(modEventBus);
 
         // Register Blocks, Tiles, and Containers
         VEBlocks.VE_BLOCKS_REGISTRY.register(modEventBus);
