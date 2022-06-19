@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -47,24 +49,26 @@ public class DinitrogenTetroxide {
     }
 
 
-    public static final FluidType DINITROGEN_TETROXIDE_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+    public static final FluidType DINITROGEN_TETROXIDE_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(BlockPathTypes.WATER)
             .canConvertToSource(false)
-            .canDrown(false)
+            .canDrown(true)
             .canExtinguish(false)
             .canHydrate(false)
-            .canPushEntity(true)
+            .canPushEntity(false)
             .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
             .density(1)
             .temperature(300)
             .viscosity(1)
-            .motionScale(0.75)
+            .motionScale(0)
             .fallDistanceModifier(0)
             .rarity(Rarity.COMMON)
             .supportsBoating(false)
-            //.sound(,)
+            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY),
+            DINITROGEN_TETROXIDE_STILL_TEXTURE,
+            DINITROGEN_TETROXIDE_FLOWING_TEXTURE
     );
 
     public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> DINITROGEN_TETROXIDE_FLUID_TYPE, () -> DINITROGEN_TETROXIDE, () -> FLOWING_DINITROGEN_TETROXIDE)

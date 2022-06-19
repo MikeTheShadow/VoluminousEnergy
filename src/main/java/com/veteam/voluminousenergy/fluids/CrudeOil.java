@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFlui
 import com.veteam.voluminousenergy.fluids.flowingFluidSource.CrudeOilFlowingFluidSource;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -51,13 +49,14 @@ public class CrudeOil {
         return CRUDE_OIL_BUCKET;
     }
 
-    public static final FluidType CRUDE_OIL_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+    public static final FluidType CRUDE_OIL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
             .adjacentPathType(BlockPathTypes.WATER)
             .canConvertToSource(false)
-            .canDrown(false)
+            .canDrown(true)
             .canExtinguish(false)
             .canHydrate(false)
             .canPushEntity(false)
+            .canConvertToSource(false)
             .canSwim(false)
             .lightLevel(0)
             .density(1)
@@ -69,7 +68,9 @@ public class CrudeOil {
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL_LAVA)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
-            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.GENERIC_EXPLODE)
+            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.GENERIC_EXPLODE),
+            CRUDE_OIL_STILL_TEXTURE,
+            CRUDE_OIL_FLOWING_TEXTURE
     );
 
     public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> CRUDE_OIL_FLUID_TYPE, () -> CRUDE_OIL, () -> FLOWING_CRUDE_OIL)

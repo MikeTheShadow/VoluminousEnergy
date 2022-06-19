@@ -6,10 +6,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.logging.log4j.LogManager;
@@ -57,8 +58,8 @@ public class VERender {
         int renderAmount = (int) Math.max(Math.min(height, amount * height / tankCapacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        int color = stack.getFluid().getFluidType().getLightLevel(); // stack.getFluid().getAttributes().getColor(); TODO: Fix rendering of fluids in tanks;
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        int color = RenderProperties.get(stack.getFluid()).getColorTint(stack);
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;
