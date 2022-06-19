@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -38,7 +38,7 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.COMPRESSOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -47,18 +47,6 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.COMPRESSING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends CompressorRecipe> getRecipeClass() {
-        return CompressorRecipe.class;
     }
 
     @Override
@@ -95,13 +83,13 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
             inputStacks.add(itemStack);
         }
 
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         // Output
         ItemStack outputStack = recipe.result.copy();
         outputStack.setCount(recipe.getOutputAmount());
 
-        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM, outputStack);
+        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, outputStack);
     }
 
     @Override
@@ -118,4 +106,3 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
         this.ingredientHandler(recipe, itemInput, itemOutput);
     }
 }
- */

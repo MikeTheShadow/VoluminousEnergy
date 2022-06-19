@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.containerHandler;
-/*
+
 import com.google.common.collect.Lists;
 import com.veteam.voluminousenergy.blocks.screens.GasFiredFurnaceScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -62,4 +62,3 @@ public class GasFiredFurnaceContainerHandler implements IGuiContainerHandler<Gas
         return areas;
     }
 }
-*/

@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -37,7 +38,7 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -46,18 +47,6 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.CENTRIFUGAL_AGITATION_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends CentrifugalAgitatorRecipe> getRecipeClass() {
-        return CentrifugalAgitatorRecipe.class;
     }
 
     @Override
@@ -94,10 +83,10 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
                                   IIngredientAcceptor firstFluidOutputAcceptor,
                                   IIngredientAcceptor secondFluidOutputAcceptor) {
 
-        fluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
-        firstFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid());
-        secondFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getSecondFluid());
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid());
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid());
     }
 
     @Override
@@ -116,4 +105,3 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         this.ingredientHandler(recipe, fluidInput, firstFluidOutput, secondFluidOutput);
     }
 }
-*/

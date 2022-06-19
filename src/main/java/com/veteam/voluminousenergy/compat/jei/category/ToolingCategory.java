@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
-/*
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -39,7 +39,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         ResourceLocation ToolingGUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 50).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEMultitools.IRON_DRILL_MULTITOOL));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEMultitools.IRON_DRILL_MULTITOOL.get()));
         arrow = guiHelper.drawableBuilder(ToolingGUI, 188, 0, 22, 47).build();
         slotDrawable = guiHelper.getSlotDrawable();
     }
@@ -47,18 +47,6 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid(){
-        return VoluminousEnergyPlugin.TOOLING_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends ToolingRecipe> getRecipeClass() {
-        return ToolingRecipe.class;
     }
 
     @Override
@@ -90,17 +78,17 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
                                   IIngredientAcceptor baseItemAcceptor) {
 
         // Bits
-        bitItemAcceptor.addIngredients(VanillaTypes.ITEM, Arrays.asList(recipe.ingredient.get().getItems()));
+        bitItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.asList(recipe.ingredient.get().getItems()));
 
         // Bases
         ArrayList<ItemStack> baseStacks = new ArrayList<>();
         for (Item base : recipe.getBases()){
             baseStacks.add(new ItemStack(base));
         }
-        baseItemAcceptor.addIngredients(VanillaTypes.ITEM, baseStacks);
+        baseItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, baseStacks);
 
         // Completed Multitool
-        completeMultitoolItemAcceptor.addIngredient(VanillaTypes.ITEM, recipe.result.copy());
+        completeMultitoolItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.result.copy());
     }
 
     @Override
@@ -117,4 +105,3 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
         this.ingredientHandler(recipe, completeMultitoolItem, bitItem, baseItem);
     }
 }
- */
