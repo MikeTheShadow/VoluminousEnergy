@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SolarPanelTile extends VESolarTile implements IVEPoweredTileEntity {
+public class SolarPanelTile extends VESolarTile implements IVEPowerGenerator {
 
     private int generation;
 

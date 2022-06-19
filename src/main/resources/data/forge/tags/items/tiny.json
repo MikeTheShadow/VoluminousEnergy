@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:tiny/charcoal",
+    "#forge:tiny/coal",
+    "#forge:tiny/coal_coke",
+    "#forge:tiny/petcoke",
+    "#forge:tiny/rosin"
+  ]
+}

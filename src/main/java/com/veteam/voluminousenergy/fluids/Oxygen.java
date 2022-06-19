@@ -25,12 +25,12 @@ public class Oxygen {
     public static Item OXYGEN_BUCKET;
 
     public static FlowingFluid OxygenFluid(){
-        OXYGEN = new ForgeFlowingFluid.Source(Oxygen.properties);
+        OXYGEN = new VEFlowingGasFluid.Source(Oxygen.properties, 4);
         return OXYGEN;
     }
 
     public static FlowingFluid FlowingOxygenFluid(){
-        FLOWING_OXYGEN = new ForgeFlowingFluid.Flowing(Oxygen.properties);
+        FLOWING_OXYGEN = new VEFlowingGasFluid.Flowing(Oxygen.properties, 4);
         return FLOWING_OXYGEN;
     }
 

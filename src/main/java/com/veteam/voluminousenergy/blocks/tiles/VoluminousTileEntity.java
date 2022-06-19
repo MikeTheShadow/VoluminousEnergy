@@ -296,6 +296,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
     public @Nullable LazyOptional<VEEnergyStorage> createEnergy() {
         if(this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
             VEEnergyStorage storage = new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
+            if(this instanceof IVEPowerGenerator) {
+                storage.setMaxReceive(0);
+            }
             return LazyOptional.of(() -> storage);
         }
         return null;

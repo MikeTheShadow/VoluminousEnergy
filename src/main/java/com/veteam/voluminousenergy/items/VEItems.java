@@ -18,6 +18,7 @@ import com.veteam.voluminousenergy.items.solid_fuels.AnimalFat;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
+import com.veteam.voluminousenergy.items.solid_fuels.tiny.*;
 import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
@@ -134,6 +135,14 @@ public class VEItems {
     public static FluidScanner FLUID_SCANNER = new FluidScanner();
     public static CreativeFluidScanner CREATIVE_FLUID_SCANNER = new CreativeFluidScanner();
     public static RFIDChip RFID_CHIP = new RFIDChip();
+
+    //Tiny fuels
+    public static TinyCharcoal TINY_CHARCOAL = new TinyCharcoal();
+    public static TinyCoal TINY_COAL = new TinyCoal();
+    public static TinyCoalCoke TINY_COAL_COKE = new TinyCoalCoke();
+    public static TinyPetcoke TINY_PETCOKE = new TinyPetcoke();
+    public static TinyRosin TINY_ROSIN = new TinyRosin();
+
     // Tools
     //public static Multitool MULTITOOL = new Multitool(new Item.Properties().tab(VESetup.itemGroup).stacksTo(1));
 }
