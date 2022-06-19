@@ -28,7 +28,7 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
 
     // "High Level" Features
     public static RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(BlockStateConfiguration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
-    public static RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(BlockStateConfiguration.CODEC)); // Geyser using BlockStateConfiguration
+    public static RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(GeyserFeature.Configuration.CODEC)); // Geyser using BlockStateConfiguration
     public static RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
     public static RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
     public static RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(BlockStateConfiguration.CODEC, true));
@@ -80,8 +80,8 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
     public static Holder<PlacedFeature> createOilGeyser(){
         ConfiguredFeature<?,?> configuredFeature = new ConfiguredFeature<>(
                 VE_GEYSER_FEATURE.get(),
-                new BlockStateConfiguration(
-                        VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock()
+                new GeyserFeature.Configuration(
+                        VEFluids.CRUDE_OIL_REG.get().defaultFluidState()
                 ));
         return registerPlacedFeature("oil_geyser", configuredFeature, noPlacement);
     }

@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class LiquefiedCoal {
@@ -45,8 +47,27 @@ public class LiquefiedCoal {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> LIQUEFIED_COAL, () -> FLOWING_LIQUEFIED_COAL, FluidAttributes.builder(LIQUEFIED_COAL_STILL_TEXTURE, LIQUEFIED_COAL_FLOWING_TEXTURE).viscosity(5))
-                    .bucket(() -> LIQUEFIED_COAL_BUCKET).block(() -> LIQUEFIED_COAL_BLOCK);
+    public static final FluidType LIQUEFIED_COAL_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> LIQUEFIED_COAL_FLUID_TYPE, () -> LIQUEFIED_COAL, () -> FLOWING_LIQUEFIED_COAL)
+            .block(() -> LIQUEFIED_COAL_BLOCK).bucket(() -> LIQUEFIED_COAL_BUCKET);
 }
 

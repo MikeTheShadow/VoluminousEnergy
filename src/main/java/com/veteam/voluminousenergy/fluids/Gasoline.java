@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Gasoline {
@@ -45,8 +47,27 @@ public class Gasoline {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> GASOLINE, () -> FLOWING_GASOLINE, FluidAttributes.builder(GASOLINE_STILL_TEXTURE, GASOLINE_FLOWING_TEXTURE).viscosity(5))
-                    .bucket(() -> GASOLINE_BUCKET).block(() -> GASOLINE_BLOCK);
+    public static final FluidType GASOLINE_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> GASOLINE_FLUID_TYPE, () -> GASOLINE, () -> FLOWING_GASOLINE)
+            .block(() -> GASOLINE_BLOCK).bucket(() -> GASOLINE_BUCKET);
 }
 

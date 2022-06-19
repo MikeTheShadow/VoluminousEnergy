@@ -1,31 +1,26 @@
 package com.veteam.voluminousenergy.world.feature;
 
 import com.mojang.serialization.Codec;
-import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.material.FluidState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
-import static java.lang.StrictMath.abs;
+public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
 
-public class GeyserFeature extends Feature<BlockStateConfiguration> {
-    public static GeyserFeature INSTANCE = new GeyserFeature(BlockStateConfiguration.CODEC);
-
-    private final BlockState crudeOil = VEFluids.CRUDE_OIL_REG.get().getFlowing().defaultFluidState().createLegacyBlock();
-    public GeyserFeature(Codec<BlockStateConfiguration> p_i231962_1_) {
-        super(p_i231962_1_);
+    public GeyserFeature(Codec<GeyserFeature.Configuration> geyserConfiguration) {
+        super(geyserConfiguration);
     }
 
     public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(
@@ -37,10 +32,11 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
     ));
 
     @Override
-    public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
+    public boolean place(FeaturePlaceContext<GeyserFeature.Configuration> context) {
         BlockPos pos = context.origin();
         WorldGenLevel worldIn = context.level();
         RandomSource rand = context.random();
+        FluidState fluidState = context.config().fluidState;
 
         ///int base = worldIn.getChunk(pos).getTopFilledSegment();
         int base = 40;
@@ -85,14 +81,16 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
                         BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
                         Block block = blockstate.getBlock();
                         if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block)) {
-                            this.setBlock(worldIn, pos.offset(i1, k, j1), crudeOil);
+                            this.setBlock(worldIn, pos.offset(i1, k, j1), fluidState.createLegacyBlock());
+                            worldIn.scheduleTick(pos.offset(i1, k, j1), fluidState.getType(), 0);
                         }
 
                         if (k != 0 && l > 1) {
                             blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
                             block = blockstate.getBlock();
                             if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block) ) {
-                                this.setBlock(worldIn, pos.offset(i1, -k, j1), crudeOil);
+                                this.setBlock(worldIn, pos.offset(i1, -k, j1), fluidState.createLegacyBlock());
+                                worldIn.scheduleTick(pos.offset(i1, -k, j1), fluidState.getType(), 0);
                             }
                         }
                     }
@@ -123,14 +121,16 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
                         BlockState blockstate = worldIn.getBlockState(pos.offset(x, y, z));
                         Block block = blockstate.getBlock();
                         if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block)) {
-                            this.setBlock(worldIn, pos.offset(x, y, z), crudeOil);
+                            this.setBlock(worldIn, pos.offset(x, y, z), fluidState.createLegacyBlock());
+                            worldIn.scheduleTick(pos.offset(x, y, z), fluidState.getType(), 0);
                         }
 
                         if (y != 0 && l > 1) {
                             blockstate = worldIn.getBlockState(pos.offset(x, -y, z));
                             block = blockstate.getBlock();
                             if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block) ) {
-                                this.setBlock(worldIn, pos.offset(x, -y, z), crudeOil);
+                                this.setBlock(worldIn, pos.offset(x, -y, z), fluidState.createLegacyBlock());
+                                worldIn.scheduleTick(pos.offset(x, -y, z), fluidState.getType(), 0);
                             }
                         }
                     }
@@ -157,39 +157,46 @@ public class GeyserFeature extends Feature<BlockStateConfiguration> {
         return true;
     }
 
-    void generateUnderground(LevelAccessor worldIn, BlockPos pos, Random rand){
+    // TODO: I'm pretty sure unused
+//    void generateUnderground(LevelAccessor worldIn, BlockPos pos, Random rand){
+//
+//        int height = -50; // Height
+//        int thickness = -50; // Thickness
+//
+//        // Underground Generation
+//        for(int k = 0; k > abs(height); --k) {
+//            float f = (1.0F - (float)k / (float)height) * (float)thickness;
+//            int l = Mth.ceil(f);
+//
+//            for(int i1 = -l; i1 <= l; ++i1) {
+//                float f1 = (float)Mth.abs(i1) - 0.25F;
+//
+//                for(int j1 = -l; j1 <= l; ++j1) {
+//                    float f2 = (float)Mth.abs(j1) - 0.25F;
+//                    if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(rand.nextFloat() > 0.75F))) {
+//                        BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
+//                        Block block = blockstate.getBlock();
+//                        if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block)) {
+//                            this.setBlock(worldIn, pos.offset(i1, k, j1), crudeOil);
+//                        }
+//
+//                        if (k != 0 && l > 1) {
+//                            blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
+//                            block = blockstate.getBlock();
+//                            if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block) ) {
+//                                this.setBlock(worldIn, pos.offset(i1, -k, j1), crudeOil);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-        int height = -50; // Height
-        int thickness = -50; // Thickness
-
-        // Underground Generation
-        for(int k = 0; k > abs(height); --k) {
-            float f = (1.0F - (float)k / (float)height) * (float)thickness;
-            int l = Mth.ceil(f);
-
-            for(int i1 = -l; i1 <= l; ++i1) {
-                float f1 = (float)Mth.abs(i1) - 0.25F;
-
-                for(int j1 = -l; j1 <= l; ++j1) {
-                    float f2 = (float)Mth.abs(j1) - 0.25F;
-                    if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(rand.nextFloat() > 0.75F))) {
-                        BlockState blockstate = worldIn.getBlockState(pos.offset(i1, k, j1));
-                        Block block = blockstate.getBlock();
-                        if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block)) {
-                            this.setBlock(worldIn, pos.offset(i1, k, j1), crudeOil);
-                        }
-
-                        if (k != 0 && l > 1) {
-                            blockstate = worldIn.getBlockState(pos.offset(i1, -k, j1));
-                            block = blockstate.getBlock();
-                            if (blockstate.isAir() || isDirt(blockstate) || isStone(blockstate) || allowList.contains(block) ) {
-                                this.setBlock(worldIn, pos.offset(i1, -k, j1), crudeOil);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    public static record Configuration(FluidState fluidState) implements FeatureConfiguration {
+        public static final Codec<GeyserFeature.Configuration> CODEC =
+                FluidState.CODEC.fieldOf("fluidstate")
+                        .xmap(GeyserFeature.Configuration::new, (fluidState) -> fluidState.fluidState).codec();
     }
 
 }

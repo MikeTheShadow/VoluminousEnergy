@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class RedFumingNitricAcid {
@@ -45,8 +47,27 @@ public class RedFumingNitricAcid {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> RED_FUMING_NITRIC_ACID, () -> FLOWING_RED_FUMING_NITRIC_ACID, FluidAttributes.builder(RFNA_STILL_TEXTURE, RFNA_FLOWING_TEXTURE))
-                    .bucket(() -> RED_FUMING_NITRIC_ACID_BUCKET).block(() -> RED_FUMING_NITRIC_ACID_BLOCK);
+    public static final FluidType RFNA_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> RFNA_FLUID_TYPE, () -> RED_FUMING_NITRIC_ACID, () -> FLOWING_RED_FUMING_NITRIC_ACID)
+            .block(() -> RED_FUMING_NITRIC_ACID_BLOCK).bucket(() -> RED_FUMING_NITRIC_ACID_BUCKET);
 
 }

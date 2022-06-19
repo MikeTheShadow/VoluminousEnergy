@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class TreeSap {
@@ -45,8 +47,27 @@ public class TreeSap {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> TREE_SAP, () -> FLOWING_TREE_SAP, FluidAttributes.builder(TREE_SAP_STILL_TEXTURE, TREE_SAP_FLOWING_TEXTURE))
-                    .bucket(() -> TREE_SAP_BUCKET).block(() -> TREE_SAP_BLOCK);
+    public static final FluidType TREE_SAP_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> TREE_SAP_FLUID_TYPE, () -> TREE_SAP, () -> FLOWING_TREE_SAP)
+            .block(() -> TREE_SAP_BLOCK).bucket(() -> TREE_SAP_BUCKET);
 
 }

@@ -58,7 +58,7 @@ public class VERender {
         int posY = (int) (y + height - renderAmount);
 
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        int color = stack.getFluid().getAttributes().getColor();
+        int color = stack.getFluid().getFluidType().getLightLevel(); // stack.getFluid().getAttributes().getColor(); TODO: Fix rendering of fluids in tanks;
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;

@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Naphtha {
@@ -46,7 +48,26 @@ public class Naphtha {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> NAPHTHA, () -> FLOWING_NAPHTHA, FluidAttributes.builder(NAPHTHA_STILL_TEXTURE, NAPHTHA_FLOWING_TEXTURE))
-                    .bucket(() -> NAPHTHA_BUCKET).block(() -> NAPHTHA_BLOCK);
+    public static final FluidType NAPHTHA_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> NAPHTHA_FLUID_TYPE, () -> NAPHTHA, () -> FLOWING_NAPHTHA)
+            .block(() -> NAPHTHA_BLOCK).bucket(() -> NAPHTHA_BUCKET);
 }

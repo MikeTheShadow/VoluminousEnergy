@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class SulfuricAcid {
@@ -45,8 +47,27 @@ public class SulfuricAcid {
     }
 
 
-    public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> SULFURIC_ACID, () -> FLOWING_SULFURIC_ACID, FluidAttributes.builder(SULFURIC_ACID_STILL_TEXTURE, SULFURIC_ACID_FLOWING_TEXTURE))
-                    .bucket(() -> SULFURIC_ACID_BUCKET).block(() -> SULFURIC_ACID_BLOCK);
+    public static final FluidType SULFURIC_ACID_FLUID_TYPE = new FluidType(FluidType.Properties.create()
+            .adjacentPathType(BlockPathTypes.WATER)
+            .canConvertToSource(false)
+            .canDrown(false)
+            .canExtinguish(false)
+            .canHydrate(false)
+            .canPushEntity(true)
+            .canConvertToSource(false)
+            .canSwim(false)
+            .lightLevel(0)
+            .density(1)
+            .temperature(300)
+            .viscosity(1)
+            .motionScale(0.75)
+            .fallDistanceModifier(0)
+            .rarity(Rarity.COMMON)
+            .supportsBoating(false)
+            //.sound(,)
+    );
+
+    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> SULFURIC_ACID_FLUID_TYPE, () -> SULFURIC_ACID, () -> FLOWING_SULFURIC_ACID)
+            .block(() -> SULFURIC_ACID_BLOCK).bucket(() -> SULFURIC_ACID_BUCKET);
 
 }
