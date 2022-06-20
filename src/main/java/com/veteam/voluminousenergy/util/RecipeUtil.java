@@ -15,7 +15,10 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,7 +49,7 @@ public class RecipeUtil {
                 if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
                     for (FluidStack recipeFluid : aqueoulizerRecipe.fluidInputList.get()){
                         for(Item ingredient : aqueoulizerRecipe.ingredientList.get()){
-                            String hash = ingredient.getRegistryName() + recipeFluid.getTranslationKey();
+                            String hash =  RegistryLookups.lookupItem(ingredient) + recipeFluid.getTranslationKey();
                             aqueoulizerRecipeHashMap.put(hash.hashCode(),aqueoulizerRecipe);
                         }
                     }
@@ -54,7 +57,7 @@ public class RecipeUtil {
             }
         }
 
-        String hash = inputItem.getItem().getRegistryName() + inputFluid.getTranslationKey();
+        String hash = RegistryLookups.lookupItem(inputItem.getItem()) + inputFluid.getTranslationKey();
         return aqueoulizerRecipeHashMap.get(hash.hashCode());
     }
 
@@ -75,17 +78,17 @@ public class RecipeUtil {
         for(Recipe<?> recipe : level.getRecipeManager().getRecipes()){
             if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
                 for(Item item : aqueoulizerRecipe.ingredientList.get()) {
-                    if(item.getRegistryName() == null) continue;
-                    int code = item.getRegistryName().hashCode();
+                    if(RegistryLookups.lookupItem(item) == null) continue;
+                    int code = RegistryLookups.lookupItem(item).hashCode();
                     if(!aqueoulizerItemMap.containsKey(code)) {
-                        aqueoulizerItemMap.put(item.getRegistryName().hashCode(),new ArrayList<>());
+                        aqueoulizerItemMap.put(code,new ArrayList<>());
                     }
                     aqueoulizerItemMap.get(code).add(aqueoulizerRecipe);
                 }
             }
         }
-        if(inputItem.getRegistryName() == null) return new ArrayList<>();
-        return aqueoulizerItemMap.get(inputItem.getRegistryName().hashCode());
+        if(RegistryLookups.lookupItem(inputItem) == null) return new ArrayList<>();
+        return aqueoulizerItemMap.get(RegistryLookups.lookupItem(inputItem).hashCode());
     }
 
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, Fluid fluid){
@@ -352,7 +355,7 @@ public class RecipeUtil {
                 if (recipe instanceof IndustrialBlastingRecipe industrialBlastingRecipe) {
                     for(Item firstIn : industrialBlastingRecipe.getFirstInputAsList()) {
                         for(Item secondIn : industrialBlastingRecipe.onlySecondInput.get()) {
-                            String hash = firstIn.getRegistryName() + "" + secondIn.getRegistryName();
+                            String hash = RegistryLookups.lookupItem(firstIn) + "" + RegistryLookups.lookupItem(secondIn);
                             industrialBlastingRecipeMap.put(hash.hashCode(),industrialBlastingRecipe);
                         }
                     }
@@ -360,7 +363,7 @@ public class RecipeUtil {
             }
         }
 
-        String hash = firstInput.getItem().getRegistryName() + "" + secondInput.getItem().getRegistryName();
+        String hash = RegistryLookups.lookupItem(firstInput.getItem()) + "" + RegistryLookups.lookupItem(secondInput.getItem());
         return industrialBlastingRecipeMap.get(hash.hashCode());
     }
 
@@ -587,13 +590,13 @@ public class RecipeUtil {
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof StirlingGeneratorRecipe stirlingGeneratorRecipe){
                 for (ItemStack itemStack : stirlingGeneratorRecipe.getIngredient().getItems()) {
-                    if(itemStack.getItem().getRegistryName() == null) continue;
-                    stirlingGeneratorRecipeMap.put(itemStack.getItem().getRegistryName().hashCode(),stirlingGeneratorRecipe);
+                    if(RegistryLookups.lookupItem(itemStack.getItem()) == null) continue;
+                    stirlingGeneratorRecipeMap.put(RegistryLookups.lookupItem(itemStack.getItem()).hashCode(),stirlingGeneratorRecipe);
                 }
             }
         });
-        if(solidFuelStack.getItem().getRegistryName() == null) return null;
-        return stirlingGeneratorRecipeMap.get(solidFuelStack.getItem().getRegistryName().hashCode());
+        if(RegistryLookups.lookupItem(solidFuelStack.getItem()) == null) return null;
+        return stirlingGeneratorRecipeMap.get(RegistryLookups.lookupItem(solidFuelStack.getItem()).hashCode());
     }
 
     public static Lazy<ArrayList<Item>> getLazyItemsFromIngredient(VERecipe recipe){
