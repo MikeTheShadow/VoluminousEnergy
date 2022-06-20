@@ -35,7 +35,6 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
-    private Lazy<Integer> inputArraySize;
 
     @Deprecated
     private FluidStack inputFluid;
