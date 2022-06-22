@@ -15,15 +15,12 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {
-
     public static boolean isAqueoulizerInputFluidEqual(Level world, Fluid fluid){
         for (Recipe<?> iRecipe : world.getRecipeManager().getRecipes()) {
             if(iRecipe instanceof AqueoulizerRecipe){
@@ -40,19 +37,25 @@ public class RecipeUtil {
         return false;
     }
 
-    public static AqueoulizerRecipe getAqueoulizerRecipe(Level world, FluidStack inputFluid, ItemStack inputItem){
-        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if (recipe instanceof AqueoulizerRecipe){
-                for (FluidStack recipeFluid : ((AqueoulizerRecipe) recipe).fluidInputList.get()){
-                    if(recipeFluid.isFluidEqual(inputFluid)) {
-                        for(Item ingredient : ((AqueoulizerRecipe) recipe).ingredientList.get()){
-                            if(ingredient.equals(inputItem.getItem())) return (AqueoulizerRecipe) recipe;
+
+    private static final HashMap<Integer,AqueoulizerRecipe> aqueoulizerRecipeHashMap = new HashMap<>();
+    public static AqueoulizerRecipe getAqueoulizerRecipe(Level world, FluidStack inputFluid, ItemStack inputItem) {
+
+        if(aqueoulizerRecipeHashMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
+                    for (FluidStack recipeFluid : aqueoulizerRecipe.fluidInputList.get()){
+                        for(Item ingredient : aqueoulizerRecipe.ingredientList.get()){
+                            String hash = ingredient.getRegistryName() + recipeFluid.getTranslationKey();
+                            aqueoulizerRecipeHashMap.put(hash.hashCode(),aqueoulizerRecipe);
                         }
                     }
                 }
             }
         }
-        return null;
+
+        String hash = inputItem.getItem().getRegistryName() + inputFluid.getTranslationKey();
+        return aqueoulizerRecipeHashMap.get(hash.hashCode());
     }
 
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromItemInput(Level level, ItemStack inputStack){
@@ -67,17 +70,22 @@ public class RecipeUtil {
         return isAqueoulizerOutput(level, fluidStack.getRawFluid());
     }
 
+    private static final HashMap<Integer,ArrayList<AqueoulizerRecipe>> aqueoulizerItemMap = new HashMap<>();
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromItemInput(Level level, Item inputItem){
-        ArrayList<AqueoulizerRecipe> validRecipes = new ArrayList<>();
-        AtomicReference<ArrayList<AqueoulizerRecipe>> atomicValidRecipes = new AtomicReference<>(validRecipes);
-        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
+        for(Recipe<?> recipe : level.getRecipeManager().getRecipes()){
             if (recipe instanceof AqueoulizerRecipe aqueoulizerRecipe) {
-                if (aqueoulizerRecipe.ingredientList.get().contains(inputItem)){
-                    atomicValidRecipes.get().add(aqueoulizerRecipe);
+                for(Item item : aqueoulizerRecipe.ingredientList.get()) {
+                    if(item.getRegistryName() == null) continue;
+                    int code = item.getRegistryName().hashCode();
+                    if(!aqueoulizerItemMap.containsKey(code)) {
+                        aqueoulizerItemMap.put(item.getRegistryName().hashCode(),new ArrayList<>());
+                    }
+                    aqueoulizerItemMap.get(code).add(aqueoulizerRecipe);
                 }
             }
-        });
-        return atomicValidRecipes.get();
+        }
+        if(inputItem.getRegistryName() == null) return new ArrayList<>();
+        return aqueoulizerItemMap.get(inputItem.getRegistryName().hashCode());
     }
 
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, Fluid fluid){
@@ -105,17 +113,22 @@ public class RecipeUtil {
         return atomicBoolean.get();
     }
 
-    public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid){
-        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if (recipe instanceof CentrifugalAgitatorRecipe){
-                for (FluidStack recipeFluid : ((CentrifugalAgitatorRecipe) recipe).fluidInputList.get()){
-                    if(recipeFluid.isFluidEqual(inputFluid)){
-                        return (CentrifugalAgitatorRecipe) recipe;
+    private static final HashMap<Integer,CentrifugalAgitatorRecipe> CentrifugalAgitatorMap = new HashMap<>();
+    public static CentrifugalAgitatorRecipe getCentrifugalAgitatorRecipe(Level world, FluidStack inputFluid) {
+
+        if (CentrifugalAgitatorMap.isEmpty()) {
+            for (Recipe<?> recipe : world.getRecipeManager().getRecipes()) {
+                if (recipe instanceof CentrifugalAgitatorRecipe centrifugalAgitatorRecipe) {
+                    for (FluidStack recipeFluid : centrifugalAgitatorRecipe.fluidInputList.get()) {
+                        String hash = recipeFluid.getTranslationKey();
+                        CentrifugalAgitatorMap.put(hash.hashCode(), centrifugalAgitatorRecipe);
                     }
                 }
             }
         }
-        return null;
+
+        String hash = inputFluid.getTranslationKey();
+        return CentrifugalAgitatorMap.get(hash.hashCode());
     }
 
     public static List<Fluid> getCentrifugalAgitatorInputFluids(Level world){
@@ -128,17 +141,22 @@ public class RecipeUtil {
         return fluidList;
     }
 
+    private static final HashMap<Integer,DistillationRecipe> distillationRecipeMap = new HashMap<>();
     public static DistillationRecipe getDistillationRecipe(Level world, FluidStack inputFluid){
-        for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if (recipe instanceof DistillationRecipe){
-                for (FluidStack recipeFluid : ((DistillationRecipe) recipe).fluidInputList.get()){
-                    if(recipeFluid.isFluidEqual(inputFluid)){
-                        return (DistillationRecipe) recipe;
+
+        if(distillationRecipeMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof DistillationRecipe distillationRecipe) {
+                    for (FluidStack recipeFluid : distillationRecipe.fluidInputList.get()){
+                        String hash = recipeFluid.getTranslationKey();
+                        distillationRecipeMap.put(hash.hashCode(),distillationRecipe);
                     }
                 }
             }
         }
-        return null;
+
+        String hash = inputFluid.getTranslationKey();
+        return distillationRecipeMap.get(hash.hashCode());
     }
 
     public static List<Fluid> getDistillationInputFluids(Level world){
@@ -184,15 +202,22 @@ public class RecipeUtil {
         return null;
     }
 
+    private static final HashMap<Integer,CombustionGeneratorFuelRecipe> combustionGeneratorFuelRecipeMap = new HashMap<>();
     public static CombustionGeneratorFuelRecipe getFuelCombustionRecipe(Level world, FluidStack inputFluid){
-        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if (recipe instanceof CombustionGeneratorFuelRecipe){
-                if (((CombustionGeneratorFuelRecipe) recipe).rawFluidInputList.get().contains(inputFluid.getRawFluid())){
-                    return (CombustionGeneratorFuelRecipe) recipe;
+
+        if(combustionGeneratorFuelRecipeMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof CombustionGeneratorFuelRecipe combustionGeneratorFuelRecipe) {
+                    for (FluidStack fluid : combustionGeneratorFuelRecipe.fluidInputList.get()){
+                        String hash = fluid.getTranslationKey();
+                        combustionGeneratorFuelRecipeMap.put(hash.hashCode(),combustionGeneratorFuelRecipe);
+                    }
                 }
             }
         }
-        return null;
+
+        String hash = inputFluid.getTranslationKey();
+        return combustionGeneratorFuelRecipeMap.get(hash.hashCode());
     }
 
     public static List<Fluid> getFuelCombustionInputFluids(Level world){
@@ -277,23 +302,27 @@ public class RecipeUtil {
         });
         return atomicBoolean.get();
     }
-
+    private static final HashMap<Integer,CombustionGeneratorOxidizerRecipe> combustionOxidizerMap = new HashMap<>();
     public static CombustionGeneratorOxidizerRecipe getOxidizerCombustionRecipe(Level world, FluidStack inputFluid){
-        AtomicReference<CombustionGeneratorOxidizerRecipe> recipeToReturn = new AtomicReference<>(null);
 
-        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if(recipe instanceof CombustionGeneratorOxidizerRecipe combustionGeneratorOxidizerRecipe){
-                if(combustionGeneratorOxidizerRecipe.rawFluidInputList.get().contains(inputFluid.getRawFluid())){
-                    recipeToReturn.set(combustionGeneratorOxidizerRecipe);
+        if(combustionOxidizerMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof CombustionGeneratorOxidizerRecipe combustionGeneratorOxidizerRecipe) {
+                    for (FluidStack recipeFluid : combustionGeneratorOxidizerRecipe.fluidInputList.get()){
+                        String hash = recipeFluid.getTranslationKey();
+                        combustionOxidizerMap.put(hash.hashCode(),combustionGeneratorOxidizerRecipe);
+                    }
                 }
             }
-        });
+        }
 
-        return recipeToReturn.get();
+        String hash = inputFluid.getTranslationKey();
+        return combustionOxidizerMap.get(hash.hashCode());
+
     }
 
     public static List<Fluid> getOxidizerFluids(Level world){
-        if (world == null) return new ArrayList<Fluid>();
+        if (world == null) return new ArrayList<>();
         AtomicReference<List<Fluid>> fluidList = new AtomicReference<>(new ArrayList<>());
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CombustionGeneratorOxidizerRecipe oxidizerRecipe){
@@ -316,18 +345,23 @@ public class RecipeUtil {
         });
         return recipeToReturn.get();
     }
-
+    private static final HashMap<Integer,IndustrialBlastingRecipe> industrialBlastingRecipeMap = new HashMap<>();
     public static IndustrialBlastingRecipe getIndustrialBlastingRecipe(Level world, ItemStack firstInput, ItemStack secondInput){
-        if(firstInput.isEmpty() || secondInput.isEmpty()) return null;
-        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if(recipe instanceof IndustrialBlastingRecipe){
-                if( ((IndustrialBlastingRecipe) recipe).getFirstInputAsList().contains(firstInput.getItem()) &&
-                        ((IndustrialBlastingRecipe) recipe).onlySecondInput.get().contains(secondInput.getItem())){
-                    return (IndustrialBlastingRecipe) recipe;
+        if(industrialBlastingRecipeMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof IndustrialBlastingRecipe industrialBlastingRecipe) {
+                    for(Item firstIn : industrialBlastingRecipe.getFirstInputAsList()) {
+                        for(Item secondIn : industrialBlastingRecipe.onlySecondInput.get()) {
+                            String hash = firstIn.getRegistryName() + "" + secondIn.getRegistryName();
+                            industrialBlastingRecipeMap.put(hash.hashCode(),industrialBlastingRecipe);
+                        }
+                    }
                 }
             }
         }
-        return null;
+
+        String hash = firstInput.getItem().getRegistryName() + "" + secondInput.getItem().getRegistryName();
+        return industrialBlastingRecipeMap.get(hash.hashCode());
     }
 
     public static boolean isFirstIngredientForIndustrialBlastingRecipe(Level world, ItemStack firstInput){
@@ -546,23 +580,20 @@ public class RecipeUtil {
         });
         return atomicRecipe.get();
     }
-
+    private static final HashMap<Integer,StirlingGeneratorRecipe> stirlingGeneratorRecipeMap = new HashMap<>();
     public static StirlingGeneratorRecipe getStirlingGeneratorRecipe(Level world, ItemStack solidFuelStack){ // Parallel by default
         if (solidFuelStack.isEmpty()) return null;
-        AtomicReference<StirlingGeneratorRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof StirlingGeneratorRecipe){
-                for (ItemStack itemStack : ((StirlingGeneratorRecipe) recipe).getIngredient().getItems()) {
-                    if (itemStack.getItem() == solidFuelStack.getItem()){
-                        atomicRecipe.set((StirlingGeneratorRecipe) recipe);
-                        break;
-                    }
+            if (recipe instanceof StirlingGeneratorRecipe stirlingGeneratorRecipe){
+                for (ItemStack itemStack : stirlingGeneratorRecipe.getIngredient().getItems()) {
+                    if(itemStack.getItem().getRegistryName() == null) continue;
+                    stirlingGeneratorRecipeMap.put(itemStack.getItem().getRegistryName().hashCode(),stirlingGeneratorRecipe);
                 }
             }
         });
-
-        return atomicRecipe.get();
+        if(solidFuelStack.getItem().getRegistryName() == null) return null;
+        return stirlingGeneratorRecipeMap.get(solidFuelStack.getItem().getRegistryName().hashCode());
     }
 
     public static Lazy<ArrayList<Item>> getLazyItemsFromIngredient(VERecipe recipe){
@@ -588,7 +619,7 @@ public class RecipeUtil {
             return items;
         });
     }
-    
+
     public static void setupFluidLazyArrayInputsUsingTags(VEFluidRecipe recipe, ResourceLocation fluidTagLocation, int fluidAmount){
         recipe.fluidUsesTagKey = true;
         recipe.tagKeyString = fluidTagLocation.toString();
@@ -596,7 +627,7 @@ public class RecipeUtil {
         recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, fluidAmount);
         recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
     }
-    
+
     public static void setupFluidLazyArrayInputsWithFluid(VEFluidRecipe recipe, ResourceLocation fluidResourceLocation, int fluidAmount){
         recipe.fluidUsesTagKey = false;
         recipe.fluidInputList = Lazy.of(() -> {
