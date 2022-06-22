@@ -61,6 +61,7 @@ public class VERecipes {
 
         public static final RegistryObject<RecipeType<SawmillingRecipe>> SAWMILLING =
                 VE_RECIPE_TYPES_REGISTRY.register("sawmilling", () -> new VERecipeType<>(RecipeConstants.SAWMILLING));
+        public static final RecipeType<VEFluidRecipe> DIMENSIONAL_LASING = registerType(RecipeConstants.DIMENSIONAL_LASING);
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING =
@@ -93,5 +94,7 @@ public class VERecipes {
             VE_RECIPE_SERIALIZERS_REGISTRY.register("tooling", () -> ToolingRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> SAWMILLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> SawmillingRecipe.SERIALIZER);
+
+    public static final RegistryObject<RecipeSerializer<?>> DIMENSIONAL_LASING = registerSerializer(RecipeConstants.DIMENSIONAL_LASING, () -> DimensionalLaserRecipe.SERIALIZER);
 
 }

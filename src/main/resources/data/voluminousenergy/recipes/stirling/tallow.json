@@ -1,0 +1,9 @@
+{
+  "type": "voluminousenergy:stirling",
+  "ingredient": {
+    "tag": "forge:tallow",
+    "count": 1
+  },
+  "process_time": 200,
+  "energy_per_tick": 128
+}

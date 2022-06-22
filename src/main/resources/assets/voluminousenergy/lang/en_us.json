@@ -13,6 +13,12 @@
     "text.voluminousenergy.battery_box.sending_out_power": "Sending out stored energy onto the FE grid",
     "text.voluminousenergy.battery_box.receiving_power": "Receiving energy from the FE grid",
     "text.voluminousenergy.energy": "Energy",
+    "text.voluminousenergy.chunk": "Chunk",
+    "text.voluminousenergy.fluid_scanner.needs_empty_rfid": "You need an empty RFID chip in order to be able to save fluid data!",
+    "text.voluminousenergy.fluid_scanner.scanning": "Scanning",
+    "text.voluminousenergy.rfid.inventory_full": "Cannot write to RFID chip; inventory is full!",
+    "text.voluminousenergy.rfid.write_success": "Successfully written chunk data to an RFID chip!",
+    "text.voluminousenergy.rfid.chunk_data_error": "ERROR: Chunk data is null / not saved!",
 
     "_comment": "Directions",
     "direction.voluminousenergy.up": "Up",
@@ -95,6 +101,7 @@
     "block.voluminousenergy.nighalite_tank": "Nighalite Tank",
     "block.voluminousenergy.eighzo_tank": "Eighzo Tank",
     "block.voluminousenergy.solarium_tank": "Solarium Tank",
+    "block.voluminousenergy.dimensional_laser" : "Dimensional laser",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",
@@ -303,6 +310,7 @@
     "item.voluminousenergy.tiny_coal_coke": "Tiny Coal Coke",
     "item.voluminousenergy.tiny_petcoke": "Tiny Petcoke",
     "item.voluminousenergy.tiny_rosin": "Tiny Rosin",
+    "item.voluminousenergy.flour_dust": "Flour Dust",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",
@@ -354,6 +362,16 @@
     "item.voluminousenergy.solarium_drill_multitool": "Solarium Drill Multitool",
     "item.voluminousenergy.solarium_scooper_multitool": "Solarium Scooper Multitool",
     "item.voluminousenergy.solarium_trimmer_multitool": "Solarium Trimmer Multitool",
+    "item.voluminousenergy.fluid_scanner": "Fluid Scanner",
+    "item.voluminousenergy.rfid_chip": "RFID Chip",
+
+    "_comment" : "Advancements",
+    "advancements.machine.activate_dimensional_laser.title": "What Have I done?",
+    "advancements.machine.activate_dimensional_laser.description": "Rip open a portal into another dimension.",
+    "advancements.overworld.stuck_in_oil.title": "It's A Lot Stickier Than It Looks",
+    "advancements.overworld.stuck_in_oil.description": "Dip your toes in some crude oil.",
+    "advancements.voluminousenergy.root.title": "Voluminous Energy",
+    "advancements.voluminousenergy.root.description": "The most energetic achievements you've seen!",
 
     "_comment": "Biomes",
     "biome.voluminousenergy.red_desert": "Red Desert",

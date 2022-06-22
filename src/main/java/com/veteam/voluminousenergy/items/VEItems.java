@@ -15,6 +15,7 @@ import com.veteam.voluminousenergy.items.plates.AluminumPlate;
 import com.veteam.voluminousenergy.items.plates.CarbonPlate;
 import com.veteam.voluminousenergy.items.plates.SolariumPlate;
 import com.veteam.voluminousenergy.items.plates.TitaniumPlate;
+import com.veteam.voluminousenergy.items.solid_fuels.AnimalFat;
 import com.veteam.voluminousenergy.items.solid_fuels.CoalCoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Petcoke;
 import com.veteam.voluminousenergy.items.solid_fuels.Rosin;
@@ -22,6 +23,9 @@ import com.veteam.voluminousenergy.items.solid_fuels.tiny.*;
 import com.veteam.voluminousenergy.items.tank_frames.ImpeccableTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.RobustTankFrame;
 import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
+import com.veteam.voluminousenergy.items.tools.CreativeFluidScanner;
+import com.veteam.voluminousenergy.items.tools.FluidScanner;
+import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
@@ -32,11 +36,16 @@ import net.minecraftforge.registries.RegistryObject;
 public class VEItems {
     public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
 
+    // Misc
     public static RegistryObject<Petcoke> PETCOKE = VE_ITEM_REGISTRY.register("petcoke", Petcoke::new);
     public static RegistryObject<CoalCoke> COALCOKE = VE_ITEM_REGISTRY.register("coalcoke",CoalCoke::new);
     public static RegistryObject<SaltpeterChunk> SALTPETERCHUNK = VE_ITEM_REGISTRY.register("saltpeterchunk",SaltpeterChunk::new);
     public static RegistryObject<Silicon> SILICON = VE_ITEM_REGISTRY.register("silicon",Silicon::new);
     public static RegistryObject<ShreddedBiomass> SHREDDED_BIOMASS = VE_ITEM_REGISTRY.register("shredded_biomass",ShreddedBiomass::new);
+    public static RegistryObject<Item> ROSIN = VE_ITEM_REGISTRY.register("rosin",Rosin::new);
+    public static AnimalFat ANIMAL_FAT = new AnimalFat();
+    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
+    public static Dough DOUGH = new Dough();
 
     // Raw Ore
     public static RegistryObject<RawBauxite> RAW_BAUXITE = VE_ITEM_REGISTRY.register("raw_bauxite",RawBauxite::new);
@@ -79,7 +88,7 @@ public class VEItems {
     public static RegistryObject<Item> COPPER_CARBONATE_DUST = VE_ITEM_REGISTRY.register("copper_carbonate_dust",CopperCarbonateDust::new);
     public static RegistryObject<Item> CUPRIC_OXIDE_DUST = VE_ITEM_REGISTRY.register("cupric_oxide_dust",CupricOxideDust::new);
     public static RegistryObject<Item> SAW_DUST = VE_ITEM_REGISTRY.register("saw_dust",SawDust::new);
-    public static RegistryObject<Item> ROSIN = VE_ITEM_REGISTRY.register("rosin",Rosin::new);
+    public static FlourDust FLOUR_DUST = new FlourDust();
 
     //Ingots and Bricks
     public static RegistryObject<CarbonBrick> CARBON_BRICK = VE_ITEM_REGISTRY.register("carbonbrick",CarbonBrick::new);
@@ -129,6 +138,11 @@ public class VEItems {
     //Crops
     public static RegistryObject<Item> RICE_GRAIN = VE_ITEM_REGISTRY.register("rice_grain",() -> new RiceItem(new Item.Properties().tab(VESetup.itemGroup))); // Can refactor to call the block here or in the item's class
     public static RegistryObject<Item> COOKED_RICE = VE_ITEM_REGISTRY.register("cooked_rice",() -> new Item(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)));
+
+    //Scanner
+    public static FluidScanner FLUID_SCANNER = new FluidScanner();
+    public static CreativeFluidScanner CREATIVE_FLUID_SCANNER = new CreativeFluidScanner();
+    public static RFIDChip RFID_CHIP = new RFIDChip();
 
     //Tiny fuels
     public static RegistryObject<Item> TINY_CHARCOAL = VE_ITEM_REGISTRY.register("tiny_charcoal",TinyCharcoal::new);

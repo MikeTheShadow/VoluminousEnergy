@@ -1,0 +1,38 @@
+{
+  "energy_beam_activate": {
+    "subtitle": "voluminousenergy.subtitle.energy_beam_activate",
+    "sounds": [ "voluminousenergy:energy_beam_activate" ]
+  },
+  "energy_beam_fired" : {
+    "subtitle": "voluminousenergy.subtitle.energy_beam_fired",
+    "sounds": [ "voluminousenergy:energy_beam_fired" ]
+  },
+  "air_compressor_active" : {
+    "subtitle" : "voluminousenergy.subtitle.air_compressor_active",
+    "sounds" : ["voluminousenergy:air_compressor_active"]
+  },
+  "aqueoulizer_active" : {
+    "subtitle" : "voluminousenergy.subtitle.aqueoulizer_active",
+    "sounds" : ["voluminousenergy:aqueoulizer_active"]
+  },
+  "compressor_active" : {
+    "subtitle" : "voluminousenergy.subtitle.compressor_active",
+    "sounds" : ["voluminousenergy:compressor_active"]
+  },
+  "crusher_active" : {
+    "subtitle" : "voluminousenergy.subtitle.crusher_active",
+    "sounds" : ["voluminousenergy:crusher_active"]
+  },
+  "furnace_active" : {
+    "subtitle" : "voluminousenergy.subtitle.furnace_active",
+    "sounds" : ["voluminousenergy:furnace_active"]
+  },
+  "general_machine_noise" : {
+    "subtitle" : "voluminousenergy.subtitle.general_machine_noise",
+    "sounds" : ["voluminousenergy:general_machine_noise"]
+  },
+  "implosion_compressor_active" : {
+    "subtitle" : "voluminousenergy.subtitle.implosion_compressor_active",
+    "sounds" : ["voluminousenergy:implosion_compressor_active"]
+  }
+}

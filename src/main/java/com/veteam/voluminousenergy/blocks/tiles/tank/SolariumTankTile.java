@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SolariumTankTile extends TankTile{
@@ -18,7 +19,7 @@ public class SolariumTankTile extends TankTile{
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player player) {
         return new SolariumTankContainer(i,level,this.worldPosition,playerInventory,player);
     }
 }

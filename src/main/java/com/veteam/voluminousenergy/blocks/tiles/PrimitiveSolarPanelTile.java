@@ -108,7 +108,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPowerGene
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity){
         return new PrimitiveSolarPanelContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 

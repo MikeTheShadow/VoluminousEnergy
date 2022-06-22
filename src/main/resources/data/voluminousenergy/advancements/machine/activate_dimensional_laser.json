@@ -1,0 +1,29 @@
+{
+  "parent": "voluminousenergy:overworld/stuck_in_oil",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:dimensional_laser"
+    },
+    "title": {
+      "translate": "advancements.machine.activate_dimensional_laser.title"
+    },
+    "description": {
+      "translate": "advancements.machine.activate_dimensional_laser.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "laser": {
+      "trigger": "voluminousenergy:construct_dimensional_laser",
+      "conditions": {
+        "level": {
+          "min": 1
+        }
+      }
+    }
+  }
+}
+

@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -131,7 +132,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity){
+    public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity){
         return new PrimitiveStirlingGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 

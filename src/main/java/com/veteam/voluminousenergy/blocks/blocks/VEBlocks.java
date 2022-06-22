@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
+import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -391,4 +392,11 @@ public class VEBlocks {
     public static RegistryObject<RawBoneBlock> RAW_BONE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bone_block", RawBoneBlock::new); // Unused
 
     public static RegistryObject<PressureLadder> PRESSURE_LADDER = VE_BLOCKS_REGISTRY.register("pressure_ladder", PressureLadder::new);;
+
+    // Dimensional Laser
+    @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
+    public static DimensionalLaserBlock DIMENSIONAL_LASER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
+    public static BlockEntityType<DimensionalLaserTile> DIMENSIONAL_LASER_TILE;
 }
