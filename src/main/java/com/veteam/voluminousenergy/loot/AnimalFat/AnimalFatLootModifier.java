@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.loot.AnimalFat;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.items.VEItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -24,7 +25,7 @@ public class AnimalFatLootModifier extends LootModifier {
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    protected AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
+    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
         super(conditionsIn);
         this.itemAddition = item;
         this.minAmount = minAmount;
@@ -32,7 +33,7 @@ public class AnimalFatLootModifier extends LootModifier {
     }
 
     @Override
-    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+    public @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
         float lootingModif = context.getLootingModifier() > 0 ? context.getLootingModifier() : 1;
         RandomSource contextualizedRandom = context.getRandom();
@@ -47,7 +48,8 @@ public class AnimalFatLootModifier extends LootModifier {
     public static class Serializer extends GlobalLootModifierSerializer<AnimalFatLootModifier> {
         @Override
         public AnimalFatLootModifier read(ResourceLocation name, JsonObject jsonObject, LootItemCondition[] conditionsIn) {
-            Item addition = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(jsonObject, "addition")));
+            Item addition = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(jsonObject, "addition"))).asItem();
+            if (addition == null) addition = VEItems.ANIMAL_FAT.get();
             int minimumCount = GsonHelper.getAsInt(jsonObject, "minimum_count", 0);
             int maximumCount = GsonHelper.getAsInt(jsonObject, "maximum_count", 1);
             return new AnimalFatLootModifier(conditionsIn, addition, minimumCount, maximumCount);

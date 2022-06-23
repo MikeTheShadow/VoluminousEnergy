@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
+import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -96,6 +97,9 @@ public class VoluminousEnergy {
         // Register modifiers
         VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
+
+        // Register Loot modifiers
+        VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
 
         // TODO: Adding features due to BiomeLoadEvent being replaced
         // TODO: Port registering of Features to use Deferred register

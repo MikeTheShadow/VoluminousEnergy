@@ -37,6 +37,7 @@ public class VEBlockItems {
             public static RegistryObject<BlockItem> BLAST_FURNACE_ITEM = VE_BLOCK_ITEM_REGISTRY.register("blast_furnace",() -> new BlockItem(VEBlocks.BLAST_FURNACE_BLOCK.get(), PROPERTIES));
             public static RegistryObject<BlockItem> TOOLING_STATION_ITEM = VE_BLOCK_ITEM_REGISTRY.register("tooling_station",() -> new BlockItem(VEBlocks.TOOLING_STATION_BLOCK.get(), PROPERTIES));
             public static RegistryObject<BlockItem> SAWMILL_ITEM = VE_BLOCK_ITEM_REGISTRY.register("sawmill",() -> new BlockItem(VEBlocks.SAWMILL_BLOCK.get(), PROPERTIES));
+            public static RegistryObject<BlockItem> DIMENSIONAL_LASER_ITEM = VE_BLOCK_ITEM_REGISTRY.register("dimensional_laser", () -> new BlockItem(VEBlocks.DIMENSIONAL_LASER_BLOCK.get(), PROPERTIES));
 
             // Tanks
             public static RegistryObject<BlockItem> ALUMINUM_TANK_ITEM = VE_BLOCK_ITEM_REGISTRY.register("aluminum_tank",() -> new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK.get(), PROPERTIES));

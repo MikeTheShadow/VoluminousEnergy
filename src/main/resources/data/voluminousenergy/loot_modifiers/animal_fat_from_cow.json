@@ -1,5 +1,5 @@
 {
-  "type": "voluminousenergy:animal_fat_from_cow",
+  "type": "voluminousenergy:animal_fat",
   "conditions": [
     {
       "condition": "minecraft:random_chance",
