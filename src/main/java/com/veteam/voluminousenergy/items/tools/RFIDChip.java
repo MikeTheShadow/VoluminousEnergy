@@ -4,20 +4,15 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +26,6 @@ public class RFIDChip extends Item {
                 .tab(VESetup.itemGroup)
                 .rarity(Rarity.create("ELECTRONIC", ChatFormatting.GREEN))
         );
-        setRegistryName("rfid_chip");
     }
 
     @Override
@@ -46,11 +40,11 @@ public class RFIDChip extends Item {
             if(fluid == null) {
                 componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));
             } else {
-                componentList.add(new TextComponent(""));
+                componentList.add(Component.nullToEmpty(""));
                 fluid.getFluids().forEach(f -> {
-                    Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
+                    Component translatedComponent = TextUtil.translateString(f.getFluid().getFluidType().getDescriptionId());
                     String translatedString = translatedComponent.getString();
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + f.getAmount());
+                    Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + f.getAmount());
                     componentList.add(textComponent);
                 });
             }

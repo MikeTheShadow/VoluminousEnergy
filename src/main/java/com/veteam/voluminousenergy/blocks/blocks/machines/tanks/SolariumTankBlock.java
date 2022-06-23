@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.tank.SolariumTankTile;
-import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
+import com.veteam.voluminousenergy.blocks.tiles.tank.*;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 

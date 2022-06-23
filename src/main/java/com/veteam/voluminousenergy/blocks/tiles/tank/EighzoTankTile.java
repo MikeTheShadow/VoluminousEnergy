@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EighzoTankTile extends TankTile{
+public class EighzoTankTile extends TankTile {
 
     public EighzoTankTile(BlockPos pos, BlockState state) {
         super(VEBlocks.EIGHZO_TANK_TILE.get(), pos, state, Config.EIGHZO_TANK_CAPACITY.get());

@@ -43,9 +43,8 @@ public class VEItems {
     public static RegistryObject<Silicon> SILICON = VE_ITEM_REGISTRY.register("silicon",Silicon::new);
     public static RegistryObject<ShreddedBiomass> SHREDDED_BIOMASS = VE_ITEM_REGISTRY.register("shredded_biomass",ShreddedBiomass::new);
     public static RegistryObject<Item> ROSIN = VE_ITEM_REGISTRY.register("rosin",Rosin::new);
-    public static AnimalFat ANIMAL_FAT = new AnimalFat();
-    public static TitaniumSawblade TITANIUM_SAWBLADE = new TitaniumSawblade();
-    public static Dough DOUGH = new Dough();
+    public static RegistryObject<AnimalFat> ANIMAL_FAT = VE_ITEM_REGISTRY.register("animal_fat", AnimalFat::new);
+    public static RegistryObject<Dough> DOUGH = VE_ITEM_REGISTRY.register("dough", Dough::new);
 
     // Raw Ore
     public static RegistryObject<RawBauxite> RAW_BAUXITE = VE_ITEM_REGISTRY.register("raw_bauxite",RawBauxite::new);
@@ -88,7 +87,7 @@ public class VEItems {
     public static RegistryObject<Item> COPPER_CARBONATE_DUST = VE_ITEM_REGISTRY.register("copper_carbonate_dust",CopperCarbonateDust::new);
     public static RegistryObject<Item> CUPRIC_OXIDE_DUST = VE_ITEM_REGISTRY.register("cupric_oxide_dust",CupricOxideDust::new);
     public static RegistryObject<Item> SAW_DUST = VE_ITEM_REGISTRY.register("saw_dust",SawDust::new);
-    public static FlourDust FLOUR_DUST = new FlourDust();
+    public static RegistryObject<FlourDust> FLOUR_DUST = VE_ITEM_REGISTRY.register("flower_dust",FlourDust::new);
 
     //Ingots and Bricks
     public static RegistryObject<CarbonBrick> CARBON_BRICK = VE_ITEM_REGISTRY.register("carbonbrick",CarbonBrick::new);
@@ -140,9 +139,9 @@ public class VEItems {
     public static RegistryObject<Item> COOKED_RICE = VE_ITEM_REGISTRY.register("cooked_rice",() -> new Item(new Item.Properties().tab(VESetup.itemGroup).food(VEFoods.COOKED_RICE)));
 
     //Scanner
-    public static FluidScanner FLUID_SCANNER = new FluidScanner();
-    public static CreativeFluidScanner CREATIVE_FLUID_SCANNER = new CreativeFluidScanner();
-    public static RFIDChip RFID_CHIP = new RFIDChip();
+    public static RegistryObject<FluidScanner> FLUID_SCANNER = VE_ITEM_REGISTRY.register("fluid_scanner",FluidScanner::new);
+    public static RegistryObject<CreativeFluidScanner> CREATIVE_FLUID_SCANNER = VE_ITEM_REGISTRY.register("creative_fluid_scanner",CreativeFluidScanner::new);
+    public static RegistryObject<RFIDChip> RFID_CHIP = VE_ITEM_REGISTRY.register("rfid_chip", RFIDChip::new);
 
     //Tiny fuels
     public static RegistryObject<Item> TINY_CHARCOAL = VE_ITEM_REGISTRY.register("tiny_charcoal",TinyCharcoal::new);

@@ -18,7 +18,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -28,7 +27,7 @@ import java.util.Objects;
 
 public class DimensionalLaserRecipe extends VEFluidRecipe {
 
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
 
     public static final DimensionalLaserRecipe.Serializer SERIALIZER = new DimensionalLaserRecipe.Serializer();
 
@@ -145,10 +144,10 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
+        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<DimensionalLaserRecipe> {
+    public static class Serializer implements RecipeSerializer<DimensionalLaserRecipe>{
         @Override
         public DimensionalLaserRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);

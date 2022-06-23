@@ -28,7 +28,6 @@ public class DimensionalLaserBlock extends Block implements EntityBlock {
                 .lightLevel(value -> 7)
                 .noOcclusion()
         );
-        setRegistryName("dimensional_laser");
         VETagDataGenerator.setRequiresSolarium(this);
         VETagDataGenerator.setRequiresPickaxe(this);
     }
@@ -51,7 +50,7 @@ public class DimensionalLaserBlock extends Block implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@Nonnull Level level,@Nonnull  BlockState state,@Nonnull  BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.DIMENSIONAL_LASER_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.DIMENSIONAL_LASER_TILE.get());
     }
 
 

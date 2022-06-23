@@ -48,41 +48,41 @@ public class WorldUtil {
 
     public static HashMap<ClimateParameters,Double> sampleClimate(Level level, BlockPos pos){
         if (level.isClientSide) new HashMap<>();
-        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
-        ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
-        ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
-        Climate.Sampler climateSampler = chunkgenerator.climateSampler();
-        Climate.TargetPoint targetPoint = climateSampler.sample(pos.getX(), pos.getY(), pos.getZ());
-
-        double continentalness = Climate.unquantizeCoord(targetPoint.continentalness());
-        double erosion = Climate.unquantizeCoord(targetPoint.erosion());
-        double humidity = Climate.unquantizeCoord(targetPoint.humidity());
-        double temperature = Climate.unquantizeCoord(targetPoint.temperature());
-
-        /*
-        BiomeSource biomeSource = chunkgenerator.getBiomeSource();
-        OverworldBiomeBuilder overworldBiomeBuilder = new OverworldBiomeBuilder();
-        String c = overworldBiomeBuilder.getDebugStringForContinentalness(continentalness);
-        String e = overworldBiomeBuilder.getDebugStringForErosion(erosion);
-        String h = overworldBiomeBuilder.getDebugStringForHumidity(humidity);
-        String t = overworldBiomeBuilder.getDebugStringForTemperature(temperature);
-        /*
-         */
-
-        if (chunkgenerator instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator){
-            NoiseRouter router = noiseBasedChunkGenerator.router();
-            DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
-            continentalness = router.continents().compute(context);
-            erosion = router.erosion().compute(context);
-            humidity = router.humidity().compute(context);
-            temperature = router.temperature().compute(context);
-        }
+//        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
+//        ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
+//        ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
+//        Climate.Sampler climateSampler = chunkgenerator.climateSampler();
+//        Climate.TargetPoint targetPoint = climateSampler.sample(pos.getX(), pos.getY(), pos.getZ());
+//
+//        double continentalness = Climate.unquantizeCoord(targetPoint.continentalness());
+//        double erosion = Climate.unquantizeCoord(targetPoint.erosion());
+//        double humidity = Climate.unquantizeCoord(targetPoint.humidity());
+//        double temperature = Climate.unquantizeCoord(targetPoint.temperature());
+//
+//        /*
+//        BiomeSource biomeSource = chunkgenerator.getBiomeSource();
+//        OverworldBiomeBuilder overworldBiomeBuilder = new OverworldBiomeBuilder();
+//        String c = overworldBiomeBuilder.getDebugStringForContinentalness(continentalness);
+//        String e = overworldBiomeBuilder.getDebugStringForErosion(erosion);
+//        String h = overworldBiomeBuilder.getDebugStringForHumidity(humidity);
+//        String t = overworldBiomeBuilder.getDebugStringForTemperature(temperature);
+//        /*
+//         */
+//
+//        if (chunkgenerator instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator){
+//            NoiseRouter router = noiseBasedChunkGenerator.router();
+//            DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
+//            continentalness = router.continents().compute(context);
+//            erosion = router.erosion().compute(context);
+//            humidity = router.humidity().compute(context);
+//            temperature = router.temperature().compute(context);
+//        }
 
         HashMap<ClimateParameters,Double> climateMap = new HashMap<>();
-        climateMap.put(ClimateParameters.CONTINENTALNESS,continentalness);
-        climateMap.put(ClimateParameters.EROSION,erosion);
-        climateMap.put(ClimateParameters.HUMIDITY,humidity);
-        climateMap.put(ClimateParameters.TEMPERATURE,temperature);
+//        climateMap.put(ClimateParameters.CONTINENTALNESS,continentalness);
+//        climateMap.put(ClimateParameters.EROSION,erosion);
+//        climateMap.put(ClimateParameters.HUMIDITY,humidity);
+//        climateMap.put(ClimateParameters.TEMPERATURE,temperature);
         return climateMap;
     }
 

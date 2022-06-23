@@ -1,8 +1,10 @@
 package com.veteam.voluminousenergy.loot.AnimalFat;
 
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -11,9 +13,6 @@ import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Random;
 
 public class AnimalFatLootModifier extends LootModifier {
     private final Item itemAddition;
@@ -32,17 +31,16 @@ public class AnimalFatLootModifier extends LootModifier {
         this.maxAmount = maxAmount;
     }
 
-    @NotNull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+    protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         float luck = context.getLuck() > 0 ? context.getLuck() : 1;
         float lootingModif = context.getLootingModifier() > 0 ? context.getLootingModifier() : 1;
-        Random contextualizedRandom = context.getRandom();
+        RandomSource contextualizedRandom = context.getRandom();
         int amount = contextualizedRandom.nextInt(this.minAmount, this.maxAmount);
         amount = Math.round(amount * luck);
         amount = Math.round(amount * lootingModif);
         generatedLoot.add(new ItemStack(itemAddition, amount));
-        System.out.println("Generated New Loot");
+//        System.out.println("Generated New Loot");
         return generatedLoot;
     }
 

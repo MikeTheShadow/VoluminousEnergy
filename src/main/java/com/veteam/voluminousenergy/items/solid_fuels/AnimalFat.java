@@ -14,7 +14,6 @@ public class AnimalFat extends Item implements IForgeItem {
                 .stacksTo(64)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("animal_fat");
     }
 
     @Override

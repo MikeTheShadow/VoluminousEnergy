@@ -2,24 +2,6 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
-import com.veteam.voluminousenergy.blocks.blocks.machines.*;
-import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
-import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
-import com.veteam.voluminousenergy.blocks.blocks.ores.*;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateGalenaOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileOre;
-import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
-import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
-import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
-import com.veteam.voluminousenergy.blocks.containers.*;
-import com.veteam.voluminousenergy.blocks.containers.tank.*;
-import com.veteam.voluminousenergy.blocks.tiles.*;
-import com.veteam.voluminousenergy.blocks.tiles.tank.*;
-import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
-import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
@@ -144,9 +126,9 @@ public class VoluminousEnergy {
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
-    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
-    }
+//    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+//        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
+//    }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
     }

@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -34,7 +34,6 @@ public class CreativeFluidScanner extends Item {
                 .tab(VESetup.itemGroup)
                 .rarity(Rarity.RARE)
         );
-        setRegistryName("creative_fluid_scanner");
     }
 
     public int getUseDuration(ItemStack itemStack) {
@@ -67,8 +66,8 @@ public class CreativeFluidScanner extends Item {
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
         // Print out message to chat
-        player.sendMessage(new TextComponent("Scanning..."), player.getUUID());
-        player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
+        player.sendSystemMessage(Component.nullToEmpty("Scanning...")); // TODO: Make translatable
+        player.sendSystemMessage(Component.nullToEmpty(climateString.toString()));
 
         ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
         StringBuilder message = new StringBuilder();
@@ -77,9 +76,9 @@ public class CreativeFluidScanner extends Item {
 
         for (Pair<Fluid, Integer> pair : fluidsList) {
             //fluid = pair.getA();
-            message.append("\nFound Entry: ").append(pair.getA().getRegistryName()).append(" Amount: ").append(pair.getB());
+            message.append("\nFound Entry: ").append(RegistryLookups.lookupFluid(pair.getA())).append(" Amount: ").append(pair.getB());
         }
-        player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
+        player.sendSystemMessage(Component.nullToEmpty(message.toString()));
 
         // MAP START
         StringBuilder builder = new StringBuilder("______________MAP______________\n");
@@ -116,7 +115,7 @@ public class CreativeFluidScanner extends Item {
             }
             builder.append("\n");
         }
-        player.sendMessage(new TextComponent(builder.toString()), player.getUUID());
+        player.sendSystemMessage(Component.nullToEmpty(builder.toString()));
         // MAP END
 
         return InteractionResult.sidedSuccess(false);

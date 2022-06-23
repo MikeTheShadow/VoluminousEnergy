@@ -9,6 +9,5 @@ public class Dough extends Item {
                 .stacksTo(64)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("dough");
     }
 }

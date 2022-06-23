@@ -265,6 +265,11 @@ public class VEBlocks {
                 return new SawmillContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }));
 
+    // Dimensional Laser
+    public static RegistryObject<DimensionalLaserBlock> DIMENSIONAL_LASER_BLOCK = VE_BLOCKS_REGISTRY.register("dimensional_laser", DimensionalLaserBlock::new);
+    public static RegistryObject<BlockEntityType<DimensionalLaserTile>> DIMENSIONAL_LASER_TILE = VE_TILE_REGISTRY.register("dimensional_laser",
+            () -> BlockEntityType.Builder.of(DimensionalLaserTile::new,VEBlocks.DIMENSIONAL_LASER_BLOCK.get()).build(null));
+
     // Tanks (Tile/Block)
 
     // Aluminum Tank
@@ -391,12 +396,5 @@ public class VEBlocks {
     @Deprecated
     public static RegistryObject<RawBoneBlock> RAW_BONE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bone_block", RawBoneBlock::new); // Unused
 
-    public static RegistryObject<PressureLadder> PRESSURE_LADDER = VE_BLOCKS_REGISTRY.register("pressure_ladder", PressureLadder::new);;
-
-    // Dimensional Laser
-    @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
-    public static DimensionalLaserBlock DIMENSIONAL_LASER_BLOCK;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
-    public static BlockEntityType<DimensionalLaserTile> DIMENSIONAL_LASER_TILE;
+    public static RegistryObject<PressureLadder> PRESSURE_LADDER = VE_BLOCKS_REGISTRY.register("pressure_ladder", PressureLadder::new);
 }

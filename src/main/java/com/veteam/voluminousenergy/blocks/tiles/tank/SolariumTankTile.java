@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SolariumTankTile extends TankTile{
+public class SolariumTankTile extends TankTile {
 
     public SolariumTankTile(BlockPos pos, BlockState state) {
         super(VEBlocks.SOLARIUM_TANK_TILE.get(), pos, state, Config.SOLARIUM_TANK_CAPACITY.get());

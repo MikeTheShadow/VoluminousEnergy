@@ -1,12 +1,10 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
-import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ConstructBeaconTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +36,7 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
     private boolean soundPlayed = false;
 
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
-        super(VEBlockEntities.DIMENSIONAL_LASER.get(), pos, state);
+        super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state);
     }
 
     @Override

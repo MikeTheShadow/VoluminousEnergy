@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class NighaliteTankTile extends TankTile{
+public class NighaliteTankTile extends TankTile {
 
     public NighaliteTankTile(BlockPos pos, BlockState state) {
         super(VEBlocks.NIGHALITE_TANK_TILE.get(), pos, state, Config.NIGHALITE_TANK_CAPACITY.get());

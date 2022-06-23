@@ -6,6 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.function.Supplier;
 
 
@@ -105,7 +105,7 @@ public class AmmoniumNitrateBucket extends VENoPlaceBucket {
             if (!(level instanceof ServerLevel)) {
                 return true;
             } else {
-                Random random = level.getRandom();
+                RandomSource random = level.getRandom();
 
                 label78:
                 for(int i = 0; i < 128; ++i) {

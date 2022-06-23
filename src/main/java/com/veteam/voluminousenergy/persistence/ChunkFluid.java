@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.persistence;
 
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -46,7 +47,7 @@ public class ChunkFluid {
         for (int i = 0; i < chunkFluidList.size(); i++) {
             SingleChunkFluid fluid = chunkFluidList.get(i);
             compoundTag.putInt("FS_" + i, fluid.getAmount());
-            compoundTag.putString("SCF_" + i, fluid.getFluid().getRegistryName().toString());
+            compoundTag.putString("SCF_" + i, RegistryLookups.lookupFluid(fluid.getFluid()).toString());
         }
 
         return compoundTag;

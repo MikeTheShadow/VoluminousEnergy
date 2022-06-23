@@ -7,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RegistryLookups {
@@ -41,5 +43,13 @@ public class RegistryLookups {
 
     public static ResourceLocation lookupBiome(Holder<Biome> biomeHolder){
         return lookupBiome(biomeHolder.get());
+    }
+
+    public static ResourceLocation lookupFluid(Fluid fluid){
+        return ForgeRegistries.FLUIDS.getKey(fluid);
+    }
+
+    public static ResourceLocation lookupFluidType(FluidType fluidType){
+        return ForgeRegistries.FLUID_TYPES.get().getKey(fluidType);
     }
 }

@@ -8,6 +8,5 @@ public class FlourDust extends Item {
         super(new Item.Properties()
                 .stacksTo(64)
                 .tab(VESetup.itemGroup));
-        setRegistryName("flour_dust");
     }
 }
