@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:raw_materials/saltpeter",
+    "#forge:raw_materials/bauxite",
+    "#forge:raw_materials/cinnabar",
+    "#forge:raw_materials/rutile",
+    "#forge:raw_materials/galena",
+    "#forge:raw_materials/eighzo",
+    "#forge:raw_materials/sulfur"
+  ]
+}
