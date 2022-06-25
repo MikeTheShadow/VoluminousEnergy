@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/eighzo",
+    "tag": "forge:raw_materials/eighzo",
     "count": 1
   },
   "process_time": 200,
