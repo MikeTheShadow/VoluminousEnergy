@@ -500,7 +500,7 @@ public class Config {
                 RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 48, -64, 320);
                 RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
-                    .defineInRange("Rice Bottom Anchor", 320, -64, 320);
+                    .defineInRange("Rice Top Anchor", 320, -64, 320);
                 RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
                         .defineInRange("Rice Chance", 32, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
