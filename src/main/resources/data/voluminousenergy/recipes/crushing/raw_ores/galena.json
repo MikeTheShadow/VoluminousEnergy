@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/galena",
+    "tag": "forge:raw_materials/galena",
     "count": 1
   },
   "process_time": 200,
