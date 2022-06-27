@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/cinnabar",
+    "tag": "forge:raw_materials/cinnabar",
     "count": 1
   },
   "process_time": 200,

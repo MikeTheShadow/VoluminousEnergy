@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/rutile",
+    "tag": "forge:raw_materials/rutile",
     "count": 1
   },
   "process_time": 200,
