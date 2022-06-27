@@ -57,7 +57,7 @@ public class MysteriousMultiplier extends Item {
             } else {
                 componentToAdd = componentToAdd.copy().append("DEBUGWARN: NoneOfTheAbove: " + multiplier);
             }
-//            componentToAdd = componentToAdd.copy().append("DEBUG_MULTIPLIER: " + multiplier);
+//            tooltip.add(Component.nullToEmpty("DEBUG_MULTIPLIER: " + multiplier));
         }
 
         tooltip.add(componentToAdd);

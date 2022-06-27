@@ -137,16 +137,10 @@ public class TagUtil {
     }
 
     public static boolean isTaggedMachineUpgradeItem(Item item){
-        ArrayList<Item> result = getTaggedMachineUpgradeItems();
-        System.out.println("Is empty: " + result.isEmpty());
-        if (!result.isEmpty()) result.forEach(itm -> System.out.println(itm.toString()));
         return getTaggedMachineUpgradeItems().contains(item);
     }
 
     public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack){
-        ArrayList<Item> result = getTaggedMachineUpgradeItems();
-        System.out.println("Is empty: " + result.isEmpty());
-        if (!result.isEmpty()) result.forEach(itm -> System.out.println(itm.toString()));
         return getTaggedMachineUpgradeItems().contains(itemStack.getItem());
     }
 }
