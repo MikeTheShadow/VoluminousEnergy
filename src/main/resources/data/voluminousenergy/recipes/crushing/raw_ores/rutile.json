@@ -13,5 +13,9 @@
     "item": "voluminousenergy:rutile_dust",
     "count": 1,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 5,
+    "maximum": 7
   }
 }

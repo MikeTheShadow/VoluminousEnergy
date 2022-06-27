@@ -13,5 +13,9 @@
     "item": "voluminousenergy:bauxite_dust",
     "count": 9,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 1,
+    "maximum": 3
   }
 }

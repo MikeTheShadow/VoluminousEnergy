@@ -13,5 +13,9 @@
     "item": "minecraft:sugar",
     "count": 1,
     "chance": 1
+  },
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
   }
 }

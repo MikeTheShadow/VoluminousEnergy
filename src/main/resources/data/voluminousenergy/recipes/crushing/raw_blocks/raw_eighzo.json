@@ -13,5 +13,9 @@
     "item": "voluminousenergy:eighzo_dust",
     "count": 9,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 7,
+    "maximum": 13
   }
 }

@@ -13,5 +13,9 @@
     "item": "minecraft:redstone",
     "count": 2,
     "chance": 0.25
+  },
+  "experience": {
+    "minimum": 1,
+    "maximum": 3
   }
 }

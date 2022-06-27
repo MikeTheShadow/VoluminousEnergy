@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -113,18 +114,27 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
-            if(level != null){
+            if(level != null && slot > 0){
                 Random rand = new Random();
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.BAUXITE_DUST)
-                    level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(rand, 1, 3)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.CINNABAR_DUST)
-                    level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(rand, 1, 3)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.GALENA_DUST)
-                    level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(rand, 2, 5)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.RUTILE_DUST)
-                    level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(rand, 5, 7)));
-                if (inventory.getStackInSlot(slot).getItem() == VEItems.SALTPETERCHUNK)
-                    level.addFreshEntity(new ExperienceOrb(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), amount*Mth.nextInt(rand, 1, 3)));
+
+                Optional<CrusherRecipe> crusherRecipe = Optional.ofNullable(RecipeUtil.getCrusherRecipeFromAnyOutputAndTryInput(inventory.getStackInSlot(slot).copy().getItem(), inventory.getStackInSlot(0).getItem(), level));
+                if (crusherRecipe.isPresent()){
+                    if (!(crusherRecipe.get().getMinExperience() == 0)){
+
+                        level.addFreshEntity(new ExperienceOrb(
+                                level,
+                                worldPosition.getX(),
+                                worldPosition.getY(),
+                                worldPosition.getZ(),
+                                amount*Mth.nextInt(
+                                        rand,
+                                        crusherRecipe.get().getMinExperience(),
+                                        crusherRecipe.get().getMaxExperience()
+                                )
+                        ));
+
+                    }
+                }
             }
             
             return super.extractItem(slot,amount,simulate);

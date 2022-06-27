@@ -13,5 +13,9 @@
     "item": "voluminousenergy:carbon_dust",
     "count": 2,
     "chance": 1
+  },
+  "experience": {
+    "minimum": 2,
+    "maximum": 5
   }
 }
