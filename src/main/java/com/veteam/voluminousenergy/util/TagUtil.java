@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
@@ -124,5 +126,27 @@ public class TagUtil {
             items.add(holder.value());
         }
         return items;
+    }
+
+    private static ArrayList<Item> cachedUpgrades;
+    public static ArrayList<Item> getTaggedMachineUpgradeItems(){
+        if (cachedUpgrades == null || cachedUpgrades.isEmpty()){
+            cachedUpgrades = getItemListFromTagResourceLocation(new ResourceLocation(VoluminousEnergy.MODID,"machine_upgrades"));
+        }
+        return cachedUpgrades;
+    }
+
+    public static boolean isTaggedMachineUpgradeItem(Item item){
+        ArrayList<Item> result = getTaggedMachineUpgradeItems();
+        System.out.println("Is empty: " + result.isEmpty());
+        if (!result.isEmpty()) result.forEach(itm -> System.out.println(itm.toString()));
+        return getTaggedMachineUpgradeItems().contains(item);
+    }
+
+    public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack){
+        ArrayList<Item> result = getTaggedMachineUpgradeItems();
+        System.out.println("Is empty: " + result.isEmpty());
+        if (!result.isEmpty()) result.forEach(itm -> System.out.println(itm.toString()));
+        return getTaggedMachineUpgradeItems().contains(itemStack.getItem());
     }
 }

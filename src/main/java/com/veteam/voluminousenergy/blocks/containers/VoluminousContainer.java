@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
-import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -70,11 +70,11 @@ public class VoluminousContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
         } else { // Inventory --> Container
-            if(slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
+            if(/*slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (!slotStack.is(VEItems.QUARTZ_MULTIPLIER) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
+            if (/*!slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ !TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
                 return ItemStack.EMPTY;
             }
         }

@@ -71,4 +71,39 @@ public class MysteriousMultiplier extends Item {
         float multiplier = level.getRandom().nextFloat() * (0.75F - 0.005F) + 0.005F;
         stack.getOrCreateTag().putFloat("multiplier", multiplier);
     }
+
+
+    // If we use this outside of the Mysterious Multiplier, should be put in a Util class
+    public enum QualityTier {
+        NULL,
+        BASIC,
+        GRAND,
+        RARE,
+        ARCANE,
+        HEROIC,
+        UNIQUE,
+        CELESTIAL,
+        DIVINE,
+        EPIC,
+        LEGENDARY,
+        MYTHIC
+    }
+
+    // Ugly, I know. You can fix this is you want
+    public static QualityTier getQualityTier(float multiplier){
+        if (multiplier >= 0.65F){           return QualityTier.BASIC;
+        } else if (multiplier >= 0.5F){     return QualityTier.GRAND;
+        } else if (multiplier >= 0.4F){     return QualityTier.RARE;
+        } else if (multiplier >= 0.3F){     return QualityTier.ARCANE;
+        } else if (multiplier >= 0.25F){    return QualityTier.HEROIC;
+        } else if (multiplier >= 0.2F){     return QualityTier.UNIQUE;
+        } else if (multiplier >= 0.1F){     return QualityTier.CELESTIAL;
+        } else if (multiplier >= 0.075F){   return QualityTier.DIVINE;
+        } else if (multiplier >= 0.05F){    return QualityTier.EPIC;
+        } else if (multiplier >= 0.025F){   return QualityTier.LEGENDARY;
+        } else if (multiplier <= 0.025F){   return QualityTier.MYTHIC;
+        }
+        return QualityTier.NULL;
+    }
+
 }

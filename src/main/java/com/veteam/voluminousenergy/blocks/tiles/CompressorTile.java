@@ -2,11 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.SimpleContainer;
@@ -126,7 +126,7 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                 } else if (slot == 1 && recipe1 != null){
                     return stack.getItem() == recipe1.result.getItem();
                 } else if (slot == 2){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
             }
@@ -149,7 +149,7 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                     if (stack.getItem() == recipe1.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
-                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

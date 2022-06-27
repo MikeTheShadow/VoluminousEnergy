@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -74,7 +75,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             } else if (slot == 2 && recipe1 != null){
                 return stack.getItem() == recipe1.getRngItem().getItem();
             } else if (slot == 3){
-                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                return TagUtil.isTaggedMachineUpgradeItem(stack);
             }
             return false;
         }
@@ -102,7 +103,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 3){
-                if(stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                if(TagUtil.isTaggedMachineUpgradeItem(stack)){
                     return super.insertItem(slot, stack, simulate);
                 }
             }

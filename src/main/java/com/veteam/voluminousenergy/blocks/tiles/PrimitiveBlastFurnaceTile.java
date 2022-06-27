@@ -2,11 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.Connection;
@@ -123,7 +123,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                 } else if (slot == 1 && recipeOutput != null){
                     return stack.getItem() == recipeOutput.result.getItem();
                 } else if (slot == 2){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER;
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
             }
@@ -146,7 +146,7 @@ public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements I
                     if (stack.getItem() == recipeOut.result.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
-                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER){
+                } else if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)){
                     return super.insertItem(slot,stack,simulate);
                 }
                 return stack;
