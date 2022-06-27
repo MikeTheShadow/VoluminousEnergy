@@ -25,6 +25,7 @@ import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.tools.CreativeFluidScanner;
 import com.veteam.voluminousenergy.items.tools.FluidScanner;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
+import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
@@ -117,6 +118,7 @@ public class VEItems {
 
     //Upgrades
     public static QuartzMultiplier QUARTZ_MULTIPLIER = new QuartzMultiplier();
+    public static MysteriousMultiplier MYSTERIOUS_MULTIPLIER = new MysteriousMultiplier();
 
     //Batteries
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
