@@ -302,6 +302,11 @@
     "item.voluminousenergy.tiny_petcoke": "Tiny Petcoke",
     "item.voluminousenergy.tiny_rosin": "Tiny Rosin",
     "item.voluminousenergy.flour_dust": "Flour Dust",
+    "item.voluminousenergy.ammonia_bucket": "Ammonia Bucket",
+    "item.voluminousenergy.ammonium_nitrate_solution_bucket": "Ammonium Nitrate Solution Bucket",
+    "item.voluminousenergy.animal_fat": "Animal Fat",
+    "item.voluminousenergy.dough": "Dough",
+    "item.voluminousenergy.mysterious_multiplier": "Mysterious Multiplier",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",

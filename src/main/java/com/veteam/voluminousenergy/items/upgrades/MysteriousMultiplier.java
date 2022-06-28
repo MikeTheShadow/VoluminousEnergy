@@ -65,8 +65,8 @@ public class MysteriousMultiplier extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
-        if (stack.getTag() == null);
-        else if (!stack.getTag().isEmpty()) return;
+        if (stack.getTag() == null && !level.isClientSide());
+        else if (level.isClientSide() || !stack.getTag().isEmpty()) return;
 
         float multiplier = level.getRandom().nextFloat() * (0.75F - 0.005F) + 0.005F;
         stack.getOrCreateTag().putFloat("multiplier", multiplier);
