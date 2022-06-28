@@ -13,5 +13,9 @@
     "item": "voluminousenergy:quartz_dust",
     "count": 1,
     "chance": 0.25
+  },
+  "experience": {
+    "minimum": 2,
+    "maximum": 4
   }
 }

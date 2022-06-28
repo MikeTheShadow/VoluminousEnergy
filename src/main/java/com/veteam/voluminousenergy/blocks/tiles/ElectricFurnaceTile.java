@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -148,7 +148,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
                     return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 2){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
             }
@@ -168,7 +168,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
                 } else if (slot == 1){
                     return super.insertItem(slot, stack, simulate);
-                } else if (slot == 2 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
+                } else if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

@@ -13,5 +13,9 @@
     "item": "minecraft:air",
     "count": 0,
     "chance": 0
+  },
+  "experience": {
+    "minimum": 7,
+    "maximum": 13
   }
 }

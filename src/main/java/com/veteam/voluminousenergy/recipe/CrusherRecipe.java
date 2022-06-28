@@ -34,6 +34,8 @@ public class CrusherRecipe extends VERecipe {
     private int outputAmount;
     private int outputRngAmount;
     private float chance;
+    private int minExperience;
+    private int maxExperience;
 
     private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
@@ -83,6 +85,10 @@ public class CrusherRecipe extends VERecipe {
 
     public int getProcessTime() { return processTime; }
 
+    public int getMinExperience() { return minExperience; }
+
+    public int getMaxExperience() { return maxExperience; }
+
     public Map<Ingredient, Integer> getIngredientMap() {
         return ImmutableMap.copyOf(ingredients);
     }
@@ -117,6 +123,10 @@ public class CrusherRecipe extends VERecipe {
             recipe.outputRngAmount = rngAmount;
             recipe.chance = rngChance;
 
+
+            recipe.minExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"minimum",0);
+            recipe.maxExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"maximum",0);
+
             return recipe;
         }
 
@@ -131,6 +141,8 @@ public class CrusherRecipe extends VERecipe {
             recipe.rngResult = buffer.readItem();
             recipe.outputRngAmount = buffer.readInt();
             recipe.chance = buffer.readFloat();
+            recipe.minExperience = buffer.readInt();
+            recipe.maxExperience = buffer.readInt();
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
@@ -147,6 +159,8 @@ public class CrusherRecipe extends VERecipe {
             buffer.writeItem(recipe.rngResult);
             buffer.writeInt(recipe.outputRngAmount);
             buffer.writeFloat(recipe.chance);
+            buffer.writeInt(recipe.minExperience);
+            buffer.writeInt(recipe.maxExperience);
 
             recipe.ingredient.get().toNetwork(buffer);
 

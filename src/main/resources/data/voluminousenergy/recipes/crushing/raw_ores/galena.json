@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/galena",
+    "tag": "forge:raw_materials/galena",
     "count": 1
   },
   "process_time": 200,
@@ -13,5 +13,9 @@
     "item": "voluminousenergy:sulfurdust",
     "count": 1,
     "chance": 0.5
+  },
+  "experience": {
+    "minimum": 2,
+    "maximum": 5
   }
 }

@@ -2,15 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.SimpleContainer;
@@ -215,7 +211,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                 } else if (slot == 6){
                     return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
                 } else if (slot == 7){
-                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER);
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
             }

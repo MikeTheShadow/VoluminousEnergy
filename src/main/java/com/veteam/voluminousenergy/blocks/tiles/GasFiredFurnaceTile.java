@@ -6,10 +6,7 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -167,6 +164,13 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                         fuelCounter = recipe.getProcessTime()/4;
                         if(inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
                             fuelCounter = fuelCounter/(inventory.getStackInSlot(4).getCount()^2);
+                        } else if (!inventory.getStackInSlot(4).isEmpty() && TagUtil.isTaggedMachineUpgradeItem(inventory.getStackInSlot(4))){
+                            ItemStack upgradeStack = inventory.getStackInSlot(4).copy();
+                            if (upgradeStack.getTag() != null && !upgradeStack.getTag().isEmpty()){
+                                float multiplier = upgradeStack.getTag().getFloat("multiplier");
+                                multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
+                                fuelCounter = (int)((float)(fuelCounter * multiplier));
+                            }
                         }
                         fuelLength = fuelCounter;
                         this.setChanged();
@@ -228,7 +232,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
 
                     return stack.getItem() == blastingRecipe.getResultItem().getItem();
                 } else if (slot == 4){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
             }
@@ -253,7 +257,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
 
                 } else if (slot == 3){
                     return super.insertItem(slot, stack, simulate);
-                } else if (slot == 4 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
+                } else if (slot == 4 && TagUtil.isTaggedMachineUpgradeItem(stack)){
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;

@@ -2,11 +2,11 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.SimpleContainer;
@@ -291,7 +291,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
             } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
                 return stack.getItem() == recipe1.getRngItemSlot2().getItem();
             } else if (slot == 6){
-                return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
+                return TagUtil.isTaggedMachineUpgradeItem(stack);
             }
             return false;
         }
@@ -328,7 +328,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
                 if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 6 && stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()){
+            } else if (slot == 6 && TagUtil.isTaggedMachineUpgradeItem(stack)){
                 return super.insertItem(slot, stack, simulate);
             }
             return stack;

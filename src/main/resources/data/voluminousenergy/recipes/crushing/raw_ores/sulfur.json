@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/sulfur",
+    "tag": "forge:raw_materials/sulfur",
     "count": 1
   },
   "process_time": 200,
@@ -13,5 +13,9 @@
     "item": "minecraft:air",
     "count": 0,
     "chance": 0
+  },
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
   }
 }

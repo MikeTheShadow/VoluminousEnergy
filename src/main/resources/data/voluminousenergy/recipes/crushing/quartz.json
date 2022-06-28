@@ -13,5 +13,9 @@
     "item": "voluminousenergy:sulfurdust",
     "count": 1,
     "chance": 0.25
+  },
+  "experience": {
+    "minimum": 0,
+    "maximum": 0
   }
 }

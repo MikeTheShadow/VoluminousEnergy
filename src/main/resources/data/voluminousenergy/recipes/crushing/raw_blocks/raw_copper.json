@@ -13,5 +13,9 @@
     "item": "voluminousenergy:copper_dust",
     "count": 8,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 1,
+    "maximum": 3
   }
 }

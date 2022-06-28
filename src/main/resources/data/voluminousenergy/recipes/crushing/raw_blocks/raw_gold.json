@@ -13,5 +13,9 @@
     "item": "voluminousenergy:gold_dust",
     "count": 9,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 2,
+    "maximum": 4
   }
 }

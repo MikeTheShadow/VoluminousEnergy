@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -8,6 +9,7 @@ import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -86,6 +87,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             } else {
                 return (-45 * upgradeStack.getCount()) + processTime;
             }
+        } else if (!upgradeStack.isEmpty() && TagUtil.isTaggedMachineUpgradeItem(upgradeStack)){
+            CompoundTag compound = upgradeStack.getTag();
+            return compound != null ? (int)((float)(processTime * compound.getFloat("multiplier"))) : processTime;
         }
         return processTime;
     }
@@ -102,6 +106,26 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             } else if (count == 1) {
                 return consumption * 2;
             }
+        } else if (!upgradeStack.isEmpty() && TagUtil.isTaggedMachineUpgradeItem(upgradeStack)){
+            CompoundTag compound = upgradeStack.getTag();
+            float multiplier = compound != null ? compound.getFloat("multiplier") : 1;
+            MysteriousMultiplier.QualityTier qualityTier = MysteriousMultiplier.getQualityTier(multiplier);
+
+            return (int) switch (qualityTier){
+                case NULL ->        consumption;
+                case BASIC ->       consumption * 1.15;
+                case GRAND ->       consumption * 1.25;
+                case RARE ->        consumption * 1.5;
+                case ARCANE ->      consumption * 2;
+                case HEROIC ->      consumption * 4;
+                case UNIQUE ->      consumption * 6;
+                case CELESTIAL ->   consumption * 8;
+                case DIVINE ->      consumption * 10;
+                case EPIC ->        consumption * 12;
+                case LEGENDARY ->   consumption * 14;
+                case MYTHIC ->      consumption * 16;
+            };
+
         }
         return consumption;
     }
@@ -237,7 +261,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if (tileEntity.getUpgradeSlotId() == slot){
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get();
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return true;
             }
@@ -246,7 +270,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
                 if(slot == tileEntity.getUpgradeSlotId()) {
-                    return stack.getItem() == VEItems.QUARTZ_MULTIPLIER.get() ? super.insertItem(slot, stack, simulate) : stack;
+                    return TagUtil.isTaggedMachineUpgradeItem(stack) ? super.insertItem(slot, stack, simulate) : stack;
                 }
                 return super.insertItem(slot, stack, simulate);
             }

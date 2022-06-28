@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:crushing",
   "ingredient": {
-    "tag": "forge:raw_ores/eighzo",
+    "tag": "forge:raw_materials/eighzo",
     "count": 1
   },
   "process_time": 200,
@@ -13,5 +13,9 @@
     "item": "voluminousenergy:eighzo_dust",
     "count": 1,
     "chance": 0.333
+  },
+  "experience": {
+    "minimum": 7,
+    "maximum": 13
   }
 }

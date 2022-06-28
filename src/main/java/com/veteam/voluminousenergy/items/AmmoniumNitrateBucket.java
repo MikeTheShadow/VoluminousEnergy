@@ -9,6 +9,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -46,6 +47,7 @@ public class AmmoniumNitrateBucket extends VENoPlaceBucket {
                 level.levelEvent(1505, blockpos, 0);
             }
 
+            if (context.getPlayer() != null) context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else {
             BlockState blockstate = level.getBlockState(blockpos);

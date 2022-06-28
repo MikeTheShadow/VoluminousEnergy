@@ -13,5 +13,9 @@
     "item": "voluminousenergy:sand_dust",
     "count": 3,
     "chance": 1
+  },
+  "experience": {
+    "minimum": 1,
+    "maximum": 3
   }
 }

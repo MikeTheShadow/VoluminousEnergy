@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -684,5 +686,54 @@ public class RecipeUtil {
 
     public static ArrayList<FluidStack> getFluidsHotEnoughForIndustrialBlastingRecipe(IndustrialBlastingRecipe recipe){
         return getFluidsAsHotOrHotterThanIntAsFluidStacks(recipe.getMinimumHeat(), Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get());
+    }
+
+    private static ArrayList<CrusherRecipe> cachedCrusherRecipes = new ArrayList<>();
+    public static ArrayList<CrusherRecipe> getCrusherRecipes(Level level){
+        if (cachedCrusherRecipes.isEmpty()){
+            for (Recipe recipe : level.getRecipeManager().getRecipes()){
+                if (recipe instanceof CrusherRecipe crusherRecipe){
+                    cachedCrusherRecipes.add(crusherRecipe);
+                }
+            }
+        }
+
+        return cachedCrusherRecipes;
+    }
+
+    private static HashMap<Integer,CrusherRecipe> CrusherIORecipeCache = new HashMap<>();
+    public static CrusherRecipe getCrusherRecipeFromAnyOutputAndTryInput(Item output, Item potentiallyKnownInput, Level level){
+        int itemPairHash = new Pair<>(output, potentiallyKnownInput).hashCode();
+        if (CrusherIORecipeCache.containsKey(itemPairHash)){
+            return CrusherIORecipeCache.get(itemPairHash);
+        }
+
+        AtomicReference<ArrayList<CrusherRecipe>> atomicSublist = new AtomicReference<>(new ArrayList<>());
+
+        getCrusherRecipes(level).parallelStream().forEach(recipe -> {
+            if (recipe.result.is(output) || recipe.rngResult.is(output)){
+                atomicSublist.get().add(recipe);
+            }
+        });
+
+
+        // This is for more accurate recipe finding; if multiple recipes have same output, but different inputs, knowing the input we can select the correct one
+        if (potentiallyKnownInput != null && potentiallyKnownInput != Items.AIR){
+            for (CrusherRecipe crusherRecipe : atomicSublist.get()){ // This feeds off of the sublist; Therefore this is ONLY Crusher Recipes with this output
+                for (ItemStack ingredientStack : crusherRecipe.getIngredient().getItems()){
+                    if (ingredientStack.getItem() == potentiallyKnownInput) {
+                        CrusherIORecipeCache.put(itemPairHash, crusherRecipe);
+                        return  crusherRecipe;
+                    }
+                }
+
+            }
+        }
+
+        try {
+            return atomicSublist.get().get(0);
+        } catch (Exception e){
+            return null;
+        }
     }
 }
