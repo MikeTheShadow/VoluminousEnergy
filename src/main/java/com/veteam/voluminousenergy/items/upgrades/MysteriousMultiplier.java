@@ -20,7 +20,6 @@ public class MysteriousMultiplier extends Item {
                 .stacksTo(1)
                 .tab(VESetup.itemGroup)
         );
-        setRegistryName("mysterious_multiplier");
     }
 
     @Override
