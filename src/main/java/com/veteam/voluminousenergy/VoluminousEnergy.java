@@ -20,12 +20,14 @@ import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
+import com.veteam.voluminousenergy.datagen.VELootInjectionData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -108,6 +110,7 @@ public class VoluminousEnergy {
         VEFluids.VE_FLUID_BLOCKS.register(modEventBus);
         VEFluids.VE_FLUID_ITEMS.register(modEventBus);
         modEventBus.addListener(this::registerRenderers);
+        VELoot.registerLoot(modEventBus);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 
@@ -898,6 +901,7 @@ public class VoluminousEnergy {
 
             if(event.includeServer()) {
                 dataGenerator.addProvider(new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
+                dataGenerator.addProvider(new VELootInjectionData(dataGenerator));
             }
         }
     }

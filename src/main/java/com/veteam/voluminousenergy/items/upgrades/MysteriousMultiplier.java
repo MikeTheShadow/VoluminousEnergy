@@ -28,7 +28,7 @@ public class MysteriousMultiplier extends Item {
         Component componentToAdd =  TextUtil.translateString("text.voluminousenergy.quality").copy().append(": ");
 
         if (stack.getTag() == null) {
-            componentToAdd = componentToAdd.copy().append("NULL").withStyle(ChatFormatting.BOLD);
+            componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.unidentified")).withStyle(ChatFormatting.BOLD);
         } else {
             float multiplier = stack.getTag().getFloat("multiplier");
 
