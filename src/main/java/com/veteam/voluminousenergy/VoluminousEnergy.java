@@ -9,6 +9,8 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.loot.VELoot;
+import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
 import com.veteam.voluminousenergy.setup.IProxy;
@@ -105,13 +107,15 @@ public class VoluminousEnergy {
         // TODO: Port registering of Features to use Deferred register
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
+        modEventBus.addListener(this::registerRenderers);
+        VELoot.registerLoot(modEventBus);
 
         //Register triggers
         VECriteriaTriggers.init();
 
         // Config Files to load
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
-        
+
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
@@ -167,6 +171,8 @@ public class VoluminousEnergy {
             DataGenerator dataGenerator = event.getGenerator();
 
             if(event.includeServer()) {
+                dataGenerator.addProvider(new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
+                dataGenerator.addProvider(new VELootInjectionData(dataGenerator));
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
             }
         }

@@ -718,8 +718,9 @@ public class RecipeUtil {
 
 
         // This is for more accurate recipe finding; if multiple recipes have same output, but different inputs, knowing the input we can select the correct one
-        if (potentiallyKnownInput != null && potentiallyKnownInput != Items.AIR){
+        if (potentiallyKnownInput != null && potentiallyKnownInput != Items.AIR && !atomicSublist.get().isEmpty()){
             for (CrusherRecipe crusherRecipe : atomicSublist.get()){ // This feeds off of the sublist; Therefore this is ONLY Crusher Recipes with this output
+                if (crusherRecipe == null) continue;
                 for (ItemStack ingredientStack : crusherRecipe.getIngredient().getItems()){
                     if (ingredientStack.getItem() == potentiallyKnownInput) {
                         CrusherIORecipeCache.put(itemPairHash, crusherRecipe);

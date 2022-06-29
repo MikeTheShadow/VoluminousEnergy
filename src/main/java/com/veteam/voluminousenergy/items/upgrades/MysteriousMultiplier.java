@@ -27,7 +27,7 @@ public class MysteriousMultiplier extends Item {
         Component componentToAdd =  TextUtil.translateString("text.voluminousenergy.quality").copy().append(": ");
 
         if (stack.getTag() == null) {
-            componentToAdd = componentToAdd.copy().append("NULL").withStyle(ChatFormatting.BOLD);
+            componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.unidentified")).withStyle(ChatFormatting.BOLD);
         } else {
             float multiplier = stack.getTag().getFloat("multiplier");
 
@@ -64,8 +64,8 @@ public class MysteriousMultiplier extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
-        if (stack.getTag() == null);
-        else if (!stack.getTag().isEmpty()) return;
+        if (stack.getTag() == null && !level.isClientSide());
+        else if (level.isClientSide() || !stack.getTag().isEmpty()) return;
 
         float multiplier = level.getRandom().nextFloat() * (0.75F - 0.005F) + 0.005F;
         stack.getOrCreateTag().putFloat("multiplier", multiplier);
