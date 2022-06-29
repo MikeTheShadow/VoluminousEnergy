@@ -2,33 +2,30 @@ package com.veteam.voluminousenergy.loot;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
-public class VELoot {
-    public static final DeferredRegister<GlobalLootModifierSerializer<?>> VE_LOOT_MODIFIER_REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, VoluminousEnergy.MODID);
-
-    public static RegistryObject<AnimalFatLootModifier.Serializer> ANIMAL_FAT_LOOT_MODIFIER_SERIALIZER = VE_LOOT_MODIFIER_REGISTRY.register(
-            "animal_fat", AnimalFatLootModifier.Serializer::new);
 import com.veteam.voluminousenergy.loot.functions.MysteriousMultiplierLootFunction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 
 public class VELoot {
+    public static final DeferredRegister<GlobalLootModifierSerializer<?>> VE_LOOT_MODIFIER_REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, VoluminousEnergy.MODID);
+
+    public static RegistryObject<AnimalFatLootModifier.Serializer> ANIMAL_FAT_LOOT_MODIFIER_SERIALIZER = VE_LOOT_MODIFIER_REGISTRY.register(
+            "animal_fat", AnimalFatLootModifier.Serializer::new);
 
     private VELoot() {}
 
@@ -61,11 +58,12 @@ public class VELoot {
     );
 
     public static void registerLoot(IEventBus modEventBus){
-        modEventBus.addGenericListener(Block.class, VELoot::registerLootFunctions);
+        modEventBus.addListener(VELoot::registerLootFunctions);
         MinecraftForge.EVENT_BUS.addListener(VELoot::loadLootTable);
     }
 
-    private static void registerLootFunctions(RegistryEvent<Block> event){
+    private static void registerLootFunctions(RegisterEvent event){
+        if (!event.getRegistryKey().equals(Registry.LOOT_FUNCTION_REGISTRY)) return;
         Registry.register(
                 Registry.LOOT_FUNCTION_TYPE,
                 new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot"),

@@ -21,7 +21,7 @@ public class MysteriousMultiplierLootFunction extends LootItemConditionalFunctio
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         BlockEntity tile = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-        VoluminousEnergy.LOGGER.debug("Loot Tile: " + tile.getType().getRegistryName());
+//        VoluminousEnergy.LOGGER.debug("Loot Tile: " + tile.getType().getRegistryName());
 
         return stack;
     }

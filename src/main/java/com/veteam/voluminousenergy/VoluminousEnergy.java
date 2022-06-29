@@ -2,14 +2,13 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.datagen.VELootInjectionData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
-import com.veteam.voluminousenergy.loot.VELoot;
-import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;
@@ -107,7 +106,6 @@ public class VoluminousEnergy {
         // TODO: Port registering of Features to use Deferred register
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
-        modEventBus.addListener(this::registerRenderers);
         VELoot.registerLoot(modEventBus);
 
         //Register triggers
@@ -171,9 +169,8 @@ public class VoluminousEnergy {
             DataGenerator dataGenerator = event.getGenerator();
 
             if(event.includeServer()) {
-                dataGenerator.addProvider(new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
-                dataGenerator.addProvider(new VELootInjectionData(dataGenerator));
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
+                dataGenerator.addProvider(true, new VELootInjectionData(dataGenerator));
             }
         }
     }
