@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.loot.AnimalFat;
+package com.veteam.voluminousenergy.loot.modifiers;
 
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +42,6 @@ public class AnimalFatLootModifier extends LootModifier {
         amount = Math.round(amount * luck);
         amount = Math.round(amount * lootingModif);
         generatedLoot.add(new ItemStack(itemAddition, amount));
-        System.out.println("Generated New Loot");
         return generatedLoot;
     }
 

@@ -26,7 +26,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
-import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.ClientProxy;

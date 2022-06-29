@@ -41,30 +41,30 @@ public class VELootInjectionData implements DataProvider {
     private void addMysteriousMultiplierSpawns(HashCache cache) throws IOException {
         HashMap<ResourceLocation, LootTable.Builder> tableMap = new HashMap<>();
 
-        tableMap.put(BuiltInLootTables.BASTION_BRIDGE, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.END_CITY_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,1));
-        tableMap.put(BuiltInLootTables.SIMPLE_DUNGEON, builder(VEItems.MYSTERIOUS_MULTIPLIER,3));
-        tableMap.put(BuiltInLootTables.ABANDONED_MINESHAFT, builder(VEItems.MYSTERIOUS_MULTIPLIER,5));
-        tableMap.put(BuiltInLootTables.BURIED_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,3));
+        tableMap.put(BuiltInLootTables.BASTION_BRIDGE, builder(VEItems.MYSTERIOUS_MULTIPLIER,12));
+        tableMap.put(BuiltInLootTables.END_CITY_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,22));
+        tableMap.put(BuiltInLootTables.SIMPLE_DUNGEON, builder(VEItems.MYSTERIOUS_MULTIPLIER,55));
+        tableMap.put(BuiltInLootTables.ABANDONED_MINESHAFT, builder(VEItems.MYSTERIOUS_MULTIPLIER,64));
+        tableMap.put(BuiltInLootTables.BURIED_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,48));
         tableMap.put(BuiltInLootTables.ARMORER_GIFT, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
         tableMap.put(BuiltInLootTables.BASTION_HOGLIN_STABLE, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.BASTION_OTHER, builder(VEItems.MYSTERIOUS_MULTIPLIER,1));
+        tableMap.put(BuiltInLootTables.BASTION_OTHER, builder(VEItems.MYSTERIOUS_MULTIPLIER,12));
         tableMap.put(BuiltInLootTables.BASTION_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,4));
-        tableMap.put(BuiltInLootTables.DESERT_PYRAMID, builder(VEItems.MYSTERIOUS_MULTIPLIER,5));
-        tableMap.put(BuiltInLootTables.FISHING_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.IGLOO_CHEST, builder(VEItems.MYSTERIOUS_MULTIPLIER,1));
-        tableMap.put(BuiltInLootTables.JUNGLE_TEMPLE, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.SHIPWRECK_SUPPLY, builder(VEItems.MYSTERIOUS_MULTIPLIER,1));
-        tableMap.put(BuiltInLootTables.SPAWN_BONUS_CHEST, builder(VEItems.MYSTERIOUS_MULTIPLIER,5));
-        tableMap.put(BuiltInLootTables.NETHER_BRIDGE, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.STRONGHOLD_CORRIDOR, builder(VEItems.MYSTERIOUS_MULTIPLIER,3));
-        tableMap.put(BuiltInLootTables.STRONGHOLD_CROSSING, builder(VEItems.MYSTERIOUS_MULTIPLIER,4));
+        tableMap.put(BuiltInLootTables.DESERT_PYRAMID, builder(VEItems.MYSTERIOUS_MULTIPLIER,14));
+        tableMap.put(BuiltInLootTables.FISHING_TREASURE, builder(VEItems.MYSTERIOUS_MULTIPLIER,4));
+        tableMap.put(BuiltInLootTables.IGLOO_CHEST, builder(VEItems.MYSTERIOUS_MULTIPLIER,14));
+        tableMap.put(BuiltInLootTables.JUNGLE_TEMPLE, builder(VEItems.MYSTERIOUS_MULTIPLIER,21));
+        tableMap.put(BuiltInLootTables.SHIPWRECK_SUPPLY, builder(VEItems.MYSTERIOUS_MULTIPLIER,18));
+        tableMap.put(BuiltInLootTables.SPAWN_BONUS_CHEST, builder(VEItems.MYSTERIOUS_MULTIPLIER,52));
+        tableMap.put(BuiltInLootTables.NETHER_BRIDGE, builder(VEItems.MYSTERIOUS_MULTIPLIER,26));
+        tableMap.put(BuiltInLootTables.STRONGHOLD_CORRIDOR, builder(VEItems.MYSTERIOUS_MULTIPLIER,32));
+        tableMap.put(BuiltInLootTables.STRONGHOLD_CROSSING, builder(VEItems.MYSTERIOUS_MULTIPLIER,48));
         tableMap.put(BuiltInLootTables.VILLAGE_WEAPONSMITH, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
         tableMap.put(BuiltInLootTables.VILLAGE_TOOLSMITH, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
         tableMap.put(BuiltInLootTables.VILLAGE_ARMORER, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
         tableMap.put(BuiltInLootTables.VILLAGE_MASON, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
-        tableMap.put(BuiltInLootTables.UNDERWATER_RUIN_BIG, builder(VEItems.MYSTERIOUS_MULTIPLIER,3));
-        tableMap.put(BuiltInLootTables.UNDERWATER_RUIN_SMALL, builder(VEItems.MYSTERIOUS_MULTIPLIER,2));
+        tableMap.put(BuiltInLootTables.UNDERWATER_RUIN_BIG, builder(VEItems.MYSTERIOUS_MULTIPLIER,30));
+        tableMap.put(BuiltInLootTables.UNDERWATER_RUIN_SMALL, builder(VEItems.MYSTERIOUS_MULTIPLIER,12));
 
 
         for (Map.Entry<ResourceLocation, LootTable.Builder> entry : tableMap.entrySet()){
