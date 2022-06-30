@@ -169,7 +169,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                 } else if (slot == 4) {
                     return RecipeUtil.isAnOutputForIndustrialBlastingRecipe(level, stack.copy());
                 } else if (slot == 5){
-                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER);
+                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER.get());
                 }
                 return false;
             }

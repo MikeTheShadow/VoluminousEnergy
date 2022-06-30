@@ -182,7 +182,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                     return !recipe.isEmpty();
                 }
 
-                if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
+                if (slot == 4) return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER.get()); // this is the upgrade slot
                 return true;
             }
 
