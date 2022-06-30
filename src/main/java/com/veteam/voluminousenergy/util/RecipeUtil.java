@@ -15,7 +15,10 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -85,7 +88,7 @@ public class RecipeUtil {
             }
         }
         if(inputItem.getRegistryName() == null) return new ArrayList<>();
-        return aqueoulizerItemMap.get(inputItem.getRegistryName().hashCode());
+        return aqueoulizerItemMap.getOrDefault(inputItem.getRegistryName().hashCode(),new ArrayList<>());
     }
 
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, Fluid fluid){
