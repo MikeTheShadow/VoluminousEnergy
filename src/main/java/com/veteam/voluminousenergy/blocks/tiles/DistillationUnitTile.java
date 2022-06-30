@@ -215,7 +215,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                 } else if (slot == 6){
                     return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
                 } else if (slot == 7){
-                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER);
+                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER.get());
                 }
                 return false;
             }

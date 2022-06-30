@@ -240,7 +240,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                 } else if (slot == 3 || slot == 4) {
                     return stack.getItem() instanceof BucketItem;
                 } else if (slot == 5){
-                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER); // this is the upgrade slot
+                    return stack.getItem().equals(VEItems.QUARTZ_MULTIPLIER.get()); // this is the upgrade slot
                 }
                 return true;
             }
