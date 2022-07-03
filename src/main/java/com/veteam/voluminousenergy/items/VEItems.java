@@ -2,7 +2,9 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.foods.VEFoods;
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
+import com.veteam.voluminousenergy.items.batteries.LeadAcidBatteryPack;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
+import com.veteam.voluminousenergy.items.batteries.MercuryBatteryPack;
 import com.veteam.voluminousenergy.items.crops.RiceItem;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
@@ -123,6 +125,8 @@ public class VEItems {
     //Batteries
     public static MercuryBattery MERCURY_BATTERY = new MercuryBattery();
     public static LeadAcidBattery LEAD_ACID_BATTERY = new LeadAcidBattery();
+    public static MercuryBatteryPack MERCURY_BATTERY_PACK = new MercuryBatteryPack();
+    public static LeadAcidBatteryPack LEAD_ACID_BATTERY_PACK = new LeadAcidBatteryPack();
 
     //Tank Frames
     public static StandardTankFrame STANDARD_TANK_FRAME = new StandardTankFrame();

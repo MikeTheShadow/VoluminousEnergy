@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "***",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/copper"
+    },
+    "*": {
+      "item": "voluminousenergy:mercury_battery"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:mercury_battery_pack",
+    "count": 1
+  }
+}

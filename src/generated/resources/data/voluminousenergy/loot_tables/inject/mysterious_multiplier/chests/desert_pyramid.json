@@ -8,12 +8,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 14,
+          "weight": 99,
           "name": "voluminousenergy:mysterious_multiplier"
         },
         {
-          "type": "minecraft:empty",
-          "weight": 86
+          "type": "minecraft:empty"
         }
       ]
     }

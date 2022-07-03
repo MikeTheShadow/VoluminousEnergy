@@ -1,11 +1,12 @@
 package com.veteam.voluminousenergy.items.batteries;
 
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
+import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -61,7 +62,8 @@ public class VEEnergyItem extends Item {
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
         if(CapabilityEnergy.ENERGY == null) return; // sanity check
         itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
-            Component textComponent = new TextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
+//            Component textComponent = new TextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
+            Component textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
             tooltip.add(textComponent);
         });
     }
