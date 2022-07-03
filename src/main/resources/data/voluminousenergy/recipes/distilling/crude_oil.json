@@ -19,6 +19,6 @@
   "third_result": {
     "item": "voluminousenergy:raw_sulfur",
     "count": 1,
-    "chance": 5
+    "chance": 0.05
   }
 }

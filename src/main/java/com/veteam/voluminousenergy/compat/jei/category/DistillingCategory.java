@@ -88,7 +88,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 2, 32,VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getAmounts().get(2) + "", 72, 32,VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getThirdChance() + "%", 96, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+        Minecraft.getInstance().font.draw(matrixStack,(int)(recipe.getThirdChance()*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_COLOUR);
     }
 
     public void ingredientHandler(DistillationRecipe recipe,
