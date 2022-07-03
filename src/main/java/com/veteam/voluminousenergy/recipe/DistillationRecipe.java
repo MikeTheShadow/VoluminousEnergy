@@ -41,6 +41,7 @@ public class DistillationRecipe extends VEFluidRecipe {
     private int outputAmount;
     private int secondAmount;
     private int thirdAmount;
+    private float thirdChance;
 
     public DistillationRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
@@ -161,6 +162,8 @@ public class DistillationRecipe extends VEFluidRecipe {
     @Override
     public int getProcessTime() { return processTime; }
 
+    public float getThirdChance(){return thirdChance;}
+
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<DistillationRecipe> {
         @Override
@@ -201,8 +204,10 @@ public class DistillationRecipe extends VEFluidRecipe {
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("third_result").getAsJsonObject(),"item","minecraft:empty"),':');
             int thirdItemAmount = GsonHelper.getAsInt(json.get("third_result").getAsJsonObject(),"count",1);
+            float thirdItemChance = GsonHelper.getAsFloat(json.get("third_result").getAsJsonObject(),"chance",0);
             recipe.thirdResult = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
             recipe.thirdAmount = thirdItemAmount;
+            recipe.thirdChance = thirdItemChance;
 
             return recipe;
         }
@@ -244,6 +249,7 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.secondAmount = buffer.readInt();
             recipe.thirdResult = buffer.readItem();
             recipe.thirdAmount = buffer.readInt();
+            recipe.thirdChance = buffer.readFloat();
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
@@ -275,6 +281,7 @@ public class DistillationRecipe extends VEFluidRecipe {
             buffer.writeInt(recipe.secondAmount);
             buffer.writeItem(recipe.thirdResult);
             buffer.writeInt(recipe.thirdAmount);
+            buffer.writeFloat(recipe.thirdChance);
 
             recipe.ingredient.get().toNetwork(buffer);
 

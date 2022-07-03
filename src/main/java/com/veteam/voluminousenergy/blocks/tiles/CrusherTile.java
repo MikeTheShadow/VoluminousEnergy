@@ -187,8 +187,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                         ItemStack newRngStack = recipe.getRngItem().copy();
 
                         // Generate Random floats
-                        Random r = new Random();
-                        float random = abs(0 + r.nextFloat() * (0 - 1));
+                        float random = abs(0 + level.getRandom().nextFloat() * (0 - 1));
 
                         // ONLY manipulate the slot if the random float is under or is identical to the chance float
                         if(random <= recipe.getChance()){

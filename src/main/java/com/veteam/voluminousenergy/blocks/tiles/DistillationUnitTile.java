@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.minecraft.util.Mth.abs;
+
 public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     public VESlotManager iTopManager = new VESlotManager(0,Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"i_top_manager");
@@ -142,13 +144,15 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                                     outputTank1.getTank().fill(recipe.getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
-                                if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
-                                    if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
-                                        thirdOutput.setCount(1);
+                                if (abs(0 + level.getRandom().nextFloat() * (0 - 1)) < recipe.getThirdChance()){
+                                    if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
+                                        if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
+                                            thirdOutput.setCount(1);
+                                        }
+                                        inventory.insertItem(6, recipe.getThirdResult().copy(),false); // CRASH the game if this is not empty!
+                                    } else { // Assuming the recipe output item is already in the output slot
+                                        inventory.insertItem(6, recipe.getThirdResult().copy(),false); // Place the new output stack on top of the old one
                                     }
-                                    inventory.insertItem(6, recipe.getThirdResult().copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    inventory.insertItem(6, recipe.getThirdResult().copy(),false); // Place the new output stack on top of the old one
                                 }
 
                                 counter--;

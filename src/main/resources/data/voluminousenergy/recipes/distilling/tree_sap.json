@@ -18,6 +18,7 @@
   },
   "third_result": {
     "item": "voluminousenergy:rosin",
-    "count": 1
+    "count": 1,
+    "chance": 25
   }
 }
