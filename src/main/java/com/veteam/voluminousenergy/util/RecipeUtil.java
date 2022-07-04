@@ -90,7 +90,7 @@ public class RecipeUtil {
             }
         }
         if(RegistryLookups.lookupItem(inputItem) == null) return new ArrayList<>();
-        return aqueoulizerItemMap.get(RegistryLookups.lookupItem(inputItem).hashCode());
+        return aqueoulizerItemMap.getOrDefault(RegistryLookups.lookupItem(inputItem).hashCode(),new ArrayList<>());
     }
 
     public static ArrayList<AqueoulizerRecipe> getAqueoulizerRecipesFromFluidInput(Level level, Fluid fluid){

@@ -329,6 +329,8 @@
     "item.voluminousenergy.animal_fat": "Animal Fat",
     "item.voluminousenergy.dough": "Dough",
     "item.voluminousenergy.mysterious_multiplier": "Mysterious Multiplier",
+    "item.voluminousenergy.mercury_battery_pack": "Mercury Battery Pack",
+    "item.voluminousenergy.lead_acid_battery_pack": "Lead-Acid Battery Pack",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",

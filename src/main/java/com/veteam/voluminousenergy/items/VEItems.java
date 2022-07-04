@@ -3,7 +3,9 @@ package com.veteam.voluminousenergy.items;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.foods.VEFoods;
 import com.veteam.voluminousenergy.items.batteries.LeadAcidBattery;
+import com.veteam.voluminousenergy.items.batteries.LeadAcidBatteryPack;
 import com.veteam.voluminousenergy.items.batteries.MercuryBattery;
+import com.veteam.voluminousenergy.items.batteries.MercuryBatteryPack;
 import com.veteam.voluminousenergy.items.crops.RiceItem;
 import com.veteam.voluminousenergy.items.dusts.*;
 import com.veteam.voluminousenergy.items.gears.*;
@@ -128,6 +130,8 @@ public class VEItems {
     //Batteries
     public static RegistryObject<Item> MERCURY_BATTERY = VE_ITEM_REGISTRY.register("mercury_battery",MercuryBattery::new);
     public static RegistryObject<Item> LEAD_ACID_BATTERY = VE_ITEM_REGISTRY.register("lead_acid_battery",LeadAcidBattery::new);
+    public static RegistryObject<Item> MERCURY_BATTERY_PACK = VE_ITEM_REGISTRY.register("mercury_battery_pack",MercuryBatteryPack::new);
+    public static RegistryObject<Item> LEAD_ACID_BATTERY_PACK = VE_ITEM_REGISTRY.register("lead_acid_battery_pck",LeadAcidBatteryPack::new);
 
     public static RegistryObject<Item> TITANIUM_SAWBLADE = VE_ITEM_REGISTRY.register("titanium_sawblade",TitaniumSawblade::new);
 

@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.loot.AnimalFat;
+package com.veteam.voluminousenergy.loot.modifiers;
 
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.items.VEItems;
