@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.loot;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.loot.AnimalFat.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.functions.MysteriousMultiplierLootFunction;
+import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
