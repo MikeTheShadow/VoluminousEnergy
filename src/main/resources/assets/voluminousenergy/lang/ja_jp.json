@@ -112,6 +112,9 @@
   "fluid.voluminousenergy.sulfuric_acid": "硫酸",
   "fluid.voluminousenergy.tree_sap": "樹液",
   "fluid.voluminousenergy.treethanol": "木からのエタノール",
+  "fluid.voluminousenergy.hydrogen": "水素",
+  "fluid.voluminousenergy.ammonia": "アンモニア",
+  "fluid.voluminousenergy.ammonium_nitrate_solution": "硝酸アンモニウム溶液",
 
   "_comment": "Fluid Blocks",
   "block.voluminousenergy.crude_oil": "原油",
@@ -133,6 +136,9 @@
   "block.voluminousenergy.sulfuric_acid": "硫酸",
   "block.voluminousenergy.tree_sap": "樹液",
   "block.voluminousenergy.treethanol": "木からのエタノール",
+  "block.voluminousenergy.hydrogen": "水素",
+  "block.voluminousenergy.ammonia": "アンモニア",
+  "block.voluminousenergy.ammonium_nitrate_solution": "硝酸アンモニウム溶液",
 
   "_comment": "Items",
   "item.voluminousenergy.petcoke": "石油コークス",
@@ -281,6 +287,9 @@
   "item.voluminousenergy.animal_fat": "動物性脂肪",
   "item.voluminousenergy.dough": "パン生地",
   "item.voluminousenergy.mysterious_multiplier": "不思議な時計乗数",
+  "item.voluminousenergy.hydrogen_bucket": "水素バケツ",
+  "item.voluminousenergy.fluid_scanner": "流体場スキャナー",
+  "item.voluminousenergy.rfid_chip": "RFID タグ",
 
   "_comment": "マルチ道具 Items",
   "item.voluminousenergy.empty_multitool": "空のマルチ道具",

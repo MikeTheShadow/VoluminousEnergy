@@ -1,12 +1,15 @@
 package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.screens.*;
 import com.veteam.voluminousenergy.compat.jei.category.*;
 import com.veteam.voluminousenergy.compat.jei.containerHandler.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
+import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -92,15 +95,35 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     }
 
     private void registerInfo(IRecipeRegistration registration){
+        // Compressed Air Info
         registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
 
-        ArrayList<ItemStack> compressedAirInfo = new ArrayList<>();
-        compressedAirInfo.add(new ItemStack(VEBlocks.AIR_COMPRESSOR_BLOCK.asItem()));
-        compressedAirInfo.add(new ItemStack(VEFluids.COMPRESSED_AIR_BUCKET_REG.get()));
+        List<ItemStack> compressedAirInfo = List.of(
+                new ItemStack(VEBlocks.AIR_COMPRESSOR_BLOCK.asItem()),
+                new ItemStack(VEFluids.COMPRESSED_AIR_BUCKET_REG.get())
+        );
         registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
 
+        // Crude Oil info
         registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
         registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
+
+        // Hydrogen via Electrolyzer info
+        registration.addIngredientInfo(List.of(new ItemStack(VEFluids.HYDROGEN_BUCKET_REG.get()), new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.asItem())), VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.hydrogen_electrolyzer_info"));
+        registration.addIngredientInfo(new FluidStack(VEFluids.HYDROGEN_REG.get(), 1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.hydrogen_electrolyzer_info"));
+
+        // Quartz Multiplier info
+        registration.addIngredientInfo(new ItemStack(VEItems.QUARTZ_MULTIPLIER), VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.quartz_multiplier_info"));
+
+        // Mysterious Multiplier info
+        ArrayList<ItemStack> tieredMysteriousMultipliers = new ArrayList<>();
+        for (MysteriousMultiplier.QualityTier tier : MysteriousMultiplier.QUALITY_TIERS){
+            ItemStack multiplier = new ItemStack(VEItems.MYSTERIOUS_MULTIPLIER);
+            multiplier.getOrCreateTag().putFloat("multiplier", MysteriousMultiplier.REFERENCE_MULTIPLIER_VALUES.get(tier));
+            multiplier.getOrCreateTag().putBoolean("jei",true);
+            tieredMysteriousMultipliers.add(multiplier);
+        }
+        registration.addIngredientInfo(tieredMysteriousMultipliers,VanillaTypes.ITEM,TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {

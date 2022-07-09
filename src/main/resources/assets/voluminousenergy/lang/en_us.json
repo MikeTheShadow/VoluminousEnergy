@@ -139,6 +139,9 @@
     "fluid.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
     "fluid.voluminousenergy.tree_sap": "Tree Sap",
     "fluid.voluminousenergy.treethanol": "Treethanol",
+    "fluid.voluminousenergy.hydrogen": "Hydrogen",
+    "fluid.voluminousenergy.ammonia": "Ammonia",
+    "fluid.voluminousenergy.ammonium_nitrate_solution": "Ammonium Nitrate Solution",
 
     "_comment": "Fluid Blocks",
     "block.voluminousenergy.crude_oil": "Crude Oil",
@@ -160,6 +163,9 @@
     "block.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
     "block.voluminousenergy.tree_sap": "Tree Sap",
     "block.voluminousenergy.treethanol": "Treethanol",
+    "block.voluminousenergy.hydrogen": "Hydrogen",
+    "block.voluminousenergy.ammonia": "Ammonia",
+    "block.voluminousenergy.ammonium_nitrate_solution": "Ammonium Nitrate Solution",
 
     "_comment": "Items",
     "item.voluminousenergy.petcoke": "Petcoke",
@@ -310,6 +316,9 @@
     "item.voluminousenergy.mysterious_multiplier": "Mysterious Multiplier",
     "item.voluminousenergy.mercury_battery_pack": "Mercury Battery Pack",
     "item.voluminousenergy.lead_acid_battery_pack": "Lead-Acid Battery Pack",
+    "item.voluminousenergy.hydrogen_bucket": "Hydrogen Bucket",
+    "item.voluminousenergy.fluid_scanner": "Fluid Scanner",
+    "item.voluminousenergy.rfid_chip": "RFID Chip",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",
@@ -361,8 +370,6 @@
     "item.voluminousenergy.solarium_drill_multitool": "Solarium Drill Multitool",
     "item.voluminousenergy.solarium_scooper_multitool": "Solarium Scooper Multitool",
     "item.voluminousenergy.solarium_trimmer_multitool": "Solarium Trimmer Multitool",
-    "item.voluminousenergy.fluid_scanner": "Fluid Scanner",
-    "item.voluminousenergy.rfid_chip": "RFID Chip",
 
     "_comment" : "Advancements",
     "advancements.machine.activate_dimensional_laser.title": "What Have I done?",
@@ -394,6 +401,9 @@
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
     "jei.voluminousenergy.air_compressor_fluid_info": "Compressed Air can be obtained via the Air Compressor",
     "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air",
+    "jei.voluminousenergy.hydrogen_electrolyzer_info": "A bucket of Hydrogen and 2 buckets of Oxygen can be obtained by electrolyzing a bucket of water in the Electrolyzer",
+    "jei.voluminousenergy.quartz_multiplier_info": "Quartz Multipliers can speed up machines at the cost of higher power consumption. The upgrade slot is the slot with a green arrow on the top right. See: https://github.com/MikeTheShadow/VoluminousEnergy/wiki/Upgrades for more details.",
+    "jei.voluminousenergy.mysterious_multiplier_info": "Mysterious Multipliers are old, gold capped clock sources to speed up machines. You'll find them in various loot chests, and maybe even from the sea. Hover over the item in JEI to see details about each quality tier. (Left-click on the item to start cycling between tiers)",
 
     "_comment": "JEI Fluid Types for Combustion",
     "jei.voluminousenergy.fluid.fuel": "Fuel",
