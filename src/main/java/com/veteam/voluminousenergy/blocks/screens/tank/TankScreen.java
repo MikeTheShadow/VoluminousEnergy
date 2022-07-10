@@ -120,7 +120,7 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
         if (tileEntity != null) {
             // Tank render
             try{
-                VERender.renderGuiTank(tileEntity.getTank().getTank(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getTank().getTank(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
             // IO Rendering

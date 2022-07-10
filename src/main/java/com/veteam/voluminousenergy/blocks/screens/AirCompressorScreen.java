@@ -124,7 +124,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
             this.blit(matrixStack,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{
-                VERender.renderGuiTank(tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);

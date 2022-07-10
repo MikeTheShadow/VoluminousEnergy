@@ -6,9 +6,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -24,13 +26,13 @@ public class VERender {
         throw new IllegalAccessError("Utility class");
     }
 
-    public static void renderGuiTank(IFluidHandler fluidHandler, int tank, double x, double y, double zLevel, double width, double height) {
+    public static void renderGuiTank(Level level, BlockPos tilePos, IFluidHandler fluidHandler, int tank, double x, double y, double zLevel, double width, double height) {
         FluidStack stack = fluidHandler.getFluidInTank(tank);
         int tankCapacity = fluidHandler.getTankCapacity(tank);
-        renderGuiTank(stack, tankCapacity, x, y, zLevel, width, height);
+        renderGuiTank(level, tilePos, stack, tankCapacity, x, y, zLevel, width, height);
     }
 
-    public static void renderGuiTank(FluidStack stack, int tankCapacity, double x, double y, double zLevel, double width, double height) {
+    public static void renderGuiTank(Level level, BlockPos tilePos, FluidStack stack, int tankCapacity, double x, double y, double zLevel, double width, double height) {
         // Originally Adapted from Ender IO by Silent's Mechanisms
         int amount;
         try{
@@ -57,13 +59,24 @@ public class VERender {
         int renderAmount = (int) Math.max(Math.min(height, amount * height / tankCapacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        int color = stack.getFluid().getAttributes().getColor();
-        float r = ((color >> 16) & 0xFF) / 255f;
-        float g = ((color >> 8) & 0xFF) / 255f;
-        float b = (color & 0xFF) / 255f;
-        float a = ((color >> 24) & 0xFF) / 255f;
-        RenderSystem.setShaderColor(r, g, b, a);
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        int color;
+        if (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER){
+            color = stack.getFluid().getAttributes().getColor();
+            float r = ((color >> 16) & 0xFF) / 255f;
+            float g = ((color >> 8) & 0xFF) / 255f;
+            float b = (color & 0xFF) / 255f;
+            float a = ((color >> 24) & 0xFF) / 255f;
+            RenderSystem.setShaderColor(r, g, b, a);
+        } else {
+            String colourString = Integer.toHexString(level.getBiome(tilePos).value().getWaterColor());
+            color = Integer.valueOf(colourString, 16);
+            float r = ((color >> 16) & 0xFF) / 255f;
+            float g = ((color >> 8) & 0xFF) / 255f;
+            float b = (color & 0xFF) / 255f;
+            float a = ((stack.getFluid().getAttributes().getColor() >> 24) & 0xFF) / 255f;
+            RenderSystem.setShaderColor(r, g, b, a);
+        }
 
         RenderSystem.enableBlend();
         for (int i = 0; i < width; i += 16) {
