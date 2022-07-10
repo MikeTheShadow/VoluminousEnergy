@@ -19,6 +19,7 @@
     "text.voluminousenergy.rfid.inventory_full": "Cannot write to RFID chip; inventory is full!",
     "text.voluminousenergy.rfid.write_success": "Successfully written chunk data to an RFID chip!",
     "text.voluminousenergy.rfid.chunk_data_error": "ERROR: Chunk data is null / not saved!",
+    "_comment": "Translators: Quality tiers are translated from Korean to English. For the original, see either ko_kr.json or https://archeage.xlgames.com/wikis/%EC%95%84%EC%9D%B4%ED%85%9C%20%EB%93%B1%EA%B8%89#h2-1",
     "text.voluminousenergy.quality": "Quality",
     "text.voluminousenergy.quality.unidentified": "Unidentified",
     "text.voluminousenergy.quality.basic": "Basic",
