@@ -123,11 +123,7 @@ public class CentrifugalSeparatorScreen extends VEContainerScreen<CentrifugalSep
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);

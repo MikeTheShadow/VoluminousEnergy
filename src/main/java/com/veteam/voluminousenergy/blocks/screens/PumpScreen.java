@@ -84,11 +84,7 @@ public class PumpScreen extends VEContainerScreen<PumpContainer> {
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.PUMP_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.PUMP_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 
@@ -123,7 +119,7 @@ public class PumpScreen extends VEContainerScreen<PumpContainer> {
             this.blit(matrixStack,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{
-                VERender.renderGuiTank(tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             drawIOSideHelper();
         }

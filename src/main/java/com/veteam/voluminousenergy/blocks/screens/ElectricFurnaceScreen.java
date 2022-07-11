@@ -86,11 +86,7 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.ELECTRIC_FURNACE_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.ELECTRIC_FURNACE_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);

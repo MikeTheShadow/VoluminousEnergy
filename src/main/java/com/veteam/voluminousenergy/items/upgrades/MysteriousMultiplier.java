@@ -12,6 +12,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 
 public class MysteriousMultiplier extends Item {
@@ -60,6 +61,28 @@ public class MysteriousMultiplier extends Item {
         }
 
         tooltip.add(componentToAdd);
+        tooltip.add(appendInfoForJEI(Component.nullToEmpty(""), stack));
+    }
+
+    public Component appendInfoForJEI(Component tooltip, ItemStack stack){
+        if (stack.getTag() != null && stack.getTag().contains("jei") && stack.getTag().contains("multiplier")){
+            QualityTier tier = getQualityTier(stack.getTag().getFloat("multiplier"));
+            tooltip = switch (tier){
+                case NULL -> tooltip.copy();
+                case BASIC -> tooltip.copy().append("1x ~ 0.65x") ;
+                case GRAND -> tooltip.copy().append("0.65x ~ 0.5x");
+                case RARE ->  tooltip.copy().append("0.5x ~ 0.4x");
+                case ARCANE ->  tooltip.copy().append("0.4x ~ 0.3x");
+                case HEROIC ->  tooltip.copy().append("0.3x ~ 0.25x");
+                case UNIQUE ->  tooltip.copy().append("0.25x ~ 0.2x");
+                case CELESTIAL ->  tooltip.copy().append("0.2x ~ 0.1x");
+                case DIVINE ->  tooltip.copy().append("0.1x ~ 0.075x");
+                case EPIC ->  tooltip.copy().append("0.075x ~ 0.05x");
+                case LEGENDARY -> tooltip.copy().append("0.05x ~ 0.025x");
+                case MYTHIC -> tooltip.copy().append("<0.025x");
+            };
+        }
+        return tooltip;
     }
 
     @Override
@@ -105,4 +128,31 @@ public class MysteriousMultiplier extends Item {
         return QualityTier.NULL;
     }
 
+    public static final List<QualityTier> QUALITY_TIERS = List.of(
+            MysteriousMultiplier.QualityTier.BASIC,
+            MysteriousMultiplier.QualityTier.GRAND,
+            MysteriousMultiplier.QualityTier.RARE,
+            MysteriousMultiplier.QualityTier.ARCANE,
+            MysteriousMultiplier.QualityTier.HEROIC,
+            MysteriousMultiplier.QualityTier.UNIQUE,
+            MysteriousMultiplier.QualityTier.CELESTIAL,
+            MysteriousMultiplier.QualityTier.DIVINE,
+            MysteriousMultiplier.QualityTier.EPIC,
+            MysteriousMultiplier.QualityTier.LEGENDARY,
+            MysteriousMultiplier.QualityTier.MYTHIC
+    );
+
+    public static final HashMap<QualityTier,Float> REFERENCE_MULTIPLIER_VALUES = new HashMap<>() {{
+        put(QualityTier.BASIC, 0.66F);
+        put(QualityTier.GRAND, 0.55F);
+        put(QualityTier.RARE, 0.45F);
+        put(QualityTier.ARCANE, 0.35F);
+        put(QualityTier.HEROIC, 0.27F);
+        put(QualityTier.UNIQUE, 0.21F);
+        put(QualityTier.CELESTIAL, 0.15F);
+        put(QualityTier.DIVINE, 0.08F);
+        put(QualityTier.EPIC, 0.06F);
+        put(QualityTier.LEGENDARY, 0.03F);
+        put(QualityTier.MYTHIC, 0.005F);
+    }};
 }

@@ -129,11 +129,7 @@ public class SawmillScreen extends VEContainerScreen<SawmillContainer> {
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.SAWMILL_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.SAWMILL_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 
@@ -183,7 +179,7 @@ public class SawmillScreen extends VEContainerScreen<SawmillContainer> {
             this.blit(matrixStack,i+67, j+31, 176, 0, progress, 17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
             // Upgrade slot

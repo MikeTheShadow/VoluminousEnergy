@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -18,6 +20,9 @@ public class TextUtil {
     public static Component TRANSLATED_BOTH_TANK = TextUtil.translateString("tank.voluminousenergy.both_tank");
 
     public static Component tankTooltip(String fluidName, int amount, int tankCapacity){
+        if (Config.SHORTEN_TANK_GUI_VALUES.get()){
+            return new TranslatableComponent(fluidName).append(": " + NumberUtil.numberToString4Fluids(amount) + " / " + NumberUtil.numberToString4Fluids(tankCapacity));
+        }
         String stringAmount = String.valueOf(amount);
         String stringTankCapacity = String.valueOf(tankCapacity);
 
@@ -30,6 +35,20 @@ public class TextUtil {
         }
 
         return Component.translatable(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
+    }
+
+    public static Component powerBarTooltip(VEEnergyStorage veEnergyStorage, int configuredMaxPower){
+        return Config.SHORTEN_POWER_BAR_VALUES.get() ?
+                Component.nullToEmpty(
+                        NumberUtil.numberToString4FE(veEnergyStorage.getEnergyStored())
+                                + " / " + NumberUtil.numberToString4FE(configuredMaxPower)
+                )
+                :
+                Component.nullToEmpty(
+                        NumberUtil.formatNumber(veEnergyStorage.getEnergyStored())
+                                + " FE / " + NumberUtil.formatNumber(configuredMaxPower)
+                                + " FE"
+                );
     }
 
     public static Component slotName(String slotName){

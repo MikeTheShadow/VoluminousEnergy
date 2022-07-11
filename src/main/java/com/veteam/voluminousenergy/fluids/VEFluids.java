@@ -265,4 +265,14 @@ public class VEFluids {
             AmmoniumNitrateSolution::FlowingAmmoniumNitrateSolutionBlock);
     public static RegistryObject<Item> AMMONIUM_NITRATE_SOLUTION_BUCKET_REG = VE_FLUID_ITEMS.register("ammonium_nitrate_solution_bucket",
             AmmoniumNitrateSolution::AmmoniumNitrateSolutionBucket);
+
+    // Hydrogen
+    public static RegistryObject<FlowingFluid> HYDROGEN_REG = VE_FLUIDS.register("hydrogen",
+            Hydrogen::HydrogenFluid);
+    public static RegistryObject<FlowingFluid> FLOWING_HYDROGEN_REG = VE_FLUIDS.register("flowing_hydrogen",
+            Hydrogen::FlowingHydrogenFluid);
+    public static RegistryObject<LiquidBlock> FLOWING_HYDROGEN_BLOCK_REG = VE_FLUID_BLOCKS.register("hydrogen_block",
+            Hydrogen::FlowingHydrogenBlock);
+    public static RegistryObject<Item> HYDROGEN_BUCKET_REG = VE_FLUID_ITEMS.register("hydrogen_bucket",
+            Hydrogen::HydrogenBucket);
 }
