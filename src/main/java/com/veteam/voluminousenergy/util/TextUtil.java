@@ -21,7 +21,7 @@ public class TextUtil {
 
     public static Component tankTooltip(String fluidName, int amount, int tankCapacity){
         if (Config.SHORTEN_TANK_GUI_VALUES.get()){
-            return new TranslatableComponent(fluidName).append(": " + NumberUtil.numberToString4Fluids(amount) + " / " + NumberUtil.numberToString4Fluids(tankCapacity));
+            return TextUtil.translateString(fluidName).copy().append(": " + NumberUtil.numberToString4Fluids(amount) + " / " + NumberUtil.numberToString4Fluids(tankCapacity));
         }
         String stringAmount = String.valueOf(amount);
         String stringTankCapacity = String.valueOf(tankCapacity);

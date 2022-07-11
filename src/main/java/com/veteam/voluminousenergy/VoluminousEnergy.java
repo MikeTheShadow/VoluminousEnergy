@@ -113,10 +113,9 @@ public class VoluminousEnergy {
         VECriteriaTriggers.init();
 
         // Config Files to load
-        //Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-common.toml"));
-        //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,Config.COMMON_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-common.toml");
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
+        //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT,Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
         JEI_LOADED = ModList.get().isLoaded("jei");

@@ -149,6 +149,9 @@
   "fluid_type.voluminousenergy.sulfuric_acid": "硫酸",
   "fluid_type.voluminousenergy.tree_sap": "樹液",
   "fluid_type.voluminousenergy.treethanol": "木からのエタノール",
+  "fluid_type.voluminousenergy.hydrogen": "水素",
+  "fluid_type.voluminousenergy.ammonia": "アンモニア",
+  "fluid_type.voluminousenergy.ammonium_nitrate_solution": "硝酸アンモニウム溶液",
 
   "_comment": "Fluid Blocks",
   "block.voluminousenergy.crude_oil": "原油",

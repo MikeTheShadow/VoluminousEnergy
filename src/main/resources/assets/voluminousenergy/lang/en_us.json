@@ -164,6 +164,9 @@
     "fluid_type.voluminousenergy.sulfuric_acid": "Sulfuric Acid",
     "fluid_type.voluminousenergy.tree_sap": "Tree Sap",
     "fluid_type.voluminousenergy.treethanol": "Treethanol",
+    "fluid_type.voluminousenergy.hydrogen": "Hydrogen",
+    "fluid_type.voluminousenergy.ammonia": "Ammonia",
+    "fluid_type.voluminousenergy.ammonium_nitrate_solution": "Ammonium Nitrate Solution",
 
     "_comment": "Fluid Blocks",
     "block.voluminousenergy.crude_oil": "Crude Oil",

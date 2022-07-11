@@ -67,7 +67,7 @@ public class VEEnergyItem extends VEItem {
             if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
                 textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
             } else {
-                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + e.getEnergyStored() + " / " + e.getMaxEnergyStored());
+                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(e.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(e.getMaxEnergyStored()) + " FE");
             }
             tooltip.add(textComponent);
         });

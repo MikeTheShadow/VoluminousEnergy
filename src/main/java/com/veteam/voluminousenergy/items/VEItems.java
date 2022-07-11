@@ -90,7 +90,7 @@ public class VEItems {
     public static RegistryObject<Item> COPPER_CARBONATE_DUST = VE_ITEM_REGISTRY.register("copper_carbonate_dust",CopperCarbonateDust::new);
     public static RegistryObject<Item> CUPRIC_OXIDE_DUST = VE_ITEM_REGISTRY.register("cupric_oxide_dust",CupricOxideDust::new);
     public static RegistryObject<Item> SAW_DUST = VE_ITEM_REGISTRY.register("saw_dust",SawDust::new);
-    public static RegistryObject<FlourDust> FLOUR_DUST = VE_ITEM_REGISTRY.register("flower_dust",FlourDust::new);
+    public static RegistryObject<FlourDust> FLOUR_DUST = VE_ITEM_REGISTRY.register("flour_dust",FlourDust::new);
 
     //Ingots and Bricks
     public static RegistryObject<CarbonBrick> CARBON_BRICK = VE_ITEM_REGISTRY.register("carbonbrick",CarbonBrick::new);
@@ -131,7 +131,7 @@ public class VEItems {
     public static RegistryObject<Item> MERCURY_BATTERY = VE_ITEM_REGISTRY.register("mercury_battery",MercuryBattery::new);
     public static RegistryObject<Item> LEAD_ACID_BATTERY = VE_ITEM_REGISTRY.register("lead_acid_battery",LeadAcidBattery::new);
     public static RegistryObject<Item> MERCURY_BATTERY_PACK = VE_ITEM_REGISTRY.register("mercury_battery_pack",MercuryBatteryPack::new);
-    public static RegistryObject<Item> LEAD_ACID_BATTERY_PACK = VE_ITEM_REGISTRY.register("lead_acid_battery_pck",LeadAcidBatteryPack::new);
+    public static RegistryObject<Item> LEAD_ACID_BATTERY_PACK = VE_ITEM_REGISTRY.register("lead_acid_battery_pack",LeadAcidBatteryPack::new);
 
     public static RegistryObject<Item> TITANIUM_SAWBLADE = VE_ITEM_REGISTRY.register("titanium_sawblade",TitaniumSawblade::new);
 

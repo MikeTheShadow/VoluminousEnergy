@@ -255,6 +255,8 @@ public class VEFluids {
             Ammonia::FlowingAmmoniaBlock);
     public static RegistryObject<Item> AMMONIA_BUCKET_REG = VE_FLUID_ITEMS.register("ammonia_bucket",
             Ammonia::AmmoniaBucket);
+    public static RegistryObject<FluidType> AMMONIA_FLUID_TYPE_REG = VE_FLUID_TYPES.register("ammonia",
+            () -> Ammonia.AMMONIA_FLUID_TYPE);
 
     // AmmoniumNitrateSolution
     public static RegistryObject<FlowingFluid> AMMONIUM_NITRATE_SOLUTION_REG = VE_FLUIDS.register("ammonium_nitrate_solution",
@@ -265,6 +267,8 @@ public class VEFluids {
             AmmoniumNitrateSolution::FlowingAmmoniumNitrateSolutionBlock);
     public static RegistryObject<Item> AMMONIUM_NITRATE_SOLUTION_BUCKET_REG = VE_FLUID_ITEMS.register("ammonium_nitrate_solution_bucket",
             AmmoniumNitrateSolution::AmmoniumNitrateSolutionBucket);
+    public static RegistryObject<FluidType> AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE_REG = VE_FLUID_TYPES.register("ammonium_nitrate_solution",
+            () -> AmmoniumNitrateSolution.AMMONIUM_NITRATE_SOLUTION_FLUID_TYPE);
 
     // Hydrogen
     public static RegistryObject<FlowingFluid> HYDROGEN_REG = VE_FLUIDS.register("hydrogen",
@@ -275,4 +279,6 @@ public class VEFluids {
             Hydrogen::FlowingHydrogenBlock);
     public static RegistryObject<Item> HYDROGEN_BUCKET_REG = VE_FLUID_ITEMS.register("hydrogen_bucket",
             Hydrogen::HydrogenBucket);
+    public static RegistryObject<FluidType> HYDROGEN_FLUID_TYPE_REG = VE_FLUID_TYPES.register("hydrogen",
+            () -> Hydrogen.HYDROGEN_FLUID_TYPE);
 }

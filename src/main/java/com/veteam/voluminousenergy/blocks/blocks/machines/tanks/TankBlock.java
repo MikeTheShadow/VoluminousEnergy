@@ -73,7 +73,7 @@ public class TankBlock extends FaceableBlock {
         } else {
             String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
             String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
-            tooltip.add(new TranslatableComponent("%1$s: %2$s / %3$s", fluid.getDisplayName(), amount, capacity));
+            tooltip.add(TextUtil.translateString(fluid.getTranslationKey()).copy().append(": " + amount + " / " + capacity));
         }
     }
     
