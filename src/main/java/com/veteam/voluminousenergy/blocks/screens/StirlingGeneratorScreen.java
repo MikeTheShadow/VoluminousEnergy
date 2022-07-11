@@ -1,8 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -20,6 +17,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGeneratorContainer> {
     private final StirlingGeneratorTile tileEntity;
@@ -76,11 +76,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.STIRLING_GENERATOR_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
         	renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);

@@ -130,11 +130,7 @@ public class SawmillScreen extends VEContainerScreen<SawmillContainer> {
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.SAWMILL_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.SAWMILL_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 

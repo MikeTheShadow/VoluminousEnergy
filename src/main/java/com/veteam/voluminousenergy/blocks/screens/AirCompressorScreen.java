@@ -84,11 +84,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, Component.nullToEmpty(
-                        veEnergyStorage.getEnergyStored()
-                                + " FE / " + Config.AIR_COMPRESSOR_MAX_POWER.get()
-                                + " FE"
-                ), mouseX, mouseY);
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.AIR_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 

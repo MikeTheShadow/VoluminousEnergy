@@ -61,7 +61,7 @@ public class VERender {
 
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         int color;
-        if (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER){
+        if ((!Config.USE_BIOME_WATER_COLOUR.get()) || (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER)){
             color = stack.getFluid().getAttributes().getColor();
             float r = ((color >> 16) & 0xFF) / 255f;
             float g = ((color >> 8) & 0xFF) / 255f;

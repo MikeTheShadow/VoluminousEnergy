@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.core.BlockPos;
@@ -61,18 +62,20 @@ public class TankBlock extends FaceableBlock {
             fluid = FluidStack.EMPTY;
         }
         int tankCapacity = this.getTankCapacity()*1000;
-        // TODO: Add config to disable simplified numbers using code by gisellevonbingen
-        //String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
-        //String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
-        //tooltip.add(new TranslatableComponent("%1$s: %2$s / %3$s", fluid.getDisplayName(), amount, capacity));
 
-        tooltip.add(
-                TextUtil.translateString(fluid.getTranslationKey()).copy()
-                        .append(": ")
-                        .append(NumberUtil.numberToString4Fluids(fluid.getAmount()))
-                        .append(" / ")
-                        .append(NumberUtil.numberToString4Fluids(tankCapacity)
-        ));
+        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
+            tooltip.add(
+                    TextUtil.translateString(fluid.getTranslationKey()).copy()
+                            .append(": ")
+                            .append(NumberUtil.numberToString4Fluids(fluid.getAmount()))
+                            .append(" / ")
+                            .append(NumberUtil.numberToString4Fluids(tankCapacity)
+                            ));
+        } else {
+            String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
+            String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
+            tooltip.add(new TranslatableComponent("%1$s: %2$s / %3$s", fluid.getDisplayName(), amount, capacity));
+        }
     }
     
     public int getTankCapacity() {

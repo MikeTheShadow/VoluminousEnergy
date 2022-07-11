@@ -11,6 +11,13 @@ import java.nio.file.Path;
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
 
+    public static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+
+    public static ForgeConfigSpec COMMON_CONFIG;
+    public static ForgeConfigSpec CLIENT_CONFIG;
+
+    // COMMON Config variables and categories
     public static final String CATEGORY_GENERAL = "General";
     public static final String CATEGORY_FOOD = "Food";
     public static final String CATEGORY_WORLDGEN = "World Generation";
@@ -49,10 +56,6 @@ public class Config {
     public static final String SUBCATEGORY_RUTILE = "Rutile Ore Settings";
     public static final String SUBCATEGORY_GALENA = "Galena Ore Settings";
     public static final String SUBCATEGORY_EIGHZO = "Eighzo Ore Settings";
-
-    private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-
-    public static ForgeConfigSpec COMMON_CONFIG;
 
     // World Generation Settings
     public static ForgeConfigSpec.BooleanValue GENERATE_VE_BIOMES;
@@ -325,7 +328,19 @@ public class Config {
     public static ForgeConfigSpec.IntValue TITANIUM_TANK_CAPACITY;
     public static ForgeConfigSpec.IntValue ALUMINUM_TANK_CAPACITY;
 
+
+    // CLIENT CONFIG Variables
+    public static ForgeConfigSpec.BooleanValue USE_BIOME_WATER_COLOUR;
+    public static ForgeConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
+    public static ForgeConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
+    public static ForgeConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
+
     static {
+        buildCommonConfig();
+        buildClientConfig();
+    }
+
+    private static void buildCommonConfig(){
         COMMON_BUILDER.comment("General Settings").push(CATEGORY_GENERAL);
         setupGeneralSettings();
         COMMON_BUILDER.pop();
@@ -945,7 +960,23 @@ public class Config {
                 .defineInRange("Maximum Transfer", 1000, 0, Integer.MAX_VALUE);
     }
 
-        public static void loadConfig(ForgeConfigSpec spec, Path path){
+    // CLIENT CONFIG START
+    private static void buildClientConfig(){
+        CLIENT_BUILDER.comment("General Client Settings").push(CATEGORY_GENERAL);
+
+        USE_BIOME_WATER_COLOUR = CLIENT_BUILDER.comment("When rendering water in tanks, use the water's biome appropriate colour, instead of the generic universal water colour.")
+                .define("Use Biome Water Colour", true);
+        SHORTEN_ITEM_TOOLTIP_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip of an item you hover over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
+                .define("Shorten Item Tooltip Values", true);
+        SHORTEN_POWER_BAR_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for the machines power bar, change the units to keep the numbers small (eg 1 kFE instead of 1000 FE).")
+                .define("Shorten Power Bar Values", true);
+        SHORTEN_TANK_GUI_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for a tank you hovered over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
+                .define("Shorten Tank Tooltip Values", true);
+
+        CLIENT_BUILDER.pop();
+    }
+
+    public static void loadConfig(ForgeConfigSpec spec, Path path){
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()

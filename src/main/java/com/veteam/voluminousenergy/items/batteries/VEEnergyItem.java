@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items.batteries;
 
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -62,8 +63,12 @@ public class VEEnergyItem extends Item {
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
         if(CapabilityEnergy.ENERGY == null) return; // sanity check
         itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
-//            Component textComponent = new TextComponent("FE: " + e.getEnergyStored() + "/" + e.getMaxEnergyStored());
-            Component textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
+            Component textComponent;
+            if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
+                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
+            } else {
+                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + e.getEnergyStored() + " / " + e.getMaxEnergyStored());
+            }
             tooltip.add(textComponent);
         });
     }
