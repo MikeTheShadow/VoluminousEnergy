@@ -30,8 +30,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class VEBlocks {
 
     public static final DeferredRegister<Block> VE_BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
-    public static final DeferredRegister<BlockEntityType<?>> VE_TILE_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, VoluminousEnergy.MODID);
-    public static final DeferredRegister<MenuType<?>> VE_CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, VoluminousEnergy.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> VE_TILE_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, VoluminousEnergy.MODID);
+    public static final DeferredRegister<MenuType<?>> VE_CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, VoluminousEnergy.MODID);
 
     // Shells
     public static RegistryObject<AluminumShellBlock> ALUMINUM_SHELL = VE_BLOCKS_REGISTRY.register("aluminum_shell", AluminumShellBlock::new);
