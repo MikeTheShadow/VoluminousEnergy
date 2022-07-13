@@ -69,7 +69,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof MenuProvider) {
-                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+                NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Primitive Blast named container provider is missing!");
             }

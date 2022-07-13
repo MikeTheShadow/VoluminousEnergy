@@ -205,13 +205,13 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
 
     private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
-        if (one.getCount() + recipe.getOutputAmount() > one.getItem().getItemStackLimit(one.copy())){ // Main output slot
+        if (one.getCount() + recipe.getOutputAmount() > one.getItem().getMaxStackSize(one.copy())){ // Main output slot
             return true;
-        } else if (two.getCount() + recipe.getOutputRngAmount0() > two.getItem().getItemStackLimit(two.copy())){ // Rng Slot 0
+        } else if (two.getCount() + recipe.getOutputRngAmount0() > two.getItem().getMaxStackSize(two.copy())){ // Rng Slot 0
             return true;
-        } else if (three.getCount() + recipe.getOutputRngAmount1() > three.getItem().getItemStackLimit(three.copy())){ // Rng Slot 1
+        } else if (three.getCount() + recipe.getOutputRngAmount1() > three.getItem().getMaxStackSize(three.copy())){ // Rng Slot 1
             return true;
-        } else if (four.getCount() + recipe.getOutputRngAmount2() > four.getItem().getItemStackLimit(four.copy())){ // Rng Slot 2
+        } else if (four.getCount() + recipe.getOutputRngAmount2() > four.getItem().getMaxStackSize(four.copy())){ // Rng Slot 2
             return true;
         } else {
             return false;

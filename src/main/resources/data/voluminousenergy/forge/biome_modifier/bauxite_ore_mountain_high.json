@@ -1,11 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_mountain",
+  "whitelisted_biomes": "minecraft:is_mountain",
   "blacklisted_biomes": "forge:is_snowy",
   "feature": "voluminousenergy:bauxite_ore_blob",
   "triangular_placement": true,
   "count": 9,
   "bottom_anchor": 208,
   "top_anchor": 256,
-  "rarity": 0
+  "rarity": 0,
+  "generation_step": "underground_ores"
 }

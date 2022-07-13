@@ -1,11 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_overworld",
+  "whitelisted_biomes": "minecraft:is_overworld",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:galena_ore_blob",
   "triangular_placement": false,
   "count": 3,
   "bottom_anchor": -48,
   "top_anchor": 12,
-  "rarity": 0
+  "rarity": 0,
+  "generation_step": "underground_ores"
 }

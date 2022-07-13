@@ -1,11 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_overworld",
+  "whitelisted_biomes": "minecraft:is_overworld",
   "blacklisted_biomes": "minecraft:is_ocean",
   "feature": "voluminousenergy:rice_crop",
   "triangular_placement": false,
   "count": 4,
   "bottom_anchor": 55,
   "top_anchor": 320,
-  "rarity": 0
+  "rarity": 0,
+  "generation_step": "vegetal_decoration"
 }
