@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
   "whitelisted_biomes": "minecraft:is_badlands",
-  "blacklisted_biomes": "forge:is_beach,forge:is_water",
+  "blacklisted_biomes": "minecraft:is_beach,forge:is_water",
   "feature": "voluminousenergy:saltpeter_ore_blob",
   "triangular_placement": true,
   "count": 1,

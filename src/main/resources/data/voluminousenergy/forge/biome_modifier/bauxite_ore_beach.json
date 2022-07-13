@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_beach",
+  "whitelisted_biomes": "minecraft:is_beach",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:bauxite_ore_blob",
   "triangular_placement": true,

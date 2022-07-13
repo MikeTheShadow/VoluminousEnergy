@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_overworld",
+  "whitelisted_biomes": "minecraft:is_overworld",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:galena_ore_blob",
   "triangular_placement": false,

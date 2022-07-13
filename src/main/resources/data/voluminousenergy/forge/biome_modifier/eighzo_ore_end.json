@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_end",
+  "whitelisted_biomes": "minecraft:is_end",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:eighzo_ore_blob",
   "triangular_placement": false,

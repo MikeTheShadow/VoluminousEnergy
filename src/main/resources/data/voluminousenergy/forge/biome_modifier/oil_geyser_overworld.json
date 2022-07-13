@@ -1,6 +1,6 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_overworld",
+  "whitelisted_biomes": "minecraft:is_overworld",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:oil_geyser",
   "triangular_placement": false,
