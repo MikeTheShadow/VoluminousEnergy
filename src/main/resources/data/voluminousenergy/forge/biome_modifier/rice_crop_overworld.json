@@ -7,5 +7,6 @@
   "count": 4,
   "bottom_anchor": 55,
   "top_anchor": 320,
-  "rarity": 0
+  "rarity": 0,
+  "generation_step": "vegetal_decoration"
 }

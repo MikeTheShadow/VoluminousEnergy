@@ -7,5 +7,6 @@
   "count": 2,
   "bottom_anchor": 62,
   "top_anchor": 92,
-  "rarity": 1
+  "rarity": 1,
+  "generation_step": "underground_ores"
 }

@@ -7,5 +7,6 @@
   "count": 1,
   "bottom_anchor": 10,
   "top_anchor": 36,
-  "rarity": 192
+  "rarity": 192,
+  "generation_step": "underground_decoration"
 }
