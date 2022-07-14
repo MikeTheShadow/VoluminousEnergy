@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.items;
 
+import com.veteam.voluminousenergy.fluids.VEFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -7,6 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
@@ -23,7 +25,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 
-public class AmmoniumNitrateBucket extends VENoPlaceBucket {
+public class AmmoniumNitrateBucket extends BucketItem {
     public AmmoniumNitrateBucket(Supplier<? extends Fluid> fluidSupplier, Properties properties) {
         super(fluidSupplier, properties);
     }
@@ -47,7 +49,13 @@ public class AmmoniumNitrateBucket extends VENoPlaceBucket {
                 level.levelEvent(1505, blockpos, 0);
             }
 
-            if (context.getPlayer() != null) context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
+            if (context.getPlayer() != null && !level.isClientSide) {
+                if (context.getPlayer().isCreative()){
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(VEFluids.AMMONIUM_NITRATE_SOLUTION_BUCKET_REG.get()));
+                } else {
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
+                }
+            }
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else {
             BlockState blockstate = level.getBlockState(blockpos);
@@ -59,7 +67,7 @@ public class AmmoniumNitrateBucket extends VENoPlaceBucket {
 
                 return InteractionResult.sidedSuccess(level.isClientSide);
             } else {
-                return InteractionResult.PASS;
+                return super.useOn(context);
             }
         }
     }
