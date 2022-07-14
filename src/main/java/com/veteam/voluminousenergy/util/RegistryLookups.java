@@ -34,7 +34,7 @@ public class RegistryLookups {
     }
 
     public static ResourceLocation lookupBlockEntityType(BlockEntityType<?> blockEntityType){
-        return ForgeRegistries.BLOCK_ENTITIES.getKey(blockEntityType);
+        return ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(blockEntityType);
     }
 
     public static ResourceLocation lookupBiome(Biome biome){

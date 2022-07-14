@@ -63,7 +63,7 @@ public class BlastFurnaceBlock extends FaceableBlock implements EntityBlock {
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof MenuProvider) {
-                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+                NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Blast Furnace named container provider is missing!");
             }

@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.fluids;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,8 +47,8 @@ public class VEFluidType extends FluidType {
     }
 
     @Override
-    public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer){
-        consumer.accept(new IFluidTypeRenderProperties() {
+    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
+        consumer.accept(new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
                 return STILL_TEXTURE;
@@ -66,8 +66,8 @@ public class VEFluidType extends FluidType {
             }
 
             @Override
-            public int getColorTint() {
-                return colourTint > 0 ? colourTint : IFluidTypeRenderProperties.super.getColorTint();
+            public int getTintColor() {
+                return colourTint > 0 ? colourTint : IClientFluidTypeExtensions.super.getTintColor();
             }
         });
     }

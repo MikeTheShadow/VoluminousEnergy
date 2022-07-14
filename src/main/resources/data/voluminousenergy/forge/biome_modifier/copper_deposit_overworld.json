@@ -1,11 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_overworld",
+  "whitelisted_biomes": "minecraft:is_overworld",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:copper_deposit",
   "triangular_placement": true,
   "count": 1,
   "bottom_anchor": -16,
   "top_anchor": 112,
-  "rarity": 26
+  "rarity": 26,
+  "generation_step": "underground_decoration"
 }

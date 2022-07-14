@@ -33,7 +33,8 @@ public class VEModifiers {
                         Codec.INT.fieldOf("count").forGetter(VEAndedMultiBiomeModifier::getCount),
                         Codec.INT.fieldOf("bottom_anchor").forGetter(VEAndedMultiBiomeModifier::getBottomAnchor),
                         Codec.INT.fieldOf("top_anchor").forGetter(VEAndedMultiBiomeModifier::getTopAnchor),
-                        Codec.INT.fieldOf("rarity").forGetter(VEAndedMultiBiomeModifier::getRarity)
+                        Codec.INT.fieldOf("rarity").forGetter(VEAndedMultiBiomeModifier::getRarity),
+                        Codec.STRING.fieldOf("generation_step").forGetter(VEAndedMultiBiomeModifier::getGenerationStep)
                 ).apply(test, VEAndedMultiBiomeModifier::new);
             }));
 

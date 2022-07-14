@@ -1,11 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_mountain",
+  "whitelisted_biomes": "minecraft:is_mountain",
   "blacklisted_biomes": "",
   "feature": "voluminousenergy:cinnabar_ore_blob",
   "triangular_placement": true,
   "count": 7,
   "bottom_anchor": 102,
   "top_anchor": 292,
-  "rarity": 0
+  "rarity": 0,
+  "generation_step": "underground_ores"
 }

@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.logging.log4j.LogManager;
@@ -64,7 +64,7 @@ public class VERender {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         int color;
         if ((!Config.USE_BIOME_WATER_COLOUR.get()) || (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER)){
-            color = RenderProperties.get(stack.getFluid()).getColorTint(stack);
+            color = IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor();
             float r = ((color >> 16) & 0xFF) / 255f;
             float g = ((color >> 8) & 0xFF) / 255f;
             float b = (color & 0xFF) / 255f;
@@ -76,7 +76,7 @@ public class VERender {
             float r = ((color >> 16) & 0xFF) / 255f;
             float g = ((color >> 8) & 0xFF) / 255f;
             float b = (color & 0xFF) / 255f;
-            float a = ((RenderProperties.get(stack.getFluid()).getColorTint(stack) >> 24) & 0xFF) / 255f;
+            float a = ((IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor() >> 24) & 0xFF) / 255f;
             RenderSystem.setShaderColor(r, g, b, a);
         }
 

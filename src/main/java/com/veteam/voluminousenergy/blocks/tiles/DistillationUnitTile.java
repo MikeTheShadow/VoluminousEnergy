@@ -22,13 +22,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.minecraft.util.Mth.abs;
 
 public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
@@ -144,7 +143,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                                     outputTank1.getTank().fill(recipe.getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
-                                if (abs(0 + level.getRandom().nextFloat() * (0 - 1)) < recipe.getThirdChance()){
+                                if (Mth.abs(0 + level.getRandom().nextFloat() * (0 - 1)) < recipe.getThirdChance()){
                                     if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
                                         if (thirdOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                                             thirdOutput.setCount(1);
