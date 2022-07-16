@@ -2,20 +2,20 @@
   "type": "minecraft:fishing",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 44,
-          "name": "voluminousenergy:mysterious_multiplier"
+          "name": "voluminousenergy:mysterious_multiplier",
+          "weight": 44
         },
         {
           "type": "minecraft:empty",
           "weight": 56
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

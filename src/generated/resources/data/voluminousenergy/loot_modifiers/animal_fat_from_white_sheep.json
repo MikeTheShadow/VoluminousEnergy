@@ -1,16 +1,20 @@
 {
   "type": "voluminousenergy:animal_fat",
+  "addition": {
+    "Count": 1,
+    "id": "voluminousenergy:animal_fat"
+  },
   "conditions": [
     {
-      "condition": "minecraft:random_chance",
-      "chance": 0.5
+      "chance": 0.5,
+      "condition": "minecraft:random_chance_with_looting",
+      "looting_multiplier": 0.5
     },
     {
       "condition": "forge:loot_table_id",
       "loot_table_id": "minecraft:entities/sheep/white"
     }
   ],
-  "minimum_count": 0,
   "maximum_count": 2,
-  "addition": "voluminousenergy:animal_fat"
+  "minimum_count": 0
 }

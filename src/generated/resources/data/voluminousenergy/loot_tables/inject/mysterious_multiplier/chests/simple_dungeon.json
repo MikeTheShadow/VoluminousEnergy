@@ -2,20 +2,20 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 98,
-          "name": "voluminousenergy:mysterious_multiplier"
+          "name": "voluminousenergy:mysterious_multiplier",
+          "weight": 98
         },
         {
           "type": "minecraft:empty",
           "weight": 2
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

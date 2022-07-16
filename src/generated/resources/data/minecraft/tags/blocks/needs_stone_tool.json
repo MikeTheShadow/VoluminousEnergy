@@ -1,6 +1,8 @@
 {
-  "replace": false,
   "values": [
+    "voluminousenergy:aluminum_shell",
+    "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "voluminousenergy:aluminum_machine_casing",
     "voluminousenergy:crusher",
     "voluminousenergy:electrolyzer",
     "voluminousenergy:compressor",
@@ -11,9 +13,6 @@
     "voluminousenergy:solar_panel",
     "voluminousenergy:bauxiteore",
     "voluminousenergy:deepslate_bauxite_ore",
-    "voluminousenergy:aluminum_shell",
-    "voluminousenergy:carbon_shielded_aluminum_machine_frame",
-    "voluminousenergy:aluminum_machine_casing",
     "voluminousenergy:aluminum_block",
     "voluminousenergy:raw_bauxite_block",
     "voluminousenergy:raw_bone_block"

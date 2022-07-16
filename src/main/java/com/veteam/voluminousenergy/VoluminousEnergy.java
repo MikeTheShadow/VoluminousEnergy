@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
 import com.veteam.voluminousenergy.datagen.VELootInjectionData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -40,7 +41,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -176,6 +176,7 @@ public class VoluminousEnergy {
             if(event.includeServer()) {
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
                 dataGenerator.addProvider(true, new VELootInjectionData(dataGenerator));
+                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator));
             }
         }
     }

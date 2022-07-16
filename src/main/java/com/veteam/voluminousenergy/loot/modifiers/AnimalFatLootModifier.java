@@ -1,22 +1,31 @@
 package com.veteam.voluminousenergy.loot.modifiers;
 
-import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.items.VEItems;
+import com.google.common.base.Suppliers;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class AnimalFatLootModifier extends LootModifier {
-    private final Item itemAddition;
+    public static final Supplier<Codec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
+            RecordCodecBuilder.create(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
+                            LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(AnimalFatLootModifier::getLootItemConditions),
+                            ItemStack.CODEC.fieldOf("addition").forGetter(AnimalFatLootModifier::getItemStackAddition),
+                            Codec.INT.fieldOf("minimum_count").forGetter(AnimalFatLootModifier::getMinAmount),
+                            Codec.INT.fieldOf("maximum_count").forGetter(AnimalFatLootModifier::getMaxAmount)
+                    ).apply(animalFatLootModifierInstance, AnimalFatLootModifier::new)
+            ));
+
+    private final ItemStack itemAddition;
     private final int minAmount;
     private final int maxAmount;
 
@@ -25,9 +34,16 @@ public class AnimalFatLootModifier extends LootModifier {
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
+    public AnimalFatLootModifier(LootItemCondition[] conditionsIn, ItemStack itemStack, int minAmount, int maxAmount) {
+        super(conditionsIn);
+        this.itemAddition = itemStack;
+        this.minAmount = minAmount;
+        this.maxAmount = maxAmount;
+    }
+
     public AnimalFatLootModifier(LootItemCondition[] conditionsIn, Item item, int minAmount, int maxAmount) {
         super(conditionsIn);
-        this.itemAddition = item;
+        this.itemAddition = new ItemStack(item, 1);
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
     }
@@ -40,28 +56,31 @@ public class AnimalFatLootModifier extends LootModifier {
         int amount = contextualizedRandom.nextInt(this.minAmount, this.maxAmount);
         amount = Math.round(amount * luck);
         amount = Math.round(amount * lootingModif);
-        generatedLoot.add(new ItemStack(itemAddition, amount));
+        ItemStack stackToAdd = itemAddition.copy();
+        stackToAdd.setCount(amount);
+        generatedLoot.add(stackToAdd);
 //        System.out.println("Generated New Loot");
         return generatedLoot;
     }
 
-    public static class Serializer extends GlobalLootModifierSerializer<AnimalFatLootModifier> {
-        @Override
-        public AnimalFatLootModifier read(ResourceLocation name, JsonObject jsonObject, LootItemCondition[] conditionsIn) {
-            Item addition = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(jsonObject, "addition"))).asItem();
-            if (addition == null) addition = VEItems.ANIMAL_FAT.get();
-            int minimumCount = GsonHelper.getAsInt(jsonObject, "minimum_count", 0);
-            int maximumCount = GsonHelper.getAsInt(jsonObject, "maximum_count", 1);
-            return new AnimalFatLootModifier(conditionsIn, addition, minimumCount, maximumCount);
-        }
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec(){
+        return CODEC.get();
+    }
 
-        @Override
-        public JsonObject write(AnimalFatLootModifier instance) {
-            JsonObject jsonObject = makeConditions(instance.conditions);
-            jsonObject.addProperty("minimum_count", instance.minAmount);
-            jsonObject.addProperty("maximum_count", instance.maxAmount);
-            jsonObject.addProperty("addition", ForgeRegistries.ITEMS.getKey(instance.itemAddition).toString());
-            return jsonObject;
-        }
+    public int getMinAmount(){
+        return this.minAmount;
+    }
+
+    public int getMaxAmount(){
+        return this.maxAmount;
+    }
+
+    public ItemStack getItemStackAddition(){
+        return this.itemAddition;
+    }
+
+    public LootItemCondition[] getLootItemConditions(){
+        return super.conditions;
     }
 }
