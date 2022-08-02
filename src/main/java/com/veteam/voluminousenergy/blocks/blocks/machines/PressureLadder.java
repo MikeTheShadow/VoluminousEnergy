@@ -150,7 +150,7 @@ public class PressureLadder extends LadderBlock {
                 }
 
                 // If entity too far to the sides, deactivate
-                if ((deltaZ > 0.9F || deltaZ < -0.9F) || (deltaX > 0.9F || deltaX < -0.9F)){
+                if ((deltaZ > 0.9F || deltaZ < -0.9F) || (deltaX > 0.9F || deltaX < -0.9F) && blockState.getValue(POWERED)){
                     powerOff(level, blockState, blockPos, entity);
                 }
 
