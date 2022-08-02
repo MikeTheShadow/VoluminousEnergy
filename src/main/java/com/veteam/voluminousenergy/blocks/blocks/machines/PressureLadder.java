@@ -1,12 +1,15 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -27,9 +30,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class PressureLadder extends LadderBlock {
     private String registryName; // Voluminous Energy 1.19 port
@@ -38,7 +39,10 @@ public class PressureLadder extends LadderBlock {
     private final PressurePlateBlock.Sensitivity sensitivity = PressurePlateBlock.Sensitivity.MOBS;
 
     public PressureLadder() {
-        super(BlockBehaviour.Properties.copy(Blocks.LADDER).requiresCorrectToolForDrops());
+        super(BlockBehaviour.Properties.copy(Blocks.LADDER)
+                .requiresCorrectToolForDrops()
+                .randomTicks()
+        );
         this.registerDefaultState(this.stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)
                         .setValue(WATERLOGGED, Boolean.valueOf(false))
@@ -119,47 +123,65 @@ public class PressureLadder extends LadderBlock {
         return 0;
     }
 
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
-        int i = this.getSignalForState(blockState);
-        if (i > 0) {
-            this.checkPressed((Entity)null, serverLevel, blockPos, blockState, i);
+
+    @Override
+    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
+        Player player = serverLevel.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2, EntitySelector.NO_SPECTATORS);
+        if ((player == null || player.isSpectator()) && blockState.getValue(POWERED)){
+            VoluminousEnergy.LOGGER.info("Pressure Ladder active with no player! Might be jammed! Deactivating to unjam!");
+            powerOff(serverLevel, blockState, blockPos, player);
         }
     }
 
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (!level.isClientSide) {
-            int i = this.getSignalForState(blockState);
-            if (i == 0) {
-                this.checkPressed(entity, level, blockPos, blockState, i);
+            if (entity instanceof LivingEntity){
+                // Calculate float differences from entity entering the ladder (double) to the actual blockPos (int)
+                // NOTE: blockPos is the VERY TOP of the block (ie ceil rounded)
+                double deltaX = entity.getX() - blockPos.getX();
+                double deltaY = entity.getY() - blockPos.getY();
+                double deltaZ = entity.getZ() - blockPos.getZ();
+
+                // Vertical (Y) checks
+                if (((deltaY > 0.91F) || (deltaY < -0.92F)) && blockState.getValue(POWERED)){ // If entity too high or low, deactivate
+                    powerOff(level, blockState, blockPos, entity);
+                } else if ( ((deltaY > -0.90F) && (deltaY < 0.9F)) && !blockState.getValue(POWERED)){ // If between target delta values, activate
+                    powerOn(level, blockState, blockPos, entity);
+                }
+
+                // If entity too far to the sides, deactivate
+                if ((deltaZ > 0.9F || deltaZ < -0.9F) || (deltaX > 0.9F || deltaX < -0.9F) && blockState.getValue(POWERED)){
+                    powerOff(level, blockState, blockPos, entity);
+                }
+
             }
-
         }
     }
 
-    protected void checkPressed(@Nullable Entity entity, Level level, BlockPos blockPos, BlockState blockState, int iFlag) {
-        int i = this.getSignalStrength(level, blockPos);
-        boolean flag = iFlag > 0;
-        boolean flag1 = i > 0;
-        if (iFlag != i) {
-            BlockState blockstate = this.setSignalForState(blockState, i);
-            level.setBlock(blockPos, blockstate, 2);
-            this.updateNeighbours(level, blockPos);
-            level.setBlocksDirty(blockPos, blockState, blockstate);
-        }
+    private void powerOff(Level level, BlockState blockState, BlockPos blockPos, Entity entity){
+        BlockState newState = blockState.setValue(POWERED, false);
+        this.setSignalForState(newState, 0);
+        level.setBlock(blockPos,newState,3);
+        level.setBlocksDirty(blockPos, blockState, newState);
+        this.updateNeighbours(level, blockPos);
 
-        if (!flag1 && flag) {
-            this.playOffSound(level, blockPos);
-            level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, blockPos);
-        } else if (flag1 && !flag) {
-            this.playOnSound(level, blockPos);
-            level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
-        }
-
-        if (flag1) {
-            level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
-        }
-
+        // Play sound
+        this.playOffSound(level, blockPos);
+        level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, blockPos);
     }
+
+    private void powerOn(Level level, BlockState blockState, BlockPos blockPos, Entity entity){
+        BlockState newState = blockState.setValue(POWERED, true);
+        this.setSignalForState(newState, 15);
+        level.setBlock(blockPos,newState,3);
+        level.setBlocksDirty(blockPos, blockState, newState);
+        this.updateNeighbours(level, blockPos);
+
+        // Play sound
+        this.playOnSound(level, blockPos);
+        level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
+    }
+
 
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean flag) {
         if (!flag && !blockState.is(blockState1.getBlock())) {
