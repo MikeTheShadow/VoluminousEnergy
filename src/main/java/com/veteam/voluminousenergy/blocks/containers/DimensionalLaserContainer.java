@@ -32,9 +32,9 @@ public class DimensionalLaserContainer extends VoluminousContainer {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> { // TODO: Coords
-            addSlot(new VEBucketSlot(h, 0, 38, 18)); // Bucket top slot
-            addSlot(new VEBucketSlot(h, 1,38,49)); // Bucket bottom slot
-            addSlot(new VEInsertSlot(h, 2, 96,49)); // RFID chip slot
+            addSlot(new VEBucketSlot(h, 0, 138, 18)); // Bucket top slot
+            addSlot(new VEBucketSlot(h, 1,138,49)); // Bucket bottom slot
+            addSlot(new VEInsertSlot(h, 2, 38,33)); // RFID chip slot
             addSlot(new VEInsertSlot(h, 3, 130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
