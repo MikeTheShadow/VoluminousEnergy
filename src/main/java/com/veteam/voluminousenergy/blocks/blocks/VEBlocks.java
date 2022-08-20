@@ -422,4 +422,7 @@ public class VEBlocks {
 
     @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
     public static BlockEntityType<DimensionalLaserTile> DIMENSIONAL_LASER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":dimensional_laser")
+    public static MenuType<DimensionalLaserContainer> DIMENSIONAL_LASER_CONTAINER;
 }

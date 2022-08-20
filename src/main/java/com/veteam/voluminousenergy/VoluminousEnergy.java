@@ -775,6 +775,11 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new SolariumTankContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("solarium_tank"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new DimensionalLaserContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("dimensional_laser"));
         }
 
         @SubscribeEvent

@@ -1,13 +1,15 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
+import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ConstructBeaconTrigger;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +30,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DimensionalLaserTile extends VEFluidTileEntity {
+public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
+
+    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
+    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
+    public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
+
+    List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(bucketTopSm);
+        add(bucketBottomSm);
+        add(RFIDsm);
+    }};
+
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"outputTank:output_tank_gui");
+
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+        add(outputTank);
+    }};
 
     //private boolean multiBlockComplete = false;
 
@@ -39,7 +58,10 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
 
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
         super(VEBlockEntities.DIMENSIONAL_LASER.get(), pos, state);
+        this.outputTank.setAllowAny(true);
     }
+
+    public ItemStackHandler inventory = createHandler(4);
 
     @Override
     public void tick() {
@@ -126,25 +148,25 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
     @Nonnull
     @Override
     public List<RelationalTank> getRelationalTanks() {
-        return new ArrayList<>();
+        return this.fluidManagers;
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, @Nonnull Inventory playerInventory, @Nonnull Player player) {
-        return null;
+        return new DimensionalLaserContainer(id,level,worldPosition,playerInventory,player);
     }
 
     @Nullable
     @Override
     public ItemStackHandler getInventoryHandler() {
-        return null;
+        return this.inventory;
     }
 
     @Nonnull
     @Override
     public List<VESlotManager> getSlotManagers() {
-        return new ArrayList<>();
+        return this.slotManagers;
     }
 
     public void setComplete() {
@@ -161,5 +183,30 @@ public class DimensionalLaserTile extends VEFluidTileEntity {
 
     public void resetTickTimer() {
         this.tickTimer = 0;
+    }
+
+    public int progressCounterPX(int px) {
+        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
+        return 0;
+    }
+
+    @Override
+    public int getMaxPower() {
+        return Integer.MAX_VALUE / 4; // TODO: CONFIG
+    }
+
+    @Override
+    public int getPowerUsage() {
+        return 1024; // TODO: CONFIG
+    }
+
+    @Override
+    public int getTransferRate() {
+        return Integer.MAX_VALUE / 16; // TODO: CONFIG
+    }
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 3;
     }
 }
