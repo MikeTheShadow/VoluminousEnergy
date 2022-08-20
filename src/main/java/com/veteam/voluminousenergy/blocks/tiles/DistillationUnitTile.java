@@ -315,6 +315,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 7;
     }
 }
