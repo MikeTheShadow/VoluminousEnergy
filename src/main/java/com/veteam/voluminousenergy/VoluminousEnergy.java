@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
 import com.veteam.voluminousenergy.datagen.VELootInjectionData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -119,6 +121,8 @@ public class VoluminousEnergy {
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT,Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
+        modEventBus.addListener(this::registerRenderers); // Register renderer for Dimensional Laser
+
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
 
@@ -137,9 +141,9 @@ public class VoluminousEnergy {
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
-//    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-//        event.registerBlockEntityRenderer(VEBlockEntities.DIMENSIONAL_LASER.get(), LaserBlockEntityRenderer::new);
-//    }
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER_TILE.get(), LaserBlockEntityRenderer::new);
+    }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
     }
