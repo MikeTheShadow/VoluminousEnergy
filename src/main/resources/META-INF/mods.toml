@@ -50,7 +50,7 @@ description='''Voluminous Energy - A Tech mod focused on resource processing and
 [[dependencies.voluminousenergy]]
     modId="jei"
     mandatory=false
-    versionRange="[9.5.2.134,10)"
+    versionRange="[10.1.0.207,)"
     ordering="NONE"
     side="CLIENT"
 

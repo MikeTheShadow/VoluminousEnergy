@@ -14,6 +14,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
@@ -92,15 +93,15 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     }
 
     private void registerInfo(IRecipeRegistration registration){
-        registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
+        registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
 
         ArrayList<ItemStack> compressedAirInfo = new ArrayList<>();
         compressedAirInfo.add(new ItemStack(VEBlocks.AIR_COMPRESSOR_BLOCK.asItem()));
         compressedAirInfo.add(new ItemStack(VEFluids.COMPRESSED_AIR_BUCKET_REG.get()));
-        registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
+        registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
 
-        registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), VanillaTypes.FLUID, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
-        registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
+        registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
+        registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {

@@ -40,7 +40,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -122,29 +122,29 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
             inputStacks.add(itemStack);
         }
 
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         if (recipe.needsBuckets() > 0){
             ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.needsBuckets());
-            bucketInputAcceptor.addIngredient(VanillaTypes.ITEM, bucketStack);
+            bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
 
         // Output --> ItemStacks here are not guaranteed to have correct amount; must do so manually
         ItemStack primaryOutputStack = recipe.result.copy();
         primaryOutputStack.setCount(recipe.getOutputAmount());
-        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM, primaryOutputStack);
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
 
         ItemStack rng0 = recipe.getRngItemSlot0().copy();
         rng0.setCount(recipe.getOutputRngAmount0());
-        rng0OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng0);
+        rng0OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng0);
 
         ItemStack rng1 = recipe.getRngItemSlot1().copy();
         rng1.setCount(recipe.getOutputRngAmount1());
-        rng1OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng1);
+        rng1OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng1);
 
         ItemStack rng2 = recipe.getRngItemSlot2().copy();
         rng2.setCount(recipe.getOutputRngAmount2());
-        rng2OutputAcceptor.addIngredient(VanillaTypes.ITEM, rng2);
+        rng2OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng2);
     }
 
     @Override

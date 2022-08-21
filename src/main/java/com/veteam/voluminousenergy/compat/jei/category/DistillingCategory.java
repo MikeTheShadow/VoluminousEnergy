@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -37,7 +38,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -96,15 +97,15 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
                                   IIngredientAcceptor secondFluidOutputAcceptor,
                                   IIngredientAcceptor itemOutputAcceptor) {
         // Input
-        fluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
         // Output
-        firstFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid()); // seems like amount is set correctly
-        secondFluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getSecondFluid()); // seems like amount is set correctly
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid()); // seems like amount is set correctly
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid()); // seems like amount is set correctly
 
         ItemStack itemStackResult = recipe.getThirdResult().copy();
         itemStackResult.setCount(recipe.getThirdAmount());
-        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM,itemStackResult);
+        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK,itemStackResult);
     }
 
     @Override
