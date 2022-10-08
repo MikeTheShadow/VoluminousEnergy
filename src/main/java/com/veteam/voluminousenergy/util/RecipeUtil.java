@@ -737,4 +737,23 @@ public class RecipeUtil {
             return null;
         }
     }
+
+
+    private static final HashMap<Integer,FluidElectrolyzerRecipe> FluidElectrolyzerMap = new HashMap<>();
+    public static FluidElectrolyzerRecipe getFluidElectrolyzerRecipe(Level world, FluidStack inputFluid) {
+
+        if (FluidElectrolyzerMap.isEmpty()) {
+            for (Recipe<?> recipe : world.getRecipeManager().getRecipes()) {
+                if (recipe instanceof FluidElectrolyzerRecipe fluidElectrolyzerRecipe) {
+                    for (FluidStack recipeFluid : fluidElectrolyzerRecipe.fluidInputList.get()) {
+                        String hash = recipeFluid.getTranslationKey();
+                        FluidElectrolyzerMap.put(hash.hashCode(), fluidElectrolyzerRecipe);
+                    }
+                }
+            }
+        }
+
+        String hash = inputFluid.getTranslationKey();
+        return FluidElectrolyzerMap.get(hash.hashCode());
+    }
 }

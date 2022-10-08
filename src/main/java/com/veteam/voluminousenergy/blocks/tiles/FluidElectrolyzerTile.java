@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.FluidElectrolyzerContainer;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.FluidElectrolyzerRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -97,9 +97,8 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         if(this.outputFluid(outputTank1,4,5)) return;
         // Main Fluid Processing occurs here
         if (inputTank != null) {
-            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
-            //lVEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
-            VEFluidRecipe recipe = RecipeUtil.getCentrifugalAgitatorRecipe(level,inputTank.getTank().getFluid().copy()); // TODO: Recipe
+
+            VEFluidRecipe recipe = RecipeUtil.getFluidElectrolyzerRecipe(level,inputTank.getTank().getFluid().copy());
             if (recipe != null) {
                 if (outputTank0 != null && outputTank1 != null) {
 
@@ -122,11 +121,11 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
                                 }
 
                                 // Second Output Tank
-                                CentrifugalAgitatorRecipe centrifugalAgitatorRecipe = (CentrifugalAgitatorRecipe) recipe;
-                                if (outputTank1.getTank().getFluid().getRawFluid() != centrifugalAgitatorRecipe.getSecondFluid().getRawFluid()) {
-                                    outputTank1.getTank().setFluid(centrifugalAgitatorRecipe.getSecondFluid().copy());
+                                FluidElectrolyzerRecipe fluidElectrolyzerRecipe = (FluidElectrolyzerRecipe) recipe;
+                                if (outputTank1.getTank().getFluid().getRawFluid() != fluidElectrolyzerRecipe.getSecondFluid().getRawFluid()) {
+                                    outputTank1.getTank().setFluid(fluidElectrolyzerRecipe.getSecondFluid().copy());
                                 } else {
-                                    outputTank1.getTank().fill(centrifugalAgitatorRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank1.getTank().fill(fluidElectrolyzerRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 counter--;
@@ -136,7 +135,7 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
                                 counter--;
                                 consumeEnergy();
                             } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(4));
+                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(this.getUpgradeSlotId()));
                                 length = counter;
                             }
                         } else { // Energy Check
@@ -152,7 +151,7 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
 
     @Override
     public int getUpgradeSlotId() {
-        return 4;
+        return 6;
     }
 
     @Nonnull

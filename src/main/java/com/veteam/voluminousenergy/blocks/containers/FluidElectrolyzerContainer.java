@@ -86,7 +86,7 @@ public class FluidElectrolyzerContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, this.getUpgradeSlotId(), slotStack) != null) return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
