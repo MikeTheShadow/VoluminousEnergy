@@ -32,10 +32,10 @@ public class FluidElectrolyzerContainer extends VoluminousContainer {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
             addSlot(new VEBucketSlot(h,0,38,18)); // Top input bucket
             addSlot(new VEBucketSlot(h,1,38,49)); // Bottom input bucket
-            addSlot(new VEBucketSlot(h,2,96,18)); // Top output bucket
-            addSlot(new VEBucketSlot(h,3,96,49)); // Bottom output bucket
-            addSlot(new VEBucketSlot(h,4,137,18)); // Top output2 bucket
-            addSlot(new VEBucketSlot(h,5,137,49)); // Bottom output2 bucket
+            addSlot(new VEBucketSlot(h,2,96,18)); // Top output0 bucket
+            addSlot(new VEBucketSlot(h,3,96,49)); // Bottom output0 bucket
+            addSlot(new VEBucketSlot(h,4,137,18)); // Top output1 bucket
+            addSlot(new VEBucketSlot(h,5,137,49)); // Bottom output1 bucket
             addSlot(new VEInsertSlot(h, 6,130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);

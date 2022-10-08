@@ -50,7 +50,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
 
         }));
 
-        // Input insert
+        // Top input bucket
         addRenderableWidget(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
@@ -59,7 +59,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
             // Do nothing
         }));
 
-        // Input Extract
+        // Bottom input bucket
         addRenderableWidget(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
@@ -68,7 +68,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
             // Do nothing
         }));
 
-        // Output Insert
+        // Top output0 bucket
         addRenderableWidget(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
@@ -77,7 +77,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
             // Do nothing
         }));
 
-        // Output Extract
+        // Bottom output0 bucket
         addRenderableWidget(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
@@ -86,30 +86,48 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
             // Do nothing
         }));
 
-        // Input Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+80, button ->{
+        // Top output1 bucket
+        addRenderableWidget(new SlotBoolButton(tileEntity.output2sm, (this.width/2)-198, this.topPos+80, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.output2sm, (this.width/2)-184, this.topPos+80, button ->{
+            // Do nothing
+        }));
+
+        // Bottom output1 bucket
+        addRenderableWidget(new SlotBoolButton(tileEntity.output3sm, (this.width/2)-198, this.topPos+100, button ->{
+            // Do nothing
+        }));
+
+        addRenderableWidget(new SlotDirectionButton(tileEntity.output3sm, (this.width/2)-184, this.topPos+100, button ->{
+            // Do nothing
+        }));
+
+        // Input Tank
+        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+120, button ->{
+            // Do nothing
+        }));
+
+        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+120, button ->{
             // Do nothing
         }));
 
         // Output Tank 0
-        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+140, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+140, button ->{
             // Do nothing
         }));
 
         // Output Tank 1
-        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.topPos+120, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank1(), (this.width/2)-198, this.topPos+160, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.topPos+120, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank1(), (this.width/2)-184, this.topPos+160, button ->{
             // Do nothing
         }));
     }
@@ -126,8 +144,10 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
         // Slots
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 137F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 96F, 49F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 137F, 18F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 137F, 49F, WHITE_TEXT_COLOUR);
 
         // Tanks
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);

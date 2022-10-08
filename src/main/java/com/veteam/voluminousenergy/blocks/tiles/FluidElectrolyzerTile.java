@@ -34,16 +34,16 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
     public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
     public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
     public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
-    public VESlotManager output3sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output4sm = new VESlotManager(5, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
+    public VESlotManager output2sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_2_sm");
+    public VESlotManager output3sm = new VESlotManager(5, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_3_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(input0sm);
         add(input1sm);
         add(output0sm);
         add(output1sm);
+        add(output2sm);
         add(output3sm);
-        add(output4sm);
     }};
 
     RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
