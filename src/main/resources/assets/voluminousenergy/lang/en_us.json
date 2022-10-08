@@ -116,6 +116,7 @@
     "block.voluminousenergy.eighzo_tank": "Eighzo Tank",
     "block.voluminousenergy.solarium_tank": "Solarium Tank",
     "block.voluminousenergy.dimensional_laser" : "Dimensional laser",
+    "block.voluminousenergy.fluid_electrolyzer": "Fluid Electrolyzer",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",

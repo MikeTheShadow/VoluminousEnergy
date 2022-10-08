@@ -259,6 +259,17 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":sawmill")
     public static MenuType<SawmillContainer> SAWMILL_CONTAINER;
 
+    // Fluid Electrolyzer
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
+    public static FluidElectrolyzerBlock FLUID_ELECTROLYZER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
+    public static BlockEntityType<FluidElectrolyzerTile> FLUID_ELECTROLYZER_TILE;
+
+    // TODO: Container
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
+    public static MenuType<FluidElectrolyzerContainer> FLUID_ELECTROLYZER_CONTAINER;
+
     // Tanks (Tile/Block)
 
     // Aluminum Tank

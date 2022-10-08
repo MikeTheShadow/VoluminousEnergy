@@ -191,6 +191,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new BlastFurnaceBlock());
             blockRegisteryEvent.getRegistry().register(new ToolingStationBlock());
             blockRegisteryEvent.getRegistry().register(new SawmillBlock());
+            blockRegisteryEvent.getRegistry().register(new FluidElectrolyzerBlock());
 
             // Tanks
             blockRegisteryEvent.getRegistry().register(new AluminumTankBlock());
@@ -282,6 +283,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.BLAST_FURNACE_BLOCK,properties).setRegistryName("blast_furnace"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TOOLING_STATION_BLOCK,properties).setRegistryName("tooling_station"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SAWMILL_BLOCK,properties).setRegistryName("sawmill"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.FLUID_ELECTROLYZER_BLOCK,properties).setRegistryName("fluid_electrolyzer"));
 
             // Tanks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK,properties).setRegistryName("aluminum_tank"));
@@ -620,6 +622,7 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(BlastFurnaceTile::new,VEBlocks.BLAST_FURNACE_BLOCK).build(null).setRegistryName("blast_furnace"));
             event.getRegistry().register(BlockEntityType.Builder.of(ToolingStationTile::new,VEBlocks.TOOLING_STATION_BLOCK).build(null).setRegistryName("tooling_station"));
             event.getRegistry().register(BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK).build(null).setRegistryName("sawmill"));
+            event.getRegistry().register(BlockEntityType.Builder.of(FluidElectrolyzerTile::new,VEBlocks.FLUID_ELECTROLYZER_BLOCK).build(null).setRegistryName("fluid_electrolyzer"));
 
             // Tanks
             event.getRegistry().register(BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK).build(null).setRegistryName("aluminum_tank"));
@@ -780,6 +783,11 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new DimensionalLaserContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("dimensional_laser"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new FluidElectrolyzerContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("fluid_electrolyzer"));
         }
 
         @SubscribeEvent
