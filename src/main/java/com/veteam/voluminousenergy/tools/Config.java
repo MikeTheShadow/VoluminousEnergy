@@ -44,6 +44,7 @@ public class Config {
     public static final String CATEGORY_TANK_BLOCKS = "Tank Blocks";
     public static final String CATEGORY_TOOLING_STATION = "Tooling Station";
     public static final String CATEGORY_FLUID_ELECTROLYZER = "Fluid Electrolyzer";
+    public static final String CATEGORY_FLUID_MIXER = "Fluid Mixer";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_CLIMATE_SPAWNS = "Climate Spawns";
@@ -326,6 +327,11 @@ public class Config {
     public static ForgeConfigSpec.IntValue FLUID_ELECTROLYZER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue FLUID_ELECTROLYZER_TRANSFER;
 
+    // Fluid Mixer Variables
+    public static ForgeConfigSpec.IntValue FLUID_MIXER_MAX_POWER;
+    public static ForgeConfigSpec.IntValue FLUID_MIXER_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue FLUID_MIXER_TRANSFER;
+
     // Tank variables
     public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
     public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
@@ -473,6 +479,11 @@ public class Config {
         // Fluid Electrolyzer
         COMMON_BUILDER.comment("Fluid Electrolyzer").push(CATEGORY_FLUID_ELECTROLYZER);
         setupFluidElectrolyzer();
+        COMMON_BUILDER.pop();
+
+        // Fluid Mixer
+        COMMON_BUILDER.comment("Fluid Mixer").push(CATEGORY_FLUID_MIXER);
+        setupFluidMixer();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -977,6 +988,15 @@ public class Config {
         FLUID_ELECTROLYZER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Fluid Electrolyzer")
                 .defineInRange("Power Consumption", 128, 0, Integer.MAX_VALUE);
         FLUID_ELECTROLYZER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Fluid Electrolyzer")
+                .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupFluidMixer(){
+        FLUID_MIXER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Fluid Mixer to store")
+                .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
+        FLUID_MIXER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Fluid Mixer")
+                .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
+        FLUID_MIXER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Fluid Mixer")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
     }
 

@@ -198,8 +198,8 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                 consumeEnergy();
             } else {
                 counter = sawmillingRecipe != null
-                                ? this.calculateCounter(sawmillingRecipe.getProcessTime(), inventory.getStackInSlot(5).copy())    // Sawmill recipe not null
-                                : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(5).copy());// Use default values when null
+                                ? this.calculateCounter(sawmillingRecipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy())    // Sawmill recipe not null
+                                : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());// Use default values when null
                 length = counter;
             }
         } else decrementSuperCounterOnNoPower();
@@ -305,6 +305,6 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 5;
     }
 }

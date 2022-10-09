@@ -95,7 +95,7 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                         this.counter = recipe.getProcessTime();
-                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(3));
+                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
                         this.length = this.counter;
                     } else {
                         this.counter = 0;
@@ -219,6 +219,6 @@ public class ImplosionCompressorTile extends VoluminousTileEntity implements IVE
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 3;
     }
 }

@@ -266,9 +266,18 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
     public static BlockEntityType<FluidElectrolyzerTile> FLUID_ELECTROLYZER_TILE;
 
-    // TODO: Container
     @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
     public static MenuType<FluidElectrolyzerContainer> FLUID_ELECTROLYZER_CONTAINER;
+
+    // Fluid Mixer
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
+    public static FluidMixerBlock FLUID_MIXER_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
+    public static BlockEntityType<FluidMixerTile> FLUID_MIXER_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
+    public static MenuType<FluidMixerContainer> FLUID_MIXER_CONTAINER;
 
     // Tanks (Tile/Block)
 

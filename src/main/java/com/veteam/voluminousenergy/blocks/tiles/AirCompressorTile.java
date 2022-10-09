@@ -108,7 +108,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
             }
         }
 
-        if(counter == 0) counter = (byte)this.calculateCounter(20,this.inventory.getStackInSlot(1).copy());
+        if(counter == 0) counter = (byte)this.calculateCounter(20,this.inventory.getStackInSlot(this.getUpgradeSlotId()));
         else counter--;
     }
 

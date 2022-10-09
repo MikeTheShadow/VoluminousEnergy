@@ -211,7 +211,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                     consumeEnergy();
                 } else { // Check if we should start processing
                     if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
-                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(3).copy());
+                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                         length = counter;
                     } else {
                         counter = 0;
@@ -280,6 +280,6 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 3;
     }
 }

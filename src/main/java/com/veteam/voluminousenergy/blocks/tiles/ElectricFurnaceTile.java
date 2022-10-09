@@ -114,7 +114,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                     consumeEnergy();
                     counter--;
                 } else {
-                    counter = this.calculateCounter(200,inventory.getStackInSlot(2));
+                    counter = this.calculateCounter(200,inventory.getStackInSlot(this.getUpgradeSlotId()));
                     length = counter;
                     this.referenceStack.set(furnaceInput.copy());
                 }
@@ -301,6 +301,6 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 2;
     }
 }

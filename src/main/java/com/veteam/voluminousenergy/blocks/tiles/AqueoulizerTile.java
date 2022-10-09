@@ -128,7 +128,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                                 counter--;
                                 consumeEnergy();
                             } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(4).copy());
+                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                                 length = counter;
                             }
                         } else { // Energy Check
@@ -347,6 +347,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     @Override
     public int getUpgradeSlotId() {
-        return 3;
+        return 4;
     }
 }

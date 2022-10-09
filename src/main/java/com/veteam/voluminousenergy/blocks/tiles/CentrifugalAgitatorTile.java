@@ -125,7 +125,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
                                 counter--;
                                 consumeEnergy();
                             } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(4));
+                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(this.getUpgradeSlotId()));
                                 length = counter;
                             }
                         } else { // Energy Check
