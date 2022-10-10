@@ -190,7 +190,7 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
     }
 
     public Rect2i getTooltipArea() {
-        return new Rect2i(81, 31, 9, 17);
+        return new Rect2i(126, 32, 9, 17);
     }
 
     public List<Component> getTooltips() {
