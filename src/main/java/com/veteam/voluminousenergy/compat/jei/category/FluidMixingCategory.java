@@ -62,7 +62,7 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
 
     @Override
     public Component getTitle() {
-        return TextUtil.translateString("jei.voluminousenergy.fluid_mixer");
+        return TextUtil.translateString("jei.voluminousenergy.fluid_mixing");
     }
 
     @Override

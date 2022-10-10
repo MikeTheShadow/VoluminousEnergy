@@ -48,8 +48,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
     public static final ResourceLocation SAWMILL_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/sawmilling");
     public static final ResourceLocation DIMENSIONAL_LASER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/dimensional_laser");
-    public static final ResourceLocation FLUID_ELECTROLYZER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_electrolyzer");
-    public static final ResourceLocation FLUID_MIXER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_mixer");
+    public static final ResourceLocation FLUID_ELECTROLYZER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
+    public static final ResourceLocation FLUID_MIXER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_mixing");
+    public static final ResourceLocation PRIMITIVE_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/primitive_blasting");
     
     public static final Component SHOW_RECIPES = new TranslatableComponent("jei.tooltip.show.recipes");
 
@@ -76,6 +77,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new SawmillCategory(guiHelper));
         registration.addRecipeCategories(new FluidElectrolyzingCategory(guiHelper));
         registration.addRecipeCategories(new FluidMixingCategory(guiHelper));
+        registration.addRecipeCategories(new PrimitiveBlastingCategory(guiHelper));
     }
 
     @Override
@@ -95,6 +97,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillingRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
+        registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));
 
         // Register info for certain ingredients that could use additional explanation for end users
         registerInfo(registration);
@@ -156,6 +159,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(FluidElectrolyzerScreen.class, new FluidElectrolyzerContainerHandler());
         registration.addGuiContainerHandler(FluidMixerScreen.class, new FluidMixerContainerHandler());
         registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
+        registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
     }
 
     @Override
@@ -171,6 +175,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(SawmillContainer.class,SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
+        registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
     }
@@ -195,5 +200,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL_BLOCK).copy(), SawmillCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK).copy(), FluidMixingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
     }
 }

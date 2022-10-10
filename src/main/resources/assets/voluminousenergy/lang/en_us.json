@@ -400,7 +400,8 @@
     "jei.voluminousenergy.tooling": "Tooling",
     "jei.voluminousenergy.sawmilling": "Sawmilling",
     "jei.voluminousenergy.fluid_electrolyzing": "Fluid Electrolyzing",
-    "jei.voluminousenergy.fluid_mixer": "Fluid Mixing",
+    "jei.voluminousenergy.fluid_mixing": "Fluid Mixing",
+    "jei.voluminousenergy.primitive_blasting": "Primitive Blasting",
 
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
