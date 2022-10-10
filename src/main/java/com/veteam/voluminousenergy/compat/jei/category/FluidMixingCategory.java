@@ -80,12 +80,12 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
         arrow.draw(matrixStack, 48, 12);
         emptyArrow.draw(matrixStack, 48, 12);
         slotDrawable.draw(matrixStack, 2, 10);
-        slotDrawable.draw(matrixStack, 26, 10);
+        slotDrawable.draw(matrixStack, 24, 10);
         slotDrawable.draw(matrixStack, 72, 10);
 
         Minecraft.getInstance().font.draw(matrixStack, "mB:", -20, 32, VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack, recipe.getInputAmount() + "", 2, 32, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack, recipe.getSecondInputAmount() + "", 26, 32, VEContainerScreen.GREY_TEXT_COLOUR);
+        Minecraft.getInstance().font.draw(matrixStack, recipe.getSecondInputAmount() + "", 24, 32, VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack, recipe.getOutputAmount() + "", 72, 32, VEContainerScreen.GREY_TEXT_COLOUR);
     }
 
@@ -104,7 +104,7 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, FluidMixerRecipe recipe, IFocusGroup focusGroup) {
         // Input
         IRecipeSlotBuilder firstInputFluid = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3, 11);
-        IRecipeSlotBuilder secondInputFluid = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 27, 11);
+        IRecipeSlotBuilder secondInputFluid = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 25, 11);
 
 
         // Output
