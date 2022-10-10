@@ -2,8 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.FluidMixerContainer;
-import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.FluidMixerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -100,34 +99,27 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
         if (inputTank0 != null) {
             //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
             //lVEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
-            VEFluidRecipe recipe = RecipeUtil.getCentrifugalAgitatorRecipe(level, inputTank0.getTank().getFluid().copy()); // TODO: Recipe
+            FluidMixerRecipe recipe = RecipeUtil.getFluidMixerRecipe(level, inputTank0.getTank().getFluid().copy(), inputTank1.getTank().getFluid().copy());
             if (recipe != null) {
                 if (inputTank1 != null && outputTank0 != null) {
 
                     // Tank fluid amount check + tank cap checks
                     if (inputTank0.getTank().getFluidAmount() >= recipe.getInputAmount()
-                            && inputTank1.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY // TODO: Redo recipe checks
-                            && outputTank0.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
+                            && inputTank1.getTank().getFluidAmount() >= recipe.getSecondInputAmount()
+                            && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY) {
                         // Check for power
                         if (canConsumeEnergy()) {
                             if (counter == 1) {
 
                                 // Drain Input
                                 inputTank0.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
+                                inputTank1.getTank().drain(recipe.getSecondInputAmount(), IFluidHandler.FluidAction.EXECUTE);
 
                                 // First Output Tank
-                                if (inputTank1.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                    inputTank1.getTank().setFluid(recipe.getOutputFluid().copy());
+                                if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
+                                    outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
                                 } else {
-                                    inputTank1.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                // Second Output Tank
-                                CentrifugalAgitatorRecipe centrifugalAgitatorRecipe = (CentrifugalAgitatorRecipe) recipe; // TODO: Recipe
-                                if (outputTank0.getTank().getFluid().getRawFluid() != centrifugalAgitatorRecipe.getSecondFluid().getRawFluid()) {
-                                    outputTank0.getTank().setFluid(centrifugalAgitatorRecipe.getSecondFluid().copy());
-                                } else {
-                                    outputTank0.getTank().fill(centrifugalAgitatorRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
+                                    outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
                                 counter--;

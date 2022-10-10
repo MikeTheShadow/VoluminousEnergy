@@ -157,7 +157,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) { // TODO: double check coords; Update tooltips to match tanks
+    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.FLUID_ELECTROLYZER_MAX_POWER.get()), mouseX, mouseY);

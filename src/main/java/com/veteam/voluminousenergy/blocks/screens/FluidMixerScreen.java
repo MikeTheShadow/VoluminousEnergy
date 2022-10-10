@@ -44,14 +44,14 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
     }
 
     @Override
-    protected void init(){ // TODO: add buttons for slots and adjust coords
+    protected void init(){
         super.init();
         // Buttons
         addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
 
         }));
 
-        // Input insert
+        // Input0 Bucket Top
         addRenderableWidget(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
@@ -60,7 +60,7 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
             // Do nothing
         }));
 
-        // Input Extract
+        // Input0 Bucket Bottom
         addRenderableWidget(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
@@ -69,48 +69,66 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
             // Do nothing
         }));
 
-        // Output Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+40, button ->{
+        // Input1 Bucket Top
+        addRenderableWidget(new SlotBoolButton(tileEntity.input2sm, (this.width/2)-198, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.topPos+40, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.input2sm, (this.width/2)-184, this.topPos+40, button ->{
             // Do nothing
         }));
 
-        // Output Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+60, button ->{
+        // Input1 Bucket Bottom
+        addRenderableWidget(new SlotBoolButton(tileEntity.input3sm, (this.width/2)-198, this.topPos+60, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.topPos+60, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.input3sm, (this.width/2)-184, this.topPos+60, button ->{
+            // Do nothing
+        }));
+
+        // Output Bucket Top
+        addRenderableWidget(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+80, button ->{
+            // Do nothing
+        }));
+
+        addRenderableWidget(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.topPos+80, button ->{
+            // Do nothing
+        }));
+
+        // Output Bucket Bottom
+        addRenderableWidget(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+100, button ->{
+            // Do nothing
+        }));
+
+        addRenderableWidget(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
 
         // Input Tank 0
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank0(), (this.width/2)-198, this.topPos+80, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank0(), (this.width/2)-198, this.topPos+120, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank0(), (this.width/2)-184, this.topPos+80, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank0(), (this.width/2)-184, this.topPos+120, button ->{
             // Do nothing
         }));
 
         // Input Tank 1
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank1(), (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank1(), (this.width/2)-198, this.topPos+140, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank1(), (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank1(), (this.width/2)-184, this.topPos+140, button ->{
             // Do nothing
         }));
 
         // Output Tank 0
-        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+120, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank0(), (this.width/2)-198, this.topPos+160, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+120, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank0(), (this.width/2)-184, this.topPos+160, button ->{
             // Do nothing
         }));
     }
@@ -144,7 +162,7 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
     protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get()), mouseX, mouseY); // TODO: Config
+                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.FLUID_MIXER_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
@@ -201,17 +219,17 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81, j+31, 176, 0, progress, 17);
+            this.blit(matrixStack,i+127, j+31, 176, 0, progress, 17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             try{
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 109, j + 18, 0, 12, 50);
             } catch (Exception e){ }
 
             try{
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(2),tileEntity.getTankCapacity(), i + 159, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             drawIOSideHelper();
             // Upgrade slot

@@ -165,7 +165,7 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
                 ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
                 RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, recipe.inputAmount);
             } else {
-                throw new JsonSyntaxException("Bad syntax for the Centrifugal Agitator recipe, input_fluid must be tag or fluid");
+                throw new JsonSyntaxException("Bad syntax for the Fluid Electrolyzer recipe, input_fluid must be tag or fluid");
             }
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
