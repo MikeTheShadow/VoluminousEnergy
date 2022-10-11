@@ -737,4 +737,47 @@ public class RecipeUtil {
             return null;
         }
     }
+
+
+    private static final HashMap<Integer,FluidElectrolyzerRecipe> FluidElectrolyzerMap = new HashMap<>();
+    public static FluidElectrolyzerRecipe getFluidElectrolyzerRecipe(Level world, FluidStack inputFluid) {
+
+        if (FluidElectrolyzerMap.isEmpty()) {
+            for (Recipe<?> recipe : world.getRecipeManager().getRecipes()) {
+                if (recipe instanceof FluidElectrolyzerRecipe fluidElectrolyzerRecipe) {
+                    for (FluidStack recipeFluid : fluidElectrolyzerRecipe.fluidInputList.get()) {
+                        String hash = recipeFluid.getTranslationKey();
+                        FluidElectrolyzerMap.put(hash.hashCode(), fluidElectrolyzerRecipe);
+                    }
+                }
+            }
+        }
+
+        String hash = inputFluid.getTranslationKey();
+        return FluidElectrolyzerMap.get(hash.hashCode());
+    }
+
+    private static final HashMap<Integer,FluidMixerRecipe> FluidMixerMap = new HashMap<>();
+    public static FluidMixerRecipe getFluidMixerRecipe(Level world, FluidStack firstInput, FluidStack secondInput){
+        if (FluidMixerMap.isEmpty()) {
+            for (Recipe<?> recipe : world.getRecipeManager().getRecipes()) {
+                if (recipe instanceof FluidMixerRecipe fluidMixerRecipe) {
+
+                    for (FluidStack firstRecipeInput : fluidMixerRecipe.fluidInputList.get()) {
+                        for (FluidStack secondRecipeInput : fluidMixerRecipe.secondFluidInputList.get()){
+                            String firstHash = firstRecipeInput.getTranslationKey();
+                            String secondHash = secondRecipeInput.getTranslationKey();
+                            FluidMixerMap.put((firstHash + secondHash).hashCode(), fluidMixerRecipe);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        String firstHash = firstInput.getTranslationKey();
+        String secondHash = secondInput.getTranslationKey();
+
+        return FluidMixerMap.get((firstHash + secondHash).hashCode());
+    }
 }

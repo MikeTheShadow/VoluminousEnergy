@@ -10,6 +10,8 @@
     "voluminousenergy:implosion_compressor",
     "voluminousenergy:tooling_station",
     "voluminousenergy:sawmill",
+    "voluminousenergy:fluid_electrolyzer",
+    "voluminousenergy:fluid_mixer",
     "voluminousenergy:aluminum_tank",
     "voluminousenergy:cinnabarore",
     "voluminousenergy:galena_ore",

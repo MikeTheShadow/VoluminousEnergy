@@ -40,6 +40,9 @@ public class ClientProxy implements IProxy {
         MenuScreens.register(VEBlocks.NIGHALITE_TANK_CONTAINER.get(), NighaliteTankScreen::new);
         MenuScreens.register(VEBlocks.EIGHZO_TANK_CONTAINER.get(), EighzoTankScreen::new);
         MenuScreens.register(VEBlocks.SOLARIUM_TANK_CONTAINER.get(), SolariumTankScreen::new);
+        MenuScreens.register(VEBlocks.DIMENSIONAL_LASER_CONTAINER.get(), DimensionalLaserScreen::new);
+        MenuScreens.register(VEBlocks.FLUID_ELECTROLYZER_CONTAINER.get(), FluidElectrolyzerScreen::new);
+        MenuScreens.register(VEBlocks.FLUID_MIXER_CONTAINER.get(), FluidMixerScreen::new);
     }
 
     @Override

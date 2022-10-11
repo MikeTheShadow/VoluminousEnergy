@@ -181,7 +181,7 @@ public class CentrifugalSeparatorTile extends VoluminousTileEntity implements IV
                         consumeEnergy();
                     } else { // Check if we should start processing
                         if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
-                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(6).copy());
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                             length = counter;
                         } else {
                             counter = 0;

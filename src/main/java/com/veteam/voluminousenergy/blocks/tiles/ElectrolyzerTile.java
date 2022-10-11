@@ -184,7 +184,7 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
                         consumeEnergy();
                     } else { // Check if we should start processing
                         if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
-                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(6).copy());
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                             length = counter;
                         } else {
                             counter = 0;
@@ -389,6 +389,6 @@ public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPowered
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 6;
     }
 }

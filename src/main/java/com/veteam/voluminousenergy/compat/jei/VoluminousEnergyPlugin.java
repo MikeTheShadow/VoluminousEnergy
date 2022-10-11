@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.*;
 import com.veteam.voluminousenergy.blocks.screens.*;
@@ -48,7 +47,11 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation INDUSTRIAL_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/industrial_blasting");
     public static final ResourceLocation TOOLING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/tooling");
     public static final ResourceLocation SAWMILL_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/sawmilling");
-    
+    public static final ResourceLocation DIMENSIONAL_LASER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/dimensional_laser");
+    public static final ResourceLocation FLUID_ELECTROLYZER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
+    public static final ResourceLocation FLUID_MIXER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_mixing");
+    public static final ResourceLocation PRIMITIVE_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/primitive_blasting");
+
     public static final Component SHOW_RECIPES = TextUtil.translateString("jei.tooltip.show.recipes");
 
     @Override
@@ -72,6 +75,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new IndustrialBlastingCategory(guiHelper));
         registration.addRecipeCategories(new ToolingCategory(guiHelper));
         registration.addRecipeCategories(new SawmillCategory(guiHelper));
+        registration.addRecipeCategories(new FluidElectrolyzingCategory(guiHelper));
+        registration.addRecipeCategories(new FluidMixingCategory(guiHelper));
+        registration.addRecipeCategories(new PrimitiveBlastingCategory(guiHelper));
     }
 
     @Override
@@ -89,6 +95,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(IndustrialBlastingCategory.RECIPE_TYPE, getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE));
         registration.addRecipes(ToolingCategory.RECIPE_TYPE, getRecipesOfType(ToolingRecipe.RECIPE_TYPE));
         registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillingRecipe.RECIPE_TYPE));
+        registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
+        registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
+        registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));
 
         // Register info for certain ingredients that could use additional explanation for end users
         registerInfo(registration);
@@ -141,7 +150,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(PrimitiveStirlingGeneratorScreen.class, new PrimitiveStirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(StirlingGeneratorScreen.class, new StirlingGeneratorContainerHandler());
         registration.addGuiContainerHandler(CentrifugalAgitatorScreen.class, new CentrifugalAgitatorContainerHandler());
-        registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AqueoulizingCategory.RECIPE_TYPE);
+        registration.addRecipeClickArea(AqueoulizerScreen.class, 79, 31, 11, 18, AqueoulizingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(AqueoulizerScreen.class, new AqueoulizerContainerHandler());
         registration.addGuiContainerHandler(DistillationUnitScreen.class, new DistillationUnitContainerHandler());
         registration.addGuiContainerHandler(GasFiredFurnaceScreen.class, new GasFiredFurnaceContainerHandler());
@@ -151,6 +160,10 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(BlastFurnaceScreen.class, new BlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(ToolingStationScreen.class, new ToolingStationContainerHandler());
         registration.addGuiContainerHandler(SawmillScreen.class, new SawmillContainerHandler());
+        registration.addGuiContainerHandler(FluidElectrolyzerScreen.class, new FluidElectrolyzerContainerHandler());
+        registration.addGuiContainerHandler(FluidMixerScreen.class, new FluidMixerContainerHandler());
+        registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
+        registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
     }
 
     @Override
@@ -166,6 +179,9 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(SawmillContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
+        registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
+        // TODO: Transfer helper for the Fluid Electrolyzer
+        // TODO: Fluid Mixer
     }
 
     @Override
@@ -186,5 +202,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get()).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get()).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL_BLOCK.get()).copy(), SawmillCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK).copy(), FluidMixingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
     }
 }

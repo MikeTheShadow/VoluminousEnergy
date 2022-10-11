@@ -89,7 +89,7 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                         this.counter = recipe.getProcessTime();
-                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(2));
+                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
                         this.length = this.counter;
                     } else {
                         this.counter = 0;
@@ -226,6 +226,6 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
 
     @Override
     public int getUpgradeSlotId() {
-        return 0;
+        return 2;
     }
 }

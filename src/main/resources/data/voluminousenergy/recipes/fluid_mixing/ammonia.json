@@ -1,0 +1,19 @@
+{
+  "type": "voluminousenergy:fluid_mixing",
+  "process_time": 200,
+  "ingredient": {
+    "item": "voluminousenergy:hydrogen_bucket"
+  },
+  "first_input_fluid": {
+    "fluid": "voluminousenergy:hydrogen",
+    "amount": 375
+  },
+  "second_input_fluid": {
+    "fluid": "voluminousenergy:nitrogen",
+    "amount": 125
+  },
+  "result": {
+    "fluid": "voluminousenergy:ammonia",
+    "amount": 500
+  }
+}
