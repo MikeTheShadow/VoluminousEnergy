@@ -57,7 +57,7 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
     }};
 
     public FluidElectrolyzerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.FLUID_ELECTROLYZER_TILE, pos, state);
+        super(VEBlocks.FLUID_ELECTROLYZER_TILE.get(), pos, state);
         inputTank.setAllowAny(true);
         outputTank0.setAllowAny(true);
         outputTank1.setAllowAny(true);

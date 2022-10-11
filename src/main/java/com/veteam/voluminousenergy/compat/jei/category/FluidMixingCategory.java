@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.FluidMixerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -37,7 +38,7 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.FLUID_MIXER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -46,18 +47,6 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
     @Override
     public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid() {
-        return VoluminousEnergyPlugin.FLUID_MIXER_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends FluidMixerRecipe> getRecipeClass() {
-        return FluidMixerRecipe.class;
     }
 
     @Override
@@ -94,10 +83,10 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
                                   IIngredientAcceptor secondFluidInputAcceptor,
                                   IIngredientAcceptor outputFluidAccepetor) {
 
-        firstFluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        firstFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
-        secondFluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.secondFluidInputList.get());
-        outputFluidAccepetor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid());
+        secondFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.secondFluidInputList.get());
+        outputFluidAccepetor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid());
     }
 
     @Override

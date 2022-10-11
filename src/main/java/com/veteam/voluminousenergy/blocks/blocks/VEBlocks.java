@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.crops.RiceCrop;
 import com.veteam.voluminousenergy.blocks.blocks.machines.*;
 import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.*;
-import com.veteam.voluminousenergy.blocks.blocks.multiblocks.DimensionalLaserBlock;
 import com.veteam.voluminousenergy.blocks.blocks.ores.*;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateBauxiteOre;
 import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateCinnabarOre;
@@ -269,26 +268,31 @@ public class VEBlocks {
     public static RegistryObject<DimensionalLaserBlock> DIMENSIONAL_LASER_BLOCK = VE_BLOCKS_REGISTRY.register("dimensional_laser", DimensionalLaserBlock::new);
     public static RegistryObject<BlockEntityType<DimensionalLaserTile>> DIMENSIONAL_LASER_TILE = VE_TILE_REGISTRY.register("dimensional_laser",
             () -> BlockEntityType.Builder.of(DimensionalLaserTile::new,VEBlocks.DIMENSIONAL_LASER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<DimensionalLaserContainer>> DIMENSIONAL_LASER_CONTAINER = VE_CONTAINER_REGISTRY.register("dimensional_laser", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new DimensionalLaserContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Fluid Electrolyzer
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
-    public static FluidElectrolyzerBlock FLUID_ELECTROLYZER_BLOCK;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
-    public static BlockEntityType<FluidElectrolyzerTile> FLUID_ELECTROLYZER_TILE;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_electrolyzer")
-    public static MenuType<FluidElectrolyzerContainer> FLUID_ELECTROLYZER_CONTAINER;
+    public static RegistryObject<FluidElectrolyzerBlock> FLUID_ELECTROLYZER_BLOCK = VE_BLOCKS_REGISTRY.register("fluid_electrolyzer", FluidElectrolyzerBlock::new);
+    public static RegistryObject<BlockEntityType<FluidElectrolyzerTile>> FLUID_ELECTROLYZER_TILE = VE_TILE_REGISTRY.register("fluid_electrolyzer",
+            () -> BlockEntityType.Builder.of(FluidElectrolyzerTile::new,VEBlocks.FLUID_ELECTROLYZER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<FluidElectrolyzerContainer>> FLUID_ELECTROLYZER_CONTAINER = VE_CONTAINER_REGISTRY.register("fluid_electrolyzer", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new FluidElectrolyzerContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Fluid Mixer
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
-    public static FluidMixerBlock FLUID_MIXER_BLOCK;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
-    public static BlockEntityType<FluidMixerTile> FLUID_MIXER_TILE;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
-    public static MenuType<FluidMixerContainer> FLUID_MIXER_CONTAINER;
+    public static RegistryObject<FluidMixerBlock> FLUID_MIXER_BLOCK = VE_BLOCKS_REGISTRY.register("fluid_mixer", FluidMixerBlock::new);
+    public static RegistryObject<BlockEntityType<FluidMixerTile>> FLUID_MIXER_TILE = VE_TILE_REGISTRY.register("fluid_mixer",
+            () -> BlockEntityType.Builder.of(FluidMixerTile::new,VEBlocks.FLUID_MIXER_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<FluidMixerContainer>> FLUID_MIXER_CONTAINER = VE_CONTAINER_REGISTRY.register("fluid_mixer", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new FluidMixerContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Tanks (Tile/Block)
 

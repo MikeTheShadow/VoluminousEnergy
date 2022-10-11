@@ -64,6 +64,12 @@ public class VERecipes {
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> DIMENSIONAL_LASING =
                 VE_RECIPE_TYPES_REGISTRY.register("dimensional_lasing", () -> new VERecipeType<>(RecipeConstants.DIMENSIONAL_LASING));
+
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> FLUID_ELECTROLYZING =
+                VE_RECIPE_TYPES_REGISTRY.register("fluid_electrolyzing", () -> new VERecipeType<>(RecipeConstants.FLUID_ELECTROLYZING));
+
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> FLUID_MIXING =
+                VE_RECIPE_TYPES_REGISTRY.register("fluid_mixing", () -> new VERecipeType<>(RecipeConstants.FLUID_MIXING));
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING =
@@ -98,4 +104,8 @@ public class VERecipes {
             VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> SawmillingRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> DIMENSIONAL_LASING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("dimensional_lasing", () -> DimensionalLaserRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> FLUID_ELECTROLYZING =
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_electrolyzing", () -> FluidElectrolyzerRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> FLUID_MIXING =
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_mixing", () -> FluidMixerRecipe.SERIALIZER);
 }

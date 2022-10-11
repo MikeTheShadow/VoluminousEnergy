@@ -56,7 +56,7 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
     }};
 
     public FluidMixerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.FLUID_MIXER_TILE, pos, state);
+        super(VEBlocks.FLUID_MIXER_TILE.get(), pos, state);
         inputTank0.setAllowAny(true);
         inputTank1.setAllowAny(true);
         outputTank0.setAllowAny(true);

@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -123,7 +124,7 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
         if (tileEntity instanceof IVEPoweredTileEntity){
             return ((IVEPoweredTileEntity) tileEntity).getUpgradeSlotId();
         }
-        VoluminousEnergy.LOGGER.error("A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: " + tileEntity.getType().getRegistryName());
+        VoluminousEnergy.LOGGER.error("A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: " + RegistryLookups.getBlockEntityTypeKey(tileEntity.getType()));
         return 0;
     }
 }

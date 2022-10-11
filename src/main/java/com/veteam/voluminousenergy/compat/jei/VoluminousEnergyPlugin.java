@@ -179,7 +179,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(SawmillContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
-        registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
+        registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
     }
@@ -202,8 +202,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get()).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get()).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL_BLOCK.get()).copy(), SawmillCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK).copy(), FluidMixingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK.get()).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get()).copy(), FluidMixingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
     }
 }

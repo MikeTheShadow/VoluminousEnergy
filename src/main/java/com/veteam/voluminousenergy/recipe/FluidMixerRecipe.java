@@ -19,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FluidMixerRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_MIXING;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_MIXING.get();
 
     public static final FluidMixerRecipe.Serializer SERIALIZER = new FluidMixerRecipe.Serializer();
 
@@ -129,12 +128,12 @@ public class FluidMixerRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK);
+        return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get());
     }
 
     public int getSecondInputAmount() { return secondInputAmount; }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FluidMixerRecipe> {
+    public static class Serializer implements RecipeSerializer<FluidMixerRecipe> {
         @Override
         public FluidMixerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             FluidMixerRecipe recipe = new FluidMixerRecipe(recipeId);
