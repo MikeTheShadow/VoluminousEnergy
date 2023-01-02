@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -44,7 +45,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
@@ -104,7 +105,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
         slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(VanillaTypes.FLUID);
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
 
         if (oxiStack.isPresent()){
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipeWithoutLevel(oxiStack.get());
@@ -154,7 +155,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             fuelStacks.add(new FluidStack(fluid, 1000));
         }
 
-        fuelAcceptor.addIngredients(VanillaTypes.FLUID, fuelStacks);
+        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, fuelStacks);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
         for (CombustionGeneratorOxidizerRecipe oxidizerRecipe : CombustionGeneratorOxidizerRecipe.oxidizerRecipes) {
@@ -163,7 +164,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
             }
         }
 
-        oxidizerAcceptor.addIngredients(VanillaTypes.FLUID, oxiStacks);
+        oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);
 
 
     }

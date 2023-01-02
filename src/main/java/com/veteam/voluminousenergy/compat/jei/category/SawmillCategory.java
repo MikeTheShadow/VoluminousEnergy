@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -46,7 +47,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 86, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.SAWMILL_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.SAWMILL_BLOCK));
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
         slotDrawable = guiHelper.getSlotDrawable();
@@ -112,22 +113,22 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
                     atomicPlankStacks.get().add(new ItemStack(registeredItem, Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()));
                 }
             });
-            inputItemAcceptor.addIngredients(VanillaTypes.ITEM, atomicLogStacks.get());
-            primaryItemOutputAcceptor.addIngredients(VanillaTypes.ITEM, atomicPlankStacks.get());
+            inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicLogStacks.get());
+            primaryItemOutputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicPlankStacks.get());
 
 
             // Secondary Output
             ResourceLocation secondOutputItemResourceLocation = new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
             Item secondOutput = ForgeRegistries.ITEMS.getValue(secondOutputItemResourceLocation);
             if (secondOutput != null){
-                secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
+                secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
             }
 
             // Fluid Output
             ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
             Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(fluidLocation);
             if (outputFluid != null){
-                fluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
+                fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
@@ -136,20 +137,20 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
                 itemStack.setCount(recipe.ingredientCount);
                 inputStacks.add(itemStack);
             }
-            inputItemAcceptor.addIngredients(VanillaTypes.ITEM, inputStacks);
+            inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)
             ItemStack resultStack = recipe.result.copy();
             resultStack.setCount(recipe.getOutputAmount());
-            primaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM, resultStack);
+            primaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
 
             // Second Item Output
             ItemStack secondOutputStack = recipe.secondResult.copy();
             secondOutputStack.setCount(recipe.getSecondAmount());
-            secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM, secondOutputStack);
+            secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, secondOutputStack);
 
             // Fluid Output
-            fluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, recipe.getOutputFluid().copy());
+            fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid().copy());
         }
 
     }
