@@ -544,7 +544,7 @@ public class Config {
                 RICE_BOTTOM_ANCHOR = COMMON_BUILDER.comment("Minimum y-value for Rice generation")
                     .defineInRange("Rice Bottom Anchor", 48, -64, 320);
                 RICE_TOP_ANCHOR = COMMON_BUILDER.comment("Maximum y-value for Rice generation")
-                    .defineInRange("Rice Bottom Anchor", 320, -64, 320);
+                    .defineInRange("Rice Top Anchor", 320, -64, 320);
                 RICE_CHANCE = COMMON_BUILDER.comment("Rice Chance (Lower = Higher chance)")
                         .defineInRange("Rice Chance", 32, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop();
@@ -638,12 +638,12 @@ public class Config {
             COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
                 ENABLE_EIGHZO_ORE_BLOBS = COMMON_BUILDER.comment("Enable/Disable generation of Eighzo Ore Blobs")
                         .define("Enable Eighzo Ore", true);
-                EIGHZO_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Eighzo Count",1,1, Integer.MAX_VALUE);
-                EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 1, -64, 320);
+                EIGHZO_ORE_BLOBS_COUNT = COMMON_BUILDER.defineInRange("Eighzo Count",3,1, Integer.MAX_VALUE);
+                EIGHZO_ORE_BLOBS_BOTTOM_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Bottom Anchor", 10, -64, 320);
                 EIGHZO_ORE_BLOBS_TOP_ANCHOR = COMMON_BUILDER.defineInRange("Eighzo Top Anchor", 36, -64, 320);
                 EIGHZO_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
                 EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Eighzo Exposed Discard Chance", 1F, 0F, 1F);
+                    .defineInRange("Eighzo Exposed Discard Chance", 0.5F, 0F, 1F);
                 EIGHZO_ORE_BLOBS_CHANCE = COMMON_BUILDER.comment("Chance for the Ore Blob to be filtered out by the rarity filter; Higher = Rarer (more filtered out)")
                     .defineInRange("Eighzo Ore Blob Chance", 0, 0, Integer.MAX_VALUE);
             COMMON_BUILDER.pop(); // End of Eighzo

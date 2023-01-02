@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -24,7 +25,7 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
 
         if(!worldIn.canSeeSky(pos)) return false;
 
-        if (worldIn.isWaterAt(pos.below()) && worldIn.isEmptyBlock(pos)){
+        if ((worldIn.isWaterAt(pos.below()) || worldIn.getBlockState(pos.below()).is(Blocks.WATER)) && worldIn.getBlockState(pos).isAir()){
             generateRice(worldIn, pos);
             return true;
         }
