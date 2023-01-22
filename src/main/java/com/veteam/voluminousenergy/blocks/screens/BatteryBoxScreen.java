@@ -14,7 +14,7 @@ import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -161,7 +161,7 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateSlotPairButton(boolean status, int id){
-        for(Widget widget : this.renderables){
+        for(Renderable widget : this.renderables){
             if(widget instanceof BatteryBoxSlotPairButton batteryBoxSlotPairButton){
                 if(batteryBoxSlotPairButton.getId() == id){
                     batteryBoxSlotPairButton.setStatus(status);
@@ -171,7 +171,7 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
     }
 
     public void updateSendOutPowerButton(boolean status){
-        for(Widget widget : this.renderables){
+        for(Renderable widget : this.renderables){
             if(widget instanceof BatteryBoxSendOutPowerButton batteryBoxSendOutPowerButton){
                 batteryBoxSendOutPowerButton.setStatus(status);
             }

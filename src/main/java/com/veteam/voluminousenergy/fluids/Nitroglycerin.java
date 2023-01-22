@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -44,7 +43,7 @@ public class Nitroglycerin {
     }
 
     public static Item NitroglycerinBucket(){
-        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGLYCERIN_BUCKET;
     }
 

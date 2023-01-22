@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.fluids;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
 import com.veteam.voluminousenergy.fluids.flowingFluidSource.CrudeOilFlowingFluidSource;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -45,7 +44,7 @@ public class CrudeOil {
     }
 
     public static Item CrudeOilBucket(){
-        CRUDE_OIL_BUCKET = new BucketItem(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        CRUDE_OIL_BUCKET = new BucketItem(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return CRUDE_OIL_BUCKET;
     }
 

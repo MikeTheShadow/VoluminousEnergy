@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.CrudeOilFlowingFluidBlock;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -44,7 +43,7 @@ public class TreeSap {
     }
 
     public static Item TreeSapBucket(){
-        TREE_SAP_BUCKET = new BucketItem(() -> TREE_SAP, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        TREE_SAP_BUCKET = new BucketItem(() -> TREE_SAP, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return TREE_SAP_BUCKET;
     }
 

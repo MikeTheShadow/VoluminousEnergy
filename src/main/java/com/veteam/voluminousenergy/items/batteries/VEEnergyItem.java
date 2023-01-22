@@ -3,11 +3,9 @@ package com.veteam.voluminousenergy.items.batteries;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyItemStorage;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -66,16 +64,6 @@ public class VEEnergyItem extends VEItem {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> itemStacks){ // Clone and make fully charged itemStack
-        if (this.allowedIn(itemGroup)){
-            itemStacks.add(new ItemStack(this));
-            ItemStack chargedStack = new ItemStack(this);
-            chargedStack.getOrCreateTag().putInt("energy",this.maxEnergy);
-            itemStacks.add(chargedStack);
-        }
-    }
-
-    @Override
     public boolean isBarVisible(ItemStack itemStack){return true;}
 
     @Override
@@ -91,5 +79,7 @@ public class VEEnergyItem extends VEItem {
     }
 
     public int getMaxTransfer() {return maxTransfer;}
+
+    public int getMaxEnergy() {return maxEnergy;}
 
 }

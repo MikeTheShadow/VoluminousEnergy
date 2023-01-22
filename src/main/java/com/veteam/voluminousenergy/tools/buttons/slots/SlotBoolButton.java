@@ -24,8 +24,8 @@ public class SlotBoolButton extends VEIOButton {
             onPress.onPress(button);
         });
 
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = 16;
         this.height = 15;
         this.slotManager = slotManager;
@@ -37,9 +37,9 @@ public class SlotBoolButton extends VEIOButton {
         RenderSystem.setShaderTexture(0, texture);
         enable = slotManager.getStatus();
         if(!enable){
-            blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 213, 0, this.width, this.height);
         } else {
-            blit(matrixStack, this.x, this.y, 213, 15, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 213, 15, this.width, this.height);
         }
     }
 

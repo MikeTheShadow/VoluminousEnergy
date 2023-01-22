@@ -97,7 +97,7 @@
     "block.voluminousenergy.solarium_tank": "Solarium Tank",
 
     "_comment": "Creative Tabs",
-    "itemGroup.voluminousenergy": "Voluminous Energy",
+    "tab.voluminousenergy.voluminousenergy": "Voluminous Energy",
 
     "_comment": "Fluids",
     "fluid.voluminousenergy.crude_oil": "Crude Oil",

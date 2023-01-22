@@ -7,7 +7,6 @@ public class Silicon extends VEItem {
     public Silicon (){
         super(new Item.Properties()
                 .stacksTo(64)
-                .tab(VESetup.itemGroup)
         );
         setRegistryName("silicon");
     }

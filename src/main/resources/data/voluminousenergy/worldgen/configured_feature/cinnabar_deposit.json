@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:ve_ore_deposit_feature",
+  "config": {
+    "ore_block_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "voluminousenergy:cinnabarore"
+      }
+    },
+    "raw_block_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "voluminousenergy:raw_cinnabar_block"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "voluminousenergy:ve_rice_feature",
+  "config": {
+    "state": {
+      "Name": "voluminousenergy:rice_crop"
+    }
+  }
+}

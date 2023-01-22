@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -44,7 +43,7 @@ public class Biofuel {
     }
 
     public static Item BiofuelBucket(){
-        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return BIOFUEL_BUCKET;
     }
 

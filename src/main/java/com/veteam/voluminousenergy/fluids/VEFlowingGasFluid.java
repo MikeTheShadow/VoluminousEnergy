@@ -121,22 +121,22 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         return fluidState.isEmpty() || fluidState.getType().isSame(this);
     }
 
-    protected void spread(LevelAccessor levelAccessor, BlockPos blockPos, FluidState fluidState) {
+    protected void spread(Level level, BlockPos blockPos, FluidState fluidState) {
         if (!fluidState.isEmpty()) {
             if (!(blockPos.getY() < 320)) return;
 
             // Preliminary check if not source
             if (!fluidState.isSource()){
-                BlockState belowState = levelAccessor.getBlockState(blockPos.below());
-                FluidState belowFluidState = levelAccessor.getFluidState(blockPos.below());
+                BlockState belowState = level.getBlockState(blockPos.below());
+                FluidState belowFluidState = level.getFluidState(blockPos.below());
 
                 if (!belowFluidState.isSource() && !belowFluidState.is(this)) {
                     boolean foundSource = false;
 
-                    FluidState fluidStateNorth = levelAccessor.getFluidState(blockPos.north());
-                    FluidState fluidStateSouth = levelAccessor.getFluidState(blockPos.south());
-                    FluidState fluidStateEast = levelAccessor.getFluidState(blockPos.east());
-                    FluidState fluidStateWest = levelAccessor.getFluidState(blockPos.west());
+                    FluidState fluidStateNorth = level.getFluidState(blockPos.north());
+                    FluidState fluidStateSouth = level.getFluidState(blockPos.south());
+                    FluidState fluidStateEast = level.getFluidState(blockPos.east());
+                    FluidState fluidStateWest = level.getFluidState(blockPos.west());
 
                     /***
                      *          This is for Immediate Neighbours.
@@ -162,7 +162,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                         for (int i = 1; i <= this.flowWidth; i++){
                             BlockPos dirPos = blockPos.relative(direction, i);
                             dirPos = dirPos.below();
-                            FluidState foundFluidState = levelAccessor.getFluidState(dirPos);
+                            FluidState foundFluidState = level.getFluidState(dirPos);
                             /*
                             if (!foundFluidState.isEmpty() && foundFluidState.is(this)){
                                 foundSource = true;
@@ -181,10 +181,10 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                                 BlockPos zPlusOne = blockPos.offset(0,0,1);
                                 BlockPos zMinusOne = blockPos.offset(0,0,-1);
 
-                                FluidState fluidStateXP1 = levelAccessor.getFluidState(xPlusOne);
-                                FluidState fluidStateXM1 = levelAccessor.getFluidState(xMinusOne);
-                                FluidState fluidStateZP1 = levelAccessor.getFluidState(zPlusOne);
-                                FluidState fluidStateZM1 = levelAccessor.getFluidState(zMinusOne);
+                                FluidState fluidStateXP1 = level.getFluidState(xPlusOne);
+                                FluidState fluidStateXM1 = level.getFluidState(xMinusOne);
+                                FluidState fluidStateZP1 = level.getFluidState(zPlusOne);
+                                FluidState fluidStateZM1 = level.getFluidState(zMinusOne);
 
                                 if (       (fluidStateXP1.getType().isSame(this.getSource()) || fluidStateXP1.getType().isSame(this.getFlowing()))
                                         || (fluidStateXM1.getType().isSame(this.getSource()) || fluidStateXM1.getType().isSame(this.getFlowing()))
@@ -205,47 +205,47 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
 
 
                     if (!foundSource){
-                        levelAccessor.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+                        level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                     }
                 }
 
             }
 
             // "Traditional" Spread code
-            BlockState blockstate = levelAccessor.getBlockState(blockPos);
+            BlockState blockstate = level.getBlockState(blockPos);
             BlockPos blockpos = blockPos.above();
-            BlockState blockstate1 = levelAccessor.getBlockState(blockpos);
-            FluidState fluidstate = this.getNewLiquid(levelAccessor, blockpos.below(), blockstate1);
+            BlockState blockstate1 = level.getBlockState(blockpos);
+            FluidState fluidstate = this.getNewLiquid(level, blockpos.below(), blockstate1);
             // Directions on the two lines below have been flipped
-            if (this.canSpreadTo(levelAccessor, blockPos, blockstate, Direction.UP, blockpos, blockstate1, levelAccessor.getFluidState(blockpos), fluidstate.getType())) {
-                this.spreadTo(levelAccessor, blockpos, blockstate1, Direction.UP, fluidstate);
-                if (this.sourceNeighborCount(levelAccessor, blockPos) >= 3 || this.isSource(fluidState)) {
-                    this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
+            if (this.canSpreadTo(level, blockPos, blockstate, Direction.UP, blockpos, blockstate1, level.getFluidState(blockpos), fluidstate.getType())) {
+                this.spreadTo(level, blockpos, blockstate1, Direction.UP, fluidstate);
+                if (this.sourceNeighborCount(level, blockPos) >= 3 || this.isSource(fluidState)) {
+                    this.spreadToSides(level, blockPos, fluidState, blockstate);
                 }
-            } else if (fluidState.isSource() || !this.isWaterHole(levelAccessor, fluidstate.getType(), blockPos, blockstate, blockpos, blockstate1)) {
-                this.spreadToSides(levelAccessor, blockPos, fluidState, blockstate);
+            } else if (fluidState.isSource() || !this.isWaterHole(level, fluidstate.getType(), blockPos, blockstate, blockpos, blockstate1)) {
+                this.spreadToSides(level, blockPos, fluidState, blockstate);
             }
             // End of "Traditional" spread code
 
         }
     }
 
-    private void spreadToSides(LevelAccessor levelAccessor, BlockPos pos, FluidState fluidState, BlockState blockState) {
-        int i = fluidState.getAmount() - this.getDropOff(levelAccessor);
+    private void spreadToSides(Level level, BlockPos pos, FluidState fluidState, BlockState blockState) {
+        int i = fluidState.getAmount() - this.getDropOff(level);
         if (fluidState.getValue(FALLING)) {
             i = 7;
         }
 
         if (i > 0) {
-            Map<Direction, FluidState> map = this.getSpread(levelAccessor, pos, blockState);
+            Map<Direction, FluidState> map = this.getSpread(level, pos, blockState);
 
             for(Map.Entry<Direction, FluidState> entry : map.entrySet()) {
                 Direction direction = entry.getKey();
                 FluidState fluidstate = entry.getValue();
                 BlockPos blockpos = pos.relative(direction);
-                BlockState blockstate = levelAccessor.getBlockState(blockpos);
-                if (this.canSpreadTo(levelAccessor, pos, blockState, direction, blockpos, blockstate, levelAccessor.getFluidState(blockpos), fluidstate.getType())) {
-                    this.spreadTo(levelAccessor, blockpos, blockstate, direction, fluidstate);
+                BlockState blockstate = level.getBlockState(blockpos);
+                if (this.canSpreadTo(level, pos, blockState, direction, blockpos, blockstate, level.getFluidState(blockpos), fluidstate.getType())) {
+                    this.spreadTo(level, blockpos, blockstate, direction, fluidstate);
                 }
             }
 

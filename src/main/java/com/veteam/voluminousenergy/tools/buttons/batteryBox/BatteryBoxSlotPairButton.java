@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
@@ -27,8 +26,8 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         });
         this.veBatterySwitchManager = veBatterySwitchManager;
         this.id = id;
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = 18;
         this.height = 20;
         this.isTopIngress = veBatterySwitchManager.isFlipped();
@@ -44,7 +43,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         if(isTopIngress) u = 0;
         else u = 18;
 
-        blit(matrixStack, this.x, this.y, this.u, this.v, this.width, this.height);
+        blit(matrixStack, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
     private void cycle(){isTopIngress = !isTopIngress;}

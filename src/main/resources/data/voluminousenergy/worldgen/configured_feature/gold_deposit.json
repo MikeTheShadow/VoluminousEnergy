@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:ve_ore_deposit_feature",
+  "config": {
+    "ore_block_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:gold_ore"
+      }
+    },
+    "raw_block_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:raw_gold_block"
+      }
+    }
+  }
+}

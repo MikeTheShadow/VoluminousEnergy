@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.tools.buttons;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +22,7 @@ public class ioMenuButton extends Button {
         super(x, y, 20, 18, Component.nullToEmpty(""), button -> {
             ((ioMenuButton) button).cycleMode();
             onPress.onPress(button);
-        });
+        }, DEFAULT_NARRATION);
         this.x = x;
         this.y = y;
         this.width = 20;

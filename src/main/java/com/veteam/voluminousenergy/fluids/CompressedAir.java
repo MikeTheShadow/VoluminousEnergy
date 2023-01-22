@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.fluids;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.fluids.flowingFluidBlocks.VEFlowingFluidBlock;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -44,7 +43,7 @@ public class CompressedAir {
     }
 
     public static Item CompressedAirBucket() {
-        COMPRESSED_AIR_BUCKET = new BucketItem(() -> COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        COMPRESSED_AIR_BUCKET = new BucketItem(() -> COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return COMPRESSED_AIR_BUCKET;
     }
 

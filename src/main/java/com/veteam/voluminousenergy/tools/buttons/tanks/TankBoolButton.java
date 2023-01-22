@@ -21,8 +21,8 @@ public class TankBoolButton extends VEIOButton {
             ((TankBoolButton) button).cycle();
             onPress.onPress(button);
         });
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = 16;
         this.height = 15;
         this.tank = tank;
@@ -34,9 +34,9 @@ public class TankBoolButton extends VEIOButton {
         RenderSystem.setShaderTexture(0, texture);
         enable = this.tank.getSideStatus();
         if(!enable){
-            blit(matrixStack, this.x, this.y, 213, 0, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 213, 0, this.width, this.height);
         } else {
-            blit(matrixStack, this.x, this.y, 213, 15, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 213, 15, this.width, this.height);
         }
     }
 
