@@ -40,12 +40,7 @@ public class Config {
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_ORE_GENERATION = "Ore Generation";
     public static final String SUBCATEGORY_ORE_DEPOSIT_GENERATION = "Ore Deposit Generation";
-    public static final String SUBCATEGORY_SALTPETER = "Saltpeter Ore Settings";
-    public static final String SUBCATEGORY_BAUXITE = "Bauxite Ore Settings";
-    public static final String SUBCATEGORY_CINNABAR = "Cinnabar Ore Settings";
-    public static final String SUBCATEGORY_RUTILE = "Rutile Ore Settings";
     public static final String SUBCATEGORY_GALENA = "Galena Ore Settings";
-    public static final String SUBCATEGORY_EIGHZO = "Eighzo Ore Settings";
 
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -59,33 +54,10 @@ public class Config {
     public static ForgeConfigSpec.DoubleValue COOKED_RICE_SATURATION;
     public static ForgeConfigSpec.DoubleValue RICE_TICK_CHANCE;
 
-    // Ore Blob Settings
-    // SALTPETER ORE
-    public static ForgeConfigSpec.IntValue SALTPETER_ORE_BLOBS_SIZE;
-    public static ForgeConfigSpec.DoubleValue SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
-
-    // BAUXITE ORE
-    public static ForgeConfigSpec.IntValue BAUXITE_ORE_BLOBS_SIZE;
-    public static ForgeConfigSpec.DoubleValue BAUXITE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
-
-
-    // CINNABAR ORE
-    public static ForgeConfigSpec.IntValue CINNABAR_ORE_BLOBS_SIZE;
-    public static ForgeConfigSpec.DoubleValue CINNABAR_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
-
-
-    // RUTILE ORE
-    public static ForgeConfigSpec.IntValue RUTILE_ORE_BLOBS_SIZE;
-    public static ForgeConfigSpec.DoubleValue RUTILE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
+    // Ore Settings
 
     // GALENA ORE
-    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOBS_SIZE;
     public static ForgeConfigSpec.IntValue GALENA_ORE_BLOCK_LIGHT_LEVEL;
-    public static ForgeConfigSpec.DoubleValue GALENA_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
-
-    // EIGHZO ORE
-    public static ForgeConfigSpec.IntValue EIGHZO_ORE_BLOBS_SIZE;
-    public static ForgeConfigSpec.DoubleValue EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE;
 
     // Ore Deposit
     public static ForgeConfigSpec.BooleanValue PREVENT_SURFACE_ORE_DEPOSITS;
@@ -370,48 +342,10 @@ public class Config {
         COMMON_BUILDER.pop(); // End of Feature Generation
 
         COMMON_BUILDER.comment("Ore Generation").push(SUBCATEGORY_ORE_GENERATION);
-            //Saltpeter
-            COMMON_BUILDER.comment("Saltpeter Ore Blob Settings").push(SUBCATEGORY_SALTPETER);
-                SALTPETER_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Saltpeter Size", 33, 0, Integer.MAX_VALUE);
-                SALTPETER_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                        .defineInRange("Saltpeter Exposed Discard Chance", 0F, 0F, 1F);
-            COMMON_BUILDER.pop();
-
-            //Bauxite
-            COMMON_BUILDER.comment("Bauxite Ore Settings").push(SUBCATEGORY_BAUXITE);
-                BAUXITE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Bauxite Size", 8, 0, Integer.MAX_VALUE);
-                BAUXITE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Bauxite Exposed Discard Chance", 0F, 0F, 1F);
-            COMMON_BUILDER.pop(); // End of Bauxite
-
-            //Cinnabar
-            COMMON_BUILDER.comment("Cinnabar Ore Settings").push(SUBCATEGORY_CINNABAR);
-                CINNABAR_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Cinnabar Size", 6, 0, Integer.MAX_VALUE);
-                CINNABAR_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Cinnabar Exposed Discard Chance", 0F, 0F, 1F);
-            COMMON_BUILDER.pop(); // End of Cinnabar
-
-            //Rutile
-            COMMON_BUILDER.comment("Rutile Ore Settings").push(SUBCATEGORY_RUTILE);
-                RUTILE_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Rutile Size", 4, 0, Integer.MAX_VALUE);
-                RUTILE_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Rutile Exposed Discard Chance", 0.75F, 0F, 1F);
-            COMMON_BUILDER.pop(); // End of Rutile
-
             //Galena
             COMMON_BUILDER.comment("Galena Ore Settings").push(SUBCATEGORY_GALENA);
-                GALENA_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Galena Size", 6, 0, Integer.MAX_VALUE);
                 GALENA_ORE_BLOCK_LIGHT_LEVEL = COMMON_BUILDER.defineInRange("Galena Light Glow Level", 4, 0, 16);
-                GALENA_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Galena Exposed Discard Chance", 0F, 0F, 1F);
             COMMON_BUILDER.pop(); // End of Galena
-
-            //Eighzo
-            COMMON_BUILDER.comment("Eighzo Ore Settings").push(SUBCATEGORY_EIGHZO);
-                EIGHZO_ORE_BLOBS_SIZE = COMMON_BUILDER.defineInRange("Eighzo Size", 4, 0, Integer.MAX_VALUE);
-                EIGHZO_ORE_BLOBS_EXPOSED_DISCARD_CHANCE = COMMON_BUILDER.comment("Chance that that the generated blob will be discarded (ungenerated) if exposed to air")
-                    .defineInRange("Eighzo Exposed Discard Chance", 0.5F, 0F, 1F);
-            COMMON_BUILDER.pop(); // End of Eighzo
 
             // DEPOSITS
             COMMON_BUILDER.comment("Ore Deposits: Large cluster of ore and raw block, more compact than an ore vein, but bigger than an ore blob.").push(SUBCATEGORY_ORE_DEPOSIT_GENERATION);
