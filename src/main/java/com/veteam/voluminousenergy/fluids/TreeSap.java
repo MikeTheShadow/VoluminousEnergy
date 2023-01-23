@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class TreeSap {
-    public static final ResourceLocation TREE_SAP_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/tree_sap_still");
-    public static final ResourceLocation TREE_SAP_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/tree_sap_flowing");
+    public static final ResourceLocation TREE_SAP_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/tree_sap_still");
+    public static final ResourceLocation TREE_SAP_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/tree_sap_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 

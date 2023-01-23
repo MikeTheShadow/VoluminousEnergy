@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class CrudeOil {
-    public static final ResourceLocation CRUDE_OIL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/crude_oil_still");
-    public static final ResourceLocation CRUDE_OIL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/crude_oil_flowing");
+    public static final ResourceLocation CRUDE_OIL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/crude_oil_still");
+    public static final ResourceLocation CRUDE_OIL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/crude_oil_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 

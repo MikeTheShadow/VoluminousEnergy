@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class LightFuel {
-    public static final ResourceLocation LIGHT_FUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/light_fuel_still");
-    public static final ResourceLocation LIGHT_FUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/light_fuel_flowing");
+    public static final ResourceLocation LIGHT_FUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/light_fuel_still");
+    public static final ResourceLocation LIGHT_FUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/light_fuel_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 

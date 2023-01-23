@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class CompressedAir {
-    public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/compressed_air_still");
-    public static final ResourceLocation COMPRESSED_AIR_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/compressed_air_flowing");
+    public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/compressed_air_still");
+    public static final ResourceLocation COMPRESSED_AIR_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/compressed_air_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
