@@ -131,7 +131,7 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) { // TODO: coords
+    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 83F, 34F, WHITE_TEXT_COLOUR);
