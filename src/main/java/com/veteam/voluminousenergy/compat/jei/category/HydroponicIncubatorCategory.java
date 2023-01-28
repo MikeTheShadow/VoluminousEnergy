@@ -39,7 +39,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     public HydroponicIncubatorCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
-        background = guiHelper.drawableBuilder(GUI, 68, 12, 156, 40).build();
+        background = guiHelper.drawableBuilder(GUI, 4, 4, 156, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
@@ -91,10 +91,37 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
 
         Minecraft.getInstance().font.draw(matrixStack,"mB:", 2, 32, VEContainerScreen.GREY_TEXT_COLOUR);
         Minecraft.getInstance().font.draw(matrixStack,recipe.getInputAmount() + "", 24, 32,VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack,recipe.getOutputAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+
+        if (recipe.getChance0() > 0) {
+            int chance = (int) (recipe.getChance0()*100);
+            int xPos = calculateXPos(94, chance);
+
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%", xPos, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+        }
+
+        if (recipe.getChance1() > 0) {
+            int chance = (int) (recipe.getChance1()*100);
+            int xPos = calculateXPos(116, chance);
+
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%", xPos, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+        }
+
+        if (recipe.getChance2() > 0) {
+            int chance = (int) (recipe.getChance2()*100);
+            int xPos = calculateXPos(138, chance);
+
+            Minecraft.getInstance().font.draw(matrixStack,chance + "%", xPos, 32,VEContainerScreen.GREY_TEXT_COLOUR);
+        }
     }
 
-
+    private int calculateXPos(int xPos, int chance) {
+        if (chance < 100 && chance > 9) {
+            xPos += 3;
+        } else if (chance < 10) {
+            xPos += 5;
+        }
+        return xPos;
+    }
 
     // NOTE: Needs to be recipe specific; refactoring of setIngredients, which is no longer used
     public void ingredientHandler(HydroponicIncubatorRecipe recipe,

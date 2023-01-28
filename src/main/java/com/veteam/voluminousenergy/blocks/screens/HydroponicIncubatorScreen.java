@@ -46,8 +46,8 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
     protected void init(){
         super.init();
         // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
-
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, button -> {
+            // Do Nothing
         }));
 
         // Bucket Top
@@ -135,10 +135,10 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 83F, 34F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 134F, 8F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 134F, 26F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 134F, 44F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("6")), 134F, 62F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 123F, 8F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 123F, 26F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 123F, 44F, WHITE_TEXT_COLOUR);
+        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("6")), 123F, 62F, WHITE_TEXT_COLOUR);
 
         // Tanks
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
@@ -165,7 +165,7 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
     }
 
     public Rect2i getTooltipArea() {
-        return new Rect2i(127, 31, 9, 17);
+        return new Rect2i(106, 31, 14, 20);
     }
 
     public List<Component> getTooltips() {
@@ -194,7 +194,7 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+127, j+31, 176, 0, progress, 17);
+            this.blit(matrixStack,i+109, j+32, 176, 0, progress, 17);
             this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
@@ -205,7 +205,7 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+129, j-16,0,0,18,18);
+            this.blit(matrixStack,i+153, j-16,0,0,18,18);
         }
 
     }

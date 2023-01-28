@@ -37,11 +37,11 @@ public class HydroponicIncubatorContainer extends VoluminousContainer {
             addSlot(new VEBucketSlot(h, 0, 38, 18)); // Bucket top slot
             addSlot(new VEBucketSlot(h, 1, 38, 49)); // Bucket bottom slot
             addSlot(new VEInsertSlot(h, 2, 83, 34)); // Primary input
-            addSlot(new VEInsertSlot(h, 3, 134, 8)); // Primary output
-            addSlot(new VEInsertSlot(h, 4, 134, 26)); // RNG0 output
-            addSlot(new VEInsertSlot(h, 5, 134, 44)); // RNG1 output
-            addSlot(new VEInsertSlot(h, 6, 134, 62)); // RNG2 output
-            addSlot(new VEInsertSlot(h, 7, 130,-14)); // Upgrade slot
+            addSlot(new VEInsertSlot(h, 3, 123, 8)); // Primary output
+            addSlot(new VEInsertSlot(h, 4, 123, 26)); // RNG0 output
+            addSlot(new VEInsertSlot(h, 5, 123, 44)); // RNG1 output
+            addSlot(new VEInsertSlot(h, 6, 123, 62)); // RNG2 output
+            addSlot(new VEInsertSlot(h, 7, 154,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 
