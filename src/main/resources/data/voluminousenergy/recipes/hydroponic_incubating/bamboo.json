@@ -17,5 +17,15 @@
     "item": "minecraft:stick",
     "count": 1,
     "chance": 0.25
+  },
+  "rng_slot_1": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
   }
 }
