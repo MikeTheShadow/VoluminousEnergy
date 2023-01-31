@@ -38,9 +38,9 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
     public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
     public VESlotManager input2sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"input_2_sm");
     public VESlotManager output0sm = new VESlotManager(3, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output1sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output2sm = new VESlotManager(5, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output3sm = new VESlotManager(6, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
+    public VESlotManager output1sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
+    public VESlotManager output2sm = new VESlotManager(5, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_2_sm");
+    public VESlotManager output3sm = new VESlotManager(6, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_3_sm");
 
     private final ItemStackHandler inventory = createHandler();
 
@@ -108,7 +108,12 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
             //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
-            if (recipe.getRawFluids().contains(inputTank.getTank().getFluid().getRawFluid())) {
+            if (recipe.getRawFluids().contains(inputTank.getTank().getFluid().getRawFluid())
+                && ((recipe.getOutputAmount() + output0.getCount()) <= recipe.getResult().getMaxStackSize())
+                && (recipe.getOutputRngAmount0() + output1.getCount() <= recipe.getResults().get(1).getMaxStackSize())
+                && (recipe.getOutputRngAmount1() + output2.getCount() <= recipe.getResults().get(1).getMaxStackSize())
+                && (recipe.getOutputRngAmount2() + output3.getCount() <= recipe.getResults().get(1).getMaxStackSize())
+            ) {
 
                 // Tank fluid amount check + tank cap checks
                 if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()){
