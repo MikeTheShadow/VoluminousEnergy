@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "voluminousenergy:item/ammonium_nitrate_solution_bucket"
+  }
+}

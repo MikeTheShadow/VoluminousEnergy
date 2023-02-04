@@ -1,0 +1,31 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredient": {
+    "item": "minecraft:melon_seeds",
+    "count": 1
+  },
+  "input_fluid": {
+    "fluid": "voluminousenergy:ammonium_nitrate_solution",
+    "amount": 250
+  },
+  "result": {
+    "item": "minecraft:melon",
+    "count": 1
+  },
+  "rng_slot_0": {
+    "item": "minecraft:melon_seeds",
+    "count": 2,
+    "chance": 0.75
+  },
+  "rng_slot_1": {
+    "item": "minecraft:melon",
+    "count": 1,
+    "chance": 0.25
+  },
+  "rng_slot_2": {
+    "item": "minecraft:air",
+    "count": 0,
+    "chance": 0
+  }
+}
