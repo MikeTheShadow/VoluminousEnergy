@@ -40,6 +40,7 @@ public class VEBlockItems {
             public static RegistryObject<BlockItem> DIMENSIONAL_LASER_ITEM = VE_BLOCK_ITEM_REGISTRY.register("dimensional_laser", () -> new BlockItem(VEBlocks.DIMENSIONAL_LASER_BLOCK.get(), PROPERTIES));
             public static RegistryObject<BlockItem> FLUID_ELECTROLYZER_ITEM = VE_BLOCK_ITEM_REGISTRY.register("fluid_electrolyzer", () -> new BlockItem(VEBlocks.FLUID_ELECTROLYZER_BLOCK.get(), PROPERTIES));
             public static RegistryObject<BlockItem> FLUID_MIXER_ITEM = VE_BLOCK_ITEM_REGISTRY.register("fluid_mixer", () -> new BlockItem(VEBlocks.FLUID_MIXER_BLOCK.get(), PROPERTIES));
+            public static RegistryObject<BlockItem> HYDROPONIC_INCUBATOR_ITEM = VE_BLOCK_ITEM_REGISTRY.register("hydroponic_incubator", () -> new BlockItem(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get(), PROPERTIES));
 
             // Tanks
             public static RegistryObject<BlockItem> ALUMINUM_TANK_ITEM = VE_BLOCK_ITEM_REGISTRY.register("aluminum_tank",() -> new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK.get(), PROPERTIES));

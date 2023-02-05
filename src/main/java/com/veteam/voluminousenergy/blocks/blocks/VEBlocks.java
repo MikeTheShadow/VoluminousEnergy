@@ -295,14 +295,14 @@ public class VEBlocks {
             }));
 
     // Hydroponic Incubator
-    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
-    public static HydroponicIncubatorBlock HYDROPONIC_INCUBATOR_BLOCK;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
-    public static BlockEntityType<HydroponicIncubatorTile> HYDROPONIC_INCUBATOR_TILE;
-
-    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
-    public static MenuType<HydroponicIncubatorContainer> HYDROPONIC_INCUBATOR_CONTAINER;
+    public static RegistryObject<HydroponicIncubatorBlock> HYDROPONIC_INCUBATOR_BLOCK = VE_BLOCKS_REGISTRY.register("hydroponic_incubator", HydroponicIncubatorBlock::new);
+    public static RegistryObject<BlockEntityType<HydroponicIncubatorTile>> HYDROPONIC_INCUBATOR_TILE = VE_TILE_REGISTRY.register("hydroponic_incubator",
+            () -> BlockEntityType.Builder.of(HydroponicIncubatorTile::new,VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get()).build(null));
+    public static RegistryObject<MenuType<HydroponicIncubatorContainer>> HYDROPONIC_INCUBATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("hydroponic_incubator", () ->
+            IForgeMenuType.create((id, inv, data)-> {
+                BlockPos pos = data.readBlockPos();
+                return new HydroponicIncubatorContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }));
 
     // Tanks (Tile/Block)
 

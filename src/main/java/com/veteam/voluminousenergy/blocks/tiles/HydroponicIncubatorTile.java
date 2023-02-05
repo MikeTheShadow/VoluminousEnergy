@@ -77,7 +77,7 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
     }
 
     public HydroponicIncubatorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.HYDROPONIC_INCUBATOR_TILE, pos, state);
+        super(VEBlocks.HYDROPONIC_INCUBATOR_TILE.get(), pos, state);
         inputTank.setAllowAny(true);
     }
 

@@ -19,14 +19,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HydroponicIncubatorRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING;
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -158,10 +157,10 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
+        return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get());
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<HydroponicIncubatorRecipe> {
+    public static class Serializer implements RecipeSerializer<HydroponicIncubatorRecipe> {
         @Override
         public HydroponicIncubatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);

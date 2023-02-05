@@ -32,7 +32,6 @@ public class HydroponicIncubatorBlock extends FaceableBlock implements EntityBlo
                 .lightLevel(l -> 0)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("hydroponic_incubator");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresIron(this);
     }
@@ -55,7 +54,7 @@ public class HydroponicIncubatorBlock extends FaceableBlock implements EntityBlo
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.HYDROPONIC_INCUBATOR_TILE);
+        return createTicker(level, blockEntityType, VEBlocks.HYDROPONIC_INCUBATOR_TILE.get());
     }
 
     @Override
@@ -63,7 +62,7 @@ public class HydroponicIncubatorBlock extends FaceableBlock implements EntityBlo
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof MenuProvider) {
-                NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+                NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Hydroponic Incubator named container provider is missing!");
             }

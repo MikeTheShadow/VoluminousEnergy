@@ -789,7 +789,7 @@ public class RecipeUtil {
                 if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
                     for (FluidStack recipeFluid : hydroponicIncubatorRecipe.fluidInputList.get()){
                         for(Item ingredient : hydroponicIncubatorRecipe.ingredientList.get()){
-                            String hash = ingredient.getRegistryName() + recipeFluid.getTranslationKey();
+                            String hash = RegistryLookups.lookupItem(ingredient).toString() + recipeFluid.getTranslationKey();
                             hydroponicIncubatorRecipeHashMap.put(hash.hashCode(),hydroponicIncubatorRecipe);
                         }
                     }
@@ -797,7 +797,7 @@ public class RecipeUtil {
             }
         }
 
-        String hash = inputItem.getItem().getRegistryName() + inputFluid.getTranslationKey();
+        String hash = RegistryLookups.lookupItem(inputItem.getItem()) + inputFluid.getTranslationKey();
         return hydroponicIncubatorRecipeHashMap.get(hash.hashCode());
     }
 
@@ -806,17 +806,17 @@ public class RecipeUtil {
         for(Recipe<?> recipe : level.getRecipeManager().getRecipes()){
             if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
                 for(Item item : hydroponicIncubatorRecipe.ingredientList.get()) {
-                    if(item.getRegistryName() == null) continue;
-                    int code = item.getRegistryName().hashCode();
+                    if(RegistryLookups.lookupItem(item) == null) continue;
+                    int code = item.hashCode();
                     if(!hydroponicIncubatorItemMap.containsKey(code)) {
-                        hydroponicIncubatorItemMap.put(item.getRegistryName().hashCode(),new ArrayList<>());
+                        hydroponicIncubatorItemMap.put(item.hashCode(),new ArrayList<>());
                     }
                     hydroponicIncubatorItemMap.get(code).add(hydroponicIncubatorRecipe);
                 }
             }
         }
-        if(inputItem.getRegistryName() == null) return new ArrayList<>();
-        return hydroponicIncubatorItemMap.getOrDefault(inputItem.getRegistryName().hashCode(),new ArrayList<>());
+        if(RegistryLookups.lookupItem(inputItem) == null) return new ArrayList<>();
+        return hydroponicIncubatorItemMap.getOrDefault(inputItem.hashCode(),new ArrayList<>());
     }
 
     private static final HashMap<Integer,ArrayList<HydroponicIncubatorRecipe>> hydroponicIncubatorOutputCache = new HashMap<>();
@@ -825,15 +825,15 @@ public class RecipeUtil {
             for (Recipe<?> recipe : level.getRecipeManager().getRecipes()) {
                 if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
                     for (Item resultItem : hydroponicIncubatorRecipe.getResultItems()) {
-                        if (hydroponicIncubatorOutputCache.containsKey(resultItem.getRegistryName().hashCode())) {
-                            ArrayList<HydroponicIncubatorRecipe> arrayList = hydroponicIncubatorOutputCache.get(resultItem.getRegistryName().hashCode());
+                        if (hydroponicIncubatorOutputCache.containsKey(resultItem.hashCode())) {
+                            ArrayList<HydroponicIncubatorRecipe> arrayList = hydroponicIncubatorOutputCache.get(resultItem.hashCode());
                             if (arrayList.contains(hydroponicIncubatorRecipe)) continue;
                             arrayList.add(hydroponicIncubatorRecipe);
-                            hydroponicIncubatorOutputCache.replace(resultItem.getRegistryName().hashCode(), arrayList);
+                            hydroponicIncubatorOutputCache.replace(resultItem.hashCode(), arrayList);
                         } else {
                             ArrayList<HydroponicIncubatorRecipe> arrayList = new ArrayList<>();
                             arrayList.add(hydroponicIncubatorRecipe);
-                            hydroponicIncubatorOutputCache.put(resultItem.getRegistryName().hashCode(), arrayList);
+                            hydroponicIncubatorOutputCache.put(resultItem.hashCode(), arrayList);
                         }
 
                     }
@@ -841,6 +841,6 @@ public class RecipeUtil {
             }
         }
 
-        return hydroponicIncubatorOutputCache.getOrDefault(outputItem.getRegistryName().hashCode(), new ArrayList<>());
+        return hydroponicIncubatorOutputCache.getOrDefault(outputItem.hashCode(), new ArrayList<>());
     }
 }
