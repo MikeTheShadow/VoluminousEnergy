@@ -158,7 +158,7 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
 
     @Override
     public ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK);
+        return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK);
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<HydroponicIncubatorRecipe> {
