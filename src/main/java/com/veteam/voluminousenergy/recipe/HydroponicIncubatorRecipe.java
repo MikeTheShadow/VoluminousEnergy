@@ -289,8 +289,8 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
             }
 
             buffer.writeInt(recipe.ingredientCount);
-            buffer.writeInt(recipe.processTime);
             buffer.writeItem(recipe.getResult());
+            buffer.writeInt(recipe.processTime);
             buffer.writeInt(recipe.outputAmount);
             //RNG 0
             buffer.writeItem(recipe.rngResult0);
