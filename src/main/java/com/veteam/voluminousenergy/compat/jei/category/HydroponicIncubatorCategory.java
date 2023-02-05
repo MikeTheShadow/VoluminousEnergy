@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -40,7 +41,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 4, 4, 156, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
         emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
@@ -138,26 +139,26 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
             testStack.setCount(recipe.getIngredientCount());
             inputList.add(testStack);
         }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM, inputList);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputList);
 
-        fluidInputAcceptor.addIngredients(VanillaTypes.FLUID, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
         // OUTPUT
         ItemStack primaryOutputStack = recipe.getResult().copy();
         primaryOutputStack.setCount(recipe.getOutputAmount());
-        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM, primaryOutputStack);
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
 
         ItemStack rng0Stack = recipe.getRngItemSlot0().copy();
         rng0Stack.setCount(recipe.getOutputRngAmount0());
-        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM, rng0Stack);
+        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng0Stack);
 
         ItemStack rng1Stack = recipe.getRngItemSlot1().copy();
         rng1Stack.setCount(recipe.getOutputRngAmount1());
-        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM, rng1Stack);
+        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng1Stack);
 
         ItemStack rng2Stack = recipe.getRngItemSlot2().copy();
         rng2Stack.setCount(recipe.getOutputRngAmount2());
-        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM, rng2Stack);
+        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng2Stack);
 
     }
 
