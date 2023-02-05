@@ -23,4 +23,5 @@ public class RecipeConstants {
     public static final ResourceLocation DIMENSIONAL_LASING = new ResourceLocation(VoluminousEnergy.MODID, "dimensional_lasing");
     public static final ResourceLocation FLUID_ELECTROLYZING = new ResourceLocation(VoluminousEnergy.MODID, "fluid_electrolyzing");
     public static final ResourceLocation FLUID_MIXING = new ResourceLocation(VoluminousEnergy.MODID, "fluid_mixing");
+    public static final ResourceLocation HYDROPONIC_INCUBATING = new ResourceLocation(VoluminousEnergy.MODID, "hydroponic_incubating");
 }

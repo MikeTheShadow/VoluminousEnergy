@@ -279,6 +279,16 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":fluid_mixer")
     public static MenuType<FluidMixerContainer> FLUID_MIXER_CONTAINER;
 
+    // Hydroponic Incubator
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static HydroponicIncubatorBlock HYDROPONIC_INCUBATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static BlockEntityType<HydroponicIncubatorTile> HYDROPONIC_INCUBATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static MenuType<HydroponicIncubatorContainer> HYDROPONIC_INCUBATOR_CONTAINER;
+
     // Tanks (Tile/Block)
 
     // Aluminum Tank

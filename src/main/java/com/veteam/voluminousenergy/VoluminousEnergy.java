@@ -193,6 +193,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new SawmillBlock());
             blockRegisteryEvent.getRegistry().register(new FluidElectrolyzerBlock());
             blockRegisteryEvent.getRegistry().register(new FluidMixerBlock());
+            blockRegisteryEvent.getRegistry().register(new HydroponicIncubatorBlock());
 
             // Tanks
             blockRegisteryEvent.getRegistry().register(new AluminumTankBlock());
@@ -286,6 +287,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SAWMILL_BLOCK,properties).setRegistryName("sawmill"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.FLUID_ELECTROLYZER_BLOCK,properties).setRegistryName("fluid_electrolyzer"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.FLUID_MIXER_BLOCK,properties).setRegistryName("fluid_mixer"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK,properties).setRegistryName("hydroponic_incubator"));
 
             // Tanks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_TANK_BLOCK,properties).setRegistryName("aluminum_tank"));
@@ -626,6 +628,7 @@ public class VoluminousEnergy {
             event.getRegistry().register(BlockEntityType.Builder.of(SawmillTile::new,VEBlocks.SAWMILL_BLOCK).build(null).setRegistryName("sawmill"));
             event.getRegistry().register(BlockEntityType.Builder.of(FluidElectrolyzerTile::new,VEBlocks.FLUID_ELECTROLYZER_BLOCK).build(null).setRegistryName("fluid_electrolyzer"));
             event.getRegistry().register(BlockEntityType.Builder.of(FluidMixerTile::new,VEBlocks.FLUID_MIXER_BLOCK).build(null).setRegistryName("fluid_mixer"));
+            event.getRegistry().register(BlockEntityType.Builder.of(HydroponicIncubatorTile::new,VEBlocks.HYDROPONIC_INCUBATOR_BLOCK).build(null).setRegistryName("hydroponic_incubator"));
 
             // Tanks
             event.getRegistry().register(BlockEntityType.Builder.of(AluminumTankTile::new, VEBlocks.ALUMINUM_TANK_BLOCK).build(null).setRegistryName("aluminum_tank"));
@@ -796,6 +799,11 @@ public class VoluminousEnergy {
                 BlockPos pos = data.readBlockPos();
                 return new FluidMixerContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }).setRegistryName("fluid_mixer"));
+
+            event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                return new HydroponicIncubatorContainer(windowId, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+            }).setRegistryName("hydroponic_incubator"));
         }
 
         @SubscribeEvent

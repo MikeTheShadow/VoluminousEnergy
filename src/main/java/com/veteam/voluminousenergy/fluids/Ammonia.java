@@ -25,12 +25,12 @@ public class Ammonia {
     public static Item AMMONIA_BUCKET;
 
     public static FlowingFluid AmmoniaFluid(){
-        AMMONIA = new ForgeFlowingFluid.Source(Ammonia.properties);
+        AMMONIA = new VEFlowingGasFluid.Source(Ammonia.properties, 4);
         return AMMONIA;
     }
 
     public static FlowingFluid FlowingAmmoniaFluid(){
-        FLOWING_AMMONIA = new ForgeFlowingFluid.Flowing(Ammonia.properties);
+        FLOWING_AMMONIA = new VEFlowingGasFluid.Flowing(Ammonia.properties, 4);
         return FLOWING_AMMONIA;
     }
 
@@ -46,6 +46,6 @@ public class Ammonia {
 
 
     public static final ForgeFlowingFluid.Properties properties =
-            new ForgeFlowingFluid.Properties(() -> AMMONIA, () -> FLOWING_AMMONIA, FluidAttributes.builder(AMMONIA_STILL_TEXTURE, AMMONIA_FLOWING_TEXTURE).viscosity(5))
+            new ForgeFlowingFluid.Properties(() -> AMMONIA, () -> FLOWING_AMMONIA, FluidAttributes.builder(AMMONIA_STILL_TEXTURE, AMMONIA_FLOWING_TEXTURE).gaseous())
                     .bucket(() -> AMMONIA_BUCKET).block(() -> AMMONIA_BLOCK);
 }
