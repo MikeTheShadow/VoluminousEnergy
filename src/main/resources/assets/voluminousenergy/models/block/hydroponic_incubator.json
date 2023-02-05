@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/hydroponic_incubator_top",
+    "up": "voluminousenergy:block/hydroponic_incubator_top",
+    "east": "voluminousenergy:block/hydroponic_incubator_side",
+    "west": "voluminousenergy:block/hydroponic_incubator_side",
+    "north": "voluminousenergy:block/hydroponic_incubator_front",
+    "south": "voluminousenergy:block/hydroponic_incubator_side"
+  }
+}

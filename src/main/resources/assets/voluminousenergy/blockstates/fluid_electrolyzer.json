@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "voluminousenergy:block/fluid_electrolyzer" },
+    "facing=south": { "model": "voluminousenergy:block/fluid_electrolyzer", "y": 180 },
+    "facing=west": { "model": "voluminousenergy:block/fluid_electrolyzer", "y": 270 },
+    "facing=east": { "model": "voluminousenergy:block/fluid_electrolyzer", "y": 90 }
+  }
+}

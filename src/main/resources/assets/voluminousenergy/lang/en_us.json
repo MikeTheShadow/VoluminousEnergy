@@ -118,6 +118,7 @@
     "block.voluminousenergy.dimensional_laser" : "Dimensional laser",
     "block.voluminousenergy.fluid_electrolyzer": "Fluid Electrolyzer",
     "block.voluminousenergy.fluid_mixer": "Fluid Mixer",
+    "block.voluminousenergy.hydroponic_incubator": "Hydroponic Incubator",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",
@@ -426,6 +427,7 @@
     "jei.voluminousenergy.fluid_electrolyzing": "Fluid Electrolyzing",
     "jei.voluminousenergy.fluid_mixing": "Fluid Mixing",
     "jei.voluminousenergy.primitive_blasting": "Primitive Blasting",
+    "jei.voluminousenergy.hydroponic_incubating": "Hydroponic Incubating",
 
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",

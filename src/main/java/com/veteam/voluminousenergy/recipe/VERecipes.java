@@ -70,6 +70,9 @@ public class VERecipes {
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> FLUID_MIXING =
                 VE_RECIPE_TYPES_REGISTRY.register("fluid_mixing", () -> new VERecipeType<>(RecipeConstants.FLUID_MIXING));
+
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> HYDROPONIC_INCUBATING =
+                VE_RECIPE_TYPES_REGISTRY.register("hydroponic_incubating", () -> new VERecipeType<>(RecipeConstants.HYDROPONIC_INCUBATING));
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING =
@@ -108,4 +111,6 @@ public class VERecipes {
             VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_electrolyzing", () -> FluidElectrolyzerRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> FLUID_MIXING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_mixing", () -> FluidMixerRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> HYDROPONIC_INCUBATING =
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("hydroponic_incubating", () -> HydroponicIncubatorRecipe.SERIALIZER);
 }

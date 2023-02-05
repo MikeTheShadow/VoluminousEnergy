@@ -45,6 +45,7 @@ public class Config {
     public static final String CATEGORY_TOOLING_STATION = "Tooling Station";
     public static final String CATEGORY_FLUID_ELECTROLYZER = "Fluid Electrolyzer";
     public static final String CATEGORY_FLUID_MIXER = "Fluid Mixer";
+    public static final String CATEGORY_HYDROPONIC_INCUBATOR = "Hydroponic Incubator";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_CLIMATE_SPAWNS = "Climate Spawns";
@@ -227,6 +228,11 @@ public class Config {
     public static ForgeConfigSpec.IntValue FLUID_MIXER_POWER_USAGE;
     public static ForgeConfigSpec.IntValue FLUID_MIXER_TRANSFER;
 
+    // Hydroponic Incubator Variables
+    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_MAX_POWER;
+    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_TRANSFER;
+
     // Tank variables
     public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
     public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
@@ -379,6 +385,11 @@ public class Config {
         // Fluid Mixer
         COMMON_BUILDER.comment("Fluid Mixer").push(CATEGORY_FLUID_MIXER);
         setupFluidMixer();
+        COMMON_BUILDER.pop();
+
+        // Fluid Mixer
+        COMMON_BUILDER.comment("Hydroponic Incubator").push(CATEGORY_HYDROPONIC_INCUBATOR);
+        setupHydroponicIncubatorMixer();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -710,6 +721,15 @@ public class Config {
         FLUID_MIXER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Fluid Mixer")
                 .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
         FLUID_MIXER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Fluid Mixer")
+                .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupHydroponicIncubatorMixer(){
+        HYDROPONIC_INCUBATOR_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Hydroponic Incubator to store")
+                .defineInRange("Maximum Power", 128_000, 0, Integer.MAX_VALUE);
+        HYDROPONIC_INCUBATOR_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Hydroponic Incubator")
+                .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
+        HYDROPONIC_INCUBATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
     }
 

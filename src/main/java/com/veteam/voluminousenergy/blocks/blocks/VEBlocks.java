@@ -294,6 +294,16 @@ public class VEBlocks {
                 return new FluidMixerContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }));
 
+    // Hydroponic Incubator
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static HydroponicIncubatorBlock HYDROPONIC_INCUBATOR_BLOCK;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static BlockEntityType<HydroponicIncubatorTile> HYDROPONIC_INCUBATOR_TILE;
+
+    @ObjectHolder(VoluminousEnergy.MODID + ":hydroponic_incubator")
+    public static MenuType<HydroponicIncubatorContainer> HYDROPONIC_INCUBATOR_CONTAINER;
+
     // Tanks (Tile/Block)
 
     // Aluminum Tank

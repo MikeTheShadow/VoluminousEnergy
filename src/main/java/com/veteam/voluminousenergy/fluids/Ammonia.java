@@ -29,12 +29,12 @@ public class Ammonia {
     public static Item AMMONIA_BUCKET;
 
     public static FlowingFluid AmmoniaFluid(){
-        AMMONIA = new ForgeFlowingFluid.Source(Ammonia.PROPERTIES);
+        AMMONIA = new VEFlowingGasFluid.Source(Ammonia.PROPERTIES, 4);
         return AMMONIA;
     }
 
     public static FlowingFluid FlowingAmmoniaFluid(){
-        FLOWING_AMMONIA = new ForgeFlowingFluid.Flowing(Ammonia.PROPERTIES);
+        FLOWING_AMMONIA = new VEFlowingGasFluid.Flowing(Ammonia.PROPERTIES, 4);
         return FLOWING_AMMONIA;
     }
 
