@@ -780,4 +780,67 @@ public class RecipeUtil {
 
         return FluidMixerMap.get((firstHash + secondHash).hashCode());
     }
+
+    private static final HashMap<Integer,HydroponicIncubatorRecipe> hydroponicIncubatorRecipeHashMap = new HashMap<>();
+    public static HydroponicIncubatorRecipe getHydroponicIncubatorRecipe(Level world, FluidStack inputFluid, ItemStack inputItem) {
+
+        if(hydroponicIncubatorRecipeHashMap.isEmpty()) {
+            for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
+                if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
+                    for (FluidStack recipeFluid : hydroponicIncubatorRecipe.fluidInputList.get()){
+                        for(Item ingredient : hydroponicIncubatorRecipe.ingredientList.get()){
+                            String hash = ingredient.getRegistryName() + recipeFluid.getTranslationKey();
+                            hydroponicIncubatorRecipeHashMap.put(hash.hashCode(),hydroponicIncubatorRecipe);
+                        }
+                    }
+                }
+            }
+        }
+
+        String hash = inputItem.getItem().getRegistryName() + inputFluid.getTranslationKey();
+        return hydroponicIncubatorRecipeHashMap.get(hash.hashCode());
+    }
+
+    private static final HashMap<Integer,ArrayList<HydroponicIncubatorRecipe>> hydroponicIncubatorItemMap = new HashMap<>();
+    public static ArrayList<HydroponicIncubatorRecipe> getHydroponicIncubatorRecipesFromItemInput(Level level, Item inputItem){
+        for(Recipe<?> recipe : level.getRecipeManager().getRecipes()){
+            if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
+                for(Item item : hydroponicIncubatorRecipe.ingredientList.get()) {
+                    if(item.getRegistryName() == null) continue;
+                    int code = item.getRegistryName().hashCode();
+                    if(!hydroponicIncubatorItemMap.containsKey(code)) {
+                        hydroponicIncubatorItemMap.put(item.getRegistryName().hashCode(),new ArrayList<>());
+                    }
+                    hydroponicIncubatorItemMap.get(code).add(hydroponicIncubatorRecipe);
+                }
+            }
+        }
+        if(inputItem.getRegistryName() == null) return new ArrayList<>();
+        return hydroponicIncubatorItemMap.getOrDefault(inputItem.getRegistryName().hashCode(),new ArrayList<>());
+    }
+
+    private static final HashMap<Integer,ArrayList<HydroponicIncubatorRecipe>> hydroponicIncubatorOutputCache = new HashMap<>();
+    public static final ArrayList<HydroponicIncubatorRecipe> getHydroponicIncubatorRecipesFromAnyItemOutput(Level level, Item outputItem) {
+        if (hydroponicIncubatorOutputCache.isEmpty()) {
+            for (Recipe<?> recipe : level.getRecipeManager().getRecipes()) {
+                if (recipe instanceof HydroponicIncubatorRecipe hydroponicIncubatorRecipe) {
+                    for (Item resultItem : hydroponicIncubatorRecipe.getResultItems()) {
+                        if (hydroponicIncubatorOutputCache.containsKey(resultItem.getRegistryName().hashCode())) {
+                            ArrayList<HydroponicIncubatorRecipe> arrayList = hydroponicIncubatorOutputCache.get(resultItem.getRegistryName().hashCode());
+                            if (arrayList.contains(hydroponicIncubatorRecipe)) continue;
+                            arrayList.add(hydroponicIncubatorRecipe);
+                            hydroponicIncubatorOutputCache.replace(resultItem.getRegistryName().hashCode(), arrayList);
+                        } else {
+                            ArrayList<HydroponicIncubatorRecipe> arrayList = new ArrayList<>();
+                            arrayList.add(hydroponicIncubatorRecipe);
+                            hydroponicIncubatorOutputCache.put(resultItem.getRegistryName().hashCode(), arrayList);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return hydroponicIncubatorOutputCache.getOrDefault(outputItem.getRegistryName().hashCode(), new ArrayList<>());
+    }
 }

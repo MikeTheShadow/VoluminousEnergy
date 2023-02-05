@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/fluid_mixer_top",
+    "up": "voluminousenergy:block/fluid_mixer_top",
+    "east": "voluminousenergy:block/fluid_mixer_side",
+    "west": "voluminousenergy:block/fluid_mixer_side",
+    "north": "voluminousenergy:block/fluid_mixer_front",
+    "south": "voluminousenergy:block/fluid_mixer_side"
+  }
+}

@@ -40,6 +40,7 @@ public class VERecipes {
         public static final RecipeType<VEFluidRecipe> DIMENSIONAL_LASING = registerType(RecipeConstants.DIMENSIONAL_LASING);
         public static final RecipeType<VEFluidRecipe> FLUID_ELECTROLYZING = registerType(RecipeConstants.FLUID_ELECTROLYZING);
         public static final RecipeType<VEFluidRecipe> FLUID_MIXING = registerType(RecipeConstants.FLUID_MIXING);
+        public static final RecipeType<VEFluidRecipe> HYDROPONIC_INCUBATING = registerType(RecipeConstants.HYDROPONIC_INCUBATING);
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING = registerSerializer(RecipeConstants.PRIMITIVE_BLAST_FURNACING, () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);
@@ -60,6 +61,7 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> DIMENSIONAL_LASING = registerSerializer(RecipeConstants.DIMENSIONAL_LASING, () -> DimensionalLaserRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> FLUID_ELECTROLYZER = registerSerializer(RecipeConstants.FLUID_ELECTROLYZING, () -> FluidElectrolyzerRecipe.SERIALIZER);
     public static final RegistryObject<RecipeSerializer<?>> FLUID_MIXING = registerSerializer(RecipeConstants.FLUID_MIXING, () -> FluidMixerRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> HYDROPONIC_INCUBATING = registerSerializer(RecipeConstants.HYDROPONIC_INCUBATING, () -> HydroponicIncubatorRecipe.SERIALIZER);
 
     private static RegistryObject<RecipeSerializer<?>> registerSerializer(ResourceLocation name, Supplier<RecipeSerializer<?>> serializer) {
         VoluminousEnergy.LOGGER.info("Registering Serializer for Recipe: " + name.toString());

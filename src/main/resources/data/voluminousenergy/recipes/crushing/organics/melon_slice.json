@@ -10,9 +10,9 @@
     "count": 2
   },
   "rng": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
+    "item": "minecraft:melon_seeds",
+    "count": 1,
+    "chance": 0.25
   },
   "experience": {
     "minimum": 0,

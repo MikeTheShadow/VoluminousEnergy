@@ -51,6 +51,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final ResourceLocation FLUID_ELECTROLYZER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_electrolyzing");
     public static final ResourceLocation FLUID_MIXER_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/fluid_mixing");
     public static final ResourceLocation PRIMITIVE_BLASTING_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/primitive_blasting");
+    public static final ResourceLocation HYDROPONIC_INCUBATOR_UID = new ResourceLocation(VoluminousEnergy.MODID, "plugin/hydroponic_incubator");
     
     public static final Component SHOW_RECIPES = new TranslatableComponent("jei.tooltip.show.recipes");
 
@@ -78,6 +79,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new FluidElectrolyzingCategory(guiHelper));
         registration.addRecipeCategories(new FluidMixingCategory(guiHelper));
         registration.addRecipeCategories(new PrimitiveBlastingCategory(guiHelper));
+        registration.addRecipeCategories(new HydroponicIncubatorCategory(guiHelper));
     }
 
     @Override
@@ -98,6 +100,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
         registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));
+        registration.addRecipes(HydroponicIncubatorCategory.RECIPE_TYPE, getRecipesOfType(HydroponicIncubatorRecipe.RECIPE_TYPE));
 
         // Register info for certain ingredients that could use additional explanation for end users
         registerInfo(registration);
@@ -160,6 +163,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addGuiContainerHandler(FluidMixerScreen.class, new FluidMixerContainerHandler());
         registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
+        registration.addGuiContainerHandler(HydroponicIncubatorScreen.class, new HydroponicIncubatorContainerHandler());
     }
 
     @Override
@@ -178,6 +182,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
+        // TODO: Hydroponic Incubator
     }
 
     @Override
@@ -201,5 +206,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK).copy(), FluidMixingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK).copy(), HydroponicIncubatorCategory.RECIPE_TYPE);
     }
 }
