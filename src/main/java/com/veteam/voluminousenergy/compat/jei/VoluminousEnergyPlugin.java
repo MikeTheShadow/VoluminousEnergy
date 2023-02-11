@@ -120,10 +120,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
         registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
 
-        // Hydrogen via Electrolyzer info
-        registration.addIngredientInfo(List.of(new ItemStack(VEFluids.HYDROGEN_BUCKET_REG.get()), new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get().asItem())), VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.hydrogen_electrolyzer_info"));
-        registration.addIngredientInfo(new FluidStack(VEFluids.HYDROGEN_REG.get(), 1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.hydrogen_electrolyzer_info"));
-
         // Quartz Multiplier info
         registration.addIngredientInfo(new ItemStack(VEItems.QUARTZ_MULTIPLIER.get()), VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.quartz_multiplier_info"));
 
