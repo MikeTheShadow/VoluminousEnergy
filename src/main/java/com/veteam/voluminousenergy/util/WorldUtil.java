@@ -1,22 +1,17 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -24,8 +19,8 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldUtil {
 
@@ -48,41 +43,25 @@ public class WorldUtil {
 
     public static HashMap<ClimateParameters,Double> sampleClimate(Level level, BlockPos pos){
         if (level.isClientSide) new HashMap<>();
-//        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
-//        ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
-//        ChunkGenerator chunkgenerator = serverchunkcache.getGenerator();
-//        Climate.Sampler climateSampler = chunkgenerator.climateSampler();
-//        Climate.TargetPoint targetPoint = climateSampler.sample(pos.getX(), pos.getY(), pos.getZ());
-//
-//        double continentalness = Climate.unquantizeCoord(targetPoint.continentalness());
-//        double erosion = Climate.unquantizeCoord(targetPoint.erosion());
-//        double humidity = Climate.unquantizeCoord(targetPoint.humidity());
-//        double temperature = Climate.unquantizeCoord(targetPoint.temperature());
-//
-//        /*
-//        BiomeSource biomeSource = chunkgenerator.getBiomeSource();
-//        OverworldBiomeBuilder overworldBiomeBuilder = new OverworldBiomeBuilder();
-//        String c = overworldBiomeBuilder.getDebugStringForContinentalness(continentalness);
-//        String e = overworldBiomeBuilder.getDebugStringForErosion(erosion);
-//        String h = overworldBiomeBuilder.getDebugStringForHumidity(humidity);
-//        String t = overworldBiomeBuilder.getDebugStringForTemperature(temperature);
-//        /*
-//         */
-//
-//        if (chunkgenerator instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator){
-//            NoiseRouter router = noiseBasedChunkGenerator.router();
-//            DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
-//            continentalness = router.continents().compute(context);
-//            erosion = router.erosion().compute(context);
-//            humidity = router.humidity().compute(context);
-//            temperature = router.temperature().compute(context);
-//        }
+
+        ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
+        ServerChunkCache serverchunkcache = serverLevel.getChunkSource();
+
+        RandomState randomState = serverchunkcache.randomState();
+
+        NoiseRouter noiseRouter = randomState.router();
+        DensityFunction.SinglePointContext context = new DensityFunction.SinglePointContext(pos.getX(), pos.getY(), pos.getZ());
+
+        double continentalness = noiseRouter.continents().compute(context);
+        double erosion = noiseRouter.erosion().compute(context);
+        double humidity = noiseRouter.vegetation().compute(context);
+        double temperature = noiseRouter.temperature().compute(context);
 
         HashMap<ClimateParameters,Double> climateMap = new HashMap<>();
-//        climateMap.put(ClimateParameters.CONTINENTALNESS,continentalness);
-//        climateMap.put(ClimateParameters.EROSION,erosion);
-//        climateMap.put(ClimateParameters.HUMIDITY,humidity);
-//        climateMap.put(ClimateParameters.TEMPERATURE,temperature);
+        climateMap.put(ClimateParameters.CONTINENTALNESS,continentalness);
+        climateMap.put(ClimateParameters.EROSION,erosion);
+        climateMap.put(ClimateParameters.HUMIDITY,humidity);
+        climateMap.put(ClimateParameters.TEMPERATURE,temperature);
         return climateMap;
     }
 
