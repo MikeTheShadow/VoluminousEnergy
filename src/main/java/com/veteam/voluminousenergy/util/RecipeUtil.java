@@ -729,7 +729,11 @@ public class RecipeUtil {
             }
         }
 
-        return Optional.ofNullable(atomicSublist.get().get(0));
+        try {
+            return Optional.ofNullable(atomicSublist.get().get(0));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
 
