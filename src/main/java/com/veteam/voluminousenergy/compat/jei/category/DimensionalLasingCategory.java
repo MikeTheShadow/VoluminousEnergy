@@ -37,11 +37,12 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
 
     public DimensionalLasingCategory(IGuiHelper guiHelper) {
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
+        ResourceLocation dimensionalLaserGUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK));
         slotDrawable = guiHelper.getSlotDrawable();
-        arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        arrow = guiHelper.drawableBuilder(dimensionalLaserGUI, 97, 34, 15, 16).build();
+        emptyArrow = guiHelper.drawableBuilder(dimensionalLaserGUI,176,0,15,17).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override
@@ -78,8 +79,8 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
 
     @Override
     public void draw(DimensionalLaserRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,2, 6);
-        emptyArrow.draw(matrixStack,2,6);
+        arrow.draw(matrixStack,9, 4);
+        emptyArrow.draw(matrixStack,9,4);
         slotDrawable.draw(matrixStack,8,22);
 
         int xPos = 36;
