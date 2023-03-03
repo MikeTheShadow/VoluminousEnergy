@@ -80,6 +80,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCategories(new FluidMixingCategory(guiHelper));
         registration.addRecipeCategories(new PrimitiveBlastingCategory(guiHelper));
         registration.addRecipeCategories(new HydroponicIncubatorCategory(guiHelper));
+        registration.addRecipeCategories(new DimensionalLasingCategory(guiHelper));
     }
 
     @Override
@@ -101,6 +102,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
         registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));
         registration.addRecipes(HydroponicIncubatorCategory.RECIPE_TYPE, getRecipesOfType(HydroponicIncubatorRecipe.RECIPE_TYPE));
+        registration.addRecipes(DimensionalLasingCategory.RECIPE_TYPE, getRecipesOfType(DimensionalLaserRecipe.RECIPE_TYPE));
 
         // Register info for certain ingredients that could use additional explanation for end users
         registerInfo(registration);
@@ -164,6 +166,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(HydroponicIncubatorScreen.class, new HydroponicIncubatorContainerHandler());
+        // TODO: Container handler for Dimensional Laser
     }
 
     @Override
@@ -183,6 +186,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
         // TODO: Hydroponic Incubator
+        // TODO: Dimensional Laser
     }
 
     @Override
