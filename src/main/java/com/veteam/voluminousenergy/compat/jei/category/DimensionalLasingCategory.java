@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -39,7 +40,7 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         ResourceLocation dimensionalLaserGUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(dimensionalLaserGUI, 97, 34, 15, 16).build();
         emptyArrow = guiHelper.drawableBuilder(dimensionalLaserGUI,176,0,15,17).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
@@ -48,18 +49,6 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     @Override
     public @NotNull RecipeType getRecipeType(){
         return RECIPE_TYPE;
-    }
-
-    @Deprecated
-    @Override
-    public ResourceLocation getUid() {
-        return VoluminousEnergyPlugin.DIMENSIONAL_LASER_UID;
-    }
-
-    @Deprecated
-    @Override
-    public Class<? extends DimensionalLaserRecipe> getRecipeClass() {
-        return DimensionalLaserRecipe.class;
     }
 
     @Override
@@ -116,7 +105,7 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     public void ingredientHandler(DimensionalLaserRecipe recipe, IIngredientAcceptor fluidOutputAcceptor) {
-        fluidOutputAcceptor.addIngredient(VanillaTypes.FLUID, new FluidStack(recipe.getFluidClimateSpawn().getFluid(), 1000));
+        fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(recipe.getFluidClimateSpawn().getFluid(), 1000));
     }
 
     @Override

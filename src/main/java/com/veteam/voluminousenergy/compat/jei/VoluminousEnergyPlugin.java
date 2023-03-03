@@ -211,5 +211,6 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get()).copy(), FluidMixingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get()).copy(), HydroponicIncubatorCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()).copy(), DimensionalLasingCategory.RECIPE_TYPE);
     }
 }
