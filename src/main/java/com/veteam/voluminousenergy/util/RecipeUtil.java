@@ -17,10 +17,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -702,15 +700,15 @@ public class RecipeUtil {
     }
 
     private static HashMap<Integer,CrusherRecipe> CrusherIORecipeCache = new HashMap<>();
-    public static CrusherRecipe getCrusherRecipeFromAnyOutputAndTryInput(Item output, Item potentiallyKnownInput, Level level){
+    public static Optional<CrusherRecipe> getCrusherRecipeFromAnyOutputAndTryInput(Item output, Item potentiallyKnownInput, Level level){
         int itemPairHash = new Pair<>(output, potentiallyKnownInput).hashCode();
         if (CrusherIORecipeCache.containsKey(itemPairHash)){
-            return CrusherIORecipeCache.get(itemPairHash);
+            return Optional.of(CrusherIORecipeCache.get(itemPairHash));
         }
 
         AtomicReference<ArrayList<CrusherRecipe>> atomicSublist = new AtomicReference<>(new ArrayList<>());
 
-        getCrusherRecipes(level).parallelStream().forEach(recipe -> {
+        getCrusherRecipes(level).forEach(recipe -> {
             if (recipe.result.is(output) || recipe.rngResult.is(output)){
                 atomicSublist.get().add(recipe);
             }
@@ -724,7 +722,7 @@ public class RecipeUtil {
                 for (ItemStack ingredientStack : crusherRecipe.getIngredient().getItems()){
                     if (ingredientStack.getItem() == potentiallyKnownInput) {
                         CrusherIORecipeCache.put(itemPairHash, crusherRecipe);
-                        return  crusherRecipe;
+                        return  Optional.of(crusherRecipe);
                     }
                 }
 
@@ -732,9 +730,9 @@ public class RecipeUtil {
         }
 
         try {
-            return atomicSublist.get().get(0);
-        } catch (Exception e){
-            return null;
+            return Optional.ofNullable(atomicSublist.get().get(0));
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 

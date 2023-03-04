@@ -117,7 +117,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
             if(level != null && slot > 0){
                 Random rand = new Random();
 
-                Optional<CrusherRecipe> crusherRecipe = Optional.ofNullable(RecipeUtil.getCrusherRecipeFromAnyOutputAndTryInput(inventory.getStackInSlot(slot).copy().getItem(), inventory.getStackInSlot(0).getItem(), level));
+                Optional<CrusherRecipe> crusherRecipe = RecipeUtil.getCrusherRecipeFromAnyOutputAndTryInput(inventory.getStackInSlot(slot).copy().getItem(), inventory.getStackInSlot(0).getItem(), level);
                 if (crusherRecipe.isPresent()){
                     if (!(crusherRecipe.get().getMinExperience() == 0)){
 
