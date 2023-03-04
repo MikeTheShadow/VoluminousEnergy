@@ -428,6 +428,7 @@
     "jei.voluminousenergy.fluid_mixing": "Fluid Mixing",
     "jei.voluminousenergy.primitive_blasting": "Primitive Blasting",
     "jei.voluminousenergy.hydroponic_incubating": "Hydroponic Incubating",
+    "jei.voluminousenergy.dimensional_lasing": "Dimensional Lasing",
 
     "_comment": "JEI UI Info",
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
