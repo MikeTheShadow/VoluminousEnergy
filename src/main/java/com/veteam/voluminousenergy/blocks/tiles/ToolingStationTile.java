@@ -190,7 +190,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot < 2) return stack.getItem() instanceof BucketItem;
-                if (slot == 2) return stack.getItem() instanceof Multitool;
+                if (slot == 2) return stack.getItem() instanceof Multitool && stack.getItem() != VEMultitools.EMPTY_MULTITOOL; // TODO: Remove Multitool base?
                 if (slot == 3) return stack.getItem() instanceof BitItem;
                 if (slot == 4) return (stack.getItem() == VEMultitools.EMPTY_MULTITOOL); // TODO: Remove Multitool base?
                 return false;
@@ -199,6 +199,9 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+                if (slot == 2 && (!this.getStackInSlot(3).isEmpty() || !this.getStackInSlot(4).isEmpty()) ) { // main Multitool slot
+                    return stack;
+                }
                 return super.insertItem(slot, stack, simulate);
             }
         };
