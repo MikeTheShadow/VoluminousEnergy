@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:root",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:primitiveblastfurnace"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.primitive_blast_furnace.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.primitive_blast_furnace.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_primitive_blast_furnace": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:primitiveblastfurnace"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

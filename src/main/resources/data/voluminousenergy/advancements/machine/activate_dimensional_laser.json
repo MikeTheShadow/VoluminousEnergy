@@ -5,10 +5,10 @@
       "item": "voluminousenergy:dimensional_laser"
     },
     "title": {
-      "translate": "advancements.machine.activate_dimensional_laser.title"
+      "translate": "advancements.voluminousenergy.machine.activate_dimensional_laser.title"
     },
     "description": {
-      "translate": "advancements.machine.activate_dimensional_laser.description"
+      "translate": "advancements.voluminousenergy.machine.activate_dimensional_laser.description"
     },
     "frame": "challenge",
     "show_toast": true,
@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "laser": {
+    "activate_dimensional_laser": {
       "trigger": "voluminousenergy:construct_dimensional_laser",
       "conditions": {
         "level": {

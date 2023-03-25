@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_blast_furnace",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:solarium_ingot"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.item.obtain.solarium_ingot.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.item.obtain.solarium_ingot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_solarium_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:solarium_ingot"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
