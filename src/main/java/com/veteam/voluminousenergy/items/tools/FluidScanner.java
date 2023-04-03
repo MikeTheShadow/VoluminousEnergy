@@ -67,12 +67,14 @@ public class FluidScanner extends Item {
         climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
-        if(ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos()) == null) {
-            player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"), player.getUUID());
-            return InteractionResult.sidedSuccess(false);
-        }
+
 
         if(player.isShiftKeyDown()) {
+            if(ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos()) == null) {
+                player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"), player.getUUID());
+                return InteractionResult.sidedSuccess(false);
+            }
+
             PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
             int freeSlot = player.getInventory().getFreeSlot();
 
