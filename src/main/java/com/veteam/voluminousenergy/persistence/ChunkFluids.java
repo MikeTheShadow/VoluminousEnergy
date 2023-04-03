@@ -37,7 +37,7 @@ public class ChunkFluids extends SavedData {
 
         // Possible this is for saving. Marking as dirty must do something
         // Done every 10s might want to save more often since players could abuse this theoretically?
-        if (this.tick % 200 == 0) {
+        if (this.tick % 20 == 0) {
             this.setDirty();
         }
     }

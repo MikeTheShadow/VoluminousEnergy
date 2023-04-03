@@ -20,10 +20,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class RFIDChip extends Item {
+
+    private static final Logger logger = LoggerFactory.getLogger(RFIDChip.class);
 
     public RFIDChip (){
         super(new Item.Properties()
@@ -40,8 +44,13 @@ public class RFIDChip extends Item {
 
         if(tag.contains("ve_x")) {
 
+
+
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
+
+            logger.info("Found pos: " + x + " | " + z);
+
             ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
             if(fluid == null) {
                 componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));

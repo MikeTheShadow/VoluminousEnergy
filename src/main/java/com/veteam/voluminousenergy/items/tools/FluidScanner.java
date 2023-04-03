@@ -67,6 +67,10 @@ public class FluidScanner extends Item {
         climateString.append("\nH: " + climateMap.get(WorldUtil.ClimateParameters.HUMIDITY));
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
+        if(ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos()) == null) {
+            player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"), player.getUUID());
+            return InteractionResult.sidedSuccess(false);
+        }
 
         if(player.isShiftKeyDown()) {
             PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
@@ -85,7 +89,6 @@ public class FluidScanner extends Item {
                         if(itemStack.getOrCreateTag().contains("ve_x")){
                             continue;
                         }
-                        System.out.println(itemStack.getOrCreateTag().toString());
                         if(!itemStack.getOrCreateTag().contains("ve_x")) {
                             itemStack.setCount(itemStack.getCount() - 1);
                             ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);

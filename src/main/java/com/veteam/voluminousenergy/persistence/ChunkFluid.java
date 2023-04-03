@@ -12,22 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChunkFluid {
-
     private final ChunkPos chunkPos;
     private final ServerLevel level;
-    private List<SingleChunkFluid> chunkFluidList = new ArrayList<>();
+    private final List<SingleChunkFluid> chunkFluidList = new ArrayList<>();
 
     public ChunkFluid(ServerLevel serverLevel, CompoundTag compoundTag) {
         this.level = serverLevel;
         this.chunkPos = new ChunkPos(compoundTag.getInt("CX"), compoundTag.getInt("CZ"));
-
         int i = 0;
-        while (compoundTag.contains("SCF_" + i++)) {
+        while (compoundTag.contains("SCF_" + i)) {
             SingleChunkFluid singleChunkFluid =
                     new SingleChunkFluid(
                             ForgeRegistries.FLUIDS.getValue(new ResourceLocation(compoundTag.getString("SCF_" + i)))
                             ,compoundTag.getInt("FS_" + i));
             this.chunkFluidList.add(singleChunkFluid);
+            i++;
         }
     }
 
