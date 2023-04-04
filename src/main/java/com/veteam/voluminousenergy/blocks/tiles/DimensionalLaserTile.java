@@ -3,14 +3,19 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
+import com.veteam.voluminousenergy.items.tools.RFIDChip;
+import com.veteam.voluminousenergy.persistence.ChunkFluid;
+import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -18,8 +23,12 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -100,13 +109,77 @@ public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPowere
                 level.playSound(null, this.getBlockPos(), VESounds.ENERGY_BEAM_FIRED, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
         }
-        //TODO Create an achievement for this
+
         int x = this.getBlockPos().getX();
         int y = this.getBlockPos().getY();
         int z = this.getBlockPos().getZ();
         if(this.complete) {
+
             for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
                 VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+            }
+
+            // Main tick code
+
+            // Tank setup
+            ItemStack bucketTop = inventory.getStackInSlot(0);
+            ItemStack bucketBottom = inventory.getStackInSlot(1);
+
+            outputTank.setInput(bucketTop.copy());
+            outputTank.setOutput(bucketBottom.copy());
+
+            if(this.inputFluid(outputTank,0,1)) return;
+            if(this.outputFluid(outputTank,0,1)) return;
+
+
+            ItemStack rfidStack = inventory.getStackInSlot(2);
+
+            if (rfidStack.getItem() instanceof RFIDChip) { // TODO: Better error/sanity checking
+                CompoundTag rfidTag = rfidStack.getOrCreateTag();
+                Tag veX = rfidTag.get("ve_x");
+                Tag veZ = rfidTag.get("ve_z");
+
+                if (veX != null && veZ != null) {
+
+                    int veXi = Integer.valueOf(veX.toString());
+                    int veZi = Integer.valueOf(veZ.toString());
+
+                    ChunkPos chunkPos = new ChunkPos(veXi, veZi);
+                    BlockPos blockPos = chunkPos.getBlockAt(0,64,0);
+
+                    ChunkFluid fluidFromPos = WorldUtil.getFluidFromPosition(level, blockPos);
+
+                    SingleChunkFluid fluid = fluidFromPos.getFluids().get(0);
+
+                    if (super.canConsumeEnergy() && fluid.getAmount() > 0 && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
+                        if (counter == 1) {
+
+                            if (outputTank.isFluidValid(fluid.getFluid())) {
+                                int fillSize = Math.min(250, TANK_CAPACITY - outputTank.getTank().getFluidAmount()); // TODO: Config fluid drain amount (MAX 4,000 mB)
+                                fillSize = Math.min(fillSize, fluid.getAmount());
+                                outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
+                                fluid.setAmount(fluid.getAmount() - fillSize);
+                                fluidFromPos.setFluidRemaining(fluid);
+                            }
+
+                            counter--;
+                            consumeEnergy();
+                            this.setChanged();
+                        } else if (counter > 0){
+                            counter--;
+                            consumeEnergy();
+                        } else {
+                            counter = 800; // TODO: Config
+                            length = counter;
+                        }
+                    } else { // Energy Check
+                        decrementSuperCounterOnNoPower();
+                    }
+                } else { // If no RFID chip, set counter to 0
+                    counter = 0;
+                }
+            } else {
+                counter = 0;
             }
         }
     }

@@ -4,9 +4,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -17,17 +15,12 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class RFIDChip extends Item {
-
-    private static final Logger logger = LoggerFactory.getLogger(RFIDChip.class);
 
     public RFIDChip (){
         super(new Item.Properties()
@@ -48,8 +41,6 @@ public class RFIDChip extends Item {
 
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
-
-            logger.info("Found pos: " + x + " | " + z);
 
             ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
             if(fluid == null) {

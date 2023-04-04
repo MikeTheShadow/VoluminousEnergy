@@ -1,15 +1,12 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -24,8 +21,8 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldUtil {
 
