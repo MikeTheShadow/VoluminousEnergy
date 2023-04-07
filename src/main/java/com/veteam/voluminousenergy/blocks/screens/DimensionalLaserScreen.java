@@ -144,7 +144,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
-            int progress = tileEntity.progressCounterPX(16); // 16 vertical, 15 horz for Dimensional Laser
+            int progress = tileEntity.progressCounterPX(17); // 17 vertical, 15 horz for Dimensional Laser
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
@@ -155,8 +155,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            // TODO: BLIT for Dimensional Laser: Coords + Switch to vertical (Texture needs actual blit too)
-            this.blit(matrixStack, i + 81, j + 31, 176, 0, progress, 17);
+            this.blit(matrixStack, i + 97, j + 34, 176, 0, 15, progress);
             this.blit(matrixStack, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
