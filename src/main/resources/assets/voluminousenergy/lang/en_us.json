@@ -120,6 +120,7 @@
     "block.voluminousenergy.fluid_electrolyzer": "Fluid Electrolyzer",
     "block.voluminousenergy.fluid_mixer": "Fluid Mixer",
     "block.voluminousenergy.hydroponic_incubator": "Hydroponic Incubator",
+    "block.voluminousenergy.solarium_machine_casing": "Solarium Machine Casing",
 
     "_comment": "Creative Tabs",
     "itemGroup.voluminousenergy": "Voluminous Energy",
