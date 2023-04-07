@@ -131,8 +131,8 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
 
     public List<Component> getTooltips() {
         return Arrays.asList(
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + "TODO" + "%"), //TODO: Percent complete
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + "TODO")); // TODO: TICKS LEFT
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override

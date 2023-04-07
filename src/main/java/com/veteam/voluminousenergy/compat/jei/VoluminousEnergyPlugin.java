@@ -166,7 +166,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(HydroponicIncubatorScreen.class, new HydroponicIncubatorContainerHandler());
-        // TODO: Container handler for Dimensional Laser
+        registration.addGuiContainerHandler(DimensionalLaserScreen.class, new DimensionalLaserContainerHandler());
     }
 
     @Override
