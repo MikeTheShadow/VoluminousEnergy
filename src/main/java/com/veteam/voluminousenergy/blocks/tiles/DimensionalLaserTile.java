@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
 import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
     public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
@@ -60,6 +62,7 @@ public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPowere
     //private boolean multiBlockComplete = false;
 
     private int tickTimer = 0;
+    private byte multiblockTickChecker = 19;
     private boolean complete = false;
     private boolean firstStageComplete = false;
     private boolean initialized = true;
@@ -75,7 +78,15 @@ public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPowere
     @Override
     public void tick() {
         updateClients();
-//        //TODO when multiblock stuff is added rewrite how this is done
+        multiblockTickChecker++;
+        if (multiblockTickChecker == 20){
+            multiblockTickChecker = 0;
+            validity = isMultiBlockValid(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK);
+        }
+        if (!(validity)) {
+            return;
+        }
+
         if (!complete) {
             setChanged();
             if (!firstStageComplete) {
@@ -169,7 +180,7 @@ public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPowere
                             counter--;
                             consumeEnergy();
                         } else {
-                            counter = 800; // TODO: Config
+                            counter = this.calculateCounter(800, inventory.getStackInSlot(this.getUpgradeSlotId()).copy()); // TODO: Config
                             length = counter;
                         }
                     } else { // Energy Check
@@ -294,4 +305,19 @@ public class DimensionalLaserTile extends VEFluidTileEntity implements IVEPowere
     public int getUpgradeSlotId() {
         return 3;
     }
+
+    @Override
+    public boolean isMultiBlockValid(Block block) {
+
+        // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
+        for (final BlockPos blockPos : BlockPos.betweenClosed(worldPosition.offset(-1, -3, -1), worldPosition.offset(1, -1, 1))) {
+            final BlockState blockState = level.getBlockState(blockPos);
+
+            if (blockState.getBlock() != block) { // Fails MultiBlock condition
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
