@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Hydrogen {
-    public static final ResourceLocation HYDROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/hydrogen_still");
-    public static final ResourceLocation HYDROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/hydrogen_flowing");
+    public static final ResourceLocation HYDROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/hydrogen_still");
+    public static final ResourceLocation HYDROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/hydrogen_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 

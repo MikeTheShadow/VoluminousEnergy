@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class AmmoniumNitrateSolution {
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/ammonium_nitrate_solution_still");
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"/block/fluids/ammonium_nitrate_solution_flowing");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonium_nitrate_solution_still");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonium_nitrate_solution_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
 
