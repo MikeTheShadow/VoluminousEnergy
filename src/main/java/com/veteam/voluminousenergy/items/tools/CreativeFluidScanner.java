@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
@@ -31,7 +30,6 @@ public class CreativeFluidScanner extends Item {
     public CreativeFluidScanner() {
         super(new Item.Properties()
                 .stacksTo(1)
-                .tab(VESetup.itemGroup)
                 .rarity(Rarity.RARE)
         );
     }

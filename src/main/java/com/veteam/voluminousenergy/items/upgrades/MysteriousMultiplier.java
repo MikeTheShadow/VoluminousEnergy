@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.items.upgrades;
 
-import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -19,7 +18,6 @@ public class MysteriousMultiplier extends Item {
     public MysteriousMultiplier() {
         super(new Item.Properties()
                 .stacksTo(1)
-                .tab(VESetup.itemGroup)
         );
     }
 

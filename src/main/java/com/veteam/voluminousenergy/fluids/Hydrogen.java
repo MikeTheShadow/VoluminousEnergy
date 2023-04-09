@@ -44,7 +44,7 @@ public class Hydrogen {
     }
 
     public static Item HydrogenBucket(){
-        HYDROGEN_BUCKET = new BucketItem(() -> HYDROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        HYDROGEN_BUCKET = new BucketItem(() -> HYDROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return HYDROGEN_BUCKET;
     }
 

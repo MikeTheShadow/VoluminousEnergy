@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.datagen;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
 
-    public VEGlobalLootModifierData(DataGenerator gen) {
-        super(gen, VoluminousEnergy.MODID);
+    public VEGlobalLootModifierData(PackOutput packOutput) {
+        super(packOutput, VoluminousEnergy.MODID);
     }
 
     @Override

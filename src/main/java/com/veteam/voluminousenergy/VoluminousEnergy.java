@@ -21,7 +21,6 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
-import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.HolderLookup;
@@ -188,9 +187,8 @@ public class VoluminousEnergy {
 
             if(event.includeServer()) {
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
-                dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
                 dataGenerator.addProvider(true, new VELootInjectionData(dataGenerator));
-                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator));
+                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput()));
             }
         }
     }

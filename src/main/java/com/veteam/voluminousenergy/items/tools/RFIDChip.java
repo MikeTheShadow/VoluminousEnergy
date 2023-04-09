@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
-import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +22,6 @@ public class RFIDChip extends Item {
     public RFIDChip (){
         super(new Item.Properties()
                 .stacksTo(16)
-                .tab(VESetup.itemGroup)
                 .rarity(Rarity.create("ELECTRONIC", ChatFormatting.GREEN))
         );
     }

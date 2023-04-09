@@ -2,9 +2,7 @@ package com.veteam.voluminousenergy.client.renderers.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
 import com.veteam.voluminousenergy.sounds.VESounds;
@@ -25,9 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nonnull;
-import java.security.SecureRandom;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
@@ -77,7 +76,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         float beaconColorB = beaconColor[2];
         poseStack.pushPose();
         //poseStack.mulPose(Vector3f.YP.rotationDegrees(somethingToDoWithTimeAndRotation * 2.25F - 45.0F)); // uncomment and comment below to activate rotation
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(45.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
         float f9 = -static02F;
         float f12 = -static02F;
         float f15 = staticRotationNumber + downwardMovement;

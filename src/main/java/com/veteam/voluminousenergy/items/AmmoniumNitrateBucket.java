@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -132,7 +132,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                     Holder<Biome> holder = level.getBiome(blockpos);
                     if (holder.is(Biomes.WARM_OCEAN)) {
                         if (i == 0 && direction != null && direction.getAxis().isHorizontal()) {
-                            blockstate = Registry.BLOCK.getTag(BlockTags.WALL_CORALS).flatMap((p_204098_) -> {
+                            blockstate = BuiltInRegistries.BLOCK.getTag(BlockTags.WALL_CORALS).flatMap((p_204098_) -> { // TODO: Switch to Forge
                                 return p_204098_.getRandomElement(level.random);
                             }).map((p_204100_) -> {
                                 return p_204100_.value().defaultBlockState();
@@ -141,7 +141,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                                 blockstate = blockstate.setValue(BaseCoralWallFanBlock.FACING, direction);
                             }
                         } else if (random.nextInt(4) == 0) {
-                            blockstate = Registry.BLOCK.getTag(BlockTags.UNDERWATER_BONEMEALS).flatMap((p_204091_) -> {
+                            blockstate = BuiltInRegistries.BLOCK.getTag(BlockTags.UNDERWATER_BONEMEALS).flatMap((p_204091_) -> { // TODO: Switch to Forge
                                 return p_204091_.getRandomElement(level.random);
                             }).map((p_204095_) -> {
                                 return p_204095_.value().defaultBlockState();

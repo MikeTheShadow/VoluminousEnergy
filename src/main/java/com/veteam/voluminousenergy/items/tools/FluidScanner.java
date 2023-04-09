@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
-import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
@@ -31,7 +30,6 @@ public class FluidScanner extends Item {
     public FluidScanner() {
         super(new Item.Properties()
                 .stacksTo(1)
-                .tab(VESetup.itemGroup)
                 .rarity(Rarity.UNCOMMON)
         );
     }

@@ -63,13 +63,13 @@ public class VELoot {
         MinecraftForge.EVENT_BUS.addListener(VELoot::loadLootTable);
     }
 
-    private static void registerLootFunctions(RegisterEvent event){
-        if (!event.getRegistryKey().equals(Registry.LOOT_FUNCTION_REGISTRY)) return;
-        Registry.register(
-                Registry.LOOT_FUNCTION_TYPE,
-                new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot"),
-                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
-        );
+    private static void registerLootFunctions(RegisterEvent event){ // TODO: FIX
+//        if (!event.getRegistryKey().equals(Registry.LOOT_FUNCTION_REGISTRY)) return;
+//        Registry.register(
+//                Registry.LOOT_FUNCTION_TYPE,
+//                new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot"),
+//                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
+//        );
     }
 
     public static void loadLootTable(LootTableLoadEvent event){

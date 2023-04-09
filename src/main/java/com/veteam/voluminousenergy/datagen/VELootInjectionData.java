@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.datagen;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class VELootInjectionData implements DataProvider {
     
@@ -34,11 +36,20 @@ public class VELootInjectionData implements DataProvider {
     }
     
     @Override
-    public void run(CachedOutput cache) throws IOException {
-        addMysteriousMultiplierSpawns(cache);
+    public CompletableFuture<?> run(CachedOutput cache) {
+        CompletableFuture<?> completableFuture;
+        try {
+            completableFuture = addMysteriousMultiplierSpawns(cache);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return completableFuture;
     }
 
-    private void addMysteriousMultiplierSpawns(CachedOutput cache) throws IOException {
+    private CompletableFuture<?> addMysteriousMultiplierSpawns(CachedOutput cache) throws IOException {
+        ImmutableList.Builder<CompletableFuture<?>> futuresBuilder = new ImmutableList.Builder<>();
+
         HashMap<ResourceLocation, LootTable.Builder> tableMap = new HashMap<>();
 
         tableMap.put(BuiltInLootTables.BASTION_BRIDGE, builder(VEItems.MYSTERIOUS_MULTIPLIER.get(),82));
@@ -68,17 +79,18 @@ public class VELootInjectionData implements DataProvider {
 
 
         for (Map.Entry<ResourceLocation, LootTable.Builder> entry : tableMap.entrySet()){
-            Path path = dataGenerator.getOutputFolder().resolve("data/" + VoluminousEnergy.MODID + "/loot_tables/inject/mysterious_multiplier/" + entry.getKey().getPath() + ".json");
+            Path path = dataGenerator.getPackOutput().getOutputFolder().resolve("data/" + VoluminousEnergy.MODID + "/loot_tables/inject/mysterious_multiplier/" + entry.getKey().getPath() + ".json");
 
             if (path.toString().contains("multiplier/chests/")){
-                DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.CHEST).build()), path);
+                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.CHEST).build()), path));
             } else if (path.toString().contains("multiplier/gameplay/fishing")){
-                DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.FISHING).build()), path);
+                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.FISHING).build()), path));
             } else {
-                DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.ALL_PARAMS).build()), path);
+                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.ALL_PARAMS).build()), path));
             }
 
         }
+        return CompletableFuture.allOf(futuresBuilder.build().toArray(CompletableFuture[]::new));
     }
     
     private LootTable.Builder builder(Item loot, int weight){

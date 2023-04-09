@@ -44,7 +44,7 @@ public class AmmoniumNitrateSolution {
     }
 
     public static Item AmmoniumNitrateSolutionBucket(){
-        AMMONIUM_NITRATE_SOLUTION_BUCKET = new AmmoniumNitrateBucket(() -> AMMONIUM_NITRATE_SOLUTION, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(VESetup.itemGroup));
+        AMMONIUM_NITRATE_SOLUTION_BUCKET = new AmmoniumNitrateBucket(() -> AMMONIUM_NITRATE_SOLUTION, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIUM_NITRATE_SOLUTION_BUCKET;
     }
 

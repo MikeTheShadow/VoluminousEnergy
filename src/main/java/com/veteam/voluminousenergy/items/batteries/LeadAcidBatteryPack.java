@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.items.batteries;
 
-import com.veteam.voluminousenergy.setup.VESetup;
-
 public class LeadAcidBatteryPack extends VEEnergyItem {
 
     private static final int MAX_ENERGY = 750_000;
@@ -9,7 +7,6 @@ public class LeadAcidBatteryPack extends VEEnergyItem {
 
     public LeadAcidBatteryPack() {
         super(new Properties()
-                        .tab(VESetup.itemGroup)
                         .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX

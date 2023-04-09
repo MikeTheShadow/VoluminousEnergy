@@ -12,7 +12,6 @@ public class AnimalFat extends Item implements IForgeItem {
     public AnimalFat() {
         super(new Item.Properties()
                 .stacksTo(64)
-                .tab(VESetup.itemGroup)
         );
     }
 
