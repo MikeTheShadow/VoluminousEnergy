@@ -23,7 +23,7 @@ public class VESetup {
     public static void registerCreativeTabs(CreativeModeTabEvent.Register event) {
         event.registerCreativeModeTab(new ResourceLocation(VoluminousEnergy.MODID, VoluminousEnergy.MODID), builder -> builder
                 .icon(() -> new ItemStack(VEFluids.RFNA_BUCKET_REG.get()))
-                .displayItems((featureFlags, output, hasOp) -> {
+                .displayItems((featureFlags, output) -> {
                     ArrayList<ItemStack> creativeTabStacks = new ArrayList<>();
 
                     // Fluid items

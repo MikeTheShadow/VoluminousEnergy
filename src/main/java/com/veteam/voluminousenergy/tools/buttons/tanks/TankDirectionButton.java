@@ -60,7 +60,7 @@ public class TankDirectionButton extends VEIOButton {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
         RenderSystem.setShaderTexture(0, texture);
 

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.RecipeUtil;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -53,6 +54,11 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
         return ingredient.get().test(stack) && count >= ingredientCount;
     }
     @Override
+    public ItemStack assemble(Container inv, RegistryAccess registryAccess){
+        return this.assemble(inv);
+    }
+
+    // NOTE: Legacy impl pre 1.19.4
     public ItemStack assemble(Container inv){
         return ItemStack.EMPTY;
     }
@@ -63,9 +69,12 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(){
-        return result;
+    public ItemStack getResultItem(RegistryAccess registryAccess){
+        return this.getResultItem();
     }
+
+    // NOTE: Legacy impl pre 1.19.4
+    public ItemStack getResultItem() { return result; }
 
     @Override
     public ResourceLocation getId(){

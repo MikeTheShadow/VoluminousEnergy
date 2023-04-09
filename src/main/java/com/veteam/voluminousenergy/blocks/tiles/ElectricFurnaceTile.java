@@ -76,9 +76,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                     // Set output based on recipe
                     ItemStack newOutputStack;
                     if (furnaceRecipe != null) {
-                        newOutputStack = furnaceRecipe.getResultItem().copy();
+                        newOutputStack = furnaceRecipe.getResultItem(level.registryAccess()).copy();
                     } else {
-                        newOutputStack = blastingRecipe.getResultItem().copy();
+                        newOutputStack = blastingRecipe.getResultItem(level.registryAccess()).copy();
                     }
                     //LOGGER.debug("NewOutputStack: " + newOutputStack);
 
@@ -89,9 +89,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                             furnaceOutput.setCount(1);
                         }
                         if (furnaceRecipe != null){
-                            newOutputStack.setCount(furnaceRecipe.getResultItem().getCount());
+                            newOutputStack.setCount(furnaceRecipe.getResultItem(level.registryAccess()).getCount());
                         } else {
-                            newOutputStack.setCount(blastingRecipe.getResultItem().getCount());
+                            newOutputStack.setCount(blastingRecipe.getResultItem(level.registryAccess()).getCount());
                         }
                         //LOGGER.debug("About to insert in pt1: " + newOutputStack);
                         inventory.insertItem(1, newOutputStack.copy(),false); // CRASH the game if this is not empty!
@@ -99,9 +99,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                     } else { // Assuming the recipe output item is already in the output slot
                         // Simply change the stack to equal the output amount
                         if (furnaceRecipe != null){
-                            furnaceOutput.setCount(furnaceRecipe.getResultItem().getCount());
+                            furnaceOutput.setCount(furnaceRecipe.getResultItem(level.registryAccess()).getCount());
                         } else {
-                            furnaceOutput.setCount(blastingRecipe.getResultItem().getCount());
+                            furnaceOutput.setCount(blastingRecipe.getResultItem(level.registryAccess()).getCount());
                         }
                         //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
                         inventory.insertItem(1, furnaceOutput.copy(),false); // Place the new output stack on top of the old one
@@ -143,10 +143,10 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
 
                     if (furnaceRecipe != null) {
-                        return stack.getItem() == furnaceRecipe.getResultItem().getItem();
+                        return stack.getItem() == furnaceRecipe.getResultItem(level.registryAccess()).getItem();
                     }
 
-                    return stack.getItem() == blastingRecipe.getResultItem().getItem();
+                    return stack.getItem() == blastingRecipe.getResultItem(level.registryAccess()).getItem();
                 } else if (slot == 2){
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
@@ -181,13 +181,13 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                     SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem(level.registryAccess()).getItem()) {
                             if(blastingRecipe.getExperience() > 0){
                                 generateXP(amount, blastingRecipe.getExperience());
                             }
                         }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem().getItem()) {
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem(level.registryAccess()).getItem()) {
                             if (furnaceRecipe.getExperience() > 0) {
                                 generateXP(amount, furnaceRecipe.getExperience());
                             }
@@ -245,9 +245,9 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
 
     public boolean countChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
-            return (itemStack.getCount() + furnaceRecipe.getResultItem().getCount()) <= 64;
+            return (itemStack.getCount() + furnaceRecipe.getResultItem(level.registryAccess()).getCount()) <= 64;
         } else if (blastingRecipe != null){
-            return (itemStack.getCount() + blastingRecipe.getResultItem().getCount()) <= 64;
+            return (itemStack.getCount() + blastingRecipe.getResultItem(level.registryAccess()).getCount()) <= 64;
         }
         return false;
     }
@@ -255,10 +255,10 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
     public boolean itemChecker(SmeltingRecipe furnaceRecipe, BlastingRecipe blastingRecipe, ItemStack itemStack){
         if(furnaceRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return furnaceRecipe.getResultItem().getItem() == itemStack.getItem();
+            return furnaceRecipe.getResultItem(level.registryAccess()).getItem() == itemStack.getItem();
         } else if (blastingRecipe != null){
             if (itemStack.getItem() == Items.AIR || itemStack.isEmpty()) return true;
-            return blastingRecipe.getResultItem().getItem() == itemStack.getItem();
+            return blastingRecipe.getResultItem(level.registryAccess()).getItem() == itemStack.getItem();
         }
         return false;
     }

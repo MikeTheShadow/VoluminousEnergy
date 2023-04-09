@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -427,7 +426,7 @@ public class RecipeUtil {
         if (logStack.isEmpty()) return null;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CraftingRecipe){
-                if(ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()).toString().contains("plank")){
+                if(ForgeRegistries.ITEMS.getKey(recipe.getResultItem(world.registryAccess()).getItem()).toString().contains("plank")){
                     AtomicBoolean foundInput = new AtomicBoolean(false);
                     recipe.getIngredients().parallelStream().forEach(ingredient -> { // Parallel stream
                         for(ItemStack itemStack : ingredient.getItems()) {
@@ -438,7 +437,7 @@ public class RecipeUtil {
                     });
 
                     if (foundInput.get()){
-                        return recipe.getResultItem().copy();
+                        return recipe.getResultItem(world.registryAccess()).copy();
                     }
                 }
             }
@@ -450,7 +449,7 @@ public class RecipeUtil {
         if (logStack.isEmpty()) return null;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof CraftingRecipe){
-                if(RegistryLookups.lookupItem(recipe.getResultItem()).toString().contains("plank")){
+                if(RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
                     AtomicBoolean foundInput = new AtomicBoolean(false);
                     recipe.getIngredients().parallelStream().forEach(ingredient -> { // Parallel stream
                         for(ItemStack itemStack : ingredient.getItems()) {
@@ -476,11 +475,11 @@ public class RecipeUtil {
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CraftingRecipe){
-                if (RegistryLookups.lookupItem(recipe.getResultItem()).toString().contains("plank")){
+                if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
                     recipe.getIngredients().forEach(ingredient -> {
                         for (ItemStack itemStack : ingredient.getItems()){
                             if (itemStack.getItem().equals(logStack.getItem())){
-                                atomicItemStack.set(recipe.getResultItem().copy());
+                                atomicItemStack.set(recipe.getResultItem(world.registryAccess()).copy());
                             }
                         }
                     });
@@ -497,7 +496,7 @@ public class RecipeUtil {
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CraftingRecipe){
-                if (RegistryLookups.lookupItem(recipe.getResultItem()).toString().contains("plank")){
+                if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
                     recipe.getIngredients().forEach(ingredient -> {
                         for (ItemStack itemStack : ingredient.getItems()){
                             if (itemStack.getItem().equals(logStack.getItem())){
@@ -518,8 +517,8 @@ public class RecipeUtil {
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if (recipe instanceof CraftingRecipe){
-                if (RegistryLookups.lookupItem(recipe.getResultItem()).toString().contains("plank")){
-                    if (recipe.getResultItem().is(plankStack.getItem())){
+                if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
+                    if (recipe.getResultItem(world.registryAccess()).is(plankStack.getItem())){
                         recipe.getIngredients().forEach(ingredient -> {
                             for(int i = 0; i < ingredient.getItems().length; i++) atomicItemStackArray.get().add(ingredient.getItems()[i]);
                         });
