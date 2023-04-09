@@ -10,7 +10,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        this.renderables.stream().filter(widget -> widget instanceof ioMenuButton).forEach(button -> {
+        this.renderables.stream().filter(Renderable -> Renderable instanceof ioMenuButton).forEach(button -> {
             if (((ioMenuButton) button).shouldIOBeOpen()) {
                 renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
             }
@@ -42,9 +42,9 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     /* PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
     public void drawIOSideHelper(){
 
-        for(Widget widget : this.renderables){
-            if (widget instanceof ioMenuButton){
-                if (((ioMenuButton) widget).shouldIOBeOpen()) { // This means IO Should be open
+        for(Renderable Renderable : this.renderables){
+            if (Renderable instanceof ioMenuButton){
+                if (((ioMenuButton) Renderable).shouldIOBeOpen()) { // This means IO Should be open
                     this.renderables.forEach(button ->{
                         if (button instanceof VEIOButton){
                             ((VEIOButton) button).toggleRender(true);
@@ -62,37 +62,37 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof SlotDirectionButton && ((SlotDirectionButton) Renderable).getAssociatedSlotId() == slotId ){
+                ((SlotDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof SlotBoolButton && ((SlotBoolButton) Renderable).getAssociatedSlotId() == slotId){
+                ((SlotBoolButton) Renderable).toggleRender(true);
+                ((SlotBoolButton) Renderable).setStatus(status);
+                ((SlotBoolButton) Renderable).toggleRender(false);
             }
         }
     }
 
     public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
-                ((TankDirectionButton) widget).setDirectionFromInt(direction);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof TankDirectionButton && ((TankDirectionButton) Renderable).getId() == id ){
+                ((TankDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
     public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
-                ((TankBoolButton) widget).toggleRender(true);
-                ((TankBoolButton) widget).setStatus(status);
-                ((TankBoolButton) widget).toggleRender(false);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof TankBoolButton && ((TankBoolButton) Renderable).getId() == id){
+                ((TankBoolButton) Renderable).toggleRender(true);
+                ((TankBoolButton) Renderable).setStatus(status);
+                ((TankBoolButton) Renderable).toggleRender(false);
             }
         }
     }

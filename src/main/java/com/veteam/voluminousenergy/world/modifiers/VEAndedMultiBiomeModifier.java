@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
 
     private String whitelistedBiome;
     private String blacklistedBiome;
-    private Holder<PlacedFeature> feature;
+    private Holder<ConfiguredFeature<?,?>> feature;
     private boolean isTriangualar;
     private int count;
     private int bottomAnchor;
@@ -41,7 +41,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public VEAndedMultiBiomeModifier(
             String whitelistedBiome,
             String blacklistedBiome,
-            Holder<PlacedFeature> feature,
+            Holder<ConfiguredFeature<?,?>> feature,
             boolean isTriangualar,
             int count,
             int bottomAnchor,
@@ -115,11 +115,11 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public void whitelistCacheBuilder(){
         if (whitelistedBiome.contains(",")){
             Arrays.stream(whitelistedBiome.split(",")).sequential().forEach(greenBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(greenBiome));
+                TagKey<Biome> biomeTag = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(greenBiome));
                 whitelistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!whitelistedBiome.isEmpty()) {
-            TagKey<Biome> biomeTagKey = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(whitelistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(whitelistedBiome));
             whitelistedBiomeKeycache.get().add(biomeTagKey);
         }
     }
@@ -127,11 +127,11 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public void blacklistCacheBuilder(){
         if (blacklistedBiome.contains(",")){
             Arrays.stream(blacklistedBiome.split(",")).sequential().forEach(redBiome -> {
-                TagKey<Biome> biomeTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(redBiome));
+                TagKey<Biome> biomeTag = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(redBiome));
                 blacklistedBiomeKeycache.get().add(biomeTag);
             });
         } else if (!blacklistedBiome.isEmpty()){
-            TagKey<Biome> biomeTagKey = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(blacklistedBiome));
+            TagKey<Biome> biomeTagKey = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(blacklistedBiome));
             blacklistedBiomeKeycache.get().add(biomeTagKey);
         }
     }
@@ -144,7 +144,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         return blacklistedBiome;
     }
 
-    public Holder<PlacedFeature> getFeature() {
+    public Holder<ConfiguredFeature<?,?>> getFeature() {
         return feature;
     }
 

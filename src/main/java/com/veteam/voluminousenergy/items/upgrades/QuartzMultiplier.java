@@ -8,7 +8,6 @@ public class QuartzMultiplier extends VEItem {
     public QuartzMultiplier() {
         super(new Item.Properties()
                 .stacksTo(4)
-                .tab(VESetup.itemGroup)
         );
         setRegistryName("quartz_multiplier");
     }

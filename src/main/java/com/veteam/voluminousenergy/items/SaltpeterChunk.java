@@ -7,7 +7,6 @@ public class SaltpeterChunk extends VEItem {
     public SaltpeterChunk (){
         super(new Item.Properties()
                 .stacksTo(64)
-                .tab(VESetup.itemGroup)
         );
         setRegistryName("saltpeterchunk");
     }

@@ -11,10 +11,8 @@ import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-
-import net.minecraft.client.gui.components.Button.OnPress;
+import net.minecraft.resources.ResourceLocation;
 
 public class TankDirectionButton extends VEIOButton {
     private RelationalTank tank;
@@ -26,8 +24,8 @@ public class TankDirectionButton extends VEIOButton {
             ((TankDirectionButton) button).cycle();
             onPress.onPress(button);
         });
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = 96;
         this.height = 20;
         this.tank = tank;
@@ -67,14 +65,14 @@ public class TankDirectionButton extends VEIOButton {
         RenderSystem.setShaderTexture(0, texture);
 
         if(!isHovered){ // x: 96 y:20
-            blit(matrixStack, this.x, this.y, 0, 166, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 0, 166, this.width, this.height);
         } else {
-            blit(matrixStack, this.x, this.y, 0, 186, this.width, this.height);
+            blit(matrixStack, getX(), getY(), 0, 186, this.width, this.height);
         }
 
         // Print text
         Component textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getId());
-        drawCenteredString(matrixStack, Minecraft.getInstance().font, textComponent.getString(),(this.x)+48,(this.y)+5,0xffffff);
+        drawCenteredString(matrixStack, Minecraft.getInstance().font, textComponent.getString(),(getX())+48,(getY())+5,0xffffff);
     }
 
     @Override

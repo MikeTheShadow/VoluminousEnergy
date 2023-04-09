@@ -24,7 +24,9 @@ import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
 import com.veteam.voluminousenergy.world.ores.VEOres;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -46,6 +48,8 @@ import net.minecraftforge.fml.loading.FileUtils;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.CompletableFuture;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy {
@@ -97,11 +101,14 @@ public class VoluminousEnergy {
 
         // Register features
         VEFeatures.VE_FEATURE_REGISTRY.register(modEventBus);
-        VEFeatures.VE_PLACED_FEATURES.register(modEventBus);
+//        VEFeatures.VE_PLACED_FEATURES.register(modEventBus);
 
         // Register modifiers
-        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
+//        VEOres.VE_PLACED_ORE_BLOBS_REGISTRY.register(modEventBus);
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
+
+        // Register Creative Mode Tabs
+        modEventBus.addListener(VESetup::registerCreativeTabs);
 
         // Register Loot modifiers
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
@@ -176,8 +183,11 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void onGatherData(GatherDataEvent event){
             DataGenerator dataGenerator = event.getGenerator();
+            PackOutput packOutput = dataGenerator.getPackOutput();
+            CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
             if(event.includeServer()) {
+                dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator, event.getExistingFileHelper()));
                 dataGenerator.addProvider(true, new VELootInjectionData(dataGenerator));
                 dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator));

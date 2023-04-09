@@ -1,0 +1,8 @@
+{
+  "type": "voluminousenergy:ve_bsc_surface_lake_feature",
+  "config": {
+    "fluidstate": {
+      "Name": "voluminousenergy:crude_oil"
+    }
+  }
+}

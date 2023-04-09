@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBits;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -11,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class VEMultitools {
     public static final DeferredRegister<Item> VE_MULTITOOL_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
-    public static Item.Properties MULTITOOL_PROPERTIES = new Item.Properties().tab(VESetup.itemGroup).stacksTo(1);
+    public static Item.Properties MULTITOOL_PROPERTIES = new Item.Properties().stacksTo(1);
 
     // Multitools
     public static RegistryObject<CombustionMultitool> EMPTY_MULTITOOL = VE_MULTITOOL_ITEM_REGISTRY.register("empty_multitool", () -> new CombustionMultitool(null, "empty_multitool", MULTITOOL_PROPERTIES));

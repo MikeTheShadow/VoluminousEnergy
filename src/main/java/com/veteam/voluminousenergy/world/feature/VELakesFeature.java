@@ -13,25 +13,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Random;
-
-public class VELakesFeature extends Feature<BlockStateConfiguration> {
-    public VELakesFeature(Codec<BlockStateConfiguration> p_i231962_1_) {
-        super(p_i231962_1_);
+public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
+    public VELakesFeature(Codec<VELakesFeature.Configuration> lakesConfiguration) {
+        super(lakesConfiguration);
     }
 
     private static final BlockState AIR = Blocks.CAVE_AIR.defaultBlockState();
 
 
     @Override
-    public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
-        return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config());
+    public boolean place(FeaturePlaceContext<VELakesFeature.Configuration> context) {
+        return place(context.level(), context.chunkGenerator(), context.random(), context.origin(), context.config().fluidState());
     }
 
-    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, BlockStateConfiguration conf) {
+    protected boolean place(WorldGenLevel worldIn, ChunkGenerator generator, RandomSource rand, BlockPos pos, FluidState fluidState) {
         while(pos.getY() > 5 && worldIn.isEmptyBlock(pos)) {
             pos = pos.below();
         }
@@ -77,7 +76,7 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
                                 return false;
                             }
 
-                            if (k < 4 && !material.isSolid() && worldIn.getBlockState(pos.offset(k1, k, l2)) != conf.state) {
+                            if (k < 4 && !material.isSolid() && worldIn.getBlockState(pos.offset(k1, k, l2)) != fluidState.createLegacyBlock()) {
                                 return false;
                             }
                         }
@@ -89,7 +88,7 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
                 for(int i3 = 0; i3 < 16; ++i3) {
                     for(int i4 = 0; i4 < 8; ++i4) {
                         if (aboolean[(l1 * 16 + i3) * 8 + i4]) {
-                            worldIn.setBlock(pos.offset(l1, i4, i3), i4 >= 4 ? AIR : conf.state, 2);
+                            worldIn.setBlock(pos.offset(l1, i4, i3), i4 >= 4 ? AIR : fluidState.createLegacyBlock(), 2);
                         }
                     }
                 }
@@ -127,5 +126,11 @@ public class VELakesFeature extends Feature<BlockStateConfiguration> {
 
             return true;
         }
+    }
+
+    public static record Configuration(FluidState fluidState) implements FeatureConfiguration {
+        public static final Codec<VELakesFeature.Configuration> CODEC =
+                FluidState.CODEC.fieldOf("fluidstate")
+                        .xmap(VELakesFeature.Configuration::new, (fluidState) -> fluidState.fluidState).codec();
     }
 }

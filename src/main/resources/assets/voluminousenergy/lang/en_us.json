@@ -121,7 +121,7 @@
     "block.voluminousenergy.hydroponic_incubator": "Hydroponic Incubator",
 
     "_comment": "Creative Tabs",
-    "itemGroup.voluminousenergy": "Voluminous Energy",
+    "tab.voluminousenergy.voluminousenergy": "Voluminous Energy",
 
     "_comment": "Fluids",
     "fluid.voluminousenergy.crude_oil": "Crude Oil",

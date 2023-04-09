@@ -1,0 +1,8 @@
+{
+  "type": "voluminousenergy:ve_bsc_underground_lakes_feature",
+  "config": {
+    "fluidstate": {
+      "Name": "voluminousenergy:crude_oil"
+    }
+  }
+}

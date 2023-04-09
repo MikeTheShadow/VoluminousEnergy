@@ -16,7 +16,7 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -139,39 +139,39 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     }
 
     public void updateButtonDirection(int direction, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotDirectionButton && ((SlotDirectionButton) widget).getAssociatedSlotId() == slotId ){
-                ((SlotDirectionButton) widget).setDirectionFromInt(direction);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof SlotDirectionButton && ((SlotDirectionButton) Renderable).getAssociatedSlotId() == slotId ){
+                ((SlotDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
     public void updateBooleanButton(boolean status, int slotId){
-        for(Widget widget: this.renderables){
-            if(widget instanceof SlotBoolButton && ((SlotBoolButton) widget).getAssociatedSlotId() == slotId){
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof SlotBoolButton && ((SlotBoolButton) Renderable).getAssociatedSlotId() == slotId){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((SlotBoolButton) widget).toggleRender(true);
-                ((SlotBoolButton) widget).setStatus(status);
-                ((SlotBoolButton) widget).toggleRender(false);
+                ((SlotBoolButton) Renderable).toggleRender(true);
+                ((SlotBoolButton) Renderable).setStatus(status);
+                ((SlotBoolButton) Renderable).toggleRender(false);
             }
         }
     }
 
     public void updateTankDirection(int direction, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankDirectionButton && ((TankDirectionButton) widget).getId() == id ){
-                ((TankDirectionButton) widget).setDirectionFromInt(direction);
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof TankDirectionButton && ((TankDirectionButton) Renderable).getId() == id ){
+                ((TankDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
     public void updateTankStatus(boolean status, int id){
-        for(Widget widget: this.renderables){
-            if(widget instanceof TankBoolButton && ((TankBoolButton) widget).getId() == id){
+        for(Renderable Renderable: this.renderables){
+            if(Renderable instanceof TankBoolButton && ((TankBoolButton) Renderable).getId() == id){
                 //VoluminousEnergy.LOGGER.debug("About to update the status of the Status/boolean Button.");
-                ((TankBoolButton) widget).toggleRender(true);
-                ((TankBoolButton) widget).setStatus(status);
-                ((TankBoolButton) widget).toggleRender(false);
+                ((TankBoolButton) Renderable).toggleRender(true);
+                ((TankBoolButton) Renderable).setStatus(status);
+                ((TankBoolButton) Renderable).toggleRender(false);
             }
         }
     }

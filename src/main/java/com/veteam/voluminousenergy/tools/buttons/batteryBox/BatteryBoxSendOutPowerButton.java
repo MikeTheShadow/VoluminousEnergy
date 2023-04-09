@@ -28,8 +28,8 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
         });
         this.powerIOManager = powerIOManager;
         this.batteryBoxTile = batteryBoxTile;
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = 16;
         this.height = 12;
     }
@@ -44,7 +44,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
         if(!sendOutPower) v = 178;
         else v = 166;
 
-        blit(matrixStack, this.x, this.y, this.u, this.v, this.width, this.height);
+        blit(matrixStack, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
     private void cycle(){

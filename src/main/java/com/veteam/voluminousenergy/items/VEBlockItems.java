@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.items;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.setup.VESetup;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -11,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class VEBlockItems {
             public static final DeferredRegister<Item> VE_BLOCK_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);
-            protected static final Item.Properties PROPERTIES = new Item.Properties().tab(VESetup.itemGroup);
+            protected static final Item.Properties PROPERTIES = new Item.Properties();
     
             //Block Items
             //Tile Entities
