@@ -2,18 +2,19 @@ package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.ToolUtil;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.world.item.Item.Properties;
+import static net.minecraft.util.Mth.abs;
 
 public class VEShovelItem extends ShovelItem {
     public VEShovelItem(Tier p_i48469_1_, float p_i48469_2_, float p_i48469_3_, Properties p_i48469_4_) {
@@ -46,6 +47,22 @@ public class VEShovelItem extends ShovelItem {
             }
         } else {
             super.setDamage(stack, damage);
+        }
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
+        if (stack.getTag() == null || level.isClientSide()) return;
+
+        int bonus = stack.getTag().getInt("bonus");
+
+        if (level.canSeeSky(entity.getOnPos().above(2)) && bonus < Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()) {
+
+            float random = abs(0 + level.getRandom().nextFloat() * (0 - 1));
+            if (random >= Config.SOLARIUM_SHEATH_REGENERATION_CHANCE.get().floatValue()) return; // Inversed due to returning (not executing) if condition is true
+
+            bonus++;
+            stack.getTag().putInt("bonus", Math.min(bonus,Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()));
         }
     }
 }
