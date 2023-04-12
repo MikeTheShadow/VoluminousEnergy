@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class Multitool extends Item /*implements Vanishable*/ {
     protected MultitoolBit bit;
@@ -42,10 +43,7 @@ public class Multitool extends Item /*implements Vanishable*/ {
         return true;
     }
 
-    /*public void setBit(@Nonnull MultitoolBit bit, ItemStack stack){
-        this.bit = bit;
-    }*/
-
+    @Nullable
     public MultitoolBit getBit(){
         return this.bit != null ? this.bit : null;
     }
