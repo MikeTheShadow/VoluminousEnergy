@@ -320,4 +320,8 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         return true;
     }
 
+    public boolean getMultiblockValidity(){
+        return validity;
+    }
+
 }
