@@ -28,6 +28,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
     private final DimensionalLaserTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
+    private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
 
 
     public DimensionalLaserScreen(DimensionalLaserContainer screenContainer, Inventory inv, Component titleIn) {
@@ -131,8 +132,8 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
 
     public List<Component> getTooltips() {
         return Arrays.asList(
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + "TODO" + "%"), //TODO: Percent complete
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + "TODO")); // TODO: TICKS LEFT
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()));
     }
 
     @Override
@@ -143,8 +144,8 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
-        if (tileEntity != null) {
-            int progress = tileEntity.progressCounterPX(16); // 16 vertical, 15 horz for Dimensional Laser
+        if (tileEntity != null && tileEntity.getMultiblockValidity()) {
+            int progress = tileEntity.progressCounterPX(17); // 17 vertical, 15 horz for Dimensional Laser
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:
@@ -155,8 +156,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            // TODO: BLIT for Dimensional Laser: Coords + Switch to vertical (Texture needs actual blit too)
-            this.blit(matrixStack, i + 81, j + 31, 176, 0, progress, 17);
+            this.blit(matrixStack, i + 97, j + 34, 176, 0, 15, progress);
             this.blit(matrixStack, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
@@ -165,6 +165,12 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             this.blit(matrixStack, i + 129, j - 16, 0, 0, 18, 18);
+        } else {
+            RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
+            this.blit(matrixStack, i, j, 0, 0, 174,82);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i + 48, j + 14, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.dimensional_laser.requirements"), i + 8, j + 32, WHITE_TEXT_COLOUR);
+            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.needed_below"), i+8, j+48, WHITE_TEXT_COLOUR);
         }
 
     }

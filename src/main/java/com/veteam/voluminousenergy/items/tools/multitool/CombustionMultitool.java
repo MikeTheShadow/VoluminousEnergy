@@ -208,5 +208,4 @@ public class CombustionMultitool extends Multitool {
         }
         return 0; // disables the tool
     }
-
 }
