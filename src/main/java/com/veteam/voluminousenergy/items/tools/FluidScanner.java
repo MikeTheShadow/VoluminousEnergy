@@ -182,6 +182,10 @@ public class FluidScanner extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
+        if (level == null || level.isClientSide()) {
+            super.appendHoverText(itemStack, level, componentList, tooltipFlag);
+            return;
+        }
         CompoundTag tag = itemStack.getOrCreateTag();
 
         if(tag.contains("ve_x")) {
