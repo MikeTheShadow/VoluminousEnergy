@@ -1037,11 +1037,11 @@ public class Config {
     }
 
     private static void setupDimensionalLaser(){
-        DIMENSIONAL_LASER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Hydroponic Incubator to store")
+        DIMENSIONAL_LASER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Dimensional Laser to store")
                 .defineInRange("Maximum Power", Integer.MAX_VALUE / 4, 0, Integer.MAX_VALUE);
-        DIMENSIONAL_LASER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Hydroponic Incubator")
+        DIMENSIONAL_LASER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Dimensional Laser")
                 .defineInRange("Power Consumption", 1024, 0, Integer.MAX_VALUE);
-        DIMENSIONAL_LASER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
+        DIMENSIONAL_LASER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Dimensional Laser")
                 .defineInRange("Maximum Transfer", Integer.MAX_VALUE / 16, 0, Integer.MAX_VALUE);
         DIMENSIONAL_LASER_FLUID_RATE = COMMON_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
                 .defineInRange("Fluid Extraction Rate", 250, 0, 4000);
