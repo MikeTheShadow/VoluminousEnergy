@@ -444,8 +444,9 @@
     "jei.voluminousenergy.crude_oil_info": "Crude Oil can be obtained either from Oil Geysers, Oil Lakes, or Soul Sand in the Centrifugal Separator",
     "jei.voluminousenergy.air_compressor_fluid_info": "Compressed Air can be obtained via the Air Compressor",
     "jei.voluminousenergy.air_compressor_item_info": "Compressed Air can be obtained via the Air Compressor; The Air Compressor produces Compressed Air",
-    "jei.voluminousenergy.quartz_multiplier_info": "Quartz Multipliers can speed up machines at the cost of higher power consumption. The upgrade slot is the slot with a green arrow on the top right. See: https://github.com/MikeTheShadow/VoluminousEnergy/wiki/Upgrades for more details.",
+    "jei.voluminousenergy.quartz_multiplier_info": "Quartz Multipliers can speed up machines at the cost of higher power consumption. The upgrade slot is the slot with a green arrow on the top right. See: https://wiki-energy.voluminous.ca/index.php?title=Machine_upgrades for more details.",
     "jei.voluminousenergy.mysterious_multiplier_info": "Mysterious Multipliers are old, gold capped clock sources to speed up machines. You'll find them in various loot chests, and maybe even from the sea. Hover over the item in JEI to see details about each quality tier. (Left-click on the item to start cycling between tiers)",
+    "jei.voluminousenergy.fluid_scanner_info": "Use the Fluid Scanner to scan for fluids in a chunk, then Shift+Right Click to write to an RFID chip for use in the Dimensional Laser.",
 
     "_comment": "JEI Fluid Types for Combustion",
     "jei.voluminousenergy.fluid.fuel": "Fuel",

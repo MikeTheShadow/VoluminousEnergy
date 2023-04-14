@@ -134,6 +134,13 @@ public class VoluminousEnergyPlugin implements IModPlugin {
             tieredMysteriousMultipliers.add(multiplier);
         }
         registration.addIngredientInfo(tieredMysteriousMultipliers,VanillaTypes.ITEM,TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));
+
+        ArrayList<ItemStack> fluidScannerDimensionalLaserInfo = new ArrayList<>();
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.FLUID_SCANNER));
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.RFID_CHIP));
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK));
+        registration.addIngredientInfo(fluidScannerDimensionalLaserInfo, VanillaTypes.ITEM, TextUtil.translateString("jei.voluminousenergy.fluid_scanner_info"));
+
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {

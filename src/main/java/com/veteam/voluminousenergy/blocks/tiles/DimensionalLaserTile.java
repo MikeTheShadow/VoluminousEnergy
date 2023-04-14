@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -166,7 +167,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                         if (counter == 1) {
 
                             if (outputTank.isFluidValid(fluid.getFluid())) {
-                                int fillSize = Math.min(250, TANK_CAPACITY - outputTank.getTank().getFluidAmount()); // TODO: Config fluid drain amount (MAX 4,000 mB)
+                                int fillSize = Math.min(Config.DIMENSIONAL_LASER_FLUID_RATE.get(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
                                 fillSize = Math.min(fillSize, fluid.getAmount());
                                 outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
                                 fluid.setAmount(fluid.getAmount() - fillSize);
@@ -180,7 +181,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             counter--;
                             consumeEnergy();
                         } else {
-                            counter = this.calculateCounter(800, inventory.getStackInSlot(this.getUpgradeSlotId()).copy()); // TODO: Config
+                            counter = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                             length = counter;
                         }
                     } else { // Energy Check
@@ -288,17 +289,17 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
     @Override
     public int getMaxPower() {
-        return Integer.MAX_VALUE / 4; // TODO: CONFIG
+        return Config.DIMENSIONAL_LASER_MAX_POWER.get();
     }
 
     @Override
     public int getPowerUsage() {
-        return 1024; // TODO: CONFIG
+        return Config.DIMENSIONAL_LASER_POWER_USAGE.get();
     }
 
     @Override
     public int getTransferRate() {
-        return Integer.MAX_VALUE / 16; // TODO: CONFIG
+        return Config.DIMENSIONAL_LASER_TRANSFER.get();
     }
 
     @Override

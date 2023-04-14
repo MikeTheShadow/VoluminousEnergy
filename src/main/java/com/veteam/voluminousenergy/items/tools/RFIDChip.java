@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -50,8 +52,13 @@ public class RFIDChip extends Item {
                 fluid.getFluids().forEach(f -> {
                     Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
                     String translatedString = translatedComponent.getString();
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + f.getAmount());
-                    componentList.add(textComponent);
+                    if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
+                        Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
+                        componentList.add(textComponent);
+                    } else {
+                        Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
+                        componentList.add(textComponent);
+                    }
                 });
             }
 

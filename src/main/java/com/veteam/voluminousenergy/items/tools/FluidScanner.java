@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
@@ -122,7 +123,7 @@ public class FluidScanner extends Item {
         StringBuilder message = new StringBuilder();
         ChunkFluid fluid = WorldUtil.getFluidFromPosition(level,pos);
         for (SingleChunkFluid singleChunkFluid : fluid.getFluids()) {
-            message.append("\nFound Fluid: ").append(singleChunkFluid.getFluid().getRegistryName()).append(" Amount: ").append(singleChunkFluid.getAmount());
+            message.append("\nFound Fluid: ").append(singleChunkFluid.getFluid().getRegistryName()).append(" Amount: ").append(NumberUtil.formatNumber(singleChunkFluid.getAmount())).append(" mB");
         }
         player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
 

@@ -46,6 +46,7 @@ public class Config {
     public static final String CATEGORY_FLUID_ELECTROLYZER = "Fluid Electrolyzer";
     public static final String CATEGORY_FLUID_MIXER = "Fluid Mixer";
     public static final String CATEGORY_HYDROPONIC_INCUBATOR = "Hydroponic Incubator";
+    public static final String CATEGORY_DIMENSIONAL_LASER = "Dimensional Laser";
 
     public static final String SUBCATEGORY_FEATURE_GENERATION = "Feature Generation";
     public static final String SUBCATEGORY_CLIMATE_SPAWNS = "Climate Spawns";
@@ -339,6 +340,13 @@ public class Config {
     public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_POWER_USAGE;
     public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_TRANSFER;
 
+    // Dimensional Laser Variables
+    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_MAX_POWER;
+    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_POWER_USAGE;
+    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_TRANSFER;
+    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_PROCESS_TIME;
+    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_FLUID_RATE;
+
     // Tank variables
     public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
     public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
@@ -496,6 +504,11 @@ public class Config {
         // Fluid Mixer
         COMMON_BUILDER.comment("Hydroponic Incubator").push(CATEGORY_HYDROPONIC_INCUBATOR);
         setupHydroponicIncubatorMixer();
+        COMMON_BUILDER.pop();
+
+        // Dimensional Laser
+        COMMON_BUILDER.comment("Dimensional Laser").push(CATEGORY_DIMENSIONAL_LASER);
+        setupDimensionalLaser();
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -1021,6 +1034,19 @@ public class Config {
                 .defineInRange("Power Consumption", 96, 0, Integer.MAX_VALUE);
         HYDROPONIC_INCUBATOR_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
                 .defineInRange("Maximum Transfer", 25_000, 0, Integer.MAX_VALUE);
+    }
+
+    private static void setupDimensionalLaser(){
+        DIMENSIONAL_LASER_MAX_POWER = COMMON_BUILDER.comment("Maximum Power for the Hydroponic Incubator to store")
+                .defineInRange("Maximum Power", Integer.MAX_VALUE / 4, 0, Integer.MAX_VALUE);
+        DIMENSIONAL_LASER_POWER_USAGE = COMMON_BUILDER.comment("Power consumption per tick for the Hydroponic Incubator")
+                .defineInRange("Power Consumption", 1024, 0, Integer.MAX_VALUE);
+        DIMENSIONAL_LASER_TRANSFER = COMMON_BUILDER.comment("Power I/O per tick for the Hydroponic Incubator")
+                .defineInRange("Maximum Transfer", Integer.MAX_VALUE / 16, 0, Integer.MAX_VALUE);
+        DIMENSIONAL_LASER_FLUID_RATE = COMMON_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
+                .defineInRange("Fluid Extraction Rate", 250, 0, 4000);
+        DIMENSIONAL_LASER_PROCESS_TIME = COMMON_BUILDER.comment("How long should it take (it ticks) to extract a fluid from a chunk for a single extraction")
+                .defineInRange("Process Time", 800, 0, Integer.MAX_VALUE);
     }
 
     // CLIENT CONFIG START
