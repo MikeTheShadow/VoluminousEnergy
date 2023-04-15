@@ -47,13 +47,10 @@ public class RFIDChip extends Item {
             fluid.getFluids().forEach(f -> {
                 Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
                 String translatedString = translatedComponent.getString();
-                if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
-                    componentList.add(textComponent);
-                } else {
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
-                    componentList.add(textComponent);
-                }
+                Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString
+                        + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount())
+                        + ChatFormatting.GRAY + "mB/s");
+                componentList.add(textComponent);
             });
 
             componentList.add(

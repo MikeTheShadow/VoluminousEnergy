@@ -55,9 +55,9 @@ public class ChunkFluid {
         return chunkFluidList;
     }
 
-    public void setFluidRemaining(SingleChunkFluid fluidRemaining) {
-        chunkFluidList.stream()
-                .filter(fr -> fr.getFluid().isSame(fluidRemaining.getFluid())).findFirst().
-                ifPresent(fr -> fr.setAmount(fluidRemaining.getAmount()));
-    }
+//    public void setFluidRemaining(SingleChunkFluid fluidRemaining) {
+//        chunkFluidList.stream()
+//                .filter(fr -> fr.getFluid().isSame(fluidRemaining.getFluid())).findFirst().
+//                ifPresent(fr -> fr.setAmount(fluidRemaining.getAmount()));
+//    }
 }

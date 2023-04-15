@@ -163,12 +163,12 @@ public class WorldUtil {
         );
 
         if (fluid.isSame(Fluids.WATER) || fluid.isSame(Fluids.FLOWING_WATER)) {
-            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000) * 10_000) * sampledClimate.get(ClimateParameters.HUMIDITY)));
+            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000)) * sampledClimate.get(ClimateParameters.HUMIDITY)));
         } else if (fluid.isSame(Fluids.LAVA) || fluid.isSame(Fluids.FLOWING_LAVA)) {
-            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000) * 10_000) * sampledClimate.get(ClimateParameters.TEMPERATURE)));
+            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000)) * sampledClimate.get(ClimateParameters.TEMPERATURE)));
         }
 
-        return 2000;
+        return 250;
     }
 
 }

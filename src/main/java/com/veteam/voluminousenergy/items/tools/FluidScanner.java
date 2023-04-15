@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
@@ -26,6 +27,7 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -69,10 +71,9 @@ public class FluidScanner extends Item {
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
 
-
-        if(player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown()) {
             ChunkFluid chunkFluid = ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos());
-            if(chunkFluid == null) {
+            if (chunkFluid == null) {
                 player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"), player.getUUID());
                 return InteractionResult.sidedSuccess(false);
             }
@@ -80,32 +81,32 @@ public class FluidScanner extends Item {
             PlayerInvWrapper inventory = new PlayerInvWrapper(player.getInventory());
             int freeSlot = player.getInventory().getFreeSlot();
 
-            if(freeSlot == -1) {
+            if (freeSlot == -1) {
                 // TODO translations
                 player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.inventory_full"), player.getUUID());
             } else {
-                for(int slot = 0; slot < inventory.getSlots(); slot++) {
+                for (int slot = 0; slot < inventory.getSlots(); slot++) {
                     ItemStack itemStack = inventory.getStackInSlot(slot);
-                    if(itemStack.getItem() instanceof RFIDChip) {
-                        if(itemStack.hasTag()) {
+                    if (itemStack.getItem() instanceof RFIDChip) {
+                        if (itemStack.hasTag()) {
                             continue;
                         }
-                        if(itemStack.getOrCreateTag().contains("ve_x")){
+                        if (itemStack.getOrCreateTag().contains("ve_x")) {
                             continue;
                         }
-                        if(!itemStack.getOrCreateTag().contains("ve_x")) {
+                        if (!itemStack.getOrCreateTag().contains("ve_x")) {
                             itemStack.setCount(itemStack.getCount() - 1);
-                            ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP,1);
+                            ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP, 1);
                             CompoundTag data = dataStack.getOrCreateTag();
 
                             int x = 0;
 
                             chunkFluid.save(data);
 
-                            data.putInt("ve_x",chunkAccess.getPos().x);
-                            data.putInt("ve_z",chunkAccess.getPos().z);
+                            data.putInt("ve_x", chunkAccess.getPos().x);
+                            data.putInt("ve_z", chunkAccess.getPos().z);
                             dataStack.setTag(data);
-                            inventory.insertItem(freeSlot,dataStack,false);
+                            inventory.insertItem(freeSlot, dataStack, false);
                             //player.sendMessage(new TextComponent(ChatFormatting.GREEN + "Written to a RFID Chip!"),player.getUUID());
                             player.sendMessage(TextUtil.translateString(ChatFormatting.GREEN, "text.voluminousenergy.rfid.write_success"), player.getUUID());
                         }
@@ -113,35 +114,50 @@ public class FluidScanner extends Item {
                     }
                 }
             }
-            player.sendMessage(TextUtil.translateString(ChatFormatting.RED,"text.voluminousenergy.fluid_scanner.needs_empty_rfid" ), player.getUUID());
+            player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.fluid_scanner.needs_empty_rfid"), player.getUUID());
             return InteractionResult.sidedSuccess(false);
         }
 
         player.sendMessage(TextUtil.translateString(ChatFormatting.YELLOW, "text.voluminousenergy.fluid_scanner.scanning")
-                .copy()
-                .append(new TextComponent("...").withStyle(ChatFormatting.YELLOW)),
+                        .copy()
+                        .append(new TextComponent("...").withStyle(ChatFormatting.YELLOW)),
                 player.getUUID()
         );
 
-        player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
+//        player.sendMessage(Component.nullToEmpty(climateString.toString()), player.getUUID());
 
-        StringBuilder message = new StringBuilder();
-        ChunkFluid fluid = WorldUtil.getFluidFromPosition(level,pos);
+//        StringBuilder message = new StringBuilder();
+        ChunkFluid fluid = WorldUtil.getFluidFromPosition(level, pos);
+//        for (SingleChunkFluid singleChunkFluid : fluid.getFluids()) {
+//            message.append("\nFound Fluid: ").append(singleChunkFluid.getFluid().getRegistryName()).append(" Throughput: ").append(NumberUtil.formatNumber(singleChunkFluid.getAmount())).append(" mB");
+//        }
+//        player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
+
+        StringBuilder builder = new StringBuilder();
         for (SingleChunkFluid singleChunkFluid : fluid.getFluids()) {
-            message.append("\nFound Fluid: ").append(singleChunkFluid.getFluid().getRegistryName()).append(" Amount: ").append(NumberUtil.formatNumber(singleChunkFluid.getAmount())).append(" mB");
+            Component translatedComponent = new TranslatableComponent(singleChunkFluid.getFluid().getAttributes().getTranslationKey());
+            String translatedString = translatedComponent.getString();
+            builder.append(ChatFormatting.DARK_PURPLE).append(translatedString)
+                    .append(": ")
+                    .append(ChatFormatting.LIGHT_PURPLE)
+                    .append(NumberUtil.formatNumber(singleChunkFluid.getAmount()))
+                    .append(ChatFormatting.GRAY).append("mB/s");
         }
-        player.sendMessage(Component.nullToEmpty(message.toString()), player.getUUID());
+        Component textComponent = new TextComponent(builder.toString());
+
+
+        player.sendMessage(textComponent, player.getUUID());
 
         ItemStack hand = useOnContext.getItemInHand();
 
         CompoundTag tag = hand.getOrCreateTag();
 
-        if(tag.contains("ve_x")) {
+        if (tag.contains("ve_x")) {
             tag.remove("ve_x");
             tag.remove("ve_z");
         }
-        tag.putInt("ve_x",chunkAccess.getPos().x);
-        tag.putInt("ve_z",chunkAccess.getPos().z);
+        tag.putInt("ve_x", chunkAccess.getPos().x);
+        tag.putInt("ve_z", chunkAccess.getPos().z);
         fluid.save(tag);
         hand.setTag(tag);
 
@@ -189,7 +205,7 @@ public class FluidScanner extends Item {
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
         CompoundTag tag = itemStack.getOrCreateTag();
 
-        if(tag.contains("ve_x")) {
+        if (tag.contains("ve_x")) {
 
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
