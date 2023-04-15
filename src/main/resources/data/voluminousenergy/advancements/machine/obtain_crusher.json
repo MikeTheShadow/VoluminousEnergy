@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:root",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:crusher"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.crusher.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.crusher.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_crusher": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:crusher"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

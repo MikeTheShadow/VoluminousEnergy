@@ -82,7 +82,7 @@ public class TextUtil {
     }
 
     public static Component translateString(ChatFormatting chatFormatting, String toTranslate){
-        return Component.nullToEmpty(toTranslate).copy().withStyle(chatFormatting);
+        return translateString(toTranslate).copy().withStyle(chatFormatting);
     }
 
     public static Component translateVEBlock(String block){

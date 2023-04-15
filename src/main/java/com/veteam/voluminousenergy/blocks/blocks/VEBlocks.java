@@ -44,6 +44,8 @@ public class VEBlocks {
 
     public static RegistryObject<TitaniumMachineCasingBlock> TITANIUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_machine_casing", TitaniumMachineCasingBlock::new);
 
+    public static RegistryObject<SolariumMachineCasingBlock> SOLARIUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("solarium_machine_casing", SolariumMachineCasingBlock::new);
+
     //Primitive Blast
     public static RegistryObject<PrimitiveBlastFurnaceBlock> PRIMITIVE_BLAST_FURNACE_BLOCK = VE_BLOCKS_REGISTRY.register("primitiveblastfurnace", PrimitiveBlastFurnaceBlock::new);
     public static RegistryObject<BlockEntityType<PrimitiveBlastFurnaceTile>> PRIMITIVE_BLAST_FURNACE_TILE = VE_TILE_REGISTRY.register("primitiveblastfurnace",
