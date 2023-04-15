@@ -225,6 +225,7 @@ public class VoluminousEnergy {
             blockRegisteryEvent.getRegistry().register(new CarbonShieldedAluminumMachineFrame());
             blockRegisteryEvent.getRegistry().register(new AluminumMachineCasingBlock());
             blockRegisteryEvent.getRegistry().register(new TitaniumMachineCasingBlock());
+            blockRegisteryEvent.getRegistry().register(new SolariumMachineCasingBlock());
 
             //Crops
             //blockRegisteryEvent.getRegistry().register(new VELandCrop(AbstractBlock.Properties.copy(Blocks.ALLIUM)));
@@ -323,6 +324,7 @@ public class VoluminousEnergy {
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME, properties).setRegistryName("carbon_shielded_aluminum_machine_frame"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK, properties).setRegistryName("aluminum_machine_casing"));
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK, properties).setRegistryName("titanium_machine_casing"));
+            itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK, properties).setRegistryName("solarium_machine_casing"));
 
             // Raw Material Storage Blocks
             itemRegisteryEvent.getRegistry().register(new BlockItem(VEBlocks.RAW_BAUXITE_BLOCK, properties).setRegistryName("raw_bauxite_block"));

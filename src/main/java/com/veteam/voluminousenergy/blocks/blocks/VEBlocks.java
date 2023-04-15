@@ -39,6 +39,9 @@ public class VEBlocks {
     @ObjectHolder(VoluminousEnergy.MODID + ":titanium_machine_casing")
     public static TitaniumMachineCasingBlock TITANIUM_MACHINE_CASING_BLOCK;
 
+    @ObjectHolder(VoluminousEnergy.MODID + ":solarium_machine_casing")
+    public static SolariumMachineCasingBlock SOLARIUM_MACHINE_CASING_BLOCK;
+
     //Primitive Blast
     @ObjectHolder(VoluminousEnergy.MODID + ":primitiveblastfurnace")
     public static PrimitiveBlastFurnaceBlock PRIMITIVE_BLAST_FURNACE_BLOCK;

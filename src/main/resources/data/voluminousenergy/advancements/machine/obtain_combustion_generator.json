@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_primitive_stirling_generator",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:combustion_generator"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.combustion_generator.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.combustion_generator.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_combustion_generator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:combustion_generator"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
