@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "313",
+    "202",
+    "#*#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/solarium"
+    },
+    "0": {
+      "item": "minecraft:beacon"
+    },
+    "*": {
+      "item": "voluminousenergy:solarium_machine_casing"
+    },
+    "1": {
+      "tag": "forge:glass_panes"
+    },
+    "2": {
+      "tag": "forge:gears/solarium"
+    },
+    "3": {
+      "tag": "forge:microchips"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:dimensional_laser"
+  }
+}

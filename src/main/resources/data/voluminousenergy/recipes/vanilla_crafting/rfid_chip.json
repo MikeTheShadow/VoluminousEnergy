@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "1#1",
+    "0*0",
+    "1#1"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/silver"
+    },
+    "*": {
+      "tag": "forge:microchips"
+    },
+    "0": {
+      "tag": "forge:ingots/lead"
+    },
+    "1": {
+      "tag": "forge:ingots/tungsten_steel"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:rfid_chip"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:root",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:primitivestirlinggenerator"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.primitive_stirling_generator.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.primitive_stirling_generator.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_primitive_stirling_generator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:primitivestirlinggenerator"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

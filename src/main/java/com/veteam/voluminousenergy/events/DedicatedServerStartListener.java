@@ -9,9 +9,8 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class ServerStartListener {
-
+@Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
+public class DedicatedServerStartListener {
     @SubscribeEvent
     public static void onServerStart(ServerStartedEvent event) {
         ServerLevel level = event.getServer().getLevel(Level.OVERWORLD);
