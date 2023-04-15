@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#0#",
+    "*1*",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/tungsten_steel"
+    },
+    "*": {
+      "tag": "forge:microchips"
+    },
+    "0": {
+      "item": "voluminousenergy:titanium_machine_casing"
+    },
+    "1": {
+      "tag": "forge:storage_blocks/solarium"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:solarium_machine_casing"
+  }
+}
