@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.fluids.VEFluids;
-import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
