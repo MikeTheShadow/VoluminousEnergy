@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_electrolyzer",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:battery_box"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.battery_box.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.battery_box.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_battery_box": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:battery_box"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

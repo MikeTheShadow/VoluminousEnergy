@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -76,7 +77,7 @@ public class CreativeFluidScanner extends Item {
 
         for (Pair<Fluid, Integer> pair : fluidsList) {
             //fluid = pair.getA();
-            message.append("\nFound Entry: ").append(RegistryLookups.lookupFluid(pair.getA())).append(" Amount: ").append(pair.getB());
+            message.append("\nFound Entry: ").append(RegistryLookups.lookupFluid(pair.getA())).append(" Amount: ").append(NumberUtil.formatNumber(pair.getB())).append(" mB");
         }
         player.sendSystemMessage(Component.nullToEmpty(message.toString()));
 

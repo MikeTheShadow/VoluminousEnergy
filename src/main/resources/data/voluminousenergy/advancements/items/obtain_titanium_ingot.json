@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_electrolyzer",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:titanium_ingot"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.item.obtain.titanium_ingot.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.item.obtain.titanium_ingot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_titanium_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:titanium_ingot"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

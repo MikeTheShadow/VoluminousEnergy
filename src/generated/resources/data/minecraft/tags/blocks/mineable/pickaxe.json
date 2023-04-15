@@ -1,9 +1,5 @@
 {
   "values": [
-    "voluminousenergy:aluminum_shell",
-    "voluminousenergy:carbon_shielded_aluminum_machine_frame",
-    "voluminousenergy:aluminum_machine_casing",
-    "voluminousenergy:titanium_machine_casing",
     "voluminousenergy:primitiveblastfurnace",
     "voluminousenergy:primitivestirlinggenerator",
     "voluminousenergy:crusher",
@@ -26,7 +22,6 @@
     "voluminousenergy:blast_furnace",
     "voluminousenergy:tooling_station",
     "voluminousenergy:sawmill",
-    "voluminousenergy:dimensional_laser",
     "voluminousenergy:fluid_electrolyzer",
     "voluminousenergy:fluid_mixer",
     "voluminousenergy:hydroponic_incubator",
@@ -45,6 +40,11 @@
     "voluminousenergy:deepslate_cinnabar_ore",
     "voluminousenergy:deepslate_rutile_ore",
     "voluminousenergy:deepslate_galena_ore",
+    "voluminousenergy:aluminum_shell",
+    "voluminousenergy:carbon_shielded_aluminum_machine_frame",
+    "voluminousenergy:aluminum_machine_casing",
+    "voluminousenergy:titanium_machine_casing",
+    "voluminousenergy:solarium_machine_casing",
     "voluminousenergy:solarium_block",
     "voluminousenergy:aluminum_block",
     "voluminousenergy:carbon_block",
@@ -59,6 +59,7 @@
     "voluminousenergy:raw_eighzo_block",
     "voluminousenergy:raw_galena_block",
     "voluminousenergy:raw_rutile_block",
-    "voluminousenergy:raw_bone_block"
+    "voluminousenergy:raw_bone_block",
+    "voluminousenergy:dimensional_laser"
   ]
 }
