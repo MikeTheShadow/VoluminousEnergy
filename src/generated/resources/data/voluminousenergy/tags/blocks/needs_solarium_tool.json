@@ -1,8 +1,8 @@
 {
   "values": [
-    "voluminousenergy:solarium_tank",
     "voluminousenergy:solarium_machine_casing",
-    "voluminousenergy:solarium_block",
-    "voluminousenergy:dimensional_laser"
+    "voluminousenergy:dimensional_laser",
+    "voluminousenergy:solarium_tank",
+    "voluminousenergy:solarium_block"
   ]
 }
