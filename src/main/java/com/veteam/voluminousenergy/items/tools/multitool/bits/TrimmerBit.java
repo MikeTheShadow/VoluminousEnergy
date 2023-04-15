@@ -24,9 +24,32 @@ public class TrimmerBit extends MultitoolBit{
         if (!blockState.is(Blocks.COBWEB) && !blockState.is(BlockTags.LEAVES)) {
             if (blockState.is(BlockTags.WOOL)) {
                 return 5.0F * destroySpeedMultiplier;
+            } else if (blockState.is(Blocks.VINE)
+                    || blockState.is(Blocks.GLOW_LICHEN)
+            ){
+                return destroySpeedMultiplier * 2.0F;
+            } else if (blockState.is(BlockTags.CAVE_VINES)
+                    || blockState.is(Blocks.TWISTING_VINES)
+                    || blockState.is(Blocks.TWISTING_VINES_PLANT)
+                    || blockState.is(Blocks.WEEPING_VINES)
+                    || blockState.is(Blocks.WEEPING_VINES_PLANT)
+                    || blockState.is(Blocks.DEAD_BUSH)
+                    || blockState.is(Blocks.GRASS)
+                    || blockState.is(Blocks.TALL_GRASS)
+                    || blockState.is(Blocks.FERN)
+                    || blockState.is(Blocks.TRIPWIRE)
+                    || blockState.is(Blocks.SEAGRASS)
+                    || blockState.is(Blocks.TALL_SEAGRASS)
+                    || blockState.is(Blocks.SEA_PICKLE)
+                    || blockState.is(Blocks.KELP_PLANT)
+                    || blockState.is(Blocks.KELP)
+                    || blockState.is(Blocks.NETHER_SPROUTS)
+                    || blockState.is(Blocks.NETHER_WART)
+                    || blockState.is(Blocks.HANGING_ROOTS)
+            ){
+                return destroySpeedMultiplier;
             } else {
-                return !blockState.is(Blocks.VINE) && !blockState.is(Blocks.GLOW_LICHEN) ?
-                        destroySpeedMultiplier : destroySpeedMultiplier * 2.0F;
+                return 1.0F;
             }
         }
         return 15.0F * destroySpeedMultiplier;

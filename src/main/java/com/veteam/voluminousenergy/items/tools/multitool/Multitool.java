@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.google.common.collect.Multimap;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class Multitool extends Item /*implements Vanishable*/ {
     protected MultitoolBit bit;
@@ -42,10 +44,7 @@ public class Multitool extends Item /*implements Vanishable*/ {
         return true;
     }
 
-    /*public void setBit(@Nonnull MultitoolBit bit, ItemStack stack){
-        this.bit = bit;
-    }*/
-
+    @Nullable
     public MultitoolBit getBit(){
         return this.bit != null ? this.bit : null;
     }
@@ -68,5 +67,26 @@ public class Multitool extends Item /*implements Vanishable*/ {
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState){
         return this.bit != null ? this.bit.isCorrectToolForDrops(blockState) : false;
+    }
+
+    // Trimmer Multitool stuff
+    @Override
+    public net.minecraft.world.InteractionResult interactLivingEntity(ItemStack stack, net.minecraft.world.entity.player.Player playerIn, LivingEntity entity, net.minecraft.world.InteractionHand hand) {
+        if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.minecraftforge.common.IForgeShearable target) {
+            if (entity.level.isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
+            BlockPos pos = new BlockPos(entity.getX(), entity.getY(), entity.getZ());
+            if (target.isShearable(stack, entity.level, pos)) {
+                java.util.List<ItemStack> drops = target.onSheared(playerIn, stack, entity.level, pos,
+                        net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.BLOCK_FORTUNE, stack));
+                java.util.Random rand = new java.util.Random();
+                drops.forEach(d -> {
+                    net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
+                    ent.setDeltaMovement(ent.getDeltaMovement().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                });
+                stack.hurtAndBreak(1, playerIn, e -> e.broadcastBreakEvent(hand));
+            }
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
+        return super.interactLivingEntity(stack, playerIn, entity, hand); // Revert to previous super code if not trimmer
     }
 }

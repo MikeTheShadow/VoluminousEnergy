@@ -1,15 +1,13 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseRouter;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -24,8 +24,9 @@ import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldUtil {
 
@@ -92,7 +93,7 @@ public class WorldUtil {
         ChunkAccess chunkAccess = level.getChunk(pos);
         ChunkFluids chunkFluids = ChunkFluids.getInstance();
 
-        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(serverLevel,
+        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(
                 chunkAccess.getPos(),
                 fluidsList
         ));
@@ -124,15 +125,21 @@ public class WorldUtil {
 
 
         // Add a fluid to the location if no other fluids exist. Can make this if it's only 1 add a pair
-        if(fluidsAtLocation.get().size() == 0) {
+        if(fluidsAtLocation.get().size() == 0 && level instanceof ServerLevel serverLevel) {
 
             Random random = new Random(randomSeedFromClimate(sampledClimate));
 
             if(random.nextInt(10) > 4) {
-                fluidsAtLocation.get().add(new Pair<>(Fluids.WATER,2000)); // create the modify thingy later
+
+                fluidsAtLocation.get().add(new Pair<>(Fluids.WATER,
+                        fallbackFluidAmount(serverLevel, Fluids.WATER, sampledClimate, pos)
+                ));
             }
             else  {
-                fluidsAtLocation.get().add(new Pair<>(Fluids.LAVA,2000)); // create the modify thingy later
+
+                fluidsAtLocation.get().add(new Pair<>(Fluids.LAVA,
+                        fallbackFluidAmount(serverLevel, Fluids.LAVA, sampledClimate, pos)
+                ));
             }
         }
 
@@ -146,6 +153,22 @@ public class WorldUtil {
                 sampledClimate.get(WorldUtil.ClimateParameters.HUMIDITY) +
                 sampledClimate.get(WorldUtil.ClimateParameters.TEMPERATURE)));
 
+    }
+
+    private static int fallbackFluidAmount(ServerLevel serverLevel, Fluid fluid, HashMap<ClimateParameters,Double> sampledClimate, BlockPos pos) {
+
+        PerlinSimplexNoise noise = new PerlinSimplexNoise(
+                new XoroshiroRandomSource(serverLevel.getSeed()),
+                List.of(0, -1, -2, -3, -4, -5, -6, -7)
+        );
+
+        if (fluid.isSame(Fluids.WATER) || fluid.isSame(Fluids.FLOWING_WATER)) {
+            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000) * 10_000) * sampledClimate.get(ClimateParameters.HUMIDITY)));
+        } else if (fluid.isSame(Fluids.LAVA) || fluid.isSame(Fluids.FLOWING_LAVA)) {
+            return Mth.abs(Mth.ceil((((float) noise.getValue(pos.getX(), pos.getZ(), true) + 1_000) * 10_000) * sampledClimate.get(ClimateParameters.TEMPERATURE)));
+        }
+
+        return 2000;
     }
 
 }

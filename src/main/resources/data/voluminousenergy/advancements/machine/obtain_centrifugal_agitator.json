@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_electrolyzer",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:centrifugal_agitator"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.centrifugal_agitator.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.centrifugal_agitator.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_centrifugal_agitator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:centrifugal_agitator"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

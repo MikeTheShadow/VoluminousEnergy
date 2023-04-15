@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0##",
+    " *#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/tungsten_steel"
+    },
+    "*": {
+      "tag": "forge:microchips"
+    },
+    "0": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "result": {
+    "item": "voluminousenergy:fluid_scanner"
+  }
+}

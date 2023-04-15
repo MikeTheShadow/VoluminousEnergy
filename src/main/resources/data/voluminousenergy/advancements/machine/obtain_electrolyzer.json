@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:root",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:electrolyzer"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.electrolyzer.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.electrolyzer.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_electrolyzer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:electrolyzer"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
