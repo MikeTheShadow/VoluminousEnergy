@@ -12,7 +12,6 @@ public class SolariumMachineCasingBlock extends Block {
                 .strength(25.0F, 1200.0F)
                 .requiresCorrectToolForDrops()
         );
-        setRegistryName("solarium_machine_casing");
         VETagDataGenerator.setRequiresPickaxe(this);
         VETagDataGenerator.setRequiresSolarium(this);
     }

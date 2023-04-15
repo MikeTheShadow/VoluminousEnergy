@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
-import com.veteam.voluminousenergy.client.renderers.VEBlockEntities;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
@@ -82,7 +81,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         multiblockTickChecker++;
         if (multiblockTickChecker == 20){
             multiblockTickChecker = 0;
-            validity = isMultiBlockValid(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK);
+            validity = isMultiBlockValid(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK.get());
         }
         if (!(validity)) {
             return;

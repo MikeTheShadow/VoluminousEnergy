@@ -70,7 +70,7 @@ public class FluidScanner extends Item {
         if(player.isShiftKeyDown()) {
             ChunkFluid chunkFluid = ChunkFluids.getInstance().getChunkFluid(chunkAccess.getPos());
             if(chunkFluid == null) {
-                player.sendMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"), player.getUUID());
+                player.sendSystemMessage(TextUtil.translateString(ChatFormatting.RED, "text.voluminousenergy.rfid.chunk_not_scanned"));
                 return InteractionResult.sidedSuccess(false);
             }
 
