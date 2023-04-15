@@ -37,7 +37,7 @@ public class ChunkFluids extends SavedData {
 
         // Possible this is for saving. Marking as dirty must do something
         // Done every 10s might want to save more often since players could abuse this theoretically?
-        if (this.tick % 200 == 0) {
+        if (this.tick % 20 == 0) {
             this.setDirty();
         }
     }
@@ -54,7 +54,7 @@ public class ChunkFluids extends SavedData {
         ListTag listtag = compoundTag.getList("ChunkFluids", 10);
         for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
-            ChunkFluid cf = new ChunkFluid(serverLevel, compoundtag);
+            ChunkFluid cf = new ChunkFluid( compoundtag);
             chunkFluid.chunkFluidSet.add(cf);
         }
         return chunkFluid;

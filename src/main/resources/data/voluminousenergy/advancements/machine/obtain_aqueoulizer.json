@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_electrolyzer",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:aqueoulizer"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.aqueoulizer.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.aqueoulizer.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_aqueoulizer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:aqueoulizer"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

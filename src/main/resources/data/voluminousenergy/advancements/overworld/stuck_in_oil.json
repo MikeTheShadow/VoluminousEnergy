@@ -5,10 +5,10 @@
       "item": "voluminousenergy:crude_oil_bucket"
     },
     "title": {
-      "translate": "advancements.overworld.stuck_in_oil.title"
+      "translate": "advancements.voluminousenergy.overworld.stuck_in_oil.title"
     },
     "description": {
-      "translate": "advancements.overworld.stuck_in_oil.description"
+      "translate": "advancements.voluminousenergy.overworld.stuck_in_oil.description"
     },
     "frame": "task",
     "show_toast": true,

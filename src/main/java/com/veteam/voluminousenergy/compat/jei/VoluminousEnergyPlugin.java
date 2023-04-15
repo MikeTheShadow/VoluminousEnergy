@@ -134,6 +134,13 @@ public class VoluminousEnergyPlugin implements IModPlugin {
             tieredMysteriousMultipliers.add(multiplier);
         }
         registration.addIngredientInfo(tieredMysteriousMultipliers,VanillaTypes.ITEM_STACK,TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));
+
+        ArrayList<ItemStack> fluidScannerDimensionalLaserInfo = new ArrayList<>();
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.FLUID_SCANNER.get()));
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.RFID_CHIP.get()));
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()));
+        registration.addIngredientInfo(fluidScannerDimensionalLaserInfo, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.fluid_scanner_info"));
+
     }
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {
@@ -166,7 +173,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeClickArea(FluidMixerScreen.class, 75, 31, 11, 18, FluidMixingCategory.RECIPE_TYPE); // X offset: 3, Y offset: 3
         registration.addGuiContainerHandler(PrimitiveBlastFurnaceScreen.class, new PrimitiveBlastFurnaceContainerHandler());
         registration.addGuiContainerHandler(HydroponicIncubatorScreen.class, new HydroponicIncubatorContainerHandler());
-        // TODO: Container handler for Dimensional Laser
+        registration.addGuiContainerHandler(DimensionalLaserScreen.class, new DimensionalLaserContainerHandler());
     }
 
     @Override

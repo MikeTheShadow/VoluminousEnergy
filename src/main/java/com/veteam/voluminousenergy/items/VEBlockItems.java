@@ -76,6 +76,7 @@ public class VEBlockItems {
             public static RegistryObject<BlockItem> CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME_ITEM = VE_BLOCK_ITEM_REGISTRY.register("carbon_shielded_aluminum_machine_frame",() -> new BlockItem(VEBlocks.CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME.get(), PROPERTIES));
             public static RegistryObject<BlockItem> ALUMINUM_MACHINE_CASING_ITEM = VE_BLOCK_ITEM_REGISTRY.register("aluminum_machine_casing",() -> new BlockItem(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.get(), PROPERTIES));
             public static RegistryObject<BlockItem> TITANIUM_MACHINE_CASING_ITEM = VE_BLOCK_ITEM_REGISTRY.register("titanium_machine_casing",() -> new BlockItem(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get(), PROPERTIES));
+            public static RegistryObject<BlockItem> SOLARIUM_MACHINE_CASING_ITEM = VE_BLOCK_ITEM_REGISTRY.register("solarium_machine_casing",() -> new BlockItem(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK.get(), PROPERTIES));
 
             // Raw Material Storage Blocks
             public static RegistryObject<BlockItem> RAW_BAUXITE_BLOCKITEM = VE_BLOCK_ITEM_REGISTRY.register("raw_bauxite_block",() -> new BlockItem(VEBlocks.RAW_BAUXITE_BLOCK.get(), PROPERTIES));
