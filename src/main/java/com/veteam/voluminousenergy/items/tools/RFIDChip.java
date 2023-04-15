@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +22,7 @@ import java.util.List;
 
 public class RFIDChip extends Item {
 
-    public RFIDChip (){
+    public RFIDChip() {
         super(new Item.Properties()
                 .stacksTo(16)
                 .tab(VESetup.itemGroup)
@@ -32,11 +34,11 @@ public class RFIDChip extends Item {
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
         CompoundTag tag = itemStack.getOrCreateTag();
 
-        if(tag.contains("ve_x")) {
+        if (tag.contains("ve_x")) {
 
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
-            ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
+            ChunkFluid fluid = new ChunkFluid(tag);
             if(fluid == null) {
                 componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));
             } else {
@@ -44,8 +46,15 @@ public class RFIDChip extends Item {
                 fluid.getFluids().forEach(f -> {
                     Component translatedComponent = TextUtil.translateString(f.getFluid().getFluidType().getDescriptionId());
                     String translatedString = translatedComponent.getString();
-                    Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + f.getAmount());
-                    componentList.add(textComponent);
+                    if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
+                        Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
+                        componentList.add(textComponent);
+                    } else {
+                        Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
+                        componentList.add(textComponent);
+                    }
+
+
                 });
             }
 

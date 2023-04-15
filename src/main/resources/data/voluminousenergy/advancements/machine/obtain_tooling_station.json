@@ -1,0 +1,32 @@
+{
+  "parent": "voluminousenergy:machine/obtain_electrolyzer",
+  "display": {
+    "icon": {
+      "item": "voluminousenergy:tooling_station"
+    },
+    "title": {
+      "translate": "advancements.voluminousenergy.machine.obtain.tooling_station.title"
+    },
+    "description": {
+      "translate": "advancements.voluminousenergy.machine.obtain.tooling_station.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_tooling_station": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "voluminousenergy:tooling_station"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
