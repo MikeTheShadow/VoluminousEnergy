@@ -93,7 +93,7 @@ public class WorldUtil {
         ChunkAccess chunkAccess = level.getChunk(pos);
         ChunkFluids chunkFluids = ChunkFluids.getInstance();
 
-        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(serverLevel,
+        ChunkFluid chunkFluid = chunkFluids.getOrElse(new ChunkFluid(
                 chunkAccess.getPos(),
                 fluidsList
         ));

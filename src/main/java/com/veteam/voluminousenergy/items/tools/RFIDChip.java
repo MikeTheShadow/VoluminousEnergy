@@ -24,7 +24,7 @@ import java.util.List;
 
 public class RFIDChip extends Item {
 
-    public RFIDChip (){
+    public RFIDChip() {
         super(new Item.Properties()
                 .stacksTo(16)
                 .tab(VESetup.itemGroup)
@@ -35,37 +35,26 @@ public class RFIDChip extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
-        if (level == null || level.isClientSide()) {
-            super.appendHoverText(itemStack, level, componentList, tooltipFlag);
-            return;
-        }
         CompoundTag tag = itemStack.getOrCreateTag();
 
-        if(tag.contains("ve_x")) {
-
-
+        if (tag.contains("ve_x")) {
 
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
 
-            ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x,z));
-            if(fluid == null) {
-                componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));
-            } else {
-                componentList.add(new TextComponent(""));
-                fluid.getFluids().forEach(f -> {
-                    Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
-                    String translatedString = translatedComponent.getString();
-                    if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
-                        Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
-                        componentList.add(textComponent);
-                    } else {
-                        Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
-                        componentList.add(textComponent);
-                    }
-                });
-            }
-
+            ChunkFluid fluid = new ChunkFluid(tag);
+            componentList.add(new TextComponent(""));
+            fluid.getFluids().forEach(f -> {
+                Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
+                String translatedString = translatedComponent.getString();
+                if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
+                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
+                    componentList.add(textComponent);
+                } else {
+                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
+                    componentList.add(textComponent);
+                }
+            });
 
             componentList.add(
                     TextUtil.translateString("text.voluminousenergy.chunk").copy()

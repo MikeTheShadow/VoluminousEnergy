@@ -54,7 +54,7 @@ public class ChunkFluids extends SavedData {
         ListTag listtag = compoundTag.getList("ChunkFluids", 10);
         for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
-            ChunkFluid cf = new ChunkFluid(serverLevel, compoundtag);
+            ChunkFluid cf = new ChunkFluid( compoundtag);
             chunkFluid.chunkFluidSet.add(cf);
         }
         return chunkFluid;

@@ -172,6 +172,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                                 outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
                                 fluid.setAmount(fluid.getAmount() - fillSize);
                                 fluidFromPos.setFluidRemaining(fluid);
+                                // Write updated code to RFID Chip
                             }
 
                             counter--;
