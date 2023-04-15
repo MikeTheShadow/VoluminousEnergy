@@ -118,7 +118,7 @@ public class WorldUtil {
             if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
                 FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
                 if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
-                    fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate)));
+                    fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate, pos, level)));
                 }
             }
         });
