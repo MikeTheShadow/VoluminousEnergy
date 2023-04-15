@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.ChatFormatting;
@@ -7,6 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TextUtil {
 
@@ -89,5 +92,37 @@ public class TextUtil {
 
     public static Component translateVEBlock(String block){
         return new TranslatableComponent("block.voluminousenergy." + block);
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(FluidStack fluidStack) {
+        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getFluid(), fluidStack.getAmount());
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(SingleChunkFluid singleChunkFluid) {
+        return fluidNameAndAmountWithUnitsAndColours(singleChunkFluid.getFluid(), singleChunkFluid.getAmount());
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(Fluid fluid, int amount) {
+        Component translateString = TextUtil.translateString(fluid.getAttributes().getTranslationKey());
+
+        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
+            return Component.nullToEmpty(""
+                    + ChatFormatting.DARK_PURPLE
+                    + translateString.getString()
+                    + ": "
+                    + ChatFormatting.LIGHT_PURPLE
+                    + NumberUtil.numberToString4Fluids(amount)
+                    + "/t"
+            );
+        } else {
+            return Component.nullToEmpty(""
+                    + ChatFormatting.DARK_PURPLE
+                    + translateString.getString()
+                    + ": "
+                    + ChatFormatting.LIGHT_PURPLE
+                    + NumberUtil.formatNumber(amount)
+                    + " mB/t"
+            );
+        }
     }
 }
