@@ -111,7 +111,7 @@ public class TextUtil {
                     + translateString.getString()
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
-                    + NumberUtil.numberToString4Fluids(amount)
+                    + NumberUtil.numberToString4Fluids(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
                     + "/t"
             );
         } else {
@@ -120,7 +120,7 @@ public class TextUtil {
                     + translateString.getString()
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
-                    + NumberUtil.formatNumber(amount)
+                    + NumberUtil.formatNumber(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
                     + " mB/t"
             );
         }

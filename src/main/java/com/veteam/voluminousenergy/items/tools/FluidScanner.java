@@ -5,8 +5,6 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.setup.VESetup;
-import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
@@ -124,21 +122,7 @@ public class FluidScanner extends Item {
 
         StringBuilder builder = new StringBuilder();
         for (SingleChunkFluid singleChunkFluid : fluid.getFluids()) {
-            Component translateString = TextUtil.translateString(singleChunkFluid.getFluid().getAttributes().getTranslationKey());
-            if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-                builder.append(ChatFormatting.DARK_PURPLE).append(translateString.getString())
-                        .append(": ")
-                        .append(ChatFormatting.LIGHT_PURPLE)
-                        .append(NumberUtil.numberToString4Fluids(singleChunkFluid.getAmount()))
-                        .append("/t");
-            } else {
-                builder.append(ChatFormatting.DARK_PURPLE).append(translateString.getString())
-                        .append(": ")
-                        .append(ChatFormatting.LIGHT_PURPLE)
-                        .append(NumberUtil.formatNumber(singleChunkFluid.getAmount()))
-                        .append(" mB/t");
-            }
-
+            builder.append(TextUtil.fluidNameAndAmountWithUnitsAndColours(singleChunkFluid).getString());
         }
 
         player.sendMessage(new TextComponent(builder.toString()), player.getUUID());

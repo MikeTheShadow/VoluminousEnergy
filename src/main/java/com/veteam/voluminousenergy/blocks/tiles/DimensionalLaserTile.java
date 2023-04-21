@@ -178,7 +178,8 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             counter--;
                             consumeEnergy();
                         } else {
-                            counter = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            counter = counterTemp != 0 ? counterTemp : 1;
                             length = counter;
                         }
                     } else { // Energy Check
