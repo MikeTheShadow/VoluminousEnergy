@@ -162,18 +162,14 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
                     SingleChunkFluid fluid = fluidFromPos.getFluids().get(0);
 
-                    if (super.canConsumeEnergy() && fluid.getAmount() > 0 && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
+                    if (super.canConsumeEnergy() && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
                         if (counter == 1) {
 
                             if (outputTank.isFluidValid(fluid.getFluid())) {
-                                int fillSize = Math.min(Config.DIMENSIONAL_LASER_FLUID_RATE.get(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
+                                int fillSize = Math.min(fluid.getAmount(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
                                 fillSize = Math.min(fillSize, fluid.getAmount());
                                 outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
-                                fluid.setAmount(fluid.getAmount() - fillSize);
-                                fluidFromPos.setFluidRemaining(fluid);
-                                // Write updated code to RFID Chip
                             }
-
                             counter--;
                             consumeEnergy();
                             this.setChanged();
@@ -181,7 +177,8 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             counter--;
                             consumeEnergy();
                         } else {
-                            counter = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            counter = counterTemp != 0 ? counterTemp : 1;
                             length = counter;
                         }
                     } else { // Energy Check
