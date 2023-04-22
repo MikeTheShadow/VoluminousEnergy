@@ -2,8 +2,8 @@
   "type": "voluminousenergy:dimensional_lasing",
   "fluid": "voluminousenergy:light_fuel",
   "amounts": {
-    "minimum": 262144,
-    "maximum": 1048576
+    "minimum": 125,
+    "maximum": 155
   },
   "climate": {
     "continentalness": {

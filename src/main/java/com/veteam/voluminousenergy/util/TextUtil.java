@@ -1,10 +1,13 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TextUtil {
 
@@ -87,5 +90,41 @@ public class TextUtil {
 
     public static Component translateVEBlock(String block){
         return Component.translatable("block.voluminousenergy." + block);
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(FluidStack fluidStack) {
+        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getTranslationKey(), fluidStack.getAmount());
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(SingleChunkFluid singleChunkFluid) {
+        return fluidNameAndAmountWithUnitsAndColours(singleChunkFluid.getFluid(), singleChunkFluid.getAmount());
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(Fluid fluid, int amount) {
+        return fluidNameAndAmountWithUnitsAndColours(new FluidStack(fluid, amount).getTranslationKey(), amount);
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(String fluidTranslationKey, int amount) {
+        String translateString = TextUtil.translateString(fluidTranslationKey).getString();
+
+        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
+            return Component.nullToEmpty(""
+                    + ChatFormatting.DARK_PURPLE
+                    + translateString
+                    + ": "
+                    + ChatFormatting.LIGHT_PURPLE
+                    + NumberUtil.numberToString4Fluids(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
+                    + "/t"
+            );
+        } else {
+            return Component.nullToEmpty(""
+                    + ChatFormatting.DARK_PURPLE
+                    + translateString
+                    + ": "
+                    + ChatFormatting.LIGHT_PURPLE
+                    + NumberUtil.formatNumber(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
+                    + " mB/t"
+            );
+        }
     }
 }
