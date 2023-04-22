@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 
-public class VERecipe  implements Recipe<Container> {
+public class VERecipe implements Recipe<Container> {
 
     public Lazy<Ingredient> ingredient;
     public int ingredientCount;

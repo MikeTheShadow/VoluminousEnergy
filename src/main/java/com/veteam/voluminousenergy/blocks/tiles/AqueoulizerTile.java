@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
@@ -32,11 +34,11 @@ import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     // Slot Managers
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.INPUT,"input_1_sm");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot",SlotType.OUTPUT,"output_0_sm");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "input_0_sm");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.INPUT, "input_1_sm");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.OUTPUT, "output_0_sm");
     // Actually an input slot omegalul
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"output_1_sm");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "output_1_sm");
 
     private final ItemStackHandler inventory = createHandler();
 
@@ -50,8 +52,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     };
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank:output_tank_gui");
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "inputTank:input_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 1, null, null, TankType.OUTPUT, 0, "outputTank:output_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -89,12 +91,15 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
         outputTank.setOutput(output0);
 
-        if(this.inputFluid(inputTank,0,1)) return;
-        if(this.outputFluid(inputTank,0,1)) return;
-        if(this.outputFluidStatic(outputTank,2)) return;
+        if (this.inputFluid(inputTank, 0, 1)) return;
+        if (this.outputFluid(inputTank, 0, 1)) return;
+        if (this.outputFluidStatic(outputTank, 2)) return;
 
         // Main Fluid Processing occurs here:
-        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level, this.inputTank.getTank().getFluid(),inputItem.copy());
+//        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level, this.inputTank.getTank().getFluid(),inputItem.copy());
+        VEFluidRecipe recipe = RecipeCache.getFluidRecipeFromCache(AqueoulizerRecipe.class,
+                Collections.singletonList(this.inputTank.getTank().getFluid()),
+                inputItem.copy());
         // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
@@ -104,27 +109,27 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                 if (outputTank != null) {
 
                     // Tank fluid amount check + tank cap checks
-                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY){
+                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY) {
                         // Check for power
-                        if (canConsumeEnergy()){
-                            if (counter == 1){
+                        if (canConsumeEnergy()) {
+                            if (counter == 1) {
 
                                 // Drain Input
                                 inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
 
                                 // Output Tank
-                                if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()){
+                                if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
                                     outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
                                 } else {
                                     outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                                 }
 
-                                inventory.extractItem(3, recipe.ingredientCount,false);
+                                inventory.extractItem(3, recipe.ingredientCount, false);
 
                                 counter--;
                                 consumeEnergy();
                                 this.setChanged();
-                            } else if (counter > 0){
+                            } else if (counter > 0) {
                                 counter--;
                                 consumeEnergy();
                             } else {
@@ -156,7 +161,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         return this.createInputFluidHandler(/*new AqueoulizerRecipe(),*/ inputTank);
     }
 
-    private IFluidHandler createOutputFluidHandler(){
+    private IFluidHandler createOutputFluidHandler() {
         return this.createFluidHandler(new AqueoulizerRecipe(), outputTank);
     }
 
@@ -173,7 +178,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                 if (slot == 0 || slot == 1) {
                     if (!(stack.getItem() instanceof BucketItem)) return false;
                 }
-                if(slot == 3) {
+                if (slot == 3) {
                     ArrayList<AqueoulizerRecipe> recipe = RecipeUtil.getAqueoulizerRecipesFromItemInput(level, stack);
                     return !recipe.isEmpty();
                 }
@@ -202,8 +207,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             @Override
             public FluidStack getFluidInTank(int tank) {
 
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
+                for (RelationalTank t : relationalTanks) {
+                    if (t.getId() == tank) {
                         return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
                     }
                 }
@@ -214,8 +219,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             @Override
             public int getTankCapacity(int tank) {
 
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getId() == tank) {
+                for (RelationalTank t : relationalTanks) {
+                    if (t.getId() == tank) {
                         return t.getTank() == null ? 0 : t.getTank().getCapacity();
                     }
                 }
@@ -236,7 +241,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                             //return aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
                         }
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     LOGGER.debug("ERROR with isFluidValid in Aqueoulizer Tile input fluid handler");
                 }
                 return false;
@@ -245,8 +250,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             @Override
             public int fill(FluidStack resource, FluidAction action) {
 
-                for(RelationalTank t : relationalTanks) {
-                    if(isFluidValid(t.getId(),resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
+                for (RelationalTank t : relationalTanks) {
+                    if (isFluidValid(t.getId(), resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
                         return t.getTank().fill(resource, action);
                     }
                 }
@@ -260,9 +265,9 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                     return FluidStack.EMPTY;
                 }
 
-                for(RelationalTank t : relationalTanks) {
-                    if(resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().drain(resource,action);
+                for (RelationalTank t : relationalTanks) {
+                    if (resource.isFluidEqual(t.getTank().getFluid())) {
+                        return t.getTank().drain(resource, action);
                     }
                 }
                 return FluidStack.EMPTY;
@@ -271,8 +276,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             @Nonnull
             @Override
             public FluidStack drain(int maxDrain, FluidAction action) {
-                for(RelationalTank t : relationalTanks) {
-                    if(t.getTank().getFluidAmount() > 0) {
+                for (RelationalTank t : relationalTanks) {
+                    if (t.getTank().getFluidAmount() > 0) {
                         if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
                             return t.getTank().drain(maxDrain, action);
                         } else if (t.getTankType() != TankType.INPUT) {
@@ -296,32 +301,32 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         return 0;
     }
 
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
+    public int progressCounterPercent() {
+        if (length != 0) {
+            return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
             return 0;
         }
     }
 
-    public int ticksLeft(){
+    public int ticksLeft() {
         return counter;
     }
 
-    public FluidStack getFluidStackFromTank(int num){
-        if (num == 0){
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num == 0) {
             return inputTank.getTank().getFluid();
-        } else if (num == 1){
+        } else if (num == 1) {
             return outputTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
 
-    public RelationalTank getInputTank(){
+    public RelationalTank getInputTank() {
         return this.inputTank;
     }
 
-    public RelationalTank getOutputTank(){
+    public RelationalTank getOutputTank() {
         return this.outputTank;
     }
 
