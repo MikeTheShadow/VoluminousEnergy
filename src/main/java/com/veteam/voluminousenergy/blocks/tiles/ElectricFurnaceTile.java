@@ -177,7 +177,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
             @Override
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
-                if (level != null){
+                if (level != null && !simulate){
                     SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {

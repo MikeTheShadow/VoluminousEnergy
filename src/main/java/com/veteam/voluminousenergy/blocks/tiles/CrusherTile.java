@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
@@ -115,13 +116,13 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
-            if(level != null && slot > 0){
+
+            if(level != null && slot > 0 && !simulate){
                 JavaRandomSource rand = new JavaRandomSource(new Random().nextLong());
 
                 Optional<CrusherRecipe> crusherRecipe = RecipeUtil.getCrusherRecipeFromAnyOutputAndTryInput(inventory.getStackInSlot(slot).copy().getItem(), inventory.getStackInSlot(0).getItem(), level);
                 if (crusherRecipe.isPresent()){
                     if (!(crusherRecipe.get().getMinExperience() == 0)){
-
                         level.addFreshEntity(new ExperienceOrb(
                                 level,
                                 worldPosition.getX(),
