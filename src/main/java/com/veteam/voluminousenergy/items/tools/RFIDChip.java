@@ -1,21 +1,16 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
-import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.setup.VESetup;
-import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,17 +39,7 @@ public class RFIDChip extends Item {
 
             ChunkFluid fluid = new ChunkFluid(tag);
             componentList.add(new TextComponent(""));
-            fluid.getFluids().forEach(f -> {
-                Component translatedComponent = new TranslatableComponent(f.getFluid().getAttributes().getTranslationKey());
-                String translatedString = translatedComponent.getString();
-                if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
-                    componentList.add(textComponent);
-                } else {
-                    Component textComponent = new TextComponent(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
-                    componentList.add(textComponent);
-                }
-            });
+            fluid.getFluids().forEach(f -> componentList.add(TextUtil.fluidNameAndAmountWithUnitsAndColours(f)));
 
             componentList.add(
                     TextUtil.translateString("text.voluminousenergy.chunk").copy()
