@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
-import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.util.NumberUtil;
+import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -34,26 +33,10 @@ public class RFIDChip extends Item {
 
             int x = tag.getInt("ve_x");
             int z = tag.getInt("ve_z");
+
             ChunkFluid fluid = new ChunkFluid(tag);
-            if(fluid == null) {
-                componentList.add(TextUtil.translateString("text.voluminousenergy.rfid.chunk_data_error"));
-            } else {
-                componentList.add(Component.nullToEmpty(""));
-                fluid.getFluids().forEach(f -> {
-                    Component translatedComponent = TextUtil.translateString(f.getFluid().getFluidType().getDescriptionId());
-                    String translatedString = translatedComponent.getString();
-                    if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-                        Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.numberToString4Fluids(f.getAmount()));
-                        componentList.add(textComponent);
-                    } else {
-                        Component textComponent = Component.nullToEmpty(ChatFormatting.DARK_PURPLE + translatedString + ": " + ChatFormatting.LIGHT_PURPLE + NumberUtil.formatNumber(f.getAmount()) + " mB");
-                        componentList.add(textComponent);
-                    }
-
-
-                });
-            }
-
+            //componentList.add(new TextComponent(""));
+            fluid.getFluids().forEach(f -> componentList.add(TextUtil.fluidNameAndAmountWithUnitsAndColours(f)));
 
             componentList.add(
                     TextUtil.translateString("text.voluminousenergy.chunk").copy()
