@@ -93,7 +93,7 @@ public class TextUtil {
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(FluidStack fluidStack) {
-        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getFluid(), fluidStack.getAmount());
+        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getTranslationKey(), fluidStack.getAmount());
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(SingleChunkFluid singleChunkFluid) {
@@ -101,12 +101,16 @@ public class TextUtil {
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(Fluid fluid, int amount) {
-        Component translateString = TextUtil.translateString(fluid.getAttributes.getTranslationKey());
+        return fluidNameAndAmountWithUnitsAndColours(new FluidStack(fluid, amount).getTranslationKey(), amount);
+    }
+
+    public static Component fluidNameAndAmountWithUnitsAndColours(String fluidTranslationKey, int amount) {
+        String translateString = TextUtil.translateString(fluidTranslationKey).getString();
 
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
             return Component.nullToEmpty(""
                     + ChatFormatting.DARK_PURPLE
-                    + translateString.getString()
+                    + translateString
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
                     + NumberUtil.numberToString4Fluids(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
@@ -115,7 +119,7 @@ public class TextUtil {
         } else {
             return Component.nullToEmpty(""
                     + ChatFormatting.DARK_PURPLE
-                    + translateString.getString()
+                    + translateString
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
                     + NumberUtil.formatNumber(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
