@@ -1046,7 +1046,7 @@ public class Config {
         DIMENSIONAL_LASER_FLUID_RATE = COMMON_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
                 .defineInRange("Fluid Extraction Rate", 250, 0, 4000);
         DIMENSIONAL_LASER_PROCESS_TIME = COMMON_BUILDER.comment("How long should it take (it ticks) to extract a fluid from a chunk for a single extraction")
-                .defineInRange("Process Time", 800, 0, Integer.MAX_VALUE);
+                .defineInRange("Process Time", 20, 0, Integer.MAX_VALUE);
     }
 
     // CLIENT CONFIG START
