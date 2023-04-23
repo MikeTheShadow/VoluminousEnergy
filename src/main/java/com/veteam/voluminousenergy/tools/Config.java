@@ -361,6 +361,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
+    public static ForgeConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
 
     static {
         buildCommonConfig();
@@ -1061,6 +1062,8 @@ public class Config {
                 .define("Shorten Power Bar Values", true);
         SHORTEN_TANK_GUI_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for a tank you hovered over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
                 .define("Shorten Tank Tooltip Values", true);
+        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
+                .define("Play Machine Sounds", true);
 
         CLIENT_BUILDER.pop();
     }
