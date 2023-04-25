@@ -528,6 +528,8 @@ public class Config {
                 .defineInRange("Solarium Sheath Regeneration Chance", 0.0175, 0, 1);
         DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
+        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
+                .define("Play Machine Sounds", true);
     }
 
     private static void setupFoodSettings(){
@@ -1062,8 +1064,6 @@ public class Config {
                 .define("Shorten Power Bar Values", true);
         SHORTEN_TANK_GUI_VALUES = CLIENT_BUILDER.comment("When displaying larger numbers on a tooltip for a tank you hovered over, change the units to keep the numbers small (eg 1 B instead of 1000 mB).")
                 .define("Shorten Tank Tooltip Values", true);
-        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
-                .define("Play Machine Sounds", true);
 
         CLIENT_BUILDER.pop();
     }
