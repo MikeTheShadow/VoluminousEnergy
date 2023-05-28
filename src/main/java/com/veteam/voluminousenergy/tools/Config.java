@@ -529,7 +529,7 @@ public class Config {
         DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
         PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
-                .define("Play Machine Sounds", true);
+                .define("Play Machine Sounds", false);
     }
 
     private static void setupFoodSettings(){
