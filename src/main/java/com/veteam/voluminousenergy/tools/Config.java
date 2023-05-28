@@ -361,6 +361,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
+    public static ForgeConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
 
     static {
         buildCommonConfig();
@@ -527,6 +528,8 @@ public class Config {
                 .defineInRange("Solarium Sheath Regeneration Chance", 0.0175, 0, 1);
         DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
+        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
+                .define("Play Machine Sounds", false);
     }
 
     private static void setupFoodSettings(){
