@@ -1,0 +1,17 @@
+{
+  "type": "voluminousenergy:industrial_blasting",
+  "ingredient": {
+    "item": "minecraft:netherite_scrap",
+    "count": 1
+  },
+  "process_time": 200,
+  "second_input": {
+    "item": "minecraft:gold_ingot",
+    "count": 1
+  },
+  "result": {
+    "item": "minecraft:netherite_ingot",
+    "count": 1
+  },
+  "minimum_heat_kelvin": 900
+}
