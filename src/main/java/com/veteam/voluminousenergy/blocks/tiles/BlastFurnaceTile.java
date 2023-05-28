@@ -105,13 +105,15 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
 
             if (recipe != null) {
                 // Tank fluid amount check + capacity and recipe checks
-                if (itemOutput.getCount() < recipe.getResult().getMaxStackSize() &&
-                        heatTank.getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get() &&
-                        heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature() >= recipe.getMinimumHeat() &&
-                        recipe.getFirstInputAsList().contains(firstItemInput.getItem()) &&
-                        firstItemInput.getCount() >= recipe.getIngredientCount() &&
-                        recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem()) &&
-                        secondItemInput.getCount() >= recipe.getSecondInputAmount()){
+                if (itemOutput.getCount() < recipe.getResult().getMaxStackSize()
+                    && heatTank.getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()
+                    && heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature() >= recipe.getMinimumHeat()
+                    && (itemOutput.isEmpty() || recipe.getResult().getItem().equals(itemOutput.getItem()))
+                    && recipe.getFirstInputAsList().contains(firstItemInput.getItem())
+                    && firstItemInput.getCount() >= recipe.getIngredientCount()
+                    && recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem())
+                    && secondItemInput.getCount() >= recipe.getSecondInputAmount()
+                ) {
                     // Check for power
                     if (canConsumeEnergy()) {
                         if (counter == 1){

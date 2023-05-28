@@ -108,7 +108,10 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                 if (outputTank != null) {
 
                     // Tank fluid amount check + tank cap checks
-                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount() && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY){
+                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()
+                        && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
+                        && (outputTank.getTank().isEmpty() || outputTank.getTank().getFluid().equals(recipe.getOutputFluid()))
+                    ) {
                         // Check for power
                         if (canConsumeEnergy()){
                             if (counter == 1){
