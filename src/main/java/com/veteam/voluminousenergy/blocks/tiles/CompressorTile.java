@@ -3,12 +3,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CompressorContainer;
 import com.veteam.voluminousenergy.recipe.CompressorRecipe;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -86,6 +88,12 @@ public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTi
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
                     consumeEnergy();
+                    if(++sound_tick == 19) {
+                        sound_tick = 0;
+                        if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                            level.playSound(null, this.getBlockPos(), VESounds.COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+                    }
                 } else { // Check if we should start processing
                     if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
                         this.counter = recipe.getProcessTime();
