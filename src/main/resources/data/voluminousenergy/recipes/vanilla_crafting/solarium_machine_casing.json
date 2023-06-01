@@ -3,7 +3,7 @@
   "pattern": [
     "#0#",
     "*1*",
-    "###"
+    "111"
   ],
   "key": {
     "#": {
@@ -16,7 +16,7 @@
       "item": "voluminousenergy:titanium_machine_casing"
     },
     "1": {
-      "tag": "forge:storage_blocks/solarium"
+      "tag": "forge:ingots/solarium"
     }
   },
   "result": {

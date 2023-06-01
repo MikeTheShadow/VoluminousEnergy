@@ -103,7 +103,9 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
             consumeEnergy();
             if(++sound_tick == 19) {
                 sound_tick = 0;
-                level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                    level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
             }
         }
 

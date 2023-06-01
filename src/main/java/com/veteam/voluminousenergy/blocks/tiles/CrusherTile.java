@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RecipeUtil;
@@ -11,6 +12,7 @@ import com.veteam.voluminousenergy.util.randoms.JavaRandomSource;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -115,13 +117,13 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
         @Override
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate){
-            if(level != null && slot > 0){
+
+            if(level != null && slot > 0 && !simulate){
                 JavaRandomSource rand = new JavaRandomSource(new Random().nextLong());
 
                 Optional<CrusherRecipe> crusherRecipe = RecipeUtil.getCrusherRecipeFromAnyOutputAndTryInput(inventory.getStackInSlot(slot).copy().getItem(), inventory.getStackInSlot(0).getItem(), level);
                 if (crusherRecipe.isPresent()){
                     if (!(crusherRecipe.get().getMinExperience() == 0)){
-
                         level.addFreshEntity(new ExperienceOrb(
                                 level,
                                 worldPosition.getX(),
@@ -210,6 +212,12 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
                 } else if (counter > 0){ //In progress
                     counter--;
                     consumeEnergy();
+                    if(++sound_tick == 19) {
+                        sound_tick = 0;
+                        if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                            level.playSound(null, this.getBlockPos(), VESounds.CRUSHER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+                    }
                 } else { // Check if we should start processing
                     if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
                         counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());

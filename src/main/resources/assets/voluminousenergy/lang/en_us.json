@@ -16,6 +16,7 @@
     "text.voluminousenergy.battery_box.receiving_power": "Receiving energy from the FE grid",
     "text.voluminousenergy.energy": "Energy",
     "text.voluminousenergy.chunk": "Chunk",
+    "text.voluminousenergy.found_fluid": "Found fluid",
     "text.voluminousenergy.fluid_scanner.needs_empty_rfid": "You need an empty RFID chip in order to be able to save fluid data!",
     "text.voluminousenergy.fluid_scanner.scanning": "Scanning",
     "text.voluminousenergy.rfid.inventory_full": "Cannot write to RFID chip; inventory is full!",

@@ -2,12 +2,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -113,6 +115,12 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
                 } else if (counter > 0) {
                     consumeEnergy();
                     counter--;
+                    if(++sound_tick == 19) {
+                        sound_tick = 0;
+                        if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                            level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+                    }
                 } else {
                     counter = this.calculateCounter(200,inventory.getStackInSlot(this.getUpgradeSlotId()));
                     length = counter;
@@ -177,7 +185,7 @@ public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPowe
             @Override
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate){
-                if (level != null){
+                if (level != null && !simulate){
                     SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if(blastingRecipe != null) {

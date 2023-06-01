@@ -228,6 +228,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
     public static ForgeConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
+    public static ForgeConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
 
     static {
         buildCommonConfig();
@@ -394,6 +395,8 @@ public class Config {
                 .defineInRange("Solarium Sheath Regeneration Chance", 0.0175, 0, 1);
         DECREMENT_SPEED_ON_NO_POWER = COMMON_BUILDER.comment("Speed of which progress should be undone at a machine when the machine loses power/FE")
                 .defineInRange("Decrement Speed On No Power", 5, 1, 20);
+        PLAY_MACHINE_SOUNDS = CLIENT_BUILDER.comment("When running a machine, should the machine's sound be played?")
+                .define("Play Machine Sounds", false);
     }
 
     private static void setupFoodSettings(){
@@ -693,7 +696,7 @@ public class Config {
         DIMENSIONAL_LASER_FLUID_RATE = COMMON_BUILDER.comment("For each time an extraction is complete, how much fluid should be extracted from the chunk and placed in the output tank")
                 .defineInRange("Fluid Extraction Rate", 250, 0, 4000);
         DIMENSIONAL_LASER_PROCESS_TIME = COMMON_BUILDER.comment("How long should it take (it ticks) to extract a fluid from a chunk for a single extraction")
-                .defineInRange("Process Time", 800, 0, Integer.MAX_VALUE);
+                .defineInRange("Process Time", 20, 0, Integer.MAX_VALUE);
     }
 
     // CLIENT CONFIG START
