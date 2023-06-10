@@ -43,12 +43,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.FileUtils;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+
+import static net.minecraftforge.fml.Logging.CORE;
 
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy {
@@ -122,7 +127,7 @@ public class VoluminousEnergy {
         VECriteriaTriggers.init();
 
         // Config Files to load
-//        FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
+        getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT,Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
@@ -130,6 +135,30 @@ public class VoluminousEnergy {
         modEventBus.addListener(this::registerRenderers); // Register renderer for Dimensional Laser
 
         JEI_LOADED = ModList.get().isLoaded("jei");
+    }
+
+    private static Path getOrCreateDirectory(Path dirPath, String dirLabel) { // Extracted from Forge 45
+        if (!Files.isDirectory(dirPath.getParent())) {
+            getOrCreateDirectory(dirPath.getParent(), "parent of "+dirLabel);
+        }
+        if (!Files.isDirectory(dirPath))
+        {
+            LOGGER.debug("Making {} directory : {}", dirLabel, dirPath);
+            try {
+                Files.createDirectory(dirPath);
+            } catch (IOException e) {
+                if (e instanceof FileAlreadyExistsException) {
+                    LOGGER.error("Failed to create {} directory - there is a file in the way", dirLabel);
+                } else {
+                    LOGGER.error("Problem with creating {} directory (Permissions?)", dirLabel, e);
+                }
+                throw new RuntimeException("Problem creating directory", e);
+            }
+            LOGGER.debug("Created {} directory : {}", dirLabel, dirPath);
+        } else {
+            LOGGER.debug("Found existing {} directory : {}", dirLabel, dirPath);
+        }
+        return dirPath;
     }
 
     private void setup(final FMLCommonSetupEvent event) {

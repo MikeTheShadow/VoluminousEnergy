@@ -4,11 +4,10 @@ import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 
 public class RutileOre extends VEOreBlock {
     public RutileOre(){
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
             .sound(SoundType.STONE)
             .strength(4.0f)
             .requiresCorrectToolForDrops()

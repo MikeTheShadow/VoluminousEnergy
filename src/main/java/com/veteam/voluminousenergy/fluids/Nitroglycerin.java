@@ -10,7 +10,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
@@ -20,7 +19,7 @@ public class Nitroglycerin {
     public static final ResourceLocation NITROGLYCERIN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitroglycerin_still");
     public static final ResourceLocation NITROGLYCERIN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitroglycerin_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable();
+    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable();
 
     public static FlowingFluid NITROGLYCERIN;
     public static FlowingFluid FLOWING_NITROGLYCERIN;

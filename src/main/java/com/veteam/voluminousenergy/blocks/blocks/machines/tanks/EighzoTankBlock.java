@@ -1,10 +1,10 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import com.veteam.voluminousenergy.blocks.tiles.tank.EighzoTankTile;
+import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -13,14 +13,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
 public class EighzoTankBlock extends TankBlock implements EntityBlock {
 
     public EighzoTankBlock(){
-        super(Properties.of(Material.METAL)
+        super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(15.0f)
                 .lightLevel(l -> 0)

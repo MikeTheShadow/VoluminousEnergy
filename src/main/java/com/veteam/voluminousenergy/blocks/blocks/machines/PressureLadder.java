@@ -26,8 +26,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -81,20 +79,20 @@ public class PressureLadder extends LadderBlock {
     }
 
     protected void playOnSound(LevelAccessor accessor, BlockPos pos) {
-        if (this.material != Material.WOOD && this.material != Material.NETHER_WOOD) {
+        /*if (this.material != Material.WOOD && this.material != Material.NETHER_WOOD) {
             accessor.playSound((Player)null, pos, SoundEvents.STONE_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.6F);
-        } else {
+        } else {*/
             accessor.playSound((Player)null, pos, SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.8F);
-        }
+        //}
 
     }
 
     protected void playOffSound(LevelAccessor accessor, BlockPos pos) {
-        if (this.material != Material.WOOD && this.material != Material.NETHER_WOOD) {
+        /*if (this.material != Material.WOOD && this.material != Material.NETHER_WOOD) {
             accessor.playSound((Player)null, pos, SoundEvents.STONE_PRESSURE_PLATE_CLICK_OFF, SoundSource.BLOCKS, 0.3F, 0.5F);
-        } else {
+        } else {*/
             accessor.playSound((Player)null, pos, SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_OFF, SoundSource.BLOCKS, 0.3F, 0.7F);
-        }
+        //}
 
     }
 
@@ -218,10 +216,10 @@ public class PressureLadder extends LadderBlock {
         return true;
     }
 
-    @Override
-    public PushReaction getPistonPushReaction(BlockState blockState) {
-        return PushReaction.DESTROY;
-    }
+//    @Override
+//    public PushReaction getPistonPushReaction(BlockState blockState) {
+//        return PushReaction.DESTROY;
+//    }
 
     // Voluminous Energy 1.19 port
     public void setRegistryName(String registryName) {

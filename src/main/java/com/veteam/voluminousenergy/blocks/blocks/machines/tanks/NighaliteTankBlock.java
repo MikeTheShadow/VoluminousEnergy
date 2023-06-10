@@ -1,10 +1,10 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.tank.*;
+import com.veteam.voluminousenergy.blocks.tiles.tank.NighaliteTankTile;
+import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -13,14 +13,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
 public class NighaliteTankBlock extends TankBlock implements EntityBlock {
 
     public NighaliteTankBlock(){
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(10.0f)
                 .lightLevel(l -> 0)

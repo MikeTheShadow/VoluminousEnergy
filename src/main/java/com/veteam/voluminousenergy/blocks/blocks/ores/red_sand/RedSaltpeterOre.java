@@ -8,11 +8,10 @@ import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 public class RedSaltpeterOre extends FallingBlock implements Fallable {
     public RedSaltpeterOre(){
-        super(Properties.of(Material.SAND)
+        super(Properties.of()
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()

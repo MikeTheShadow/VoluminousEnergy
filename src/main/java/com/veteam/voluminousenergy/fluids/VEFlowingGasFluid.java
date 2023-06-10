@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -82,7 +81,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                 float f = fluidstate.getOwnHeight();
                 float f1 = 0.0F;
                 if (f == 0.0F) {
-                    if (!getter.getBlockState(blockpos$mutableblockpos).getMaterial().blocksMotion()) {
+                    if (!getter.getBlockState(blockpos$mutableblockpos).blocksMotion()) {
                         BlockPos blockpos = blockpos$mutableblockpos.above(); // flipped
                         FluidState fluidstate1 = getter.getFluidState(blockpos);
                         if (this.affectsFlow(fluidstate1)) {
@@ -316,9 +315,8 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         if (block instanceof LiquidBlockContainer) {
             return ((LiquidBlockContainer)block).canPlaceLiquid(getter, pos, blockState, fluid);
         } else if (!(block instanceof DoorBlock) && !blockState.is(BlockTags.SIGNS) && !blockState.is(Blocks.LADDER) && !blockState.is(Blocks.SUGAR_CANE) && !blockState.is(Blocks.BUBBLE_COLUMN)) {
-            Material material = blockState.getMaterial();
-            if (material != Material.PORTAL && material != Material.STRUCTURAL_AIR && material != Material.WATER_PLANT && material != Material.REPLACEABLE_WATER_PLANT) {
-                return !material.blocksMotion();
+            if (!blockState.is(Blocks.NETHER_PORTAL) && !blockState.is(Blocks.END_PORTAL) && !blockState.is(Blocks.END_GATEWAY) && !blockState.is(Blocks.STRUCTURE_VOID)) {
+                return !blockState.blocksMotion();
             } else {
                 return false;
             }

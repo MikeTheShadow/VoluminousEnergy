@@ -14,9 +14,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
@@ -37,8 +37,8 @@ public class CombustionMultitool extends Multitool {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
-        if(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) return; // sanity check
-        itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+        if(ForgeCapabilities.FLUID_HANDLER_ITEM == null) return; // sanity check
+        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             tooltip.add(
                     TextUtil.translateString(fluidStack.getTranslationKey()).copy()
@@ -65,7 +65,7 @@ public class CombustionMultitool extends Multitool {
     @Override
     public int getBarWidth(ItemStack itemStack){
         AtomicInteger fluidInTank = new AtomicInteger(0);
-        itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             fluidInTank.set(fluidStack.getAmount());
         });
@@ -76,7 +76,7 @@ public class CombustionMultitool extends Multitool {
     @Override
     public int getBarColor(ItemStack itemStack) {
         AtomicReference<Float> ratio = new AtomicReference<>(0F);
-        itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             ratio.set(fluid.getFluidInTank(0).getAmount() / (float)this.TANK_CAPACITY);
         });
         return Mth.hsvToRgb(ratio.get() / 3.0F, 1.0F, 1.0F);
@@ -102,7 +102,7 @@ public class CombustionMultitool extends Multitool {
         int usesLeftUntilRefuel = tag.getInt("energy");
         if (usesLeftUntilRefuel < 1){
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
-            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
                 if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
@@ -120,9 +120,9 @@ public class CombustionMultitool extends Multitool {
     public  <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
         CompoundTag tag = stack.getTag();
 
-        if (tag == null && stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()){
+        if (tag == null && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()){
             AtomicInteger volumetricEnergy = new AtomicInteger();
-            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
                 if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
@@ -145,7 +145,7 @@ public class CombustionMultitool extends Multitool {
             return -1;
         } else if (usesLeftUntilRefuel <= 1){
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
-            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
                 if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() >= 50){
@@ -173,7 +173,7 @@ public class CombustionMultitool extends Multitool {
     }
 
     public void onDestroyed(ItemStack itemStack){ // Doesn't seem to work, but should never fire with current design
-        itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
             if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
@@ -199,7 +199,7 @@ public class CombustionMultitool extends Multitool {
                 return super.getDestroySpeed(itemStack, blockStateToMine);
             } else {
                 AtomicBoolean notEmpty = new AtomicBoolean(false);
-                itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> notEmpty.set(!fluid.getFluidInTank(0).isEmpty()));
+                itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> notEmpty.set(!fluid.getFluidInTank(0).isEmpty()));
                 if (notEmpty.get()){
                     return super.getDestroySpeed(itemStack, blockStateToMine);
                 }

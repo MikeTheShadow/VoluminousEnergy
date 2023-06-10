@@ -13,9 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -34,7 +34,7 @@ public class VEEnergyItem extends VEItem {
     }
 
     public static float getChargeRatio(ItemStack stack){
-        LazyOptional<IEnergyStorage> energy = stack.getCapability(CapabilityEnergy.ENERGY);
+        LazyOptional<IEnergyStorage> energy = stack.getCapability(ForgeCapabilities.ENERGY);
         if(energy.isPresent()){
             IEnergyStorage energyStorage = energy.orElseThrow(IllegalStateException::new);
             return (float) energyStorage.getEnergyStored()/ energyStorage.getMaxEnergyStored();
@@ -49,7 +49,7 @@ public class VEEnergyItem extends VEItem {
             @Nonnull
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if(cap == CapabilityEnergy.ENERGY){
+                if(cap == ForgeCapabilities.ENERGY){
                     return LazyOptional.of(() -> new VEEnergyItemStorage(itemStack, maxEnergy, maxTransfer)).cast();
                 }
                 return LazyOptional.empty();
@@ -59,8 +59,8 @@ public class VEEnergyItem extends VEItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
-        if(CapabilityEnergy.ENERGY == null) return; // sanity check
-        itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(e ->{
+        if(ForgeCapabilities.ENERGY == null) return; // sanity check
+        itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(e ->{
             Component textComponent;
             if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
                 textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));

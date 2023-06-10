@@ -5,11 +5,10 @@ import com.veteam.voluminousenergy.datagen.MaterialConstants;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 
 public class DeepslateBauxiteOre extends VEOreBlock {
     public DeepslateBauxiteOre(){
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops()

@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -24,11 +24,11 @@ public class TankContainer extends VoluminousContainer {
     public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
         super(menuType,id);
         setTileEntity(world.getBlockEntity(pos));
-        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        getTileEntity().getCapability(ForgeCapabilities.ITEM_HANDLER);
         //this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        getTileEntity().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        getTileEntity().getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top slot
             addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom slot
         });
