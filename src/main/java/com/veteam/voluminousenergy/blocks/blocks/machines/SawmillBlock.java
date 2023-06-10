@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,7 +35,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
 
     public SawmillBlock() {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

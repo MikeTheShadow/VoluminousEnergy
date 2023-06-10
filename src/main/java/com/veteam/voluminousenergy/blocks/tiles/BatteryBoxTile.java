@@ -19,9 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -80,13 +79,13 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     public ItemStackHandler inventory = new ItemStackHandler(12) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-            return stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
+            return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
         }
 
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-            if(stack.getCapability(CapabilityEnergy.ENERGY).isPresent()) return super.insertItem(slot, stack, simulate);
+            if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent()) return super.insertItem(slot, stack, simulate);
             return stack;
         }
 
@@ -108,7 +107,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
         updateClients();
         for(int i = 0; i < 12; i++){
             if(!inventory.getStackInSlot(i).isEmpty()){
-                if(inventory.getStackInSlot(i).getCapability(CapabilityEnergy.ENERGY).isPresent()){
+                if(inventory.getStackInSlot(i).getCapability(ForgeCapabilities.ENERGY).isPresent()){
                     if(i >= 6){
                         int j = i-6;
                         if(switchManagers[j].isFlipped()){
@@ -139,7 +138,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     private void dischargeItem(ItemStack itemStack) {
         energy.ifPresent(teEnergy -> {
             if(teEnergy.getEnergyStored() < teEnergy.getMaxEnergyStored()){
-                itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem ->{
+                itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energyItem ->{
                     if(energyItem.canExtract()){
                         int toExtract;
                         if(itemStack.getItem() instanceof VEEnergyItem) {
@@ -166,7 +165,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     private void chargeItem(ItemStack itemStack){
         energy.ifPresent(teEnergy -> {
             if(teEnergy.getEnergyStored() > 0){
-                itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyItem -> {
+                itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energyItem -> {
                     if(energyItem.canReceive()){
                         int toReceive;
                         if(itemStack.getItem() instanceof VEEnergyItem){
@@ -198,7 +197,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
             if(inventory.getStackInSlot(i+6).isEmpty()){
                 //VoluminousEnergy.LOGGER.debug("Empty check passed");
                 // Remove stack in the ith, slot and move it to i+6th slot indicating it's discharged
-                itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energy -> {
+                itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy -> {
                     //VoluminousEnergy.LOGGER.debug("Item has Energy Capability");
                     if((!switchManagers[i].isFlipped() && energy.getEnergyStored() == energy.getMaxEnergyStored())
                             || (switchManagers[i].isFlipped() && energy.getEnergyStored() == 0)){
@@ -210,7 +209,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
             }
         } else if (inventory.getStackInSlot(i-6).isEmpty()) {
             ItemStack itemStack = inventory.getStackInSlot(i).copy();
-            itemStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energy -> {
+            itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy -> {
                 if((switchManagers[i-6].isFlipped() && energy.getEnergyStored() == energy.getMaxEnergyStored())
                         || (!switchManagers[i-6].isFlipped() && energy.getEnergyStored() == 0)){
                     inventory.extractItem(i,1,false);
@@ -221,7 +220,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 
@@ -277,7 +276,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if(cap == ForgeCapabilities.ITEM_HANDLER) {
             if (side == null) {
                 return handler.cast();
             } else {
@@ -291,7 +290,7 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
                 }
             }
         }
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == ForgeCapabilities.ENERGY){
             return energy.cast();
         }
         return super.getCapability(cap, side);

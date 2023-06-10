@@ -19,8 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
         updateClients();
         if (counter > 0){
             counter--;
-            if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
+            if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()){
                 energy.ifPresent(e -> e.addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
             }
             if(++sound_tick == 19) {
@@ -84,7 +84,7 @@ public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity impleme
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 

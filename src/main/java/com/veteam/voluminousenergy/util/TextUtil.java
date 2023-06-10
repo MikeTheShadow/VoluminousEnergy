@@ -4,10 +4,15 @@ import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
 
 public class TextUtil {
 
@@ -126,5 +131,28 @@ public class TextUtil {
                     + " mB/t"
             );
         }
+    }
+
+    public static int computeTextRenderWidth(int imageWidth, Font font, Component component) {
+        return imageWidth - 8 - font.width(component) - 2;
+    }
+
+    public static void renderShadowedText(GuiGraphics graphics, Font font, Component component, int imageWidth, int x, int y, @Nullable Style styleOptional) {
+        veRenderGuiText(graphics, font, component, imageWidth, x, y, styleOptional, true);
+    }
+
+    public static void renderUnshadowedText(GuiGraphics graphics, Font font, Component component, int imageWidth, int x, int y, @Nullable Style styleOptional) {
+        veRenderGuiText(graphics, font, component, imageWidth, x, y, styleOptional, false);
+    }
+
+    private static void veRenderGuiText(GuiGraphics graphics, Font font, Component component, int imageWidth, int x, int y, @Nullable Style styleOptional, boolean shouldShadow) {
+        Component componentToRender = component.copy();
+        if (styleOptional != null) {
+            componentToRender = componentToRender.copy().withStyle(styleOptional);
+        }
+
+        int width = computeTextRenderWidth(imageWidth, font, componentToRender);
+
+        graphics.drawString(font, componentToRender, width, x, y, shouldShadow);
     }
 }

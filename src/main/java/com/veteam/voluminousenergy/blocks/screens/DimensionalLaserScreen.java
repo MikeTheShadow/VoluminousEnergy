@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
 import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
@@ -12,6 +11,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
@@ -89,14 +89,14 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("dimensional_laser"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float) (this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 138F, 18F, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 138F, 49F, WHITE_TEXT_COLOUR);
@@ -107,7 +107,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, tileEntity.getMaxPower()), mouseX, mouseY);
@@ -136,7 +136,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);

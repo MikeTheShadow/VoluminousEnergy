@@ -15,7 +15,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 
 public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
     public VELakesFeature(Codec<VELakesFeature.Configuration> lakesConfiguration) {
@@ -71,8 +70,8 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                     for(int k = 0; k < 8; ++k) {
                         boolean flag = !aboolean[(k1 * 16 + l2) * 8 + k] && (k1 < 15 && aboolean[((k1 + 1) * 16 + l2) * 8 + k] || k1 > 0 && aboolean[((k1 - 1) * 16 + l2) * 8 + k] || l2 < 15 && aboolean[(k1 * 16 + l2 + 1) * 8 + k] || l2 > 0 && aboolean[(k1 * 16 + (l2 - 1)) * 8 + k] || k < 7 && aboolean[(k1 * 16 + l2) * 8 + k + 1] || k > 0 && aboolean[(k1 * 16 + l2) * 8 + (k - 1)]);
                         if (flag) {
-                            Material material = worldIn.getBlockState(pos.offset(k1, k, l2)).getMaterial();
-                            if (k >= 4 && material.isLiquid()) {
+                            BlockState material = worldIn.getBlockState(pos.offset(k1, k, l2));
+                            if (k >= 4 && material.liquid()) {
                                 return false;
                             }
 
@@ -117,7 +116,7 @@ public class VELakesFeature extends Feature<VELakesFeature.Configuration> {
                 for(int k3 = 0; k3 < 16; ++k3) {
                     for(int k4 = 0; k4 < 8; ++k4) {
                         boolean flag1 = !aboolean[(j2 * 16 + k3) * 8 + k4] && (j2 < 15 && aboolean[((j2 + 1) * 16 + k3) * 8 + k4] || j2 > 0 && aboolean[((j2 - 1) * 16 + k3) * 8 + k4] || k3 < 15 && aboolean[(j2 * 16 + k3 + 1) * 8 + k4] || k3 > 0 && aboolean[(j2 * 16 + (k3 - 1)) * 8 + k4] || k4 < 7 && aboolean[(j2 * 16 + k3) * 8 + k4 + 1] || k4 > 0 && aboolean[(j2 * 16 + k3) * 8 + (k4 - 1)]);
-                        if (flag1 && (k4 < 4 || rand.nextInt(2) != 0) && worldIn.getBlockState(pos.offset(j2, k4, k3)).getMaterial().isSolid()) {
+                        if (flag1 && (k4 < 4 || rand.nextInt(2) != 0) && worldIn.getBlockState(pos.offset(j2, k4, k3)).isSolid()) {
                             worldIn.setBlock(pos.offset(j2, k4, k3), Blocks.STONE.defaultBlockState(), 2);
                         }
                     }

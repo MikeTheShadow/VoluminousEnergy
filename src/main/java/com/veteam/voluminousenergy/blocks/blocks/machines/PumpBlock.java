@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -26,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class PumpBlock extends FaceableBlock implements EntityBlock {
     public PumpBlock() {
-        super(Block.Properties.of(Material.STONE)
+        super(Block.Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

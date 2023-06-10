@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
@@ -14,6 +13,7 @@ import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -75,52 +75,52 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("battery_box"), 34.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack,TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
+    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("battery_box"), this.imageWidth, 34, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack,this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Top Row
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 35F, 17F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53F, 17F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 71F, 17F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 89F, 17F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 107F, 17F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 125F, 17F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,35, 17, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 53, 17, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 71, 17, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 89, 17, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 107, 17, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 125, 17, WHITE_TEXT_STYLE);
 
         // Bottom Row
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 35F, 54F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 53F, 54F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 71F, 54F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 89F, 54F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 107F, 54F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 125F, 54F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,35, 54, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,53, 54, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,71, 54, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,89, 54, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,107, 54, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,125, 54, WHITE_TEXT_STYLE);
 
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.BATTERY_BOX_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.BATTERY_BOX_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 
         if (isHovering(10,4,15,10, mouseX, mouseY)){
             if(tileEntity.getPowerIOManager().isFlipped()) {
-                renderTooltip(matrixStack,TextUtil.translateString("text.voluminousenergy.battery_box.sending_out_power"), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font,TextUtil.translateString("text.voluminousenergy.battery_box.sending_out_power"), mouseX, mouseY);
             } else {
-                renderTooltip(matrixStack, TextUtil.translateString("text.voluminousenergy.battery_box.receiving_power"), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.translateString("text.voluminousenergy.battery_box.receiving_power"), mouseX, mouseY);
             }
         }
 
@@ -128,13 +128,13 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(this.GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int power = menu.powerScreen(49);
 
@@ -147,7 +147,7 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
             //this.blit(matrixStack,i+81,j+31,176,0,progress,17);
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(this.GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper();
             for (VEBatterySwitchManager switchManager : tileEntity.getSwitchManagers()) {
                 updateSlotPairButton(switchManager.isFlipped(),switchManager.getSlot());

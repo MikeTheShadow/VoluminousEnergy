@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.StirlingGeneratorTile;
@@ -11,6 +10,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
@@ -58,7 +58,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
         drawString(matrixStack, Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, WHITE_TEXT_COLOUR);
         this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float) (this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
@@ -66,13 +66,13 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 80F, 35F, WHITE_TEXT_COLOUR);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
@@ -95,7 +95,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);

@@ -1,13 +1,13 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveSolarPanelContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveSolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,14 +25,14 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarP
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
@@ -42,7 +42,7 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarP
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY){
+    protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitive_solar_panel"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
         if (tileEntity.getLevel().isDay())
         drawString(matrixStack,Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t", 50, 32, 0xffffff);
@@ -51,10 +51,10 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarP
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {}
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {}
 
     @Override
-    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY){
+    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY){
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);

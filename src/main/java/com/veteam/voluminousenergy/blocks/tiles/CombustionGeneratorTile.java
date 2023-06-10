@@ -24,7 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -153,7 +153,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
         // Main Combustion Generator tick logic
         if (counter > 0) {
-            if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()) {
+            if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()) {
                 counter--;
                 energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
                 if(++sound_tick == 19) {
@@ -206,7 +206,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 

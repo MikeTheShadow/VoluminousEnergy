@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -27,7 +26,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
 
     public PrimitiveStirlingGeneratorBlock() {
 
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
                 .sound(SoundType.STONE)
                 .strength(2.0f)
                 .lightLevel(l -> 0)

@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
@@ -13,6 +12,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     }
 
     @Override
-    public void render(PoseStack matrixStack,int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
@@ -65,46 +65,48 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("air_compressor"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack,TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
+    protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
+
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
+
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack,int mouseX, int mouseY){
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
         // Extract slot
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 70F, 49F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,70, 49, WHITE_TEXT_STYLE);
         // Tank
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93F, 18F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,93, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.AIR_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.AIR_COMPRESSOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
             String name = tileEntity.getAirTankFluid().getTranslationKey();
             int amount = tileEntity.getAirTankFluid().getAmount();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
 
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit( this.GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
             int power = menu.powerScreen(49);
 
@@ -116,7 +118,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
+            matrixStack.blit(this.GUI,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{
                 VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
@@ -124,7 +126,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
-            this.blit(matrixStack,i+153, j-16,0,0,18,18);
+            matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
             drawIOSideHelper();
         }
     }

@@ -107,7 +107,7 @@ public class VoluminousEnergy {
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
 
         // Register Creative Mode Tabs
-        modEventBus.addListener(VESetup::registerCreativeTabs);
+//        modEventBus.addListener(VESetup::registerCreativeTabs); // TODO: Register creative mode tabs
 
         // Register Loot modifiers
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
@@ -122,7 +122,7 @@ public class VoluminousEnergy {
         VECriteriaTriggers.init();
 
         // Config Files to load
-        FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID);
+//        FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT,Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");

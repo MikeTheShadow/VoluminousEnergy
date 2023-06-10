@@ -5,11 +5,7 @@ import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
-import com.veteam.voluminousenergy.util.MultiSlotWrapper;
-import com.veteam.voluminousenergy.util.RegistryLookups;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,12 +24,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +130,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      * @return int representing the stored energy of the tile entity
      */
     protected int getEnergyStored() {
-        return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        return this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     /**
@@ -290,7 +284,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
         ItemStackHandler inventory = getInventoryHandler();
         List<VESlotManager> itemManagers = getSlotManagers();
 
-        if (inventory != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (inventory != null && cap == ForgeCapabilities.ITEM_HANDLER) {
             if (side == null) return LazyOptional.of(() -> inventory).cast();
             Direction modifiedSide = normalizeDirection(side);
             List<VESlotManager> managerList = itemManagers
@@ -301,9 +295,9 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
             if (managerList.size() == 0) return super.getCapability(cap, side);
             MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
             return LazyOptional.of(() -> slotWrapper).cast();
-        } else if (cap == CapabilityEnergy.ENERGY && energy != null) {
+        } else if (cap == ForgeCapabilities.ENERGY && energy != null) {
             return energy.cast();
-        } else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
+        } else if (cap == ForgeCapabilities.FLUID_HANDLER && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
             Direction modifiedSide = normalizeDirection(side);
             List<RelationalTank> relationalTanks = veFluidTileEntity.getRelationalTanks().stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue() || manager.isIgnoreDirection()).toList();
             if (relationalTanks.size() == 0) return super.getCapability(cap, side);
@@ -353,7 +347,7 @@ public abstract class VoluminousTileEntity extends BlockEntity implements MenuPr
      */
     public boolean canConsumeEnergy() {
         if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
-            return this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+            return this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
                     > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
         } else {
             throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());

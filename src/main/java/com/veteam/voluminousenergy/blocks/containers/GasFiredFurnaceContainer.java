@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -24,11 +24,11 @@ public class GasFiredFurnaceContainer extends VoluminousContainer {
     public GasFiredFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(GAS_FIRED_FURNACE_CONTAINER.get(),id);
         this.tileEntity = world.getBlockEntity(pos);
-        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new VEBucketSlot(h, 0, 8, 18)); // Fluid input slot
             addSlot(new VEBucketSlot(h, 1,8,49)); // Extract fluid from input
             addSlot(new VEInsertSlot(h, 2, 53,33)); // Item input slot

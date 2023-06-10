@@ -22,8 +22,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
@@ -96,7 +96,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         if(fuelRecipe != null){
             // Logic for refueling the base
             if (!mainTool.isEmpty()){
-                mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluid -> {
+                mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(fluid -> {
                     FluidStack itemFluid = fluid.getFluidInTank(0);
                     FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
                     int tankCapacity = fluid.getTankCapacity(0);
@@ -118,7 +118,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
                             // Fill the item
                             fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
                             // Fill the fluid in the base as well
-                            inventory.getStackInSlot(4).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+                            inventory.getStackInSlot(4).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
                                     .ifPresent(baseFluid -> baseFluid.fill(toolingStationFluid, IFluidHandler.FluidAction.EXECUTE));
                         }
                     }
@@ -133,8 +133,8 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
                     ItemStack craftedTool = new ItemStack(toolingRecipe.result.getItem(),1);
 
                     // Fill the crafted Multitool with fluid from the emptyMultitool
-                    craftedTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(
-                            fluidTool -> toolBase.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidBase ->{
+                    craftedTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(
+                            fluidTool -> toolBase.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidBase ->{
                                 FluidStack baseFluid = fluidBase.getFluidInTank(0).copy();
                                 fluidTool.fill(baseFluid, IFluidHandler.FluidAction.EXECUTE);
                             }));
@@ -149,8 +149,8 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
                 ItemStack baseStack = new ItemStack(toolingRecipe.getBases().get(0));
 
                 // Fill the base with the same fluid as the mainTool
-                baseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(baseFluid ->
-                    mainTool.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(toolFluid -> {
+                baseStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(baseFluid ->
+                    mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(toolFluid -> {
                         FluidStack fluidTool = toolFluid.getFluidInTank(0).copy();
                         baseFluid.fill(fluidTool, IFluidHandler.FluidAction.EXECUTE);
                 }));

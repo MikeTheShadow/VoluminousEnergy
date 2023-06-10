@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.StirlingGeneratorInputSlot;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -11,9 +10,8 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -27,11 +25,11 @@ public class StirlingGeneratorContainer extends VoluminousContainer {
     public StirlingGeneratorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(STIRLING_GENERATOR_CONTAINER.get(),id);
         this.tileEntity = world.getBlockEntity(pos);
-        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new StirlingGeneratorInputSlot(h, 0, 80, 35, world));
         });
         layoutPlayerInventorySlots(8, 84);
@@ -49,12 +47,12 @@ public class StirlingGeneratorContainer extends VoluminousContainer {
     }
 
     public int getEnergy(){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     public int powerScreen(int px){
-        int stored = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
         return (((stored*100/max*100)/100)*px)/100;
     }
 

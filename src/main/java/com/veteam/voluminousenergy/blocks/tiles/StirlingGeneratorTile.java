@@ -21,8 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +62,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
             StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, input.copy());
 
             if (counter > 0){
-                if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
+                if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     counter--;
                     energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
                 }
@@ -74,7 +74,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
                 }
                 setChanged();
             } else if (!input.isEmpty()) {
-                if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
+                if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
                     h.extractItem(0,recipe.ingredientCount,false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();
@@ -90,7 +90,7 @@ public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPo
     }
 
     public static int recieveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 

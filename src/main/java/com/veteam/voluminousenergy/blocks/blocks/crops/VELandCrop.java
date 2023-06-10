@@ -91,7 +91,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2 && player.getItemInHand(handIn).sameItem(new ItemStack(Items.BONE_MEAL,1))){
+        if(age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)){
             return InteractionResult.PASS;
         } else if (age > 1){
             popResource(world, pos, new ItemStack(Items.WHEAT_SEEDS, 1));

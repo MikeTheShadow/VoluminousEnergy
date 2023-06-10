@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -10,10 +9,12 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -24,12 +25,15 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     public static final int WHITE_TEXT_COLOUR = 16777215;
     public static final int GREY_TEXT_COLOUR = 0x606060;
 
+    public static final Style WHITE_TEXT_STYLE = Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(WHITE_TEXT_COLOUR);
+    public static final Style GREY_TEXT_STYLE = Style.EMPTY.withFont(Style.DEFAULT_FONT).withColor(GREY_TEXT_COLOUR);
+
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         this.renderables.stream().filter(Renderable -> Renderable instanceof ioMenuButton).forEach(button -> {
             if (((ioMenuButton) button).shouldIOBeOpen()) {
                 renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
@@ -37,9 +41,9 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         });
     }
 
-    protected abstract void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY);
+    protected abstract void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY);
 
-    /* PoseStack matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
+    /* GuiGraphics matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
     public void drawIOSideHelper(){
 
         for(Renderable Renderable : this.renderables){

@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
@@ -25,11 +25,11 @@ public class PrimitiveBlastFurnaceContainer extends VoluminousContainer {
     public PrimitiveBlastFurnaceContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), id);
         this.tileEntity = world.getBlockEntity(pos);
-        this.tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new PrimitiveBlastFurnaceInsertSlot(h, 0, 53, 33, world));
             addSlot(new PrimitiveBlastFurnaceOutputSlot(h, 1,116,33));
             addSlot(new VEInsertSlot(h,2,154, -14));

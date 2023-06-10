@@ -4,13 +4,10 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveSolarPanelContainer;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -56,13 +53,13 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPowerGene
     }
 
     private void generateEnergy(int fe){
-        if (this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()){
+        if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()){
             energy.ifPresent(e -> e.addEnergy(fe)); //Amount of energy to add per tick
         }
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
-        return tileEntity.getCapability(CapabilityEnergy.ENERGY, from).map(handler ->
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 
@@ -100,7 +97,7 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPowerGene
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityEnergy.ENERGY){
+        if (cap == ForgeCapabilities.ENERGY){
             return energy.cast();
         }
         return super.getCapability(cap, side);

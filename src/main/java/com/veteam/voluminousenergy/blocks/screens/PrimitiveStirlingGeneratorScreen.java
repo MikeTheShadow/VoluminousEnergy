@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
@@ -11,6 +10,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
@@ -59,7 +59,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
@@ -82,7 +82,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY){
+    protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
         this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitivestirlinggenerator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
 
         int generationRate;
@@ -95,13 +95,13 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
         this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 80F, 35F, WHITE_TEXT_COLOUR);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY){
+    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY){
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);

@@ -181,7 +181,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2 && player.getItemInHand(handIn).sameItem(new ItemStack(Items.BONE_MEAL,1))){
+        if(age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)){
             return InteractionResult.PASS;
         } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()){ // Make sure the player isn't targetting the bottom
             popResource(world, pos, new ItemStack(cropItem(), 1));

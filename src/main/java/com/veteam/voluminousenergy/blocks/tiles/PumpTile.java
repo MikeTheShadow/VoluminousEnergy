@@ -23,14 +23,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +84,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
                 }
             }
 
-            if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
+            if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 for(int i = 0; i < 50; i++) {
                     if(fluidPumpMethod()) break;
                 }
@@ -208,13 +206,13 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return handler.cast();
         }
-        if (cap == CapabilityEnergy.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY) {
             return energy.cast();
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if (cap == ForgeCapabilities.FLUID_HANDLER){
             return fluid.cast();
         }
         return super.getCapability(cap, side);
