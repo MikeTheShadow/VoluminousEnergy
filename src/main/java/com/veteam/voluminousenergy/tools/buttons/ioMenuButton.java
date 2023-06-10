@@ -3,8 +3,12 @@ package com.veteam.voluminousenergy.tools.buttons;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.TextUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,15 +38,15 @@ public class ioMenuButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         RenderSystem.setShaderTexture(0, texture);
 
         if(!isHovered){
-            blit(matrixStack, this.x, this.y, 193, 0, this.width, this.height);
+            matrixStack.blit(texture, this.x, this.y, 193, 0, this.width, this.height);
         } else {
-            blit(matrixStack, this.x, this.y, 193, 19, this.width, this.height);
+            matrixStack.blit(texture, this.x, this.y, 193, 19, this.width, this.height);
         }
-        drawString(matrixStack, getInstance().font, "IO",(this.x)+5,(this.y)+5,0xffffff);
+        TextUtil.renderUnshadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), this.width,(this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override

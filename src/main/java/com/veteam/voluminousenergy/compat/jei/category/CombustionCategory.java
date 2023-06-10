@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -23,6 +22,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -69,24 +69,28 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, PoseStack matrixStack, double mouseX, double mouseY){
+    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics matrixStack, double mouseX, double mouseY){
 
         // Volumetric Energy label
-        Minecraft.getInstance().font.drawShadow(
+        TextUtil.renderShadowedText(
                 matrixStack,
+                Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
+                this.getWidth(),
                 16,
                 4,
-                VEContainerScreen.WHITE_TEXT_COLOUR
+                VEContainerScreen.WHITE_TEXT_STYLE
         );
 
         // Actual Volumetric Energy value + FE/B units added on the end
-        Minecraft.getInstance().font.draw(
+        TextUtil.renderUnshadowedText(
                 matrixStack,
-                recipe.getVolumetricEnergy() + " FE/B",
+                Minecraft.getInstance().font,
+                Component.nullToEmpty(recipe.getVolumetricEnergy() + " FE/B"),
+                this.getWidth(),
                 35,
                 16,
-                VEContainerScreen.GREY_TEXT_COLOUR
+                VEContainerScreen.GREY_TEXT_STYLE
         );
 
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
@@ -109,26 +113,30 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                 x = 46;
             }
 
-            Minecraft.getInstance().font.draw(matrixStack, fePerTickComponent, x, 45,VEContainerScreen.GREY_TEXT_COLOUR);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fePerTickComponent, this.getWidth(), x, 45,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        Minecraft.getInstance().font.drawShadow(matrixStack,"FE/t:",48,35,VEContainerScreen.WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("FE/t:"), this.getWidth(),48,35,VEContainerScreen.WHITE_TEXT_STYLE);
 
-        Minecraft.getInstance().font.draw(
+        TextUtil.renderUnshadowedText(
                 matrixStack,
+                Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
+                this.getWidth(),
                 16,
                 26,
-                VEContainerScreen.GREY_TEXT_COLOUR
+                VEContainerScreen.GREY_TEXT_STYLE
         );
 
         // Oxidizer Label
-        Minecraft.getInstance().font.draw(
+        TextUtil.renderUnshadowedText(
                 matrixStack,
+                Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
+                this.getWidth(),
                 76,
                 26,
-                VEContainerScreen.GREY_TEXT_COLOUR
+                VEContainerScreen.GREY_TEXT_STYLE
         );
 
     }

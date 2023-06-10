@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -21,6 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -65,17 +65,17 @@ public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrol
     }
 
     @Override
-    public void draw(FluidElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(FluidElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 24, 12);
         emptyArrow.draw(matrixStack, 24, 12);
         slotDrawable.draw(matrixStack, 2, 10);
         slotDrawable.draw(matrixStack, 48, 10);
         slotDrawable.draw(matrixStack, 72, 10);
 
-        Minecraft.getInstance().font.draw(matrixStack, "mB:", -20, 32, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack, recipe.getInputAmount() + "", 2, 32, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack, recipe.getOutputAmount() + "", 48, 32, VEContainerScreen.GREY_TEXT_COLOUR);
-        Minecraft.getInstance().font.draw(matrixStack, recipe.getSecondAmount() + "", 72, 32, VEContainerScreen.GREY_TEXT_COLOUR);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputAmount() + "", this.getWidth(), 48, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getSecondAmount() + "", this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(FluidElectrolyzerRecipe recipe,

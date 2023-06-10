@@ -1,11 +1,11 @@
 package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,7 +34,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
         if(!isHovered) v = 166;
@@ -43,7 +43,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
         if(isTopIngress) u = 0;
         else u = 18;
 
-        blit(matrixStack, getX(), getY(), this.u, this.v, this.width, this.height);
+        matrixStack.blit(GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
     private void cycle(){isTopIngress = !isTopIngress;}

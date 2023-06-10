@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -20,6 +19,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +68,7 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     }
 
     @Override
-    public void draw(CentrifugalSeparatorRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CentrifugalSeparatorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,25, 30);
         emptyArrow.draw(matrixStack,25,30);
         slotDrawable.draw(matrixStack,5,20); // Input
@@ -80,17 +80,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,26, VEContainerScreen.GREY_TEXT_COLOUR);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,44,VEContainerScreen.GREY_TEXT_COLOUR);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 44, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",74,62,VEContainerScreen.GREY_TEXT_COLOUR);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }

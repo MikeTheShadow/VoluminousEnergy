@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -49,18 +50,18 @@ public class SlotDirectionButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
         RenderSystem.setShaderTexture(0, texture);
 
         if(!isHovered){ // x: 96 y:20
-            blit(matrixStack, getX(), getY(), 0, 166, this.width, this.height);
+            matrixStack.blit(texture, getX(), getY(), 0, 166, this.width, this.height);
         } else {
-            blit(matrixStack, getX(), getY(), 0, 186, this.width, this.height);
+            matrixStack.blit(texture, getX(), getY(), 0, 186, this.width, this.height);
         }
 
         Component textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
-        drawCenteredString(matrixStack, Minecraft.getInstance().font, textComponent.getString(),(getX())+48,(getY())+5,0xffffff);
+        matrixStack.drawCenteredString(Minecraft.getInstance().font, textComponent.getString(),(getX())+48,(getY())+5,0xffffff);
     }
 
     @Override

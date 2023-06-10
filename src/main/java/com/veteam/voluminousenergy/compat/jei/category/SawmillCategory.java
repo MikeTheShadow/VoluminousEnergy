@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
@@ -21,6 +20,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -75,7 +75,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
     }
 
     @Override
-    public void draw(SawmillingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(SawmillingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,2,10);
         slotDrawable.draw(matrixStack,48,1);
         slotDrawable.draw(matrixStack,48,19);

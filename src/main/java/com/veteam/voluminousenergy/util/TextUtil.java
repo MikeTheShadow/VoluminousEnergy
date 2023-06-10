@@ -141,8 +141,16 @@ public class TextUtil {
         veRenderGuiText(graphics, font, component, imageWidth, x, y, styleOptional, true);
     }
 
+    public static void renderShadowedText(GuiGraphics graphics, Font font, String string, int imageWidth, int x, int y, @Nullable Style styleOptional){
+        renderShadowedText(graphics, font, Component.nullToEmpty(string), imageWidth, x, y, styleOptional);
+    }
+
     public static void renderUnshadowedText(GuiGraphics graphics, Font font, Component component, int imageWidth, int x, int y, @Nullable Style styleOptional) {
         veRenderGuiText(graphics, font, component, imageWidth, x, y, styleOptional, false);
+    }
+
+    public static void renderUnshadowedText(GuiGraphics graphics, Font font, String string, int imageWidth, int x, int y, @Nullable Style styleOptional){
+        renderUnshadowedText(graphics, font, Component.nullToEmpty(string), imageWidth, x, y, styleOptional);
     }
 
     private static void veRenderGuiText(GuiGraphics graphics, Font font, Component component, int imageWidth, int x, int y, @Nullable Style styleOptional, boolean shouldShadow) {

@@ -1,13 +1,13 @@
 package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -35,7 +35,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
         if(!isHovered) u = 96;
@@ -44,7 +44,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
         if(!sendOutPower) v = 178;
         else v = 166;
 
-        blit(matrixStack, getX(), getY(), this.u, this.v, this.width, this.height);
+        matrixStack.blit(GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
     private void cycle(){

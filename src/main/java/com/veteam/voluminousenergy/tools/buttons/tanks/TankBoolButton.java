@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,14 +30,14 @@ public class TankBoolButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
         if(!render) return;
         RenderSystem.setShaderTexture(0, texture);
         enable = this.tank.getSideStatus();
         if(!enable){
-            blit(matrixStack, getX(), getY(), 213, 0, this.width, this.height);
+            matrixStack.blit(texture, getX(), getY(), 213, 0, this.width, this.height);
         } else {
-            blit(matrixStack, getX(), getY(), 213, 15, this.width, this.height);
+            matrixStack.blit(texture, getX(), getY(), 213, 15, this.width, this.height);
         }
     }
 

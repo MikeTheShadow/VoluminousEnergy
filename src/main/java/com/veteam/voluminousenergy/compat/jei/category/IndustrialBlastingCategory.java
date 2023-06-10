@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -22,6 +21,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -71,7 +71,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
     @Override
-    public void draw(IndustrialBlastingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(IndustrialBlastingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,54, 12); // 24, 12
         emptyArrow.draw(matrixStack,54,12); // 24, 12
         slotDrawable.draw(matrixStack,30,1); // 2, 1
@@ -79,10 +79,10 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         slotDrawable.draw(matrixStack,78,10); // 48, 10
         slotDrawable.draw(matrixStack,5,10);
 
-        Minecraft.getInstance().font.draw(matrixStack,
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font,
                 recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
                         ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " \u00B0F)",
-                1,45, VEContainerScreen.GREY_TEXT_COLOUR);
+                this.getWidth(),1,45, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(IndustrialBlastingRecipe recipe,

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
@@ -17,6 +16,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -65,7 +65,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     }
 
     @Override
-    public void draw(ToolingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(ToolingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,2,14); // Completed Multitool
         slotDrawable.draw(matrixStack,48,1); // Bit
         slotDrawable.draw(matrixStack,48,29); // Base

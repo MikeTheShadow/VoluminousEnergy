@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -20,6 +19,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -65,7 +65,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,10, 19);
 
 
@@ -77,7 +77,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             } else if (chance < 10){
                 xPos += 5;
             }
-            Minecraft.getInstance().font.draw(matrixStack,chance + "%",xPos,65, VEContainerScreen.GREY_TEXT_COLOUR);
+            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(),xPos,65, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }

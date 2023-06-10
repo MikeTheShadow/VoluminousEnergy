@@ -196,7 +196,7 @@ public class RecipeUtil {
     public static DistillationRecipe getDistillationRecipeFromThirdResult(Level world, ItemStack thirdResultItem){
         for(Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if (recipe instanceof DistillationRecipe){
-                if(((DistillationRecipe) recipe).getThirdResult().sameItem(thirdResultItem)){
+                if(((DistillationRecipe) recipe).getThirdResult().is(thirdResultItem.getItem())){
                     return (DistillationRecipe) recipe;
                 }
             }
@@ -390,7 +390,7 @@ public class RecipeUtil {
         if (outputStack.isEmpty()) return false;
         for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
             if(recipe instanceof IndustrialBlastingRecipe){
-                if (((IndustrialBlastingRecipe) recipe).getResult().sameItem(outputStack)) return true;
+                if (((IndustrialBlastingRecipe) recipe).getResult().is(outputStack.getItem())) return true;
             }
         }
         return false;

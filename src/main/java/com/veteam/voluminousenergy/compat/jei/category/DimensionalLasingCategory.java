@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.compat.jei.category;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -21,6 +20,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -67,39 +67,39 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     @Override
-    public void draw(DimensionalLaserRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(DimensionalLaserRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,9, 4);
         emptyArrow.draw(matrixStack,9,4);
         slotDrawable.draw(matrixStack,8,22);
 
         int xPos = 36;
-        Minecraft.getInstance().font.draw(matrixStack, "C: "
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("C: "
                 + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getA()
                 + " ~ "
                 + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getB()
-                , xPos, -1, VEContainerScreen.GREY_TEXT_COLOUR
+                ), this.getWidth(), xPos, -1, VEContainerScreen.GREY_TEXT_STYLE
         );
 
-        Minecraft.getInstance().font.draw(matrixStack, "E: "
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("E: "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getB()
-                , xPos, 9, VEContainerScreen.GREY_TEXT_COLOUR
+                ), this.getWidth(), xPos, 9, VEContainerScreen.GREY_TEXT_STYLE
         );
 
-        Minecraft.getInstance().font.draw(matrixStack, "H: "
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("H: "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getB()
-                , xPos, 19, VEContainerScreen.GREY_TEXT_COLOUR
+                ), this.getWidth(), xPos, 19, VEContainerScreen.GREY_TEXT_STYLE
         );
 
 
-        Minecraft.getInstance().font.draw(matrixStack, "T: "
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("T: "
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getB()
-                , xPos, 29, VEContainerScreen.GREY_TEXT_COLOUR
+                ), this.getWidth(), xPos, 29, VEContainerScreen.GREY_TEXT_STYLE
         );
 
     }

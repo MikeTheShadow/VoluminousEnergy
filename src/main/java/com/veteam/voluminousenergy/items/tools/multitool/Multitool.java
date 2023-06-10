@@ -75,10 +75,10 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     @Override
     public net.minecraft.world.InteractionResult interactLivingEntity(ItemStack stack, net.minecraft.world.entity.player.Player playerIn, LivingEntity entity, net.minecraft.world.InteractionHand hand) {
         if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.minecraftforge.common.IForgeShearable target) {
-            if (entity.level.isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
+            if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
-            if (target.isShearable(stack, entity.level, pos)) {
-                java.util.List<ItemStack> drops = target.onSheared(playerIn, stack, entity.level, pos,
+            if (target.isShearable(stack, entity.level(), pos)) {
+                java.util.List<ItemStack> drops = target.onSheared(playerIn, stack, entity.level(), pos,
                         net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.BLOCK_FORTUNE, stack));
                 java.util.Random rand = new java.util.Random();
                 drops.forEach(d -> {
