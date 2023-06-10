@@ -103,20 +103,20 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("electrolyzer"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("electrolyzer"), this.imageWidth,8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 71F, 13F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 89F, 13F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 53F, 57F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 71F, 57F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 89F, 57F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 107F, 57F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,71, 13, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,89, 13, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth,53, 57, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), this.imageWidth,71, 57, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), this.imageWidth,89, 57, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), this.imageWidth,107, 57, WHITE_TEXT_STYLE);
 
     }
 
@@ -124,10 +124,10 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.ELECTROLYZER_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.ELECTROLYZER_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
@@ -149,7 +149,7 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(24);
             int power = menu.powerScreen(49);
@@ -161,12 +161,12 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+79, j+31, 176, 0, 17, progress);
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(GUI,i+79, j+31, 176, 0, 17, progress);
+            matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
-        this.blit(matrixStack,i+153, j-16,0,0,18,18);
+        matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
     }
 }

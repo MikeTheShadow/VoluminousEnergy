@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens.tank;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
@@ -16,6 +15,7 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
@@ -80,41 +80,41 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderSlotAndTankLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 70F, 19F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 70F, 50F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,70, 19, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,70, 50, WHITE_TEXT_STYLE);
 
         // Tank
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93F, 18F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,93, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){
             int amount = tileEntity.getTank().getTank().getFluid().getAmount();
             String name = tileEntity.getTank().getTank().getFluid().getTranslationKey();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
 
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
             // Tank render
             try{

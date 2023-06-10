@@ -96,20 +96,20 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX,int mouseY){
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("gas_fired_furnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("gas_fired_furnace"), this.imageWidth,8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 8F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 8F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 53F, 33F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 116F, 33F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,8, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,8, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth,53, 33, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), this.imageWidth,116, 33, WHITE_TEXT_STYLE);
 
         // Tanks
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 31F, 18F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,31, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
@@ -117,11 +117,11 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
         if(isHovering(31,18,12,49,mouseX,mouseY)){
             int amount = tileEntity.getFluidFromTank().getAmount();
             String name = tileEntity.getFluidFromTank().getTranslationKey();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(),mouseX,mouseY)){
-            renderComponentTooltip(matrixStack, getFuelTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, getFuelTooltips(), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getCounterTooltipArea(),mouseX,mouseY)){
-            renderComponentTooltip(matrixStack, getCounterTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, getCounterTooltips(), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX,mouseY);
@@ -154,7 +154,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
         RenderSystem.setShaderTexture(0, this.GUI);
         int i=(this.width-this.imageWidth)/2;
         int j=(this.height-this.imageHeight)/2;
-        this.blit(matrixStack,i,j,0,0,this.imageWidth,this.imageHeight);
+        matrixStack.blit(GUI,i,j,0,0,this.imageWidth,this.imageHeight);
         final int flameHeight = 14;
         if(tileEntity!=null){
             int progress = tileEntity.progressCounterPX(9);
@@ -168,14 +168,14 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81,j+31,176,0,progress,17);
-            this.blit(matrixStack,i+54,j+(54 + (flameHeight - fuelProgress)),176,24 + (flameHeight - fuelProgress),flameHeight,fuelProgress);
+            matrixStack.blit(GUI,i+81,j+31,176,0,progress,17);
+            matrixStack.blit(GUI,i+54,j+(54 + (flameHeight - fuelProgress)),176,24 + (flameHeight - fuelProgress),flameHeight,fuelProgress);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidFromTank(),tileEntity.getTankCapacity(),i+31,j+18,0,12,50);
             drawIOSideHelper();
         }
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
-        this.blit(matrixStack,i+153, j-16,0,0,18,18);
+        matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
     }
 
 }

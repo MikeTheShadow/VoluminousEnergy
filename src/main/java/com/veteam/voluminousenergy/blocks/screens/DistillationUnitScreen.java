@@ -144,8 +144,8 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (tileEntity.getMultiblockValidity()){
-            this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("distillation_unit"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("distillation_unit"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         }
          super.renderLabels(matrixStack, mouseX, mouseY);
     }
@@ -153,46 +153,46 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96F, 11F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 96F, 42F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), 137F, 11F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), 137F, 42F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("6")), 122F, 64F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,38, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,38, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth,96, 11, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), this.imageWidth,96, 42, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), this.imageWidth,137, 11, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("5")), this.imageWidth,137, 42, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("6")), this.imageWidth,122, 64, WHITE_TEXT_STYLE);
 
         // Tanks
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119F, 11F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), 157F, 11F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth, 61, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), this.imageWidth,119, 11, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), this.imageWidth,157, 11, WHITE_TEXT_STYLE);
     }
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.DISTILLATION_UNIT_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.DISTILLATION_UNIT_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(119, 11, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(157, 11, 12, 50, mouseX, mouseY)){ // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
             String name = tileEntity.getFluidStackFromTank(2).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
@@ -215,7 +215,7 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null && tileEntity.getMultiblockValidity()){
             int progress = tileEntity.progressCounterPX(9);
             int power = menu.powerScreen(49);
@@ -228,8 +228,8 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81, j+31, 176, 0, progress, 17);
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(GUI,i+81, j+31, 176, 0, progress, 17);
+            matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
@@ -243,13 +243,13 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+129, j-16,0,0,18,18);
+            matrixStack.blit(GUI_TOOLS,i+129, j-16,0,0,18,18);
         } else {
             RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
-            this.blit(matrixStack, i, j, 0, 0, 174,82);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i + 48, j + 14, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), i + 8, j + 32, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), i+8, j+48, WHITE_TEXT_COLOUR);
+            matrixStack.blit(GUI_TOOLS, i, j, 0, 0, 174,82);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock_warn"), this.imageWidth,i + 48, j + 14, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), this.imageWidth, i + 8, j + 32, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), this.imageWidth, i+8, j+48, WHITE_TEXT_STYLE);
         }
 
     }

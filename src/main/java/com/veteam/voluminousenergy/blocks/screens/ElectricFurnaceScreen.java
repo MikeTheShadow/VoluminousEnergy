@@ -69,16 +69,16 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("electric_furnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("electric_furnace"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53F, 33F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 116F, 33F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 53, 33, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth, 116, 33, WHITE_TEXT_STYLE);
 
     }
 
@@ -86,10 +86,10 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.ELECTRIC_FURNACE_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.ELECTRIC_FURNACE_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);
     }
@@ -111,7 +111,7 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(9);
             int power = menu.powerScreen(49);
@@ -124,12 +124,12 @@ public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceCont
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81,j+31,176,0,progress,17);
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(GUI,i+81,j+31,176,0,progress,17);
+            matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
             drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
-        this.blit(matrixStack,i+153, j-16,0,0,18,18);
+        matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
     }
 }

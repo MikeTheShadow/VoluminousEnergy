@@ -115,23 +115,23 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("centrifugal_agitator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack,TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("centrifugal_agitator"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 38F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 137F, 49F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 38, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,38, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth,96, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), this.imageWidth,137, 49, WHITE_TEXT_STYLE);
 
         // Tanks
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), 157F, 18F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,61, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), this.imageWidth,119, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), this.imageWidth,157, 18, WHITE_TEXT_STYLE);
 
     }
 
@@ -139,28 +139,28 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(119, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
-            renderTooltip(matrixStack,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(157, 18, 12, 50, mouseX, mouseY)){ // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
             String name = tileEntity.getFluidStackFromTank(2).getTranslationKey();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack,mouseX, mouseY);
@@ -183,7 +183,7 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(this.GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(9);
             int power = menu.powerScreen(49);
@@ -196,8 +196,8 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+81, j+31, 176, 0, progress, 17);
-            this.blit(matrixStack,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(this.GUI,i+81, j+31, 176, 0, progress, 17);
+            matrixStack.blit(this.GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
@@ -211,7 +211,7 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack,i+129, j-16,0,0,18,18);
+            matrixStack.blit(GUI_TOOLS,i+129, j-16,0,0,18,18);
         }
 
     }

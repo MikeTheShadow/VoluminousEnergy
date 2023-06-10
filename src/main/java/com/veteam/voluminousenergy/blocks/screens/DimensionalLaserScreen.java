@@ -90,36 +90,36 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("dimensional_laser"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float) (this.imageWidth - 96 - 8), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("dimensional_laser"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 138F, 18F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 138F, 49F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 38F, 33F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 138, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth, 138, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth, 38, 33, WHITE_TEXT_STYLE);
 
         // Tanks
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 119F, 18F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth, 119, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, tileEntity.getMaxPower()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, tileEntity.getMaxPower()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
         if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Tank
             int amount = this.getTank().getFluidAmount();
             String name = this.getFluidStackFromTank().getTranslationKey();
-            renderTooltip(matrixStack, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -142,7 +142,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null && tileEntity.getMultiblockValidity()) {
             int progress = tileEntity.progressCounterPX(17); // 17 vertical, 15 horz for Dimensional Laser
             int power = menu.powerScreen(49);
@@ -155,21 +155,21 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack, i + 97, j + 34, 176, 0, 15, progress);
-            this.blit(matrixStack, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
+            matrixStack.blit(GUI, i + 97, j + 34, 176, 0, 15, progress);
+            matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            this.blit(matrixStack, i + 129, j - 16, 0, 0, 18, 18);
+            matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         } else {
             RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
-            this.blit(matrixStack, i, j, 0, 0, 174,82);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i + 48, j + 14, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.dimensional_laser.requirements"), i + 8, j + 32, WHITE_TEXT_COLOUR);
-            this.font.drawShadow(matrixStack, TextUtil.translateString("text.voluminousenergy.multiblock.needed_below"), i+8, j+48, WHITE_TEXT_COLOUR);
+            matrixStack.blit(GUI, i, j, 0, 0, 174,82);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), this.imageWidth, i + 48, j + 14, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.dimensional_laser.requirements"), this.imageWidth, i + 8, j + 32, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_below"), this.imageWidth, i+8, j+48, WHITE_TEXT_STYLE);
         }
 
     }

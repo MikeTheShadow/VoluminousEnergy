@@ -59,26 +59,26 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("stirling_generator"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        drawString(matrixStack, Minecraft.getInstance().font, TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t", 50, 18, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float) (this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("stirling_generator"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"), this.imageWidth, 50, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 80F, 35F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 80, 35, WHITE_TEXT_STYLE);
     }
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                renderTooltip(matrixStack, TextUtil.powerBarTooltip(veEnergyStorage, Config.STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
             }));
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-        	renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
         super.renderTooltip(matrixStack, mouseX, mouseY);
     }
@@ -101,7 +101,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
             int progress = tileEntity.progressCounterPX(14);
             int power = menu.powerScreen(49);
@@ -114,8 +114,8 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack, i + 81, j + (55 + (14 - progress)), 176, (14 - progress), 14, progress); // 55 = full, 55+14 = end
-            this.blit(matrixStack, i + 11, j + (16 + (49 - power)), 176, 14 + (49 - power), 12, power);
+            matrixStack.blit(GUI, i + 81, j + (55 + (14 - progress)), 176, (14 - progress), 14, progress); // 55 = full, 55+14 = end
+            matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 14 + (49 - power), 12, power);
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             drawIOSideHelper();
         }

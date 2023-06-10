@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.GuiGraphics;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
@@ -67,22 +66,22 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlas
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
-        this.font.drawShadow(matrixStack, TextUtil.translateVEBlock("primitiveblastfurnace"), 8.0F, 6.0F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, TextUtil.translateString("container.inventory"), 8.0F, (float)(this.imageHeight - 96 + 2), WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("primitiveblastfurnace"), this.imageWidth,8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth,8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53F, 33F, WHITE_TEXT_COLOUR);
-        this.font.drawShadow(matrixStack, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 116F, 33F, WHITE_TEXT_COLOUR);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,53, 33, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth,116, 33, WHITE_TEXT_STYLE);
     }
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX,int mouseY){
         if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
-            renderComponentTooltip(matrixStack, this.getTooltips(), mouseX, mouseY);
+            matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
 //        if (isHovering(78,32,19,17,mouseX,mouseY)){
@@ -109,7 +108,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlas
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack,i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
             int progress = tileEntity.progressCounterPX(24);
             /*Note for this.blit below:
@@ -120,13 +119,13 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlas
                 uHeight = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 vHeight = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            this.blit(matrixStack,i+78, j+32, 176, 0, progress, 17);
+            matrixStack.blit(GUI,i+78, j+32, 176, 0, progress, 17);
             //this.blit(i,j,180,1,progress,15);
             drawIOSideHelper();
         }
         // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
-        this.blit(matrixStack,i+153, j-16,0,0,18,18);
+        matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
     }
 
 }
