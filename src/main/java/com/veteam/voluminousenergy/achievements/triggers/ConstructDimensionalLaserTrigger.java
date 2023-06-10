@@ -14,37 +14,37 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
       return ID;
    }
 
-   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject p_22753_, EntityPredicate.Composite p_22754_, DeserializationContext p_22755_) {
-      MinMaxBounds.Ints minmaxbounds$ints = MinMaxBounds.Ints.fromJson(p_22753_.get("level"));
-      return new ConstructDimensionalLaserTrigger.TriggerInstance(p_22754_, minmaxbounds$ints);
+   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject jsonObject, ContextAwarePredicate predicateCtx, DeserializationContext deserializationCtx) {
+      MinMaxBounds.Ints minmaxbounds$ints = MinMaxBounds.Ints.fromJson(jsonObject.get("level"));
+      return new ConstructDimensionalLaserTrigger.TriggerInstance(predicateCtx, minmaxbounds$ints);
    }
 
-   public void trigger(ServerPlayer p_148030_, int p_148031_) {
-      this.trigger(p_148030_, (p_148028_) -> p_148028_.matches(p_148031_));
+   public void trigger(ServerPlayer serverPlayer, int p_148031_) {
+      this.trigger(serverPlayer, (p_148028_) -> p_148028_.matches(p_148031_));
    }
 
    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
       private final MinMaxBounds.Ints level;
 
-      public TriggerInstance(EntityPredicate.Composite p_22763_, MinMaxBounds.Ints p_22764_) {
-         super(ConstructDimensionalLaserTrigger.ID, p_22763_);
-         this.level = p_22764_;
+      public TriggerInstance(ContextAwarePredicate contextAwarePredicate, MinMaxBounds.Ints minmaxbounds$ints) {
+         super(ConstructDimensionalLaserTrigger.ID, contextAwarePredicate);
+         this.level = minmaxbounds$ints;
       }
 
       public static ConstructDimensionalLaserTrigger.TriggerInstance constructedDimensionalLaser() {
-         return new ConstructDimensionalLaserTrigger.TriggerInstance(EntityPredicate.Composite.ANY, MinMaxBounds.Ints.ANY);
+         return new ConstructDimensionalLaserTrigger.TriggerInstance(ContextAwarePredicate.ANY, MinMaxBounds.Ints.ANY);
       }
 
-      public static ConstructDimensionalLaserTrigger.TriggerInstance constructedDimensionalLaser(MinMaxBounds.Ints p_22766_) {
-         return new ConstructDimensionalLaserTrigger.TriggerInstance(EntityPredicate.Composite.ANY, p_22766_);
+      public static ConstructDimensionalLaserTrigger.TriggerInstance constructedDimensionalLaser(MinMaxBounds.Ints minmaxbounds$ints) {
+         return new ConstructDimensionalLaserTrigger.TriggerInstance(ContextAwarePredicate.ANY, minmaxbounds$ints);
       }
 
       public boolean matches(int p_148033_) {
          return this.level.matches(p_148033_);
       }
 
-      public @NotNull JsonObject serializeToJson(SerializationContext p_22770_) {
-         JsonObject jsonobject = super.serializeToJson(p_22770_);
+      public @NotNull JsonObject serializeToJson(SerializationContext serializationContext) {
+         JsonObject jsonobject = super.serializeToJson(serializationContext);
          jsonobject.add("level", this.level.serializeToJson());
          return jsonobject;
       }

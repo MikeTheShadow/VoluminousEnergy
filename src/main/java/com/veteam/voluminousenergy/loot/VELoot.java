@@ -4,10 +4,10 @@ import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.loot.functions.MysteriousMultiplierLootFunction;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -74,8 +74,8 @@ public class VELoot {
 
     public static void loadLootTable(LootTableLoadEvent event){
         // Inject Mysterious Multipliers
-        if (SPAWN_MYSTERIOUS_MULTIPLIERS_IN.contains(event.getName())){
-            event.getTable().addPool(buildPoolFromInjectionEntry("mysterious_multiplier/" + event.getName().getPath()));
+        if (SPAWN_MYSTERIOUS_MULTIPLIERS_IN.contains(event.getName())){//TODO: PORT loot to 1.20
+//            event.getTable().addPool(buildPoolFromInjectionEntry("mysterious_multiplier/" + event.getName().getPath()));
         }
 
     }

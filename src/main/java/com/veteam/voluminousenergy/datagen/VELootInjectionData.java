@@ -13,11 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.io.IOException;
@@ -81,12 +79,12 @@ public class VELootInjectionData implements DataProvider {
         for (Map.Entry<ResourceLocation, LootTable.Builder> entry : tableMap.entrySet()){
             Path path = dataGenerator.getPackOutput().getOutputFolder().resolve("data/" + VoluminousEnergy.MODID + "/loot_tables/inject/mysterious_multiplier/" + entry.getKey().getPath() + ".json");
 
-            if (path.toString().contains("multiplier/chests/")){
-                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.CHEST).build()), path));
-            } else if (path.toString().contains("multiplier/gameplay/fishing")){
-                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.FISHING).build()), path));
-            } else {
-                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.ALL_PARAMS).build()), path));
+            if (path.toString().contains("multiplier/chests/")){ // TODO: PORT DATAGEN INJECTOR
+//                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.CHEST).build()), path));
+            } else if (path.toString().contains("multiplier/gameplay/fishing")){ // TODO: PORT DATAGEN INJECTOR
+//                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.FISHING).build()), path));
+            } else { // TODO: PORT DATAGEN INJECTOR
+//                futuresBuilder.add(DataProvider.saveStable(cache, LootTables.serialize(entry.getValue().setParamSet(LootContextParamSets.ALL_PARAMS).build()), path));
             }
 
         }
@@ -96,7 +94,7 @@ public class VELootInjectionData implements DataProvider {
     private LootTable.Builder builder(Item loot, int weight){
         LootPoolEntryContainer.Builder<?> entry = LootItem.lootTableItem(loot).setWeight(weight);
         
-        LootPool.Builder pool = LootPool.lootPool().name("main").setBonusRolls(ConstantValue.exactly(1)).setRolls(ConstantValue.exactly(1));
+        LootPool.Builder pool = LootPool.lootPool().setBonusRolls(ConstantValue.exactly(1)).setRolls(ConstantValue.exactly(1));
         pool.add(entry);
         pool.add(EmptyLootItem.emptyItem().setWeight(100-weight));
         return LootTable.lootTable().withPool(pool);
