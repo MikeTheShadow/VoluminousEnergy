@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class PressureLadder extends LadderBlock {
         super(BlockBehaviour.Properties.copy(Blocks.LADDER)
                 .requiresCorrectToolForDrops()
                 .randomTicks()
+                .pushReaction(PushReaction.DESTROY)
         );
         this.registerDefaultState(this.stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)

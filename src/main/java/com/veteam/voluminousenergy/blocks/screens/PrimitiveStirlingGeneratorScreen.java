@@ -88,7 +88,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<Primitiv
         int generationRate;
         if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
         else generationRate = 0;
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + generationRate + " FE/t"), this.imageWidth, 50, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + generationRate + " FE/t"), this.imageWidth, 50, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
 
         super.renderLabels(matrixStack, mouseX, mouseY);

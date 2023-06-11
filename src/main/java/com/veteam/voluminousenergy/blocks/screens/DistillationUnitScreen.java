@@ -246,7 +246,7 @@ public class DistillationUnitScreen extends VEContainerScreen<DistillationUnitCo
             matrixStack.blit(GUI_TOOLS,i+129, j-16,0,0,18,18);
         } else {
             RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
-            matrixStack.blit(GUI_TOOLS, i, j, 0, 0, 174,82);
+            matrixStack.blit(MULTIBLOCK_WARN, i, j, 0, 0, 174,82);
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock_warn"), this.imageWidth,i + 48, j + 14, WHITE_TEXT_STYLE);
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock.distillation_unit.requirements"), this.imageWidth, i + 8, j + 32, WHITE_TEXT_STYLE);
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), this.imageWidth, i+8, j+48, WHITE_TEXT_STYLE);
