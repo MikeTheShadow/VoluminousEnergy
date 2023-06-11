@@ -53,8 +53,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraftforge.fml.Logging.CORE;
-
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy {
     public static final String MODID = "voluminousenergy";
@@ -112,7 +110,7 @@ public class VoluminousEnergy {
         VEModifiers.VE_BIOME_MODIFIER_REGISTRY.register(modEventBus);
 
         // Register Creative Mode Tabs
-//        modEventBus.addListener(VESetup::registerCreativeTabs); // TODO: Register creative mode tabs
+        modEventBus.addListener(VESetup::registerCreativeTabs);
 
         // Register Loot modifiers
         VELoot.VE_LOOT_MODIFIER_REGISTRY.register(modEventBus);
