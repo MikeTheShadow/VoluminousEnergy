@@ -4,9 +4,11 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,11 +33,11 @@ import java.util.List;
 
 public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP,false,"slot.voluminousenergy.input_slot", SlotType.INPUT,"heat_top_manager");
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1,Direction.DOWN,false,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"heat_bottom_manager");
-    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"first_input_manager");
-    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot",SlotType.INPUT,"second_input_manager");
-    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "heat_top_manager");
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "heat_bottom_manager");
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "first_input_manager");
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "second_input_manager");
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_manager");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -46,7 +49,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         }
     };
 
-    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"heatTank:heat_tank_gui");
+    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "heatTank:heat_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
@@ -73,11 +76,15 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state);
     }
 
+    private IndustrialBlastingRecipe recipe;
+    private Item lastFirstItem;
+    private Item lastSecondItem;
+
     @Override
     public void tick() {
         updateClients();
         tick++;
-        if (tick == 20){
+        if (tick == 20) {
             tick = 0;
             validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get());
         }
@@ -92,14 +99,21 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         ItemStack secondItemInput = inventory.getStackInSlot(3).copy();
         ItemStack itemOutput = inventory.getStackInSlot(4).copy();
 
-        heatTank.setIOItemstack(heatTankItemInputTop.copy(),heatTankItemInputBottom.copy());
+        heatTank.setIOItemstack(heatTankItemInputTop.copy(), heatTankItemInputBottom.copy());
 
-        if(inputFluid(heatTank,0,1)) return;
-        if(this.outputFluid(heatTank,0,1)) return;
+        if (inputFluid(heatTank, 0, 1)) return;
+        if (this.outputFluid(heatTank, 0, 1)) return;
 
         // Main Processing occurs here:
         if (heatTank != null || !heatTank.getTank().isEmpty()) {
-            IndustrialBlastingRecipe recipe = RecipeUtil.getIndustrialBlastingRecipe(level, firstItemInput.copy(), secondItemInput.copy());
+
+            // Recipe check
+            if (!firstItemInput.is(lastFirstItem) || !secondItemInput.is(lastSecondItem)) {
+                recipe = (IndustrialBlastingRecipe) RecipeCache.getRecipeFromCache(level, IndustrialBlastingRecipe.class, firstItemInput.copy(), secondItemInput.copy());
+                lastFirstItem = firstItemInput.getItem();
+                lastSecondItem = secondItemInput.getItem();
+                counter = 0;
+            }
 
             if (recipe != null) {
                 // Tank fluid amount check + capacity and recipe checks
@@ -114,26 +128,26 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                 ) {
                     // Check for power
                     if (canConsumeEnergy()) {
-                        if (counter == 1){
+                        if (counter == 1) {
 
                             // Drain Input
                             heatTank.getTank().drain(Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get(), IFluidHandler.FluidAction.EXECUTE);
 
-                            inventory.extractItem(2,recipe.getIngredientCount(),false);
-                            inventory.extractItem(3, recipe.getSecondInputAmount(),false);
+                            inventory.extractItem(2, recipe.getIngredientCount(), false);
+                            inventory.extractItem(3, recipe.getSecondInputAmount(), false);
 
                             // Place the new output stack on top of the old one
                             if (itemOutput.getItem() != recipe.getResult().getItem()) {
-                                if (itemOutput.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
+                                if (itemOutput.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
                                     itemOutput.setCount(1);
                                 }
                             }
-                            inventory.insertItem(4, recipe.getResult().copy(),false); // CRASH the game if this is not empty!
+                            inventory.insertItem(4, recipe.getResult().copy(), false); // CRASH the game if this is not empty!
 
                             counter--;
                             consumeEnergy();
                             this.setChanged();
-                        } else if (counter > 0){
+                        } else if (counter > 0) {
                             counter--;
                             consumeEnergy();
                             if(++sound_tick == 19) {
@@ -174,7 +188,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
                     return RecipeUtil.isSecondIngredientForIndustrialBlastingRecipe(level, stack.copy());
                 } else if (slot == 4) {
                     return RecipeUtil.isAnOutputForIndustrialBlastingRecipe(level, stack.copy());
-                } else if (slot == 5){
+                } else if (slot == 5) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return false;
@@ -199,60 +213,60 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         return 0;
     }
 
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
+    public int progressCounterPercent() {
+        if (length != 0) {
+            return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
             return 0;
         }
     }
 
-    public int ticksLeft(){
+    public int ticksLeft() {
         return counter;
     }
 
-    public FluidStack getFluidStackFromTank(int num){
-        if (num == 0){
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num == 0) {
             return heatTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
 
-    public boolean getMultiblockValidity(){
+    public boolean getMultiblockValidity() {
         return validity;
     }
 
-    public RelationalTank getHeatTank(){
+    public RelationalTank getHeatTank() {
         return this.heatTank;
     }
 
-    public int getTemperatureKelvin(){
+    public int getTemperatureKelvin() {
         return this.heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature();
     }
 
-    public int getTemperatureCelsius(){
-        return getTemperatureKelvin()-273;
+    public int getTemperatureCelsius() {
+        return getTemperatureKelvin() - 273;
     }
 
-    public int getTemperatureFahrenheit(){
-        return (int) ((getTemperatureKelvin()-273) * 1.8)+32;
+    public int getTemperatureFahrenheit() {
+        return (int) ((getTemperatureKelvin() - 273) * 1.8) + 32;
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
+    public void updatePacketFromGui(boolean status, int slotId) {
+        if (slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setStatus(status);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemBottomManager.setStatus(status);
-        else if(slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setStatus(status);
+        else if (slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setStatus(status);
         else if (slotId == secondInputSlotManager.getSlotNum()) secondInputSlotManager.setStatus(status);
-        else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setStatus(status);
+        else if (slotId == outputSlotManager.getSlotNum()) outputSlotManager.setStatus(status);
     }
 
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setDirection(direction);
+    public void updatePacketFromGui(int direction, int slotId) {
+        if (slotId == heatTankItemTopManager.getSlotNum()) heatTankItemTopManager.setDirection(direction);
         else if (slotId == heatTankItemBottomManager.getSlotNum()) heatTankItemBottomManager.setDirection(direction);
-        else if(slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setDirection(direction);
+        else if (slotId == firstInputSlotManager.getSlotNum()) firstInputSlotManager.setDirection(direction);
         else if (slotId == secondInputSlotManager.getSlotNum()) secondInputSlotManager.setDirection(direction);
-        else if(slotId == outputSlotManager.getSlotNum()) outputSlotManager.setDirection(direction);
+        else if (slotId == outputSlotManager.getSlotNum()) outputSlotManager.setDirection(direction);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;

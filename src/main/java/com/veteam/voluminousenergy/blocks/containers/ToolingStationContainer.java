@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;

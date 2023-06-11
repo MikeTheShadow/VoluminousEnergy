@@ -1,13 +1,14 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -28,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
@@ -68,6 +71,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         return inventory;
     }
 
+    private VEFluidRecipe recipe;
+    private Fluid lastFluid;
+
     @Override
     public void tick() {
         updateClients();
@@ -88,9 +94,13 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         if(this.outputFluidStatic(outputTank1,3)) return;
         // Main Fluid Processing occurs here
         if (inputTank != null) {
-            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(), 1);
-            //lVEFluidRecipe recipe = world.getRecipeManager().getRecipe(CentrifugalAgitatorRecipe.RECIPE_TYPE, new Inventory(inputFluidStack), world).orElse(null);
-            VEFluidRecipe recipe = RecipeUtil.getCentrifugalAgitatorRecipe(level,inputTank.getTank().getFluid().copy());
+            if(!inputTank.getTank().getFluid().getRawFluid().isSame(lastFluid)) {
+                recipe = RecipeCache.getFluidRecipeFromCache(level,CentrifugalAgitatorRecipe.class, Collections.singletonList(inputTank.getTank().getFluid()));
+                lastFluid = inputTank.getTank().getFluid().getRawFluid();
+                VoluminousEnergy.LOGGER.info("updating recipe: " + (recipe == null));
+            }
+
+
             if (recipe != null) {
                 if (outputTank0 != null && outputTank1 != null) {
 

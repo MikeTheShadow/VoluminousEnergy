@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.util.NumberUtil;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

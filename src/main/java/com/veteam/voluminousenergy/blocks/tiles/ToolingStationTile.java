@@ -10,7 +10,7 @@ import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;

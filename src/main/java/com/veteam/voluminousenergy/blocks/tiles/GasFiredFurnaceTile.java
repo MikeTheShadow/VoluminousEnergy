@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

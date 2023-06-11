@@ -1,9 +1,11 @@
-package com.veteam.voluminousenergy.util;
+package com.veteam.voluminousenergy.util.recipe;
 
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.RegistryLookups;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

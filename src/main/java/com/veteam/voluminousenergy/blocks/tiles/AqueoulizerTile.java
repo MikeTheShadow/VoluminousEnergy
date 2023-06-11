@@ -9,6 +9,9 @@ import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
+import com.veteam.voluminousenergy.util.recipe.RecipeItem;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,16 +20,16 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +82,11 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         inputTank.setAllowAny(true);
     }
 
+    // Recipe caching
+    RecipeItem lastItem = new RecipeItem();
+    RecipeFluid lastFluid = new RecipeFluid();
+    VEFluidRecipe recipe;
+
     @Override
     public void tick() {
         updateClients();
@@ -98,65 +106,58 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         if (this.outputFluidStatic(outputTank, 2)) return;
 
         // Main Fluid Processing occurs here:
-//        VEFluidRecipe recipe = RecipeUtil.getAqueoulizerRecipe(level, this.inputTank.getTank().getFluid(),inputItem.copy());
-        VEFluidRecipe recipe = RecipeCache.getFluidRecipeFromCache(AqueoulizerRecipe.class,
-                Collections.singletonList(this.inputTank.getTank().getFluid()),
-                inputItem.copy());
-        // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
+        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())
+                || lastItem.isDifferent(inputItem)) {
+            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, AqueoulizerRecipe.class,
+                    Collections.singletonList(this.inputTank.getTank().getFluid()),
+                    inputItem.copy());
 
-        if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
-            //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
+            if(newRecipe != recipe) {
+                counter = 0;
+            }
+            recipe = newRecipe;
+        }
 
-            if (recipe.getRawFluids().contains(inputTank.getTank().getFluid().getRawFluid())) {
-                if (outputTank != null) {
-
-                    // Tank fluid amount check + tank cap checks
-                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()
-                        && outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
+        if (recipe != null) {
+                // Tank cap checks
+                if (outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
                         && (outputTank.getTank().isEmpty() || outputTank.getTank().getFluid().equals(recipe.getOutputFluid()))
-                    ) {
-                        // Check for power
-                        if (canConsumeEnergy()) {
-                            if (counter == 1) {
+                ) {
+                    // Check for power
+                    if (canConsumeEnergy()) {
+                        if (counter == 1) {
+                            // Drain Input
+                            inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
 
-                                // Drain Input
-                                inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
-
-                                // Output Tank
-                                if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                    outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
-                                } else {
-                                    outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                inventory.extractItem(3, recipe.ingredientCount, false);
-
-                                counter--;
-                                consumeEnergy();
-                                this.setChanged();
-                            } else if (counter > 0) {
-                                counter--;
-                                consumeEnergy();
-                                if(++sound_tick == 19) {
-                                    sound_tick = 0;
-                                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                        level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    }
-                                }
+                            // Output Tank
+                            if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
+                                outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
                             } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
-                                length = counter;
+                                outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
                             }
-                        } else { // Energy Check
-                            decrementSuperCounterOnNoPower();
+
+                            inventory.extractItem(3, recipe.ingredientCount, false);
+
+                            counter--;
+                            consumeEnergy();
+                            this.setChanged();
+                        } else if (counter > 0) {
+                            counter--;
+                            consumeEnergy();
+                            if (++sound_tick == 19) {
+                                sound_tick = 0;
+                                if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                                }
+                            }
+                        } else {
+                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            length = counter;
                         }
-                    } else { // If fluid tank empty set counter to zero
-                        counter = 0;
+                    } else { // Energy Check
+                        decrementSuperCounterOnNoPower();
                     }
-                } else counter = 0;
-            } else counter = 0;
-        } else {
-            counter = 0;
+                }
         }
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
@@ -301,7 +302,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         };
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
@@ -342,7 +343,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @Nonnull List<RelationalTank> getRelationalTanks() {
         return this.fluidManagers;
     }
 

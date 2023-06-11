@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;

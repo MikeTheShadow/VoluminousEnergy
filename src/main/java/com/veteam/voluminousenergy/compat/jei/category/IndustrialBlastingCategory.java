@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;

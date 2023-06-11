@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
