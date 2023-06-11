@@ -67,7 +67,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
 
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), 0, 8, 6, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
 
         super.renderLabels(matrixStack, mouseX, mouseY);

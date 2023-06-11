@@ -1,10 +1,8 @@
 package com.veteam.voluminousenergy.tools.buttons;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -46,7 +44,7 @@ public class ioMenuButton extends Button {
         } else {
             matrixStack.blit(texture, this.x, this.y, 193, 19, this.width, this.height);
         }
-        TextUtil.renderUnshadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), this.width,(this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
+        TextUtil.renderShadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), this.width,(this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override
