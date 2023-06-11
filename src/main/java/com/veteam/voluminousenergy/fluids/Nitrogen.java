@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
@@ -20,7 +21,7 @@ public class Nitrogen {
     public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitrogen_flowing");
     public static final int NITROGEN_FLUID_WIDTH = 4;
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable();
+    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
     public static FlowingFluid NITROGEN;
     public static FlowingFluid FLOWING_NITROGEN;
