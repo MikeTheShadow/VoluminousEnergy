@@ -110,11 +110,11 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("combustion_generator"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
 
         if (tileEntity.getEnergyRate() < 10) {
-            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,80, 18, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,80, 18, WHITE_TEXT_STYLE);
         } else if (tileEntity.getEnergyRate() < 100){
-            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,77, 18, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,77, 18, WHITE_TEXT_STYLE);
         } else {
-            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,75, 18, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), this.imageWidth,75, 18, WHITE_TEXT_STYLE);
         }
 
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
