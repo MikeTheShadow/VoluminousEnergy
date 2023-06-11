@@ -8,17 +8,16 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -51,12 +50,6 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public Ingredient getIngredient(){ return ingredient.get();}
-
-    @Override
-    public int getIngredientCount(){ return ingredientCount;}
-
-    @Override
     public List<Integer> getAmounts() {
         return null;
     }
@@ -64,19 +57,6 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     public FluidStack getInputFluid(){
         return this.inputFluid.get();
     }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
     @Deprecated
@@ -156,13 +136,13 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     public float getChance2(){return chance2;}
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<HydroponicIncubatorRecipe> {
         @Override
-        public HydroponicIncubatorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull HydroponicIncubatorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -224,7 +204,7 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public HydroponicIncubatorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public HydroponicIncubatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);
             recipe.inputAmount = buffer.readInt();
 

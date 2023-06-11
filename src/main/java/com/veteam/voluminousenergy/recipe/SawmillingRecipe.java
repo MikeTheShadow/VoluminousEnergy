@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -60,12 +61,6 @@ public class SawmillingRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
     public ItemStack getResultItem(){return result;}
 
     @Override
@@ -101,7 +96,7 @@ public class SawmillingRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<SawmillingRecipe>{
 
         @Override
-        public SawmillingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull SawmillingRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json){
             SawmillingRecipe recipe = new SawmillingRecipe(recipeId);
 
             recipe.isLogRecipe = GsonHelper.getAsBoolean(json, "auto_log_to_plank", false);
@@ -138,7 +133,7 @@ public class SawmillingRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public SawmillingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public SawmillingRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             SawmillingRecipe recipe = new SawmillingRecipe((recipeId));
 
             recipe.isLogRecipe = buffer.readBoolean();

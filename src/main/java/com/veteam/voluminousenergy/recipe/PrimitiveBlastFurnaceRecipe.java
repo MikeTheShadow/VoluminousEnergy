@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -54,16 +55,6 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
-    }
-
-    @Override
     public ItemStack getResultItem(){
         return result;
     }
@@ -95,7 +86,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<PrimitiveBlastFurnaceRecipe>{
 
         @Override
-        public PrimitiveBlastFurnaceRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull PrimitiveBlastFurnaceRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
 
             PrimitiveBlastFurnaceRecipe recipe = new PrimitiveBlastFurnaceRecipe(recipeId);
 
@@ -113,7 +104,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public PrimitiveBlastFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public PrimitiveBlastFurnaceRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             PrimitiveBlastFurnaceRecipe recipe = new PrimitiveBlastFurnaceRecipe(recipeId);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();

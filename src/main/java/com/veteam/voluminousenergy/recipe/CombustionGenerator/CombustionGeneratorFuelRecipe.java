@@ -10,7 +10,6 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,11 +17,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -56,29 +55,12 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
-    public Ingredient getIngredient(){ return ingredient.get();}
-
-    public int getIngredientCount(){ return ingredientCount;}
-
     public ItemStack getResult() {return result;}
 
     @Deprecated
     public FluidStack getInputFluid(){
         return this.inputFluid.copy();
     }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
     public ItemStack getResultItem(){return result;}
@@ -148,7 +130,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
     public static class Serializer implements RecipeSerializer<CombustionGeneratorFuelRecipe> {
         @Override
-        public CombustionGeneratorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull CombustionGeneratorFuelRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe(recipeId);
 
             recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
@@ -182,7 +164,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorFuelRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CombustionGeneratorFuelRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe((recipeId));
 
             // Start with usesTagKey check

@@ -10,18 +10,17 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -61,28 +60,11 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
         return ImmutableMap.copyOf(ingredients);
     }
 
-    public Ingredient getIngredient(){ return ingredient.get();}
-
-    public int getIngredientCount(){ return ingredientCount;}
-
     public ItemStack getResult() {return result;}
 
     public FluidStack getInputFluid(){
         return this.inputFluid.get().copy();
     }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
     public ItemStack getResultItem(){return result;}
@@ -101,7 +83,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
     public static class Serializer implements RecipeSerializer<CombustionGeneratorOxidizerRecipe> {
         @Override
-        public CombustionGeneratorOxidizerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull CombustionGeneratorOxidizerRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);
 
             recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient")));
@@ -149,7 +131,7 @@ public class CombustionGeneratorOxidizerRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CombustionGeneratorOxidizerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CombustionGeneratorOxidizerRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();

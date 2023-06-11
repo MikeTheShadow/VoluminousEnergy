@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -61,16 +62,6 @@ public class CompressorRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
-    }
-
-    @Override
     public ItemStack getResultItem(){
         return result;
     }
@@ -102,7 +93,7 @@ public class CompressorRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<CompressorRecipe>{
 
         @Override
-        public CompressorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull CompressorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
 
             CompressorRecipe recipe = new CompressorRecipe(recipeId);
 
@@ -122,7 +113,7 @@ public class CompressorRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CompressorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CompressorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             CompressorRecipe recipe = new CompressorRecipe(recipeId);
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();

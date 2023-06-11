@@ -8,17 +8,16 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -47,12 +46,6 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     public FluidElectrolyzerRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
-
-    @Override
-    public Ingredient getIngredient(){ return ingredient.get(); }
-
-    @Override
-    public int getIngredientCount(){ return ingredientCount;}
 
     @Override
     @Deprecated
@@ -99,19 +92,6 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
     @Deprecated
     public ItemStack getResultItem(){return this.getResult();}
 
@@ -136,13 +116,13 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     public int getProcessTime() { return processTime; }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<FluidElectrolyzerRecipe> {
         @Override
-        public FluidElectrolyzerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull FluidElectrolyzerRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             FluidElectrolyzerRecipe recipe = new FluidElectrolyzerRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -182,7 +162,7 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public FluidElectrolyzerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public FluidElectrolyzerRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             FluidElectrolyzerRecipe recipe = new FluidElectrolyzerRecipe(recipeId);
             recipe.ingredientCount = buffer.readByte();
             recipe.inputAmount = buffer.readInt();

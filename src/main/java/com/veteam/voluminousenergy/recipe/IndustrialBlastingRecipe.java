@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -62,15 +63,6 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
-    public ItemStack getResultItem(){return result;}
-
-    @Override
     public ResourceLocation getId(){return recipeId;}
 
     @Override
@@ -97,10 +89,6 @@ public class IndustrialBlastingRecipe extends VERecipe {
         return ingredientList.get();
     }
 
-    public ItemStack getResult(){
-        return result;
-    }
-
     @Override
     public ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get());
@@ -109,7 +97,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<IndustrialBlastingRecipe>{
 
         @Override
-        public IndustrialBlastingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull IndustrialBlastingRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
             final JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -165,7 +153,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public IndustrialBlastingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public IndustrialBlastingRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe(recipeId);
 
             // Start with usesTagKey check
@@ -217,9 +205,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
                 buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.onlySecondInput.get().size());
-                recipe.onlySecondInput.get().forEach(item -> {
-                    buffer.writeItem(new ItemStack(item));
-                });
+                recipe.onlySecondInput.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
             }
 
             ArrayList<Item> firstInputList = recipe.ingredientList.get();

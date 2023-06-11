@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -63,16 +64,6 @@ public class StirlingGeneratorRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
-    }
-
-    @Override
     public ItemStack getResultItem(){
         return result;
     }
@@ -92,7 +83,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
         return RECIPE_TYPE;
     }
 
-    public int getEnergyPerTick(){ return energyPerTick;};
+    public int getEnergyPerTick(){ return energyPerTick;}
 
     @Override
     public ItemStack getToastSymbol(){
@@ -102,7 +93,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<StirlingGeneratorRecipe> {
 
         @Override
-        public StirlingGeneratorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull StirlingGeneratorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
 
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
 
@@ -125,7 +116,7 @@ public class StirlingGeneratorRecipe extends VERecipe {
          **/
         @Nullable
         @Override
-        public StirlingGeneratorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public StirlingGeneratorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             StirlingGeneratorRecipe recipe = new StirlingGeneratorRecipe(recipeId);
             recipe.ingredientCount = buffer.readByte();
             recipe.processTime = buffer.readInt();

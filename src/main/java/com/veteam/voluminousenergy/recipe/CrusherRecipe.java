@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -62,12 +63,6 @@ public class CrusherRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
     public ItemStack getResultItem(){return result;}
 
     @Override
@@ -101,7 +96,7 @@ public class CrusherRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<CrusherRecipe>{
 
         @Override
-        public CrusherRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull CrusherRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -132,7 +127,7 @@ public class CrusherRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public CrusherRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CrusherRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             CrusherRecipe recipe = new CrusherRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();

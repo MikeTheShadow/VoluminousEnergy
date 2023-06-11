@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +49,13 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public ItemStack getResult() { return result; }
 
     @Override
-    public boolean matches(Container inv, Level worldIn){
+    public boolean matches(Container inv, @NotNull Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.get().test(stack) && count >= ingredientCount;
     }
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess){
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess registryAccess){
         return this.assemble(inv);
     }
 
@@ -69,7 +70,7 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess){
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){
         return this.getResultItem();
     }
 
@@ -77,15 +78,15 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public ItemStack getResultItem() { return result; }
 
     @Override
-    public ResourceLocation getId(){
+    public @NotNull ResourceLocation getId(){
         return null;
     }
 
     @Override
-    public  abstract RecipeSerializer<?> getSerializer();
+    public  abstract @NotNull RecipeSerializer<?> getSerializer();
 
 
-    public abstract RecipeType<VEFluidRecipe> getType();
+    public abstract @NotNull RecipeType<VEFluidRecipe> getType();
 
     public abstract ArrayList<Item>  getIngredientList();
 

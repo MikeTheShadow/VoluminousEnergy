@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -53,10 +54,6 @@ public class ToolingRecipe extends VERecipe {
         return ingredient.get();
     }
 
-    public int getIngredientCount() {
-        return ingredientCount;
-    }
-
     @Override
     public ItemStack getResult() { return result; }
 
@@ -65,16 +62,6 @@ public class ToolingRecipe extends VERecipe {
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
     }
 
     @Override
@@ -117,7 +104,7 @@ public class ToolingRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<ToolingRecipe>{
 
         @Override
-        public ToolingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull ToolingRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
 
             ToolingRecipe recipe = new ToolingRecipe(recipeId);
 
@@ -163,7 +150,7 @@ public class ToolingRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public ToolingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public ToolingRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             ToolingRecipe recipe = new ToolingRecipe(recipeId);
 
             // Start with usesTagKey check
@@ -204,15 +191,11 @@ public class ToolingRecipe extends VERecipe {
                 buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.bases.get().size());
-                recipe.bases.get().forEach(item -> {
-                    buffer.writeItem(new ItemStack(item));
-                });
+                recipe.bases.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
             }
 
             buffer.writeInt(recipe.bits.get().size());
-            recipe.bits.get().forEach(item -> {
-                buffer.writeItem(new ItemStack(item));
-            });
+            recipe.bits.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
 
             buffer.writeItem(recipe.getResult());
             recipe.ingredient.get().toNetwork(buffer);

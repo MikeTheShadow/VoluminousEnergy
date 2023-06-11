@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
@@ -74,12 +75,6 @@ public class ElectrolyzerRecipe extends VERecipe {
     }
 
     @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
     public ItemStack getResultItem(){return result;}
 
     @Override
@@ -115,7 +110,7 @@ public class ElectrolyzerRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<ElectrolyzerRecipe>{
 
         @Override
-        public ElectrolyzerRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull ElectrolyzerRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
             ElectrolyzerRecipe recipe = new ElectrolyzerRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -164,7 +159,7 @@ public class ElectrolyzerRecipe extends VERecipe {
 
         @Nullable
         @Override
-        public ElectrolyzerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public ElectrolyzerRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             ElectrolyzerRecipe recipe = new ElectrolyzerRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
             recipe.result = buffer.readItem();

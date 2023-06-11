@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 public class VERecipe implements Recipe<Container> {
 
@@ -29,13 +30,13 @@ public class VERecipe implements Recipe<Container> {
     public ItemStack getResult() { return result; }
 
     @Override
-    public boolean matches(Container inv, Level worldIn){
+    public boolean matches(Container inv, @NotNull Level worldIn){
         ItemStack stack = inv.getItem(0);
         int count = stack.getCount();
         return ingredient.get().test(stack) && count >= ingredientCount;
     }
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess) { return this.assemble(inv); }
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess registryAccess) { return this.assemble(inv); }
 
     public ItemStack assemble(Container inv){
         return ItemStack.EMPTY;
@@ -47,29 +48,29 @@ public class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) { return this.getResultItem(); }
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) { return this.getResultItem(); }
 
     public ItemStack getResultItem(){
         return result;
     }
 
     @Override
-    public ResourceLocation getId(){
+    public @NotNull ResourceLocation getId(){
         return null;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer(){
+    public @NotNull RecipeSerializer<?> getSerializer(){
         return null;
     }
 
     @Override
-    public RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType(){
         return null;
     }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return null;
     }
 }

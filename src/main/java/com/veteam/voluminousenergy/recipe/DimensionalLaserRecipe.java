@@ -6,18 +6,17 @@ import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -56,12 +55,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public Ingredient getIngredient(){ return ingredient.get();}
-
-    @Override
-    public int getIngredientCount(){ return ingredientCount;}
-
-    @Override
     @Deprecated
     // use getOutputFluid instead
     public ItemStack getResult() {return new ItemStack(this.fluid.getBucket());}
@@ -79,19 +72,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     public FluidStack getInputFluid(){
         return new FluidStack(this.fluid, 1000);
     }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
 
     @Override
     @Deprecated
@@ -143,13 +123,13 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<DimensionalLaserRecipe>{
         @Override
-        public DimensionalLaserRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull DimensionalLaserRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
 
             ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json,"fluid","minecraft:air"),':');
@@ -203,7 +183,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public DimensionalLaserRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public DimensionalLaserRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
             recipe.fluid = buffer.readFluidStack().getRawFluid();
 

@@ -8,17 +8,16 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -55,12 +54,6 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public Ingredient getIngredient(){ return ingredient.get(); }
-
-    @Override
-    public int getIngredientCount(){ return ingredientCount;}
-
-    @Override
     @Deprecated
     public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
 
@@ -92,19 +85,6 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){return ItemStack.EMPTY;}
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){return true;}
-
-    @Override
     @Deprecated
     public ItemStack getResultItem(){return this.getResult();}
 
@@ -127,7 +107,7 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     public int getProcessTime() { return processTime; }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get());
     }
 
@@ -135,7 +115,7 @@ public class FluidMixerRecipe extends VEFluidRecipe {
 
     public static class Serializer implements RecipeSerializer<FluidMixerRecipe> {
         @Override
-        public FluidMixerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull FluidMixerRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             FluidMixerRecipe recipe = new FluidMixerRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
@@ -188,7 +168,7 @@ public class FluidMixerRecipe extends VEFluidRecipe {
 
         @Nullable
         @Override
-        public FluidMixerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public FluidMixerRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             FluidMixerRecipe recipe = new FluidMixerRecipe((recipeId));
             recipe.ingredientCount = buffer.readByte();
             recipe.firstInputAmount = buffer.readInt();
