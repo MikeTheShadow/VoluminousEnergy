@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.loot.functions;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.loot.VELoot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;

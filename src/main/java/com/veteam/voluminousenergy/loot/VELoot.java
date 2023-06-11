@@ -4,16 +4,13 @@ import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.loot.functions.MysteriousMultiplierLootFunction;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -28,10 +25,13 @@ public class VELoot {
     public static RegistryObject<Codec<AnimalFatLootModifier>> ANIMAL_FAT_LOOT_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
             "animal_fat", AnimalFatLootModifier.CODEC);
 
+    public static RegistryObject<Codec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
+            "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
+
     private VELoot() {}
 
     public static final LootItemFunctionType MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION = new LootItemFunctionType(new MysteriousMultiplierLootFunction.Serializer());
-    private static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
+    public static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
             BuiltInLootTables.BASTION_BRIDGE,
             BuiltInLootTables.END_CITY_TREASURE,
             BuiltInLootTables.SIMPLE_DUNGEON,
@@ -60,31 +60,34 @@ public class VELoot {
 
     public static void registerLoot(IEventBus modEventBus){
         modEventBus.addListener(VELoot::registerLootFunctions);
-        MinecraftForge.EVENT_BUS.addListener(VELoot::loadLootTable);
+//        MinecraftForge.EVENT_BUS.addListener(VELoot::loadLootTable);
     }
 
-    private static void registerLootFunctions(RegisterEvent event){ // TODO: FIX
-//        if (!event.getRegistryKey().equals(Registry.LOOT_FUNCTION_REGISTRY)) return;
-//        Registry.register(
-//                Registry.LOOT_FUNCTION_TYPE,
-//                new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot"),
-//                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
-//        );
-    }
+    private static void registerLootFunctions(RegisterEvent event){
 
-    public static void loadLootTable(LootTableLoadEvent event){
-        // Inject Mysterious Multipliers
-        if (SPAWN_MYSTERIOUS_MULTIPLIERS_IN.contains(event.getName())){//TODO: PORT loot to 1.20
-//            event.getTable().addPool(buildPoolFromInjectionEntry("mysterious_multiplier/" + event.getName().getPath()));
-        }
+        event.register(Registries.LOOT_FUNCTION_TYPE, registerer -> registerer.register(
+                ResourceKey.create(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot")),
+                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
+        ));
 
     }
-
-    private static LootPool buildPoolFromInjectionEntry(String name){
-        return LootPool.lootPool().add(getInjectionEntry(new ResourceLocation(VoluminousEnergy.MODID, "inject/" + name))).build();
-    }
-
-    private static LootPoolEntryContainer.Builder<?> getInjectionEntry(ResourceLocation resourceLocation){
-        return LootTableReference.lootTableReference(resourceLocation).setWeight(1);
-    }
+//
+//    @Deprecated
+//    public static void loadLootTable(LootTableLoadEvent event){
+//        // Inject Mysterious Multipliers
+//        if (SPAWN_MYSTERIOUS_MULTIPLIERS_IN.contains(event.getName())){
+////            event.getTable().addPool(buildPoolFromInjectionEntry("mysterious_multiplier/" + event.getName().getPath()));
+//        }
+//
+//    }
+//
+//    @Deprecated
+//    private static LootPool buildPoolFromInjectionEntry(String name){
+//        return LootPool.lootPool().add(getInjectionEntry(new ResourceLocation(VoluminousEnergy.MODID, "inject/" + name))).build();
+//    }
+//
+//    @Deprecated
+//    private static LootPoolEntryContainer.Builder<?> getInjectionEntry(ResourceLocation resourceLocation){
+//        return LootTableReference.lootTableReference(resourceLocation).setWeight(1);
+//    }
 }

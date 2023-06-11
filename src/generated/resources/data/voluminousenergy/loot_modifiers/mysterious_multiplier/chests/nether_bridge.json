@@ -1,0 +1,13 @@
+{
+  "type": "voluminousenergy:mysterious_multiplier",
+  "conditions": [
+    {
+      "chance": 1.0,
+      "condition": "minecraft:random_chance"
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/nether_bridge"
+    }
+  ]
+}

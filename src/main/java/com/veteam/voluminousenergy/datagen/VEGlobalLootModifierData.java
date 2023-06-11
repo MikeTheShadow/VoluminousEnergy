@@ -2,10 +2,13 @@ package com.veteam.voluminousenergy.datagen;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 import net.minecraftforge.common.loot.LootTableIdCondition;
@@ -20,47 +23,69 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
     @Override
     protected void start() {
         LootItemCondition fiftyFiftyChanceCondition = LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.5F, 0.5F).build();
+        LootItemCondition alwaysMetCondition = LootItemRandomChanceCondition.randomChance(1F).build();
 
 
+        animalFatModifierProvider(fiftyFiftyChanceCondition);
+        mysteriousMultiplierModifierProvider(alwaysMetCondition);
+
+    }
+
+    private void mysteriousMultiplierModifierProvider(LootItemCondition lootCondition) {
+
+        for (ResourceLocation resourceLocation : VELoot.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
+            String lootTableString = "mysterious_multiplier/" + resourceLocation.getPath();
+
+            add(lootTableString,
+                    new MysteriousMultiplierModifier(new LootItemCondition[]{
+                            lootCondition,
+                            LootTableIdCondition.builder(resourceLocation).build()
+                    })
+            );
+        }
+
+    }
+
+    private void animalFatModifierProvider(LootItemCondition lootCondition) {
         // Sheep
         add("animal_fat_from_black_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/black")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         add("animal_fat_from_brown_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/brown")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         add("animal_fat_from_gray_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/gray")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         add("animal_fat_from_light_gray_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/light_gray")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         add("animal_fat_from_pink_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/pink")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
 
         add("animal_fat_from_white_sheep",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/white")).build()
                 }, VEItems.ANIMAL_FAT.get(), 0, 2)
         );
@@ -68,7 +93,7 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         // Pig
         add("animal_fat_from_pig",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/pig")).build()
                 }, VEItems.ANIMAL_FAT.get(), 1, 3)
         );
@@ -76,14 +101,11 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         // Cow
         add("animal_fat_from_cow",
                 new AnimalFatLootModifier(new LootItemCondition[]{
-                        fiftyFiftyChanceCondition,
+                        lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/cow")).build()
                 }, VEItems.ANIMAL_FAT.get(), 1, 2)
         );
-
-
     }
-
 
 
     @Override
