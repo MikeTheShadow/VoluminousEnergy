@@ -96,13 +96,13 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     public ItemStack getResultItem(){return this.getResult();}
 
     @Override
-    public ResourceLocation getId(){return recipeId;}
+    public @NotNull ResourceLocation getId(){return recipeId;}
 
     @Override
-    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+    public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
     @Override
     public int getOutputAmount() {return outputAmount;}

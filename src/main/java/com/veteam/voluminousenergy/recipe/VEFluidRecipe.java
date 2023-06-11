@@ -78,9 +78,7 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public ItemStack getResultItem() { return result; }
 
     @Override
-    public @NotNull ResourceLocation getId(){
-        return null;
-    }
+    public abstract @NotNull ResourceLocation getId();
 
     @Override
     public  abstract @NotNull RecipeSerializer<?> getSerializer();
