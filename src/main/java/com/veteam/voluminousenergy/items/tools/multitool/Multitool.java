@@ -72,7 +72,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
         System.out.println("OnBlockStartBreak");
-        if (player.level.isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
+        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
             System.out.println("Client side or player is not server player");
             return super.onBlockStartBreak(itemstack, pos, player);
         } else {
@@ -92,7 +92,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
             return super.onBlockStartBreak(itemstack, pos, player);
         }
 
-        ServerLevel level = serverPlayer.getLevel();
+        ServerLevel level = serverPlayer.server.getLevel(player.level().dimension());
         BlockState miningBlock = level.getBlockState(pos);
 
         // Tree Felling -- CHAIN BIT
