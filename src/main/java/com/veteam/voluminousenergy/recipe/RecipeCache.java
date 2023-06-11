@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.codec.digest.Sha2Crypt;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class RecipeCache {
             for (ItemStack stack : recipe.getIngredient().getItems()) {
                 boolean hasIngredient = false;
                 for (ItemStack item : items) {
-                    if (stack.sameItem(item)) {
+                    if (stack.is(item.getItem())) {
                         hasIngredient = true;
                         break;
                     }
@@ -82,7 +81,7 @@ public class RecipeCache {
             for (ItemStack stack : recipe.getIngredient().getItems()) {
                 boolean hasIngredient = false;
                 for (ItemStack item : items) {
-                    if (stack.sameItem(item)) {
+                    if (stack.is(item.getItem())) {
                         hasIngredient = true;
                         break;
                     }
