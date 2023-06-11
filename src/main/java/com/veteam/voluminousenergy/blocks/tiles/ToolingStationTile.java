@@ -96,7 +96,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         if(fuelRecipe != null){
             // Logic for refueling the base
             if (!mainTool.isEmpty()){
-                mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(fluid -> {
+                mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                     FluidStack itemFluid = fluid.getFluidInTank(0);
                     FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
                     int tankCapacity = fluid.getTankCapacity(0);
