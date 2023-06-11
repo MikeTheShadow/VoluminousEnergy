@@ -6,6 +6,8 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -97,51 +99,67 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
         // Tree Felling -- CHAIN BIT
         if (this.canPerformAction(new ItemStack(this), ToolActions.AXE_DIG)) {
+            treefelling(pos, player, level, miningBlock);
+        }
 
-            ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
-            if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
+        // Drill bit AoE
+        if (this.canPerformAction(new ItemStack(this), ToolActions.PICKAXE_DIG)) {
 
-                BlockPos offsetPos = pos;
+            Direction playerDirection = player.getDirection();
 
-                System.out.println("Should be activating Tree Felling");
-                for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
-                    offsetPos = offsetPos.above();
-                    BlockState potentialStateToFell = level.getBlockState(offsetPos);
+            if (playerDirection == Direction.EAST || playerDirection == Direction.WEST) {
+                System.out.println("East/west sided code!");
 
-                    if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
-
-                        if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
-                            System.out.println("Calling player destroy");
-                            potentialStateToFell.getBlock()
-                                    .playerDestroy(
-                                            level,
-                                            player,
-                                            offsetPos,
-                                            potentialStateToFell,
-                                            null,
-                                            player.getMainHandItem()
-                                    );
-                            level.destroyBlock(offsetPos, true, player);
-                        } else {
-                            System.out.println("Cannot harvest block!");
-                        }
-
-                    } else {
-                        System.out.println("Found block is not present in taggedAsWood. Mined block is: " + potentialStateToFell + ", valid entries are: ");
-                        taggedAsWood.forEach(System.out::println);
-                        break;
-                    }
-
-                }
-
-            } else {
-                System.out.println("Mined block is not present in taggedAsWood. Mined block is: " + miningBlock + ", valid entries are: ");
-                taggedAsWood.forEach(System.out::println);
+            } else if (playerDirection == Direction.NORTH || playerDirection == Direction.SOUTH) {
+                System.out.println("North/south sided code");
             }
 
         }
 
         return super.onBlockStartBreak(itemstack, pos, player);
+    }
+
+    private static void treefelling(BlockPos pos, Player player, ServerLevel level, BlockState miningBlock) { // Extracted vertical Tree Felling code
+        ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
+        if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
+
+            BlockPos offsetPos = pos;
+
+            System.out.println("Should be activating Tree Felling");
+            for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
+                offsetPos = offsetPos.above();
+                BlockState potentialStateToFell = level.getBlockState(offsetPos);
+
+                if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
+
+                    if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
+                        System.out.println("Calling player destroy");
+                        potentialStateToFell.getBlock()
+                                .playerDestroy(
+                                        level,
+                                        player,
+                                        offsetPos,
+                                        potentialStateToFell,
+                                        null,
+                                        player.getMainHandItem()
+                                );
+                        level.destroyBlock(offsetPos, true, player);
+                    } else {
+                        System.out.println("Cannot harvest block!");
+                    }
+
+                } else {
+                    System.out.println("Found block is not present in taggedAsWood. Mined block is: " + potentialStateToFell + ", valid entries are: ");
+                    taggedAsWood.forEach(System.out::println);
+                    break;
+                }
+
+            }
+
+        } else {
+            System.out.println("Mined block is not present in taggedAsWood. Mined block is: " + miningBlock + ", valid entries are: ");
+            taggedAsWood.forEach(System.out::println);
+        }
     }
 
     @Override

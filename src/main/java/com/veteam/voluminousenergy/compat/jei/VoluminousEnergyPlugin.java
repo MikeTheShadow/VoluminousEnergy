@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.compat.jei.category.*;
 import com.veteam.voluminousenergy.compat.jei.containerHandler.*;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
+import com.veteam.voluminousenergy.items.upgrades.machine.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;

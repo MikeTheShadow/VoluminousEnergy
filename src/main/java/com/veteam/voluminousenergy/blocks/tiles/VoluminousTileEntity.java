@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
+import com.veteam.voluminousenergy.items.upgrades.machine.MysteriousMultiplier;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;

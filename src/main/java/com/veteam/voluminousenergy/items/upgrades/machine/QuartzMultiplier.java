@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.items.upgrades;
+package com.veteam.voluminousenergy.items.upgrades.machine;
 
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.setup.VESetup;
