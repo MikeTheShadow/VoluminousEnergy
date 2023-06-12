@@ -60,7 +60,7 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("stirling_generator"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"), this.imageWidth, 50, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"), 90, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
