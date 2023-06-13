@@ -44,7 +44,7 @@ public class ioMenuButton extends Button {
         } else {
             matrixStack.blit(texture, this.x, this.y, 193, 19, this.width, this.height);
         }
-        TextUtil.renderShadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), this.width,(this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
+        TextUtil.renderShadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), (this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override

@@ -72,10 +72,10 @@ public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrol
         slotDrawable.draw(matrixStack, 48, 10);
         slotDrawable.draw(matrixStack, 72, 10);
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputAmount() + "", this.getWidth(), 48, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getSecondAmount() + "", this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputAmount() + "",  48, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getSecondAmount() + "",  72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(FluidElectrolyzerRecipe recipe,

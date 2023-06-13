@@ -67,8 +67,8 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
 
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), 0, 8, 6, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
 
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
@@ -76,9 +76,9 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
         // Extract slot
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth,70, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 70, 49, WHITE_TEXT_STYLE);
         // Tank
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,93, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
