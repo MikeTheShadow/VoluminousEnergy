@@ -78,28 +78,28 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         slotDrawable.draw(matrixStack,116,10); // RNG1 output
         slotDrawable.draw(matrixStack,138,10); // RNG2 output
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "", this.getWidth(), 24, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
         if (recipe.getChance0() > 0) {
             int chance = (int) (recipe.getChance0()*100);
             int xPos = calculateXPos(94, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getChance1() > 0) {
             int chance = (int) (recipe.getChance1()*100);
             int xPos = calculateXPos(116, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getChance2() > 0) {
             int chance = (int) (recipe.getChance2()*100);
             int xPos = calculateXPos(138, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
     }
 
