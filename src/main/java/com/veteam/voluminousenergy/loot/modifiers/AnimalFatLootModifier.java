@@ -59,7 +59,7 @@ public class AnimalFatLootModifier extends LootModifier {
         ItemStack stackToAdd = itemAddition.copy();
         stackToAdd.setCount(amount);
         generatedLoot.add(stackToAdd);
-//        System.out.println("Generated New Loot");
+        System.out.println("Generated New Loot");
         return generatedLoot;
     }
 

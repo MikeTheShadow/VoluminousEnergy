@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.datagen;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
 import net.minecraft.data.PackOutput;
@@ -33,7 +32,7 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
 
     private void mysteriousMultiplierModifierProvider(LootItemCondition lootCondition) {
 
-        for (ResourceLocation resourceLocation : VELoot.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
+        for (ResourceLocation resourceLocation : LootSpawns.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
             String lootTableString = "mysterious_multiplier/" + resourceLocation.getPath();
 
             add(lootTableString,
@@ -47,51 +46,22 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
     }
 
     private void animalFatModifierProvider(LootItemCondition lootCondition) {
+        String lootTableString = "animal_fat/";
+
         // Sheep
-        add("animal_fat_from_black_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/black")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
+        for (ResourceLocation resourceLocation : LootSpawns.SHEEP_THAT_DROP_ANIMAL_FAT) {
 
-        add("animal_fat_from_brown_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/brown")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
-
-        add("animal_fat_from_gray_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/gray")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
-
-        add("animal_fat_from_light_gray_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/light_gray")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
-
-        add("animal_fat_from_pink_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/pink")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
-
-        add("animal_fat_from_white_sheep",
-                new AnimalFatLootModifier(new LootItemCondition[]{
-                        lootCondition,
-                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/sheep/white")).build()
-                }, VEItems.ANIMAL_FAT.get(), 0, 2)
-        );
+            add(lootTableString + resourceLocation.getPath(),
+                    new AnimalFatLootModifier(new LootItemCondition[]{
+                            lootCondition,
+                            LootTableIdCondition.builder(resourceLocation).build()
+                    }, VEItems.ANIMAL_FAT.get(), 0, 2)
+            );
+        }
+        lootTableString += "entities/";
 
         // Pig
-        add("animal_fat_from_pig",
+        add(lootTableString + "pig",
                 new AnimalFatLootModifier(new LootItemCondition[]{
                         lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/pig")).build()
@@ -99,12 +69,53 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         );
 
         // Cow
-        add("animal_fat_from_cow",
+        add(lootTableString + "cow",
                 new AnimalFatLootModifier(new LootItemCondition[]{
                         lootCondition,
                         LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/cow")).build()
                 }, VEItems.ANIMAL_FAT.get(), 1, 2)
         );
+
+        // Mooshroom
+        add(lootTableString + "mooshroom",
+                new AnimalFatLootModifier(new LootItemCondition[]{
+                        lootCondition,
+                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/mooshroom")).build()
+                }, VEItems.ANIMAL_FAT.get(), 1, 2)
+        );
+
+        // Llama
+        add(lootTableString + "llama",
+                new AnimalFatLootModifier(new LootItemCondition[]{
+                        lootCondition,
+                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/llama")).build()
+                }, VEItems.ANIMAL_FAT.get(), 1, 2)
+        );
+
+        // Polar bear
+        add(lootTableString + "polar_bear",
+                new AnimalFatLootModifier(new LootItemCondition[]{
+                        lootCondition,
+                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/polar_bear")).build()
+                }, VEItems.ANIMAL_FAT.get(), 3, 6)
+        );
+
+        // Panda
+        add(lootTableString + "panda",
+                new AnimalFatLootModifier(new LootItemCondition[]{
+                        lootCondition,
+                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/panda")).build()
+                }, VEItems.ANIMAL_FAT.get(), 0, 2)
+        );
+
+        // Dolphin
+        add(lootTableString + "dolphin",
+                new AnimalFatLootModifier(new LootItemCondition[]{
+                        lootCondition,
+                        LootTableIdCondition.builder(new ResourceLocation("minecraft","entities/dolphin")).build()
+                }, VEItems.ANIMAL_FAT.get(), 2, 5)
+        );
+
     }
 
 
