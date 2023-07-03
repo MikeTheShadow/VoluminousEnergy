@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -49,23 +50,8 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
         this.recipeId = recipeId;
     }
 
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
-    }
-
     public FluidStack getInputFluid(){
         return this.inputFluid.get();
-    }
-
-    @Override
-    @Deprecated
-    // Use getResult instead
-    public ItemStack getResultItem(){return this.getResult();}
-
-    @Override
-    public ItemStack getResult() {
-        return this.result;
     }
 
     @Override
@@ -82,26 +68,12 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
         return null;
     }
 
-    @Override
-    public List<FluidStack> getFluids() {
-        return this.fluidInputList.get();
-    }
 
     @Override
-    public List<Fluid> getRawFluids(){
-        return this.rawFluidInputList.get();
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return List.of(result.copy(), rngResult0.copy(), rngResult1.copy(), rngResult2.copy());
     }
 
-    public List<Item> getResultItems() {
-        return List.of(result.getItem(), rngResult0.getItem(), rngResult1.getItem(), rngResult2.getItem());
-    }
-
-    @Override
     public int getOutputAmount() {return this.outputAmount;}
 
     public int getOutputRngAmount0(){return outputRngAmount0;}
@@ -111,14 +83,8 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     public int getOutputRngAmount2(){return outputRngAmount2;}
 
     @Override
-    public FluidStack getOutputFluid() { // This recipe does not have an output fluid
-        return null;
-    }
-
-    @Override
     public int getProcessTime() { return processTime; }
 
-    @Override
     public int getInputAmount(){
         return this.inputAmount;
     }
@@ -134,6 +100,13 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     public float getChance1(){return chance1;}
 
     public float getChance2(){return chance2;}
+
+    @Override
+    public ItemStack getResult() {
+        return getOutputItems().get(0);
+    }
+
+
 
     @Override
     public @NotNull ItemStack getToastSymbol(){

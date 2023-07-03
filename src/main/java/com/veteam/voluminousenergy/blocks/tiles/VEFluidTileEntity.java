@@ -131,7 +131,7 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
                             AtomicBoolean recipeHit = new AtomicBoolean(false);
                             veRecipe.getIngredientList().forEach(i -> {
                                 VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(new ItemStack(i)), level).orElse(null);
-                                if (recipe != null && recipe.getFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
+                                if (recipe != null && recipe.getInputFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
                                     recipeHit.set(true);
                                 }
                             });

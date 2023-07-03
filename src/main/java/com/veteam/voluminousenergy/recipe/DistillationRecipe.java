@@ -55,9 +55,6 @@ public class DistillationRecipe extends VEFluidRecipe {
     public FluidStack getSecondResult(){return this.secondResult;}
 
     @Override
-    public int getInputAmount(){ return inputAmount; }
-
-    @Override
     public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get());
     }
@@ -103,40 +100,9 @@ public class DistillationRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(null);
-        f.add(getOutputFluid());
-        f.add(getSecondFluid());
-        return f;
-    }
-
-    @Override
-    public List<Fluid> getRawFluids() {
-        List<Fluid> f = new ArrayList<>();
-        f.add(null);
-        f.add(getOutputFluid().getRawFluid());
-        f.add(getSecondFluid().getRawFluid());
-        return f;
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
-
-    @Override
-    public List<Integer> getAmounts() {
-        List<Integer> l = new ArrayList<>();
-        l.add(getInputAmount());
-        l.add(getOutputAmount());
-        l.add(secondAmount);
-        l.add(getThirdAmount());
-        return l;
-    }
-
-    @Override
-    public int getOutputAmount() {return outputAmount;}
 
     @Override
     public int getProcessTime() { return processTime; }
@@ -188,6 +154,9 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.thirdAmount = thirdItemAmount;
             recipe.thirdChance = thirdItemChance;
 
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
+
             return recipe;
         }
 
@@ -229,6 +198,9 @@ public class DistillationRecipe extends VEFluidRecipe {
             recipe.thirdResult = buffer.readItem();
             recipe.thirdAmount = buffer.readInt();
             recipe.thirdChance = buffer.readFloat();
+
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);

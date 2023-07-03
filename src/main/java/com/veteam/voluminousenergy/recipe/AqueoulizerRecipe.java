@@ -50,16 +50,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     // use getOutputFluid instead
     public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
 
-    @Override
-    public FluidStack getOutputFluid(){
-        return this.result;
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
-    }
-
     public FluidStack getInputFluid(){
         return this.inputFluid.get();
     }
@@ -84,30 +74,17 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public List<FluidStack> getFluids() {
+    public List<FluidStack> getInputFluids() {
         return this.fluidInputList.get();
     }
 
     @Override
-    public List<Fluid> getRawFluids(){
-        return this.rawFluidInputList.get();
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
 
     @Override
-    public int getOutputAmount() {return this.outputAmount;}
-
-    @Override
     public int getProcessTime() { return processTime; }
-
-    @Override
-    public int getInputAmount(){
-        return this.inputAmount;
-    }
 
     @Override
     public @NotNull ItemStack getToastSymbol(){
@@ -143,6 +120,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             ResourceLocation secondBucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             recipe.outputAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"amount",0);
             recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),recipe.outputAmount);
+
+            recipe.fluidOutputList.add(recipe.result);
 
             return recipe;
         }
@@ -182,6 +161,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
             recipe.outputAmount = buffer.readInt();
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
+            recipe.fluidOutputList.add(recipe.result);
+
             return recipe;
         }
 

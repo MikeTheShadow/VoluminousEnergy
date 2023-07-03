@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     public Lazy<ArrayList<FluidStack>> fluidInputList;
     public Lazy<ArrayList<Fluid>> rawFluidInputList;
     public Lazy<Integer> inputArraySize;
+    public ArrayList<FluidStack> fluidOutputList = new ArrayList<>();
 
     public boolean fluidUsesTagKey;
     public String tagKeyString;
@@ -88,19 +90,32 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
 
     public abstract ArrayList<Item>  getIngredientList();
 
-    public abstract List<FluidStack> getFluids();
+    public List<FluidStack> getInputFluids() {
+        return fluidInputList.get();
+    }
 
-    public abstract List<Fluid> getRawFluids();
+    public abstract List<ItemStack> getOutputItems();
 
-    public abstract List<ItemStack> getResults();
-
-    public abstract int getInputAmount();
-
-    public abstract int getOutputAmount();
-
-    public abstract FluidStack getOutputFluid();
-
-    public abstract List<Integer> getAmounts();
+    public List<FluidStack> getOutputFluids() {
+        return this.fluidOutputList;
+    }
 
     public abstract int getProcessTime();
+
+    public Lazy<ArrayList<Item>> getLazyIngredients() {
+        return this.ingredientList;
+    }
+
+    public FluidStack getOutputFluid(int slot) {
+        return this.fluidOutputList.get(slot);
+    }
+
+    public FluidStack getInputFluid(int slot) {
+        return getInputFluids().get(slot); // Use getInputFluids because it might need to be overriden in some different entities
+    }
+
+
+    public List<Float> getRNGAmounts() {
+        throw new NotImplementedException("This method needs to be impl'd before call in " + this.getClass().getName());
+    }
 }

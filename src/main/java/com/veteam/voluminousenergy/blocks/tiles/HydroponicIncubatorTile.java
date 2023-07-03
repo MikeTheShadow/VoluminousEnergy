@@ -1,12 +1,17 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.HydroponicIncubatorContainer;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
+import com.veteam.voluminousenergy.util.recipe.RecipeItem;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
@@ -84,6 +90,10 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
         inputTank.setAllowAny(true);
     }
 
+    RecipeItem lastItem = new RecipeItem();
+    RecipeFluid lastFluid = new RecipeFluid();
+    HydroponicIncubatorRecipe recipe;
+
     @Override
     public void tick() {
         updateClients();
@@ -104,25 +114,35 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
 
         inputItemStack.set(inputItem.copy()); // This reference is for preventing insertions on output slots, while still being able to verify them
 
-        // Main Fluid Processing occurs here:
-        HydroponicIncubatorRecipe recipe = RecipeUtil.getHydroponicIncubatorRecipe(level, this.inputTank.getTank().getFluid(),inputItem.copy());
+        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())
+                || lastItem.isDifferent(inputItem)) {
+            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, HydroponicIncubatorRecipe.class,
+                    Collections.singletonList(this.inputTank.getTank().getFluid()),
+                    inputItem.copy());
+
+            if (newRecipe != recipe) {
+                counter = 0;
+            }
+            recipe = (HydroponicIncubatorRecipe) newRecipe;
+            VoluminousEnergy.LOGGER.info("Recipe null: " + (recipe == null));
+        }
+
         // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
 
         if (inputTank != null && !inputTank.getTank().isEmpty() && recipe != null) {
             //ItemStack inputFluidStack = new ItemStack(inputTank.getTank().getFluid().getRawFluid().getFilledBucket(),1);
 
-            if (recipe.getRawFluids().contains(inputTank.getTank().getFluid().getRawFluid())
-                && ((recipe.getOutputAmount() + output0.getCount()) <= recipe.getResult().getMaxStackSize())
-                && (recipe.getOutputRngAmount0() + output1.getCount() <= recipe.getResults().get(1).getMaxStackSize())
-                && (recipe.getOutputRngAmount1() + output2.getCount() <= recipe.getResults().get(1).getMaxStackSize())
-                && (recipe.getOutputRngAmount2() + output3.getCount() <= recipe.getResults().get(1).getMaxStackSize())
+            if (((recipe.getOutputAmount() + output0.getCount()) <= recipe.getResult().getMaxStackSize())
+                && (recipe.getOutputRngAmount0() + output1.getCount() <= recipe.getOutputItems().get(1).getMaxStackSize())
+                && (recipe.getOutputRngAmount1() + output2.getCount() <= recipe.getOutputItems().get(1).getMaxStackSize())
+                && (recipe.getOutputRngAmount2() + output3.getCount() <= recipe.getOutputItems().get(1).getMaxStackSize())
             ) {
 
                 // Tank fluid amount check + tank cap checks
-                if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()){
+                if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()) {
                     // Check for power
-                    if (canConsumeEnergy()){
-                        if (counter == 1){
+                    if (canConsumeEnergy()) {
+                        if (counter == 1) {
 
                             // Drain Input Tank
                             inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
@@ -149,7 +169,7 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
 
                                 // Generate Random floats
                                 Random r = new Random();
-                                float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
+                                float random = Mth.abs(0 + r.nextFloat() * (-1));
                                 //LOGGER.debug("Random: " + random);
                                 // ONLY manipulate the slot if the random float is under or is identical to the chance float
                                 if(random <= recipe.getChance0()){
@@ -218,7 +238,7 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
                             counter--;
                             consumeEnergy();
                             this.setChanged();
-                        } else if (counter > 0){
+                        } else if (counter > 0) {
                             counter--;
                             consumeEnergy();
                             if(++sound_tick == 19) {
@@ -234,16 +254,9 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
                     } else { // Energy Check
                         decrementSuperCounterOnNoPower();
                     }
-                } else { // If fluid tank empty set counter to zero
-                    counter = 0;
                 }
-
-
-            } else counter = 0;
-        } else {
-            counter = 0;
+            }
         }
-        //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
 
     @Override
@@ -264,12 +277,8 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (slot == 0 || slot == 1) {
                     return stack.getItem() instanceof BucketItem;
-                } else if (slot == 2) {
-                    ArrayList<HydroponicIncubatorRecipe> recipes = RecipeUtil.getHydroponicIncubatorRecipesFromItemInput(level, stack.getItem());
-                    return !recipes.isEmpty();
                 } else if (slot < 7) {
-                    ArrayList<HydroponicIncubatorRecipe> recipes = RecipeUtil.getHydroponicIncubatorRecipesFromAnyItemOutput(level, stack.getItem());
-                    return !recipes.isEmpty();
+                    return RecipeCache.vEFluidRecipeHasItem(HydroponicIncubatorRecipe.class,stack);
                 }
 
                 if (slot == 7) return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
@@ -290,9 +299,7 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
                         return stack;
                     }
                 } else if (slot > 2 && slot < 7) {
-                    ArrayList<HydroponicIncubatorRecipe> recipes = RecipeUtil.getHydroponicIncubatorRecipesFromAnyItemOutput(level, inputItemStack.get().getItem());
-                    if (recipes.isEmpty()) return stack;
-                    if (RecipeUtil.getHydroponicIncubatorRecipesFromAnyItemOutput(level, stack.getItem()).isEmpty()) return stack;
+                    if(!isItemValid(slot,stack)) return stack;
                 }
 
                 return super.insertItem(slot, stack, simulate);

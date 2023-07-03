@@ -59,16 +59,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     // use getOutputFluid instead
     public ItemStack getResult() {return new ItemStack(this.fluid.getBucket());}
 
-    @Override
-    public FluidStack getOutputFluid(){
-        return new FluidStack(this.fluid, 1000);
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return List.of(this.minimumAmount, this.maximumAmount);
-    }
-
     public FluidStack getInputFluid(){
         return new FluidStack(this.fluid, 1000);
     }
@@ -93,30 +83,16 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public List<FluidStack> getFluids() {
+    public List<FluidStack> getInputFluids() {
         return List.of(new FluidStack(this.fluid, 1000));
     }
-
     @Override
-    public List<Fluid> getRawFluids() {
-        return List.of(this.fluid);
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
 
     @Override
-    public int getOutputAmount() {return 0;}
-
-    @Override
     public int getProcessTime() { return 0; }
-
-    @Override
-    public int getInputAmount(){
-        return 0;
-    }
 
     public FluidClimateSpawn getFluidClimateSpawn() {
         return fluidClimateSpawn;
@@ -178,6 +154,8 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
             recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
             recipe.result = new FluidStack(Objects.requireNonNull(recipe.fluid), 1000);
 
+            recipe.fluidOutputList.add(recipe.result);
+
             return recipe;
         }
 
@@ -224,6 +202,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
             recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
             recipe.result = new FluidStack(recipe.fluid, 1000);
+            recipe.fluidOutputList.add(recipe.result);
 
             return recipe;
         }

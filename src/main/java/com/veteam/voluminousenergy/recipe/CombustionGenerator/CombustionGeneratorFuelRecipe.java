@@ -78,46 +78,11 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public ArrayList<Item> getIngredientList() {
         return ingredientList.get();
     }
-
     @Override
-    public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(getOutputFluid());
-        return f;
-    }
-
-    @Override
-    public List<Fluid> getRawFluids() {
-        List<Fluid> f = new ArrayList<>();
-        f.add(getOutputFluid().getRawFluid());
-        return f;
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         List<ItemStack> s = new ArrayList<>();
         s.add(getResult());
         return s;
-    }
-
-    @Override
-    public int getInputAmount() {
-        return 0;
-    }
-
-    @Override
-    public int getOutputAmount() {
-        return 0;
-    }
-
-    @Override
-    public FluidStack getOutputFluid() {
-        return new FluidStack(((BucketItem) result.getItem()).getFluid(),250);
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
     }
 
     @Override

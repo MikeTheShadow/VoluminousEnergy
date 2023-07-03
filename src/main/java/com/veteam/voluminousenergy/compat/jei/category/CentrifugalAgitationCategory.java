@@ -73,9 +73,9 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
         slotDrawable.draw(matrixStack,72,10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("mB:"), this.getWidth(), -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getInputAmount() + ""), this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputAmount() + ""), this.getWidth(), 48, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getSecondAmount() + ""), this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getInputFluids().get(0).getAmount() + ""), this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(0).getAmount() + ""), this.getWidth(), 48, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(1).getAmount() + ""), this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(CentrifugalAgitatorRecipe recipe,

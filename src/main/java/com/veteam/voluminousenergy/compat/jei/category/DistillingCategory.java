@@ -50,22 +50,22 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.distilling");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(DistillationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(DistillationRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,24, 12);
         emptyArrow.draw(matrixStack,24,12);
         slotDrawable.draw(matrixStack,2,10);
@@ -74,9 +74,9 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,96,10);
 
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", this.getWidth(),-20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputAmount() + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputAmount() + "",this.getWidth(), 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getAmounts().get(2) + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputFluid(0).getAmount() + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "",this.getWidth(), 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getThirdAmount() + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%",this.getWidth(), 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
@@ -12,6 +11,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -35,10 +34,10 @@ import java.util.List;
 
 public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "input_0_sm");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "input_1_sm");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_0_sm");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_1_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(input0sm);
@@ -47,14 +46,14 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         add(output1sm);
     }};
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank0:output_tank_0_gui");
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.OUTPUT,1,"outputTank1:output_tank_1_gui");
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "inputTank:input_tank_gui");
+    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY), 1, null, null, TankType.OUTPUT, 0, "outputTank0:output_tank_0_gui");
+    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1, "outputTank1:output_tank_1_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
-       add(inputTank);
-       add(outputTank0);
-       add(outputTank1);
+        add(inputTank);
+        add(outputTank0);
+        add(outputTank1);
     }};
 
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
@@ -72,7 +71,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
     }
 
     private VEFluidRecipe recipe;
-    private Fluid lastFluid;
+    private final RecipeFluid lastFluid = new RecipeFluid();
 
     @Override
     public void tick() {
@@ -88,70 +87,55 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         outputTank0.setOutput(output0);
         outputTank1.setOutput(output1);
 
-        if(this.inputFluid(inputTank,0,1)) return;
-        if(this.outputFluid(inputTank,0,1)) return;
-        if(this.outputFluidStatic(outputTank0,2)) return;
-        if(this.outputFluidStatic(outputTank1,3)) return;
+        if (this.inputFluid(inputTank, 0, 1)) return;
+        if (this.outputFluid(inputTank, 0, 1)) return;
+        if (this.outputFluidStatic(outputTank0, 2)) return;
+        if (this.outputFluidStatic(outputTank1, 3)) return;
         // Main Fluid Processing occurs here
-        if (inputTank != null) {
-            if(!inputTank.getTank().getFluid().getRawFluid().isSame(lastFluid)) {
-                recipe = RecipeCache.getFluidRecipeFromCache(level,CentrifugalAgitatorRecipe.class, Collections.singletonList(inputTank.getTank().getFluid()));
-                lastFluid = inputTank.getTank().getFluid().getRawFluid();
-                VoluminousEnergy.LOGGER.info("updating recipe: " + (recipe == null));
+
+        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())) {
+            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, CentrifugalAgitatorRecipe.class,
+                    Collections.singletonList(this.inputTank.getTank().getFluid()));
+
+            if (newRecipe != recipe) {
+                counter = 0;
             }
+            recipe = newRecipe;
+        }
 
+        if (recipe != null) {
 
-            if (recipe != null) {
-                if (outputTank0 != null && outputTank1 != null) {
+            if (outputTank0.canInsertOutputFluid(recipe, 0) && outputTank1.canInsertOutputFluid(recipe, 1)) {
+                // Check for power
+                if (canConsumeEnergy()) {
+                    if (counter == 1) {
+                        // Drain Input
+                        inputTank.drainInput(recipe,0);
 
-                    // Tank fluid amount check + tank cap checks
-                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()
-                            && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
-                            && outputTank1.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
-                        // Check for power
-                        if (canConsumeEnergy()) {
-                            if (counter == 1) {
-
-                                // Drain Input
-                                inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
-
-                                // First Output Tank
-                                if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                    outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
-                                } else {
-                                    outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                // Second Output Tank
-                                CentrifugalAgitatorRecipe centrifugalAgitatorRecipe = (CentrifugalAgitatorRecipe) recipe;
-                                if (outputTank1.getTank().getFluid().getRawFluid() != centrifugalAgitatorRecipe.getSecondFluid().getRawFluid()) {
-                                    outputTank1.getTank().setFluid(centrifugalAgitatorRecipe.getSecondFluid().copy());
-                                } else {
-                                    outputTank1.getTank().fill(centrifugalAgitatorRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
-
-                                counter--;
-                                consumeEnergy();
-                                this.setChanged();
-                            } else if (counter > 0) {
-                                counter--;
-                                consumeEnergy();
-                                if(++sound_tick == 19) {
-                                    sound_tick = 0;
-                                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                        level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    }
-                                }
-                            } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(this.getUpgradeSlotId()));
-                                length = counter;
-                            }
-                        } else { // Energy Check
-                            decrementSuperCounterOnNoPower();
+                        //AFTER
+                        if (outputTank0.canInsertOutputFluid(recipe, 0) && outputTank1.canInsertOutputFluid(recipe, 1)) {
+                            outputTank0.fillOutput(recipe, 0);
+                            outputTank1.fillOutput(recipe, 1);
                         }
-                    } else { // If fluid tank empty set counter to zero
-                        counter = 0;
+
+                        counter--;
+                        consumeEnergy();
+                        this.setChanged();
+                    } else if (counter > 0) {
+                        counter--;
+                        consumeEnergy();
+                        if (++sound_tick == 19) {
+                            sound_tick = 0;
+                            if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                                level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                            }
+                        }
+                    } else {
+                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
+                        length = counter;
                     }
+                } else { // Energy Check
+                    decrementSuperCounterOnNoPower();
                 }
             }
         }
@@ -167,7 +151,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
     }
-    
+
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -179,31 +163,31 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         return 0;
     }
 
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
+    public int progressCounterPercent() {
+        if (length != 0) {
+            return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
             return 0;
         }
     }
 
-    public int ticksLeft(){
+    public int ticksLeft() {
         return counter;
     }
 
     // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
-    public FluidStack getFluidStackFromTank(int num){
-        if (num == 0){
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num == 0) {
             return inputTank.getTank().getFluid();
-        } else if (num == 1){
+        } else if (num == 1) {
             return outputTank0.getTank().getFluid();
-        } else if (num == 2){
+        } else if (num == 2) {
             return outputTank1.getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
 
-    public int getTankCapacity(){
+    public int getTankCapacity() {
         return TANK_CAPACITY;
     }
 
@@ -212,15 +196,15 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         return fluidManagers;
     }
 
-    public RelationalTank getInputTank(){
+    public RelationalTank getInputTank() {
         return this.inputTank;
     }
 
-    public RelationalTank getOutputTank0(){
+    public RelationalTank getOutputTank0() {
         return this.outputTank0;
     }
 
-    public RelationalTank getOutputTank1(){
+    public RelationalTank getOutputTank1() {
         return this.outputTank1;
     }
 

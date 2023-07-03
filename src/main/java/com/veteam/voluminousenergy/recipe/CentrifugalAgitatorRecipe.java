@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
@@ -51,25 +52,8 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     @Deprecated
     public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
 
-    public FluidStack getSecondResult(){return secondResult;}
-
-    public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(getOutputFluid());
-        f.add(getSecondFluid());
-        return f;
-    }
-
     @Override
-    public List<Fluid> getRawFluids() {
-        List<Fluid> f = new ArrayList<>();
-        f.add(getOutputFluid().getRawFluid());
-        f.add(getSecondFluid().getRawFluid());
-        return f;
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
 
@@ -79,16 +63,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     public FluidStack getOutputFluid(){
         return this.result.copy();
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
-    }
-
-    @Deprecated
-    public FluidStack getInputFluid(){
-        return this.fluidInputList.get().get(0).copy();
     }
 
     @Override
@@ -103,12 +77,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-
-    @Override
-    public int getOutputAmount() {return outputAmount;}
-
-    @Override
-    public int getInputAmount() {return inputAmount;}
 
     public int getSecondAmount(){return secondAmount;}
 
@@ -147,6 +115,7 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
                 throw new JsonSyntaxException("Bad syntax for the Centrifugal Agitator recipe, input_fluid must be tag or fluid");
             }
 
+            // TODO remove deprecated result and outputAmounts
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("first_result").getAsJsonObject(),"amount",0);
             recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
@@ -156,6 +125,9 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
             int secondOutputFluidAmount = GsonHelper.getAsInt(json.get("second_result").getAsJsonObject(),"amount",0);
             recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
             recipe.secondAmount = secondOutputFluidAmount;
+
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
 
             return recipe;
         }
@@ -198,6 +170,9 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
+
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
 
             return recipe;
         }

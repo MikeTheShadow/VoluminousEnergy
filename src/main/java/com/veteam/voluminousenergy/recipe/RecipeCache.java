@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -17,7 +18,9 @@ import java.util.List;
 public class RecipeCache {
 
     private static final HashMap<Level, HashMap<Class<?>, List<VERecipe>>> veRecipeCache = new HashMap<>();
+    private static final List<VERecipe> rawVERecipes = new ArrayList<>();
     private static final HashMap<Level, HashMap<Class<?>, List<VEFluidRecipe>>> veFluidRecipeCache = new HashMap<>();
+    private static final List<VEFluidRecipe> rawVEFluidRecipes = new ArrayList<>();
 
     public static void buildCache(Iterable<ServerLevel> levels) {
 
@@ -33,11 +36,13 @@ public class RecipeCache {
                     var cache = levelCache.getOrDefault(veRecipe.getClass(), new ArrayList<>());
                     cache.add(veRecipe);
                     levelCache.put(veRecipe.getClass(), cache);
+                    rawVERecipes.add(veRecipe);
                     cached++;
                 } else if (recipe instanceof VEFluidRecipe veFluidRecipe) {
                     var cache = fluidLevelCache.getOrDefault(veFluidRecipe.getClass(), new ArrayList<>());
                     cache.add(veFluidRecipe);
                     fluidLevelCache.put(veFluidRecipe.getClass(), cache);
+                    rawVEFluidRecipes.add(veFluidRecipe);
                     cached++;
                 }
             }
@@ -60,6 +65,8 @@ public class RecipeCache {
         }
         veRecipeCache.clear();
         veFluidRecipeCache.clear();
+        rawVEFluidRecipes.clear();
+        rawVERecipes.clear();
         buildCache(levels);
     }
 
@@ -93,7 +100,7 @@ public class RecipeCache {
         var recipes = levelCache.get(clazz);
 
         if (recipes == null) {
-            VoluminousEnergy.LOGGER.info("No recipes?");
+            VoluminousEnergy.LOGGER.error("No recipes found for " + clazz.getName());
             return null;
         }
 
@@ -102,7 +109,7 @@ public class RecipeCache {
             if (items.length != 0) {
                 isValid = containsIngredient(recipe.getIngredient(), items);
             }
-            for (FluidStack fluid : recipe.getFluids()) {
+            for (FluidStack fluid : recipe.getInputFluids()) {
                 boolean hasFluid = false;
                 for (FluidStack inputFluid : fluids) {
                     if (fluid.isFluidEqual(inputFluid) && inputFluid.getAmount() >= fluid.getAmount()) {
@@ -110,6 +117,7 @@ public class RecipeCache {
                         break;
                     }
                 }
+
                 if (!hasFluid) {
                     isValid = false;
                     break;
@@ -118,6 +126,21 @@ public class RecipeCache {
             if (isValid) return recipe;
         }
         return null;
+    }
+
+    public static boolean vEFluidRecipeHasItem(Class<? extends VEFluidRecipe> recipe, ItemStack stack) {
+
+        for(VEFluidRecipe veFluidRecipe : rawVEFluidRecipes) {
+            if (recipe.isAssignableFrom(veFluidRecipe.getClass())) {
+                for(Item item : veFluidRecipe.getLazyIngredients().get()) {
+                    if(stack.is(item)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private static boolean containsIngredient(Ingredient ingredient, ItemStack[] items) {

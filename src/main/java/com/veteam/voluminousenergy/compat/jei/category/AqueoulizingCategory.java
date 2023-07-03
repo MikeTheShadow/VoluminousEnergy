@@ -77,8 +77,8 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         slotDrawable.draw(matrixStack,72,10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("mB:"), this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getInputAmount() + ""), this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputAmount() + ""), this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getInputFluids().get(0).getAmount() + ""), this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(0).getAmount() + ""), this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
 
@@ -100,8 +100,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
 
         // OUTPUT
-        List<FluidStack> outputStacks = new ArrayList<>();
-        outputStacks.add(recipe.getOutputFluid()); // Normal output
+        List<FluidStack> outputStacks = recipe.getOutputFluids();
         fluidOutputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, outputStacks);
     }
 

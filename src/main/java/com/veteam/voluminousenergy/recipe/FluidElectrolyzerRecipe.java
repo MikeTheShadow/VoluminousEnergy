@@ -53,23 +53,8 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
 
     public FluidStack getSecondResult(){return secondResult;}
 
-    public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(getOutputFluid());
-        f.add(getSecondFluid());
-        return f;
-    }
-
     @Override
-    public List<Fluid> getRawFluids() {
-        List<Fluid> f = new ArrayList<>();
-        f.add(getOutputFluid().getRawFluid());
-        f.add(getSecondFluid().getRawFluid());
-        return f;
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
 
@@ -80,12 +65,6 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     public FluidStack getOutputFluid(){
         return this.result.copy();
     }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
-    }
-
     @Deprecated
     public FluidStack getInputFluid(){
         return this.fluidInputList.get().get(0).copy();
@@ -103,12 +82,6 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-
-    @Override
-    public int getOutputAmount() {return outputAmount;}
-
-    @Override
-    public int getInputAmount() {return inputAmount;}
 
     public int getSecondAmount(){return secondAmount;}
 
@@ -157,6 +130,9 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
             recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
             recipe.secondAmount = secondOutputFluidAmount;
 
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
+
             return recipe;
         }
 
@@ -198,6 +174,9 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
 
             Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
             recipe.ingredient = Lazy.of(() -> tempIngredient);
+
+            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(recipe.secondResult);
 
             return recipe;
         }

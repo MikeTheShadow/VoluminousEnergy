@@ -56,32 +56,13 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     @Override
     @Deprecated
     public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
-
-    public List<FluidStack> getFluids() {
-        List<FluidStack> f = new ArrayList<>();
-        f.add(getOutputFluid());
-        return f;
-    }
-
     @Override
-    public List<Fluid> getRawFluids() {
-        List<Fluid> f = new ArrayList<>();
-        f.add(getOutputFluid().getRawFluid());
-        return f;
-    }
-
-    @Override
-    public List<ItemStack> getResults() {
+    public List<ItemStack> getOutputItems() {
         return null;
     }
 
     public FluidStack getOutputFluid(){
         return this.result.copy();
-    }
-
-    @Override
-    public List<Integer> getAmounts() {
-        return null;
     }
 
     @Override
@@ -98,12 +79,6 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
     @Override
-    public int getOutputAmount() {return outputAmount;}
-
-    @Override
-    public int getInputAmount() {return firstInputAmount;}
-
-    @Override
     public int getProcessTime() { return processTime; }
 
     @Override
@@ -111,7 +86,16 @@ public class FluidMixerRecipe extends VEFluidRecipe {
         return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get());
     }
 
-    public int getSecondInputAmount() { return secondInputAmount; }
+    // This is a nasty hack but will work for now
+    @Override
+    public List<FluidStack> getInputFluids() {
+        FluidStack first = fluidInputList.get().get(0);
+        FluidStack second = secondFluidInputList.get().get(0);
+        return new ArrayList<>() {{
+            add(first);
+            add(second);
+        }};
+    }
 
     public static class Serializer implements RecipeSerializer<FluidMixerRecipe> {
         @Override
@@ -162,6 +146,8 @@ public class FluidMixerRecipe extends VEFluidRecipe {
             int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"amount",0);
             recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
             recipe.outputAmount = firstOutputFluidAmount;
+
+            recipe.fluidOutputList.add(recipe.result);
 
             return recipe;
         }
@@ -220,6 +206,7 @@ public class FluidMixerRecipe extends VEFluidRecipe {
 
                 recipe.secondFluidInputList = Lazy.of(() -> fluidStacks);
                 recipe.secondRawFluidInputList = Lazy.of(() -> fluids);
+                recipe.fluidOutputList.addAll(fluidStacks);
             }
 
             recipe.result = buffer.readFluidStack();

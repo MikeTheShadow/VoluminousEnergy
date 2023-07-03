@@ -2,11 +2,15 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.FluidElectrolyzerContainer;
+import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
 import com.veteam.voluminousenergy.recipe.FluidElectrolyzerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
+import com.veteam.voluminousenergy.util.recipe.RecipeItem;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -28,16 +32,17 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
-    public VESlotManager output1sm = new VESlotManager(3, Direction.WEST, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_1_sm");
-    public VESlotManager output2sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_2_sm");
-    public VESlotManager output3sm = new VESlotManager(5, Direction.SOUTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_3_sm");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "input_0_sm");
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "input_1_sm");
+    public VESlotManager output0sm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_0_sm");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.WEST, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_1_sm");
+    public VESlotManager output2sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_2_sm");
+    public VESlotManager output3sm = new VESlotManager(5, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_3_sm");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(input0sm);
@@ -48,9 +53,9 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         add(output3sm);
     }};
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.INPUT,"inputTank:input_tank_gui");
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY),1,null,null, TankType.OUTPUT,0,"outputTank0:output_tank_0_gui");
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY),2,null,null, TankType.OUTPUT,1,"outputTank1:output_tank_1_gui");
+    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "inputTank:input_tank_gui");
+    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY), 1, null, null, TankType.OUTPUT, 0, "outputTank0:output_tank_0_gui");
+    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1, "outputTank1:output_tank_1_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(inputTank);
@@ -72,6 +77,9 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         return inventory;
     }
 
+    RecipeFluid lastFluid = new RecipeFluid();
+    VEFluidRecipe recipe;
+
     @Override
     public void tick() {
         updateClients();
@@ -91,67 +99,59 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         outputTank1.setInput(input2);
         outputTank1.setOutput(output2);
 
-        if(this.inputFluid(inputTank,0,1)) return;
-        if(this.outputFluid(inputTank,0,1)) return;
-        if(this.inputFluid(outputTank0,2,3)) return;
-        if(this.outputFluid(outputTank0,2,3)) return;
-        if(this.inputFluid(outputTank1, 4,5)) return;
-        if(this.outputFluid(outputTank1,4,5)) return;
-        // Main Fluid Processing occurs here
-        if (inputTank != null) {
+        if (this.inputFluid(inputTank, 0, 1)) return;
+        if (this.outputFluid(inputTank, 0, 1)) return;
+        if (this.inputFluid(outputTank0, 2, 3)) return;
+        if (this.outputFluid(outputTank0, 2, 3)) return;
+        if (this.inputFluid(outputTank1, 4, 5)) return;
+        if (this.outputFluid(outputTank1, 4, 5)) return;
 
-            VEFluidRecipe recipe = RecipeUtil.getFluidElectrolyzerRecipe(level,inputTank.getTank().getFluid().copy());
-            if (recipe != null) {
-                if (outputTank0 != null && outputTank1 != null) {
+        boolean lastFluidDifferent = lastFluid.isDifferent(this.inputTank.getTank().getFluid());
 
-                    // Tank fluid amount check + tank cap checks
-                    if (inputTank.getTank().getFluidAmount() >= recipe.getInputAmount()
-                            && outputTank0.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
-                            && outputTank1.getTank().getFluidAmount() + recipe.getFluids().get(1).getAmount() <= TANK_CAPACITY) {
-                        // Check for power
-                        if (canConsumeEnergy()) {
-                            if (counter == 1) {
+        if (lastFluidDifferent) {
+            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, FluidElectrolyzerRecipe.class,
+                    Collections.singletonList(this.inputTank.getTank().getFluid()));
 
-                                // Drain Input
-                                inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
+            if (newRecipe != recipe) {
+                counter = 0;
+            }
+            recipe = newRecipe;
+        }
 
-                                // First Output Tank
-                                if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                    outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
-                                } else {
-                                    outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
+        VEFluidRecipe recipe = RecipeUtil.getFluidElectrolyzerRecipe(level, inputTank.getTank().getFluid().copy());
+        if (recipe != null) {
 
-                                // Second Output Tank
-                                FluidElectrolyzerRecipe fluidElectrolyzerRecipe = (FluidElectrolyzerRecipe) recipe;
-                                if (outputTank1.getTank().getFluid().getRawFluid() != fluidElectrolyzerRecipe.getSecondFluid().getRawFluid()) {
-                                    outputTank1.getTank().setFluid(fluidElectrolyzerRecipe.getSecondFluid().copy());
-                                } else {
-                                    outputTank1.getTank().fill(fluidElectrolyzerRecipe.getSecondResult().copy(), IFluidHandler.FluidAction.EXECUTE);
-                                }
+            // Tank fluid amount check + tank cap checks
+            if (outputTank0.canInsertOutputFluid(recipe, 0)
+                    && outputTank1.canInsertOutputFluid(recipe, 1)) {
+                // Check for power
+                if (canConsumeEnergy()) {
+                    if (counter == 1) {
+                        inputTank.drainInput(recipe, 0);
 
-                                counter--;
-                                consumeEnergy();
-                                this.setChanged();
-                            } else if (counter > 0) {
-                                counter--;
-                                consumeEnergy();
-                                if(++sound_tick == 19) {
-                                    sound_tick = 0;
-                                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                        level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    }
-                                }
-                            } else {
-                                counter = this.calculateCounter(recipe.getProcessTime(),inventory.getStackInSlot(this.getUpgradeSlotId()));
-                                length = counter;
-                            }
-                        } else { // Energy Check
-                            decrementSuperCounterOnNoPower();
+                        if (outputTank0.canInsertOutputFluid(recipe, 0) && outputTank1.canInsertOutputFluid(recipe, 1)) {
+                            outputTank0.fillOutput(recipe, 0);
+                            outputTank1.fillOutput(recipe, 1);
                         }
-                    } else { // If fluid tank empty set counter to zero
-                        counter = 0;
+
+                        counter--;
+                        consumeEnergy();
+                        this.setChanged();
+                    } else if (counter > 0) {
+                        counter--;
+                        consumeEnergy();
+                        if (++sound_tick == 19) {
+                            sound_tick = 0;
+                            if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                                level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                            }
+                        }
+                    } else {
+                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
+                        length = counter;
                     }
+                } else { // Energy Check
+                    decrementSuperCounterOnNoPower();
                 }
             }
         }
@@ -179,31 +179,31 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         return 0;
     }
 
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
+    public int progressCounterPercent() {
+        if (length != 0) {
+            return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
             return 0;
         }
     }
 
-    public int ticksLeft(){
+    public int ticksLeft() {
         return counter;
     }
 
     // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
-    public FluidStack getFluidStackFromTank(int num){
-        if (num == 0){
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num == 0) {
             return inputTank.getTank().getFluid();
-        } else if (num == 1){
+        } else if (num == 1) {
             return outputTank0.getTank().getFluid();
-        } else if (num == 2){
+        } else if (num == 2) {
             return outputTank1.getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
 
-    public int getTankCapacity(){
+    public int getTankCapacity() {
         return TANK_CAPACITY;
     }
 
@@ -212,15 +212,15 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         return fluidManagers;
     }
 
-    public RelationalTank getInputTank(){
+    public RelationalTank getInputTank() {
         return this.inputTank;
     }
 
-    public RelationalTank getOutputTank0(){
+    public RelationalTank getOutputTank0() {
         return this.outputTank0;
     }
 
-    public RelationalTank getOutputTank1(){
+    public RelationalTank getOutputTank1() {
         return this.outputTank1;
     }
 

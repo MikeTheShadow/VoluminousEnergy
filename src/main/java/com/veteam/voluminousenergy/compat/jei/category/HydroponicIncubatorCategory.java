@@ -151,7 +151,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, HydroponicIncubatorRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull HydroponicIncubatorRecipe recipe, IFocusGroup focusGroup) {
 
         // init
         // Inputs

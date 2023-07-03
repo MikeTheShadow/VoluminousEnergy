@@ -8,7 +8,10 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
 import com.veteam.voluminousenergy.util.recipe.RecipeItem;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
@@ -20,10 +23,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -105,59 +106,46 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         if (this.outputFluid(inputTank, 0, 1)) return;
         if (this.outputFluidStatic(outputTank, 2)) return;
 
-        // Main Fluid Processing occurs here:
+        // Recipe check
         if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())
                 || lastItem.isDifferent(inputItem)) {
             VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, AqueoulizerRecipe.class,
                     Collections.singletonList(this.inputTank.getTank().getFluid()),
                     inputItem.copy());
 
-            if(newRecipe != recipe) {
+            if (newRecipe != recipe) {
                 counter = 0;
             }
             recipe = newRecipe;
         }
 
-        if (recipe != null) {
-                // Tank cap checks
-                if (outputTank.getTank().getFluidAmount() + recipe.getOutputAmount() <= TANK_CAPACITY
-                        && (outputTank.getTank().isEmpty() || outputTank.getTank().getFluid().equals(recipe.getOutputFluid()))
-                ) {
-                    // Check for power
-                    if (canConsumeEnergy()) {
-                        if (counter == 1) {
-                            // Drain Input
-                            inputTank.getTank().drain(recipe.getInputAmount(), IFluidHandler.FluidAction.EXECUTE);
+        if (recipe == null) return;
 
-                            // Output Tank
-                            if (outputTank.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                                outputTank.getTank().setFluid(recipe.getOutputFluid().copy());
-                            } else {
-                                outputTank.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                            }
+        if(!canConsumeEnergy()) {
+            decrementSuperCounterOnNoPower();
+            return;
+        }
 
-                            inventory.extractItem(3, recipe.ingredientCount, false);
-
-                            counter--;
-                            consumeEnergy();
-                            this.setChanged();
-                        } else if (counter > 0) {
-                            counter--;
-                            consumeEnergy();
-                            if (++sound_tick == 19) {
-                                sound_tick = 0;
-                                if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                }
-                            }
-                        } else {
-                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
-                            length = counter;
-                        }
-                    } else { // Energy Check
-                        decrementSuperCounterOnNoPower();
-                    }
+        // Tank cap checks
+        if (outputTank.canInsertOutputFluid(recipe,0) && canConsumeEnergy()) {
+            if (counter == 1) {
+                inputTank.drainInput(recipe,0);
+                inventory.extractItem(3, recipe.ingredientCount, false);
+                // Fill Output
+                outputTank.fillOutput(recipe,0);
+                this.setChanged();
+            } else if (counter > 0) {
+                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
+                    sound_tick = 0;
+                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
+            } else {
+                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                length = counter;
+                return;
+            }
+            counter--;
+            consumeEnergy();
         }
         //LOGGER.debug("Fluid: " + inputTank.getFluid().getRawFluid().getFilledBucket().getTranslationKey() + " amount: " + inputTank.getFluid().getAmount());
     }
