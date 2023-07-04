@@ -37,12 +37,12 @@ import java.util.List;
 
 public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "input_0_sm");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "input_1_sm");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_0_sm");
-    public VESlotManager output1sm = new VESlotManager(3, Direction.WEST, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_1_sm");
-    public VESlotManager output2sm = new VESlotManager(4, Direction.NORTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_2_sm");
-    public VESlotManager output3sm = new VESlotManager(5, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_3_sm");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager output0sm = new VESlotManager(2, Direction.EAST, true, SlotType.OUTPUT);
+    public VESlotManager output1sm = new VESlotManager(3, Direction.WEST, true, SlotType.OUTPUT);
+    public VESlotManager output2sm = new VESlotManager(4, Direction.NORTH, true, SlotType.OUTPUT);
+    public VESlotManager output3sm = new VESlotManager(5, Direction.SOUTH, true, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(input0sm);
@@ -118,7 +118,7 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
             recipe = newRecipe;
         }
 
-        VEFluidRecipe recipe = RecipeUtil.getFluidElectrolyzerRecipe(level, inputTank.getTank().getFluid().copy());
+        VEFluidRecipe recipe = null;// RecipeUtil.getFluidElectrolyzerRecipe(level, inputTank.getTank().getFluid().copy()); // TODO FIX ME
         if (recipe != null) {
 
             // Tank fluid amount check + tank cap checks

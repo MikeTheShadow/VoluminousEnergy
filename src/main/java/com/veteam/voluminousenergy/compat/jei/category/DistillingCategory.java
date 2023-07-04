@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
@@ -24,7 +25,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     private final IDrawable background;
@@ -74,9 +79,9 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,96,10);
 
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", this.getWidth(),-20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputFluid(0).getAmount() + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "",this.getWidth(), 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getThirdAmount() + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputFluid(1).getAmount() + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%",this.getWidth(), 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 
@@ -85,15 +90,16 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
                                   IIngredientAcceptor firstFluidOutputAcceptor,
                                   IIngredientAcceptor secondFluidOutputAcceptor,
                                   IIngredientAcceptor itemOutputAcceptor) {
+
         // Input
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // Output
-        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid()); // seems like amount is set correctly
-        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid()); // seems like amount is set correctly
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
 
-        ItemStack itemStackResult = recipe.getThirdResult().copy();
-        itemStackResult.setCount(recipe.getThirdAmount());
+        ItemStack itemStackResult = recipe.getOutputItem(0).copy();
+        itemStackResult.setCount(recipe.getOutputItem(0).getCount());
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK,itemStackResult);
     }
 

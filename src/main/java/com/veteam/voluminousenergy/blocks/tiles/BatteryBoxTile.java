@@ -34,8 +34,8 @@ import java.util.List;
 public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
+    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true,SlotType.OUTPUT);
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();

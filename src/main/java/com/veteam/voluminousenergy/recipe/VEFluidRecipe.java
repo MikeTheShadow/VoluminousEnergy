@@ -1,17 +1,17 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.NotImplementedException;
@@ -19,103 +19,167 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class VEFluidRecipe implements Recipe<Container> {
 
-    public Lazy<Ingredient> ingredient;
-    public int ingredientCount;
-    public ItemStack result;
 
-    // Fluids
-    public Lazy<ArrayList<Item>> ingredientList = RecipeUtil.getLazyItemsFromIngredient(this);
-    public Lazy<ArrayList<FluidStack>> fluidInputList;
-    public Lazy<ArrayList<Fluid>> rawFluidInputList;
-    public Lazy<Integer> inputArraySize;
-    public ArrayList<FluidStack> fluidOutputList = new ArrayList<>();
+    List<Ingredient> ingredientList = null;
+    List<Lazy<Ingredient>> lazyIngredientList = new ArrayList<>();
+    List<FluidIngredient> fluidIngredientList = null;
+    List<Lazy<FluidIngredient>> lazyFluidIngredientList = new ArrayList<>();
 
-    public boolean fluidUsesTagKey;
-    public String tagKeyString;
+    List<FluidStack> fluidOutputList = new ArrayList<>();
+    List<ItemStack> itemOutputList = new ArrayList<>();
+    int processTime;
 
     public VEFluidRecipe() {
 
     }
 
-    public Ingredient getIngredient() {
-        return ingredient.get();
+    @Override
+    public boolean matches(Container inv, @NotNull Level worldIn) {
+        throw new NotImplementedException();
     }
-
-    public int getIngredientCount() {
-        return ingredientCount;
-    }
-
-    public ItemStack getResult() { return result; }
 
     @Override
-    public boolean matches(Container inv, @NotNull Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-    @Override
-    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess registryAccess){
+    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess registryAccess) {
         return this.assemble(inv);
     }
 
     // NOTE: Legacy impl pre 1.19.4
-    public ItemStack assemble(Container inv){
+    public ItemStack assemble(Container inv) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height){
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
-
-    @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){
-        return this.getResultItem();
-    }
-
-    // NOTE: Legacy impl pre 1.19.4
-    public ItemStack getResultItem() { return result; }
 
     @Override
     public abstract @NotNull ResourceLocation getId();
 
     @Override
-    public  abstract @NotNull RecipeSerializer<?> getSerializer();
+    public abstract @NotNull RecipeSerializer<?> getSerializer();
 
 
     public abstract @NotNull RecipeType<VEFluidRecipe> getType();
 
-    public abstract ArrayList<Item>  getIngredientList();
-
-    public List<FluidStack> getInputFluids() {
-        return fluidInputList.get();
+    public List<ItemStack> getOutputItems() {
+        return this.itemOutputList;
     }
-
-    public abstract List<ItemStack> getOutputItems();
 
     public List<FluidStack> getOutputFluids() {
         return this.fluidOutputList;
-    }
-
-    public abstract int getProcessTime();
-
-    public Lazy<ArrayList<Item>> getLazyIngredients() {
-        return this.ingredientList;
     }
 
     public FluidStack getOutputFluid(int slot) {
         return this.fluidOutputList.get(slot);
     }
 
-    public FluidStack getInputFluid(int slot) {
-        return getInputFluids().get(slot); // Use getInputFluids because it might need to be overriden in some different entities
+
+    public List<FluidIngredient> getFluidIngredients() {
+        if (this.fluidIngredientList == null) {
+            fluidIngredientList = new ArrayList<>();
+            lazyFluidIngredientList.forEach(fluidIngredientLazy -> fluidIngredientList.add(fluidIngredientLazy.get()));
+        }
+        return this.fluidIngredientList;
     }
 
+    public FluidIngredient getFluidIngredient(int slot) {
+        return getFluidIngredients().get(slot);
+    }
+
+    public int getFluidIngredientAmount(int slot) {
+        return getFluidIngredients().get(slot).getFluids()[0].getAmount();
+    }
+
+    @Override
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+        VoluminousEnergy.LOGGER.warn("Suspicious call to getResultItem in " + this.getClass().getName() + ".");
+        return new ItemStack(Items.BUCKET,1);
+    }
+
+    public List<Ingredient> getItemIngredients() {
+        if (this.ingredientList == null) {
+            ingredientList = new ArrayList<>();
+            lazyIngredientList.forEach(fluidIngredientLazy -> ingredientList.add(fluidIngredientLazy.get()));
+        }
+        return this.ingredientList;
+    }
+
+    public Ingredient getItemIngredient(int slot) {
+        return getItemIngredients().get(slot);
+    }
 
     public List<Float> getRNGAmounts() {
         throw new NotImplementedException("This method needs to be impl'd before call in " + this.getClass().getName());
+    }
+
+    public int getProcessTime() {
+        return this.processTime;
+    }
+
+    public void setProcessTime(int time) {
+        this.processTime = time;
+    }
+
+    public List<Lazy<Ingredient>> getLazyIngredientList() {
+        return lazyIngredientList;
+    }
+
+    public List<FluidIngredient> getFluidIngredientList() {
+        return fluidIngredientList;
+    }
+
+    public List<Lazy<FluidIngredient>> getLazyFluidIngredientList() {
+        return lazyFluidIngredientList;
+    }
+
+    public List<FluidStack> getFluidOutputList() {
+        return fluidOutputList;
+    }
+
+    public void addFluidOutput(FluidStack stack) {
+        this.fluidOutputList.add(stack);
+    }
+
+    public List<ItemStack> getItemOutputList() {
+        return itemOutputList;
+    }
+
+    public void setIngredientList(List<Ingredient> ingredientList) {
+        this.ingredientList = ingredientList;
+    }
+
+
+
+    public void setLazyIngredientList(List<Lazy<Ingredient>> lazyIngredientList) {
+        this.lazyIngredientList = lazyIngredientList;
+    }
+
+    public void setFluidIngredientList(List<FluidIngredient> fluidIngredientList) {
+        this.fluidIngredientList = fluidIngredientList;
+    }
+
+    public void setLazyFluidIngredientList(List<Lazy<FluidIngredient>> lazyFluidIngredientList) {
+        this.lazyFluidIngredientList = lazyFluidIngredientList;
+    }
+
+    public void setFluidOutputList(List<FluidStack> fluidOutputList) {
+        this.fluidOutputList = fluidOutputList;
+    }
+
+    public void setItemOutputList(List<ItemStack> itemOutputList) {
+        this.itemOutputList = itemOutputList;
+    }
+
+    public void addItemOutput(ItemStack stack) {
+        this.itemOutputList.add(stack);
+    }
+
+    public ItemStack getOutputItem(int slot) {
+        return this.itemOutputList.get(slot);
     }
 }

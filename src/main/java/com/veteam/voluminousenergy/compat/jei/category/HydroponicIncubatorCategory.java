@@ -79,7 +79,7 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         slotDrawable.draw(matrixStack,138,10); // RNG2 output
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "", this.getWidth(), 24, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", this.getWidth(), 24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
         if (recipe.getChance0() > 0) {
             int chance = (int) (recipe.getChance0()*100);
@@ -122,31 +122,14 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
                                   IIngredientAcceptor rng2OutputAccepter) {
 
         // INPUT
-        List<ItemStack> inputList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(recipe.getIngredientCount());
-            inputList.add(testStack);
-        }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputList);
-
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getItemIngredient(0).getItems()));
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT
-        ItemStack primaryOutputStack = recipe.getResult().copy();
-        primaryOutputStack.setCount(recipe.getOutputAmount());
-        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
-
-        ItemStack rng0Stack = recipe.getRngItemSlot0().copy();
-        rng0Stack.setCount(recipe.getOutputRngAmount0());
-        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng0Stack);
-
-        ItemStack rng1Stack = recipe.getRngItemSlot1().copy();
-        rng1Stack.setCount(recipe.getOutputRngAmount1());
-        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng1Stack);
-
-        ItemStack rng2Stack = recipe.getRngItemSlot2().copy();
-        rng2Stack.setCount(recipe.getOutputRngAmount2());
-        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng2Stack);
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(0));
+        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(1));
+        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(2));
+        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(3));
 
     }
 

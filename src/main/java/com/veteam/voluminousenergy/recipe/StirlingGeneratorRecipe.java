@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -99,8 +100,8 @@ public class StirlingGeneratorRecipe extends VERecipe {
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
-            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            recipe.ingredient = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
             recipe.energyPerTick  = GsonHelper.getAsInt(json, "energy_per_tick", Config.STIRLING_GENERATOR_GENERATE.get());
 

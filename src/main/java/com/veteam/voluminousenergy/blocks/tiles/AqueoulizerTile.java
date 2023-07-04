@@ -40,11 +40,11 @@ import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     // Slot Managers
-    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "input_0_sm");
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.INPUT, "input_1_sm");
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.OUTPUT, "output_0_sm");
+    public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, SlotType.INPUT);
+    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
     // Actually an input slot omegalul
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT, "output_1_sm");
+    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, SlotType.INPUT);
 
     private final ItemStackHandler inventory = createHandler();
 
@@ -130,7 +130,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         if (outputTank.canInsertOutputFluid(recipe,0) && canConsumeEnergy()) {
             if (counter == 1) {
                 inputTank.drainInput(recipe,0);
-                inventory.extractItem(3, recipe.ingredientCount, false);
+                inventory.extractItem(3, recipe.getItemIngredient(0).getItems()[0].getCount(), false);
                 // Fill Output
                 outputTank.fillOutput(recipe,0);
                 this.setChanged();
@@ -179,8 +179,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                     if (!(stack.getItem() instanceof BucketItem)) return false;
                 }
                 if (slot == 3) {
-                    ArrayList<AqueoulizerRecipe> recipe = RecipeUtil.getAqueoulizerRecipesFromItemInput(level, stack);
-                    return !recipe.isEmpty();
+                    return true; // TODO fix me
                 }
 
                 if (slot == 4) return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
@@ -232,14 +231,15 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 try {
                     for (RelationalTank t : relationalTanks) {
-                        if (t.getTankType() == TankType.INPUT) {
-                            ArrayList<AqueoulizerRecipe> recipes = RecipeUtil.getAqueoulizerRecipesFromFluidInput(level, stack);
-                            return !recipes.isEmpty() && t.getTank() != null && t.getTank().isFluidValid(stack);
-                            //return aqueoulizerRecipe.rawFluidInputList.get().contains(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        } else {
-                            return RecipeUtil.isAqueoulizerOutput(level, stack) && t.getTank() != null && t.getTank().isFluidValid(stack);
-                            //return aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        }
+//                        if (t.getTankType() == TankType.INPUT) {
+//                            ArrayList<AqueoulizerRecipe> recipes = RecipeUtil.getAqueoulizerRecipesFromFluidInput(level, stack);
+//                            return !recipes.isEmpty() && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                            //return aqueoulizerRecipe.rawFluidInputList.get().contains(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                        } else {
+//                            return RecipeUtil.isAqueoulizerOutput(level, stack) && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                            //return aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                        }
+                        return true; // TODO fix me
                     }
                 } catch (Exception e) {
                     LOGGER.debug("ERROR with isFluidValid in Aqueoulizer Tile input fluid handler");

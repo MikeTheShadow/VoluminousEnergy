@@ -43,9 +43,9 @@ import java.util.Random;
 
 public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_0_sm");
-    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"input_1_sm");
-    public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_0_sm");
+    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
+    public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(bucketTopSm);

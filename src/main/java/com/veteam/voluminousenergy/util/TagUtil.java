@@ -43,6 +43,18 @@ public class TagUtil {
         });
     }
 
+    public static Lazy<FluidStack> getLazyFluidStack(ResourceLocation fluidTagLocation, int amount){
+        TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
+        return Lazy.of(() -> {
+            HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
+            AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
+            holderSet.stream().forEach(fluidHolder -> {
+                fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
+            });
+            return fluidSet.get().get(0);
+        });
+    }
+
     public static Lazy<ArrayList<Item>> getLazyItems(ResourceLocation itemTagLocation){
         TagKey<Item> tag = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), itemTagLocation);
         return Lazy.of(() -> {

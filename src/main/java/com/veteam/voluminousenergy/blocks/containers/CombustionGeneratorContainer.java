@@ -120,11 +120,12 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
                 // Handle bucket with fluid
                 Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                if (RecipeUtil.isOxidizer(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
-                    return ItemStack.EMPTY;
-                } else if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 2, 3, false)){
-                    return ItemStack.EMPTY;
-                }
+//                if (RecipeUtil.isOxidizer(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
+//                    return ItemStack.EMPTY;
+//                } else if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 2, 3, false)){
+//                    return ItemStack.EMPTY;
+//                }
+                // TODO FIX ME
             }
         }
         return null;

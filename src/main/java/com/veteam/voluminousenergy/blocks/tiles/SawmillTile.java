@@ -35,11 +35,11 @@ import java.util.Objects;
 public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
-    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
-    public VESlotManager plankSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"plank_slot");
-    public VESlotManager secondOutputSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"second_output_slot");
-    public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_top_slot");
-    public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_bottom_slot");
+    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager plankSm = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
+    public VESlotManager secondOutputSm = new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT);
+    public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,SlotType.INPUT);
+    public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSm);

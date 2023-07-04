@@ -2,7 +2,9 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -43,10 +45,10 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     // Handlers
 
     // Slot Managers
-    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"oxi_in_sm");
-    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"oxi_out_sm");
-    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"fuel_in_sm");
-    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, "slot.voluminousenergy.output_slot", SlotType.OUTPUT,"fuel_out_sm");
+    public VESlotManager oxiInSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager oxiOutSm = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager fuelInSm = new VESlotManager(2, Direction.NORTH, true, SlotType.INPUT);
+    public VESlotManager fuelOutSm = new VESlotManager(3, Direction.SOUTH, true, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -80,8 +82,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     @Override
     public void tick() {
-        if (!oxidizerTank.isValidFluidsSet()) oxidizerTank.setValidFluids(RecipeUtil.getOxidizerFluids(level));
-        if (!fuelTank.isValidFluidsSet()) fuelTank.setValidFluids(RecipeUtil.getFuelCombustionInputFluidsParallel(level));
 
         updateClients();
 
@@ -166,7 +166,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             setChanged();
         } else if (!oxidizerTank.getTank().isEmpty()) {
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, this.oxidizerTank.getTank().getFluid().copy());
-            VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(level, this.fuelTank.getTank().getFluid().copy());
+            VEFluidRecipe fuelRecipe = RecipeCache.getFluidRecipeFromCache(level,
+                    CombustionGeneratorFuelRecipe.class,
+                    List.of(this.fuelTank.getTank().getFluid().copy()));
 
             if (oxidizerRecipe != null && fuelRecipe != null) {
                 int amount = 250;
@@ -238,14 +240,14 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 if (!(stack.getItem() instanceof BucketItem)) return false;
-                if (slot == 0 || slot == 1) {
-                    CombustionGeneratorOxidizerRecipe recipe = RecipeUtil.getOxidizerCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000));
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 || slot == 3) {
-                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000));
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                }
-                return false;
+//                if (slot == 0 || slot == 1) {
+//                    CombustionGeneratorOxidizerRecipe recipe = RecipeUtil.getOxidizerCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000));
+//                    return recipe != null || stack.getItem() == Items.BUCKET;
+//                } else if (slot == 2 || slot == 3) {
+//                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000));
+//                    return recipe != null || stack.getItem() == Items.BUCKET;
+//                }
+                return false; // TODO FIX ME
             }
 
             @Nonnull

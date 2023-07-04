@@ -44,7 +44,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Capability is unique. Can't add new impl to this
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
 
     private final int tankCapacity = 4000;
 

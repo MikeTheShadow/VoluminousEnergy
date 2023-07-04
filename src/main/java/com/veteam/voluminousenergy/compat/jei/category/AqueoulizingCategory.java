@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
@@ -28,6 +29,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> {
@@ -77,7 +79,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         slotDrawable.draw(matrixStack,72,10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("mB:"), this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getInputFluids().get(0).getAmount() + ""), this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getFluidIngredientAmount(0) + ""), this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(0).getAmount() + ""), this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
@@ -90,18 +92,12 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
                                   IIngredientAcceptor fluidOutputAcceptor) {
 
         // INPUT
-        List<ItemStack> inputList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(recipe.getIngredientCount());
-            inputList.add(testStack);
-        }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputList);
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getItemIngredient(0).getItems()));
 
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT
-        List<FluidStack> outputStacks = recipe.getOutputFluids();
-        fluidOutputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, outputStacks);
+        fluidOutputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, Collections.singletonList(recipe.getOutputFluid(0)));
     }
 
     @Override

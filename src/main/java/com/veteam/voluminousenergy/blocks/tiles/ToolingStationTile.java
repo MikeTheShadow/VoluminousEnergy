@@ -37,11 +37,11 @@ import java.util.List;
 public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
-    public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"fuel_top_slot");
-    public VESlotManager fuelBottomSlotSM = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"fuel_bottom_slot");
-    public VESlotManager mainToolSlotSM = new VESlotManager(2, Direction.NORTH, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"main_tool_slot");
-    public VESlotManager bitSlotSM = new VESlotManager(3, Direction.SOUTH,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bit_slot");
-    public VESlotManager multitoolBaseSM = new VESlotManager(4, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"multitool_base_slot");
+    public VESlotManager fuelTopSlotSM = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager fuelBottomSlotSM = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
+    public VESlotManager mainToolSlotSM = new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT);
+    public VESlotManager bitSlotSM = new VESlotManager(3, Direction.SOUTH,true,SlotType.INPUT);
+    public VESlotManager multitoolBaseSM = new VESlotManager(4, Direction.EAST, true,SlotType.INPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(fuelTopSlotSM);
@@ -91,7 +91,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         if(this.inputFluid(fuelTank,0,1)) return;
         if(this.outputFluid(fuelTank,0,1)) return;
 
-        VEFluidRecipe fuelRecipe = RecipeUtil.getFuelCombustionRecipe(this.level,this.fuelTank.getTank().getFluid());
+        VEFluidRecipe fuelRecipe = null; // TODO FIX ME RecipeUtil.getFuelCombustionRecipe(this.level,this.fuelTank.getTank().getFluid());
 
         if(fuelRecipe != null){
             // Logic for refueling the base

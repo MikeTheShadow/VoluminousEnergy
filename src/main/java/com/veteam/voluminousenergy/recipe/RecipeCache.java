@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,14 +11,14 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class RecipeCache {
 
     private static final HashMap<Level, HashMap<Class<?>, List<VERecipe>>> veRecipeCache = new HashMap<>();
+
+    private static final HashMap<Level, HashMap<Class<?>, HashMap<Integer, List<Ingredient>>>> veRecipeItemCache = new HashMap<>();
+    private static final HashMap<Level, HashMap<Class<?>, HashMap<Integer, List<FluidIngredient>>>> veRecipeFluidCache = new HashMap<>();
     private static final List<VERecipe> rawVERecipes = new ArrayList<>();
     private static final HashMap<Level, HashMap<Class<?>, List<VEFluidRecipe>>> veFluidRecipeCache = new HashMap<>();
     private static final List<VEFluidRecipe> rawVEFluidRecipes = new ArrayList<>();
@@ -105,44 +106,54 @@ public class RecipeCache {
         }
 
         for (VEFluidRecipe recipe : recipes) {
-            boolean isValid = true;
-            if (items.length != 0) {
-                isValid = containsIngredient(recipe.getIngredient(), items);
-            }
-            for (FluidStack fluid : recipe.getInputFluids()) {
-                boolean hasFluid = false;
-                for (FluidStack inputFluid : fluids) {
-                    if (fluid.isFluidEqual(inputFluid) && inputFluid.getAmount() >= fluid.getAmount()) {
-                        hasFluid = true;
-                        break;
-                    }
+            boolean itemsValid = recipe.getItemIngredients().stream().allMatch(ingredient -> {
+                for (ItemStack s : items) {
+                    if (ingredient.test(s) && s.getCount() >= ingredient.getItems()[0].getCount()) return true;
                 }
-
-                if (!hasFluid) {
-                    isValid = false;
-                    break;
+                return false;
+            });
+            boolean fluidsValid = recipe.getFluidIngredients().stream().allMatch(ingredient -> {
+                for (FluidStack s : fluids) {
+                    if (ingredient.test(s)) return true;
                 }
-            }
-            if (isValid) return recipe;
+                return false;
+            });
+            if (itemsValid && fluidsValid) return recipe;
         }
         return null;
     }
 
-    public static boolean vEFluidRecipeHasItem(Class<? extends VEFluidRecipe> recipe, ItemStack stack) {
+    public static int recipeHasItem(Level level, Class<?> recipe, ItemStack stack, int position) {
 
-        for(VEFluidRecipe veFluidRecipe : rawVEFluidRecipes) {
-            if (recipe.isAssignableFrom(veFluidRecipe.getClass())) {
-                for(Item item : veFluidRecipe.getLazyIngredients().get()) {
-                    if(stack.is(item)) {
-                        return true;
-                    }
-                }
+        if (!veRecipeItemCache.containsKey(level)) return -1;
+
+        if (!veRecipeItemCache.get(level).containsKey(recipe)) return -1;
+
+        var list = veRecipeItemCache.get(level).get(recipe).get(position);
+
+        for (Ingredient ingredient : list) {
+            if (ingredient.test(stack)) {
+                return list.indexOf(ingredient);
             }
         }
-
-        return false;
+        return -1;
     }
 
+    public static int recipeHasFluid(Level level, Class<?> recipe, FluidStack stack, int position) {
+
+        if (!veRecipeFluidCache.containsKey(level)) return -1;
+
+        if (!veRecipeFluidCache.get(level).containsKey(recipe)) return -1;
+
+        var list = veRecipeFluidCache.get(level).get(recipe).get(position);
+
+        for (FluidIngredient ingredient : list) {
+            if (ingredient.test(stack)) {
+                return list.indexOf(ingredient);
+            }
+        }
+        return -1;
+    }
     private static boolean containsIngredient(Ingredient ingredient, ItemStack[] items) {
         for (ItemStack stack : ingredient.getItems()) {
             boolean hasIngredient = false;

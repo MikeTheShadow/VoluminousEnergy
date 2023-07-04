@@ -34,8 +34,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot_manager");
-    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot_manager");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN,true,SlotType.OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
        add(inputSlotManager);

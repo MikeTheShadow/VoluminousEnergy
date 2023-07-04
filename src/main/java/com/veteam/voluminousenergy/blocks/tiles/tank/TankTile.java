@@ -31,8 +31,8 @@ public class TankTile extends VEFluidTileEntity {
 
     private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH,"tank:tank_gui");
 
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_top_slot");
-    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_bottom_slot");
+    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(bucketBottomSlotManager);

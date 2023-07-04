@@ -39,13 +39,13 @@ import java.util.List;
 
 public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager iTopManager = new VESlotManager(0, Direction.UP, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "i_top_manager");
-    public VESlotManager iBottomManager = new VESlotManager(1, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "i_bottom_manager");
-    public VESlotManager o0TopManager = new VESlotManager(2, Direction.UP, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "o_0_top_manager");
-    public VESlotManager o0BottomManager = new VESlotManager(3, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "o_0_top_manager");
-    public VESlotManager o1TopManager = new VESlotManager(4, Direction.UP, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "0_1_top_manager");
-    public VESlotManager o1BottomManager = new VESlotManager(5, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "o_1_bottom_manager");
-    public VESlotManager o2Manager = new VESlotManager(6, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "o_2_manager");
+    public VESlotManager iTopManager = new VESlotManager(0, Direction.UP, false, SlotType.INPUT);
+    public VESlotManager iBottomManager = new VESlotManager(1, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager o0TopManager = new VESlotManager(2, Direction.UP, false, SlotType.INPUT);
+    public VESlotManager o0BottomManager = new VESlotManager(3, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager o1TopManager = new VESlotManager(4, Direction.UP, false, SlotType.INPUT);
+    public VESlotManager o1BottomManager = new VESlotManager(5, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager o2Manager = new VESlotManager(6, Direction.DOWN, false, SlotType.OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(iTopManager);
@@ -88,9 +88,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     @Override
     public void tick() {
-        if (!inputTank.isValidFluidsSet()) inputTank.setValidFluids(RecipeUtil.getDistillationInputFluids(level));
-        if (!outputTank0.isValidFluidsSet()) outputTank0.setAllowAny(true);
-        if (!outputTank1.isValidFluidsSet()) outputTank1.setAllowAny(true);
 
         updateClients();
         tick++;
@@ -136,7 +133,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         if (recipe != null) {
 
             // Tank fluid amount check + tank cap checks
-            if (thirdOutput.getCount() < recipe.getThirdResult().getMaxStackSize()) {
+            if (thirdOutput.getCount() < recipe.getOutputItem(0).getMaxStackSize()) {
                 // Check for power
                 if (canConsumeEnergy()) {
                     if (counter == 1) {
@@ -146,20 +143,16 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                         outputTank0.fillOutput(recipe,0);
 
                         // Second Output Tank
-                        if (outputTank1.getTank().getFluid().getRawFluid() != recipe.getSecondResult().getRawFluid()) {
-                            outputTank1.getTank().setFluid(recipe.getSecondFluid().copy());
-                        } else {
-                            outputTank1.getTank().fill(recipe.getSecondFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
-                        }
+                        outputTank1.fillOutput(recipe,1);
 
                         if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getThirdChance()) {
-                            if (thirdOutput.getItem() != recipe.getThirdResult().getItem()) {
+                            if (thirdOutput.getItem() != recipe.getOutputItem(0).getItem()) {
                                 if (thirdOutput.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
                                     thirdOutput.setCount(1);
                                 }
-                                inventory.insertItem(6, recipe.getThirdResult().copy(), false); // CRASH the game if this is not empty!
+                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // CRASH the game if this is not empty!
                             } else { // Assuming the recipe output item is already in the output slot
-                                inventory.insertItem(6, recipe.getThirdResult().copy(), false); // Place the new output stack on top of the old one
+                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // Place the new output stack on top of the old one
                             }
                         }
 
@@ -211,22 +204,23 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot == 0 || slot == 1) {
-                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE, new SimpleContainer(stack), level).orElse(null);
-                    return recipe != null || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    return RecipeUtil.getDistillationRecipeFromResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
-                } else if (slot == 4 || slot == 5 && stack.getItem() instanceof BucketItem) {
-                    if (stack.getItem() == Items.BUCKET) return true;
-
-                    return RecipeUtil.getDistillationRecipeFromSecondResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
-                } else if (slot == 6) {
-                    return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
-                } else if (slot == 7) {
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
-                }
+//                if (slot == 0 || slot == 1) {
+//                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE, new SimpleContainer(stack), level).orElse(null);
+//                    return recipe != null || stack.getItem() == Items.BUCKET;
+//                } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
+//                    if (stack.getItem() == Items.BUCKET) return true;
+//
+//                    return RecipeUtil.getDistillationRecipeFromResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
+//                } else if (slot == 4 || slot == 5 && stack.getItem() instanceof BucketItem) {
+//                    if (stack.getItem() == Items.BUCKET) return true;
+//
+//                    return RecipeUtil.getDistillationRecipeFromSecondResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
+//                } else if (slot == 6) {
+//                    return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
+//                } else if (slot == 7) {
+//                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+//                }
+                // TODO fix me
                 return false;
             }
 

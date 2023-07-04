@@ -30,9 +30,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ImplosionCompressorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
-    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"gunpowder_manager");
-    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true,SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(2, Direction.DOWN, true,SlotType.OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
        add(inputSlotManager);

@@ -123,20 +123,22 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
             public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
                 try {
                     for (RelationalTank t : relationalTanks) {
-                        if (t.getTankType() == TankType.INPUT) {
-                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getBucket());
-                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(bucketStack), level).orElse(null);
-                            return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        } else {
-                            AtomicBoolean recipeHit = new AtomicBoolean(false);
-                            veRecipe.getIngredientList().forEach(i -> {
-                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(new ItemStack(i)), level).orElse(null);
-                                if (recipe != null && recipe.getInputFluids().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
-                                    recipeHit.set(true);
-                                }
-                            });
-                            return recipeHit.get() && t.getTank() != null && t.getTank().isFluidValid(stack);
-                        }
+                        //TODO FIX ME
+                        return true;
+//                        if (t.getTankType() == TankType.INPUT) {
+//                            ItemStack bucketStack = new ItemStack(stack.getRawFluid().getBucket());
+//                            VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(bucketStack), level).orElse(null);
+//                            return recipe != null && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                        } else {
+//                            AtomicBoolean recipeHit = new AtomicBoolean(false);
+//                            veRecipe.getIngredientList().forEach(i -> {
+//                                VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(veRecipe.getType(), new SimpleContainer(new ItemStack(i)), level).orElse(null);
+//                                if (recipe != null && recipe.getFluidIngredients().get(t.getOutputID()).getFluid().isSame(stack.getFluid())) { // In theory should never be null
+//                                    recipeHit.set(true);
+//                                }
+//                            });
+//                            return recipeHit.get() && t.getTank() != null && t.getTank().isFluidValid(stack);
+//                        }
                     }
                 } catch (Exception e){
                     LOGGER.debug("ERROR with isFluidValid in VEFluidTileEntity");

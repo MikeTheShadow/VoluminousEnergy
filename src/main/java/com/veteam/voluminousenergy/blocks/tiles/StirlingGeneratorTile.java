@@ -35,7 +35,7 @@ import java.util.List;
 public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPowerGenerator,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(slotManager);

@@ -40,9 +40,9 @@ import static net.minecraft.util.Mth.abs;
 public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
-    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
-    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
-    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true, "slot.voluminousenergy.rng_slot",SlotType.OUTPUT,"rng_slot");
+    public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager outputSlotProp = new VESlotManager(1,Direction.DOWN,true,SlotType.OUTPUT);
+    public VESlotManager rngSlotProp = new VESlotManager(2, Direction.NORTH,true,SlotType.RNG_OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSlotProp);
@@ -162,7 +162,7 @@ public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileE
         CrusherRecipe recipe = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
-        if (!input.isEmpty()){
+        if (!input.isEmpty() && recipe != null){
             if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && canConsumeEnergy()) {
                 if (counter == 1){ //The processing is about to be complete
                     // Extract the inputted item

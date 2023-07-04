@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CompressorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
-    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
+    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
        add(inputSlotManager);

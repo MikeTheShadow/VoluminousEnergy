@@ -39,10 +39,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountable {
 
-    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_input_gui");
-    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_output_gui");
-    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true, "slot.voluminousenergy.input_slot",SlotType.INPUT,"furnace_input_gui");
-    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"furnace_output_gui");
+    public VESlotManager bucketInputSm = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager bucketOutputSm = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
+    public VESlotManager furnaceInputSm = new VESlotManager(2, Direction.EAST, true,SlotType.INPUT);
+    public VESlotManager furnaceOutputSm = new VESlotManager(3, Direction.WEST,true,SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers =  new ArrayList<>() {{
         add(bucketInputSm);
@@ -158,7 +158,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                 } else if (fuelCounter > 0){
                     fuelCounter--;
                 } else {
-                    VEFluidRecipe recipe = RecipeUtil.getFuelCombustionRecipe(level, fuelTank.getTank().getFluid().copy());
+                    VEFluidRecipe recipe = null; //= RecipeUtil.getFuelCombustionRecipe(level, fuelTank.getTank().getFluid().copy());// TODO FIX ME
                     if (recipe != null){
                         // Drain Input
                         fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);

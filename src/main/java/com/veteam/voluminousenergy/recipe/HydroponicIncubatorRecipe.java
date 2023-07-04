@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,86 +32,45 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
     public static final Serializer SERIALIZER = new Serializer();
 
     private final ResourceLocation recipeId;
-    private int processTime;
-
-    private Lazy<FluidStack> inputFluid;
-    private ItemStack result;
-    private ItemStack rngResult0;
-    private ItemStack rngResult1;
-    private ItemStack rngResult2;
-    private int inputAmount;
-    private int outputAmount;
-    private int outputRngAmount0;
-    private int outputRngAmount1;
-    private int outputRngAmount2;
     private float chance0;
     private float chance1;
     private float chance2;
 
-    public HydroponicIncubatorRecipe(ResourceLocation recipeId){
+    public HydroponicIncubatorRecipe(ResourceLocation recipeId) {
         this.recipeId = recipeId;
     }
 
-    public FluidStack getInputFluid(){
-        return this.inputFluid.get();
+
+    @Override
+    public @NotNull ResourceLocation getId() {
+        return recipeId;
     }
 
     @Override
-    public @NotNull ResourceLocation getId(){return recipeId;}
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeType<VEFluidRecipe> getType() {
+        return RECIPE_TYPE;
+    }
 
-    @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+    public float getChance0() {
+        return chance0;
+    }
 
-    @Override
-    public ArrayList<Item> getIngredientList() {
-        return null;
+    public float getChance1() {
+        return chance1;
+    }
+
+    public float getChance2() {
+        return chance2;
     }
 
 
     @Override
-    public List<ItemStack> getOutputItems() {
-        return List.of(result.copy(), rngResult0.copy(), rngResult1.copy(), rngResult2.copy());
-    }
-
-    public int getOutputAmount() {return this.outputAmount;}
-
-    public int getOutputRngAmount0(){return outputRngAmount0;}
-
-    public int getOutputRngAmount1(){return outputRngAmount1;}
-
-    public int getOutputRngAmount2(){return outputRngAmount2;}
-
-    @Override
-    public int getProcessTime() { return processTime; }
-
-    public int getInputAmount(){
-        return this.inputAmount;
-    }
-
-    public ItemStack getRngItemSlot0(){return rngResult0;}
-
-    public ItemStack getRngItemSlot1(){return rngResult1;}
-
-    public ItemStack getRngItemSlot2(){return rngResult2;}
-
-    public float getChance0(){return chance0;}
-
-    public float getChance1(){return chance1;}
-
-    public float getChance2(){return chance2;}
-
-    @Override
-    public ItemStack getResult() {
-        return getOutputItems().get(0);
-    }
-
-
-
-    @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get());
     }
 
@@ -120,144 +81,77 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
-            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
-            recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
+            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            recipe.lazyIngredientList
+                    .add(Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount)));
+            recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
-            recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
-
-            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
-                // A tag is used instead of a manually defined fluid
-                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
-                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, recipe.inputAmount);
-            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
-                // In here, a manually defined fluid is used instead of a tag
-                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, recipe.inputAmount);
-            } else {
-                throw new JsonSyntaxException("Bad syntax for the Hydroponic Incubator recipe, input_fluid must be tag or fluid");
-            }
+            recipe.lazyFluidIngredientList.add(Lazy.of(() -> FluidIngredient.fromJson(inputFluid)));
 
             // Main Output Slot
-            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
-            int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"count",1);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
-            recipe.outputAmount = itemAmount;
+            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"), ':');
+            int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
+            ItemStack stack0 = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), itemAmount);
 
             // First RNG Slot, RNG 0
-            ResourceLocation rngResourceLocation0 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_0").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount0 = GsonHelper.getAsInt(json.get("rng_slot_0").getAsJsonObject(),"count",0);
-            float rngChance0 = GsonHelper.getAsFloat(json.get("rng_slot_0").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation0 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_0").getAsJsonObject(), "item", "minecraft:air"), ':');
+            int rngAmount0 = GsonHelper.getAsInt(json.get("rng_slot_0").getAsJsonObject(), "count", 0);
+            float rngChance0 = GsonHelper.getAsFloat(json.get("rng_slot_0").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
-            recipe.rngResult0 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation0));
-            recipe.outputRngAmount0 = rngAmount0;
+            ItemStack stack1 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation0), rngAmount0);
             recipe.chance0 = rngChance0;
 
             //Second RNG Slot, RNG 1
-            ResourceLocation rngResourceLocation1 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_1").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount1 = GsonHelper.getAsInt(json.get("rng_slot_1").getAsJsonObject(),"count",0);
-            float rngChance1 = GsonHelper.getAsFloat(json.get("rng_slot_1").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation1 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_1").getAsJsonObject(), "item", "minecraft:air"), ':');
+            int rngAmount1 = GsonHelper.getAsInt(json.get("rng_slot_1").getAsJsonObject(), "count", 0);
+            float rngChance1 = GsonHelper.getAsFloat(json.get("rng_slot_1").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
-            recipe.rngResult1 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation1));
-            recipe.outputRngAmount1 = rngAmount1;
+            ItemStack stack2 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation1), rngAmount1);
             recipe.chance1 = rngChance1;
 
             //Third RNG Slot, RNG 2
-            ResourceLocation rngResourceLocation2 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_2").getAsJsonObject(),"item","minecraft:air"),':');
-            int rngAmount2 = GsonHelper.getAsInt(json.get("rng_slot_2").getAsJsonObject(),"count",0);
-            float rngChance2 = GsonHelper.getAsFloat(json.get("rng_slot_2").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
+            ResourceLocation rngResourceLocation2 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_2").getAsJsonObject(), "item", "minecraft:air"), ':');
+            int rngAmount2 = GsonHelper.getAsInt(json.get("rng_slot_2").getAsJsonObject(), "count", 0);
+            float rngChance2 = GsonHelper.getAsFloat(json.get("rng_slot_2").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
-            recipe.rngResult2 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation2));
-            recipe.outputRngAmount2 = rngAmount2;
+            ItemStack stack3 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation2), rngAmount2);
             recipe.chance2 = rngChance2;
+
+            recipe.addItemOutput(stack0);
+            recipe.addItemOutput(stack1);
+            recipe.addItemOutput(stack2);
+            recipe.addItemOutput(stack3);
 
             return recipe;
         }
+
+
+        private static final FluidSerializerHelper<HydroponicIncubatorRecipe> helper = new FluidSerializerHelper<>();
 
         @Nullable
         @Override
-        public HydroponicIncubatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public HydroponicIncubatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+
+
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);
-            recipe.inputAmount = buffer.readInt();
 
-            // Start with usesTagKey check
-            recipe.fluidUsesTagKey = buffer.readBoolean();
-
-            if (recipe.fluidUsesTagKey){
-                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
-                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
-                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
-            } else {
-                int inputArraySize = buffer.readInt();
-                recipe.inputArraySize = Lazy.of(() -> inputArraySize);
-                ArrayList<Fluid> fluids = new ArrayList<>();
-                ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-                for (int i = 0; i < inputArraySize; i++){
-                    FluidStack serverFluid = buffer.readFluidStack();
-                    fluidStacks.add(serverFluid.copy());
-                    fluids.add(serverFluid.getRawFluid());
-                }
-
-                recipe.fluidInputList = Lazy.of(() -> fluidStacks);
-                recipe.rawFluidInputList = Lazy.of(() -> fluids);
-            }
-
-            recipe.ingredientCount = buffer.readInt();
-            recipe.result = buffer.readItem();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-            //RNG 0
-            recipe.rngResult0 = buffer.readItem();
-            recipe.outputRngAmount0 = buffer.readInt();
             recipe.chance0 = buffer.readFloat();
-            //RNG 1
-            recipe.rngResult1 = buffer.readItem();
-            recipe.outputRngAmount1 = buffer.readInt();
             recipe.chance1 = buffer.readFloat();
-            //RNG 2
-            recipe.rngResult2 = buffer.readItem();
-            recipe.outputRngAmount2 = buffer.readInt();
             recipe.chance2 = buffer.readFloat();
 
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
+            helper.fromNetwork(recipe, buffer);
             return recipe;
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, HydroponicIncubatorRecipe recipe){
-            buffer.writeInt(recipe.inputAmount);
-            buffer.writeBoolean(recipe.fluidUsesTagKey);
+        public void toNetwork(FriendlyByteBuf buffer, HydroponicIncubatorRecipe recipe) {
 
-            if (recipe.fluidUsesTagKey){
-                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
-            } else { // does not use tags for fluid input
-                buffer.writeInt(recipe.inputArraySize.get());
-                for(int i = 0; i < recipe.inputArraySize.get(); i++){
-                    buffer.writeFluidStack(recipe.fluidInputList.get().get(i).copy());
-                }
-            }
-
-            buffer.writeInt(recipe.ingredientCount);
-            buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-            //RNG 0
-            buffer.writeItem(recipe.rngResult0);
-            buffer.writeInt(recipe.outputRngAmount0);
             buffer.writeFloat(recipe.chance0);
-            //RNG 1
-            buffer.writeItem(recipe.rngResult1);
-            buffer.writeInt(recipe.outputRngAmount1);
             buffer.writeFloat(recipe.chance1);
-            //RNG 2
-            buffer.writeItem(recipe.rngResult2);
-            buffer.writeInt(recipe.outputRngAmount2);
             buffer.writeFloat(recipe.chance2);
 
-            recipe.ingredient.get().toNetwork(buffer);
+            helper.toNetwork(buffer, recipe);
         }
     }
 }

@@ -131,23 +131,23 @@ public class HydroponicIncubatorContainer extends VoluminousContainer {
             }
 
             // Checks primary input slot
-            if (!RecipeUtil.getHydroponicIncubatorRecipesFromItemInput(this.tileEntity.getLevel(), slotStack.getItem()).isEmpty()
-                && this.slots.get(2).getItem().getCount() < 1) {
-
-                if (slotStack.getCount() > 1) {
-                    ItemStack tempStack = slotStack.copy();
-                    tempStack.setCount(1);
-
-                    if (moveItemStackTo(tempStack, 2, 3, false)) {
-
-                        // If the shift-clicking slot with valid item >1 decrement the stack in that slot stack by 1
-                        slotStack.setCount(slotStack.getCount()-1);
-                        return slotStack;
-                    }
-                } else if (moveItemStackTo(slotStack, 2, 3, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
+//            if (!RecipeUtil.getHydroponicIncubatorRecipesFromItemInput(this.tileEntity.getLevel(), slotStack.getItem()).isEmpty()
+//                && this.slots.get(2).getItem().getCount() < 1) {
+//
+//                if (slotStack.getCount() > 1) {
+//                    ItemStack tempStack = slotStack.copy();
+//                    tempStack.setCount(1);
+//
+//                    if (moveItemStackTo(tempStack, 2, 3, false)) {
+//
+//                        // If the shift-clicking slot with valid item >1 decrement the stack in that slot stack by 1
+//                        slotStack.setCount(slotStack.getCount()-1);
+//                        return slotStack;
+//                    }
+//                } else if (moveItemStackTo(slotStack, 2, 3, false)) {
+//                    return ItemStack.EMPTY;
+//                }
+//            } TODO FIX ME
 
         }
         return null;

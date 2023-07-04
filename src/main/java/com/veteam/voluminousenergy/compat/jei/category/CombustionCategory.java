@@ -31,6 +31,8 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
@@ -145,12 +147,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                                   IIngredientAcceptor fuelAcceptor,
                                   IIngredientAcceptor oxidizerAcceptor) {
 
-        ArrayList<FluidStack> fuelStacks = new ArrayList<>();
-        for (Fluid fluid : recipe.rawFluidInputList.get()){
-            fuelStacks.add(new FluidStack(fluid, 1000));
-        }
-
-        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, fuelStacks);
+        List<FluidStack> inputList = new ArrayList<>(Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
+        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
         for (CombustionGeneratorOxidizerRecipe oxidizerRecipe : CombustionGeneratorOxidizerRecipe.oxidizerRecipes) {

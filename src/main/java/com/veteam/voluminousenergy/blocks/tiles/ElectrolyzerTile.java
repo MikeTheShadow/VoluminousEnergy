@@ -34,12 +34,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ElectrolyzerTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
-    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"input_manager");
-    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,"slot.voluminousenergy.input_slot",SlotType.INPUT,"bucket_manager");
-    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_manager");
-    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_one_manager");
-    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_two_manager");
-    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,"slot.voluminousenergy.output_slot",SlotType.OUTPUT,"rng_three_manager");
+    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,SlotType.INPUT);
+    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,SlotType.OUTPUT);
+    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,SlotType.OUTPUT);
+    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,SlotType.OUTPUT);
+    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSm);

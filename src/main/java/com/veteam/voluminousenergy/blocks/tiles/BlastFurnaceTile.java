@@ -33,11 +33,11 @@ import java.util.List;
 
 public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "heat_top_manager");
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1, Direction.DOWN, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "heat_bottom_manager");
-    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "first_input_manager");
-    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, "slot.voluminousenergy.input_slot", SlotType.INPUT, "second_input_manager");
-    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, "slot.voluminousenergy.output_slot", SlotType.OUTPUT, "output_manager");
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP, false, SlotType.INPUT);
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, SlotType.INPUT);
+    public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {

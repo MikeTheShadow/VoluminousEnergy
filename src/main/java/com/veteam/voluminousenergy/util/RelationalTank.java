@@ -98,7 +98,7 @@ public class RelationalTank {
      * @param id The id of the input fluid
      */
     public void drainInput(VEFluidRecipe recipe, int id) {
-        this.tank.drain(recipe.getInputFluids().get(id).getAmount(), IFluidHandler.FluidAction.EXECUTE);
+        this.tank.drain(recipe.getFluidIngredients().get(id).getFluids()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
     }
 
     public boolean isIgnoreDirection() {

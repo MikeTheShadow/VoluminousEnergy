@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,19 +40,10 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     private int inputAmount;
     private int outputAmount;
     private int secondAmount;
-    
-    @Override
-    public ArrayList<Item> getIngredientList() {
-        return null;
-    }
 
     public CentrifugalAgitatorRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
-
-    @Override
-    @Deprecated
-    public ItemStack getResult() {return new ItemStack(this.result.getFluid().getBucket());}
 
     @Override
     public List<ItemStack> getOutputItems() {
@@ -64,10 +57,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
     public FluidStack getOutputFluid(){
         return this.result.copy();
     }
-
-    @Override
-    @Deprecated
-    public ItemStack getResultItem(){return this.getResult();}
 
     @Override
     public @NotNull ResourceLocation getId(){return recipeId;}
@@ -95,111 +84,41 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
-            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            recipe.lazyIngredientList.add(Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount)));
 
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
-            recipe.inputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
+            recipe.lazyFluidIngredientList.add(Lazy.of(() -> FluidIngredient.fromJson(inputFluid)));
 
-            if(inputFluid.has("tag") && !inputFluid.has("fluid")){
-                // A tag is used instead of a manually defined fluid
-                ResourceLocation fluidTagLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"tag","minecraft:air"),':');
-                RecipeUtil.setupFluidLazyArrayInputsUsingTags(recipe, fluidTagLocation, recipe.inputAmount);
-            } else if (inputFluid.has("fluid") && !inputFluid.has("tag")){
-                // In here, a manually defined fluid is used instead of a tag
-                ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(inputFluid,"fluid","minecraft:empty"),':');
-                RecipeUtil.setupFluidLazyArrayInputsWithFluid(recipe, fluidResourceLocation, recipe.inputAmount);
-            } else {
-                throw new JsonSyntaxException("Bad syntax for the Centrifugal Agitator recipe, input_fluid must be tag or fluid");
-            }
-
-            // TODO remove deprecated result and outputAmounts
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("first_result").getAsJsonObject(),"amount",0);
             recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
-            recipe.outputAmount = firstOutputFluidAmount;
 
             ResourceLocation secondBucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int secondOutputFluidAmount = GsonHelper.getAsInt(json.get("second_result").getAsJsonObject(),"amount",0);
             recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
-            recipe.secondAmount = secondOutputFluidAmount;
 
             recipe.fluidOutputList.add(recipe.result);
             recipe.fluidOutputList.add(recipe.secondResult);
 
             return recipe;
         }
+
+        FluidSerializerHelper<CentrifugalAgitatorRecipe> helper = new FluidSerializerHelper<>();
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CentrifugalAgitatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             CentrifugalAgitatorRecipe recipe = new CentrifugalAgitatorRecipe((recipeId));
-            recipe.ingredientCount = buffer.readByte();
-            recipe.inputAmount = buffer.readInt();
-
-            // Start with usesTagKey check
-            recipe.fluidUsesTagKey = buffer.readBoolean();
-
-            if (recipe.fluidUsesTagKey){
-                ResourceLocation fluidTagLocation = buffer.readResourceLocation();
-                recipe.rawFluidInputList = TagUtil.getLazyFluids(fluidTagLocation);
-                recipe.fluidInputList = TagUtil.getLazyFluidStacks(fluidTagLocation, recipe.inputAmount);
-                recipe.inputArraySize = Lazy.of(() -> recipe.fluidInputList.get().size());
-            } else {
-                int inputArraySize = buffer.readInt();
-                recipe.inputArraySize = Lazy.of(() -> inputArraySize);
-                ArrayList<Fluid> fluids = new ArrayList<>();
-                ArrayList<FluidStack> fluidStacks = new ArrayList<>();
-                for (int i = 0; i < inputArraySize; i++){
-                    FluidStack serverFluid = buffer.readFluidStack();
-                    fluidStacks.add(serverFluid.copy());
-                    fluids.add(serverFluid.getRawFluid());
-                }
-
-                recipe.fluidInputList = Lazy.of(() -> fluidStacks);
-                recipe.rawFluidInputList = Lazy.of(() -> fluids);
-            }
-
-            recipe.result = buffer.readFluidStack();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-            recipe.secondResult = buffer.readFluidStack();
-            recipe.secondAmount = buffer.readInt();
-
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
-
-            recipe.fluidOutputList.add(recipe.result);
-            recipe.fluidOutputList.add(recipe.secondResult);
-
+            helper.fromNetwork(recipe,buffer);
             return recipe;
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, CentrifugalAgitatorRecipe recipe){
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeInt(recipe.inputAmount);
-
-            buffer.writeBoolean(recipe.fluidUsesTagKey);
-
-            if (recipe.fluidUsesTagKey){
-                buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
-            } else { // does not use tags for fluid input
-                buffer.writeInt(recipe.inputArraySize.get());
-                for(int i = 0; i < recipe.inputArraySize.get(); i++){
-                    buffer.writeFluidStack(recipe.fluidInputList.get().get(i).copy());
-                }
-            }
-
-            buffer.writeFluidStack(recipe.result);
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-            buffer.writeFluidStack(recipe.secondResult);
-            buffer.writeInt(recipe.secondAmount);
-
-            recipe.ingredient.get().toNetwork(buffer);
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CentrifugalAgitatorRecipe recipe){
+            helper.toNetwork(buffer,recipe);
         }
     }
 }

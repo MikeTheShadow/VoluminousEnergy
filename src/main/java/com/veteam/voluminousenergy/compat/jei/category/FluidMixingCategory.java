@@ -26,6 +26,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
     private final IDrawable background;
     private IDrawable icon;
@@ -73,8 +75,8 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
         slotDrawable.draw(matrixStack, 72, 10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputFluid(0).getAmount() + "", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputFluid(1).getAmount() + "", this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(1) + "", this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "", this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
@@ -83,10 +85,10 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
                                   IIngredientAcceptor secondFluidInputAcceptor,
                                   IIngredientAcceptor outputFluidAccepetor) {
 
-        firstFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        firstFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
-        secondFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.secondFluidInputList.get());
-        outputFluidAccepetor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid());
+        secondFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(1).getFluids()));
+        outputFluidAccepetor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
     }
 
     @Override

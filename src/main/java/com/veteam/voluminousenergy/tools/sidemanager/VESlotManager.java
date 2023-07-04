@@ -3,25 +3,26 @@ package com.veteam.voluminousenergy.tools.sidemanager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class VESlotManager {
     private final int slot;
-    private AtomicReference<Direction> side = new AtomicReference<>();
-    private AtomicBoolean enabled = new AtomicBoolean();
-    private final String translationKey;
+    private int selectedRecipe = -1;
+    private final AtomicReference<Direction> side = new AtomicReference<>();
+    private final AtomicBoolean enabled = new AtomicBoolean();
     private final SlotType slotType;
     private final String nbtName;
 
-    public VESlotManager(int slotNum, Direction direction, boolean status, String translationKey,SlotType slotType,String nbtName){
+    public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType){
         this.side.set(direction);
         this.slot = slotNum;
         this.enabled.set(status);
-        this.translationKey = translationKey;
         this.slotType = slotType;
-        this.nbtName = nbtName;
+        this.nbtName = slotType.getNBTName(slotNum);
     }
 
     public void setStatus(boolean bool){
@@ -52,7 +53,7 @@ public class VESlotManager {
     }
 
     public String getTranslationKey(){
-        return translationKey;
+        return slotType.getTranslationKey();
     }
 
     public String getNbtName() {

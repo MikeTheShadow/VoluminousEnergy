@@ -54,19 +54,9 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
         this.recipeId = recipeId;
     }
 
-    @Override
-    @Deprecated
-    // use getOutputFluid instead
-    public ItemStack getResult() {return new ItemStack(this.fluid.getBucket());}
-
     public FluidStack getInputFluid(){
         return new FluidStack(this.fluid, 1000);
     }
-
-    @Override
-    @Deprecated
-    // Use getResult instead
-    public ItemStack getResultItem(){return this.getResult();}
 
     @Override
     public @NotNull ResourceLocation getId(){return recipeId;}
@@ -76,16 +66,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-
-    @Override
-    public ArrayList<Item> getIngredientList() {
-        return null;
-    }
-
-    @Override
-    public List<FluidStack> getInputFluids() {
-        return List.of(new FluidStack(this.fluid, 1000));
-    }
     @Override
     public List<ItemStack> getOutputItems() {
         return null;
@@ -151,8 +131,8 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
                     recipe.maximumAmount
             );
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
-            recipe.result = new FluidStack(Objects.requireNonNull(recipe.fluid), 1000);
+            recipe.lazyIngredientList.add(Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1))));
+            recipe.fluidOutputList.add(new FluidStack(Objects.requireNonNull(recipe.fluid), 1000));
 
             recipe.fluidOutputList.add(recipe.result);
 
@@ -200,7 +180,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
                     recipe.maximumAmount
             );
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1)));
+            recipe.lazyIngredientList.add(Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1))));
             recipe.result = new FluidStack(recipe.fluid, 1000);
             recipe.fluidOutputList.add(recipe.result);
 
