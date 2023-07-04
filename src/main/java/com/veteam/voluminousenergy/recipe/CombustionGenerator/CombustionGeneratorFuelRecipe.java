@@ -82,7 +82,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.volumetricEnergy = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
             recipe.getLazyFluidIngredientList().add(Lazy.of(()
-                    -> FluidIngredient.fromJson(json.get("input_fluid").getAsJsonObject())));
+                    -> FluidIngredient.fromJsonNoAmount(json.get("input_fluid").getAsJsonObject())));
 
             lazyFluidsWithVolumetricEnergy.add(Lazy.of(()
                     -> new Pair<>(Arrays.stream(

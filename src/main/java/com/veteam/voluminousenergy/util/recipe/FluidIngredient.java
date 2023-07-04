@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,10 +19,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 /**
@@ -191,14 +191,50 @@ public class FluidIngredient {
 
         if(jsonObject == null) throw new IllegalStateException("Recipe has null object!");
 
-        if(!jsonObject.has("fluid")) throw new IllegalStateException("Recipe missing fluid tag!");
+        ResourceLocation fluidTagLocation;
+
+        boolean isTag = false;
+
+        if(jsonObject.has("fluid")) {
+            fluidTagLocation = ResourceLocation.of(jsonObject.get("fluid").getAsString(),':');
+        } else if(jsonObject.has("tag")) {
+            isTag = true;
+            fluidTagLocation = ResourceLocation.of(jsonObject.get("tag").getAsString(),':');
+        } else {
+            throw new IllegalStateException("Recipe missing fluid tag!");
+        }
         if(!jsonObject.has("amount")) throw new IllegalStateException("Recipe missing amount!");
 
-        ResourceLocation fluidTagLocation = ResourceLocation.of(jsonObject.get("fluid").getAsString(),':');
+        if(!isTag) {
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidTagLocation);
+            if(fluid == null) {
+                throw new IllegalStateException("Fluid does not exist for a recipe!");
+            }
+            return FluidIngredient.of(new FluidStack(fluid,jsonObject.get("amount").getAsInt()));
+        }
 
         TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
 
         return FluidIngredient.of(tag,jsonObject.get("amount").getAsInt());
+    }
+
+    public static FluidIngredient fromJsonNoAmount(@Nullable JsonObject jsonObject) {
+
+        if(jsonObject == null) throw new IllegalStateException("Recipe has null object!");
+
+        ResourceLocation fluidTagLocation;
+
+        if(jsonObject.has("fluid")) {
+            fluidTagLocation = ResourceLocation.of(jsonObject.get("fluid").getAsString(),':');
+        } else if(jsonObject.has("tag")) {
+            fluidTagLocation = ResourceLocation.of(jsonObject.get("tag").getAsString(),':');
+        } else {
+            throw new IllegalStateException("Recipe missing fluid tag!");
+        }
+
+        TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
+
+        return FluidIngredient.of(tag,1000);
     }
 
     public static class FluidValue implements FluidIngredient.Value {

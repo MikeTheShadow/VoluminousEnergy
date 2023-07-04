@@ -183,7 +183,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(CompressorContainer.class, VEBlocks.COMPRESSOR_CONTAINER.get(), CompressingCategory.RECIPE_TYPE, 0, 1, CompressorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(PrimitiveStirlingGeneratorContainer.class, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, PrimitiveStirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(StirlingGeneratorContainer.class, VEBlocks.STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, StirlingGeneratorContainer.NUMBER_OF_SLOTS, 36);
-        registration.addRecipeTransferHandler(AqueoulizerContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 1, AqueoulizerContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(AqueoulizerContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2, AqueoulizerContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(CentrifugalSeparatorContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, CentrifugalSeparatorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);

@@ -88,11 +88,10 @@ public class CentrifugalAgitationCategory implements IRecipeCategory<Centrifugal
                                   IIngredientAcceptor firstFluidOutputAcceptor,
                                   IIngredientAcceptor secondFluidOutputAcceptor) {
 
-        List<FluidStack> inputList = new ArrayList<>(Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
 
-        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid());
-        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid());
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
     }
 
     @Override

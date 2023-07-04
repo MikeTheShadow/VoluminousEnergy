@@ -75,12 +75,8 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
             JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
             recipe.lazyFluidIngredientList.add(Lazy.of(() -> FluidIngredient.fromJson(inputFluid)));
 
-            recipe.addItemOutput(RecipeUtil.pullItemFromJSON("first_result",json));
-
-            ResourceLocation secondBucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
-            int secondOutputFluidAmount = GsonHelper.getAsInt(json.get("second_result").getAsJsonObject(),"amount",0);
-            FluidStack temp = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
-            recipe.addFluidOutput(temp);
+            recipe.addFluidOutput(RecipeUtil.pullFluidFromJSON("first_result",json));
+            recipe.addFluidOutput(RecipeUtil.pullFluidFromJSON("second_result",json));
 
             return recipe;
         }

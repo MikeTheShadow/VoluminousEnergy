@@ -34,28 +34,9 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     private final ResourceLocation recipeId;
     private int processTime;
-    
-    private FluidStack result;
-    private FluidStack secondResult;
-    private int inputAmount;
-    private int outputAmount;
-    private int secondAmount;
 
     public CentrifugalAgitatorRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
-    }
-
-    @Override
-    public List<ItemStack> getOutputItems() {
-        return null;
-    }
-
-    public FluidStack getSecondFluid(){
-        return this.secondResult.copy();
-    }
-
-    public FluidStack getOutputFluid(){
-        return this.result.copy();
     }
 
     @Override
@@ -66,9 +47,6 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-
-    public int getSecondAmount(){return secondAmount;}
-
     @Override
     public int getProcessTime() { return processTime; }
 
@@ -94,14 +72,14 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("first_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("first_result").getAsJsonObject(),"amount",0);
-            recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
+            FluidStack firstOutput = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)),firstOutputFluidAmount);
 
             ResourceLocation secondBucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("second_result").getAsJsonObject(),"fluid","minecraft:empty"),':');
             int secondOutputFluidAmount = GsonHelper.getAsInt(json.get("second_result").getAsJsonObject(),"amount",0);
-            recipe.secondResult = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
+            FluidStack secondOutput = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(secondBucketResourceLocation)),secondOutputFluidAmount);
 
-            recipe.fluidOutputList.add(recipe.result);
-            recipe.fluidOutputList.add(recipe.secondResult);
+            recipe.fluidOutputList.add(firstOutput);
+            recipe.fluidOutputList.add(secondOutput);
 
             return recipe;
         }
