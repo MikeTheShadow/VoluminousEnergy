@@ -53,11 +53,6 @@ public class DistillationRecipe extends VEFluidRecipe {
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
 
-    @Override
-    public List<ItemStack> getOutputItems() {
-        return null;
-    }
-
     public float getThirdChance(){return thirdChance;}
 
 

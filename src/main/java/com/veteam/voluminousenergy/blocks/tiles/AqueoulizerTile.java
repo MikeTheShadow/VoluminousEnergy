@@ -14,7 +14,6 @@ import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
 import com.veteam.voluminousenergy.util.recipe.RecipeItem;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +25,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -35,25 +33,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     // Slot Managers
     public VESlotManager input0sm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-    public VESlotManager input1sm = new VESlotManager(1, Direction.DOWN, true, SlotType.INPUT);
-    public VESlotManager output0sm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
-    // Actually an input slot omegalul
-    public VESlotManager output1sm = new VESlotManager(3, Direction.SOUTH, true, SlotType.INPUT);
+    public VESlotManager output0sm = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager output1sm = new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_HYBRID);
+    public VESlotManager input1sm = new VESlotManager(3, Direction.SOUTH, true, SlotType.INPUT);
 
-    private final ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler(this,5);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
             add(input0sm);
-            add(input1sm);
             add(output0sm);
             add(output1sm);
+            add(input1sm);
         }
 
     };
@@ -121,18 +117,18 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
         if (recipe == null) return;
 
-        if(!canConsumeEnergy()) {
+        if (!canConsumeEnergy()) {
             decrementSuperCounterOnNoPower();
             return;
         }
 
         // Tank cap checks
-        if (outputTank.canInsertOutputFluid(recipe,0) && canConsumeEnergy()) {
+        if (outputTank.canInsertOutputFluid(recipe, 0) && canConsumeEnergy()) {
             if (counter == 1) {
-                inputTank.drainInput(recipe,0);
+                inputTank.drainInput(recipe, 0);
                 inventory.extractItem(3, recipe.getItemIngredient(0).getItems()[0].getCount(), false);
                 // Fill Output
-                outputTank.fillOutput(recipe,0);
+                outputTank.fillOutput(recipe, 0);
                 this.setChanged();
             } else if (counter > 0) {
                 if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
@@ -157,17 +153,9 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         return compoundTag;
     }
 
-    private IFluidHandler createInputFluidHandler() {
-        return this.createInputFluidHandler(/*new AqueoulizerRecipe(),*/ inputTank);
-    }
+    private ItemStackHandler createHandler(VEFluidTileEntity tileEntity,int size) {
+        return new ItemStackHandler(size) {
 
-    private IFluidHandler createOutputFluidHandler() {
-        return this.createFluidHandler(new AqueoulizerRecipe(), outputTank);
-    }
-
-
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(5) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -179,7 +167,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
                     if (!(stack.getItem() instanceof BucketItem)) return false;
                 }
                 if (slot == 3) {
-                    return true; // TODO fix me
                 }
 
                 if (slot == 4) return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
@@ -193,103 +180,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
             }
         };
     }
-
-    public IFluidHandler createInputFluidHandler(/*AqueoulizerRecipe aqueoulizerRecipe,*/ RelationalTank... relationalTanks) {
-
-        return new IFluidHandler() {
-            @Override
-            public int getTanks() {
-                return relationalTanks.length;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack getFluidInTank(int tank) {
-
-                for (RelationalTank t : relationalTanks) {
-                    if (t.getId() == tank) {
-                        return t.getTank() == null ? FluidStack.EMPTY : t.getTank().getFluid();
-                    }
-                }
-                LOGGER.debug("Invalid tankId in Aqueoulizer Tile for getFluidInTank");
-                return FluidStack.EMPTY;
-            }
-
-            @Override
-            public int getTankCapacity(int tank) {
-
-                for (RelationalTank t : relationalTanks) {
-                    if (t.getId() == tank) {
-                        return t.getTank() == null ? 0 : t.getTank().getCapacity();
-                    }
-                }
-                LOGGER.debug("Invalid tankId in Aqueoulizer Tile for getTankCapacity");
-                return 0;
-            }
-
-            @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-                try {
-                    for (RelationalTank t : relationalTanks) {
-//                        if (t.getTankType() == TankType.INPUT) {
-//                            ArrayList<AqueoulizerRecipe> recipes = RecipeUtil.getAqueoulizerRecipesFromFluidInput(level, stack);
-//                            return !recipes.isEmpty() && t.getTank() != null && t.getTank().isFluidValid(stack);
-//                            //return aqueoulizerRecipe.rawFluidInputList.get().contains(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
-//                        } else {
-//                            return RecipeUtil.isAqueoulizerOutput(level, stack) && t.getTank() != null && t.getTank().isFluidValid(stack);
-//                            //return aqueoulizerRecipe.getOutputFluid().getRawFluid().isSame(stack.getRawFluid()) && t.getTank() != null && t.getTank().isFluidValid(stack);
-//                        }
-                        return true; // TODO fix me
-                    }
-                } catch (Exception e) {
-                    LOGGER.debug("ERROR with isFluidValid in Aqueoulizer Tile input fluid handler");
-                }
-                return false;
-            }
-
-            @Override
-            public int fill(FluidStack resource, FluidAction action) {
-
-                for (RelationalTank t : relationalTanks) {
-                    if (isFluidValid(t.getId(), resource) && t.getTank().isEmpty() || resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().fill(resource, action);
-                    }
-                }
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(FluidStack resource, FluidAction action) {
-                if (resource.isEmpty()) {
-                    return FluidStack.EMPTY;
-                }
-
-                for (RelationalTank t : relationalTanks) {
-                    if (resource.isFluidEqual(t.getTank().getFluid())) {
-                        return t.getTank().drain(resource, action);
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-
-            @Nonnull
-            @Override
-            public FluidStack drain(int maxDrain, FluidAction action) {
-                for (RelationalTank t : relationalTanks) {
-                    if (t.getTank().getFluidAmount() > 0) {
-                        if (Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                            return t.getTank().drain(maxDrain, action);
-                        } else if (t.getTankType() != TankType.INPUT) {
-                            return t.getTank().drain(maxDrain, action);
-                        }
-                    }
-                }
-                return FluidStack.EMPTY;
-            }
-        };
-    }
-
     @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {

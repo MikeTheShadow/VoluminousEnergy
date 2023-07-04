@@ -51,11 +51,6 @@ public class FluidMixerRecipe extends VEFluidRecipe {
         this.recipeId = recipeId;
     }
 
-    @Override
-    public List<ItemStack> getOutputItems() {
-        return null;
-    }
-
     public FluidStack getOutputFluid() {
         return this.result.copy();
     }

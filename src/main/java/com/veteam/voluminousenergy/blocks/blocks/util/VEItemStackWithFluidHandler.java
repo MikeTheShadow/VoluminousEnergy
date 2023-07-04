@@ -1,33 +1,33 @@
 package com.veteam.voluminousenergy.blocks.blocks.util;
 
-import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class VEItemStackWithFluidHandler extends ItemStackHandler implements IFluidHandler {
+public class VEItemStackWithFluidHandler extends ItemStackHandler {
 
     private final VESlotManager[] managers;
     private final RelationalTank[] relationalTanks;
     private final Class<?> recipeType;
     private VEFluidRecipe recipe;
+    private final Level level;
+    private final int upgradeSlot;
 
-    private int[] recipeIndex;
-
-    public VEItemStackWithFluidHandler(int size, Class<?> recipeType, List<RelationalTank> tankList, VESlotManager... managers) {
+    public VEItemStackWithFluidHandler(int size,int upgradeSlot, Class<?> recipeType, List<RelationalTank> tankList, Level level, VESlotManager... managers) {
         stacks = NonNullList.withSize(size, ItemStack.EMPTY);
         this.managers = managers;
         this.recipeType = recipeType;
         this.relationalTanks = tankList.toArray(RelationalTank[]::new);
-        recipeIndex = new int[relationalTanks.length + managers.length];
+        this.level = level;
+        this.upgradeSlot = upgradeSlot;
     }
 
     public VESlotManager[] getManagers() {
@@ -40,40 +40,24 @@ public class VEItemStackWithFluidHandler extends ItemStackHandler implements IFl
     }
 
     @Override
-    public int getTanks() {
-        return 0;
-    }
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 
-    @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
-        return relationalTanks[tank].getTank().getFluid();
-    }
+        if (slot == upgradeSlot) return TagUtil.isTaggedMachineUpgradeItem(stack);
 
-    @Override
-    public int getTankCapacity(int tank) {
-        return relationalTanks[tank].getTank().getCapacity();
-    }
 
-    @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-
-//        RecipeCache.recipeHasItem()
 
         return false;
     }
 
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return 0;
+    public RelationalTank[] getRelationalTanks() {
+        return relationalTanks;
     }
 
-    @Override
-    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-        return null;
+    public Level getLevel() {
+        return level;
     }
 
-    @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        return null;
+    public Class<?> getRecipeType() {
+        return recipeType;
     }
 }

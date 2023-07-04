@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

@@ -182,18 +182,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     }
 
-    private IFluidHandler createInputFluidHandler() {
-        return this.createFluidHandler(new DistillationRecipe(), inputTank);
-    }
-
-    private IFluidHandler createOutput0FluidHandler() {
-        return this.createFluidHandler(new DistillationRecipe(), outputTank0);
-    }
-
-    private IFluidHandler createOutput1FluidHandler() {
-        return this.createFluidHandler(new DistillationRecipe(), outputTank1);
-    }
-
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(8) {

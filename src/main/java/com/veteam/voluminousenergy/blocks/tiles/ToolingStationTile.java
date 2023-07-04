@@ -163,10 +163,6 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
 
     }
 
-    private IFluidHandler createFuelFluidHandler() {
-        return this.createFluidHandler(new CombustionGeneratorFuelRecipe(), fuelTank);
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override

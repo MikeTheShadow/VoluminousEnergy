@@ -66,10 +66,6 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-    @Override
-    public List<ItemStack> getOutputItems() {
-        return null;
-    }
 
     @Override
     public int getProcessTime() { return 0; }

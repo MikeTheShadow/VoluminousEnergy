@@ -1,9 +1,12 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.blocks.util.VEItemStackWithFluidHandler;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -114,7 +117,7 @@ public class RecipeCache {
             });
             boolean fluidsValid = recipe.getFluidIngredients().stream().allMatch(ingredient -> {
                 for (FluidStack s : fluids) {
-                    if (ingredient.test(s)) return true;
+                    if (ingredient.test(s) && s.getAmount() >= ingredient.getFluids()[0].getAmount()) return true;
                 }
                 return false;
             });
@@ -123,37 +126,22 @@ public class RecipeCache {
         return null;
     }
 
-    public static int recipeHasItem(Level level, Class<?> recipe, ItemStack stack, int position) {
+    public static List<VEFluidRecipe> getAllValidFluidRecipes(VEFluidTileEntity tileEntity,Class<? extends VEFluidRecipe> clazz) {
 
-        if (!veRecipeItemCache.containsKey(level)) return -1;
-
-        if (!veRecipeItemCache.get(level).containsKey(recipe)) return -1;
-
-        var list = veRecipeItemCache.get(level).get(recipe).get(position);
-
-        for (Ingredient ingredient : list) {
-            if (ingredient.test(stack)) {
-                return list.indexOf(ingredient);
-            }
+        var levelCache = veFluidRecipeCache.get(tileEntity.getLevel());
+        if (levelCache == null) {
+            VoluminousEnergy.LOGGER.warn("Unable to find cache for level: " + tileEntity.getLevel().getClass().getCanonicalName());
+            return new ArrayList<>();
         }
-        return -1;
+
+        var recipes = levelCache.get(clazz);
+        if (recipes == null) {
+            VoluminousEnergy.LOGGER.error("No recipes found for " + clazz.getName());
+            return new ArrayList<>();
+        }
+        return recipes;
     }
 
-    public static int recipeHasFluid(Level level, Class<?> recipe, FluidStack stack, int position) {
-
-        if (!veRecipeFluidCache.containsKey(level)) return -1;
-
-        if (!veRecipeFluidCache.get(level).containsKey(recipe)) return -1;
-
-        var list = veRecipeFluidCache.get(level).get(recipe).get(position);
-
-        for (FluidIngredient ingredient : list) {
-            if (ingredient.test(stack)) {
-                return list.indexOf(ingredient);
-            }
-        }
-        return -1;
-    }
     private static boolean containsIngredient(Ingredient ingredient, ItemStack[] items) {
         for (ItemStack stack : ingredient.getItems()) {
             boolean hasIngredient = false;

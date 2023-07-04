@@ -39,11 +39,6 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public List<ItemStack> getOutputItems() {
-        return null;
-    }
-
-    @Override
     public @NotNull ResourceLocation getId(){return recipeId;}
 
     @Override
