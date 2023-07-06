@@ -352,6 +352,7 @@
     "item.voluminousenergy.hydrogen_bucket": "Hydrogen Bucket",
     "item.voluminousenergy.fluid_scanner": "Fluid Scanner",
     "item.voluminousenergy.rfid_chip": "RFID Chip",
+    "item.voluminousenergy.creative_fluid_scanner": "Creative Fluid Scanner",
 
     "_comment": "Multitool Items",
     "item.voluminousenergy.empty_multitool": "Empty Multitool",
