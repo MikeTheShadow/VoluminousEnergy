@@ -90,20 +90,22 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("dimensional_laser"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), this.imageWidth, 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
-        super.renderLabels(matrixStack, mouseX, mouseY);
+        if (tileEntity.getMultiblockValidity()) {
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("dimensional_laser"),  8, 6, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"),  8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);
+        }
+         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 138, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth, 138, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth, 38, 33, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")),  138, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")),  138, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")),  38, 33, WHITE_TEXT_STYLE);
 
         // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth, 119, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")),  119, 18, WHITE_TEXT_STYLE);
     }
 
     @Override
@@ -166,10 +168,10 @@ public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserCo
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         } else {
             RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
-            matrixStack.blit(GUI, i, j, 0, 0, 174,82);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), this.imageWidth, i + 48, j + 14, WHITE_TEXT_STYLE);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.dimensional_laser.requirements"), this.imageWidth, i + 8, j + 32, WHITE_TEXT_STYLE);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_below"), this.imageWidth, i+8, j+48, WHITE_TEXT_STYLE);
+            matrixStack.blit(MULTIBLOCK_WARN, i, j, 0, 0, 174,82);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock_warn"),  i + 48, j + 14, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.dimensional_laser.requirements"),  i + 8, j + 32, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_below"),  i+8, j+48, WHITE_TEXT_STYLE);
         }
 
     }

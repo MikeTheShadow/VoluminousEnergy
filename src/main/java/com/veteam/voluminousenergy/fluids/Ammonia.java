@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
@@ -19,7 +20,7 @@ public class Ammonia {
     public static final ResourceLocation AMMONIA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonia_still");
     public static final ResourceLocation AMMONIA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonia_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable();
+    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
     public static FlowingFluid AMMONIA;
     public static FlowingFluid FLOWING_AMMONIA;

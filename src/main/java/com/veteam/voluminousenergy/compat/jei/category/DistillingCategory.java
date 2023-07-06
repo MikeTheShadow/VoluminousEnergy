@@ -78,11 +78,11 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,72,10);
         slotDrawable.draw(matrixStack,96,10);
 
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", this.getWidth(),-20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "",this.getWidth(), 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputFluid(1).getAmount() + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%",this.getWidth(), 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", -20,32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getFluidIngredientAmount(0)  + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(0).getAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(1).getAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(DistillationRecipe recipe,

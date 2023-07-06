@@ -108,13 +108,13 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
     @Override
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (tileEntity.getMultiblockValidity()){
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("blast_furnace"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("blast_furnace"),  8, 6, WHITE_TEXT_STYLE);
 
             TextUtil.renderShadowedText(matrixStack, this.font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.temperature").getString() + ": " +
                     tileEntity.getTemperatureKelvin() + " K (" +
-                    tileEntity.getTemperatureCelsius() + " \u00B0C) "), this.imageWidth,  8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
+                    tileEntity.getTemperatureCelsius() + " \u00B0C) "),   8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
 
-            TextUtil.renderShadowedText(matrixStack, this.font,Component.nullToEmpty(tileEntity.getTemperatureFahrenheit() + " \u00B0F"), this.imageWidth, 101, (this.imageHeight - 103), WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font,Component.nullToEmpty(tileEntity.getTemperatureFahrenheit() + " \u00B0F"),  101, (this.imageHeight - 103), WHITE_TEXT_STYLE);
 
         }
         super.renderLabels(matrixStack, mouseX, mouseY);
@@ -123,14 +123,14 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), this.imageWidth, 38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), this.imageWidth, 38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), this.imageWidth, 80, 25, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), this.imageWidth, 80, 43, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")), this.imageWidth, 134, 34, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")),  38, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")),  38, 49, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")),  80, 25, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")),  80, 43, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("4")),  134, 34, WHITE_TEXT_STYLE);
 
         // Tanks
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), this.imageWidth,61, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
 
     }
 
@@ -194,10 +194,10 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
             matrixStack.blit(GUI_TOOLS,i+129, j-16,0,0,18,18);
         } else {
             RenderSystem.setShaderTexture(0, MULTIBLOCK_WARN);
-            matrixStack.blit(GUI_TOOLS, i, j, 0, 0, 174,82);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), this.imageWidth,i + 48, j + 14, WHITE_TEXT_STYLE);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"), this.imageWidth, i + 8, j + 32, WHITE_TEXT_STYLE);
-            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), this.imageWidth, i+8, j+48, WHITE_TEXT_STYLE);
+            matrixStack.blit(MULTIBLOCK_WARN, i, j, 0, 0, 174,82);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock_warn"), i + 48, j + 14, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.blast_furnace.requirements"),  i + 8, j + 32, WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"),  i+8, j+48, WHITE_TEXT_STYLE);
         }
 
     }

@@ -30,10 +30,10 @@ import java.util.List;
 
 public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.FLUID_MIXER_UID, FluidMixerRecipe.class);
 
     public FluidMixingCategory(IGuiHelper guiHelper) {
@@ -74,10 +74,10 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
         slotDrawable.draw(matrixStack, 24, 10);
         slotDrawable.draw(matrixStack, 72, 10);
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(1) + "", this.getWidth(), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "", this.getWidth(), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0 + "",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(1) + "",  24, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "",  72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(FluidMixerRecipe recipe,

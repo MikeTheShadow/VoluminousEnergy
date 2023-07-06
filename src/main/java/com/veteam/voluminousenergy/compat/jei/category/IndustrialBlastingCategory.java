@@ -82,7 +82,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font,
                 recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
                         ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " \u00B0F)",
-                this.getWidth(),1,45, VEContainerScreen.GREY_TEXT_STYLE);
+                1,45, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(IndustrialBlastingRecipe recipe,

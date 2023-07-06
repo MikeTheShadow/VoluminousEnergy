@@ -1,0 +1,31 @@
+{
+  "type": "voluminousenergy:hydroponic_incubating",
+  "process_time": 200,
+  "ingredient": {
+    "item": "minecraft:cherry_sapling",
+    "count": 1
+  },
+  "input_fluid": {
+    "fluid": "voluminousenergy:ammonium_nitrate_solution",
+    "amount": 250
+  },
+  "result": {
+    "item": "minecraft:cherry_log",
+    "count": 9
+  },
+  "rng_slot_0": {
+    "item": "minecraft:cherry_sapling",
+    "count": 1,
+    "chance": 0.75
+  },
+  "rng_slot_1": {
+    "item": "minecraft:stick",
+    "count": 4,
+    "chance": 0.25
+  },
+  "rng_slot_2": {
+    "item": "minecraft:apple",
+    "count": 1,
+    "chance": 0.05
+  }
+}

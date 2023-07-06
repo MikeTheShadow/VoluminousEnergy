@@ -31,10 +31,10 @@ import java.util.List;
 
 public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIncubatorRecipe> {
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.HYDROPONIC_INCUBATOR_UID,HydroponicIncubatorRecipe.class);
 
     public HydroponicIncubatorCategory(IGuiHelper guiHelper){
@@ -53,17 +53,17 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.hydroponic_incubating");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
@@ -78,28 +78,28 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         slotDrawable.draw(matrixStack,116,10); // RNG1 output
         slotDrawable.draw(matrixStack,138,10); // RNG2 output
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", this.getWidth(), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", this.getWidth(), 24, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
         if (recipe.getChance0() > 0) {
             int chance = (int) (recipe.getChance0()*100);
             int xPos = calculateXPos(94, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getChance1() > 0) {
             int chance = (int) (recipe.getChance1()*100);
             int xPos = calculateXPos(116, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getChance2() > 0) {
             int chance = (int) (recipe.getChance2()*100);
             int xPos = calculateXPos(138, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", this.getWidth(), xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
     }
 
