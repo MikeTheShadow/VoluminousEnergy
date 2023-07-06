@@ -1,0 +1,26 @@
+{
+  "type": "voluminousenergy:dimensional_lasing",
+  "fluid": "voluminousenergy:crude_oil",
+  "amounts": {
+    "minimum": 48,
+    "maximum": 128
+  },
+  "climate": {
+    "continentalness": {
+      "minimum": 0.25,
+      "maximum": 0.4
+    },
+    "erosion": {
+      "minimum": -0.5,
+      "maximum": 0.25
+    },
+    "humidity": {
+      "minimum": -0.3,
+      "maximum": -0.15
+    },
+    "temperature": {
+      "minimum": -0.15,
+      "maximum": 0.05
+    }
+  }
+}
