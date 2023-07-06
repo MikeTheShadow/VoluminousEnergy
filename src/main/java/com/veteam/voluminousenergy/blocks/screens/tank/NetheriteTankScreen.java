@@ -14,7 +14,7 @@ public class NetheriteTankScreen extends TankScreen {
 
     @Override
     protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("netherite_tank"), this.imageWidth, 8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("netherite_tank"),  8, 6, WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 }

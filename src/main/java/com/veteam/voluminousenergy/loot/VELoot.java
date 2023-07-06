@@ -60,7 +60,6 @@ public class VELoot {
 
     public static void registerLoot(IEventBus modEventBus){
         modEventBus.addListener(VELoot::registerLootFunctions);
-//        MinecraftForge.EVENT_BUS.addListener(VELoot::loadLootTable);
     }
 
     private static void registerLootFunctions(RegisterEvent event){
@@ -71,23 +70,4 @@ public class VELoot {
         ));
 
     }
-//
-//    @Deprecated
-//    public static void loadLootTable(LootTableLoadEvent event){
-//        // Inject Mysterious Multipliers
-//        if (SPAWN_MYSTERIOUS_MULTIPLIERS_IN.contains(event.getName())){
-////            event.getTable().addPool(buildPoolFromInjectionEntry("mysterious_multiplier/" + event.getName().getPath()));
-//        }
-//
-//    }
-//
-//    @Deprecated
-//    private static LootPool buildPoolFromInjectionEntry(String name){
-//        return LootPool.lootPool().add(getInjectionEntry(new ResourceLocation(VoluminousEnergy.MODID, "inject/" + name))).build();
-//    }
-//
-//    @Deprecated
-//    private static LootPoolEntryContainer.Builder<?> getInjectionEntry(ResourceLocation resourceLocation){
-//        return LootTableReference.lootTableReference(resourceLocation).setWeight(1);
-//    }
 }

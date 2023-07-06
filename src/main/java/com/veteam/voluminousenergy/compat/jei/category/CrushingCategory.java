@@ -77,7 +77,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
             } else if (chance < 10){
                 xPos += 5;
             }
-            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(),xPos,65, VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), xPos,65, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }

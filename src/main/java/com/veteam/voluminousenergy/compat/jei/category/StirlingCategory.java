@@ -64,9 +64,9 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     @Override
     public void draw(StirlingGeneratorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,11,0);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", this.getWidth(),-1,20, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime() + " t",this.getWidth(),-1,28, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime()/20 + " sec",this.getWidth(),-1,36, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", -1,20, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime() + " t",-1,28, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime()/20 + " sec",-1,36, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {

@@ -77,21 +77,21 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
                 + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getA()
                 + " ~ "
                 + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getB()
-                ), this.getWidth(), xPos, -1, VEContainerScreen.GREY_TEXT_STYLE
+                ),  xPos, -1, VEContainerScreen.GREY_TEXT_STYLE
         );
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("E: "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getB()
-                ), this.getWidth(), xPos, 9, VEContainerScreen.GREY_TEXT_STYLE
+                ),  xPos, 9, VEContainerScreen.GREY_TEXT_STYLE
         );
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("H: "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getB()
-                ), this.getWidth(), xPos, 19, VEContainerScreen.GREY_TEXT_STYLE
+                ),  xPos, 19, VEContainerScreen.GREY_TEXT_STYLE
         );
 
 
@@ -99,7 +99,7 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getB()
-                ), this.getWidth(), xPos, 29, VEContainerScreen.GREY_TEXT_STYLE
+                ),  xPos, 29, VEContainerScreen.GREY_TEXT_STYLE
         );
 
     }

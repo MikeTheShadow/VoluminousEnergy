@@ -73,11 +73,11 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,72,10);
         slotDrawable.draw(matrixStack,96,10);
 
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", this.getWidth(),-20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputAmount() + "",this.getWidth(), 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputAmount() + "",this.getWidth(), 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getAmounts().get(2) + "",this.getWidth(), 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%",this.getWidth(), 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", -20,32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputAmount() + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getAmounts().get(2) + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(DistillationRecipe recipe,

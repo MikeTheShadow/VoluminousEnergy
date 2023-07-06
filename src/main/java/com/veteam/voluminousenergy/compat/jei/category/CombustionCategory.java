@@ -76,7 +76,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                 matrixStack,
                 Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
-                this.getWidth(),
                 16,
                 4,
                 VEContainerScreen.WHITE_TEXT_STYLE
@@ -87,7 +86,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                 matrixStack,
                 Minecraft.getInstance().font,
                 Component.nullToEmpty(recipe.getVolumetricEnergy() + " FE/B"),
-                this.getWidth(),
                 35,
                 16,
                 VEContainerScreen.GREY_TEXT_STYLE
@@ -113,16 +111,15 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                 x = 46;
             }
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fePerTickComponent, this.getWidth(), x, 45,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fePerTickComponent,  x, 45,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("FE/t:"), this.getWidth(),48,35,VEContainerScreen.WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("FE/t:"), 48,35,VEContainerScreen.WHITE_TEXT_STYLE);
 
         TextUtil.renderUnshadowedText(
                 matrixStack,
                 Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
-                this.getWidth(),
                 16,
                 26,
                 VEContainerScreen.GREY_TEXT_STYLE
@@ -133,7 +130,6 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                 matrixStack,
                 Minecraft.getInstance().font,
                 TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
-                this.getWidth(),
                 76,
                 26,
                 VEContainerScreen.GREY_TEXT_STYLE
