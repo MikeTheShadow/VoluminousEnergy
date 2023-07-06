@@ -26,8 +26,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     public static final Serializer SERIALIZER = new Serializer();
 
     private final ResourceLocation recipeId;
-    private FluidStack result;
-
     public AqueoulizerRecipe() {
         recipeId = null;
     }

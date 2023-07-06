@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,9 +17,8 @@ import java.util.List;
 public class RelationalTank {
 
     FluidTank tank;
+    int slotNum;
     int id;
-
-    int outputID;
     ItemStack input;
     ItemStack output;
     TankType tankType;
@@ -38,22 +37,27 @@ public class RelationalTank {
 
     }
 
-    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output, TankType tankType, String nbt) {
+    public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, String nbt) {
         this.tank = tank;
-        this.id = id;
+        this.slotNum = slotNum;
         this.input = input;
         this.output = output;
         this.tankType = tankType;
         this.nbt = nbt;
+
+        this.tank.setValidator(t -> {
+
+            return true;
+        });
     }
 
-    public RelationalTank(FluidTank tank, int id, ItemStack input, ItemStack output, TankType tankType, int outputID, String nbt) {
+    public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
         this.tank = tank;
-        this.id = id;
+        this.slotNum = slotNum;
         this.input = input;
         this.output = output;
         this.tankType = tankType;
-        this.outputID = outputID;
+        this.id = id;
         this.nbt = nbt;
     }
 
@@ -63,9 +67,8 @@ public class RelationalTank {
     }
 
     /**
-     *
      * @param recipe The fluid recipe to pull the required data from
-     * @param id The ID which is mapped to the output fluid id in the arraylist for the recipes outputfluids
+     * @param id     The ID which is mapped to the output fluid id in the arraylist for the recipes outputfluids
      * @return true if the fluid can be inserted into the tank
      */
     public boolean canInsertOutputFluid(VEFluidRecipe recipe, int id) {
@@ -73,11 +76,27 @@ public class RelationalTank {
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
 
+    public boolean addBucket(BucketItem item) {
+        Fluid fluid = item.getFluid();
+        FluidStack stack = new FluidStack(fluid, 1000);
+
+        if (this.getTank().getFluid().isEmpty()) {
+            this.getTank().setFluid(stack);
+            return true;
+        }
+
+        if (this.getTank().getFluidAmount() + 1000 <= this.tank.getCapacity()
+                && this.getTank().getFluid().isFluidEqual(stack)) {
+            this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
+            return true;
+        }
+        return false;
+    }
+
     /**
-     *
      * @param recipe The fluid recipe to use
-     * @param id The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
-     *           especially if there are multiple outputs
+     * @param id     The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
+     *               especially if there are multiple outputs
      */
     public void fillOutput(VEFluidRecipe recipe, int id) {
 
@@ -95,8 +114,9 @@ public class RelationalTank {
      * To find the id the easiest way is to go to the fromJson in a recipe's serializer.
      * From there look at the fluidInputList being built and check for the position of
      * the fluid you're looking to subtract.
+     *
      * @param recipe The recipe to pull the input from
-     * @param id The id of the input fluid
+     * @param id     The id of the input fluid
      */
     public void drainInput(VEFluidRecipe recipe, int id) {
         this.tank.drain(recipe.getFluidIngredients().get(id).getFluids()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
@@ -147,12 +167,12 @@ public class RelationalTank {
         this.tank = tank;
     }
 
-    public int getId() {
-        return id;
+    public int getSlotNum() {
+        return slotNum;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSlotNum(int slotNum) {
+        this.slotNum = slotNum;
     }
 
     public ItemStack getInput() {
@@ -169,14 +189,6 @@ public class RelationalTank {
 
     public void setOutput(ItemStack output) {
         this.output = output;
-    }
-
-    public int getOutputID() {
-        return outputID;
-    }
-
-    public void setOutputID(int outputID) {
-        this.outputID = outputID;
     }
 
     public boolean getSideStatus() {
@@ -230,5 +242,4 @@ public class RelationalTank {
     public boolean isValidFluidsSet() {
         return allowAny || !this.validFluids.isEmpty();
     }
-
 }

@@ -11,6 +11,8 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,82 +30,52 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     private AqueoulizerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    
 
-    public AqueoulizerScreen(AqueoulizerContainer screenContainer, Inventory inv, Component titleIn){
-        super(screenContainer,inv,titleIn);
+
+    public AqueoulizerScreen(AqueoulizerContainer screenContainer, Inventory inv, Component titleIn) {
+        super(screenContainer, inv, titleIn);
         tileEntity = (AqueoulizerTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
     @Override
-    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
-        super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderTooltip(matrixStack,mouseX,mouseY);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void init(){
+    protected void init() {
         super.init();
         // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
+        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
 
         }));
 
-        // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.input0sm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
+        int increase = 0;
 
-        // Input Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
 
-        // Output Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
+        for (RelationalTank tank : tileEntity.getRelationalTanks()) {
+            // Input Tank
+            addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Output Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.input1sm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // Input Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank(), (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank(), (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
+            addRenderableWidget(new TankDirectionButton(tank, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+            increase++;
+        }
     }
 
     @Override
@@ -128,7 +101,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.AQUEOULIZER_MAX_POWER.get()), mouseX, mouseY);
             }));
@@ -136,19 +109,19 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        if (isHovering(157, 18, 12, 50, mouseX, mouseY)){ // First Output Tank
+        if (isHovering(157, 18, 12, 50, mouseX, mouseY)) { // First Output Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
-            matrixStack.renderTooltip(this.font,TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        super.renderTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public Rect2i getTooltipArea() {
@@ -162,14 +135,14 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(this.GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
-        if(tileEntity != null){
+        matrixStack.blit(this.GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        if (tileEntity != null) {
             int progress = tileEntity.progressCounterPX(9);
             int power = menu.powerScreen(49);
 
@@ -181,18 +154,19 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(this.GUI,i+127, j+31, 176, 0, progress, 17);
-            matrixStack.blit(this.GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(this.GUI, i + 127, j + 31, 176, 0, progress, 17);
+            matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
-            try{
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
-            } catch (Exception e){ }
+            try {
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+            } catch (Exception e) {
+            }
             drawIOSideHelper();
             // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            matrixStack.blit(GUI_TOOLS,i+129, j-16,0,0,18,18);
+            matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         }
 
     }

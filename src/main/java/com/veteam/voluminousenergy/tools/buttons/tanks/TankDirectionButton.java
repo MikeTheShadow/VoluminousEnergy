@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -72,7 +71,7 @@ public class TankDirectionButton extends VEIOButton {
         }
 
         // Print text
-        Component textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getId());
+        Component textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getSlotNum());
         matrixStack.drawCenteredString(Minecraft.getInstance().font, textComponent.getString(),(getX())+48,(getY())+5,0xffffff);
     }
 
@@ -89,7 +88,7 @@ public class TankDirectionButton extends VEIOButton {
     }
 
     public int getId(){
-        return this.tank.getId();
+        return this.tank.getSlotNum();
     }
 
     public void setDirectionFromInt(int sideInt){

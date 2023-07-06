@@ -1,13 +1,9 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -22,9 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.veteam.voluminousenergy.VoluminousEnergy.LOGGER;
 
 public abstract class VEFluidTileEntity extends VoluminousTileEntity implements IFluidTileEntity {
 
@@ -118,13 +111,13 @@ public abstract class VEFluidTileEntity extends VoluminousTileEntity implements 
 
     public void updateTankPacketFromGui(boolean status, int id) {
         for(RelationalTank tank : getRelationalTanks()) {
-            if(id == tank.getId()) tank.setSideStatus(status);
+            if(id == tank.getSlotNum()) tank.setSideStatus(status);
         }
     }
 
     public void updateTankPacketFromGui(int direction, int id) {
         for(RelationalTank tank : getRelationalTanks()) {
-            if(id == tank.getId()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+            if(id == tank.getSlotNum()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
         }
     }
 

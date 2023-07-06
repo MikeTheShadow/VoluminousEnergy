@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -54,7 +53,7 @@ public class TankBoolButton extends VEIOButton {
     public boolean status(){ return enable; }
 
     public int getId(){
-        return this.tank.getId();
+        return this.tank.getSlotNum();
     }
 
     public void setStatus(boolean status) {
