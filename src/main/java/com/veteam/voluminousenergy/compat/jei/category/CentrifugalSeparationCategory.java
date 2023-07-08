@@ -80,17 +80,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance0()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 26, VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance1()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 44, VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 44, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
             int chance = (int)(recipe.getChance2()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), this.getWidth(), 74, 62, VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }

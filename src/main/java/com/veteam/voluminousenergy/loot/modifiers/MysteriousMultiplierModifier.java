@@ -38,9 +38,6 @@ public class MysteriousMultiplierModifier extends LootModifier {
             }
         });
 
-        var rs = context.getQueriedLootTableId();
-        System.out.println("Found loot table id: " + rs);
-
         if (!generatedMysteriousMultiplier.get()) {
             ObjectArrayList<ItemStack> clonedArray = generatedLoot.clone();
             clonedArray.add(new ItemStack(VEItems.MYSTERIOUS_MULTIPLIER.get(), 1));
