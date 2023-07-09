@@ -41,27 +41,8 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     protected void init(){
         super.init();
         // Buttons go here
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        addIOMenu(tileEntity);
 
-        }));
-
-        // Output slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getAirTank(), (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getAirTank(), (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
     }
 
     @Override

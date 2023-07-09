@@ -30,16 +30,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
-    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.OUTPUT);
 
-    private final int TANK_CAPACITY = 4000;
+    public VESlotManager[] slotManagers = new VESlotManager[]{
+            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_HYBRID)
+    };
+
     private final ItemStackHandler inventory = createHandler(2,this);
 
-    //private FluidTank airTank = new FluidTank(tankCapacity);
-    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"air_tank:air_tank_properties");
+    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0, TankType.OUTPUT,"air_tank:air_tank_properties");
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state);
+        super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state, null);
         airTank.setValidFluids(Collections.singletonList(VEFluids.COMPRESSED_AIR_REG.get()));
     }
 
@@ -149,7 +150,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
-        return Collections.singletonList(outputSlotManager);
+        return List.of(slotManagers);
     }
 
     @Override

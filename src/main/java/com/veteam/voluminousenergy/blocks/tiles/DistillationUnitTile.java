@@ -2,72 +2,49 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.*;
-import com.veteam.voluminousenergy.util.recipe.RecipeFluid;
-import com.veteam.voluminousenergy.util.recipe.RecipeItem;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.util.Mth;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager iTopManager = new VESlotManager(0, Direction.UP, false, SlotType.INPUT);
-    public VESlotManager iBottomManager = new VESlotManager(1, Direction.DOWN, false, SlotType.OUTPUT);
-    public VESlotManager o0TopManager = new VESlotManager(2, Direction.UP, false, SlotType.INPUT);
-    public VESlotManager o0BottomManager = new VESlotManager(3, Direction.DOWN, false, SlotType.OUTPUT);
-    public VESlotManager o1TopManager = new VESlotManager(4, Direction.UP, false, SlotType.INPUT);
-    public VESlotManager o1BottomManager = new VESlotManager(5, Direction.DOWN, false, SlotType.OUTPUT);
-    public VESlotManager o2Manager = new VESlotManager(6, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager[] slotManagers = new VESlotManager[] {
+            new VESlotManager(0, Direction.UP, false, SlotType.FLUID_INPUT),
+            new VESlotManager(1, Direction.DOWN, false, SlotType.FLUID_OUTPUT),
+            new VESlotManager(2, Direction.UP, false, SlotType.FLUID_INPUT),
+            new VESlotManager(3, Direction.DOWN, false, SlotType.FLUID_OUTPUT),
+            new VESlotManager(4, Direction.UP, false, SlotType.FLUID_INPUT),
+            new VESlotManager(5, Direction.DOWN, false, SlotType.FLUID_OUTPUT),
+            new VESlotManager(6, 0,Direction.DOWN, false, SlotType.OUTPUT)
+    };
 
-    public List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(iTopManager);
-        add(iBottomManager);
-        add(o0TopManager);
-        add(o0BottomManager);
-        add(o1TopManager);
-        add(o1BottomManager);
-        add(o2Manager);
-    }};
-
-    private final int tankCapacity = 4000;
-
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "inputTank:input_tank_gui");
-    RelationalTank outputTank0 = new RelationalTank(new FluidTank(TANK_CAPACITY), 1, null, null, TankType.OUTPUT, 0, "outputTank0:output_tank_0_gui");
-    RelationalTank outputTank1 = new RelationalTank(new FluidTank(TANK_CAPACITY), 2, null, null, TankType.OUTPUT, 1, "outputTank1:output_tank_1_gui");
-
-    public List<RelationalTank> fluidManagers = new ArrayList<>() {{
-        add(inputTank);
-        add(outputTank0);
-        add(outputTank1);
-    }};
+    public RelationalTank[] fluidManagers = new RelationalTank[] {
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, TankType.INPUT, "inputTank:input_tank_gui"),
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0, TankType.OUTPUT, "outputTank0:output_tank_0_gui"),
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 2, 1, TankType.OUTPUT, "outputTank1:output_tank_1_gui")
+    };
 
     private byte tick = 19;
 
@@ -79,7 +56,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     }
 
     public DistillationUnitTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state);
+        super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state, DistillationRecipe.RECIPE_TYPE);
     }
 
     @Override
@@ -94,29 +71,11 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         if (!(validity)) {
             return;
         }
-        ItemStack inputTop = inventory.getStackInSlot(0).copy();
-        ItemStack inputBottom = inventory.getStackInSlot(1).copy();
-        ItemStack firstOutputTop = inventory.getStackInSlot(2).copy();
-        ItemStack firstOutputBottom = inventory.getStackInSlot(3).copy();
-        ItemStack secondOutputTop = inventory.getStackInSlot(4).copy();
-        ItemStack secondOutputBottom = inventory.getStackInSlot(5).copy();
-        ItemStack thirdOutput = inventory.getStackInSlot(6).copy();
-
-        inputTank.setIOItemstack(inputTop.copy(), inputBottom.copy());
-        outputTank0.setIOItemstack(firstOutputTop.copy(), firstOutputBottom.copy());
-        outputTank1.setIOItemstack(secondOutputTop.copy(), secondOutputBottom.copy());
-
-        if (inputFluid(inputTank, 0, 1)) return;
-        if (this.outputFluid(inputTank, 0, 1)) return;
-
-        if (this.inputFluid(outputTank0, 2, 3)) return;
-        if (this.outputFluid(outputTank0, 2, 3)) return;
-
-        if (this.inputFluid(outputTank1, 4, 5)) return;
-        if (this.outputFluid(outputTank1, 4, 5)) return;
+        super.tick();
 
         // Main Fluid Processing occurs here:
         if (selectedRecipe != null) {
+            ItemStack thirdOutput = inventory.getStackInSlot(6).copy();
 
             DistillationRecipe recipe = (DistillationRecipe) selectedRecipe;
 
@@ -127,11 +86,11 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                     if (counter == 1) {
 
                         // Drain Input
-                        inputTank.drainInput(recipe,0);
-                        outputTank0.fillOutput(recipe,0);
+                        fluidManagers[0].drainInput(recipe,0);
+                        fluidManagers[1].fillOutput(recipe,0);
 
                         // Second Output Tank
-                        outputTank1.fillOutput(recipe,1);
+                        fluidManagers[2].fillOutput(recipe,1);
 
                         if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getThirdChance()) {
                             if (thirdOutput.getItem() != recipe.getOutputItem(0).getItem()) {
@@ -217,7 +176,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     @NotNull
     @Override
     public List<VESlotManager> getSlotManagers() {
-        return slotManagers;
+        return List.of(slotManagers);
     }
 
     @Nullable
@@ -245,22 +204,18 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     public FluidStack getFluidStackFromTank(int num) {
         if (num == 0) {
-            return inputTank.getTank().getFluid();
+            return fluidManagers[0].getTank().getFluid();
         } else if (num == 1) {
-            return outputTank0.getTank().getFluid();
+            return fluidManagers[1].getTank().getFluid();
         } else if (num == 2) {
-            return outputTank1.getTank().getFluid();
+            return fluidManagers[2].getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
 
-    public int getTankCapacity() {
-        return tankCapacity;
-    }
-
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
-        return fluidManagers;
+        return List.of(fluidManagers);
     }
 
     public boolean getMultiblockValidity() {
@@ -268,15 +223,15 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     }
 
     public RelationalTank getInputTank() {
-        return this.inputTank;
+        return this.fluidManagers[0];
     }
 
     public RelationalTank getOutputTank0() {
-        return this.outputTank0;
+        return this.fluidManagers[1];
     }
 
     public RelationalTank getOutputTank1() {
-        return this.outputTank1;
+        return this.fluidManagers[2];
     }
 
     @Override
