@@ -31,11 +31,13 @@ public class CentrifugalAgitatorContainer extends VoluminousContainer {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new VEBucketSlot(h, 0, 38, 18)); // Fluid input slot
-            addSlot(new VEBucketSlot(h, 1,38,49)); // Extract fluid from input
-            addSlot(new VEBucketSlot(h, 2, 96,49)); // Extract fluid from first output
-            addSlot(new VEBucketSlot(h, 3, 137,49)); // Extract fluid from second output
-            addSlot(new VEInsertSlot(h, 4, 130,-14)); // Upgrade slot
+            addSlot(new VEBucketSlot(h, 0, 38, 18)); // Bucket insert; input tank
+            addSlot(new VEBucketSlot(h, 1,38,49)); // Bucket extract; input tank
+            addSlot(new VEBucketSlot(h, 2, 96,18)); // Bucket insert; first output tank
+            addSlot(new VEBucketSlot(h, 3, 96,49)); // Bucket extract; first output tank
+            addSlot(new VEBucketSlot(h, 4, 137, 18)); // Bucket insert; second output tank
+            addSlot(new VEBucketSlot(h, 5, 137, 49)); // Bucket extract; second output tank
+            addSlot(new VEInsertSlot(h, 6, 130,-14)); // Upgrade slot
         });
         layoutPlayerInventorySlots(8, 84);
 

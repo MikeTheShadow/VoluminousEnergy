@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
-    private final ItemStackHandler inventory = createHandler(5);
+    private final ItemStackHandler inventory = createHandler(6);
 
     public RelationalTank[] fluidManagers = new RelationalTank[]{
             new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"),
@@ -31,8 +31,9 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     public VESlotManager[] slotManagers = new VESlotManager[]{
             new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0),
             new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_HYBRID, 2, 1),
-            new VESlotManager(3, 0, Direction.SOUTH, true, SlotType.INPUT)
+            new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 3, 1),
+            new VESlotManager(3, Direction.SOUTH, true, SlotType.FLUID_OUTPUT),
+            new VESlotManager(4, 0, Direction.EAST, true, SlotType.INPUT)
     };
 
     @Override
@@ -85,6 +86,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     @Override
     public int getUpgradeSlotId() {
-        return 4;
+        return 5;
     }
 }

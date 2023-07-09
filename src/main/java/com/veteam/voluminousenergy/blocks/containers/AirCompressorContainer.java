@@ -31,8 +31,9 @@ public class AirCompressorContainer extends VoluminousContainer {
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new VEBucketSlot(h, 0, 70, 49)); // Air Compressor extract slot
-            addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
+            addSlot(new VEBucketSlot(h, 0, 70, 49)); // Air Compressor bucket input slot
+            addSlot(new VEBucketSlot(h, 1, 70, 18)); // Air Compressor bucket output slot
+            addSlot(new VEInsertSlot(h, 2, 154, -14)); // Upgrade Slot
         });
 
         layoutPlayerInventorySlots(8, 84);

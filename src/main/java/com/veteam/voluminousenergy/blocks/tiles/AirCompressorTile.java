@@ -32,7 +32,8 @@ import java.util.List;
 public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     public VESlotManager[] slotManagers = new VESlotManager[]{
-            new VESlotManager(0, Direction.UP, true, SlotType.FLUID_HYBRID)
+            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_HYBRID),
+            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
     };
 
     private final ItemStackHandler inventory = createHandler(2, this);
