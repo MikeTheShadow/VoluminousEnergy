@@ -93,28 +93,8 @@ public class RelationalTank {
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
 
-    public boolean addBucket(ItemStack item,VEFluidTileEntity tile) {
-
-        if(item.getItem() instanceof BucketItem bucketItem) {
-            Fluid fluid = bucketItem.getFluid();
-            FluidStack stack = new FluidStack(fluid, 1000);
-
-            if (this.getTank().getFluid().isEmpty()) {
-                this.getTank().setFluid(stack);
-                return true;
-            }
-
-            if (this.getTank().getFluidAmount() + 1000 <= this.tank.getCapacity()
-                    && this.getTank().getFluid().isFluidEqual(stack)) {
-                this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
-     * // TODO make sure that anything that calls this method properly marks the tiles recipe as dirty!
+     * // TODO make sure that anything that calls this method properly marks the tiles recipe and fluid input as dirty!
      * @param recipe The fluid recipe to use
      * @param id     The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
      *               especially if there are multiple outputs
@@ -146,7 +126,7 @@ public class RelationalTank {
     }
 
     /**
-     * TODO make sure that anything that calls this method properly marks the tiles recipe as dirty!
+     * TODO make sure that anything that calls this method properly marks the tiles recipe and fluid input as dirty!
      * The id will be located in the Recipe file itself.
      * To find the id the easiest way is to go to the fromJson in a recipe's serializer.
      * From there look at the fluidInputList being built and check for the position of

@@ -3,8 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -12,12 +10,10 @@ import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -54,46 +50,12 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     public void tick() {
         updateClients();
         super.tick();
-
-        if (selectedRecipe == null) return;
-        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
-        if (!canConsumeEnergy()) {
-            decrementSuperCounterOnNoPower();
-            return;
-        }
-
-        // Tank cap checks
-        if (fluidManagers[1].canInsertOutputFluid(recipe, 0) && canConsumeEnergy()) {
-            if (counter == 1) {
-                fluidManagers[0].drainInput(recipe, 0);
-                inventory.extractItem(3, recipe.getItemIngredient(0).getItems()[0].getCount(), false);
-                // Fill Output
-                fluidManagers[1].fillOutput(recipe, 0);
-                this.setChanged();
-            } else if (counter > 0) {
-                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
-                    sound_tick = 0;
-                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-            } else {
-                counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
-                length = counter;
-                return;
-            }
-            counter--;
-            consumeEnergy();
-        }
     }
 
     @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
-    }
-
-    public FluidStack getFluidStackFromTank(int num) {
-        if (num >= fluidManagers.length) return FluidStack.EMPTY;
-        return fluidManagers[num].getTank().getFluid();
     }
 
     @Override

@@ -1,14 +1,20 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,30 +36,8 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
     public static final int TANK_CAPACITY = 4000;
     private boolean fluidInputDirty;
 
-    private final List<VEFluidRecipe> fluidRecipeList = new ArrayList<>();
-
     public VEFluidTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
         super(type, pos, state, recipeType);
-    }
-
-    //use for inputting a fluid
-    public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
-        ItemStack input = tank.getInput();
-        ItemStack output = tank.getOutput();
-        FluidTank inputTank = tank.getTank();
-        ItemStackHandler handler = getInventoryHandler();
-        if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
-            if ((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || checkOutputSlotForEmptyOrBucket(output.copy())) {
-                Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
-                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
-                    inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
-                    handler.extractItem(slot1, 1, false);
-                    handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -61,32 +45,36 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
         VEFluidTileEntity tileEntity = this;
         int upgradeSlotLocation = -1;
-        if(tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
+        if (tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
             upgradeSlotLocation = poweredTileEntity.getUpgradeSlotId();
         }
 
         int finalUpgradeSlotLocation = upgradeSlotLocation;
-        return new ItemStackHandler(5) {
+        return new ItemStackHandler(slots) {
 
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
                 List<VESlotManager> managers = getSlotManagers();
-                if(managers.size() < slot) {
-                    if(getSlotManagers().get(slot).getSlotType() == SlotType.INPUT) {
+
+                if(slot == finalUpgradeSlotLocation) tileEntity.markRecipeDirty();
+                else if (slot < managers.size()) {
+                    SlotType slotType = getSlotManagers().get(slot).getSlotType();
+                    if (slotType == SlotType.INPUT) {
                         tileEntity.markRecipeDirty();
+                    } else if (slotType.isFluidBucketIORelated()) {
+                        tileEntity.markFluidInputDirty();
                     }
                 }
-                tileEntity.processInputNextTick();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == finalUpgradeSlotLocation)
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+                if (slot == finalUpgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
+
                 VESlotManager manager = tileEntity.getSlotManagers().get(slot);
                 if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
-                    if(bucketItem.getFluid() == Fluids.EMPTY) return true;
+                    if (bucketItem.getFluid() == Fluids.EMPTY) return true;
                     RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
                     for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
                         VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
@@ -118,9 +106,30 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         };
     }
 
+    //use for inputting a fluid
+    public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
+        ItemStack input = tank.getInput();
+        ItemStack output = tank.getOutput();
+        FluidTank inputTank = tank.getTank();
+        ItemStackHandler handler = getInventoryHandler();
+        if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
+            if ((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || checkOutputSlotForEmptyOrBucket(output.copy())) {
+                Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
+                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
+                    inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                    handler.extractItem(slot1, 1, false);
+                    handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
+                    this.markRecipeDirty();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     //use for when the input and output slot are different
     public boolean outputFluid(RelationalTank tank, int slot1, int slot2) {
-
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
@@ -130,6 +139,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot1, 1, false);
             handler.insertItem(slot2, bucketStack, false);
+            this.markRecipeDirty();
             return true;
         }
         return false;
@@ -146,6 +156,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot, 1, false);
             handler.insertItem(slot, bucketStack, false);
+            this.markRecipeDirty();
             return true;
         }
         return false;
@@ -167,6 +178,88 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
     public void tick() {
         processFluidIO();
         super.tick();
+
+        if (selectedRecipe == null) return;
+        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
+
+
+        /* TODO debate on this.
+            if (!canConsumeEnergy()) {
+            decrementSuperCounterOnNoPower();
+            return;
+        }
+         */
+
+        if (canConsumeEnergy()) {
+
+            if (counter == 1) {
+                // Validate output
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
+                        // If the output fluid amount won't fit, then you must acquit
+                        FluidTank tank = relationalTank.getTank();
+                        FluidStack currentFluid = tank.getFluid();
+                        if (!recipeFluid.isFluidEqual(currentFluid)
+                                || tank.getFluidAmount() + recipeFluid.getAmount() > tank.getCapacity()) {
+                            return;
+                        }
+                    }
+                }
+
+                ItemStackHandler handler = getInventoryHandler();
+
+                if (handler != null) {
+                    // Validate output
+                    for (VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
+                        ItemStack recipeStack = recipe.getOutputItem(slotManager.getRecipePos());
+                        ItemStack currentItem = slotManager.getItem(handler);
+                        // If the output item amount won't fit, then you must acquit
+                        if(!recipeStack.is(currentItem.getItem())
+                                || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
+                            return;
+                        }
+                    }
+
+                    // process recipe
+                    for(VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() == SlotType.OUTPUT) {
+                            ItemStack output = recipe.getOutputItem(slotManager.getRecipePos());
+                            ItemStack currentStack = slotManager.getItem(handler);
+                            currentStack.setCount(currentStack.getCount() + output.getCount());
+                        } else if(slotManager.getSlotType() == SlotType.INPUT) {
+                            Ingredient ingredient = recipe.getItemIngredient(slotManager.getRecipePos());
+                            ItemStack currentStack = slotManager.getItem(handler);
+                            currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
+                        }
+                    }
+                }
+
+                // process recipe
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        relationalTank.fillOutput(recipe,relationalTank.getRecipePos());
+                    } else if(relationalTank.getTankType() == TankType.INPUT) {
+                        relationalTank.drainInput(recipe,relationalTank.getRecipePos());
+                    }
+                }
+
+
+                this.markRecipeDirty();
+                this.markFluidInputDirty();
+                this.setChanged();
+            } else if (counter > 0) {
+                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
+                    sound_tick = 0;
+                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            } else {
+                counter = length;
+            }
+            counter--;
+            consumeEnergy();
+        }
     }
 
     @Override
@@ -205,7 +298,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         return slotStack.copy() == ItemStack.EMPTY || ((slotStack.copy().getItem() == Items.BUCKET) && slotStack.copy().getCount() < 16);
     }
 
-    public void processInputNextTick() {
+    public void markFluidInputDirty() {
         this.fluidInputDirty = true;
     }
 
@@ -235,13 +328,13 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
     @Override
     public void validateRecipe() {
-        if(!this.isRecipeDirty) {
+        if (!this.isRecipeDirty) {
             return;
         }
         this.isRecipeDirty = false;
 
-        this.potentialRecipes = RecipeCache.getFluidRecipesFromCache(level,this.getRecipeType(),getSlotManagers(),getRelationalTanks(),this,true);
-        if(this.potentialRecipes.size() == 1) {
+        this.potentialRecipes = RecipeCache.getFluidRecipesFromCache(level, this.getRecipeType(), getSlotManagers(), getRelationalTanks(), this, true);
+        if (this.potentialRecipes.size() == 1) {
             List<FluidStack> inputFluids = this.getRelationalTanks().stream()
                     .filter(tank -> tank.getTankType() == TankType.INPUT)
                     .map(tank -> tank.getTank().getFluid()).toList();
@@ -255,27 +348,42 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             }
             VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, getRecipeType(), inputFluids, inputItems);
 
-            if(newRecipe == null) {
+            if (newRecipe == null) {
                 counter = 0;
                 length = 0;
                 this.selectedRecipe = null;
                 return;
             }
-            
+
+            int newLength;
+
             if (this instanceof IVEPoweredTileEntity poweredTileEntity && handler != null) {
-                counter = this.calculateCounter(newRecipe.getProcessTime(),
+                newLength = this.calculateCounter(newRecipe.getProcessTime(),
                         handler.getStackInSlot(poweredTileEntity.getUpgradeSlotId()).copy());
             } else {
-                counter = this.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
+                newLength = this.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
             }
-            length = counter;
+
+
+            double ratio = (double) length / (double) newLength;
+            length = newLength;
+            counter = (int) (counter / ratio);
+
             if (this.selectedRecipe != newRecipe) {
                 this.selectedRecipe = newRecipe;
+                counter = newLength;
             }
         } else {
             counter = 0;
             length = 0;
             this.selectedRecipe = null;
         }
+    }
+
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num >= getRelationalTanks().size() || num < 0) {
+            return FluidStack.EMPTY;
+        }
+        return getRelationalTanks().get(num).getTank().getFluid();
     }
 }

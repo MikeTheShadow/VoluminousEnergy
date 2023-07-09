@@ -359,8 +359,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
+     * //TODO make this cache the capability otherwise it's a laggy mess
      * Like consumeEnergy this requires that the object has an inventory
-     *
      * @return True if the object has enough energy to be able to continue
      * Throws an error if missing the power consumeEnergy IMPL
      */

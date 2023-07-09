@@ -127,6 +127,7 @@ public class VESlotManager {
         };
     }
 
+    // This gives the raw item to be used in manipulation. If you wish to use it for something else .copy() it
     public ItemStack getItem(ItemStackHandler handler) {
         return handler.getStackInSlot(this.slot);
     }

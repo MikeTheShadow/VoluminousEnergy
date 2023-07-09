@@ -128,28 +128,10 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
     }
 
     // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
-    public FluidStack getFluidStackFromTank(int num) {
-        if (num >= fluidManagers.length || num < 0) {
-            return FluidStack.EMPTY;
-        }
-        return fluidManagers[num].getTank().getFluid();
-    }
 
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return List.of(fluidManagers);
-    }
-
-    public RelationalTank getInputTank0() {
-        return this.fluidManagers[0];
-    }
-
-    public RelationalTank getInputTank1() {
-        return this.fluidManagers[1];
-    }
-
-    public RelationalTank getOutputTank0() {
-        return this.fluidManagers[2];
     }
 
     @Override
