@@ -72,6 +72,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * This message can be removed if updateClients(); is found to be useless
      */
     public void tick() {
+        updateClients();
         validateRecipe();
     }
 

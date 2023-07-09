@@ -79,12 +79,11 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
                         level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                 }
+                counter = (byte) this.calculateCounter(20, this.inventory.getStackInSlot(this.getUpgradeSlotId()));
             }
+        } else {
+            counter--;
         }
-
-        if (counter == 0)
-            counter = (byte) this.calculateCounter(20, this.inventory.getStackInSlot(this.getUpgradeSlotId()));
-        else counter--;
     }
 
     public boolean addAirToTank(int multiplier) {

@@ -55,7 +55,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
 
     @Override
     public void tick() {
-        updateClients();
         super.tick();
     }
 

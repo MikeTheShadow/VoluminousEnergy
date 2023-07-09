@@ -176,19 +176,12 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
     @Override
     public void tick() {
-        processFluidIO();
         super.tick();
+        processFluidIO();
 
+        // TODO extract this
         if (selectedRecipe == null) return;
         VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
-
-
-        /* TODO debate on this.
-            if (!canConsumeEnergy()) {
-            decrementSuperCounterOnNoPower();
-            return;
-        }
-         */
 
         if (canConsumeEnergy()) {
 
@@ -197,9 +190,10 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                 for (RelationalTank relationalTank : getRelationalTanks()) {
                     if (relationalTank.getTankType() == TankType.OUTPUT) {
                         FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
-                        // If the output fluid amount won't fit, then you must acquit
                         FluidTank tank = relationalTank.getTank();
                         FluidStack currentFluid = tank.getFluid();
+                        if(currentFluid.isEmpty()) continue;
+                        // If the output fluid amount won't fit, then you must acquit
                         if (!recipeFluid.isFluidEqual(currentFluid)
                                 || tank.getFluidAmount() + recipeFluid.getAmount() > tank.getCapacity()) {
                             return;
@@ -215,6 +209,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
                         ItemStack recipeStack = recipe.getOutputItem(slotManager.getRecipePos());
                         ItemStack currentItem = slotManager.getItem(handler);
+                        if(!currentItem.isEmpty()) continue;
                         // If the output item amount won't fit, then you must acquit
                         if(!recipeStack.is(currentItem.getItem())
                                 || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
