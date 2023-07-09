@@ -156,6 +156,8 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
         return this.slotManagers;
     }
 
+
+    // TODO check if these methods are identical to super. If they are remove them
     public int progressCounterPX(int px) {
         if (counter == 0){
             return 0;
@@ -167,11 +169,6 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
     public int progressCounterPercent(){
         if (counter != 0 && length != 0) return (int)(100-(((float)counter/(float)length)*100));
         return 0;
-    }
-
-
-    public int ticksLeft(){
-        return counter;
     }
 
     public int getEnergyRate(){

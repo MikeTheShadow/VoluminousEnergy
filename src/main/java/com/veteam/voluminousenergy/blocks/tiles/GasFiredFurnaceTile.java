@@ -308,11 +308,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
         return new GasFiredFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
     public int progressFuelCounterPX(int px) {
         if (fuelCounter == 0){
             return 0;

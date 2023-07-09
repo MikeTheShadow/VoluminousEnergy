@@ -279,6 +279,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
         return slotManagers;
     }
 
+    // TODO figure out if this can just be a call to the super method
     public int progressCounterPX(int px) {
         if (counter == 0) {
             return 0;

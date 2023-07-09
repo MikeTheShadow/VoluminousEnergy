@@ -215,11 +215,6 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
                 && (inventory.getStackInSlot(4) != ItemStack.EMPTY);
     }
 
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return fuelTank.getTank().getFluid();

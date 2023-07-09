@@ -123,33 +123,12 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         return new FluidElectrolyzerContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
-    public int progressCounterPercent() {
-        if (length != 0) {
-            return (int) (100 - (((float) counter / (float) length) * 100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft() {
-        return counter;
-    }
-
     // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
     public FluidStack getFluidStackFromTank(int num) {
         if (num >= fluidManagers.length || num < 0) {
             return FluidStack.EMPTY;
         }
         return fluidManagers[num].getTank().getFluid();
-    }
-
-    public int getTankCapacity() {
-        return TANK_CAPACITY;
     }
 
     @Override

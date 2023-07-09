@@ -177,18 +177,6 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
         return null;
     }
 
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
     public int getCounter(){ return counter; }
 
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
-    }
 }

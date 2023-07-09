@@ -264,11 +264,6 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         return new SawmillContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
     public FluidStack getFluidStackFromTank(int num){
         if (num == 0){
             return outputTank.getTank().getFluid();
@@ -283,18 +278,6 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
-    }
-
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft(){
-        return counter;
     }
 
     @Override

@@ -180,24 +180,13 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
         return slotManagers;
     }
 
+    // TODO check if this is indentical to super method
     public int progressCounterPX(int px){
         if (counter == 0){
             return 0;
         } else {
             return (px*(((counter*100)/length)))/100;
         }
-    }
-
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft(){
-        return counter;
     }
 
     public int getEnergyRate(){

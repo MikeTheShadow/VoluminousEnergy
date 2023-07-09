@@ -192,23 +192,6 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
     }
-
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
-    public int progressCounterPercent(){
-        if (length != 0){
-            return (int)(100-(((float)counter/(float)length)*100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft(){
-        return counter;
-    }
     
     @Override
     public int getMaxPower() {

@@ -28,6 +28,15 @@ public class VESlotManager {
         this.nbtName = slotType.getNBTName(slotNum);
     }
 
+    /**
+     * Use this for when you have an input slot type
+     * @param slotNum The slot number is the index in the array of the slotManagers
+     * @param direction The direction it will be facing by default
+     * @param status The status of the IO
+     * @param slotType The type of slot
+     * @param outputSlot The slotNum of the tank to which a bucket will be placed when this has processed a bucket
+     * @param tankId The index of the tank in the fluidManagers
+     */
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType, int outputSlot, int tankId) {
         this.side.set(direction);
         this.slot = slotNum;
@@ -38,6 +47,13 @@ public class VESlotManager {
         this.tankId = tankId;
     }
 
+    /**
+     * Use this for an input slot or others
+     * @param slotNum The slot number is the index in the array of the slotManagers
+     * @param direction The direction it will be facing by default
+     * @param status The status of the IO
+     * @param slotType The type of slot
+     */
     public VESlotManager(int slotNum, int recipePos, Direction direction, boolean status, SlotType slotType) {
         this.side.set(direction);
         this.slot = slotNum;

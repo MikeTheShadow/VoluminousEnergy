@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
@@ -10,20 +9,14 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
@@ -32,7 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
-    private final ItemStackHandler inventory = createHandler();
+    private final ItemStackHandler inventory = createHandler(5);
 
     public RelationalTank[] fluidManagers = new RelationalTank[]{
             new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"),
@@ -49,11 +42,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
-    }
-
-    @Override
-    public @Nonnull List<VESlotManager> getSlotManagers() {
-        return List.of(slotManagers);
     }
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
@@ -97,84 +85,10 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         }
     }
 
-    @Override
-    public @Nonnull CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
-        return compoundTag;
-    }
-
-    private ItemStackHandler createHandler() {
-
-        VEFluidTileEntity tileEntity = this;
-        return new ItemStackHandler(5) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                tileEntity.markRecipeDirty();
-                tileEntity.processInputNextTick();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == getUpgradeSlotId())
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
-                VESlotManager manager = tileEntity.getSlotManagers().get(slot);
-                if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
-                    if(bucketItem.getFluid() == Fluids.EMPTY) return true;
-                    RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
-                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                        VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                        if (veFluidRecipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
-                            return true;
-                        }
-                    }
-                } else if (manager.getSlotType() == SlotType.INPUT) {
-                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                        VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                        if (veFluidRecipe.getItemIngredient(manager.getRecipePos()).test(stack)) {
-                            return true;
-                        }
-                    }
-                } else return manager.getSlotType() == SlotType.FLUID_OUTPUT;
-                return false;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-
-                if (slot >= slotManagers.length || slot < 0) return super.insertItem(slot, stack, simulate);
-                if (!isItemValid(slot, stack)) return stack;
-                ItemStack existing = this.stacks.get(slot);
-                if (stack.is(existing.getItem())) return super.insertItem(slot, stack, simulate);
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
-
     @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
-    }
-
-    public int progressCounterPX(int px) {
-        if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
-        return 0;
-    }
-
-    public int progressCounterPercent() {
-        if (length != 0) {
-            return (int) (100 - (((float) counter / (float) length) * 100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft() {
-        return counter;
     }
 
     public FluidStack getFluidStackFromTank(int num) {
@@ -185,6 +99,11 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     @Override
     public @Nonnull List<RelationalTank> getRelationalTanks() {
         return List.of(this.fluidManagers);
+    }
+
+    @Override
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return List.of(slotManagers);
     }
 
     @Override

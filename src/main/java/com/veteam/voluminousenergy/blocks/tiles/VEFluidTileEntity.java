@@ -3,10 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RelationalTank;
-import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BucketItem;
@@ -17,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -61,6 +59,63 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             }
         }
         return false;
+    }
+
+    @Override
+    public ItemStackHandler createHandler(int slots) {
+
+        VEFluidTileEntity tileEntity = this;
+        int upgradeSlotLocation = -1;
+        if(tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
+            upgradeSlotLocation = poweredTileEntity.getUpgradeSlotId();
+        }
+
+        int finalUpgradeSlotLocation = upgradeSlotLocation;
+        return new ItemStackHandler(5) {
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                tileEntity.markRecipeDirty();
+                tileEntity.processInputNextTick();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot == finalUpgradeSlotLocation)
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+                VESlotManager manager = tileEntity.getSlotManagers().get(slot);
+                if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
+                    if(bucketItem.getFluid() == Fluids.EMPTY) return true;
+                    RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
+                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+                        VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
+                        if (veFluidRecipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
+                            return true;
+                        }
+                    }
+                } else if (manager.getSlotType() == SlotType.INPUT) {
+                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+                        VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
+                        if (veFluidRecipe.getItemIngredient(manager.getRecipePos()).test(stack)) {
+                            return true;
+                        }
+                    }
+                } else return manager.getSlotType() == SlotType.FLUID_OUTPUT;
+                return false;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+
+                if (slot >= getSlotManagers().size() || slot < 0) return super.insertItem(slot, stack, simulate);
+                if (!isItemValid(slot, stack)) return stack;
+                ItemStack existing = this.stacks.get(slot);
+                if (stack.is(existing.getItem())) return super.insertItem(slot, stack, simulate);
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
     }
 
     //use for when the input and output slot are different
