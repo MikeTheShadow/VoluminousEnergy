@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.common.base.Preconditions;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -13,6 +14,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
     List<RelationalTank> tanks;
+    VETileEntity tileEntity;
 
     public MultiFluidSlotWrapper(List<RelationalTank> tanks) {
         Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
@@ -58,6 +60,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
@@ -73,6 +76,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
             }
         }
@@ -85,6 +89,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
             if (tank.getTank().getFluidAmount() > 0) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().drain(maxDrain, action);
             }
         }
