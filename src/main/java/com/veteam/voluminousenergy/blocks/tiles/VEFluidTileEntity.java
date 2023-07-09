@@ -207,10 +207,10 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                 this.selectedRecipe = null;
                 return;
             }
-
-            if (this instanceof IVEPoweredTileEntity poweredTileEntity && getInventoryHandler() != null) {
-                counter = this.calculateCounter(newRecipe.getProcessTime(), getInventoryHandler()
-                        .getStackInSlot(poweredTileEntity.getUpgradeSlotId()).copy());
+            
+            if (this instanceof IVEPoweredTileEntity poweredTileEntity && handler != null) {
+                counter = this.calculateCounter(newRecipe.getProcessTime(),
+                        handler.getStackInSlot(poweredTileEntity.getUpgradeSlotId()).copy());
             } else {
                 counter = this.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
             }

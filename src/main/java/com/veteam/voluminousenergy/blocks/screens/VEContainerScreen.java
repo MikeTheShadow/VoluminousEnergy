@@ -1,5 +1,7 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -8,6 +10,8 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RelationalTank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -39,6 +43,57 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
                 renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
             }
         });
+    }
+
+    public void addIOMenu(VEFluidTileEntity tileEntity) {
+
+        // Buttons
+        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+
+        for (RelationalTank tank : tileEntity.getRelationalTanks()) {
+            // Input Tank
+            addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+
+            addRenderableWidget(new TankDirectionButton(tank, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+            increase++;
+        }
+    }
+
+    public void addIOMenu(VETileEntity tileEntity) {
+        // Buttons
+        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
     }
 
     protected abstract void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY);

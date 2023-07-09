@@ -21,13 +21,14 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
-    private AqueoulizerTile tileEntity;
+    private final AqueoulizerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
@@ -39,7 +40,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     }
 
     @Override
-    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
@@ -48,34 +49,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     @Override
     protected void init() {
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
-
-        }));
-
-
-        int increase = 0;
-
-        for (VESlotManager manager : tileEntity.getSlotManagers()) {
-            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
-            }));
-
-            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
-            }));
-            increase++;
-        }
-
-        for (RelationalTank tank : tileEntity.getRelationalTanks()) {
-            // Input Tank
-            addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
-                // Do nothing
-            }));
-
-            addRenderableWidget(new TankDirectionButton(tank, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
-                // Do nothing
-            }));
-            increase++;
-        }
+        addIOMenu(tileEntity);
     }
 
     @Override

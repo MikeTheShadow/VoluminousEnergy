@@ -40,6 +40,7 @@ public class RelationalTank {
 
     }
 
+    @Deprecated
     public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
@@ -49,6 +50,7 @@ public class RelationalTank {
         this.nbt = nbt;
     }
 
+    @Deprecated
     public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
@@ -59,13 +61,20 @@ public class RelationalTank {
         this.nbt = nbt;
     }
 
-    public RelationalTank(FluidTank tank, int slotNum,int recipePos, ItemStack input, ItemStack output, TankType tankType, String nbt) {
+    public RelationalTank(FluidTank tank, int slotNum,int recipePos, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.input = input;
         this.output = output;
         this.tankType = tankType;
         this.recipePos = recipePos;
+        this.nbt = nbt;
+    }
+
+    public RelationalTank(FluidTank tank, int slotNum, TankType tankType, String nbt) {
+        this.tank = tank;
+        this.slotNum = slotNum;
+        this.tankType = tankType;
         this.nbt = nbt;
     }
 

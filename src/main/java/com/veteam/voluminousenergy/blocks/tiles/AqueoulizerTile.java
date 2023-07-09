@@ -35,8 +35,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     private final ItemStackHandler inventory = createHandler();
 
     public RelationalTank[] fluidManagers = new RelationalTank[]{
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, null, null, TankType.INPUT, "inputTank:input_tank_gui"),
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0, null, null, TankType.OUTPUT, "outputTank:output_tank_gui")
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"),
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0,  TankType.OUTPUT, "outputTank:output_tank_gui")
     };
 
     public VESlotManager[] slotManagers = new VESlotManager[]{
