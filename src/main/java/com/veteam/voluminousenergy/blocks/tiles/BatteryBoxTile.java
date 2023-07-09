@@ -68,12 +68,12 @@ public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity
     private final VEPowerIOManager powerIOManager = new VEPowerIOManager(true);
 
     public BatteryBoxTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
+        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
     }
 
     @Deprecated
     public BatteryBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
+        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(12) {

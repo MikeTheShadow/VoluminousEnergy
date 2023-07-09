@@ -43,12 +43,12 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ImplosionCompressorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state);
+        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state,ImplosionCompressorRecipe.RECIPE_TYPE);
     }
 
     @Deprecated
     public ImplosionCompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state);
+        super(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state,ImplosionCompressorRecipe.RECIPE_TYPE);
     }
 
     private final ItemStackHandler inventory = createHandler();

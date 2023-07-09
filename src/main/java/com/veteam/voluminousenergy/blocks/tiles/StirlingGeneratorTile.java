@@ -45,12 +45,12 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
     private final ItemStackHandler inventory = this.createHandler();
 
     public StirlingGeneratorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state);
+        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state,null);
     }
 
     @Deprecated
     public StirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state);
+        super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state,null);
     }
 
     @Override

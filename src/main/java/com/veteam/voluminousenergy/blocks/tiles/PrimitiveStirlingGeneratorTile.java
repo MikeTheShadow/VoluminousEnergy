@@ -43,12 +43,12 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
     private final ItemStackHandler inventory = this.createHandler();
 
     public PrimitiveStirlingGeneratorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state,null);
     }
 
     @Deprecated
     public PrimitiveStirlingGeneratorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
+        super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state,null);
     }
 
     @Override

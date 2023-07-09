@@ -73,7 +73,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state);
+        super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state,IndustrialBlastingRecipe.RECIPE_TYPE);
     }
 
     private IndustrialBlastingRecipe recipe;

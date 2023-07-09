@@ -12,12 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
 
-
-    @Deprecated
-    public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-    }
-
     public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
         super(type, pos, state, recipeType);
     }

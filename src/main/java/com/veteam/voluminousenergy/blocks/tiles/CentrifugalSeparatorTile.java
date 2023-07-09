@@ -55,12 +55,12 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CentrifugalSeparatorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
+        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state,CentrifugalSeparatorRecipe.RECIPE_TYPE);
     }
 
     @Deprecated
     public CentrifugalSeparatorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
+        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state,CentrifugalSeparatorRecipe.RECIPE_TYPE);
     }
 
     @Override

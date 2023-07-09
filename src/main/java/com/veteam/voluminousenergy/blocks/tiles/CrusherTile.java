@@ -56,12 +56,12 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
     private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public CrusherTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.CRUSHER_TILE.get(), pos, state);
+        super(VEBlocks.CRUSHER_TILE.get(), pos, state,CrusherRecipe.RECIPE_TYPE);
     }
 
     @Deprecated
     public CrusherTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.CRUSHER_TILE.get(), pos, state);
+        super(VEBlocks.CRUSHER_TILE.get(), pos, state,CrusherRecipe.RECIPE_TYPE);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(4) {

@@ -57,7 +57,7 @@ public class TankTile extends VEFluidTileEntity {
     }
 
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
-        super(blockEntityType, pos, state);
+        super(blockEntityType, pos, state,null);
         capacity = capacity * 1000;
         tank.getTank().setCapacity(capacity);
         tank.setAllowAny(true);
@@ -65,7 +65,7 @@ public class TankTile extends VEFluidTileEntity {
     }
 
     public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+        super(type, pos, state,null);
     }
 
     @Override

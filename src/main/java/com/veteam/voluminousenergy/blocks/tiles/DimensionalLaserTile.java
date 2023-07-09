@@ -69,7 +69,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     private boolean soundPlayed = false;
 
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state);
+        super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state,null);
         this.outputTank.setAllowAny(true);
     }
 

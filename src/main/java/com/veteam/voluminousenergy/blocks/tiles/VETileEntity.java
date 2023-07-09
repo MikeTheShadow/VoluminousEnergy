@@ -52,12 +52,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.isRecipeDirty = true;
     }
 
-    @Deprecated
-    public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-        this.recipeType = null;
-    }
-
     /**
      * Lazy Optional of getEnergy which cannot be null but can contain a null VEEnergyStorage
      * for the ifpresent to fail
@@ -496,8 +490,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public RecipeType<? extends Recipe<?>> getRecipeType() {
-//        return this.recipeType;
-        return AqueoulizerRecipe.RECIPE_TYPE; // TODO REMOVE THIS
+        return this.recipeType;
     }
 
     public List<? extends Recipe<?>> getPotentialRecipes() {

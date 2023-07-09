@@ -36,11 +36,6 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         super(type, pos, state, recipeType);
     }
 
-    @Deprecated
-    public VEFluidTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-    }
-
     //use for inputting a fluid
     public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput();
@@ -76,7 +71,12 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
-                tileEntity.markRecipeDirty();
+                List<VESlotManager> managers = getSlotManagers();
+                if(managers.size() < slot) {
+                    if(getSlotManagers().get(slot).getSlotType() == SlotType.INPUT) {
+                        tileEntity.markRecipeDirty();
+                    }
+                }
                 tileEntity.processInputNextTick();
             }
 

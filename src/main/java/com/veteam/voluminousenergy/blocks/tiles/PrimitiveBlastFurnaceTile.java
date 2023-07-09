@@ -43,12 +43,12 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public PrimitiveBlastFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state,PrimitiveBlastFurnaceRecipe.RECIPE_TYPE);
     }
 
     @Deprecated
     public PrimitiveBlastFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
+        super(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state,PrimitiveBlastFurnaceRecipe.RECIPE_TYPE);
     }
 
     private ItemStackHandler inventory = createHandler();

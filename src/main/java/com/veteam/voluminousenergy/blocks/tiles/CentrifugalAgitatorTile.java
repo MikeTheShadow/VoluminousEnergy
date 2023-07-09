@@ -43,9 +43,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
 
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE.get(), pos, state, CentrifugalAgitatorRecipe.RECIPE_TYPE);
-        fluidManagers[0].setValidator(this, true);
-        fluidManagers[1].setValidator(this, false);
-        fluidManagers[2].setValidator(this, false);
+//        fluidManagers[0].setValidator(this, true);
+//        fluidManagers[1].setValidator(this, false);
+//        fluidManagers[2].setValidator(this, false);
     }
 
     public ItemStackHandler inventory = createHandler(5);
@@ -126,10 +126,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
             return fluidManagers[2].getTank().getFluid();
         }
         return FluidStack.EMPTY;
-    }
-
-    public int getTankCapacity() {
-        return TANK_CAPACITY;
     }
 
     @Override

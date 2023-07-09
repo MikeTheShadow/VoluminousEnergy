@@ -71,7 +71,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
     }
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.TOOLING_STATION_TILE.get(), pos, state);
+        super(VEBlocks.TOOLING_STATION_TILE.get(), pos, state,null);
         fuelTank.setValidFluids(RecipeUtil.getCombustibleFuelsWithoutLevel());
     }
 

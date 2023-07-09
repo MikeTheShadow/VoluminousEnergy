@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -46,12 +47,12 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
     private final AtomicReference<ItemStack> referenceStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
 
     public ElectricFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state);
+        super(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state,null);
     }
 
     @Deprecated
     public ElectricFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state);
+        super(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state,null);
     }
 
     public ItemStackHandler inventory = createHandler();
