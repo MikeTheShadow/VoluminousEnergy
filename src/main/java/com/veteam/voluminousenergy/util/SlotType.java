@@ -7,7 +7,6 @@ public enum SlotType {
     FLUID_INPUT("slot.voluminousenergy.input_slot"),
     FLUID_OUTPUT("slot.voluminousenergy.output_slot"),
     FLUID_HYBRID("slot.voluminousenergy.output_slot");
-
     private final String translationKey;
 
     private

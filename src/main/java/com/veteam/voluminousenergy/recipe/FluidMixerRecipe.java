@@ -36,23 +36,9 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     private int processTime;
 
     // Second input (Fluid Mixer specific)
-    public boolean secondFluidUsesTagKey;
-    public String secondTagKeyString;
-    public Lazy<ArrayList<FluidStack>> secondFluidInputList;
-    public Lazy<ArrayList<Fluid>> secondRawFluidInputList;
-    public Lazy<Integer> secondInputArraySize;
-
-    private FluidStack result;
-    private int firstInputAmount;
-    private int secondInputAmount;
-    private int outputAmount;
 
     public FluidMixerRecipe(ResourceLocation recipeId) {
         this.recipeId = recipeId;
-    }
-
-    public FluidStack getOutputFluid() {
-        return this.result.copy();
     }
 
     @Override
@@ -101,10 +87,9 @@ public class FluidMixerRecipe extends VEFluidRecipe {
 
             ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "fluid", "minecraft:empty"), ':');
             int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "amount", 0);
-            recipe.result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)), firstOutputFluidAmount);
-            recipe.outputAmount = firstOutputFluidAmount;
+            FluidStack result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)), firstOutputFluidAmount);
 
-            recipe.fluidOutputList.add(recipe.result);
+            recipe.fluidOutputList.add(result);
 
             return recipe;
         }

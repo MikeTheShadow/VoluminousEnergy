@@ -13,6 +13,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -69,7 +70,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public RecipeType<?> getType(){return RECIPE_TYPE;}
+    public RecipeType<? extends Recipe> getType(){return RECIPE_TYPE;}
 
     public int getProcessTime(){ return processTime; }
 

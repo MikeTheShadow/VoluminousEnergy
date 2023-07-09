@@ -18,6 +18,7 @@ public class VESlotManager {
     private final String nbtName;
     private int output = -1;
     private int tankId = -1;
+    private int recipePos = -1;
 
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType) {
         this.side.set(direction);
@@ -35,6 +36,15 @@ public class VESlotManager {
         this.nbtName = slotType.getNBTName(slotNum);
         this.output = outputSlot;
         this.tankId = tankId;
+    }
+
+    public VESlotManager(int slotNum, int recipePos, Direction direction, boolean status, SlotType slotType) {
+        this.side.set(direction);
+        this.slot = slotNum;
+        this.enabled.set(status);
+        this.slotType = slotType;
+        this.nbtName = slotType.getNBTName(slotNum);
+        this.recipePos = recipePos;
     }
 
     public void setStatus(boolean bool) {
@@ -63,6 +73,10 @@ public class VESlotManager {
 
     public String getTranslationKey() {
         return slotType.getTranslationKey();
+    }
+
+    public int getRecipePos() {
+        return recipePos;
     }
 
     public String getNbtName() {

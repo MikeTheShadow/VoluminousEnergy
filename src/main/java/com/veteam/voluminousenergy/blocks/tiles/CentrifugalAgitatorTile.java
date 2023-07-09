@@ -70,9 +70,6 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         return inventory;
     }
 
-    private VEFluidRecipe recipe;
-    private final RecipeFluid lastFluid = new RecipeFluid();
-
     @Override
     public void tick() {
         updateClients();
@@ -93,17 +90,9 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
         if (this.outputFluidStatic(outputTank1, 3)) return;
         // Main Fluid Processing occurs here
 
-        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())) {
-            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, CentrifugalAgitatorRecipe.class,
-                    Collections.singletonList(this.inputTank.getTank().getFluid()));
+        if (selectedRecipe != null) {
 
-            if (newRecipe != recipe) {
-                counter = 0;
-            }
-            recipe = newRecipe;
-        }
-
-        if (recipe != null) {
+            VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
 
             if (outputTank0.canInsertOutputFluid(recipe, 0) && outputTank1.canInsertOutputFluid(recipe, 1)) {
                 // Check for power

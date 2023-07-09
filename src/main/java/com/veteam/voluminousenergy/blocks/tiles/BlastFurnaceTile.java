@@ -109,7 +109,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
 
             // Recipe check
             if (!firstItemInput.is(lastFirstItem) || !secondItemInput.is(lastSecondItem)) {
-                recipe = (IndustrialBlastingRecipe) RecipeCache.getRecipeFromCache(level, IndustrialBlastingRecipe.class, firstItemInput.copy(), secondItemInput.copy());
+                recipe = (IndustrialBlastingRecipe) RecipeCache.getRecipeFromCache(level, getRecipeType(), firstItemInput.copy(), secondItemInput.copy());
                 lastFirstItem = firstItemInput.getItem();
                 lastSecondItem = secondItemInput.getItem();
                 counter = 0;

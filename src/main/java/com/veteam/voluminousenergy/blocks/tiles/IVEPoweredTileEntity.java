@@ -31,7 +31,7 @@ public interface IVEPoweredTileEntity {
 
     /**
      * Used in conjunction with createHandler
-     * @see com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity#createHandler(int,IVEPoweredTileEntity) ;
+     * @see VETileEntity#createHandler(int,IVEPoweredTileEntity) ;
      * Otherwise this method does nothing
      * @return The slot id of the upgrade slot
      */

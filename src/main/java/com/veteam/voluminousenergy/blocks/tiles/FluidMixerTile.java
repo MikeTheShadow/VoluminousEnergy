@@ -77,11 +77,6 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
         return inventory;
     }
 
-    // Recipe caching
-    RecipeFluid lastFluid = new RecipeFluid();
-    RecipeFluid lastFluid2 = new RecipeFluid();
-    FluidMixerRecipe recipe;
-
     @Override
     public void tick() {
         updateClients();
@@ -109,21 +104,10 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
         if (this.inputFluid(outputTank0, 4, 5)) return;
         if (this.outputFluid(outputTank0, 4, 5)) return;
 
-        if (lastFluid.isDifferent(this.inputTank0.getTank().getFluid()) || lastFluid2.isDifferent(this.inputTank1.getTank().getFluid())) {
-            FluidMixerRecipe newRecipe = (FluidMixerRecipe) RecipeCache.getFluidRecipeFromCache(level, FluidMixerRecipe.class,
-                    new ArrayList<>() {{
-                        add(inputTank1.getTank().getFluid());
-                        add(inputTank0.getTank().getFluid());
-                    }});
-
-            if (newRecipe != recipe) {
-                counter = 0;
-            }
-            recipe = newRecipe;
-        }
-
         // Main Fluid Processing occurs here
-        if (recipe != null) {
+        if (selectedRecipe != null) {
+
+            VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
 
             // Tank fluid amount check + tank cap checks
             if (outputTank0.getTank().getFluidAmount() + recipe.getOutputFluid(0).getAmount() <= TANK_CAPACITY) {
@@ -136,10 +120,10 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
                         inputTank1.drainInput(recipe,1);
 
                         // First Output Tank
-                        if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid().getRawFluid()) {
-                            outputTank0.getTank().setFluid(recipe.getOutputFluid().copy());
+                        if (outputTank0.getTank().getFluid().getRawFluid() != recipe.getOutputFluid(0).getRawFluid()) {
+                            outputTank0.getTank().setFluid(recipe.getOutputFluid(0).copy());
                         } else {
-                            outputTank0.getTank().fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+                            outputTank0.getTank().fill(recipe.getOutputFluid(0).copy(), IFluidHandler.FluidAction.EXECUTE);
                         }
 
                         counter--;

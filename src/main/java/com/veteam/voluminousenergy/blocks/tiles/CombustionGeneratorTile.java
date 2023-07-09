@@ -166,9 +166,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             setChanged();
         } else if (!oxidizerTank.getTank().isEmpty()) {
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, this.oxidizerTank.getTank().getFluid().copy());
-            VEFluidRecipe fuelRecipe = RecipeCache.getFluidRecipeFromCache(level,
-                    CombustionGeneratorFuelRecipe.class,
-                    List.of(this.fuelTank.getTank().getFluid().copy()));
+            VEFluidRecipe fuelRecipe = (VEFluidRecipe) selectedRecipe; // TODO impl custom validateFluidRecipe for this tile
 
             if (oxidizerRecipe != null && fuelRecipe != null) {
                 int amount = 250;

@@ -106,20 +106,9 @@ public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPower
         if (this.inputFluid(outputTank1, 4, 5)) return;
         if (this.outputFluid(outputTank1, 4, 5)) return;
 
-        boolean lastFluidDifferent = lastFluid.isDifferent(this.inputTank.getTank().getFluid());
+        if (selectedRecipe != null) {
 
-        if (lastFluidDifferent) {
-            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, FluidElectrolyzerRecipe.class,
-                    Collections.singletonList(this.inputTank.getTank().getFluid()));
-
-            if (newRecipe != recipe) {
-                counter = 0;
-            }
-            recipe = newRecipe;
-        }
-
-        VEFluidRecipe recipe = null;// RecipeUtil.getFluidElectrolyzerRecipe(level, inputTank.getTank().getFluid().copy()); // TODO FIX ME
-        if (recipe != null) {
+            VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
 
             // Tank fluid amount check + tank cap checks
             if (outputTank0.canInsertOutputFluid(recipe, 0)

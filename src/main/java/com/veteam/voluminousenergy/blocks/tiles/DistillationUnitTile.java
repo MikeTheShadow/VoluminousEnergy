@@ -82,10 +82,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state);
     }
 
-    RecipeFluid lastFluid = new RecipeFluid();
-    DistillationRecipe recipe;
-
-
     @Override
     public void tick() {
 
@@ -119,18 +115,10 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         if (this.inputFluid(outputTank1, 4, 5)) return;
         if (this.outputFluid(outputTank1, 4, 5)) return;
 
-        // Recipe check
-        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())) {
-            DistillationRecipe newRecipe = (DistillationRecipe) RecipeCache.getFluidRecipeFromCache(level, DistillationRecipe.class,
-                    Collections.singletonList(this.inputTank.getTank().getFluid()));
-            if (newRecipe != recipe) {
-                counter = 0;
-            }
-            recipe = newRecipe;
-        }
-
         // Main Fluid Processing occurs here:
-        if (recipe != null) {
+        if (selectedRecipe != null) {
+
+            DistillationRecipe recipe = (DistillationRecipe) selectedRecipe;
 
             // Tank fluid amount check + tank cap checks
             if (thirdOutput.getCount() < recipe.getOutputItem(0).getMaxStackSize()) {

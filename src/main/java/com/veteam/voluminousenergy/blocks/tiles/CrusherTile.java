@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
-public class CrusherTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
 
     // Slot Managers
     public VESlotManager inputSlotProp = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);

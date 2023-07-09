@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ImplosionCompressorTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
     public VESlotManager gunpowderSlotManager = new VESlotManager(1, Direction.EAST, true,SlotType.INPUT);

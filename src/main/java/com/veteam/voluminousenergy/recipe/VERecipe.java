@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 public class VERecipe implements Recipe<Container> {
@@ -65,8 +66,8 @@ public class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull RecipeType<?> getType(){
-        return null;
+    public @NotNull RecipeType<? extends Recipe<?>> getType(){
+        throw new NotImplementedException("Unable to get type for recipe: " + this.getClass().getName());
     }
 
     @Override

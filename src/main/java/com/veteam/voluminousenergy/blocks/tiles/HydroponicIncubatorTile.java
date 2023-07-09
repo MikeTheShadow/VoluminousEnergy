@@ -88,10 +88,6 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
         inputTank.setAllowAny(true);
     }
 
-    RecipeItem lastItem = new RecipeItem();
-    RecipeFluid lastFluid = new RecipeFluid();
-    HydroponicIncubatorRecipe recipe;
-
     @Override
     public void tick() {
         updateClients();
@@ -112,20 +108,9 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
 
         inputItemStack.set(inputItem.copy()); // This reference is for preventing insertions on output slots, while still being able to verify them
 
-        if (lastFluid.isDifferent(this.inputTank.getTank().getFluid())
-                || lastItem.isDifferent(inputItem)) {
-            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, HydroponicIncubatorRecipe.class,
-                    Collections.singletonList(this.inputTank.getTank().getFluid()),
-                    inputItem.copy());
-
-            if (newRecipe != recipe) {
-                counter = 0;
-            }
-            recipe = (HydroponicIncubatorRecipe) newRecipe;
-        }
-
         // Manually find the recipe since we have 2 conditions rather than the 1 input the vanilla getRecipe supports
-        if (recipe != null) {
+        if (selectedRecipe != null) {
+            HydroponicIncubatorRecipe recipe = (HydroponicIncubatorRecipe) selectedRecipe;
             // Check for power
             if (canConsumeEnergy()) {
                 if (counter == 1) {

@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorTile extends VoluminousTileEntity implements IVEPowerGenerator,IVECountable {
+public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator,IVECountable {
 
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 

@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
     public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);

@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
-import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -60,9 +60,9 @@ public class BoolButtonPacket {
             if(openContainer instanceof VoluminousContainer voluminousContainer){
                 if(onServer){
                     BlockEntity tileEntity = voluminousContainer.getTileEntity();
-                    if (tileEntity instanceof VoluminousTileEntity voluminousTileEntity){
-                        voluminousTileEntity.updatePacketFromGui(packet.status, packet.slotId);
-                        voluminousTileEntity.setChanged();
+                    if (tileEntity instanceof VETileEntity VETileEntity){
+                        VETileEntity.updatePacketFromGui(packet.status, packet.slotId);
+                        VETileEntity.setChanged();
                     }
                 } else {
                     voluminousContainer.updateStatusButton(packet.status, packet.slotId);

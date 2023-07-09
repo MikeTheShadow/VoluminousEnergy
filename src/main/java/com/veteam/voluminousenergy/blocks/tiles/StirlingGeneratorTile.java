@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StirlingGeneratorTile extends VoluminousTileEntity implements IVEPowerGenerator,IVECountable {
+public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator,IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
 
     public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);

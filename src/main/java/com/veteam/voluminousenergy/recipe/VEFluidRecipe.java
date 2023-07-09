@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class VEFluidRecipe implements Recipe<Container> {
 
@@ -75,7 +74,7 @@ public abstract class VEFluidRecipe implements Recipe<Container> {
     }
 
     public FluidStack getOutputFluid(int slot) {
-        return this.fluidOutputList.get(slot);
+        return this.fluidOutputList.get(slot).copy();
     }
 
 

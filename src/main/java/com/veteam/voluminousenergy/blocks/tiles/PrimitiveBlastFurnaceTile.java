@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class PrimitiveBlastFurnaceTile extends VoluminousTileEntity implements IVECountable {
+public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECountable {
 
     public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
     public VESlotManager outputSm = new VESlotManager(1, Direction.DOWN,true,SlotType.OUTPUT);

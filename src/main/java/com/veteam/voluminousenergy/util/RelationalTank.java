@@ -1,10 +1,12 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -27,6 +29,7 @@ public class RelationalTank {
     private Direction sideDirection = Direction.DOWN;
     private boolean allowAny = false;
     private boolean ignoreDirection = false;
+    private int recipePos;
     /**
      * nbtName follows the format TANKNAME:ENABLEDNAME
      * //TODO switch tank name to follow the ENABLEDNAME format of snake case and remove the need for tankname
@@ -44,11 +47,6 @@ public class RelationalTank {
         this.output = output;
         this.tankType = tankType;
         this.nbt = nbt;
-
-        this.tank.setValidator(t -> {
-
-            return true;
-        });
     }
 
     public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
@@ -58,6 +56,16 @@ public class RelationalTank {
         this.output = output;
         this.tankType = tankType;
         this.id = id;
+        this.nbt = nbt;
+    }
+
+    public RelationalTank(FluidTank tank, int slotNum,int recipePos, ItemStack input, ItemStack output, TankType tankType, String nbt) {
+        this.tank = tank;
+        this.slotNum = slotNum;
+        this.input = input;
+        this.output = output;
+        this.tankType = tankType;
+        this.recipePos = recipePos;
         this.nbt = nbt;
     }
 
@@ -76,19 +84,22 @@ public class RelationalTank {
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
 
-    public boolean addBucket(BucketItem item) {
-        Fluid fluid = item.getFluid();
-        FluidStack stack = new FluidStack(fluid, 1000);
+    public boolean addBucket(ItemStack item) {
 
-        if (this.getTank().getFluid().isEmpty()) {
-            this.getTank().setFluid(stack);
-            return true;
-        }
+        if(item.getItem() instanceof BucketItem bucketItem) {
+            Fluid fluid = bucketItem.getFluid();
+            FluidStack stack = new FluidStack(fluid, 1000);
 
-        if (this.getTank().getFluidAmount() + 1000 <= this.tank.getCapacity()
-                && this.getTank().getFluid().isFluidEqual(stack)) {
-            this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
-            return true;
+            if (this.getTank().getFluid().isEmpty()) {
+                this.getTank().setFluid(stack);
+                return true;
+            }
+
+            if (this.getTank().getFluidAmount() + 1000 <= this.tank.getCapacity()
+                    && this.getTank().getFluid().isFluidEqual(stack)) {
+                this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
+                return true;
+            }
         }
         return false;
     }
@@ -100,13 +111,27 @@ public class RelationalTank {
      */
     public void fillOutput(VEFluidRecipe recipe, int id) {
 
-        FluidStack stack = recipe.getOutputFluids().get(id);
+        FluidStack stack = recipe.getOutputFluid(id);
 
         if (this.getTank().getFluid().getRawFluid() != stack.getRawFluid()) {
             this.getTank().setFluid(stack);
         } else {
             this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
+    }
+
+    public void setValidator(VEFluidTileEntity tileEntity,boolean isInput) {
+        this.tank.setValidator(t -> {
+            for(Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+                VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
+                if(isInput && veFluidRecipe.getFluidIngredient(this.getRecipePos()).test(t))  {
+                    return true;
+                } else if(veFluidRecipe.getOutputFluid(this.getRecipePos()).isFluidEqual(t)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     /**
@@ -213,6 +238,10 @@ public class RelationalTank {
 
     public String getNBTPrefix() {
         return nbt.split(":")[1];
+    }
+
+    public int getRecipePos() {
+        return recipePos;
     }
 
     public String getTranslationKey() {

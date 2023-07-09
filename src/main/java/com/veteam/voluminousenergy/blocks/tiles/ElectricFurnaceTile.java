@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends VoluminousTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
 
     public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
     public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN,true,SlotType.OUTPUT);
