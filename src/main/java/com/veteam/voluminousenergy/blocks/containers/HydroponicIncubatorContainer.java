@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
@@ -27,7 +28,7 @@ public class HydroponicIncubatorContainer extends VoluminousContainer {
 
     public HydroponicIncubatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(VEBlocks.HYDROPONIC_INCUBATOR_CONTAINER.get(), id);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);

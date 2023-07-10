@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +21,7 @@ public class PrimitiveSolarPanelContainer extends VoluminousContainer {
 
     public PrimitiveSolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_SOLAR_PANEL_CONTAINER.get(), windowID);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
@@ -93,10 +94,6 @@ public class PrimitiveSolarPanelContainer extends VoluminousContainer {
         }
 
         return itemstack;
-    }
-
-    public BlockEntity getTileEntity(){
-        return tileEntity;
     }
 
     public int powerScreen(int px){

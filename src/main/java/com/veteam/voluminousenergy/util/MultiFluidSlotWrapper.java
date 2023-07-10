@@ -50,7 +50,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         RelationalTank relationalTank = tankHashMap.get(tank);
         if (relationalTank == null) return false;
-        if(relationalTank.getValidFluids().stream().noneMatch(fluid -> fluid.isSame(stack.getFluid())) && !relationalTank.isAllowAny()) return false;
         return relationalTank.getTank() != null && relationalTank.getTank().isFluidValid(stack);
     }
 

@@ -71,11 +71,13 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if (slot == finalUpgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
-
                 VESlotManager manager = tileEntity.getSlotManagers().get(slot);
                 if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
                     if (bucketItem.getFluid() == Fluids.EMPTY) return true;
                     RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
+                    if(tank.getTankType() == TankType.OUTPUT) {
+                        return bucketItem.getFluid().isSame(Fluids.EMPTY);
+                    }
                     for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
                         VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
                         if (veFluidRecipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
@@ -96,11 +98,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-
-                if (slot >= getSlotManagers().size() || slot < 0) return super.insertItem(slot, stack, simulate);
                 if (!isItemValid(slot, stack)) return stack;
-                ItemStack existing = this.stacks.get(slot);
-                if (stack.is(existing.getItem())) return super.insertItem(slot, stack, simulate);
                 return super.insertItem(slot, stack, simulate);
             }
         };
@@ -145,23 +143,6 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         return false;
     }
 
-    //Use only when the input and output slot are the same slot
-    public boolean outputFluidStatic(RelationalTank tank, int slot) {
-
-        ItemStack inputSlot = tank.getOutput();
-        FluidTank outputTank = tank.getTank();
-        ItemStackHandler handler = getInventoryHandler();
-        if (inputSlot.copy().getItem() == Items.BUCKET && inputSlot.copy().getCount() == 1 && outputTank.getFluidAmount() >= 1000) {
-            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
-            outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-            handler.extractItem(slot, 1, false);
-            handler.insertItem(slot, bucketStack, false);
-            this.markRecipeDirty();
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void load(CompoundTag tag) {
 
@@ -177,7 +158,6 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
     @Override
     public void tick() {
         super.tick();
-        processFluidIO();
 
         // TODO extract this
         if (selectedRecipe == null) return;
@@ -307,16 +287,8 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                 RelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
                 tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
                 tank.setOutput(inventory.getStackInSlot(manager.getOutputSlotId()));
-                inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
+                if(inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId())) continue;
                 outputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
-
-            } else if (manager.getSlotType() == SlotType.FLUID_HYBRID) {
-
-                RelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
-                tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
-                tank.setOutput(inventory.getStackInSlot(manager.getSlotNum()));
-                outputFluidStatic(tank, manager.getSlotNum());
-
             }
         }
     }

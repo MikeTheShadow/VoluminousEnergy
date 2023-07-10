@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -8,6 +9,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,10 +17,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -32,7 +35,7 @@ import java.util.List;
 public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     public VESlotManager[] slotManagers = new VESlotManager[]{
-            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_HYBRID),
+            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),
             new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
     };
 
@@ -42,15 +45,16 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state, null);
-        airTank.setValidFluids(Collections.singletonList(VEFluids.COMPRESSED_AIR_REG.get()));
+        airTank.setAllowAny(true);
     }
 
     @Override
     public void tick() {
         updateClients();
+        processFluidIO();
 
         if (!canConsumeEnergy()) return;
-        if (airTank.getTank().getFluidAmount() == TANK_CAPACITY && counter == 0) {
+        if (counter <= 0) {
             // Check blocks around the Air Compressor to see if it's air
             int x = this.worldPosition.getX();
             int y = this.worldPosition.getY();
@@ -84,6 +88,35 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
         } else {
             counter--;
         }
+    }
+
+    public ItemStackHandler createHandler(int size, AirCompressorTile tileEntity) {
+        return new ItemStackHandler(size) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                tileEntity.markFluidInputDirty();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (tileEntity.getUpgradeSlotId() == slot) {
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+                }
+                VoluminousEnergy.LOGGER.info("Slot id: " + slot);
+                if(slot == 0 && stack.getItem() instanceof BucketItem bucketItem) {
+                    return bucketItem.getFluid().isSame(Fluids.EMPTY);
+                }
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(!isItemValid(slot,stack)) return stack;
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
     }
 
     public boolean addAirToTank(int multiplier) {
@@ -141,6 +174,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     @Override
     public int getUpgradeSlotId() {
-        return 1;
+        return 2;
     }
 }

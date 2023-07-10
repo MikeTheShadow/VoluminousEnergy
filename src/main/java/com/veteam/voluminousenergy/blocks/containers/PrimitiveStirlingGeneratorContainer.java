@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +24,7 @@ public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
 
     public PrimitiveStirlingGeneratorContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), windowID);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity = (VETileEntity) world.getBlockEntity(pos);
         this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
@@ -85,10 +86,6 @@ public class PrimitiveStirlingGeneratorContainer extends VoluminousContainer {
             slot.onTake(player, slotStack);
         }
         return returnStack;
-    }
-
-    public BlockEntity getTileEntity(){
-        return tileEntity;
     }
 
     public int powerScreen(int px){

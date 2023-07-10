@@ -160,6 +160,7 @@ public class RelationalTank {
         return validFluids;
     }
 
+    @Deprecated
     public void setValidFluids(List<Fluid> validFluids) {
         this.validFluids = validFluids;
     }

@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.containers.tank;
 
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +24,7 @@ public class TankContainer extends VoluminousContainer {
 
     public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
         super(menuType,id);
-        setTileEntity(world.getBlockEntity(pos));
+        setTileEntity((VETileEntity) world.getBlockEntity(pos));
         getTileEntity().getCapability(ForgeCapabilities.ITEM_HANDLER);
         //this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
