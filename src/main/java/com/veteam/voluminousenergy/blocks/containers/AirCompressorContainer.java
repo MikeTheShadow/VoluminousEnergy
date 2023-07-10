@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +22,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_
 
 public class AirCompressorContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 2;
+    private static final int NUMBER_OF_SLOTS = 3;
 
     public AirCompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(AIR_COMPRESSOR_CONTAINER.get(),id);
@@ -84,7 +85,7 @@ public class AirCompressorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 1, slotStack) != null)
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, ((IVEPoweredTileEntity) this.tileEntity).getUpgradeSlotId(), slotStack) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {

@@ -36,7 +36,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
             new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
     };
 
-    private final ItemStackHandler inventory = createHandler(2, this);
+    private final ItemStackHandler inventory = createHandler(3, this);
 
     private final RelationalTank airTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, TankType.OUTPUT, "air_tank:air_tank_properties");
 

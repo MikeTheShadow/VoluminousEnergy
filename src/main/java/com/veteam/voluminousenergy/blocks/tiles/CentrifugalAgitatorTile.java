@@ -27,7 +27,7 @@ public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPow
     public VESlotManager[] slotManagers = new VESlotManager[]{
             new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0),
             new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 2, 1),
+            new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 3, 1),
             new VESlotManager(3, Direction.SOUTH, true, SlotType.FLUID_OUTPUT),
             new VESlotManager(4, Direction.EAST, true, SlotType.FLUID_INPUT, 5, 2),
             new VESlotManager(5, Direction.WEST, true, SlotType.FLUID_OUTPUT)
