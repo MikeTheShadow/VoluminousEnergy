@@ -6,13 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
 import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,15 +54,12 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")),  38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")),  38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")),  137, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")),  96, 32, WHITE_TEXT_STYLE);
-
         // Tanks
         TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")),  61, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font,(TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")),  157, 18, WHITE_TEXT_STYLE);
 
+        // Slots handled by super
+        super.renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override

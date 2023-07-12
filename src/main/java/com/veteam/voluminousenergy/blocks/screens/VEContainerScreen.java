@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
@@ -12,6 +13,7 @@ import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -21,10 +23,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 
 import java.util.UUID;
 
 public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
+
+    private VETileEntity tileEntity;
 
     public static final int WHITE_TEXT_COLOUR = 16777215;
     public static final int GREY_TEXT_COLOUR = 0x606060;
@@ -34,6 +39,9 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        if (menu instanceof VoluminousContainer voluminousContainer) {
+            this.tileEntity = voluminousContainer.getTileEntity();
+        }
     }
 
     @Override
@@ -96,7 +104,12 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
-    protected abstract void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY);
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        for (int i = 0; i < this.tileEntity.getSlotManagers().size(); i++) {
+            Slot slot = this.menu.getSlot(i);
+            TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append(String.valueOf(i))), slot.x, slot.y, WHITE_TEXT_STYLE);
+        }
+    }
 
     /* GuiGraphics matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
     public void drawIOSideHelper(){
