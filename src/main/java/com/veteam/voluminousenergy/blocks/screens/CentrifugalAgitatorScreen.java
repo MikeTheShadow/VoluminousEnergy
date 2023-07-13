@@ -53,17 +53,13 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        // Slots
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")),  38, 18, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 38, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("2")), 96, 49, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("3")), 137, 49, WHITE_TEXT_STYLE);
-
         // Tanks
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 61, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("1")), 119, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("2")), 157, 18, WHITE_TEXT_STYLE);
 
+        // Slots handled by super
+        super.renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override
