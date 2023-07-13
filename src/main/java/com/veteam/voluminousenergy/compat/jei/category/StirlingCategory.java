@@ -74,7 +74,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull StirlingGeneratorRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull StirlingGeneratorRecipe recipe, @NotNull IFocusGroup  focusGroup) {
         // Inputs
         IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 1);
 
