@@ -96,11 +96,11 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
         }));
 
         // Heat Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getHeatTank(), (this.width/2)-198, this.topPos+100, button ->{
+        addRenderableWidget(new TankBoolButton(tileEntity.getRelationalTanks().get(0), (this.width/2)-198, this.topPos+100, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new TankDirectionButton(tileEntity.getHeatTank(), (this.width/2)-184, this.topPos+100, button ->{
+        addRenderableWidget(new TankDirectionButton(tileEntity.getRelationalTanks().get(0), (this.width/2)-184, this.topPos+100, button ->{
             // Do nothing
         }));
     }

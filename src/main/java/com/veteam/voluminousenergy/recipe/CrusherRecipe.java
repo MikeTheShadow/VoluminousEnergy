@@ -1,97 +1,76 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.IExperienceRecipe;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Objects;
 
-public class CrusherRecipe extends VERecipe {
+public class CrusherRecipe extends VERecipe implements IRNGRecipe, IExperienceRecipe {
 
     public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
     public final ResourceLocation recipeId;
-    public Lazy<Ingredient> ingredient;
-    public int ingredientCount;
-    public ItemStack result;
-    public ItemStack rngResult;
-    private int processTime;
-    private int outputAmount;
-    private int outputRngAmount;
-    private float chance;
+
     private int minExperience;
     private int maxExperience;
-
-    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
-
 
     public CrusherRecipe(ResourceLocation recipeId){
         this.recipeId = recipeId;
     }
 
-    public Ingredient getIngredient(){ return ingredient.get();}
-
-    public int getIngredientCount(){ return ingredientCount;}
-
-    public ItemStack getResult() {return result;}
-
-    public ItemStack getRngItem(){return rngResult;}
-
-    public float getChance(){return chance;}
+    @Override
+    public @NotNull ResourceLocation getId(){return recipeId;}
 
     @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
+    public @NotNull RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public ItemStack getResultItem(){return result;}
-
+    public @NotNull RecipeType<?> getType(){return RECIPE_TYPE;}
     @Override
-    public ResourceLocation getId(){return recipeId;}
-
-    @Override
-    public RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
-
-    @Override
-    public RecipeType<?> getType(){return RECIPE_TYPE;}
-
-    public int getOutputAmount() {return outputAmount;}
-
-    public int getOutputRngAmount(){return outputRngAmount;}
-
-    public int getProcessTime() { return processTime; }
-
-    public int getMinExperience() { return minExperience; }
-
-    public int getMaxExperience() { return maxExperience; }
-
-    public Map<Ingredient, Integer> getIngredientMap() {
-        return ImmutableMap.copyOf(ingredients);
-    }
-
-    @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.CRUSHER_BLOCK.get());
+    }
+
+    @Override
+    public float[] getRNGOutputs() {
+        return new float[0];
+    }
+
+    @Override
+    public void setRNGOutputs(float[] rngOutputs) {
+
+    }
+
+    @Override
+    public int getMinExperience() {
+        return this.minExperience;
+    }
+
+    @Override
+    public int getMaxExperience() {
+        return this.maxExperience;
+    }
+
+    @Override
+    public void setBoth(int min, int max) {
+        this.minExperience = min;
+        this.maxExperience = min;
     }
 
     public static class Serializer implements RecipeSerializer<CrusherRecipe>{
@@ -100,66 +79,53 @@ public class CrusherRecipe extends VERecipe {
         public @NotNull CrusherRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
             CrusherRecipe recipe = new CrusherRecipe(recipeId);
 
+            float[] rng = new float[2];
+
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
             int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
-            recipe.ingredient = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
+            Lazy<Ingredient> ingredientLazy = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
+            recipe.lazyIngredients.add(ingredientLazy);
             recipe.processTime = GsonHelper.getAsInt(json,"process_time",200);
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(),"item","minecraft:air"),':');
             int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(),"count",1);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
-            recipe.outputAmount = itemAmount;
+
+
+            ItemStack result = new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(itemResourceLocation)),itemAmount);
+            recipe.addResult(result);
+            rng[0] = 1;
 
             ResourceLocation rngResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("rng").getAsJsonObject(),"item","minecraft:air"),':');
             int rngAmount = GsonHelper.getAsInt(json.get("rng").getAsJsonObject(),"count",0);
             float rngChance = GsonHelper.getAsFloat(json.get("rng").getAsJsonObject(),"chance",0); //Enter % as DECIMAL. Ie 50% = 0.5
 
-            recipe.rngResult = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation));
-            recipe.outputRngAmount = rngAmount;
-            recipe.chance = rngChance;
+            ItemStack rngResult = new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(rngResourceLocation)),rngAmount);
+            recipe.addResult(rngResult);
+            rng[1] = rngChance;
 
 
             recipe.minExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"minimum",0);
             recipe.maxExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"maximum",0);
 
+            recipe.setRNGOutputs(rng);
+
             return recipe;
         }
+
+        IngredientSerializerHelper<CrusherRecipe> helper = new IngredientSerializerHelper<>();
 
         @Nullable
         @Override
-        public CrusherRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public CrusherRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer){
             CrusherRecipe recipe = new CrusherRecipe((recipeId));
-            recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItem();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-            recipe.rngResult = buffer.readItem();
-            recipe.outputRngAmount = buffer.readInt();
-            recipe.chance = buffer.readFloat();
-            recipe.minExperience = buffer.readInt();
-            recipe.maxExperience = buffer.readInt();
-
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
-
+            helper.fromNetwork(recipe,buffer);
             return recipe;
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, CrusherRecipe recipe){
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-            buffer.writeItem(recipe.rngResult);
-            buffer.writeInt(recipe.outputRngAmount);
-            buffer.writeFloat(recipe.chance);
-            buffer.writeInt(recipe.minExperience);
-            buffer.writeInt(recipe.maxExperience);
-
-            recipe.ingredient.get().toNetwork(buffer);
-
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CrusherRecipe recipe){
+            helper.toNetwork(buffer,recipe);
         }
     }
 

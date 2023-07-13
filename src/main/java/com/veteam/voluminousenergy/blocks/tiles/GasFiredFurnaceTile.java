@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
@@ -65,7 +66,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
 
     public GasFiredFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.GAS_FIRED_FURNACE_TILE.get(), pos, state,null);
-        this.fuelTank.setValidFluids(RecipeUtil.getCombustibleFuelsWithoutLevel());
     }
 
     public ItemStackHandler inventory = createHandler();

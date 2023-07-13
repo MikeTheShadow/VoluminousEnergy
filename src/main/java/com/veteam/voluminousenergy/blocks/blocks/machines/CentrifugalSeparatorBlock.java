@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -38,8 +39,8 @@ public class CentrifugalSeparatorBlock extends FaceableBlock implements EntityBl
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CentrifugalSeparatorTile(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state);
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
+        return new CentrifugalSeparatorTile(pos, state);
     }
 
     // NEW TICK SYSTEM

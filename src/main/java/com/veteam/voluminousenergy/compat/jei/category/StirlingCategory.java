@@ -47,22 +47,22 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.stirling");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(StirlingGeneratorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(StirlingGeneratorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,11,0);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", -1,20, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime() + " t",-1,28, VEContainerScreen.GREY_TEXT_STYLE);
@@ -70,11 +70,11 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.ingredient.get().getItems()).toList());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(recipe.getIngredient(0).getItems()).toList());
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, StirlingGeneratorRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull StirlingGeneratorRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Inputs
         IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 1);
 

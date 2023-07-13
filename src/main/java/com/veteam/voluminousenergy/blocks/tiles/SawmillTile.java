@@ -128,15 +128,15 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                 }
 
             } else if (sawmillingRecipe != null && !sawmillingRecipe.isLogRecipe()){ // Using Recipe
-                plankOutputStack = sawmillingRecipe.result.copy();
-                secondOutputStack = sawmillingRecipe.secondResult.copy();
-                FluidStack outputFluid = sawmillingRecipe.getOutputFluid().copy();
+                plankOutputStack = sawmillingRecipe.getOutputItem(0).copy();
+                secondOutputStack = sawmillingRecipe.getOutputItem(1).copy();
+                FluidStack outputFluid = sawmillingRecipe.getOutputFluid(0).copy();
 
                 if ((outputTank.getTank().getFluidAmount() + outputFluid.getAmount()) <= TANK_CAPACITY
                         && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
                         && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
-                        && (inventory.getStackInSlot(1).getCount() + sawmillingRecipe.result.getCount()) <= 64
-                        && (inventory.getStackInSlot(2).getCount() + sawmillingRecipe.secondResult.getCount()) <= 64){
+                        && (inventory.getStackInSlot(1).getCount() + sawmillingRecipe.getOutputItem(0).getCount()) <= 64
+                        && (inventory.getStackInSlot(2).getCount() + sawmillingRecipe.getOutputItem(1).getCount()) <= 64){
                     if (outputTank.getTank().getFluid().isFluidEqual(outputFluid.copy()) || outputTank.getTank().getFluid().isEmpty()){
                         coreTickProcessing(sawmillingRecipe, logInput, plankOutputStack, secondOutputStack, outputFluid);
                     } else {
@@ -160,7 +160,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
             if (counter == 1){
                 // Core processing occurs here
 
-                inventory.extractItem(0, (sawmillingRecipe != null ? sawmillingRecipe.ingredientCount : Config.SAWMILL_LOG_CONSUMPTION_RATE.get()), false); // Extract log
+                inventory.extractItem(0, (sawmillingRecipe != null ? sawmillingRecipe.getItemIngredient(0).getItems()[0].getCount() : Config.SAWMILL_LOG_CONSUMPTION_RATE.get()), false); // Extract log
 
                 // Plank output
                 ItemStack currentPlankStack = inventory.getStackInSlot(1);

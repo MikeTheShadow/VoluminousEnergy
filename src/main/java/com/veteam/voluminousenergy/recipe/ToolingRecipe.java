@@ -1,21 +1,18 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// TODO consider if this needs a rework
 public class ToolingRecipe extends VERecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
@@ -43,49 +41,25 @@ public class ToolingRecipe extends VERecipe {
 
     private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
-    public Map<Ingredient, Integer> getIngredientMap() {
-        return ImmutableMap.copyOf(ingredients);
-    }
-
     public ToolingRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
     @Override
-    public Ingredient getIngredient() {
-        return ingredient.get();
-    }
-
-    @Override
-    public ItemStack getResult() { return result; }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack getResultItem(){
-        return result;
-    }
-
-    @Override
-    public ResourceLocation getId(){
+    public @NotNull ResourceLocation getId(){
         return recipeId;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer(){
+    public @NotNull RecipeSerializer<?> getSerializer(){
         return SERIALIZER;
     }
 
     @Override
-    public RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType(){
         return RECIPE_TYPE;
     }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
@@ -197,7 +171,7 @@ public class ToolingRecipe extends VERecipe {
             buffer.writeInt(recipe.bits.get().size());
             recipe.bits.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
 
-            buffer.writeItem(recipe.getResult());
+            buffer.writeItem(recipe.getResult(0));
             recipe.ingredient.get().toNetwork(buffer);
         }
     }

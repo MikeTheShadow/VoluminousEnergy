@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -63,23 +64,22 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64) {
+            if (output.getCount() + recipe.getResultCount(0) < 64) {
                 if (this.counter == 1){ //The processing is about to be complete
                     // Extract the inputted item
-                    inventory.extractItem(0,recipe.ingredientCount,false);
+                    inventory.extractItem(0,recipe.getIngredientCount(0),false);
 
                     // Get output stack and RNG stack from the recipe
-                    ItemStack newOutputStack = recipe.getResult().copy();
+                    ItemStack newOutputStack = recipe.getResult(0).copy();
 
                     // Manipulating the Output slot
                     if (output.getItem() != newOutputStack.getItem()) {
                         if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                             output.setCount(1);
                         }
-                        newOutputStack.setCount(recipe.getOutputAmount());
                         inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                     } else { // Assuming the recipe output item is already in the output slot
-                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                        output.setCount(newOutputStack.getCount()); // Simply change the stack to equal the output amount
                         inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                     }
                     this.counter--;
@@ -87,7 +87,7 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
                 } else if (this.counter > 0){ //In progress
                     this.counter--;
                 } else { // Check if we should start processing
-                    if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
+                    if (output.isEmpty() || output.getItem() == recipe.getResult(0).getItem()){
                         this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(2).copy());
                         this.length = this.counter;
                     } else {
@@ -115,13 +115,13 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOutput = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()), level).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
+                PrimitiveBlastFurnaceRecipe recipeOutput = (PrimitiveBlastFurnaceRecipe) RecipeCache.getRecipeFromCache(level,PrimitiveBlastFurnaceRecipe.RECIPE_TYPE,inputItemStack.get().copy());
+                PrimitiveBlastFurnaceRecipe recipe = (PrimitiveBlastFurnaceRecipe) RecipeCache.getRecipeFromCache(level,PrimitiveBlastFurnaceRecipe.RECIPE_TYPE,referenceStack);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.get().test(stack);
+                    return recipe.getIngredient(0).test(stack);
                 } else if (slot == 1 && recipeOutput != null){
-                    return stack.getItem() == recipeOutput.result.getItem();
+                    return stack.getItem() == recipeOutput.getResult(0).getItem();
                 } else if (slot == 2){
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
@@ -133,23 +133,8 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                PrimitiveBlastFurnaceRecipe recipeOut = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()), level).orElse(null);
-                PrimitiveBlastFurnaceRecipe recipe = level.getRecipeManager().getRecipeFor(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack),level).orElse(null);
-
-                if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.get().getItems()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    }
-                } else if (slot == 1 && recipeOut != null){
-                    if (stack.getItem() == recipeOut.result.getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)){
-                    return super.insertItem(slot,stack,simulate);
-                }
-                return stack;
+                if(isItemValid(slot,stack)) return stack;
+                return super.insertItem(slot,stack,simulate);
             }
         };
     }

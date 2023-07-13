@@ -118,7 +118,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
-                return slot == 0 && recipe != null && recipe.getIngredient().test(referenceStack);
+                return slot == 0 && recipe != null && recipe.getIngredient(0).test(referenceStack);
             }
 
             @Nonnull
@@ -127,7 +127,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.getIngredient().getItems()){
+                    for (ItemStack testStack : recipe.getIngredient(0).getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }

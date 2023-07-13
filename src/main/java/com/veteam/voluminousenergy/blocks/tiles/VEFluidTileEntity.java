@@ -158,8 +158,10 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
     @Override
     public void tick() {
         super.tick();
+    }
 
-        // TODO extract this
+    @Override
+    void processRecipe() {
         if (selectedRecipe == null) return;
         VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
 

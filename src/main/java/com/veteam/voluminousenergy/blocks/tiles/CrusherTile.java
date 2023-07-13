@@ -73,11 +73,11 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
             CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                return recipe.ingredient.get().test(stack);
+                return recipe.getIngredient(0).test(stack);
             } else if (slot == 1 && recipe1 != null){
-                return stack.getItem() == recipe1.result.getItem();
+                return stack.getItem() == recipe1.getResult(0).getItem();
             } else if (slot == 2 && recipe1 != null){
-                return stack.getItem() == recipe1.getRngItem().getItem();
+                return stack.getItem() == recipe1.getResult(1).getItem();
             } else if (slot == 3){
                 return TagUtil.isTaggedMachineUpgradeItem(stack);
             }
@@ -93,17 +93,17 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
             CrusherRecipe recipe1 = level.getRecipeManager().getRecipeFor(CrusherRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.get().getItems()){
+                for (ItemStack testStack : recipe.getIngredient(0).getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
                 }
             } else if (slot == 1 && recipe1 != null){
-                if (stack.getItem() == recipe1.result.getItem()){
+                if (stack.getItem() == recipe1.getResult(0).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 2 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItem().getItem()){
+                if (stack.getItem() == recipe1.getResult(1).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 3){
@@ -163,13 +163,13 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty() && recipe != null){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && rng.getCount() + recipe.getOutputRngAmount() < 64 && canConsumeEnergy()) {
+            if (output.getCount() + recipe.getResultCount(0) < 64 && rng.getCount() + recipe.getResultCount(1) < 64 && canConsumeEnergy()) {
                 if (counter == 1){ //The processing is about to be complete
                     // Extract the inputted item
-                    inventory.extractItem(0,recipe.ingredientCount,false);
+                    inventory.extractItem(0,recipe.getResultCount(0),false);
 
                     // Get output stack from the recipe
-                    ItemStack newOutputStack = recipe.getResult().copy();
+                    ItemStack newOutputStack = recipe.getResult(0).copy();
 
                     //LOGGER.debug("output: " + output + " rng: " + rng + " newOutputStack: "  + newOutputStack);
 
@@ -178,30 +178,31 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
                         if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
                             output.setCount(1);
                         }
-                        newOutputStack.setCount(recipe.getOutputAmount());
                         inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                     } else { // Assuming the recipe output item is already in the output slot
-                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                        output.setCount(recipe.getResultCount(0)); // Simply change the stack to equal the output amount
                         inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
                     }
 
                     // Manipulating the RNG slot
-                    if (recipe.getChance() != 0){ // If the chance is ZERO, this functionality won't be used
-                        ItemStack newRngStack = recipe.getRngItem().copy();
+
+                    float[] randoms = recipe.getRNGOutputs();
+
+                    if (randoms[1] != 0){ // If the chance is ZERO, this functionality won't be used
+                        ItemStack newRngStack = recipe.getResult(1).copy();
 
                         // Generate Random floats
                         float random = abs(0 + level.getRandom().nextFloat() * (0 - 1));
 
                         // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                        if(random <= recipe.getChance()){
-                            if (rng.getItem() != recipe.getRngItem().getItem()){
+                        if(random <= randoms[1]){
+                            if (rng.getItem() != recipe.getResult(1).getItem()){
                                 if (rng.getItem() == Items.AIR){
                                     rng.setCount(1);
                                 }
-                                newRngStack.setCount(recipe.getOutputRngAmount());
                                 inventory.insertItem(2, newRngStack.copy(),false); // CRASH the game if this is not empty!
                             } else { // Assuming the recipe output item is already in the output slot
-                                rng.setCount(recipe.getOutputRngAmount()); // Simply change the stack to equal the output amount
+                                rng.setCount(newRngStack.getCount()); // Simply change the stack to equal the output amount
                                 inventory.insertItem(2,rng.copy(),false); // Place the new output stack on top of the old one
                             }
                         }
@@ -219,7 +220,8 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity,IV
                         }
                     }
                 } else { // Check if we should start processing
-                    if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.getItem() == recipe.getRngItem().getItem() || output.getItem() == recipe.getResult().getItem() && rng.isEmpty()){
+                    if (output.isEmpty() && rng.isEmpty() || output.isEmpty() && rng.getItem() == recipe.getResult(1).getItem()
+                            || output.getItem() == recipe.getResult(0).getItem() && rng.getItem() == recipe.getResult(1).getItem() || output.getItem() == recipe.getResult(0).getItem() && rng.isEmpty()){
                         counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                         length = counter;
                     } else {

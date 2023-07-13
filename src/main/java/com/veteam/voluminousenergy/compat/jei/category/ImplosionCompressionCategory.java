@@ -80,19 +80,19 @@ public class ImplosionCompressionCategory implements IRecipeCategory<ImplosionCo
                                   IIngredientAcceptor itemOutputAcceptor) {
         // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-            itemStack.setCount(recipe.getIngredientCount());
+        for (ItemStack itemStack : recipe.getIngredient(0).getItems()){
+            itemStack.setCount(recipe.getIngredientCount(0));
             inputStacks.add(itemStack);
         }
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         // Explosive input
-        explosiveInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.GUNPOWDER, recipe.ingredientCount));
+        explosiveInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.GUNPOWDER, recipe.getIngredientCount(0)));
 
         // Output
-        ItemStack resultStack = recipe.result.copy();
-        resultStack.setCount(recipe.getOutputAmount());
+        ItemStack resultStack = recipe.getResult(0).copy();
+        resultStack.setCount(recipe.getResultCount(0));
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
     }
 

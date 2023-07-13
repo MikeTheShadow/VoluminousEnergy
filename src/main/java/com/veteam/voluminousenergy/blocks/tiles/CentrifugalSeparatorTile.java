@@ -58,11 +58,6 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
         super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state,CentrifugalSeparatorRecipe.RECIPE_TYPE);
     }
 
-    @Deprecated
-    public CentrifugalSeparatorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get(), pos, state,CentrifugalSeparatorRecipe.RECIPE_TYPE);
-    }
-
     @Override
     public void tick(){
 
@@ -76,37 +71,40 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             ItemStack rngTwo = h.getStackInSlot(4).copy();
             ItemStack rngThree = h.getStackInSlot(5).copy();
 
-            CentrifugalSeparatorRecipe recipe = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
+
+            if(selectedRecipe == null) return;
+
+            CentrifugalSeparatorRecipe recipe = (CentrifugalSeparatorRecipe) selectedRecipe;
+
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
             if (usesBucket(recipe,bucket.copy())){
                 if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && canConsumeEnergy()) {
                     if (counter == 1){ //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,recipe.ingredientCount,false);
+                        h.extractItem(0,recipe.getIngredient(0).getItems()[0].getCount(),false);
                         // Extract bucket if it uses a bucket
                         if (recipe.needsBuckets() > 0){
                             h.extractItem(1,recipe.needsBuckets(),false);
                         }
 
                         // Get output stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult().copy();
+                        ItemStack newOutputStack = recipe.getResult(0).copy();
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
+                            if(output.getItem() == Items.AIR){
                                 output.setCount(1);
                             }
-                            newOutputStack.setCount(recipe.getOutputAmount());
-                            h.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                        } else { // Assuming the recipe output item is already in the output slot
-                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            h.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
+                            h.insertItem(2,newOutputStack.copy(),false);
+                        } else {
+                            output.setCount(newOutputStack.getCount());
+                            h.insertItem(2,output.copy(),false);
                         }
 
                         // Manipulating the RNG 0 slot
                         if (recipe.getChance0() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot0().copy();
+                            ItemStack newRngStack = recipe.getResult(1).copy();
 
                             // Generate Random floats
                             Random r = new Random();
@@ -115,22 +113,21 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance0()){
                                 //LOGGER.debug("Chance HIT!");
-                                if (rngOne.getItem() != recipe.getRngItemSlot0().getItem()){
+                                if (rngOne.getItem() != recipe.getResult(1).getItem()){
                                     if (rngOne.getItem() == Items.AIR){
                                         rngOne.setCount(1);
                                     }
-                                    newRngStack.setCount(recipe.getOutputRngAmount0());
                                     h.insertItem(3, newRngStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    rngOne.setCount(recipe.getOutputRngAmount0()); // Simply change the stack to equal the output amount
-                                    h.insertItem(3,rngOne.copy(),false); // Place the new output stack on top of the old one
+                                    rngOne.setCount(newRngStack.getCount()); // Simply change the stack to equal the output amount
+                                    h.insertItem(3,rngOne.copy(),false);
                                 }
                             }
                         }
 
                         // Manipulating the RNG 1 slot
                         if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot1().copy();
+                            ItemStack newRngStack = recipe.getResult(2).copy();
 
                             // Generate Random floats
                             Random r = new Random();
@@ -139,14 +136,14 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance1()){
                                 //LOGGER.debug("Chance HIT!");
-                                if (rngTwo.getItem() != recipe.getRngItemSlot1().getItem()){
+                                if (rngTwo.getItem() != recipe.getResult(2).getItem()){
                                     if (rngTwo.getItem() == Items.AIR){
                                         rngTwo.setCount(1);
                                     }
-                                    newRngStack.setCount(recipe.getOutputRngAmount1());
+                                    newRngStack.setCount(recipe.getResult(2).getCount());
                                     h.insertItem(4, newRngStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    rngTwo.setCount(recipe.getOutputRngAmount1()); // Simply change the stack to equal the output amount
+                                    rngTwo.setCount(recipe.getResult(2).getCount()); // Simply change the stack to equal the output amount
                                     h.insertItem(4,rngTwo.copy(),false); // Place the new output stack on top of the old one
                                 }
                             }
@@ -154,7 +151,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
 
                         // Manipulating the RNG 2 slot
                         if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot2().copy();
+                            ItemStack newRngStack = recipe.getResult(3).copy();
 
                             // Generate Random floats
                             Random r = new Random();
@@ -162,14 +159,13 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
 
                             // ONLY manipulate the slot if the random float is under or is identical to the chance float
                             if(random <= recipe.getChance2()){
-                                if (rngThree.getItem() != recipe.getRngItemSlot2().getItem()){
+                                if (rngThree.getItem() != recipe.getResult(3).getItem()){
                                     if (rngThree.getItem() == Items.AIR){
                                         rngThree.setCount(1);
                                     }
-                                    newRngStack.setCount(recipe.getOutputRngAmount2());
                                     h.insertItem(5, newRngStack.copy(),false); // CRASH the game if this is not empty!
                                 } else { // Assuming the recipe output item is already in the output slot
-                                    rngThree.setCount(recipe.getOutputRngAmount2()); // Simply change the stack to equal the output amount
+                                    rngThree.setCount(recipe.getResult(3).getCount()); // Simply change the stack to equal the output amount
                                     h.insertItem(5,rngThree.copy(),false); // Place the new output stack on top of the old one
                                 }
                             }
@@ -210,17 +206,14 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
 
     private boolean areSlotsFull(CentrifugalSeparatorRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
 
-        if (one.getCount() + recipe.getOutputAmount() > one.getItem().getMaxStackSize(one.copy())){ // Main output slot
+        if (one.getCount() + recipe.getResult(0).getCount() > one.getItem().getMaxStackSize(one.copy())){ // Main output slot
             return true;
-        } else if (two.getCount() + recipe.getOutputRngAmount0() > two.getItem().getMaxStackSize(two.copy())){ // Rng Slot 0
+        } else if (two.getCount() + recipe.getResult(1).getCount() > two.getItem().getMaxStackSize(two.copy())){ // Rng Slot 0
             return true;
-        } else if (three.getCount() + recipe.getOutputRngAmount1() > three.getItem().getMaxStackSize(three.copy())){ // Rng Slot 1
+        } else // Rng Slot 2
+            if (three.getCount() + recipe.getResult(2).getCount() > three.getItem().getMaxStackSize(three.copy())){ // Rng Slot 1
             return true;
-        } else if (four.getCount() + recipe.getOutputRngAmount2() > four.getItem().getMaxStackSize(four.copy())){ // Rng Slot 2
-            return true;
-        } else {
-            return false;
-        }
+        } else return four.getCount() + recipe.getResult(3).getCount() > four.getItem().getMaxStackSize(four.copy());
     }
 
     private boolean usesBucket(CentrifugalSeparatorRecipe recipe, ItemStack bucket){
@@ -251,13 +244,13 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             if (!x.isEmpty()){
                 //LOGGER.debug("Not Empty Slot!");
                 isEmpty = false;
-                if (one.getItem() != recipe.getResult().getItem() && one.getItem() != Items.AIR){
+                if (one.getItem() != recipe.getResult(0).getItem() && one.getItem() != Items.AIR){
                     return false;
-                } else if (two.getItem() != recipe.getRngItemSlot0().getItem() && two.getItem() != Items.AIR){
+                } else if (two.getItem() != recipe.getResult(1).getItem() && two.getItem() != Items.AIR){
                     return false;
-                } else if (three.getItem() != recipe.getRngItemSlot1().getItem() && three.getItem() != Items.AIR){
+                } else if (three.getItem() != recipe.getResult(2).getItem() && three.getItem() != Items.AIR){
                     return false;
-                } else if (four.getItem() != recipe.getRngItemSlot2().getItem() && four.getItem() != Items.AIR){
+                } else if (four.getItem() != recipe.getResult(3).getItem() && four.getItem() != Items.AIR){
                     return false;
                 } else {
                     return true;
@@ -283,7 +276,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.get().getItems()){
+                for (ItemStack testStack : recipe.getIngredient(0).getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return true;
                     }
@@ -291,13 +284,13 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             } else if (slot == 1 && stack.getItem() == Items.BUCKET){
                 return true;
             } else if (slot == 2 && recipe1 != null){ // Output slot
-                return stack.getItem() == recipe1.result.getItem();
+                return stack.getItem() == recipe1.getResult(0).getItem();
             } else if (slot == 3 && recipe1 != null){ // RNG 0 slot
-                return stack.getItem() == recipe1.getRngItemSlot0().getItem();
+                return stack.getItem() == recipe1.getResult(1).getItem();
             } else if (slot == 4 && recipe1 != null){ // RNG 1 slot
-                return stack.getItem() == recipe1.getRngItemSlot1().getItem();
+                return stack.getItem() == recipe1.getResult(2).getItem();
             } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
-                return stack.getItem() == recipe1.getRngItemSlot2().getItem();
+                return stack.getItem() == recipe1.getResult(3).getItem();
             } else if (slot == 6){
                 return TagUtil.isTaggedMachineUpgradeItem(stack);
             }
@@ -313,7 +306,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             CentrifugalSeparatorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CentrifugalSeparatorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
             if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.get().getItems()){
+                for (ItemStack testStack : recipe.getIngredient(0).getItems()){
                     if(stack.getItem() == testStack.getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
@@ -321,19 +314,19 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
             } else if ( slot == 1 && stack.getItem() == Items.BUCKET) {
                 return super.insertItem(slot, stack, simulate);
             } else if (slot == 2 && recipe1 != null){
-                if (stack.getItem() == recipe1.result.getItem()){
+                if (stack.getItem() == recipe1.getResult(0).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 3 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot0().getItem()){
+                if (stack.getItem() == recipe1.getResult(1).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 4 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot1().getItem()){
+                if (stack.getItem() == recipe1.getResult(2).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 5 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
+                if (stack.getItem() == recipe1.getResult(3).getItem()){
                     return super.insertItem(slot, stack, simulate);
                 }
             } else if (slot == 6 && TagUtil.isTaggedMachineUpgradeItem(stack)){

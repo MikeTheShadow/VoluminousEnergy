@@ -75,7 +75,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
                 setChanged();
             } else if (!input.isEmpty()) {
                 if (recipe != null  && (recipe.getEnergyPerTick() * recipe.getProcessTime()) + this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()){
-                    h.extractItem(0,recipe.ingredientCount,false);
+                    h.extractItem(0,recipe.getIngredientCount(0),false);
                     this.counter = recipe.getProcessTime();
                     this.energyRate = recipe.getEnergyPerTick();
                     this.length = this.counter;
@@ -142,7 +142,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
-                return slot == 0 && recipe != null && recipe.getIngredient().test(referenceStack);
+                return slot == 0 && recipe != null && recipe.getIngredient(0).test(referenceStack);
             }
 
             @Nonnull
@@ -151,7 +151,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
                 StirlingGeneratorRecipe recipe = RecipeUtil.getStirlingGeneratorRecipe(level, stack);
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.getIngredient().getItems()){
+                    for (ItemStack testStack : recipe.getIngredient(0).getItems()){
                         if(stack.getItem() == testStack.getItem()){
                             return super.insertItem(slot, stack, simulate);
                         }

@@ -64,8 +64,6 @@ public class RelationalTank {
     public RelationalTank(FluidTank tank, int slotNum,int recipePos, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
-        this.input = input;
-        this.output = output;
         this.tankType = tankType;
         this.recipePos = recipePos;
         this.nbt = nbt;

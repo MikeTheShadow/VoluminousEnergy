@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ImplosionCompressorContainer;
 import com.veteam.voluminousenergy.recipe.ImplosionCompressorRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -65,26 +66,26 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
         inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
         if (!input.isEmpty() && !gunpowderInput.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && canConsumeEnergy()) {
+            if (output.getCount() + recipe.getResultCount(0) < 64 && canConsumeEnergy()) {
                 if (this.counter == 1) { //The processing is about to be complete
                     // Extract the inputted item
-                    inventory.extractItem(0,recipe.ingredientCount,false);
+                    inventory.extractItem(0,recipe.getIngredientCount(0),false);
 
                     // Extract the gunpowder
                     inventory.extractItem(1, 1, false);
 
                     // Get output stack and RNG stack from the recipe
-                    ItemStack newOutputStack = recipe.getResult().copy();
+                    ItemStack newOutputStack = recipe.getResult(0).copy();
 
                     // Manipulating the Output slot
                     if (output.getItem() != newOutputStack.getItem()) {
                         if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
                             output.setCount(1);
                         }
-                        newOutputStack.setCount(recipe.getOutputAmount());
+                        newOutputStack.setCount(recipe.getResultCount(0));
                         inventory.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
                     } else { // Assuming the recipe output item is already in the output slot
-                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+                        output.setCount(recipe.getResultCount(0)); // Simply change the stack to equal the output amount
                         inventory.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
                     }
 
@@ -101,7 +102,7 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
                         }
                     }
                 } else { // Check if we should start processing
-                    if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
+                    if (output.isEmpty() || output.getItem() == recipe.getResult(0).getItem()){
                         this.counter = recipe.getProcessTime();
                         this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
                         this.length = this.counter;
@@ -136,11 +137,11 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
                 ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
                 if (slot == 0 && recipe != null){
-                    return recipe.ingredient.get().test(stack);
+                    return recipe.getIngredient(0).test(stack);
                 } else if (slot == 1) {
                     return stack.getItem() == Items.GUNPOWDER;
                 } else if (slot == 2 && recipe1 != null){
-                    return stack.getItem() == recipe1.result.getItem();
+                    return stack.getItem() == recipe1.getResult(0).getItem();
                 } else if (slot == 3){
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
@@ -152,11 +153,12 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                ImplosionCompressorRecipe recipe = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-                ImplosionCompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(ImplosionCompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
+
+                ImplosionCompressorRecipe recipe = (ImplosionCompressorRecipe) RecipeCache.getRecipeFromCache(level,ImplosionCompressorRecipe.RECIPE_TYPE,referenceStack);
+                ImplosionCompressorRecipe recipe1 = (ImplosionCompressorRecipe) RecipeCache.getRecipeFromCache(level,ImplosionCompressorRecipe.RECIPE_TYPE,inputItemStack.get());
 
                 if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.get().getItems()) {
+                    for (ItemStack testStack : recipe.getIngredient(0).getItems()) {
                         if (stack.getItem() == testStack.getItem()) {
                             return super.insertItem(slot, stack, simulate);
                         }
@@ -164,7 +166,7 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
                 } else if (slot == 1 && stack.getItem() == Items.GUNPOWDER){
                     return super.insertItem(slot, stack, simulate);
                 } else if (slot == 2 && recipe1 != null){
-                    if (stack.getItem() == recipe1.result.getItem()){
+                    if (stack.getItem() == recipe1.getResult(0).getItem()){
                         return super.insertItem(slot, stack, simulate);
                     }
                 } else if (slot == 3 && TagUtil.isTaggedMachineUpgradeItem(stack)){

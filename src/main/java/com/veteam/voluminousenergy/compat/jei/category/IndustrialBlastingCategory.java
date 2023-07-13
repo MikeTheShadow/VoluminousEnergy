@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBlastingRecipe> {
@@ -91,24 +92,17 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
                                   IIngredientAcceptor heatFluidAcceptor,
                                   IIngredientAcceptor outputItemAcceptor) {
         // Inputs
-        ArrayList<ItemStack> firstInputStacks = new ArrayList<>();
-        for (Item inputItem : recipe.getFirstInputAsList()) {
-            firstInputStacks.add(new ItemStack(inputItem, recipe.getIngredientCount()));
-        }
+        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
         firstInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, firstInputStacks);
 
-        AtomicReference<ArrayList<ItemStack>> atomicSecondInputStack = new AtomicReference(new ArrayList<>());
-        recipe.onlySecondInput.get().parallelStream().forEach(item -> {
-            ItemStack secondInputStack = new ItemStack(item, recipe.getSecondInputAmount());
-            atomicSecondInputStack.get().add(secondInputStack);
-        });
-        secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicSecondInputStack.get());
+        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredient(1).getItems()));
+        secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
         heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, RecipeUtil.getFluidsHotEnoughForIndustrialBlastingRecipe(recipe));
 
         // Output
-        ItemStack resultStack = recipe.result.copy();
-        resultStack.setCount(recipe.getOutputAmount());
+        ItemStack resultStack = recipe.getResult(0).copy();
+        resultStack.setCount(recipe.getResultCount(0));
         outputItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
     }
 

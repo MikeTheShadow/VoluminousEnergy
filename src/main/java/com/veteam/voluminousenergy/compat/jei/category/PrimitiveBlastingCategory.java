@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlastFurnaceRecipe> {
 
@@ -77,17 +78,12 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
                                   IIngredientAcceptor itemOutputAcceptor) {
 
         // Input
-        ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-            itemStack.setCount(recipe.ingredientCount);
-            inputStacks.add(itemStack);
-        }
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         // Output
-        ItemStack outputStack = recipe.result.copy();
-        outputStack.setCount(recipe.getOutputAmount());
+        ItemStack outputStack = recipe.getResult(0).copy();
 
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, outputStack);
     }

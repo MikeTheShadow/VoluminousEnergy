@@ -72,16 +72,37 @@ public class RecipeCache {
     @Nullable
     public static VERecipe getRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, ItemStack... items) {
 
-        var levelCache = veRecipeCache.get(level);
-
-        if (levelCache == null) return null;
-
-        var recipes = levelCache.get(type);
-
-        if (recipes == null) return null;
+        var recipes = getRecipesFromLevelWithClass(level, type);
 
         for (VERecipe recipe : recipes) {
-            if (containsIngredient(recipe.getIngredient(), items)) return recipe;
+            boolean isValid = true;
+            for (int i = 0; i < items.length; i++) {
+                if (!recipe.getIngredient(i).test(items[i])
+                        || items[i].getCount() < recipe.getIngredient(i).getItems()[0].getCount()) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) return recipe;
+        }
+        return null;
+    }
+
+    @Nullable
+    public static VERecipe getRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<ItemStack> items) {
+
+        var recipes = getRecipesFromLevelWithClass(level, type);
+
+        for (VERecipe recipe : recipes) {
+            boolean isValid = true;
+            for (int i = 0; i < items.size(); i++) {
+                if (!recipe.getIngredient(i).test(items.get(i))
+                        || items.get(i).getCount() < recipe.getIngredient(i).getItems()[0].getCount()) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) return recipe;
         }
         return null;
     }
@@ -112,6 +133,32 @@ public class RecipeCache {
             if (isValid) return recipe;
         }
         return null;
+    }
+
+    public static @NotNull List<VERecipe> getRecipesFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<VESlotManager> slots, VETileEntity entity, boolean ignoreEmpty) {
+
+        var recipes = getRecipesFromLevelWithClass(level, type);
+
+        List<VERecipe> recipeList = new ArrayList<>();
+
+        for (VERecipe recipe : recipes) {
+            boolean isValid = true;
+
+            ItemStackHandler handler = entity.getInventoryHandler();
+            if (handler != null) {
+                for (VESlotManager manager : slots) {
+                    if (manager.getSlotType() != SlotType.INPUT) continue;
+                    ItemStack stack = manager.getItem(handler);
+                    if (ignoreEmpty && stack.isEmpty()) continue;
+                    if (!recipe.getIngredient(manager.getRecipePos()).test(stack)) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }
+            if (isValid) recipeList.add(recipe);
+        }
+        return recipeList;
     }
 
     public static @NotNull List<VEFluidRecipe> getFluidRecipesFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<VESlotManager> slots, List<RelationalTank> tanks, VETileEntity entity, boolean ignoreEmpty) {
@@ -151,16 +198,27 @@ public class RecipeCache {
         return recipeList;
     }
 
-    public static List<VEFluidRecipe> getAllFluidRecipesWithItemInSlot(Level level, RecipeType<? extends Recipe<?>> type, ItemStack stack, int pos) {
-        return getFluidRecipesFromLevelWithClass(level, type).stream()
-                .filter(recipe -> recipe.getItemIngredient(pos).test(stack)).toList();
+    public static List<VEFluidRecipe> getFluidRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
+
+        Set<VEFluidRecipe> veFluidRecipes = new HashSet<>();
+
+        for(var map : veFluidRecipeCache.entrySet()) {
+            List<VEFluidRecipe> recipes = map.getValue().get(type);
+            veFluidRecipes.addAll(recipes);
+        }
+        return veFluidRecipes.stream().toList();
     }
 
-    public static List<VEFluidRecipe> getAllFluidRecipesForFluidInSlot(Level level, RecipeType<? extends Recipe<?>> type, FluidStack stack, int pos) {
-        return getFluidRecipesFromLevelWithClass(level, type).stream()
-                .filter(recipe -> recipe.getFluidIngredient(pos).test(stack)).toList();
-    }
+    public static List<VERecipe> getRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
 
+        Set<VERecipe> veFluidRecipes = new HashSet<>();
+
+        for(var map : veRecipeCache.entrySet()) {
+            List<VERecipe> recipes = map.getValue().get(type);
+            veFluidRecipes.addAll(recipes);
+        }
+        return veFluidRecipes.stream().toList();
+    }
 
     @Nonnull
     private static List<VEFluidRecipe> getFluidRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
@@ -180,20 +238,21 @@ public class RecipeCache {
         return recipes;
     }
 
+    @Nonnull
+    private static List<VERecipe> getRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
+        var levelCache = veRecipeCache.get(level);
 
-    private static boolean containsIngredient(Ingredient ingredient, ItemStack[] items) {
-        for (ItemStack stack : ingredient.getItems()) {
-            boolean hasIngredient = false;
-            for (ItemStack item : items) {
-                if (stack.is(item.getItem()) && item.getCount() >= stack.getCount()) {
-                    hasIngredient = true;
-                    break;
-                }
-            }
-            if (!hasIngredient) {
-                return false;
-            }
+        if (levelCache == null) {
+            VoluminousEnergy.LOGGER.warn("Unable to find cache for level: " + level.getClass().getCanonicalName());
+            return new ArrayList<>();
         }
-        return true;
+
+        var recipes = levelCache.get(type);
+
+        if (recipes == null) {
+            VoluminousEnergy.LOGGER.error("No recipes found for " + type.getClass().getName());
+            return new ArrayList<>();
+        }
+        return recipes;
     }
 }

@@ -31,6 +31,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
@@ -121,25 +122,19 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
-            ArrayList<ItemStack> inputStacks = new ArrayList<>();
-            for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-                itemStack.setCount(recipe.ingredientCount);
-                inputStacks.add(itemStack);
-            }
+            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(0).getItems()));
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)
-            ItemStack resultStack = recipe.result.copy();
-            resultStack.setCount(recipe.getOutputAmount());
+            ItemStack resultStack = recipe.getOutputItem(0).copy();
             primaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
 
             // Second Item Output
-            ItemStack secondOutputStack = recipe.secondResult.copy();
-            secondOutputStack.setCount(recipe.getSecondAmount());
+            ItemStack secondOutputStack = recipe.getOutputItem(1).copy();
             secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, secondOutputStack);
 
             // Fluid Output
-            fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid().copy());
+            fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0).copy());
         }
 
     }

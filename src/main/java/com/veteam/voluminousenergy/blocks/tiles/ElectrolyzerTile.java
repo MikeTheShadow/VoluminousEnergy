@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -31,15 +32,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
+public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
     private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
 
-    public VESlotManager inputSm = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
-    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,SlotType.INPUT);
-    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,SlotType.OUTPUT);
-    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,SlotType.OUTPUT);
-    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,SlotType.OUTPUT);
-    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,SlotType.OUTPUT);
+    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager bucketSm = new VESlotManager(1, Direction.WEST, true, SlotType.INPUT);
+    public VESlotManager outputSm = new VESlotManager(2, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true, SlotType.OUTPUT);
+    public VESlotManager rngTwoSm = new VESlotManager(4, Direction.SOUTH, true, SlotType.OUTPUT);
+    public VESlotManager rngThreeSm = new VESlotManager(5, Direction.EAST, true, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(inputSm);
@@ -50,19 +51,19 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
         add(rngThreeSm);
     }};
 
-    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
 
     public ElectrolyzerTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state,ElectrolyzerRecipe.RECIPE_TYPE);
+        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state, ElectrolyzerRecipe.RECIPE_TYPE);
     }
 
     @Deprecated
-    public ElectrolyzerTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state,ElectrolyzerRecipe.RECIPE_TYPE);
+    public ElectrolyzerTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state, ElectrolyzerRecipe.RECIPE_TYPE);
     }
 
     @Override
-    public void tick(){
+    public void tick() {
 
         updateClients();
 
@@ -77,103 +78,57 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
             ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
             inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
 
-            if (usesBucket(recipe,bucket.copy())){
-                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && canConsumeEnergy()) {
-                    if (counter == 1){ //The processing is about to be complete
+            if (usesBucket(recipe, bucket.copy())) {
+                if (!areSlotsFull(recipe, output.copy(), rngOne.copy(), rngTwo.copy(), rngThree.copy()) && canConsumeEnergy()) {
+                    if (counter == 1) { //The processing is about to be complete
                         // Extract the inputted item
-                        h.extractItem(0,recipe.ingredientCount,false);
+                        h.extractItem(0, recipe.getIngredientCount(0), false);
                         // Extract bucket if it uses a bucket
-                        if (recipe.needsBuckets() > 0){
-                            h.extractItem(1,recipe.needsBuckets(),false);
+                        if (recipe.needsBuckets() > 0) {
+                            h.extractItem(1, recipe.needsBuckets(), false);
                         }
 
                         // Get output stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult().copy();
+                        ItemStack newOutputStack = recipe.getResult(0).copy();
 
-                        //LOGGER.debug("output: " + output + " rngOne: " + rngOne + " rngTwo: " + rngTwo + " rngThree: " + rngThree + " newOutputStack: "  + newOutputStack);
+                        float[] rngAmounts = recipe.getRNGOutputs();
 
                         // Manipulating the Output slot
                         if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                            if(output.getItem() == Items.AIR){ // Fix air >1 jamming slots
+                            if (output.getItem() == Items.AIR) { // Fix air >1 jamming slots
                                 output.setCount(1);
                             }
-                            newOutputStack.setCount(recipe.getOutputAmount());
+                            newOutputStack.setCount(recipe.getResultCount(0));
                             //LOGGER.debug(" Stack to output: " + newOutputStack.copy());
-                            h.insertItem(2,newOutputStack.copy(),false); // CRASH the game if this is not empty!
+                            h.insertItem(2, newOutputStack.copy(), false); // CRASH the game if this is not empty!
                             //LOGGER.debug(" in output slot: " + h.getStackInSlot(2).copy());
                         } else { // Assuming the recipe output item is already in the output slot
-                            output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                            h.insertItem(2,output.copy(),false); // Place the new output stack on top of the old one
+                            output.setCount(recipe.getResultCount(0)); // Simply change the stack to equal the output amount
+                            h.insertItem(2, output.copy(), false); // Place the new output stack on top of the old one
                         }
 
-                        // Manipulating the RNG 0 slot
-                        if (recipe.getChance0() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot0().copy();
+                        for (int i = 1; i < rngAmounts.length; i++) {
+                            // Manipulating the RNG 0 slot
+                            float rng = recipe.getRNGOutputs()[i];
+                            if (rng != 0) { // If the chance is ZERO, this functionality won't be used
+                                ItemStack newRngStack = recipe.getResult(i).copy();
 
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
-                            //LOGGER.debug("Random: " + random);
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance0()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rngOne.getItem() != recipe.getRngItemSlot0().getItem()){
-                                    if (rngOne.getItem() == Items.AIR){
-                                        rngOne.setCount(1);
+                                // Generate Random floats
+                                Random r = new Random();
+                                float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
+                                //LOGGER.debug("Random: " + random);
+                                // ONLY manipulate the slot if the random float is under or is identical to the chance float
+                                if (random <= rng) {
+                                    //LOGGER.debug("Chance HIT!");
+                                    if (rngOne.getItem() != newRngStack.getItem()) {
+                                        if (rngOne.getItem() == Items.AIR) {
+                                            rngOne.setCount(1);
+                                        }
+                                        h.insertItem(3, newRngStack.copy(), false); // CRASH the game if this is not empty!
+                                    } else { // Assuming the recipe output item is already in the output slot
+                                        rngOne.setCount(newRngStack.getCount()); // Simply change the stack to equal the output amount
+                                        h.insertItem(3, rngOne.copy(), false); // Place the new output stack on top of the old one
                                     }
-                                    newRngStack.setCount(recipe.getOutputRngAmount0());
-                                    h.insertItem(3, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngOne.setCount(recipe.getOutputRngAmount0()); // Simply change the stack to equal the output amount
-                                    h.insertItem(3,rngOne.copy(),false); // Place the new output stack on top of the old one
-                                }
-                            }
-                        }
-
-                        // Manipulating the RNG 1 slot
-                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot1().copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
-                            //LOGGER.debug("Random: " + random);
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance1()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rngTwo.getItem() != recipe.getRngItemSlot1().getItem()){
-                                    if (rngTwo.getItem() == Items.AIR){
-                                        rngTwo.setCount(1);
-                                    }
-                                    newRngStack.setCount(recipe.getOutputRngAmount1());
-                                    h.insertItem(4, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngTwo.setCount(recipe.getOutputRngAmount1()); // Simply change the stack to equal the output amount
-                                    h.insertItem(4,rngTwo.copy(),false); // Place the new output stack on top of the old one
-                                }
-                            }
-                        }
-
-                        // Manipulating the RNG 2 slot
-                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getRngItemSlot2().copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = Mth.abs(0 + r.nextFloat() * (0 - 1));
-                            //LOGGER.debug("Random: " + random);
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance2()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rngThree.getItem() != recipe.getRngItemSlot2().getItem()){
-                                    if (rngThree.getItem() == Items.AIR){
-                                        rngThree.setCount(1);
-                                    }
-                                    newRngStack.setCount(recipe.getOutputRngAmount2());
-                                    h.insertItem(5, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngThree.setCount(recipe.getOutputRngAmount2()); // Simply change the stack to equal the output amount
-                                    h.insertItem(5,rngThree.copy(),false); // Place the new output stack on top of the old one
                                 }
                             }
                         }
@@ -181,17 +136,17 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
                         counter--;
                         consumeEnergy();
                         setChanged();
-                    } else if (counter > 0){ //In progress
+                    } else if (counter > 0) { //In progress
                         counter--;
                         consumeEnergy();
-                        if(++sound_tick == 19) {
+                        if (++sound_tick == 19) {
                             sound_tick = 0;
                             if (Config.PLAY_MACHINE_SOUNDS.get()) {
                                 level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
                             }
                         }
                     } else { // Check if we should start processing
-                        if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
+                        if (areSlotsEmptyOrHaveCurrentItems(recipe, output, rngOne, rngTwo, rngThree)) {
                             counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
                             length = counter;
                         } else {
@@ -199,7 +154,7 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
                         }
                     }
                 } else { // This is if we reach the maximum in the slots; or no power
-                    if (!canConsumeEnergy()){ // if no power
+                    if (!canConsumeEnergy()) { // if no power
                         decrementSuperCounterOnNoPower();
                     } else { // zero in other cases
                         counter = 0;
@@ -211,27 +166,27 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
         });
     }
 
-    private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
+    private boolean areSlotsFull(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four) {
 
-        if (one.getCount() + recipe.getOutputAmount() > one.getItem().getMaxStackSize(one.copy())){ // Main output slot
+        if (one.getCount() + recipe.getResultCount(0) > one.getItem().getMaxStackSize(one.copy())) { // Main output slot
             return true;
-        } else if (two.getCount() + recipe.getOutputRngAmount0() > two.getItem().getMaxStackSize(two.copy())){ // Rng Slot 0
+        } else if (two.getCount() + recipe.getResultCount(1) > two.getItem().getMaxStackSize(two.copy())) { // Rng Slot 0
             return true;
-        } else if (three.getCount() + recipe.getOutputRngAmount1() > three.getItem().getMaxStackSize(three.copy())){ // Rng Slot 1
+        } else if (three.getCount() + recipe.getResultCount(2) > three.getItem().getMaxStackSize(three.copy())) { // Rng Slot 1
             return true;
-        } else if (four.getCount() + recipe.getOutputRngAmount2() > four.getItem().getMaxStackSize(four.copy())){ // Rng Slot 2
+        } else if (four.getCount() + recipe.getResultCount(3) > four.getItem().getMaxStackSize(four.copy())) { // Rng Slot 2
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean usesBucket(ElectrolyzerRecipe recipe,ItemStack bucket){
-        if (recipe != null){ // If the recipe is null, don't bother processing
-            if (recipe.needsBuckets() > 0){ // If it doesn't use a bucket, we know that it must have a valid recipe, return true
-                if (!bucket.isEmpty() && bucket.getItem() == Items.BUCKET){
-                    if(bucket.getCount() >= recipe.needsBuckets()) return true; // Needs a bucket, has enough buckets. Return true.
-                    return false; // Needs a bucket, doesn't have enough buckets. Return false.
+    private boolean usesBucket(ElectrolyzerRecipe recipe, ItemStack bucket) {
+        if (recipe != null) { // If the recipe is null, don't bother processing
+            if (recipe.needsBuckets() > 0) { // If it doesn't use a bucket, we know that it must have a valid recipe, return true
+                if (!bucket.isEmpty() && bucket.getItem() == Items.BUCKET) {
+                    return bucket.getCount() >= recipe.needsBuckets(); // Needs a bucket, has enough buckets. Return true.
+// Needs a bucket, doesn't have enough buckets. Return false.
                 } else {
                     return false; // Needs a bucket, doesn't have a bucket. Return false.
                 }
@@ -242,7 +197,7 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
         return false; // Likely empty slot, don't bother
     }
 
-    private boolean areSlotsEmptyOrHaveCurrentItems(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
+    private boolean areSlotsEmptyOrHaveCurrentItems(ElectrolyzerRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four) {
         ArrayList<ItemStack> outputList = new ArrayList<>();
         outputList.add(one.copy());
         outputList.add(two.copy());
@@ -250,17 +205,17 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
         outputList.add(four.copy());
         boolean isEmpty = true;
         boolean matchesRecipe = true;
-        for (ItemStack x : outputList){
-            if (!x.isEmpty()){
+        for (ItemStack x : outputList) {
+            if (!x.isEmpty()) {
                 //LOGGER.debug("Not Empty Slot!");
                 isEmpty = false;
-                if (one.getItem() != recipe.getResult().getItem() && one.getItem() != Items.AIR){
+                if (one.getItem() != recipe.getResult(0).getItem() && one.getItem() != Items.AIR) {
                     return false;
-                } else if (two.getItem() != recipe.getRngItemSlot0().getItem() && two.getItem() != Items.AIR){
+                } else if (two.getItem() != recipe.getResult(1).getItem() && two.getItem() != Items.AIR) {
                     return false;
-                } else if (three.getItem() != recipe.getRngItemSlot1().getItem() && three.getItem() != Items.AIR){
+                } else if (three.getItem() != recipe.getResult(2).getItem() && three.getItem() != Items.AIR) {
                     return false;
-                } else if (four.getItem() != recipe.getRngItemSlot2().getItem() && four.getItem() != Items.AIR){
+                } else if (four.getItem() != recipe.getResult(3).getItem() && four.getItem() != Items.AIR) {
                     return false;
                 } else {
                     return true;
@@ -283,25 +238,25 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
             //ItemStack referenceStack1 = inputItemStack.get().copy();
             //referenceStack1.setCount(64);
             ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
+            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()), level).orElse(null);
 
-            if (slot == 0 && recipe != null){
-                for (ItemStack testStack : recipe.ingredient.get().getItems()){
-                    if(stack.getItem() == testStack.getItem()){
+            if (slot == 0 && recipe != null) {
+                for (ItemStack testStack : recipe.getIngredient(0).getItems()) {
+                    if (stack.getItem() == testStack.getItem()) {
                         return true;
                     }
                 }
-            } else if (slot == 1 && stack.getItem() == Items.BUCKET){
+            } else if (slot == 1 && stack.getItem() == Items.BUCKET) {
                 return true;
-            } else if (slot == 2 && recipe1 != null){ // Output slot
-                return stack.getItem() == recipe1.result.getItem();
-            } else if (slot == 3 && recipe1 != null){ // RNG 0 slot
-                return stack.getItem() == recipe1.getRngItemSlot0().getItem();
-            } else if (slot == 4 && recipe1 != null){ // RNG 1 slot
-                return stack.getItem() == recipe1.getRngItemSlot1().getItem();
-            } else if (slot == 5 && recipe1 != null){ // RNG 2 slot
-                return stack.getItem() == recipe1.getRngItemSlot2().getItem();
-            } else if (slot == 6){
+            } else if (slot == 2 && recipe1 != null) { // Output slot
+                return stack.getItem() == recipe1.getResult(0).getItem();
+            } else if (slot == 3 && recipe1 != null) { // RNG 0 slot
+                return stack.getItem() == recipe1.getResult(1).getItem();
+            } else if (slot == 4 && recipe1 != null) { // RNG 1 slot
+                return stack.getItem() == recipe1.getResult(2).getItem();
+            } else if (slot == 5 && recipe1 != null) { // RNG 2 slot
+                return stack.getItem() == recipe1.getResult(3).getItem();
+            } else if (slot == 6) {
                 return TagUtil.isTaggedMachineUpgradeItem(stack);
             }
             return false;
@@ -309,37 +264,38 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
 
         @Nonnull
         @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
             ItemStack referenceStack = stack.copy();
             referenceStack.setCount(64);
-            ElectrolyzerRecipe recipe = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack.copy()), level).orElse(null);
-            ElectrolyzerRecipe recipe1 = level.getRecipeManager().getRecipeFor(ElectrolyzerRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
 
-            if(slot == 0 && recipe != null) {
-                for (ItemStack testStack : recipe.ingredient.get().getItems()){
-                    if(stack.getItem() == testStack.getItem()){
+            ElectrolyzerRecipe recipe = (ElectrolyzerRecipe) RecipeCache.getRecipeFromCache(level,ElectrolyzerRecipe.RECIPE_TYPE,referenceStack);
+            ElectrolyzerRecipe recipe1 = (ElectrolyzerRecipe) RecipeCache.getRecipeFromCache(level,ElectrolyzerRecipe.RECIPE_TYPE,inputItemStack.get().copy());
+
+            if (slot == 0 && recipe != null) {
+                for (ItemStack testStack : recipe.getIngredient(0).getItems()) {
+                    if (stack.getItem() == testStack.getItem()) {
                         return super.insertItem(slot, stack, simulate);
                     }
                 }
-            } else if ( slot == 1 && stack.getItem() == Items.BUCKET) {
+            } else if (slot == 1 && stack.getItem() == Items.BUCKET) {
                 return super.insertItem(slot, stack, simulate);
-            } else if (slot == 2 && recipe1 != null){
-                if (stack.getItem() == recipe1.result.getItem()){
+            } else if (slot == 2 && recipe1 != null) {
+                if (stack.getItem() == recipe1.getResult(0).getItem()) {
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 3 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot0().getItem()){
+            } else if (slot == 3 && recipe1 != null) {
+                if (stack.getItem() == recipe1.getResult(1).getItem()) {
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 4 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot1().getItem()){
+            } else if (slot == 4 && recipe1 != null) {
+                if (stack.getItem() == recipe1.getResult(2).getItem()) {
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 5 && recipe1 != null){
-                if (stack.getItem() == recipe1.getRngItemSlot2().getItem()){
+            } else if (slot == 5 && recipe1 != null) {
+                if (stack.getItem() == recipe1.getResult(3).getItem()) {
                     return super.insertItem(slot, stack, simulate);
                 }
-            } else if (slot == 6 && TagUtil.isTaggedMachineUpgradeItem(stack)){
+            } else if (slot == 6 && TagUtil.isTaggedMachineUpgradeItem(stack)) {
                 return super.insertItem(slot, stack, simulate);
             }
             return stack;
@@ -349,7 +305,7 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new ElectrolyzerContainer(i,level,worldPosition,playerInventory,playerEntity);
+        return new ElectrolyzerContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

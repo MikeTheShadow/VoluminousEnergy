@@ -4,6 +4,9 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -32,6 +35,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +78,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void tick() {
         updateClients();
         validateRecipe();
+        processRecipe();
+    }
+
+    void processRecipe() {
+
     }
 
     /**
@@ -359,15 +368,21 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+
+
+    private LazyOptional<IEnergyStorage> capability;
     /**
-     * //TODO make this cache the capability otherwise it's a laggy mess
      * Like consumeEnergy this requires that the object has an inventory
      * @return True if the object has enough energy to be able to continue
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public boolean canConsumeEnergy() {
         if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
-            return this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0)
+
+            if(capability == null) {
+                capability = this.getCapability(ForgeCapabilities.ENERGY);
+            }
+            return capability.map(IEnergyStorage::getEnergyStored).orElse(0)
                     > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
         } else {
             throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());
@@ -486,9 +501,56 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     //TODO impl for regular recipes
     public void validateRecipe() {
-        if (!this.isRecipeDirty) return;
+        if (!this.isRecipeDirty) {
+            return;
+        }
         this.isRecipeDirty = false;
+
+        this.potentialRecipes = RecipeCache.getRecipesFromCache(level, this.getRecipeType(), getSlotManagers(),this,true);
+        if (this.potentialRecipes.size() == 1) {
+
+            ItemStackHandler handler = this.getInventoryHandler();
+            List<ItemStack> inputItems = new ArrayList<>();
+            if (handler != null) {
+                inputItems = this.getSlotManagers().stream()
+                        .filter(manager -> manager.getSlotType() == SlotType.INPUT)
+                        .map(manager -> manager.getItem(handler)).toList();
+            }
+            VERecipe newRecipe = RecipeCache.getRecipeFromCache(level, getRecipeType(), inputItems);
+
+            if (newRecipe == null) {
+                counter = 0;
+                length = 0;
+                this.selectedRecipe = null;
+                return;
+            }
+
+            int newLength;
+
+            if (this instanceof IVEPoweredTileEntity poweredTileEntity && handler != null) {
+                newLength = this.calculateCounter(newRecipe.getProcessTime(),
+                        handler.getStackInSlot(poweredTileEntity.getUpgradeSlotId()).copy());
+            } else {
+                newLength = this.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
+            }
+
+
+            double ratio = (double) length / (double) newLength;
+            length = newLength;
+            counter = (int) (counter / ratio);
+
+            if (this.selectedRecipe != newRecipe) {
+                this.selectedRecipe = newRecipe;
+                counter = newLength;
+            }
+        } else {
+            counter = 0;
+            length = 0;
+            this.selectedRecipe = null;
+        }
     }
+
+
 
     public RecipeType<? extends Recipe<?>> getRecipeType() {
         return this.recipeType;

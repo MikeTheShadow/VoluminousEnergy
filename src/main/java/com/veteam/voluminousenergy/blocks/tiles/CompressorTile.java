@@ -28,93 +28,83 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
+public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager inputSlotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
-    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
+    public VESlotManager inputSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
-       add(inputSlotManager);
-       add(outputSlotManager);
+        add(inputSlotManager);
+        add(outputSlotManager);
     }};
 
-    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
+    private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR, 0));
 
     public CompressorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.COMPRESSOR_TILE.get(), pos, state,null);
+        super(VEBlocks.COMPRESSOR_TILE.get(), pos, state, null);
     }
 
     @Deprecated
-    public CompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.COMPRESSOR_TILE.get(), pos, state,null);
+    public CompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(VEBlocks.COMPRESSOR_TILE.get(), pos, state, null);
     }
 
     private final ItemStackHandler inventory = createHandler();
 
     @Override
-    public void tick(){
+    public void tick() {
         updateClients();
-
-        ItemStack input = inventory.getStackInSlot(0).copy();
-        ItemStack output = inventory.getStackInSlot(1).copy();
-
-        CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
-        inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
-
-        if (!input.isEmpty()){
-            if (output.getCount() + recipe.getOutputAmount() < 64 && canConsumeEnergy()) {
-                if (this.counter == 1){ //The processing is about to be complete
-                    // Extract the inputted item
-                    inventory.extractItem(0,recipe.ingredientCount,false);
-
-                    // Get output stack and RNG stack from the recipe
-                    ItemStack newOutputStack = recipe.getResult().copy();
-
-                    // Manipulating the Output slot
-                    if (output.getItem() != newOutputStack.getItem()) {
-                        if (output.getItem() == Items.AIR){ // To prevent the slot from being jammed by air
-                            output.setCount(1);
-                        }
-                        newOutputStack.setCount(recipe.getOutputAmount());
-                        inventory.insertItem(1,newOutputStack.copy(),false); // CRASH the game if this is not empty!
-                    } else { // Assuming the recipe output item is already in the output slot
-                        output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
-                        inventory.insertItem(1,output.copy(),false); // Place the new output stack on top of the old one
-                    }
-
-                    this.counter--;
-                    consumeEnergy();
-                    setChanged();
-                } else if (this.counter > 0){ //In progress
-                    this.counter--;
-                    consumeEnergy();
-                    if(++sound_tick == 19) {
-                        sound_tick = 0;
-                        if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                            level.playSound(null, this.getBlockPos(), VESounds.COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
-                        }
-                    }
-                } else { // Check if we should start processing
-                    if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()){
-                        this.counter = recipe.getProcessTime();
-                        this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
-                        this.length = this.counter;
-                    } else {
-                        this.counter = 0;
-                    }
-                }
-            } else { // This is if we reach the maximum in the slots; or no power
-                if (!canConsumeEnergy()){ // if no power
-                    decrementSuperCounterOnNoPower();
-                } else { // zero in other cases
-                    counter = 0;
-                }
-            }
-        } else { // This is if the input slot is empty
-            this.counter = 0;
-        }
+// TODO delete this if the new processing works
+//        ItemStack input = inventory.getStackInSlot(0).copy();
+//        ItemStack output = inventory.getStackInSlot(1).copy();
+//
+//        CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(input), level).orElse(null);
+//        inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
+//        if (canConsumeEnergy()) {
+//            if (this.counter == 1) { //The processing is about to be complete
+//                // Extract the inputted item
+//                inventory.extractItem(0, recipe.ingredientCount, false);
+//
+//                // Get output stack and RNG stack from the recipe
+//                ItemStack newOutputStack = recipe.getResult().copy();
+//
+//                // Manipulating the Output slot
+//                if (output.getItem() != newOutputStack.getItem()) {
+//                    if (output.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
+//                        output.setCount(1);
+//                    }
+//                    newOutputStack.setCount(recipe.getOutputAmount());
+//                    inventory.insertItem(1, newOutputStack.copy(), false); // CRASH the game if this is not empty!
+//                } else { // Assuming the recipe output item is already in the output slot
+//                    output.setCount(recipe.getOutputAmount()); // Simply change the stack to equal the output amount
+//                    inventory.insertItem(1, output.copy(), false); // Place the new output stack on top of the old one
+//                }
+//
+//                this.counter--;
+//                consumeEnergy();
+//                setChanged();
+//            } else if (this.counter > 0) { //In progress
+//                this.counter--;
+//                consumeEnergy();
+//                if (++sound_tick == 19) {
+//                    sound_tick = 0;
+//                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
+//                        level.playSound(null, this.getBlockPos(), VESounds.COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+//                    }
+//                }
+//            } else { // Check if we should start processing
+//                if (output.isEmpty() || output.getItem() == recipe.getResult().getItem()) {
+//                    this.counter = recipe.getProcessTime();
+//                    this.counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
+//                    this.length = this.counter;
+//                } else {
+//                    this.counter = 0;
+//                }
+//            }
+//        }
     }
 
+    // TODO remove me eventually
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(3) {
             @Override
@@ -124,52 +114,25 @@ public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-                CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
-
-                if (slot == 0 && recipe != null){
-                    return recipe.ingredient.get().test(stack);
-                } else if (slot == 1 && recipe1 != null){
-                    return stack.getItem() == recipe1.result.getItem();
-                } else if (slot == 2){
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
-                }
-                return false;
+                return true;
             }
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate){ //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                ItemStack referenceStack = stack.copy();
-                referenceStack.setCount(64);
-                CompressorRecipe recipe = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(referenceStack), level).orElse(null);
-                CompressorRecipe recipe1 = level.getRecipeManager().getRecipeFor(CompressorRecipe.RECIPE_TYPE, new SimpleContainer(inputItemStack.get().copy()),level).orElse(null);
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
 
-                if(slot == 0 && recipe != null) {
-                    for (ItemStack testStack : recipe.ingredient.get().getItems()){
-                        if(stack.getItem() == testStack.getItem()){
-                            return super.insertItem(slot, stack, simulate);
-                        }
-                    }
-                } else if (slot == 1 && recipe1 != null){
-                    if (stack.getItem() == recipe1.result.getItem()){
-                        return super.insertItem(slot, stack, simulate);
-                    }
-                } else if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)){
+                if (slot == 2 && TagUtil.isTaggedMachineUpgradeItem(stack)) {
                     return super.insertItem(slot, stack, simulate);
                 }
-                return stack;
+                return super.insertItem(slot,stack,simulate);
             }
         };
     }
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
-    {
-        return new CompressorContainer(i,level,worldPosition,playerInventory,playerEntity);
+    public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
+        return new CompressorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override
@@ -184,18 +147,18 @@ public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == inputSlotManager.getSlotNum()){
+    public void updatePacketFromGui(boolean status, int slotId) {
+        if (slotId == inputSlotManager.getSlotNum()) {
             inputSlotManager.setStatus(status);
-        } else if (slotId == outputSlotManager.getSlotNum()){
+        } else if (slotId == outputSlotManager.getSlotNum()) {
             outputSlotManager.setStatus(status);
         }
     }
 
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == inputSlotManager.getSlotNum()){
+    public void updatePacketFromGui(int direction, int slotId) {
+        if (slotId == inputSlotManager.getSlotNum()) {
             inputSlotManager.setDirection(direction);
-        } else if (slotId == outputSlotManager.getSlotNum()){
+        } else if (slotId == outputSlotManager.getSlotNum()) {
             outputSlotManager.setDirection(direction);
         }
     }

@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
@@ -165,7 +166,8 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             }
             setChanged();
         } else if (!oxidizerTank.getTank().isEmpty()) {
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipe(level, this.oxidizerTank.getTank().getFluid().copy());
+            CombustionGeneratorOxidizerRecipe oxidizerRecipe =
+                    (CombustionGeneratorOxidizerRecipe) RecipeCache.getFluidRecipeFromCache(level,CombustionGeneratorOxidizerRecipe.RECIPE_TYPE, Collections.singletonList(this.oxidizerTank.getTank().getFluid()),new ArrayList<>());
             VEFluidRecipe fuelRecipe = (VEFluidRecipe) selectedRecipe; // TODO impl custom validateFluidRecipe for this tile
 
             if (oxidizerRecipe != null && fuelRecipe != null) {

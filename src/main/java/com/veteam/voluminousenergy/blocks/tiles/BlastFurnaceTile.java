@@ -19,6 +19,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -33,8 +34,8 @@ import java.util.List;
 
 public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP, false, SlotType.INPUT);
-    public VESlotManager heatTankItemBottomManager = new VESlotManager(1, Direction.DOWN, false, SlotType.OUTPUT);
+    public VESlotManager heatTankItemTopManager = new VESlotManager(0, Direction.UP, false, SlotType.FLUID_INPUT,1,0);
+    public VESlotManager heatTankItemBottomManager = new VESlotManager(1, Direction.DOWN, false, SlotType.FLUID_OUTPUT);
     public VESlotManager firstInputSlotManager = new VESlotManager(2, Direction.EAST, false, SlotType.INPUT);
     public VESlotManager secondInputSlotManager = new VESlotManager(3, Direction.WEST, false, SlotType.INPUT);
     public VESlotManager outputSlotManager = new VESlotManager(4, Direction.NORTH, false, SlotType.OUTPUT);
@@ -49,13 +50,8 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         }
     };
 
-    RelationalTank heatTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "heatTank:heat_tank_gui");
-
-    List<RelationalTank> fluidManagers = new ArrayList<>() {
-        {
-            add(heatTank);
-            heatTank.setAllowAny(true);
-        }
+    RelationalTank[] fluidManagers = new RelationalTank[] {
+            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, TankType.INPUT, "heatTank:heat_tank_gui")
     };
 
     private byte tick = 19;
@@ -73,13 +69,9 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     }
 
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state,IndustrialBlastingRecipe.RECIPE_TYPE);
+        super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state, IndustrialBlastingRecipe.RECIPE_TYPE);
+        fluidManagers[0].setAllowAny(true);
     }
-
-    private IndustrialBlastingRecipe recipe;
-    private Item lastFirstItem;
-    private Item lastSecondItem;
-
     @Override
     public void tick() {
         updateClients();
@@ -93,64 +85,56 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         }
 
         // Main idea: Heat --> Needs to be "high enough" to work, 2 Item Inputs, 1 item output.
-        ItemStack heatTankItemInputTop = inventory.getStackInSlot(0).copy();
-        ItemStack heatTankItemInputBottom = inventory.getStackInSlot(1).copy();
         ItemStack firstItemInput = inventory.getStackInSlot(2).copy();
         ItemStack secondItemInput = inventory.getStackInSlot(3).copy();
         ItemStack itemOutput = inventory.getStackInSlot(4).copy();
 
-        heatTank.setIOItemstack(heatTankItemInputTop.copy(), heatTankItemInputBottom.copy());
+        if(selectedRecipe == null) return;
 
-        if (inputFluid(heatTank, 0, 1)) return;
-        if (this.outputFluid(heatTank, 0, 1)) return;
+        IndustrialBlastingRecipe recipe = (IndustrialBlastingRecipe) selectedRecipe;
 
         // Main Processing occurs here:
-        if (heatTank != null || !heatTank.getTank().isEmpty()) {
-
-            // Recipe check
-            if (!firstItemInput.is(lastFirstItem) || !secondItemInput.is(lastSecondItem)) {
-                recipe = (IndustrialBlastingRecipe) RecipeCache.getRecipeFromCache(level, getRecipeType(), firstItemInput.copy(), secondItemInput.copy());
-                lastFirstItem = firstItemInput.getItem();
-                lastSecondItem = secondItemInput.getItem();
-                counter = 0;
-            }
-
-            if (recipe != null) {
+        if (!fluidManagers[0].getTank().isEmpty()) {
+            if (selectedRecipe != null) {
                 // Tank fluid amount check + capacity and recipe checks
-                if (itemOutput.getCount() < recipe.getResult().getMaxStackSize()
-                    && heatTank.getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()
-                    && heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature() >= recipe.getMinimumHeat()
-                    && (itemOutput.isEmpty() || recipe.getResult().getItem().equals(itemOutput.getItem()))
-                    && recipe.getFirstInputAsList().contains(firstItemInput.getItem())
-                    && firstItemInput.getCount() >= recipe.getIngredientCount()
-                    && recipe.ingredientListIncludingSeconds.get().contains(secondItemInput.getItem())
-                    && secondItemInput.getCount() >= recipe.getSecondInputAmount()
+
+                int firstIngredientCount = recipe.getIngredient(0).getItems()[0].getCount();
+                int secondIngredientCount = recipe.getIngredient(1).getItems()[0].getCount();
+
+                if (itemOutput.getCount() < recipe.getResult(0).getMaxStackSize()
+                        && fluidManagers[0].getTank().getFluidAmount() >= Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()
+                        && fluidManagers[0].getTank().getFluid().getRawFluid().getFluidType().getTemperature() >= recipe.getMinimumHeat()
+                        && (itemOutput.isEmpty() || recipe.getResult(0).getItem().equals(itemOutput.getItem()))
+                        && recipe.getIngredient(0).test(firstItemInput)
+                        && firstItemInput.getCount() >= firstIngredientCount
+                        && secondItemInput.getCount() >= secondIngredientCount
                 ) {
                     // Check for power
                     if (canConsumeEnergy()) {
                         if (counter == 1) {
 
                             // Drain Input
-                            heatTank.getTank().drain(Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get(), IFluidHandler.FluidAction.EXECUTE);
+                            fluidManagers[0].getTank().drain(Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get(), IFluidHandler.FluidAction.EXECUTE);
 
-                            inventory.extractItem(2, recipe.getIngredientCount(), false);
-                            inventory.extractItem(3, recipe.getSecondInputAmount(), false);
+                            inventory.extractItem(2, firstIngredientCount, false);
+                            inventory.extractItem(3, secondIngredientCount, false);
 
                             // Place the new output stack on top of the old one
-                            if (itemOutput.getItem() != recipe.getResult().getItem()) {
+                            if (itemOutput.getItem() != recipe.getResult(0).getItem()) {
                                 if (itemOutput.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
                                     itemOutput.setCount(1);
                                 }
                             }
-                            inventory.insertItem(4, recipe.getResult().copy(), false); // CRASH the game if this is not empty!
+                            inventory.insertItem(4, recipe.getResult(0).copy(), false); // CRASH the game if this is not empty!
 
                             counter--;
                             consumeEnergy();
                             this.setChanged();
+                            markFluidInputDirty();
                         } else if (counter > 0) {
                             counter--;
                             consumeEnergy();
-                            if(++sound_tick == 19) {
+                            if (++sound_tick == 19) {
                                 sound_tick = 0;
                                 if (Config.PLAY_MACHINE_SOUNDS.get()) {
                                     level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -171,27 +155,19 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
 
     }
 
+
+    // TODO replace me
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(6) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+                markFluidInputDirty();
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot == 0 || slot == 1) {
-                    return stack.getItem() instanceof BucketItem || stack.getItem() == Items.BUCKET;
-                } else if (slot == 2) {
-                    return RecipeUtil.isFirstIngredientForIndustrialBlastingRecipe(level, stack.copy());
-                } else if (slot == 3) {
-                    return RecipeUtil.isSecondIngredientForIndustrialBlastingRecipe(level, stack.copy());
-                } else if (slot == 4) {
-                    return RecipeUtil.isAnOutputForIndustrialBlastingRecipe(level, stack.copy());
-                } else if (slot == 5) {
-                    return TagUtil.isTaggedMachineUpgradeItem(stack);
-                }
-                return false;
+                return true;
             }
 
             @Nonnull
@@ -210,7 +186,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
 
     public FluidStack getFluidStackFromTank(int num) {
         if (num == 0) {
-            return heatTank.getTank().getFluid();
+            return fluidManagers[num].getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
@@ -219,12 +195,8 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         return validity;
     }
 
-    public RelationalTank getHeatTank() {
-        return this.heatTank;
-    }
-
     public int getTemperatureKelvin() {
-        return this.heatTank.getTank().getFluid().getRawFluid().getFluidType().getTemperature();
+        return fluidManagers[0].getTank().getFluid().getRawFluid().getFluidType().getTemperature();
     }
 
     public int getTemperatureCelsius() {
@@ -254,7 +226,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
 
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
-        return fluidManagers;
+        return List.of(fluidManagers);
     }
 
     @Override
