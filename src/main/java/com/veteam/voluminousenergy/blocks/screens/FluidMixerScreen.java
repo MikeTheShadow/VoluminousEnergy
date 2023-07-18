@@ -41,7 +41,7 @@ public class FluidMixerScreen extends VEContainerScreen<FluidMixerContainer> {
     protected void init(){
         super.init();
         // Buttons
-        super.addIOMenu(this.tileEntity);
+        super.renderIOMenu(this.tileEntity);
     }
 
     @Override

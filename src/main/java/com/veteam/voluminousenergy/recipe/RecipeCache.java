@@ -71,21 +71,7 @@ public class RecipeCache {
 
     @Nullable
     public static VERecipe getRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, ItemStack... items) {
-
-        var recipes = getRecipesFromLevelWithClass(level, type);
-
-        for (VERecipe recipe : recipes) {
-            boolean isValid = true;
-            for (int i = 0; i < items.length; i++) {
-                if (!recipe.getIngredient(i).test(items[i])
-                        || items[i].getCount() < recipe.getIngredient(i).getItems()[0].getCount()) {
-                    isValid = false;
-                    break;
-                }
-            }
-            if (isValid) return recipe;
-        }
-        return null;
+        return getRecipeFromCache(level,type, Arrays.stream(items).toList());
     }
 
     @Nullable
@@ -96,6 +82,7 @@ public class RecipeCache {
         for (VERecipe recipe : recipes) {
             boolean isValid = true;
             for (int i = 0; i < items.size(); i++) {
+                if(recipe.getIngredient(i).isEmpty()) continue;
                 if (!recipe.getIngredient(i).test(items.get(i))
                         || items.get(i).getCount() < recipe.getIngredient(i).getItems()[0].getCount()) {
                     isValid = false;
@@ -116,6 +103,7 @@ public class RecipeCache {
             boolean isValid = true;
 
             for (int i = 0; i < fluids.size(); i++) {
+                if(recipe.getItemIngredient(i).isEmpty()) continue;
                 if (!recipe.getFluidIngredient(i).test(fluids.get(i))
                         || fluids.get(i).getAmount() < recipe.getFluidIngredient(i).getFluids()[0].getAmount()) {
                     isValid = false;
@@ -150,6 +138,7 @@ public class RecipeCache {
                     if (manager.getSlotType() != SlotType.INPUT) continue;
                     ItemStack stack = manager.getItem(handler);
                     if (ignoreEmpty && stack.isEmpty()) continue;
+                    if(recipe.getIngredient(manager.getRecipePos()).isEmpty()) continue;
                     if (!recipe.getIngredient(manager.getRecipePos()).test(stack)) {
                         isValid = false;
                         break;
@@ -186,6 +175,7 @@ public class RecipeCache {
                     if (manager.getSlotType() != SlotType.INPUT) continue;
                     ItemStack stack = manager.getItem(handler);
                     if (ignoreEmpty && stack.isEmpty()) continue;
+                    if(recipe.getItemIngredient(manager.getRecipePos()).isEmpty()) continue;
                     if (!recipe.getItemIngredient(manager.getRecipePos()).test(stack)) {
                         isValid = false;
                         break;

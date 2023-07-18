@@ -3,23 +3,19 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
-import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,29 +23,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static net.minecraft.util.Mth.abs;
-
 public class CentrifugalSeparatorTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
-
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory); // Main item handler
-
-    public VESlotManager inputSm = new VESlotManager(0, Direction.UP,true, SlotType.INPUT);
-    public VESlotManager bucketSm = new VESlotManager(1,Direction.WEST,true,SlotType.INPUT);
-    public VESlotManager outputSm = new VESlotManager(2,Direction.DOWN,true,SlotType.OUTPUT);
-    public VESlotManager rngOneSm = new VESlotManager(3, Direction.NORTH, true,SlotType.OUTPUT);
-    public VESlotManager rngTwoSm = new VESlotManager(4,Direction.SOUTH,true,SlotType.OUTPUT);
-    public VESlotManager rngThreeSm = new VESlotManager(5,Direction.EAST,true,SlotType.OUTPUT);
+    private final ItemStackHandler handler = createHandler(7);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(inputSm);
-        add(bucketSm);
-        add(outputSm);
-        add(rngOneSm);
-        add(rngTwoSm);
-        add(rngThreeSm);
+        add(new VESlotManager(0,0, Direction.UP,true, SlotType.INPUT));
+        add(new VESlotManager(1,1,Direction.WEST,true,SlotType.INPUT));
+        add(new VESlotManager(2,0,Direction.DOWN,true,SlotType.OUTPUT));
+        add(new VESlotManager(3,1, Direction.NORTH, true,SlotType.OUTPUT));
+        add(new VESlotManager(4,2,Direction.SOUTH,true,SlotType.OUTPUT));
+        add(new VESlotManager(5,3,Direction.EAST,true,SlotType.OUTPUT));
     }};
 
     private final AtomicReference<ItemStack> inputItemStack = new AtomicReference<ItemStack>(new ItemStack(Items.AIR,0));
@@ -62,175 +47,9 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
     public void tick(){
 
         updateClients();
-
-        handler.ifPresent(h -> {
-            ItemStack input = h.getStackInSlot(0).copy();
-            ItemStack bucket = h.getStackInSlot(1).copy();
-            ItemStack output = h.getStackInSlot(2).copy();
-            ItemStack rngOne = h.getStackInSlot(3).copy();
-            ItemStack rngTwo = h.getStackInSlot(4).copy();
-            ItemStack rngThree = h.getStackInSlot(5).copy();
-
-
-            if(selectedRecipe == null) return;
-
-            CentrifugalSeparatorRecipe recipe = (CentrifugalSeparatorRecipe) selectedRecipe;
-
-            inputItemStack.set(input.copy()); // Atomic Reference, use this to query recipes
-
-            if (usesBucket(recipe,bucket.copy())){
-                if (!areSlotsFull(recipe,output.copy(),rngOne.copy(),rngTwo.copy(),rngThree.copy()) && canConsumeEnergy()) {
-                    if (counter == 1){ //The processing is about to be complete
-                        // Extract the inputted item
-                        h.extractItem(0,recipe.getIngredient(0).getItems()[0].getCount(),false);
-                        // Extract bucket if it uses a bucket
-                        if (recipe.needsBuckets() > 0){
-                            h.extractItem(1,recipe.needsBuckets(),false);
-                        }
-
-                        // Get output stack from the recipe
-                        ItemStack newOutputStack = recipe.getResult(0).copy();
-
-                        // Manipulating the Output slot
-                        if (output.getItem() != newOutputStack.getItem() || output.getItem() == Items.AIR) {
-                            if(output.getItem() == Items.AIR){
-                                output.setCount(1);
-                            }
-                            h.insertItem(2,newOutputStack.copy(),false);
-                        } else {
-                            output.setCount(newOutputStack.getCount());
-                            h.insertItem(2,output.copy(),false);
-                        }
-
-                        // Manipulating the RNG 0 slot
-                        if (recipe.getChance0() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getResult(1).copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
-
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance0()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rngOne.getItem() != recipe.getResult(1).getItem()){
-                                    if (rngOne.getItem() == Items.AIR){
-                                        rngOne.setCount(1);
-                                    }
-                                    h.insertItem(3, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngOne.setCount(newRngStack.getCount()); // Simply change the stack to equal the output amount
-                                    h.insertItem(3,rngOne.copy(),false);
-                                }
-                            }
-                        }
-
-                        // Manipulating the RNG 1 slot
-                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getResult(2).copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
-
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance1()){
-                                //LOGGER.debug("Chance HIT!");
-                                if (rngTwo.getItem() != recipe.getResult(2).getItem()){
-                                    if (rngTwo.getItem() == Items.AIR){
-                                        rngTwo.setCount(1);
-                                    }
-                                    newRngStack.setCount(recipe.getResult(2).getCount());
-                                    h.insertItem(4, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngTwo.setCount(recipe.getResult(2).getCount()); // Simply change the stack to equal the output amount
-                                    h.insertItem(4,rngTwo.copy(),false); // Place the new output stack on top of the old one
-                                }
-                            }
-                        }
-
-                        // Manipulating the RNG 2 slot
-                        if (recipe.getChance1() != 0){ // If the chance is ZERO, this functionality won't be used
-                            ItemStack newRngStack = recipe.getResult(3).copy();
-
-                            // Generate Random floats
-                            Random r = new Random();
-                            float random = abs(0 + r.nextFloat() * (0 - 1));
-
-                            // ONLY manipulate the slot if the random float is under or is identical to the chance float
-                            if(random <= recipe.getChance2()){
-                                if (rngThree.getItem() != recipe.getResult(3).getItem()){
-                                    if (rngThree.getItem() == Items.AIR){
-                                        rngThree.setCount(1);
-                                    }
-                                    h.insertItem(5, newRngStack.copy(),false); // CRASH the game if this is not empty!
-                                } else { // Assuming the recipe output item is already in the output slot
-                                    rngThree.setCount(recipe.getResult(3).getCount()); // Simply change the stack to equal the output amount
-                                    h.insertItem(5,rngThree.copy(),false); // Place the new output stack on top of the old one
-                                }
-                            }
-                        }
-
-                        counter--;
-                        consumeEnergy();
-                        setChanged();
-                    } else if (counter > 0){ //In progress
-                        counter--;
-                        consumeEnergy();
-                        if(++sound_tick == 19) {
-                            sound_tick = 0;
-                            if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            }
-                        }
-                    } else { // Check if we should start processing
-                        if (areSlotsEmptyOrHaveCurrentItems(recipe,output,rngOne,rngTwo,rngThree)){
-                            counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
-                            length = counter;
-                        } else {
-                            counter = 0;
-                        }
-                    }
-                } else { // This is if we reach the maximum in the slots; or no power
-                    if (!canConsumeEnergy()){ // if no power
-                        decrementSuperCounterOnNoPower();
-                    } else { // zero in other cases
-                        counter = 0;
-                    }
-                }
-            } else { // this is if the input slot is empty
-                counter = 0;
-            }
-        });
+        super.tick();
     }
 
-    private boolean areSlotsFull(CentrifugalSeparatorRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
-
-        if (one.getCount() + recipe.getResult(0).getCount() > one.getItem().getMaxStackSize(one.copy())){ // Main output slot
-            return true;
-        } else if (two.getCount() + recipe.getResult(1).getCount() > two.getItem().getMaxStackSize(two.copy())){ // Rng Slot 0
-            return true;
-        } else // Rng Slot 2
-            if (three.getCount() + recipe.getResult(2).getCount() > three.getItem().getMaxStackSize(three.copy())){ // Rng Slot 1
-            return true;
-        } else return four.getCount() + recipe.getResult(3).getCount() > four.getItem().getMaxStackSize(four.copy());
-    }
-
-    private boolean usesBucket(CentrifugalSeparatorRecipe recipe, ItemStack bucket){
-        if (recipe != null){ // If the recipe is null, don't bother processing
-            if (recipe.needsBuckets() > 0){ // If it doesn't use a bucket, we know that it must have a valid recipe, return true
-                if (!bucket.isEmpty() && bucket.getItem() == Items.BUCKET){
-                    if(bucket.getCount() >= recipe.needsBuckets()) return true; // Needs a bucket, has enough buckets. Return true.
-                    return false; // Needs a bucket, doesn't have enough buckets. Return false.
-                } else {
-                    return false; // Needs a bucket, doesn't have a bucket. Return false.
-                }
-            } else {
-                return true; // Doesn't need a bucket, likely valid recipe. Return true.
-            }
-        }
-        return false; // Likely empty slot, don't bother
-    }
 
     private boolean areSlotsEmptyOrHaveCurrentItems(CentrifugalSeparatorRecipe recipe, ItemStack one, ItemStack two, ItemStack three, ItemStack four){
         ArrayList<ItemStack> outputList = new ArrayList<>();
@@ -260,7 +79,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
         return isEmpty;
     }
 
-    public ItemStackHandler inventory = new ItemStackHandler(7) {
+    private ItemStackHandler inventory = new ItemStackHandler(7) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -344,7 +163,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
 
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
-        return inventory;
+        return handler;
     }
 
     @NotNull

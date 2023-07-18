@@ -40,7 +40,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzer
     protected void init(){
         super.init();
         // Buttons
-        addIOMenu(this.tileEntity);
+        renderIOMenu(this.tileEntity);
     }
 
     @Override

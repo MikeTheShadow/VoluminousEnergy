@@ -3,10 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
-import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.*;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -18,11 +16,14 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -30,12 +31,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +47,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static net.minecraft.util.Mth.abs;
 
 public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     private final RecipeType<? extends Recipe<?>> recipeType;
@@ -69,7 +75,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     int counter = 0;
     int length = 0;
     int sound_tick = 0;
-    boolean isRecipeDirty = true;
+    boolean isRecipeDirty;
 
     /**
      * Must include a call to updateClients();
@@ -82,7 +88,75 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     void processRecipe() {
+        if (selectedRecipe == null) return;
+        VERecipe recipe = (VERecipe) selectedRecipe;
 
+        if (canConsumeEnergy()) {
+
+            if (counter == 1) {
+                // Validate output
+                ItemStackHandler handler = getInventoryHandler();
+                if (handler != null) {
+                    // Validate output
+                    for (VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
+                        ItemStack recipeStack = recipe.getResult(slotManager.getRecipePos());
+                        ItemStack currentItem = slotManager.getItem(handler);
+                        if(currentItem.isEmpty()) continue;
+                        // If the output item amount won't fit, then you must acquit
+                        if(!recipeStack.is(currentItem.getItem())
+                                || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
+                            return;
+                        }
+                    }
+
+                    IRNGRecipe irngRecipe = null;
+                    if(recipe instanceof IRNGRecipe rec) {
+                        irngRecipe = rec;
+                    }
+                    Random r = new Random();
+                    // process recipe
+                    for(VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() == SlotType.OUTPUT) {
+                            ItemStack output = recipe.getResult(slotManager.getRecipePos());
+                            ItemStack currentStack = slotManager.getItem(handler);
+
+                            // rng calculations
+                            if(irngRecipe != null) {
+                                float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
+                                if(randomness != 1) {
+                                    float random = abs(0 + r.nextFloat() * (-1));
+                                    VoluminousEnergy.LOGGER.info("Random: " + random + " | " + irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]);
+                                    if(random < irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]) continue;
+                                }
+
+                            }
+
+                            if(currentStack.isEmpty()) slotManager.setItem(output,handler);
+                            else currentStack.setCount(currentStack.getCount() + output.getCount());
+                        } else if(slotManager.getSlotType() == SlotType.INPUT) {
+                            Ingredient ingredient = recipe.getIngredient(slotManager.getRecipePos());
+                            ItemStack currentStack = slotManager.getItem(handler);
+                            // This is to support recipes with empty slots
+                            if(ingredient.isEmpty()) continue;
+                            currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
+                        }
+                    }
+                }
+
+                this.markRecipeDirty();
+                this.setChanged();
+            } else if (counter > 0) {
+                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
+                    sound_tick = 0;
+                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            } else {
+                counter = length;
+            }
+            counter--;
+            consumeEnergy();
+        }
     }
 
     /**
@@ -247,27 +321,53 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     /**
      * A default ItemStackHandler creator. Passing in an int size creates it for us
-     * DO NOT USE THIS IF YOU REQUIRE EXTRA HANDLING FUNCTIONALITY!!!
-     * TODO maybe add recipe functionality to this to allow for removal of recipe ItemStackHandlers
-     *
-     * @param size the size of the inventory
+     * @param slots the size of the inventory
      * @return a new inventory
      */
-    public ItemStackHandler createHandler(int size) {
-        return new ItemStackHandler(size) {
+    public ItemStackHandler createHandler(int slots) {
+
+        VETileEntity tileEntity = this;
+        int upgradeSlotLocation = -1;
+        if (tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
+            upgradeSlotLocation = poweredTileEntity.getUpgradeSlotId();
+        }
+
+        int finalUpgradeSlotLocation = upgradeSlotLocation;
+        return new ItemStackHandler(slots) {
+
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+                List<VESlotManager> managers = getSlotManagers();
+
+                if(slot == finalUpgradeSlotLocation) tileEntity.markRecipeDirty();
+                else if (slot < managers.size()) {
+                    SlotType slotType = getSlotManagers().get(slot).getSlotType();
+                    if (slotType == SlotType.INPUT) {
+                        tileEntity.markRecipeDirty();
+                    }
+                }
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                return true;
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot == finalUpgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
+                VESlotManager manager = tileEntity.getSlotManagers().get(slot);
+                if (manager.getSlotType() == SlotType.INPUT) {
+                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+                        VERecipe veRecipe = (VERecipe) recipe;
+                        if (veRecipe.getIngredient(manager.getRecipePos()).test(stack)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if (!isItemValid(slot, stack)) return stack;
                 return super.insertItem(slot, stack, simulate);
             }
         };

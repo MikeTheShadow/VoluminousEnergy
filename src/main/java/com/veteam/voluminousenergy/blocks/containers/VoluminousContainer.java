@@ -169,9 +169,12 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
     }
 
     public ItemStack handleStuffs(final int index, final int containerSlots, ItemStack slotStack,int slotId){
-        if(index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true))
+        if(index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
+            this.tileEntity.markRecipeDirty();
             return ItemStack.EMPTY;
+        }
         else if(!moveItemStackTo(slotStack,this.slots.size(),slotId)) {
+            this.tileEntity.markRecipeDirty();
             return ItemStack.EMPTY;
         }
         return null;

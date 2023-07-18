@@ -40,7 +40,7 @@ public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgit
     protected void init(){
         super.init();
         // Buttons
-        addIOMenu(tileEntity);
+        renderIOMenu(tileEntity);
 
     }
 

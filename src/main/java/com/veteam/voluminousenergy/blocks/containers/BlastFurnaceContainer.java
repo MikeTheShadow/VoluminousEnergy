@@ -8,13 +8,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.wrapper.InvWrapper;
-
-import javax.annotation.Nonnull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.BLAST_FURNACE_CONTAINER;
 
@@ -63,32 +59,5 @@ public class BlastFurnaceContainer extends VoluminousContainer {
         // Hotbar
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
-        ItemStack returnStack = ItemStack.EMPTY;
-        final Slot slot = this.slots.get(index);
-
-        if (slot != null && slot.hasItem()) {
-            final ItemStack slotStack = slot.getItem();
-            returnStack = slotStack.copy();
-
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 5, slotStack) != null) return ItemStack.EMPTY;
-
-            if (slotStack.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (slotStack.getCount() == returnStack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, slotStack);
-        }
-        return returnStack;
     }
 }

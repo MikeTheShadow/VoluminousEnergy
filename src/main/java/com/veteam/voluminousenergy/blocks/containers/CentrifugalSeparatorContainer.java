@@ -76,29 +76,4 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
-
-    @Nonnull
-    @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
-        ItemStack returnStack = ItemStack.EMPTY;
-        final Slot slot = this.slots.get(index);
-
-        if (slot != null && slot.hasItem()) {
-            final ItemStack slotStack = slot.getItem();
-            returnStack = slotStack.copy();
-
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
-
-            if (slotStack.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (slotStack.getCount() == returnStack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(player, slotStack);
-        }
-        return returnStack;
-    }
 }

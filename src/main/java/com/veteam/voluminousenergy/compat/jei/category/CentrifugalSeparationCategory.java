@@ -27,6 +27,8 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class CentrifugalSeparationCategory implements IRecipeCategory<CentrifugalSeparatorRecipe> {
     private final IDrawable background;
@@ -79,17 +81,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         slotDrawable.draw(matrixStack,49,56); // Third RNG
 
         if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance0()*100);
+            int chance = (int)(recipe.getRNGOutputs()[1] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getResult(2) != null && recipe.getResult(2).getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance1()*100);
+            int chance = (int)(recipe.getRNGOutputs()[2] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 44, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getResult(3) != null && recipe.getResult(3).getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance2()*100);
+            int chance = (int)(recipe.getRNGOutputs()[3] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
@@ -112,9 +114,13 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (recipe.needsBuckets() > 0){
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.needsBuckets());
-            bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
+
+
+        if (!recipe.getIngredient(1).isEmpty()){
+            ItemStack[] buckets = recipe.getIngredient(1).getItems();
+            bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(buckets).toList());
+        } else {
+            bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Collections.singletonList(new ItemStack(Items.AIR,1)));
         }
 
         // Output --> ItemStacks here are not guaranteed to have correct amount; must do so manually

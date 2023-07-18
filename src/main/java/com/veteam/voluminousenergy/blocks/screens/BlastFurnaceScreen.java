@@ -6,11 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -45,7 +40,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<BlastFurnaceContainer>
     protected void init(){
         super.init();
 
-        addIOMenu(this.tileEntity,64 + (this.width/2),this.topPos +4);
+        renderIOMenu(this.tileEntity,64 + (this.width/2),this.topPos +4);
     }
 
     @Override

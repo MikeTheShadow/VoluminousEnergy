@@ -53,11 +53,11 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         });
     }
 
-    public void addIOMenu(VEFluidTileEntity tileEntity) {
-        addIOMenu(tileEntity,64 + (this.width / 2),this.topPos - 18);
+    public void renderIOMenu(VEFluidTileEntity tileEntity) {
+        renderIOMenu(tileEntity,64 + (this.width / 2),this.topPos - 18);
     }
 
-    public void addIOMenu(VEFluidTileEntity tileEntity,int menuButtonX,int menuButtonY) {
+    public void renderIOMenu(VEFluidTileEntity tileEntity, int menuButtonX, int menuButtonY) {
 
         // Buttons
         addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
@@ -89,7 +89,28 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
-    public void addIOMenu(VETileEntity tileEntity) {
+
+    public void renderIOMenu(VETileEntity tileEntity, int menuButtonX, int menuButtonY) {
+
+        // Buttons
+        addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+    }
+
+    public void renderIOMenu(VETileEntity tileEntity) {
         // Buttons
         addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
 

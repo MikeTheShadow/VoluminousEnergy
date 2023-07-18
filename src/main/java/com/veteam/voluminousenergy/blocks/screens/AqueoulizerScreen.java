@@ -41,7 +41,7 @@ public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
     @Override
     protected void init() {
         super.init();
-        addIOMenu(tileEntity);
+        renderIOMenu(tileEntity);
     }
 
     @Override

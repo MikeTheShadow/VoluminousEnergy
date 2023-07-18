@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.BlastFurnaceTile;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
@@ -9,6 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -56,7 +58,8 @@ public class VERecipe implements Recipe<Container> {
 
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        throw new NotImplementedException("Please impl getResultItem for class " + this.getClass().getName());
+        VoluminousEnergy.LOGGER.warn("Dangerous getResultItem call from class: " + this.getClass().getName());
+        return new ItemStack(Items.DIRT,1);
     }
 
     public ItemStack getResult(int id) {
