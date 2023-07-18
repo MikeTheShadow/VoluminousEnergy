@@ -157,6 +157,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
     @Override
     public void tick() {
+        processFluidIO();
         super.tick();
     }
 
@@ -191,7 +192,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
                         ItemStack recipeStack = recipe.getOutputItem(slotManager.getRecipePos());
                         ItemStack currentItem = slotManager.getItem(handler);
-                        if(!currentItem.isEmpty()) continue;
+                        if(currentItem.isEmpty()) continue;
                         // If the output item amount won't fit, then you must acquit
                         if(!recipeStack.is(currentItem.getItem())
                                 || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
@@ -204,7 +205,8 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         if(slotManager.getSlotType() == SlotType.OUTPUT) {
                             ItemStack output = recipe.getOutputItem(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
-                            currentStack.setCount(currentStack.getCount() + output.getCount());
+                            if(currentStack.isEmpty()) slotManager.setItem(output,handler);
+                            else currentStack.setCount(currentStack.getCount() + output.getCount());
                         } else if(slotManager.getSlotType() == SlotType.INPUT) {
                             Ingredient ingredient = recipe.getItemIngredient(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);

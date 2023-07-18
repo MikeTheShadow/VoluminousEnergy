@@ -499,7 +499,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.isRecipeDirty = true;
     }
 
-    //TODO impl for regular recipes
     public void validateRecipe() {
         if (!this.isRecipeDirty) {
             return;

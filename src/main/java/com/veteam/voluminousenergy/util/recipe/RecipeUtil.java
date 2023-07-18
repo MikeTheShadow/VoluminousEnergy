@@ -2,10 +2,12 @@ package com.veteam.voluminousenergy.util.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +26,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -193,18 +196,6 @@ public class RecipeUtil {
             if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
         });
         return atomicInteger.get();
-    }
-
-    public static ArrayList<FluidStack> getFluidsAsHotOrHotterThanIntAsFluidStacks(int minimumTemperatureKelvin, int stackAmount){
-        AtomicReference<ArrayList<FluidStack>> fluidStacks = new AtomicReference<>(new ArrayList<>());
-        ForgeRegistries.FLUIDS.getValues().parallelStream().forEach(fluid -> {
-            if (fluid.getFluidType().getTemperature() > minimumTemperatureKelvin) fluidStacks.get().add(new FluidStack(fluid, stackAmount));
-        });
-        return fluidStacks.get();
-    }
-
-    public static ArrayList<FluidStack> getFluidsHotEnoughForIndustrialBlastingRecipe(IndustrialBlastingRecipe recipe){
-        return getFluidsAsHotOrHotterThanIntAsFluidStacks(recipe.getMinimumHeat(), Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get());
     }
 
     private static ArrayList<CrusherRecipe> cachedCrusherRecipes = new ArrayList<>();

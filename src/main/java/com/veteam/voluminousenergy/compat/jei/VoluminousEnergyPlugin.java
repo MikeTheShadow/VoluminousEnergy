@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final Component SHOW_RECIPES = TextUtil.translateString("jei.tooltip.show.recipes");
 
     @Override
-    public ResourceLocation getPluginUid(){
+    public @NotNull ResourceLocation getPluginUid(){
         return PLUGIN_UID;
     }
 
@@ -186,7 +187,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(AqueoulizerContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2, AqueoulizerContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(CentrifugalSeparatorContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, CentrifugalSeparatorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
-        registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 2, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(SawmillContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
         registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);

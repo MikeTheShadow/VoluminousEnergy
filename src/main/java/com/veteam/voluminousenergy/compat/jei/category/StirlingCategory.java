@@ -29,8 +29,8 @@ import java.util.Arrays;
 public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe> {
 
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.STIRLING_UID, StirlingGeneratorRecipe.class);
 
     public StirlingCategory(IGuiHelper guiHelper){

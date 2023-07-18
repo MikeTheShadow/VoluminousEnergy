@@ -202,7 +202,7 @@ public class RecipeCache {
 
         Set<VEFluidRecipe> veFluidRecipes = new HashSet<>();
 
-        for(var map : veFluidRecipeCache.entrySet()) {
+        for (var map : veFluidRecipeCache.entrySet()) {
             List<VEFluidRecipe> recipes = map.getValue().get(type);
             veFluidRecipes.addAll(recipes);
         }
@@ -213,7 +213,7 @@ public class RecipeCache {
 
         Set<VERecipe> veFluidRecipes = new HashSet<>();
 
-        for(var map : veRecipeCache.entrySet()) {
+        for (var map : veRecipeCache.entrySet()) {
             List<VERecipe> recipes = map.getValue().get(type);
             veFluidRecipes.addAll(recipes);
         }
@@ -255,4 +255,18 @@ public class RecipeCache {
         }
         return recipes;
     }
+
+
+    @Nullable
+    public static VERecipe checkRecipeUsingMatch(Level level, RecipeType<?> recipeType, VETileEntity tile) {
+        List<VERecipe> recipes = getRecipesFromLevelWithClass(level, recipeType);
+
+        for (VERecipe recipe : recipes) {
+            if (recipe.matches(tile)) {
+                return recipe;
+            }
+        }
+        return null;
+    }
+
 }

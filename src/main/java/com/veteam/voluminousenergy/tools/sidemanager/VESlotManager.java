@@ -132,6 +132,10 @@ public class VESlotManager {
         return handler.getStackInSlot(this.slot);
     }
 
+    public void setItem(ItemStack stack,ItemStackHandler handler) {
+        handler.setStackInSlot(this.slot,stack.copy());
+    }
+
     public int getOutputSlotId() {
         return output;
     }

@@ -35,10 +35,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBlastingRecipe> {
 
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID, IndustrialBlastingRecipe.class);
 
     public IndustrialBlastingCategory(IGuiHelper guiHelper){
@@ -57,22 +57,22 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.industrial_blasting");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(IndustrialBlastingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(IndustrialBlastingRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,54, 12); // 24, 12
         emptyArrow.draw(matrixStack,54,12); // 24, 12
         slotDrawable.draw(matrixStack,30,1); // 2, 1
@@ -92,22 +92,22 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
                                   IIngredientAcceptor heatFluidAcceptor,
                                   IIngredientAcceptor outputItemAcceptor) {
         // Inputs
-        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
+        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(0).getItems()));
         firstInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, firstInputStacks);
 
-        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredient(1).getItems()));
+        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(1).getItems()));
         secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
-        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, RecipeUtil.getFluidsHotEnoughForIndustrialBlastingRecipe(recipe));
+        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.getFluidIngredient(0).getFluids()).toList());
 
         // Output
-        ItemStack resultStack = recipe.getResult(0).copy();
-        resultStack.setCount(recipe.getResultCount(0));
+        ItemStack resultStack = recipe.getOutputItem(0).copy();
+        resultStack.setCount(recipe.getOutputItem(0).getCount());
         outputItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, IndustrialBlastingRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull IndustrialBlastingRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Inputs
         IRecipeSlotBuilder firstItemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 31, 2);
         IRecipeSlotBuilder secondItemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 31, 20);

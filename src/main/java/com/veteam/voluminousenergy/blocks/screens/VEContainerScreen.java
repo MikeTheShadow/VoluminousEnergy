@@ -54,9 +54,13 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     }
 
     public void addIOMenu(VEFluidTileEntity tileEntity) {
+        addIOMenu(tileEntity,64 + (this.width / 2),this.topPos - 18);
+    }
+
+    public void addIOMenu(VEFluidTileEntity tileEntity,int menuButtonX,int menuButtonY) {
 
         // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
+        addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
 
         }));
 
