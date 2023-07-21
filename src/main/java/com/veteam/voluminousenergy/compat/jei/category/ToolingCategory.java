@@ -78,7 +78,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
                                   IIngredientAcceptor baseItemAcceptor) {
 
         // Bits
-        bitItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.asList(recipe.ingredient.get().getItems()));
+        bitItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.asList(recipe.getIngredient(0).getItems()));
 
         // Bases
         ArrayList<ItemStack> baseStacks = new ArrayList<>();
@@ -88,7 +88,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
         baseItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, baseStacks);
 
         // Completed Multitool
-        completeMultitoolItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.result.copy());
+        completeMultitoolItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.getResult(0).copy());
     }
 
     @Override

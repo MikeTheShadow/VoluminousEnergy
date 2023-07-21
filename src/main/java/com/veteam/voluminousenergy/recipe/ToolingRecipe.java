@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// TODO consider if this needs a rework
 public class ToolingRecipe extends VERecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
@@ -33,8 +33,6 @@ public class ToolingRecipe extends VERecipe {
     protected Lazy<ArrayList<Item>> bases;
 
     public final ResourceLocation recipeId;
-    public Lazy<Ingredient> ingredient;
-    public ItemStack result;
 
     protected boolean usesTagKey;
     protected String tagKeyString;
@@ -82,15 +80,17 @@ public class ToolingRecipe extends VERecipe {
 
             ToolingRecipe recipe = new ToolingRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient"))); // bits
+            Lazy<Ingredient> ingredientLazy = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient"))); // bits
 
             recipe.bits = Lazy.of(() -> {
                 ArrayList<Item> items = new ArrayList<>();
-                for (ItemStack item : recipe.ingredient.get().getItems()) {
+                for (ItemStack item : ingredientLazy.get().getItems()) {
                     items.add(item.getItem());
                 }
                 return items;
             });
+
+            recipe.addLazyIngredient(ingredientLazy);
 
             JsonObject toolBase = json.get("tool_base").getAsJsonObject();
 
@@ -117,10 +117,12 @@ public class ToolingRecipe extends VERecipe {
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
+            recipe.addResult(new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation)));
 
             return recipe;
         }
+
+        IngredientSerializerHelper<ToolingRecipe> helper= new IngredientSerializerHelper<>();
 
         @Nullable
         @Override
@@ -148,12 +150,8 @@ public class ToolingRecipe extends VERecipe {
                 bitList.add(buffer.readItem().getItem());
             }
             recipe.bits = Lazy.of(() -> bitList);
-
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
-
-            recipe.result = buffer.readItem();
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
+            helper.fromNetwork(recipe,buffer);
             return recipe;
         }
 
@@ -167,12 +165,9 @@ public class ToolingRecipe extends VERecipe {
                 buffer.writeInt(recipe.bases.get().size());
                 recipe.bases.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
             }
-
             buffer.writeInt(recipe.bits.get().size());
             recipe.bits.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
-
-            buffer.writeItem(recipe.getResult(0));
-            recipe.ingredient.get().toNetwork(buffer);
+            helper.toNetwork(buffer,recipe);
         }
     }
 }

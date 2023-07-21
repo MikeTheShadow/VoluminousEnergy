@@ -2,14 +2,9 @@ package com.veteam.voluminousenergy.util.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.util.RegistryLookups;
-import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -26,8 +21,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -166,18 +163,6 @@ public class RecipeUtil {
         });
         if(RegistryLookups.lookupItem(solidFuelStack.getItem()) == null) return null;
         return stirlingGeneratorRecipeMap.get(RegistryLookups.lookupItem(solidFuelStack.getItem()).hashCode());
-    }
-
-    public static Lazy<ArrayList<Item>> getLazyItemsFromIngredient(VERecipe recipe){
-        return Lazy.of(() -> {
-            ArrayList<Item> items = new ArrayList<>();
-            for (ItemStack stack : recipe.getIngredient(0).getItems()){
-                if(!items.contains(stack.getItem())){
-                    items.add(stack.getItem());
-                }
-            }
-            return items;
-        });
     }
 
     public static Lazy<ArrayList<Item>> createLazyAnthology(Lazy<ArrayList<Item>>... toAnthologize){

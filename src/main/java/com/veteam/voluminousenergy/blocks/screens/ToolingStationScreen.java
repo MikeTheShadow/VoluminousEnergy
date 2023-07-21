@@ -40,64 +40,7 @@ public class ToolingStationScreen extends VEContainerScreen<ToolingStationContai
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, buttons ->{
-
-        }));
-
-        // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.fuelTopSlotSM, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelTopSlotSM, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Input Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.fuelBottomSlotSM, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelBottomSlotSM, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Output Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.mainToolSlotSM, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.mainToolSlotSM, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Output Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.bitSlotSM, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bitSlotSM, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // Input Tank
-        addRenderableWidget(new SlotBoolButton(tileEntity.multitoolBaseSM, (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.multitoolBaseSM, (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos + 4);
     }
 
     @Override
