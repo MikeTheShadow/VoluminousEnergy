@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -59,6 +60,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
             int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
             Lazy<Ingredient> ingredientLazy = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
             recipe.addLazyIngredient(ingredientLazy);
+            recipe.addLazyIngredient(Lazy.of(() -> Ingredient.of(new ItemStack(Items.GUNPOWDER,1))));
 
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
