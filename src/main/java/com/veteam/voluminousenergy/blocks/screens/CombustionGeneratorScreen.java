@@ -45,64 +45,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos -18, buttons ->{
-
-        }));
-
-        // Oxidizer insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.oxiInSm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.oxiInSm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Oxidizer Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.oxiOutSm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.oxiOutSm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Fuel Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.fuelInSm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelInSm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Fuel Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.fuelOutSm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.fuelOutSm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // Oxidizer Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getOxidizerTank(), (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOxidizerTank(), (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // Fuel Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos -18);
     }
 
     @Override

@@ -6,9 +6,9 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -103,7 +103,7 @@ public class RecipeCache {
             boolean isValid = true;
 
             for (int i = 0; i < fluids.size(); i++) {
-                if(recipe.getItemIngredient(i).isEmpty()) continue;
+                if(recipe.getFluidIngredient(i).isEmpty()) continue;
                 if (!recipe.getFluidIngredient(i).test(fluids.get(i))
                         || fluids.get(i).getAmount() < recipe.getFluidIngredient(i).getFluids()[0].getAmount()) {
                     isValid = false;
@@ -211,11 +211,12 @@ public class RecipeCache {
     }
 
     @Nonnull
-    private static List<VEFluidRecipe> getFluidRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
+    public static List<VEFluidRecipe> getFluidRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
         var levelCache = veFluidRecipeCache.get(level);
 
         if (levelCache == null) {
             VoluminousEnergy.LOGGER.warn("Unable to find cache for level: " + level.getClass().getCanonicalName());
+            if(level instanceof ClientLevel) throw new IllegalStateException("This should not be called on client!");
             return new ArrayList<>();
         }
 
@@ -229,7 +230,7 @@ public class RecipeCache {
     }
 
     @Nonnull
-    private static List<VERecipe> getRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
+    public static List<VERecipe> getRecipesFromLevelWithClass(Level level, RecipeType<? extends Recipe<?>> type) {
         var levelCache = veRecipeCache.get(level);
 
         if (levelCache == null) {

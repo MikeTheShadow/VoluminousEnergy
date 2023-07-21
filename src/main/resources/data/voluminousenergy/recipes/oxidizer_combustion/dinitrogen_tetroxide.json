@@ -5,6 +5,7 @@
     "item": "voluminousenergy:dinitrogen_tetroxide_bucket"
   },
   "input_fluid": {
-    "tag": "forge:dinitrogen_tetroxide"
+    "tag": "forge:dinitrogen_tetroxide",
+    "amount": 250
   }
 }

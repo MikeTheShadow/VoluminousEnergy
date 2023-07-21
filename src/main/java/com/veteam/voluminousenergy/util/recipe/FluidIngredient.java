@@ -218,7 +218,8 @@ public class FluidIngredient {
         return FluidIngredient.of(tag,jsonObject.get("amount").getAsInt());
     }
 
-    public static FluidIngredient fromJsonNoAmount(@Nullable JsonObject jsonObject) {
+    // Only use this is if the amount object is not present in the passed in jsonObject
+    public static FluidIngredient fromJsonNoAmount(@Nullable JsonObject jsonObject,int rawAmount) {
 
         if(jsonObject == null) throw new IllegalStateException("Recipe has null object!");
 
@@ -234,7 +235,7 @@ public class FluidIngredient {
 
         TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
 
-        return FluidIngredient.of(tag,1000);
+        return FluidIngredient.of(tag,rawAmount);
     }
 
     public static class FluidValue implements FluidIngredient.Value {

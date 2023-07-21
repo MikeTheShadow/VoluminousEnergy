@@ -30,6 +30,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile.COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT;
+
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
@@ -82,7 +84,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
             recipe.volumetricEnergy = GsonHelper.getAsInt(json.get("ingredient").getAsJsonObject(), "volumetric_energy", 102400);
 
             recipe.getLazyFluidIngredientList().add(Lazy.of(()
-                    -> FluidIngredient.fromJsonNoAmount(json.get("input_fluid").getAsJsonObject())));
+                    -> FluidIngredient.fromJsonNoAmount(json.get("input_fluid").getAsJsonObject(),COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT)));
 
             lazyFluidsWithVolumetricEnergy.add(Lazy.of(()
                     -> new Pair<>(Arrays.stream(

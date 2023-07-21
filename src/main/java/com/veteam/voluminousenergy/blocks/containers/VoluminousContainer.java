@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
@@ -150,7 +149,7 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleStuffs(index, numberOfSlots, slotStack,index) != null)
+            if (handleItemMove(index, numberOfSlots, slotStack,index) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
@@ -168,7 +167,7 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
         return returnStack;
     }
 
-    public ItemStack handleStuffs(final int index, final int containerSlots, ItemStack slotStack,int slotId){
+    public ItemStack handleItemMove(final int index, final int containerSlots, ItemStack slotStack, int slotId){
         if(index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
             this.tileEntity.markRecipeDirty();
             return ItemStack.EMPTY;

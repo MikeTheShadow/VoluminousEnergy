@@ -5,6 +5,7 @@
     "item": "voluminousenergy:oxygen_bucket"
   },
   "input_fluid": {
-    "tag": "forge:oxygen"
+    "tag": "forge:oxygen",
+    "amount": 250
   }
 }
