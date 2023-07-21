@@ -38,7 +38,7 @@ public class PrimitiveSolarPanelBlock extends FaceableBlock implements EntityBlo
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveSolarPanelTile(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE.get(), pos, state);
+        return new PrimitiveSolarPanelTile(pos, state);
     }
 
     // NEW TICK SYSTEM

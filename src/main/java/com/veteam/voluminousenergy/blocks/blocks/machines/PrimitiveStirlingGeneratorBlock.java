@@ -40,7 +40,7 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveStirlingGeneratorTile(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state);
+        return new PrimitiveStirlingGeneratorTile(pos, state);
     }
 
     // NEW TICK SYSTEM

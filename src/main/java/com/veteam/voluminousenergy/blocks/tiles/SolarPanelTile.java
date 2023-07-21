@@ -34,11 +34,6 @@ public class SolarPanelTile extends VESolarTile implements IVEPowerGenerator {
         super(VEBlocks.SOLAR_PANEL_TILE.get(), pos, state);
     }
 
-    @Deprecated
-    public SolarPanelTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.SOLAR_PANEL_TILE.get(), pos, state);
-    }
-
     @Override
     public void tick() {
         updateClients();

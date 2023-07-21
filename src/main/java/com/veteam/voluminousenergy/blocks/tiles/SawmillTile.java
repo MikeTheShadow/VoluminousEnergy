@@ -34,19 +34,12 @@ import java.util.Objects;
 
 public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
 
-    // Slot Managers
-    public VESlotManager inputSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-    public VESlotManager plankSm = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
-    public VESlotManager secondOutputSm = new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT);
-    public VESlotManager bucketTopSm = new VESlotManager(3, Direction.SOUTH,true,SlotType.INPUT);
-    public VESlotManager bucketBottomSm = new VESlotManager(4, Direction.EAST,true,SlotType.OUTPUT);
-
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(inputSm);
-        add(plankSm);
-        add(secondOutputSm);
-        add(bucketTopSm);
-        add(bucketBottomSm);
+        add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
+        add(new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT));
+        add(new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT));
+        add(new VESlotManager(3, Direction.SOUTH,true,SlotType.INPUT));
+        add(new VESlotManager(4, Direction.EAST,true,SlotType.OUTPUT));
     }};
 
     RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,0,"outputTank:output_tank_gui");
@@ -74,9 +67,12 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         outputTank.setAllowAny(true);
     }
 
+    SawmillingRecipe sawmillingRecipe;
+
     @Override
     public void tick() {
         updateClients();
+        validateRecipe();
 
         ItemStack logInput = inventory.getStackInSlot(0).copy(); // Log input
         //ItemStack plankOutput = inventory.getStackInSlot(1).copy(); // Plank Output
@@ -92,7 +88,6 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
 
         // Resolve recipes:
         if (!logInput.isEmpty()){
-            SawmillingRecipe sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromLog(level, logInput.copy());
             ItemStack plankOutputStack;
             ItemStack secondOutputStack;
 
@@ -149,6 +144,16 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         } else {
             counter = 0;
         }
+    }
+
+    @Override
+    public void validateRecipe() {
+        if (!this.isRecipeDirty) {
+            return;
+        }
+        this.isRecipeDirty = false;
+        ItemStack logInput = inventory.getStackInSlot(0).copy();
+        sawmillingRecipe = RecipeUtil.getSawmillingRecipeFromLog(level, logInput.copy());
     }
 
     private void coreTickProcessing(@Nullable SawmillingRecipe sawmillingRecipe,
@@ -215,10 +220,12 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     }
 
     private ItemStackHandler createHandler() {
+        SawmillTile tile = this;
         return new ItemStackHandler(6) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+                tile.markRecipeDirty();
             }
 
             @Override

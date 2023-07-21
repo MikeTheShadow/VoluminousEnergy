@@ -38,7 +38,7 @@ public class StirlingGeneratorBlock extends FaceableBlock implements EntityBlock
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new StirlingGeneratorTile(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state);
+        return new StirlingGeneratorTile(pos, state);
     }
 
     // NEW TICK SYSTEM
