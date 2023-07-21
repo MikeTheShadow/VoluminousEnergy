@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
-import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
