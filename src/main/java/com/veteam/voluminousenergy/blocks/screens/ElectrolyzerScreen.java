@@ -41,64 +41,7 @@ public class ElectrolyzerScreen extends VEContainerScreen<ElectrolyzerContainer>
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
-
-        }));
-
-        // Input
-        addRenderableWidget(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Bucket Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketSm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketSm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.outputSm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // RNG 1
-        addRenderableWidget(new SlotBoolButton(tileEntity.rngOneSm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.rngOneSm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // RNG 2
-        addRenderableWidget(new SlotBoolButton(tileEntity.rngTwoSm, (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.rngTwoSm, (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // RNG 3
-        addRenderableWidget(new SlotBoolButton(tileEntity.rngThreeSm, (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.rngThreeSm, (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos +4);
     }
 
     @Override

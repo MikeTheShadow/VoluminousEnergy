@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,7 +24,6 @@ public class ElectrolyzerRecipe extends VERecipe implements IRNGRecipe {
     public static final RecipeType<ElectrolyzerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.ELECTROLYZING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
-    private int usesBucket;
 
     private float[] rngOutputs;
 
@@ -44,10 +44,6 @@ public class ElectrolyzerRecipe extends VERecipe implements IRNGRecipe {
     @Override
     public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;
-    }
-
-    public int needsBuckets() {
-        return usesBucket;
     }
 
     @Override
@@ -87,7 +83,12 @@ public class ElectrolyzerRecipe extends VERecipe implements IRNGRecipe {
             recipe.addResult(result);
             rngAmounts[0] = 1;
 
-            recipe.usesBucket = bucketNeeded;
+            ItemStack stack = new ItemStack(Items.AIR,0);
+            if(bucketNeeded != 0) {
+                stack = new ItemStack(Items.BUCKET,bucketNeeded);
+            }
+            ItemStack finalStack = stack;
+            recipe.addLazyIngredient(Lazy.of(() -> Ingredient.of(finalStack)));
 
             // First RNG Slot, RNG 0
             ResourceLocation rngResourceLocation0 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_0").getAsJsonObject(), "item", "minecraft:air"), ':');
@@ -128,14 +129,12 @@ public class ElectrolyzerRecipe extends VERecipe implements IRNGRecipe {
         public ElectrolyzerRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ElectrolyzerRecipe recipe = new ElectrolyzerRecipe((recipeId));
             helper.fromNetwork(recipe,buffer);
-            recipe.usesBucket = buffer.readInt();
             return recipe;
         }
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ElectrolyzerRecipe recipe) {
             helper.toNetwork(buffer,recipe);
-            buffer.writeInt(recipe.usesBucket);
         }
     }
 

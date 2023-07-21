@@ -53,17 +53,6 @@ public class ElectrolyzerContainer extends VoluminousContainer {
         });
     }
 
-    public int getEnergy(){
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-    }
-
-    public int powerScreen(int px){
-        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
-    }
-
     @Override
     public boolean stillValid(Player playerIn) {
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.ELECTROLYZER_BLOCK.get());
@@ -76,29 +65,5 @@ public class ElectrolyzerContainer extends VoluminousContainer {
         // Hotbar
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
-        ItemStack returnStack = ItemStack.EMPTY;
-        final Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            final ItemStack slotStack = slot.getItem();
-            returnStack = slotStack.copy();
-
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
-
-            if (slotStack.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (slotStack.getCount() == returnStack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(player, slotStack);
-        }
-        return returnStack;
     }
 }
