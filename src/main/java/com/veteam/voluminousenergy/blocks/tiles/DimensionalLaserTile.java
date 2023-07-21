@@ -41,11 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity,IVECountable {
+public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
     public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT);
-    public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT);
+    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(bucketTopSm);
@@ -53,7 +53,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         add(RFIDsm);
     }};
 
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"outputTank:output_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.OUTPUT, "outputTank:output_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
@@ -69,7 +69,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     private boolean soundPlayed = false;
 
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state,null);
+        super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state, null);
         this.outputTank.setAllowAny(true);
     }
 
@@ -79,13 +79,11 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     public void tick() {
         updateClients();
         multiblockTickChecker++;
-        if (multiblockTickChecker == 20){
+        if (multiblockTickChecker == 20) {
             multiblockTickChecker = 0;
             validity = isMultiBlockValid(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK.get());
         }
-        if (!(validity)) {
-            return;
-        }
+        if (!validity) return;
 
         if (!complete) {
             setChanged();
@@ -124,7 +122,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         int x = this.getBlockPos().getX();
         int y = this.getBlockPos().getY();
         int z = this.getBlockPos().getZ();
-        if(this.complete) {
+        if (this.complete) {
 
             for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
                 VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
@@ -139,8 +137,8 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
             outputTank.setInput(bucketTop.copy());
             outputTank.setOutput(bucketBottom.copy());
 
-            if(this.inputFluid(outputTank,0,1)) return;
-            if(this.outputFluid(outputTank,0,1)) return;
+            if (this.inputFluid(outputTank, 0, 1)) return;
+            if (this.outputFluid(outputTank, 0, 1)) return;
 
 
             ItemStack rfidStack = inventory.getStackInSlot(2);
@@ -156,7 +154,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                     int veZi = Integer.valueOf(veZ.toString());
 
                     ChunkPos chunkPos = new ChunkPos(veXi, veZi);
-                    BlockPos blockPos = chunkPos.getBlockAt(0,64,0);
+                    BlockPos blockPos = chunkPos.getBlockAt(0, 64, 0);
 
                     ChunkFluid fluidFromPos = WorldUtil.getFluidFromPosition(level, blockPos);
 
@@ -173,7 +171,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             counter--;
                             consumeEnergy();
                             this.setChanged();
-                        } else if (counter > 0){
+                        } else if (counter > 0) {
                             counter--;
                             consumeEnergy();
                         } else {
@@ -236,7 +234,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, @Nonnull Inventory playerInventory, @Nonnull Player player) {
-        return new DimensionalLaserContainer(id,level,worldPosition,playerInventory,player);
+        return new DimensionalLaserContainer(id, level, worldPosition, playerInventory, player);
     }
 
     @Nullable
@@ -266,6 +264,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     public void resetTickTimer() {
         this.tickTimer = 0;
     }
+
     @Override
     public int getMaxPower() {
         return Config.DIMENSIONAL_LASER_MAX_POWER.get();
@@ -300,7 +299,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         return true;
     }
 
-    public boolean getMultiblockValidity(){
+    public boolean getMultiblockValidity() {
         return validity;
     }
 

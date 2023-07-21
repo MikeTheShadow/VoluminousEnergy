@@ -40,7 +40,7 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ElectricFurnaceTile(VEBlocks.ELECTRIC_FURNACE_TILE.get(), pos, state);
+        return new ElectricFurnaceTile( pos, state);
     }
 
     // NEW TICK SYSTEM

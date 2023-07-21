@@ -106,6 +106,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                         counter--;
                         consumeEnergy();
                         this.setChanged();
+                        this.markRecipeDirty();
                     } else if (counter > 0) {
                         counter--;
                         consumeEnergy();
