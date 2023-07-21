@@ -188,6 +188,8 @@ public class RecipeCache {
         return recipeList;
     }
 
+    /* You really only want to use this on the client. You should never attempt to use this on the server because you should always
+     have access to level*/
     public static List<VEFluidRecipe> getFluidRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
 
         Set<VEFluidRecipe> veFluidRecipes = new HashSet<>();
