@@ -39,7 +39,7 @@ public class CrusherBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new CrusherTile(VEBlocks.CRUSHER_TILE.get(), pos, state);
+        return new CrusherTile(pos, state);
     }
 
     // NEW TICK SYSTEM

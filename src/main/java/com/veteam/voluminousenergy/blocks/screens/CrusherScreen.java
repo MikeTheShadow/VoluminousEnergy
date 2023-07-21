@@ -34,36 +34,7 @@ public class CrusherScreen extends VEContainerScreen<CrusherContainer> {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, button -> {
-            // Do Nothing
-        }));
-
-        // Input Slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.inputSlotProp, (this.width/2)-198, this.topPos, button ->{
-            // Do Nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSlotProp, (this.width/2)-184, this.topPos, button ->{
-            // Do Nothing
-        }));
-
-        // Output Slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotProp, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotProp, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // RNG slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.rngSlotProp, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.rngSlotProp, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos + 4);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.screens.CrusherScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
@@ -31,10 +32,10 @@ import java.util.ArrayList;
 public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     private final IDrawable background;
-    private IDrawable icon;
+    private final IDrawable icon;
     private IDrawable slotDrawable;
-    private IDrawable arrow;
-    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
+    private final IDrawable arrow;
+    public static final RecipeType RECIPE_TYPE = new RecipeType<>(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
 
     public CrushingCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -65,12 +66,12 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(CrusherRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,10, 19);
 
 
         if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){ // Check RNG if it's not air
-            int chance = (int)(recipe.getRNGOutputs()[0] * 100);
+            int chance = (int)(recipe.getRNGOutputs()[1] * 100);
             int xPos = 20;
             if (chance < 100 && chance >= 10){
                 xPos += 3;
@@ -105,7 +106,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, CrusherRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull CrusherRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Input
         IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 1);
 

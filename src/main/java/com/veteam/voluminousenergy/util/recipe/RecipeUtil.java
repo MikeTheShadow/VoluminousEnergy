@@ -211,7 +211,7 @@ public class RecipeUtil {
         return cachedCrusherRecipes;
     }
 
-    private static HashMap<Integer,CrusherRecipe> CrusherIORecipeCache = new HashMap<>();
+    private static final HashMap<Integer,CrusherRecipe> CrusherIORecipeCache = new HashMap<>();
     public static Optional<CrusherRecipe> getCrusherRecipeFromAnyOutputAndTryInput(Item output, Item potentiallyKnownInput, Level level){
         int itemPairHash = new Pair<>(output, potentiallyKnownInput).hashCode();
         if (CrusherIORecipeCache.containsKey(itemPairHash)){

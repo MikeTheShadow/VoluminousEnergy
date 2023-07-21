@@ -223,7 +223,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         relationalTank.drainInput(recipe,relationalTank.getRecipePos());
                     }
                 }
-
+                doExtraRecipeProcessing();
 
                 this.markRecipeDirty();
                 this.markFluidInputDirty();

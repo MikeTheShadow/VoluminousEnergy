@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.google.gson.JsonObject;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.recipe.IExperienceRecipe;
 import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
@@ -27,6 +28,8 @@ public class CrusherRecipe extends VERecipe implements IRNGRecipe, IExperienceRe
 
     public final ResourceLocation recipeId;
 
+    private float[] rng;
+
     private int minExperience;
     private int maxExperience;
 
@@ -49,12 +52,12 @@ public class CrusherRecipe extends VERecipe implements IRNGRecipe, IExperienceRe
 
     @Override
     public float[] getRNGOutputs() {
-        return new float[0];
+        return rng;
     }
 
     @Override
     public void setRNGOutputs(float[] rngOutputs) {
-
+        this.rng = rngOutputs;
     }
 
     @Override
@@ -104,12 +107,10 @@ public class CrusherRecipe extends VERecipe implements IRNGRecipe, IExperienceRe
             recipe.addResult(rngResult);
             rng[1] = rngChance;
 
-
             recipe.minExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"minimum",0);
             recipe.maxExperience = GsonHelper.getAsInt(json.get("experience").getAsJsonObject(),"maximum",0);
 
             recipe.setRNGOutputs(rng);
-
             return recipe;
         }
 

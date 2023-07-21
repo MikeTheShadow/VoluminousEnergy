@@ -21,7 +21,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,14 +30,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -126,8 +122,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                                 float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
-                                    VoluminousEnergy.LOGGER.info("Random: " + random + " | " + irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]);
-                                    if(random < irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]) continue;
+                                    if(random > irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]) continue;
                                 }
 
                             }
@@ -142,6 +137,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                             currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
                         }
                     }
+                    this.doExtraRecipeProcessing();
                 }
 
                 this.markRecipeDirty();
@@ -649,7 +645,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    public void doExtraRecipeProcessing() {
 
+    }
 
     public RecipeType<? extends Recipe<?>> getRecipeType() {
         return this.recipeType;
