@@ -116,13 +116,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                         if(slotManager.getSlotType() == SlotType.OUTPUT) {
                             ItemStack output = recipe.getResult(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
-
                             // rng calculations
                             if(irngRecipe != null) {
                                 float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
-                                    if(random > irngRecipe.getRNGOutputs()[slotManager.getRecipePos()]) continue;
+                                    if(random > randomness) continue;
                                 }
 
                             }

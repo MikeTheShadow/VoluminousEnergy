@@ -26,15 +26,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HydroponicIncubatorRecipe extends VEFluidRecipe {
+public class HydroponicIncubatorRecipe extends VEFluidRecipe implements IRNGRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING.get();
 
     public static final Serializer SERIALIZER = new Serializer();
 
     private final ResourceLocation recipeId;
-    private float chance0;
-    private float chance1;
-    private float chance2;
+
+    private float[] rng;
 
     public HydroponicIncubatorRecipe(ResourceLocation recipeId) {
         this.recipeId = recipeId;
@@ -56,28 +55,28 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
         return RECIPE_TYPE;
     }
 
-    public float getChance0() {
-        return chance0;
-    }
-
-    public float getChance1() {
-        return chance1;
-    }
-
-    public float getChance2() {
-        return chance2;
-    }
-
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get());
     }
 
+    @Override
+    public float[] getRNGOutputs() {
+        return rng;
+    }
+
+    @Override
+    public void setRNGOutputs(float[] rngOutputs) {
+        this.rng = rngOutputs;
+    }
+
     public static class Serializer implements RecipeSerializer<HydroponicIncubatorRecipe> {
         @Override
         public @NotNull HydroponicIncubatorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);
+
+            float rng[] = new float[4];
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
@@ -93,6 +92,7 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"), ':');
             int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
             ItemStack stack0 = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), itemAmount);
+            rng[0] = 1;
 
             // First RNG Slot, RNG 0
             ResourceLocation rngResourceLocation0 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_0").getAsJsonObject(), "item", "minecraft:air"), ':');
@@ -100,7 +100,7 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
             float rngChance0 = GsonHelper.getAsFloat(json.get("rng_slot_0").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             ItemStack stack1 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation0), rngAmount0);
-            recipe.chance0 = rngChance0;
+            rng[1] = rngChance0;
 
             //Second RNG Slot, RNG 1
             ResourceLocation rngResourceLocation1 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_1").getAsJsonObject(), "item", "minecraft:air"), ':');
@@ -108,7 +108,7 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
             float rngChance1 = GsonHelper.getAsFloat(json.get("rng_slot_1").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             ItemStack stack2 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation1), rngAmount1);
-            recipe.chance1 = rngChance1;
+            rng[2] = rngChance1;
 
             //Third RNG Slot, RNG 2
             ResourceLocation rngResourceLocation2 = ResourceLocation.of(GsonHelper.getAsString(json.get("rng_slot_2").getAsJsonObject(), "item", "minecraft:air"), ':');
@@ -116,12 +116,13 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
             float rngChance2 = GsonHelper.getAsFloat(json.get("rng_slot_2").getAsJsonObject(), "chance", 0); //Enter % as DECIMAL. Ie 50% = 0.5
 
             ItemStack stack3 = new ItemStack(ForgeRegistries.ITEMS.getValue(rngResourceLocation2), rngAmount2);
-            recipe.chance2 = rngChance2;
+            rng[3] = rngChance2;
 
             recipe.addItemOutput(stack0);
             recipe.addItemOutput(stack1);
             recipe.addItemOutput(stack2);
             recipe.addItemOutput(stack3);
+            recipe.setRNGOutputs(rng);
 
             return recipe;
         }
@@ -132,25 +133,13 @@ public class HydroponicIncubatorRecipe extends VEFluidRecipe {
         @Nullable
         @Override
         public HydroponicIncubatorRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
-
-
             HydroponicIncubatorRecipe recipe = new HydroponicIncubatorRecipe(recipeId);
-
-            recipe.chance0 = buffer.readFloat();
-            recipe.chance1 = buffer.readFloat();
-            recipe.chance2 = buffer.readFloat();
-
             helper.fromNetwork(recipe, buffer);
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, HydroponicIncubatorRecipe recipe) {
-
-            buffer.writeFloat(recipe.chance0);
-            buffer.writeFloat(recipe.chance1);
-            buffer.writeFloat(recipe.chance2);
-
             helper.toNetwork(buffer, recipe);
         }
     }

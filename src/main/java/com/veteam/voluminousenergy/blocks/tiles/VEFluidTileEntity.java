@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.recipe.IRNGRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
@@ -30,6 +31,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static net.minecraft.util.Mth.abs;
 
 public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTileEntity {
 
@@ -200,11 +204,26 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         }
                     }
 
+                    IRNGRecipe irngRecipe = null;
+                    if(recipe instanceof IRNGRecipe rec) {
+                        irngRecipe = rec;
+                    }
+                    Random r = new Random();
+
                     // process recipe
                     for(VESlotManager slotManager : getSlotManagers()) {
                         if(slotManager.getSlotType() == SlotType.OUTPUT) {
                             ItemStack output = recipe.getOutputItem(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
+                            // rng calculations
+                            if(irngRecipe != null) {
+                                float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
+                                if(randomness != 1) {
+                                    float random = abs(0 + r.nextFloat() * (-1));
+                                    if(random > randomness) continue;
+                                }
+
+                            }
                             if(currentStack.isEmpty()) slotManager.setItem(output,handler);
                             else currentStack.setCount(currentStack.getCount() + output.getCount());
                         } else if(slotManager.getSlotType() == SlotType.INPUT) {

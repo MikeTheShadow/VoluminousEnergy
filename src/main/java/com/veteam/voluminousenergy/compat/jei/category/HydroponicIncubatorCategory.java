@@ -81,22 +81,24 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
-        if (recipe.getChance0() > 0) {
-            int chance = (int) (recipe.getChance0()*100);
+        float[] chances = recipe.getRNGOutputs();
+
+        if (chances[1] > 0) {
+            int chance = (int) (chances[1]*100);
             int xPos = calculateXPos(94, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getChance1() > 0) {
-            int chance = (int) (recipe.getChance1()*100);
+        if (chances[2] > 0) {
+            int chance = (int) (chances[2]*100);
             int xPos = calculateXPos(116, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getChance2() > 0) {
-            int chance = (int) (recipe.getChance2()*100);
+        if (chances[3] > 0) {
+            int chance = (int) (chances[3]*100);
             int xPos = calculateXPos(138, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
