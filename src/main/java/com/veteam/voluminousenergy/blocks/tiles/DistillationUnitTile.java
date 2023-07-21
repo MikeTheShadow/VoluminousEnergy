@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -26,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
@@ -59,6 +62,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state, DistillationRecipe.RECIPE_TYPE);
     }
 
+    DistillationRecipe recipe;
     @Override
     public void tick() {
 
@@ -77,7 +81,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         if (selectedRecipe != null) {
             ItemStack thirdOutput = inventory.getStackInSlot(6).copy();
 
-            DistillationRecipe recipe = (DistillationRecipe) selectedRecipe;
+
 
             // Tank fluid amount check + tank cap checks
             if (thirdOutput.getCount() < recipe.getOutputItem(0).getMaxStackSize()) {
@@ -129,6 +133,15 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     }
 
+    @Override
+    public void validateRecipe() {
+        if (!this.isRecipeDirty) {
+            return;
+        }
+        this.isRecipeDirty = false;
+        recipe = (DistillationRecipe) RecipeCache.getFluidRecipeFromCache(level,DistillationRecipe.RECIPE_TYPE,
+                Collections.singletonList(fluidManagers[0].getTank().getFluid()),new ArrayList<>());
+    }
 
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(8) {
