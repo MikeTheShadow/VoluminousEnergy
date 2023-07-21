@@ -46,9 +46,6 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
 
     public FluidMixerTile(BlockPos pos, BlockState state) {
         super(VEBlocks.FLUID_MIXER_TILE.get(), pos, state, FluidMixerRecipe.RECIPE_TYPE);
-        fluidManagers[0].setValidator(this, true);
-        fluidManagers[1].setValidator(this, true);
-        fluidManagers[2].setValidator(this, false);
     }
 
     public ItemStackHandler inventory = createHandler(7);
@@ -56,57 +53,6 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
         return inventory;
-    }
-
-    @Override
-    public void tick() {
-        updateClients();
-        super.tick();
-
-        // Main Fluid Processing occurs here
-        if (selectedRecipe != null) {
-
-            VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
-
-            // Tank fluid amount check + tank cap checks
-            if (fluidManagers[2].getTank().getFluidAmount() + recipe.getOutputFluid(0).getAmount() <= TANK_CAPACITY) {
-                // Check for power
-                if (canConsumeEnergy()) {
-                    if (counter == 1) {
-
-                        // Drain Input
-                        fluidManagers[0].drainInput(recipe,0);
-                        fluidManagers[1].drainInput(recipe,1);
-
-                        // First Output Tank
-                        if (fluidManagers[2].getTank().getFluid().getRawFluid() != recipe.getOutputFluid(0).getRawFluid()) {
-                            fluidManagers[2].getTank().setFluid(recipe.getOutputFluid(0).copy());
-                        } else {
-                            fluidManagers[2].getTank().fill(recipe.getOutputFluid(0).copy(), IFluidHandler.FluidAction.EXECUTE);
-                        }
-
-                        counter--;
-                        consumeEnergy();
-                        this.setChanged();
-                    } else if (counter > 0) {
-                        counter--;
-                        consumeEnergy();
-                        if (++sound_tick == 19) {
-                            sound_tick = 0;
-                            if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                                level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            }
-                        }
-                    } else {
-                        counter = this.calculateCounter(recipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()));
-                        length = counter;
-                    }
-                } else { // Energy Check
-                }
-            } else { // If fluid tank empty set counter to zero
-                counter = 0;
-            }
-        }
     }
 
     @Override
@@ -125,8 +71,6 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
         return new FluidMixerContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
-
-    // TODO abstract this to the fluid tile entity. This messes with the screen so be careful with that
 
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
