@@ -65,8 +65,8 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     DistillationRecipe recipe;
     @Override
     public void tick() {
-
         updateClients();
+        validateRecipe();
         tick++;
         if (tick == 20) {
             tick = 0;
@@ -148,6 +148,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+                markRecipeDirty();
             }
 
             @Override
@@ -169,7 +170,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 //                    return TagUtil.isTaggedMachineUpgradeItem(stack);
 //                }
                 // TODO fix me
-                return false;
+                return true;
             }
 
             @Nonnull
