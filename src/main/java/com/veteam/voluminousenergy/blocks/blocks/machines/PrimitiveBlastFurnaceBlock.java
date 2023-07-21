@@ -45,7 +45,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PrimitiveBlastFurnaceTile(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get(), pos, state);
+        return new PrimitiveBlastFurnaceTile( pos, state);
     }
 
     // NEW TICK SYSTEM

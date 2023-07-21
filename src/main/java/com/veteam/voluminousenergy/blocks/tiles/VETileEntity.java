@@ -473,9 +473,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     public boolean canConsumeEnergy() {
         if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
-
+            if(ivePoweredTileEntity.getMaxPower() == 0) return true; // For tiles that do not consume power
             if(capability == null) {
-                capability = this.getCapability(ForgeCapabilities.ENERGY);
+                capability = this.getCapability(ForgeCapabilities.ENERGY,null);
             }
             return capability.map(IEnergyStorage::getEnergyStored).orElse(0)
                     > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
