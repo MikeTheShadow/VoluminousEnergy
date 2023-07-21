@@ -223,7 +223,6 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
                     length = counter;
                 }
             } else { // Energy Check
-                decrementSuperCounterOnNoPower();
             }
         }
     }

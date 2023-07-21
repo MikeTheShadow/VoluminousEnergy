@@ -112,7 +112,6 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
                 }
             } else { // This is if we reach the maximum in the slots; or no power
                 if (!canConsumeEnergy()){ // if no power
-                    decrementSuperCounterOnNoPower();
                 } else { // zero in other cases
                     counter = 0;
                 }

@@ -102,7 +102,6 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
                         length = counter;
                     }
                 } else { // Energy Check
-                    decrementSuperCounterOnNoPower();
                 }
             } else { // If fluid tank empty set counter to zero
                 counter = 0;

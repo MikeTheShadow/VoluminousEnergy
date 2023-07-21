@@ -587,8 +587,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public void decrementSuperCounterOnNoPower() {
-        this.counter = this.counter < this.length ? this.counter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
-        this.setChanged();
+        throw new IllegalStateException("This method is currently disabled!");
+//        this.counter = this.counter < this.length ? this.counter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
+//        this.setChanged();
     }
 
     public void markRecipeDirty() {

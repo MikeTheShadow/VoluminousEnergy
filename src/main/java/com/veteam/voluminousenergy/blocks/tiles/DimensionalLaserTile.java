@@ -180,7 +180,6 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             length = counter;
                         }
                     } else { // Energy Check
-                        decrementSuperCounterOnNoPower();
                     }
                 } else { // If no RFID chip, set counter to 0
                     counter = 0;

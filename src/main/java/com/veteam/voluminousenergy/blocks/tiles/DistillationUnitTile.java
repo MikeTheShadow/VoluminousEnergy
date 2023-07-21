@@ -121,7 +121,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                         length = counter;
                     }
                 } else { // Energy Check
-                    decrementSuperCounterOnNoPower();
                 }
             }
         }
