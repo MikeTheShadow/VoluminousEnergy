@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -56,7 +54,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof MenuProvider) {
-                NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
             } else {
                 throw new IllegalStateException("Sawmill named container provider is missing!");
             }

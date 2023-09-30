@@ -10,6 +10,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPow
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.PacketDistributor;
 
 public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
@@ -56,7 +57,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     @Override
     public void onPress(){
         cycle();
-        VENetwork.channel.sendToServer(new BatteryBoxSendOutPowerPacket(this.sendOutPower));
+        VENetwork.channel.send(new BatteryBoxSendOutPowerPacket(this.sendOutPower), PacketDistributor.SERVER.noArg());
     }
 
     public void setStatus(boolean status){

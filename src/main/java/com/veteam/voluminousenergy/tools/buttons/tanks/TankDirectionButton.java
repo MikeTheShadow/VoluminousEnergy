@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.tools.buttons.tanks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -14,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.PacketDistributor;
 
 public class TankDirectionButton extends VEIOButton {
     private RelationalTank tank;
@@ -81,7 +81,7 @@ public class TankDirectionButton extends VEIOButton {
         if(!render) return;
         cycle();
         this.tank.setSideDirection(direction);
-        VENetwork.channel.sendToServer(new TankDirectionPacket(this.getDirection().get3DDataValue(),this.getId()));
+        VENetwork.channel.send(new TankDirectionPacket(this.getDirection().get3DDataValue(),this.getId()), PacketDistributor.SERVER.noArg());
     }
 
     public Direction getDirection(){

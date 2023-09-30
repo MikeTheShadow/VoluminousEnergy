@@ -2,22 +2,21 @@ package com.veteam.voluminousenergy.tools.networking;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
+import io.netty.util.AttributeKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-
-import java.util.Objects;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.ForgePacketHandler;
+import net.minecraftforge.network.SimpleChannel;
 
 public class VENetwork {
-    private static final String VERSION = "venet";
     public static final ResourceLocation CHANNEL_ID = new ResourceLocation(VoluminousEnergy.MODID, "network");
+
+    public static final AttributeKey<ForgePacketHandler> CONTEXT = AttributeKey.newInstance(CHANNEL_ID.toString());
 
     public static SimpleChannel channel;
     static {
-        channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_ID)
-                .clientAcceptedVersions(s -> Objects.equals(s, VERSION))
-                .serverAcceptedVersions(s -> Objects.equals(s, VERSION))
-                .networkProtocolVersion(() -> VERSION)
+        channel = ChannelBuilder.named(CHANNEL_ID)
+                .networkProtocolVersion(1)
                 .simpleChannel();
 
         channel.messageBuilder(BoolButtonPacket.class, 1)

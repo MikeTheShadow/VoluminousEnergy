@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 public class SlotBoolButton extends VEIOButton {
@@ -50,7 +51,7 @@ public class SlotBoolButton extends VEIOButton {
         if(!render) return;
         cycle();
         this.slotManager.setStatus(enable);
-        VENetwork.channel.sendToServer(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()));
+        VENetwork.channel.send(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
     }
 
     public boolean status(){ return enable; }

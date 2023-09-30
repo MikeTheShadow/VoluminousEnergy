@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPa
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.PacketDistributor;
 
 public class BatteryBoxSlotPairButton extends VEIOButton {
 
@@ -52,7 +53,7 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     public void onPress(){
         cycle();
         veBatterySwitchManager.setFlipped(isTopIngress);
-        VENetwork.channel.sendToServer(new BatteryBoxSlotPairPacket(isTopIngress, this.id));
+        VENetwork.channel.send(new BatteryBoxSlotPairPacket(isTopIngress, this.id), PacketDistributor.SERVER.noArg());
     }
 
     public int getId(){

@@ -1,14 +1,12 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VoluminousTileEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /*
  * THIS IS TO SERVER ONLY
@@ -40,10 +38,10 @@ public class UuidPacket {
         buffer.writeBoolean(this.connection);
     }
 
-    public static void handle(UuidPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
+    public static void handle(UuidPacket packet, CustomPayloadEvent.Context contextSupplier){
+        AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
         //contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
-        contextSupplier.get().setPacketHandled(true);
+        contextSupplier.setPacketHandled(true);
     }
 
     public static void handlePacket(UuidPacket packet, AbstractContainerMenu openContainer){

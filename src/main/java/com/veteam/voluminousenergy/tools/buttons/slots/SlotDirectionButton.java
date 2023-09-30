@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.PacketDistributor;
 
 public class SlotDirectionButton extends VEIOButton {
     private final VESlotManager slotManager;
@@ -69,7 +70,7 @@ public class SlotDirectionButton extends VEIOButton {
         if(!render) return;
         cycle();
         this.slotManager.setDirection(direction);
-        VENetwork.channel.sendToServer(new DirectionButtonPacket(this.getDirection().get3DDataValue(),this.getAssociatedSlotId()));
+        VENetwork.channel.send(new DirectionButtonPacket(this.getDirection().get3DDataValue(),this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
     }
 
     public Direction getDirection(){
