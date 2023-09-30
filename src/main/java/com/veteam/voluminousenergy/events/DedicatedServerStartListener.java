@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.events;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,6 +17,7 @@ public class DedicatedServerStartListener {
         ServerLevel level = event.getServer().getLevel(Level.OVERWORLD);
         ChunkFluids.loadInstance(level);
         VoluminousEnergy.LOGGER.info("Loaded chunk fluids!");
+        RecipeCache.buildCache(level);
     }
 
 }

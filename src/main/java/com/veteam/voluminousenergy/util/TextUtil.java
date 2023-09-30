@@ -145,12 +145,30 @@ public class TextUtil {
         renderShadowedText(graphics, font, Component.nullToEmpty(string), x, y, styleOptional);
     }
 
+    public static void renderCenteredShadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
+        renderShadowedText(graphics, font, component, x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
+    }
+
+    public static void renderCenteredShadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional) {
+        Component component = Component.nullToEmpty(string);
+        renderShadowedText(graphics, font, component, x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
+    }
+
     public static void renderUnshadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
-        veRenderGuiText(graphics, font, component, x, y, styleOptional, false);
+        veRenderGuiText(graphics, font, component,  x, y, styleOptional, false);
     }
 
     public static void renderUnshadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional){
         renderUnshadowedText(graphics, font, Component.nullToEmpty(string), x, y, styleOptional);
+    }
+
+    public static void renderCenteredUnshadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
+        renderUnshadowedText(graphics, font, component,  x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
+    }
+
+    public static void renderCenteredUnshadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional) {
+        Component component = Component.nullToEmpty(string);
+        renderUnshadowedText(graphics, font, component, x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
     }
 
     private static void veRenderGuiText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional, boolean shouldShadow) {

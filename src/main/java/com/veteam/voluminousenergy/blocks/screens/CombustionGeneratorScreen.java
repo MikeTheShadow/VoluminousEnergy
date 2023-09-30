@@ -109,13 +109,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGener
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("combustion_generator"),  8, 6, WHITE_TEXT_STYLE);
 
-        if (tileEntity.getEnergyRate() < 10) {
-            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), 80, 18, WHITE_TEXT_STYLE);
-        } else if (tileEntity.getEnergyRate() < 100){
-            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), 77, 18, WHITE_TEXT_STYLE);
-        } else {
-            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), 75, 18, WHITE_TEXT_STYLE);
-        }
+        TextUtil.renderCenteredShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), 96, 18, WHITE_TEXT_STYLE);
 
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"),  8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);

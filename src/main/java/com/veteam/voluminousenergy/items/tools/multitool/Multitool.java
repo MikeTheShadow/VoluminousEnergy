@@ -4,17 +4,25 @@ import com.google.common.collect.Multimap;
 import com.veteam.voluminousenergy.items.VEItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
+import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class Multitool extends VEItem /*implements Vanishable*/ {
     protected MultitoolBit bit;
@@ -59,6 +67,81 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
     public float getAttackDamage() {
         return this.bit != null ? this.bit.getAttackDamage() : 0;
+    }
+
+    @Override
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+        System.out.println("OnBlockStartBreak");
+        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
+            System.out.println("Client side or player is not server player");
+            return super.onBlockStartBreak(itemstack, pos, player);
+        } else {
+            System.out.println("Player is server side");
+        }
+
+        CompoundTag tag = player.getMainHandItem().getTag();
+
+        if (!tag.contains("energy")) {
+            System.out.println("Energy is empty or null");
+            return super.onBlockStartBreak(itemstack, pos, player);
+        }
+
+        int energyLeft = tag.getInt("energy");
+        if (!(energyLeft > 0)) {
+            System.out.println("Energy is not greater than zero: " + energyLeft);
+            return super.onBlockStartBreak(itemstack, pos, player);
+        }
+
+        ServerLevel level = serverPlayer.server.getLevel(player.level().dimension());
+        BlockState miningBlock = level.getBlockState(pos);
+
+        // Tree Felling -- CHAIN BIT
+        if (this.canPerformAction(new ItemStack(this), ToolActions.AXE_DIG)) {
+
+            ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
+            if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
+
+                BlockPos offsetPos = pos;
+
+                System.out.println("Should be activating Tree Felling");
+                for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
+                    offsetPos = offsetPos.above();
+                    BlockState potentialStateToFell = level.getBlockState(offsetPos);
+
+                    if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
+
+                        if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
+                            System.out.println("Calling player destroy");
+                            potentialStateToFell.getBlock()
+                                    .playerDestroy(
+                                            level,
+                                            player,
+                                            offsetPos,
+                                            potentialStateToFell,
+                                            null,
+                                            player.getMainHandItem()
+                                    );
+                            level.destroyBlock(offsetPos, true, player);
+                        } else {
+                            System.out.println("Cannot harvest block!");
+                        }
+
+                    } else {
+                        System.out.println("Found block is not present in taggedAsWood. Mined block is: " + potentialStateToFell + ", valid entries are: ");
+                        taggedAsWood.forEach(System.out::println);
+                        break;
+                    }
+
+                }
+
+            } else {
+                System.out.println("Mined block is not present in taggedAsWood. Mined block is: " + miningBlock + ", valid entries are: ");
+                taggedAsWood.forEach(System.out::println);
+            }
+
+        }
+
+        return super.onBlockStartBreak(itemstack, pos, player);
     }
 
     @Override

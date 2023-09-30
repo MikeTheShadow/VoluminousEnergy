@@ -45,8 +45,8 @@ public class SolarPanelScreen extends VEContainerScreen<SolarPanelContainer> {
     protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("solar_panel"),  8, 6, WHITE_TEXT_STYLE);
         if (tileEntity.getLevel().isDay())
-            TextUtil.renderShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t"),  50, 32, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"),  8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
+            TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t"), 90, 32, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
     }
 
     @Override
