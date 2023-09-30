@@ -44,7 +44,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Capability is unique. Can't add new impl to this
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.input_slot", SlotType.INPUT,"slot_manager");
+    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
 
     private final int tankCapacity = 4000;
 
@@ -59,13 +59,13 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final ItemStackHandler inventory = this.createHandler();
 
     public PumpTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE.get(), pos, state);
+        super(VEBlocks.PUMP_TILE.get(), pos, state,null);
         fluidTank.setAllowAny(true);
     }
 
     @Deprecated
     public PumpTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE.get(), pos, state);
+        super(VEBlocks.PUMP_TILE.get(), pos, state,null);
     }
 
     @Override

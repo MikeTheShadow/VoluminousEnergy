@@ -1,149 +1,90 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public class ImplosionCompressorRecipe extends VERecipe {
     public static final RecipeType<ImplosionCompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.IMPLOSION_COMPRESSING.get();
 
     public static final Serializer SERIALIZER = new ImplosionCompressorRecipe.Serializer();
 
-    public final ResourceLocation recipeId;
-    public Lazy<Ingredient> ingredient;
-    public int ingredientCount;
-    public ItemStack result;
-    private int processTime;
-    private int outputAmount;
-
-    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
-
-    public Map<Ingredient, Integer> getIngredientMap() {
-        return ImmutableMap.copyOf(ingredients);
-    }
-
-    public ImplosionCompressorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
-
-    @Override
-    public Ingredient getIngredient() {
-        return ingredient.get();
-    }
-
-    public int getIngredientCount() {
-        return ingredientCount;
+    public ImplosionCompressorRecipe(ResourceLocation recipeId) {
+        this.recipeId = recipeId;
     }
 
     @Override
-    public ItemStack getResult() { return result; }
-
-    public int getProcessTime() { return processTime; }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(){
-        return result;
-    }
-
-    @Override
-    public ResourceLocation getId(){
+    public @NotNull ResourceLocation getId() {
         return recipeId;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer(){
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
     }
 
     @Override
-    public RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;
     }
 
-    public int getOutputAmount(){
-        return outputAmount;
-    }
-
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get());
     }
 
     public static class Serializer implements RecipeSerializer<ImplosionCompressorRecipe> {
 
         @Override
-        public ImplosionCompressorRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull ImplosionCompressorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
 
             ImplosionCompressorRecipe recipe = new ImplosionCompressorRecipe(recipeId);
 
             JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(ingredientJson));
-            recipe.ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
+            Lazy<Ingredient> ingredientLazy = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
+            recipe.addLazyIngredient(ingredientLazy);
+            recipe.addLazyIngredient(Lazy.of(() -> Ingredient.of(new ItemStack(Items.GUNPOWDER,1))));
+
             recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
 
-            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
+            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"), ':');
             int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
-            recipe.outputAmount = itemAmount;
+            ItemStack result = new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(itemResourceLocation)),itemAmount);
+            recipe.addResult(result);
 
             return recipe;
         }
+
+        IngredientSerializerHelper<ImplosionCompressorRecipe> helper = new IngredientSerializerHelper<>();
 
         @Nullable
         @Override
-        public ImplosionCompressorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public ImplosionCompressorRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             ImplosionCompressorRecipe recipe = new ImplosionCompressorRecipe(recipeId);
-            recipe.ingredientCount = buffer.readByte();
-            recipe.result = buffer.readItem();
-            recipe.processTime = buffer.readInt();
-            recipe.outputAmount = buffer.readInt();
-
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
-
+            helper.fromNetwork(recipe,buffer);
             return recipe;
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, ImplosionCompressorRecipe recipe){
-            buffer.writeByte(recipe.getIngredientCount());
-            buffer.writeItem(recipe.getResult());
-            buffer.writeInt(recipe.processTime);
-            buffer.writeInt(recipe.outputAmount);
-
-            recipe.ingredient.get().toNetwork(buffer);
-
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ImplosionCompressorRecipe recipe) {
+            helper.toNetwork(buffer,recipe);
         }
     }
 }

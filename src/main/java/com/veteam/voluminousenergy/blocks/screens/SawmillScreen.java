@@ -6,11 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.SawmillContainer;
 import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -44,64 +39,7 @@ public class SawmillScreen extends VEContainerScreen<SawmillContainer> {
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, buttons ->{
-
-        }));
-
-        // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.inputSm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Output Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.plankSm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.plankSm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Output 2 Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.secondOutputSm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.secondOutputSm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Bucket Input
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketTopSm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketTopSm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // Bucket Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketBottomSm, (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketBottomSm, (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getOutputTank(), (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getOutputTank(), (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos + 4);
     }
 
     @Override

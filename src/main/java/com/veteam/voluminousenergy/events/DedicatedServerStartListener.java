@@ -17,7 +17,7 @@ public class DedicatedServerStartListener {
         ServerLevel level = event.getServer().getLevel(Level.OVERWORLD);
         ChunkFluids.loadInstance(level);
         VoluminousEnergy.LOGGER.info("Loaded chunk fluids!");
-        RecipeCache.buildCache(level);
+        VoluminousEnergy.LOGGER.info("Total keys: " + event.getServer().levelKeys().size());
+        RecipeCache.buildCache(event.getServer().getAllLevels());
     }
-
 }

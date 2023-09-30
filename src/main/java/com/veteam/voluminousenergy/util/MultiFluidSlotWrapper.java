@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.google.common.base.Preconditions;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -13,11 +14,12 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
     List<RelationalTank> tanks;
+    VETileEntity tileEntity;
 
     public MultiFluidSlotWrapper(List<RelationalTank> tanks) {
         Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
         this.tanks = tanks;
-        tanks.forEach(m -> tankHashMap.put(m.getId(), m));
+        tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
     }
 
     @Override
@@ -48,7 +50,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         RelationalTank relationalTank = tankHashMap.get(tank);
         if (relationalTank == null) return false;
-        if(relationalTank.getValidFluids().stream().noneMatch(fluid -> fluid.isSame(stack.getFluid())) && !relationalTank.isAllowAny()) return false;
         return relationalTank.getTank() != null && relationalTank.getTank().isFluidValid(stack);
     }
 
@@ -57,7 +58,8 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public int fill(FluidStack resource, FluidAction action) {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
-            if (isFluidValid(tank.getId(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
+            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
@@ -73,6 +75,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
             }
         }
@@ -85,6 +88,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
             if (tank.getTank().getFluidAmount() > 0) {
+                tileEntity.markRecipeDirty();
                 return tank.getTank().drain(maxDrain, action);
             }
         }

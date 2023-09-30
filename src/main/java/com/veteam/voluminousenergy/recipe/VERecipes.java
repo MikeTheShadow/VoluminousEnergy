@@ -35,7 +35,7 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<StirlingGeneratorRecipe>> STIRLING =
                 VE_RECIPE_TYPES_REGISTRY.register("stirling", () -> new VERecipeType<>(RecipeConstants.STIRLING));
 
-        public static final RegistryObject<RecipeType<CombustionGeneratorOxidizerRecipe>> OXIDIZING =
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> OXIDIZING =
                 VE_RECIPE_TYPES_REGISTRY.register("oxidizer_combustion", () -> new VERecipeType<>(RecipeConstants.OXIDIZING));
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> FUEL_COMBUSTION =
@@ -53,7 +53,7 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<ImplosionCompressorRecipe>> IMPLOSION_COMPRESSING =
                 VE_RECIPE_TYPES_REGISTRY.register("implosion_compressing", () -> new VERecipeType<>(RecipeConstants.IMPLOSION_COMPRESSING));
 
-        public static final RegistryObject<RecipeType<IndustrialBlastingRecipe>> INDUSTRIAL_BLASTING =
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> INDUSTRIAL_BLASTING =
                 VE_RECIPE_TYPES_REGISTRY.register("industrial_blasting", () -> new VERecipeType<>(RecipeConstants.INDUSTRIAL_BLASTING));
 
         public static final RegistryObject<RecipeType<ToolingRecipe>> TOOLING =

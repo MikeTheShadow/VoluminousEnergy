@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,9 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
 
-
-    public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
+        super(type, pos, state, recipeType);
     }
 
     public boolean validity = false;

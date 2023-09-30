@@ -54,7 +54,7 @@ public class TankBoolButton extends VEIOButton {
     public boolean status(){ return enable; }
 
     public int getId(){
-        return this.tank.getId();
+        return this.tank.getSlotNum();
     }
 
     public void setStatus(boolean status) {

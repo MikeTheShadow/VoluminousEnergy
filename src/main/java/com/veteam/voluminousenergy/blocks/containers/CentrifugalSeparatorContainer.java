@@ -3,19 +3,16 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEOutputSlot;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.wrapper.InvWrapper;
-
-import javax.annotation.Nonnull;
 
 public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
@@ -23,7 +20,7 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
 
     public CentrifugalSeparatorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(),id);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
@@ -74,30 +71,5 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
         // Hotbar
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
-        ItemStack returnStack = ItemStack.EMPTY;
-        final Slot slot = this.slots.get(index);
-
-        if (slot != null && slot.hasItem()) {
-            final ItemStack slotStack = slot.getItem();
-            returnStack = slotStack.copy();
-
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 6, slotStack) != null) return ItemStack.EMPTY;
-
-            if (slotStack.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (slotStack.getCount() == returnStack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(player, slotStack);
-        }
-        return returnStack;
     }
 }

@@ -29,17 +29,17 @@ import java.util.List;
 
 public class TankTile extends VEFluidTileEntity {
 
-    private final RelationalTank tank  = new RelationalTank(new FluidTank(0),0,null,null, TankType.BOTH,"tank:tank_gui");
+    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, null, null, TankType.BOTH, "tank:tank_gui");
 
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"bucket_top_slot");
-    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"bucket_bottom_slot");
+    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 0, 1);
+    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(bucketBottomSlotManager);
         add(bucketTopSlotManager);
     }};
 
-    List<RelationalTank> fluidManagers = new ArrayList<>(){{
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(tank);
     }};
 
@@ -56,16 +56,20 @@ public class TankTile extends VEFluidTileEntity {
         return slotManagers;
     }
 
+    List<PosPair> surroundingBlocks = new ArrayList<>();
+
     public TankTile(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, int capacity) {
-        super(blockEntityType, pos, state);
+        super(blockEntityType, pos, state, null);
         capacity = capacity * 1000;
         tank.getTank().setCapacity(capacity);
         tank.setAllowAny(true);
         tank.setIgnoreDirection(true);
-    }
-
-    public TankTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+        surroundingBlocks.add(new PosPair(pos.above(), Direction.DOWN));
+        surroundingBlocks.add(new PosPair(pos.below(), Direction.UP));
+        surroundingBlocks.add(new PosPair(pos.east(), Direction.WEST));
+        surroundingBlocks.add(new PosPair(pos.west(), Direction.EAST));
+        surroundingBlocks.add(new PosPair(pos.north(), Direction.SOUTH));
+        surroundingBlocks.add(new PosPair(pos.south(), Direction.NORTH));
     }
 
     @Override
@@ -78,9 +82,35 @@ public class TankTile extends VEFluidTileEntity {
         tank.setInput(bucketTop.copy());
         tank.setOutput(bucketBottom.copy());
 
-        if(this.inputFluid(tank,0,1)) return;
-        if(this.outputFluid(tank,0,1)) return;
+        if (this.inputFluid(tank, 0, 1)) return;
+        if (this.outputFluid(tank, 0, 1)) return;
 
+        if (!tank.getSideStatus() || tank.getTank().getFluidAmount() == tank.getTank().getCapacity()) return;
+
+//        Direction side = tank.getSideDirection();
+//        BlockPos pos = getBlockPos().relative(side);
+//        BlockEntity entity = level.getBlockEntity(pos);
+//        if (entity == null) return;
+//        var capability = entity.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite());
+//        capability.ifPresent(fluidHandler -> {
+//
+//            int tanks = fluidHandler.getTanks();
+//
+//            for (int i = 0; i < tanks; i++) {
+//                FluidStack outsideAmount = fluidHandler.getFluidInTank(i);
+//                if (outsideAmount.isEmpty()) continue;
+//                FluidTank fluidTank = this.tank.getTank();
+//                FluidStack currentFluid = fluidTank.getFluid();
+//                if (!currentFluid.isEmpty() && !outsideAmount.getFluid().isSame(currentFluid.getFluid())) continue;
+//                int amountToTake = Math.min(outsideAmount.getAmount(), 1000);
+//                amountToTake = Math.min(amountToTake, fluidTank.getCapacity() - fluidTank.getFluidAmount());
+//                if (amountToTake == 0) return;
+//                Fluid outsideFluid = outsideAmount.getFluid(); // if we don't extract this it will get modified below when extracted and potentially be set to AIR
+//                int filled = fluidTank.fill(new FluidStack(outsideFluid, amountToTake), IFluidHandler.FluidAction.EXECUTE);
+//                if(filled == 0) return;
+//                fluidHandler.drain(amountToTake, IFluidHandler.FluidAction.EXECUTE);
+//            }
+//        });
     }
 
     private ItemStackHandler createHandler() {
@@ -104,7 +134,7 @@ public class TankTile extends VEFluidTileEntity {
         };
     }
 
-    public RelationalTank getTank(){
+    public RelationalTank getTank() {
         return this.tank;
     }
 
@@ -128,7 +158,7 @@ public class TankTile extends VEFluidTileEntity {
     }
 
     @Override
-    public int getTankCapacity(){
+    public int getTankCapacity() {
         return this.tank.getTank().getCapacity();
     }
 
@@ -137,4 +167,8 @@ public class TankTile extends VEFluidTileEntity {
         return fluidManagers;
     }
 
+
+    private record PosPair(BlockPos pos, Direction direction) {
+
+    }
 }

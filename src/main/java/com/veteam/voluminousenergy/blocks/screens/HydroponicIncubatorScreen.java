@@ -6,11 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.HydroponicIncubatorContaine
 import com.veteam.voluminousenergy.blocks.tiles.HydroponicIncubatorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -18,12 +13,13 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncubatorContainer> {
-    private HydroponicIncubatorTile tileEntity;
+    private final HydroponicIncubatorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/hydroponic_incubator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
@@ -35,8 +31,8 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
     }
 
     @Override
-    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
-        this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
+        this.renderBackground(matrixStack);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
@@ -44,82 +40,8 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<HydroponicIncub
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, button -> {
-            // Do Nothing
-        }));
 
-        // Bucket Top
-        addRenderableWidget(new SlotBoolButton(tileEntity.input0sm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.input0sm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Bucket Bottom
-        addRenderableWidget(new SlotBoolButton(tileEntity.input1sm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.input1sm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Primary Input
-        addRenderableWidget(new SlotBoolButton(tileEntity.input2sm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.input2sm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Primary Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.output0sm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output0sm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // RNG0 Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.output1sm, (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output1sm, (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        // RNG1 Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.output2sm, (this.width/2)-198, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output2sm, (this.width/2)-184, this.topPos+100, button ->{
-            // Do nothing
-        }));
-
-        // RNG2 Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.output3sm, (this.width/2)-198, this.topPos+120, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.output3sm, (this.width/2)-184, this.topPos+120, button ->{
-            // Do nothing
-        }));
-
-        // Input Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getInputTank(), (this.width/2)-198, this.topPos+140, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getInputTank(), (this.width/2)-184, this.topPos+140, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos + 4);
     }
 
     @Override

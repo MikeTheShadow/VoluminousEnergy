@@ -26,6 +26,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     private final IDrawable background;
     private IDrawable icon;
@@ -50,22 +52,22 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.distilling");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(DistillationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(DistillationRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,24, 12);
         emptyArrow.draw(matrixStack,24,12);
         slotDrawable.draw(matrixStack,2,10);
@@ -74,9 +76,9 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         slotDrawable.draw(matrixStack,96,10);
 
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", -20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getInputAmount() + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getOutputAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getAmounts().get(2) + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getFluidIngredientAmount(0)  + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(0).getAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(1).getAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getThirdChance()*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 
@@ -85,15 +87,16 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
                                   IIngredientAcceptor firstFluidOutputAcceptor,
                                   IIngredientAcceptor secondFluidOutputAcceptor,
                                   IIngredientAcceptor itemOutputAcceptor) {
+
         // Input
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // Output
-        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid()); // seems like amount is set correctly
-        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid()); // seems like amount is set correctly
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
 
-        ItemStack itemStackResult = recipe.getThirdResult().copy();
-        itemStackResult.setCount(recipe.getThirdAmount());
+        ItemStack itemStackResult = recipe.getOutputItem(0).copy();
+        itemStackResult.setCount(recipe.getOutputItem(0).getCount());
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK,itemStackResult);
     }
 

@@ -31,11 +31,11 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTileEntity {
+public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, "slot.voluminousenergy.input_slot", SlotType.INPUT,"input_slot");
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true, "slot.voluminousenergy.output_slot",SlotType.OUTPUT,"output_slot");
+    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
+    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true,SlotType.OUTPUT);
 
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
@@ -68,12 +68,12 @@ public class BatteryBoxTile extends VoluminousTileEntity implements IVEPoweredTi
     private final VEPowerIOManager powerIOManager = new VEPowerIOManager(true);
 
     public BatteryBoxTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
+        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
     }
 
     @Deprecated
     public BatteryBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
-        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
+        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
     }
 
     public ItemStackHandler inventory = new ItemStackHandler(12) {

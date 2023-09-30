@@ -5,11 +5,6 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.blocks.tiles.GasFiredFurnaceTile;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -43,55 +38,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<GasFiredFurnaceCont
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
-
-        }));
-
-        // Bucket insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketInputSm, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketInputSm, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Bucket Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketOutputSm, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketOutputSm, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Furnace Insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.furnaceInputSm, (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.furnaceInputSm, (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        // Furnace Extract
-        addRenderableWidget(new SlotBoolButton(tileEntity.furnaceOutputSm, (this.width/2)-198, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.furnaceOutputSm, (this.width/2)-184, this.topPos+60, button ->{
-            // Do nothing
-        }));
-
-        // Fuel Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getFuelTank(), (this.width/2)-198, this.topPos+80, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getFuelTank(), (this.width/2)-184, this.topPos+80, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos +4);
     }
 
     @Override

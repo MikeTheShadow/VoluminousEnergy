@@ -37,7 +37,7 @@ public class ElectrolyzerBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ElectrolyzerTile(VEBlocks.ELECTROLYZER_TILE.get(), pos, state);
+        return new ElectrolyzerTile( pos, state);
     }
 
     // NEW TICK SYSTEM

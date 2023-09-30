@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -31,11 +30,6 @@ public class SolarPanelTile extends VESolarTile implements IVEPowerGenerator {
     private int generation;
 
     public SolarPanelTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.SOLAR_PANEL_TILE.get(), pos, state);
-    }
-
-    @Deprecated
-    public SolarPanelTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(VEBlocks.SOLAR_PANEL_TILE.get(), pos, state);
     }
 

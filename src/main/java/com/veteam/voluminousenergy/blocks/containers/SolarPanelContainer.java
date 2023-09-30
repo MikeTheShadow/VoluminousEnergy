@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,7 +11,6 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -21,7 +21,7 @@ public class SolarPanelContainer extends VoluminousContainer {
 
     public SolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(SOLAR_PANEL_CONTAINER.get(), windowID);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
@@ -38,10 +38,6 @@ public class SolarPanelContainer extends VoluminousContainer {
                 tileEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> ((VEEnergyStorage) h).setEnergy(value));
             }
         });
-    }
-
-    public int getEnergy() {
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     @Override
@@ -95,10 +91,6 @@ public class SolarPanelContainer extends VoluminousContainer {
         }
 
         return itemstack;
-    }
-
-    public BlockEntity getTileEntity() {
-        return tileEntity;
     }
 
     public int powerScreen(int px) {

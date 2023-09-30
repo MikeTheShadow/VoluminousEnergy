@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
     private final BlockState[] stateList;

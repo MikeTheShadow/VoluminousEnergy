@@ -6,11 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
-import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -41,27 +36,8 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     protected void init(){
         super.init();
         // Buttons go here
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos +4, buttons ->{
+        renderIOMenu(tileEntity);
 
-        }));
-
-        // Output slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotManager, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getAirTank(), (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getAirTank(), (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
     }
 
     @Override
@@ -75,10 +51,11 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
 
     @Override
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack,int mouseX, int mouseY){
-        // Extract slot
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 70, 49, WHITE_TEXT_STYLE);
         // Tank
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.tank_short").copy().append("0")), 93, 18, WHITE_TEXT_STYLE);
+
+        // Slots handeled by super
+        super.renderSlotAndTankLabels(matrixStack, mouseX, mouseY);
     }
 
     @Override

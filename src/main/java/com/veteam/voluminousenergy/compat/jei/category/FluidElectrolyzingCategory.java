@@ -26,12 +26,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrolyzerRecipe> {
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.FLUID_ELECTROLYZER_UID, FluidElectrolyzerRecipe.class);
 
     public FluidElectrolyzingCategory(IGuiHelper guiHelper) {
@@ -50,22 +52,22 @@ public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrol
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.fluid_electrolyzing");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(FluidElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(FluidElectrolyzerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 24, 12);
         emptyArrow.draw(matrixStack, 24, 12);
         slotDrawable.draw(matrixStack, 2, 10);
@@ -73,9 +75,9 @@ public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrol
         slotDrawable.draw(matrixStack, 72, 10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputAmount() + "",  48, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getSecondAmount() + "",  72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "",  48, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(1).getAmount() + "",  72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(FluidElectrolyzerRecipe recipe,
@@ -83,10 +85,10 @@ public class FluidElectrolyzingCategory implements IRecipeCategory<FluidElectrol
                                   IIngredientAcceptor firstFluidOutputAcceptor,
                                   IIngredientAcceptor secondFluidOutputAcceptor) {
 
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
-        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid());
-        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getSecondFluid());
+        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
     }
 
     @Override

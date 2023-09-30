@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.screens.tank;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;

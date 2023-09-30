@@ -78,16 +78,16 @@ public class CompressingCategory implements IRecipeCategory<CompressorRecipe> {
 
         // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-            itemStack.setCount(recipe.ingredientCount);
+        for (ItemStack itemStack : recipe.getIngredient(0).getItems()){
+            itemStack.setCount(recipe.getIngredientCount(0));
             inputStacks.add(itemStack);
         }
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
         // Output
-        ItemStack outputStack = recipe.result.copy();
-        outputStack.setCount(recipe.getOutputAmount());
+        ItemStack outputStack = recipe.getResult(0).copy();
+        outputStack.setCount(outputStack.getCount());
 
         itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, outputStack);
     }

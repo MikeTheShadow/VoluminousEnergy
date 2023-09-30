@@ -1,23 +1,22 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,71 +33,31 @@ public class ToolingRecipe extends VERecipe {
     protected Lazy<ArrayList<Item>> bases;
 
     public final ResourceLocation recipeId;
-    public Lazy<Ingredient> ingredient;
-    public ItemStack result;
 
     protected boolean usesTagKey;
     protected String tagKeyString;
 
     private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
-    public Map<Ingredient, Integer> getIngredientMap() {
-        return ImmutableMap.copyOf(ingredients);
-    }
-
     public ToolingRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
 
     @Override
-    public Ingredient getIngredient() {
-        return ingredient.get();
-    }
-
-    public int getIngredientCount() {
-        return ingredientCount;
-    }
-
-    @Override
-    public ItemStack getResult() { return result; }
-
-    @Override
-    public boolean matches(Container inv, Level worldIn){
-        ItemStack stack = inv.getItem(0);
-        int count = stack.getCount();
-        return ingredient.get().test(stack) && count >= ingredientCount;
-    }
-
-    @Override
-    public ItemStack assemble(Container inv){
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height){
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(){
-        return result;
-    }
-
-    @Override
-    public ResourceLocation getId(){
+    public @NotNull ResourceLocation getId(){
         return recipeId;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer(){
+    public @NotNull RecipeSerializer<?> getSerializer(){
         return SERIALIZER;
     }
 
     @Override
-    public RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType(){
         return RECIPE_TYPE;
     }
 
     @Override
-    public ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
@@ -117,19 +76,21 @@ public class ToolingRecipe extends VERecipe {
     public static class Serializer implements RecipeSerializer<ToolingRecipe>{
 
         @Override
-        public ToolingRecipe fromJson(ResourceLocation recipeId, JsonObject json){
+        public @NotNull ToolingRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
 
             ToolingRecipe recipe = new ToolingRecipe(recipeId);
 
-            recipe.ingredient = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient"))); // bits
+            Lazy<Ingredient> ingredientLazy = Lazy.of(() -> Ingredient.fromJson(json.get("ingredient"))); // bits
 
             recipe.bits = Lazy.of(() -> {
                 ArrayList<Item> items = new ArrayList<>();
-                for (ItemStack item : recipe.ingredient.get().getItems()) {
+                for (ItemStack item : ingredientLazy.get().getItems()) {
                     items.add(item.getItem());
                 }
                 return items;
             });
+
+            recipe.addLazyIngredient(ingredientLazy);
 
             JsonObject toolBase = json.get("tool_base").getAsJsonObject();
 
@@ -156,14 +117,16 @@ public class ToolingRecipe extends VERecipe {
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
 
             ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
-            recipe.result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation));
+            recipe.addResult(new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation)));
 
             return recipe;
         }
 
+        IngredientSerializerHelper<ToolingRecipe> helper= new IngredientSerializerHelper<>();
+
         @Nullable
         @Override
-        public ToolingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer){
+        public ToolingRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
             ToolingRecipe recipe = new ToolingRecipe(recipeId);
 
             // Start with usesTagKey check
@@ -187,12 +150,8 @@ public class ToolingRecipe extends VERecipe {
                 bitList.add(buffer.readItem().getItem());
             }
             recipe.bits = Lazy.of(() -> bitList);
-
             recipe.basesAndBits = RecipeUtil.createLazyAnthology(recipe.bases, recipe.bits);
-
-            recipe.result = buffer.readItem();
-            Ingredient tempIngredient = Ingredient.fromNetwork(buffer);
-            recipe.ingredient = Lazy.of(() -> tempIngredient);
+            helper.fromNetwork(recipe,buffer);
             return recipe;
         }
 
@@ -204,18 +163,11 @@ public class ToolingRecipe extends VERecipe {
                 buffer.writeResourceLocation(new ResourceLocation(recipe.tagKeyString));
             } else { // does not use tags for item input
                 buffer.writeInt(recipe.bases.get().size());
-                recipe.bases.get().forEach(item -> {
-                    buffer.writeItem(new ItemStack(item));
-                });
+                recipe.bases.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
             }
-
             buffer.writeInt(recipe.bits.get().size());
-            recipe.bits.get().forEach(item -> {
-                buffer.writeItem(new ItemStack(item));
-            });
-
-            buffer.writeItem(recipe.getResult());
-            recipe.ingredient.get().toNetwork(buffer);
+            recipe.bits.get().forEach(item -> buffer.writeItem(new ItemStack(item)));
+            helper.toNetwork(buffer,recipe);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
 import com.veteam.voluminousenergy.fluids.VEFluids;
@@ -8,6 +9,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
+import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,10 +17,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -29,94 +32,100 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
-    public VESlotManager outputSlotManager = new VESlotManager(0,Direction.UP,true,"slot.voluminousenergy.output_slot", SlotType.OUTPUT,"output_slot");
+public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    private final int TANK_CAPACITY = 4000;
-    private final ItemStackHandler inventory = createHandler(2,this);
+    public VESlotManager[] slotManagers = new VESlotManager[]{
+            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),
+            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
+    };
 
-    //private FluidTank airTank = new FluidTank(tankCapacity);
-    private final RelationalTank airTank = new RelationalTank( new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,"air_tank:air_tank_properties");
+    private final ItemStackHandler inventory = createHandler(3, this);
+
+    private final RelationalTank airTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, TankType.OUTPUT, "air_tank:air_tank_properties");
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state);
-        airTank.setValidFluids(Collections.singletonList(VEFluids.COMPRESSED_AIR_REG.get()));
+        super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state, null);
+        airTank.setAllowAny(true);
     }
 
     @Override
-    public void tick(){
+    public void tick() {
         updateClients();
+        processFluidIO();
 
-        ItemStack slotStack = inventory.getStackInSlot(0).copy();
-
-        // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
-        if (slotStack.copy() != ItemStack.EMPTY) {
-            if (slotStack.getItem() == Items.BUCKET && airTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
-                ItemStack bucketStack = new ItemStack(airTank.getTank().getFluid().getRawFluid().getBucket(), 1);
-                airTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                inventory.extractItem(0, 1, false);
-                inventory.insertItem(0, bucketStack, false);
-            }
-        }
-
-        if (airTank != null && (airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY && counter == 0 && canConsumeEnergy()){
+        if (!canConsumeEnergy()) return;
+        if (counter <= 0) {
             // Check blocks around the Air Compressor to see if it's air
             int x = this.worldPosition.getX();
             int y = this.worldPosition.getY();
             int z = this.worldPosition.getZ();
 
-            // Sanity check
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z)).getBlock()){
-                addAirToTank();
-            }
-
+            int airMultiplier = 0;
             // Check X offsets
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x+1,y,z)).getBlock()){
-                //LOGGER.debug("HIT! x+1: " + (x+1) + " y: " + y + " z: " + z + " is AIR!");
-                addAirToTank();
-            }
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x-1,y,z)).getBlock()){
-                //LOGGER.debug("HIT! x-1: " + (x-1) + " y: " + y + " z: " + z + " is AIR!");
-                addAirToTank();
-            }
-
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x + 1, y, z)).getBlock())
+                airMultiplier++;
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x - 1, y, z)).getBlock())
+                airMultiplier++;
             // Check Y offsets
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y+1,z)).getBlock()){
-                //LOGGER.debug("HIT! x: " + x + " y+1: " + (y+1) + " z: " + z + " is AIR!");
-                addAirToTank();
-            }
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y-1,z)).getBlock()){
-                //LOGGER.debug("HIT! x: " + x + " y-1: " + (y-1) + " z: " + z + " is AIR!");
-                addAirToTank();
-            }
-
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z+1)).getBlock()){
-                //LOGGER.debug("HIT! x: " + x + " y: " + y + " z+1: " + (z+1) + " is AIR!");
-                addAirToTank();
-            }
-            if (Blocks.AIR == level.getBlockState(new BlockPos(x,y,z-1)).getBlock()){
-                //LOGGER.debug("HIT! x: " + x + " y: " + y + " z-1: " + (z-1) + " is AIR!");
-                addAirToTank();
-            }
-
-        } else if (airTank.getTank() != null && (airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY && canConsumeEnergy()){
-            consumeEnergy();
-            if(++sound_tick == 19) {
-                sound_tick = 0;
-                if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                    level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x, y + 1, z)).getBlock())
+                airMultiplier++;
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x, y - 1, z)).getBlock())
+                airMultiplier++;
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x, y, z + 1)).getBlock())
+                airMultiplier++;
+            if (Blocks.AIR == level.getBlockState(new BlockPos(x, y, z - 1)).getBlock())
+                airMultiplier++;
+            if (addAirToTank(airMultiplier)) {
+                consumeEnergy();
+                if (++sound_tick == 19) {
+                    sound_tick = 0;
+                    if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                        level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
                 }
+                counter = (byte) this.calculateCounter(20, this.inventory.getStackInSlot(this.getUpgradeSlotId()));
             }
+        } else {
+            counter--;
         }
-
-        if(counter == 0) counter = (byte)this.calculateCounter(20,this.inventory.getStackInSlot(this.getUpgradeSlotId()));
-        else counter--;
     }
 
-    public void addAirToTank() {
-        if ((airTank.getTank().getFluidAmount() + 250) <= TANK_CAPACITY) {
-            airTank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 250), IFluidHandler.FluidAction.EXECUTE);
-        }
+    public ItemStackHandler createHandler(int size, AirCompressorTile tileEntity) {
+        return new ItemStackHandler(size) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                tileEntity.markFluidInputDirty();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (tileEntity.getUpgradeSlotId() == slot) {
+                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+                }
+                VoluminousEnergy.LOGGER.info("Slot id: " + slot);
+                if(slot == 0 && stack.getItem() instanceof BucketItem bucketItem) {
+                    return bucketItem.getFluid().isSame(Fluids.EMPTY);
+                }
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(!isItemValid(slot,stack)) return stack;
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
+    }
+
+    public boolean addAirToTank(int multiplier) {
+
+        int totalToAdd = 250 * multiplier;
+        int amountToAdd = Math.min(totalToAdd, (airTank.getTank().getFluidAmount() + totalToAdd));
+        if (amountToAdd == 0) return false;
+        airTank.getTank().fill(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), amountToAdd), IFluidHandler.FluidAction.EXECUTE);
+        return true;
     }
 
     @Nullable
@@ -125,12 +134,8 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
         return new AirCompressorContainer(i, level, worldPosition, playerInventory, playerEntity);
     }
 
-    public FluidStack getAirTankFluid(){
+    public FluidStack getAirTankFluid() {
         return this.airTank.getTank().getFluid();
-    }
-
-    public int getTankCapacity(){
-        return TANK_CAPACITY;
     }
 
     @Override
@@ -138,7 +143,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
         return Collections.singletonList(airTank);
     }
 
-    public RelationalTank getAirTank(){
+    public RelationalTank getAirTank() {
         return this.airTank;
     }
 
@@ -149,7 +154,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
-        return Collections.singletonList(outputSlotManager);
+        return List.of(slotManagers);
     }
 
     @Override
@@ -169,6 +174,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
 
     @Override
     public int getUpgradeSlotId() {
-        return 1;
+        return 2;
     }
 }

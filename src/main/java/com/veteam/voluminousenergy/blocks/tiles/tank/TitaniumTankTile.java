@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.tiles.tank;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.tank.TitaniumTankContainer;
-import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;

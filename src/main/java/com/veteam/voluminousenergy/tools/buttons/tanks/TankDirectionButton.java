@@ -72,7 +72,7 @@ public class TankDirectionButton extends VEIOButton {
         }
 
         // Print text
-        Component textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getId());
+        Component textComponent = TextUtil.slotNameWithDirection(tank.getTranslationKey(), tank.getSideDirection(), tank.getSlotNum());
         matrixStack.drawCenteredString(Minecraft.getInstance().font, textComponent.getString(),(getX())+48,(getY())+5,0xffffff);
     }
 
@@ -89,7 +89,7 @@ public class TankDirectionButton extends VEIOButton {
     }
 
     public int getId(){
-        return this.tank.getId();
+        return this.tank.getSlotNum();
     }
 
     public void setDirectionFromInt(int sideInt){

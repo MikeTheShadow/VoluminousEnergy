@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,18 +23,19 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.AIR_COMPRESSOR_
 
 public class AirCompressorContainer extends VoluminousContainer {
 
-    private static final int NUMBER_OF_SLOTS = 2;
+    private static final int NUMBER_OF_SLOTS = 3;
 
     public AirCompressorContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(AIR_COMPRESSOR_CONTAINER.get(),id);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
 
         tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new VEBucketSlot(h, 0, 70, 49)); // Air Compressor extract slot
-            addSlot(new VEInsertSlot(h, 1, 154, -14)); // Upgrade Slot
+            addSlot(new VEBucketSlot(h, 0, 70, 18)); // Air Compressor bucket input slot
+            addSlot(new VEBucketSlot(h, 1, 70, 49)); // Air Compressor bucket output slot
+            addSlot(new VEInsertSlot(h, 2, 154, -14)); // Upgrade Slot
         });
 
         layoutPlayerInventorySlots(8, 84);
@@ -83,7 +86,7 @@ public class AirCompressorContainer extends VoluminousContainer {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, 1, slotStack) != null)
+            if (handleCoreQuickMoveStackLogicWithUpgradeSlot(index, NUMBER_OF_SLOTS, ((IVEPoweredTileEntity) this.tileEntity).getUpgradeSlotId(), slotStack) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {

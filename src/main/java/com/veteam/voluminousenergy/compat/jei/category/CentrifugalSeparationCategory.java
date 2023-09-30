@@ -27,6 +27,8 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class CentrifugalSeparationCategory implements IRecipeCategory<CentrifugalSeparatorRecipe> {
     private final IDrawable background;
@@ -53,17 +55,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.centrifugal_separation");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
@@ -78,18 +80,18 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         slotDrawable.draw(matrixStack,49,38); // Second RNG
         slotDrawable.draw(matrixStack,49,56); // Third RNG
 
-        if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance0()*100);
+        if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){
+            int chance = (int)(recipe.getRNGOutputs()[1] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance1()*100);
+        if (recipe.getResult(2) != null && recipe.getResult(2).getItem() != Items.AIR){
+            int chance = (int)(recipe.getRNGOutputs()[2] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 44, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance2()*100);
+        if (recipe.getResult(3) != null && recipe.getResult(3).getItem() != Items.AIR){
+            int chance = (int)(recipe.getRNGOutputs()[3] * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
@@ -105,33 +107,37 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
 
         // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-            itemStack.setCount(recipe.ingredientCount);
+        for (ItemStack itemStack : recipe.getIngredient(0).getItems()){
+            itemStack.setCount(recipe.getIngredientCount(0));
             inputStacks.add(itemStack);
         }
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (recipe.needsBuckets() > 0){
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.needsBuckets());
-            bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
+
+
+        if (!recipe.getIngredient(1).isEmpty()){
+            ItemStack[] buckets = recipe.getIngredient(1).getItems();
+            bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Arrays.stream(buckets).toList());
+        } else {
+            bucketInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, Collections.singletonList(new ItemStack(Items.AIR,1)));
         }
 
         // Output --> ItemStacks here are not guaranteed to have correct amount; must do so manually
-        ItemStack primaryOutputStack = recipe.result.copy();
-        primaryOutputStack.setCount(recipe.getOutputAmount());
+        ItemStack primaryOutputStack = recipe.getResult(0).copy();
+        primaryOutputStack.setCount(recipe.getResultCount(0));
         primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
 
-        ItemStack rng0 = recipe.getRngItemSlot0().copy();
-        rng0.setCount(recipe.getOutputRngAmount0());
+        ItemStack rng0 = recipe.getResult(1).copy();
+        rng0.setCount(rng0.getCount());
         rng0OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng0);
 
-        ItemStack rng1 = recipe.getRngItemSlot1().copy();
-        rng1.setCount(recipe.getOutputRngAmount1());
+        ItemStack rng1 = recipe.getResult(2).copy();
+        rng1.setCount(rng1.getCount());
         rng1OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng1);
 
-        ItemStack rng2 = recipe.getRngItemSlot2().copy();
-        rng2.setCount(recipe.getOutputRngAmount2());
+        ItemStack rng2 = recipe.getResult(3).copy();
+        rng2.setCount(rng2.getCount());
         rng2OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng2);
     }
 

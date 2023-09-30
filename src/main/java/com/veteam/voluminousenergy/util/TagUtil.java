@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -40,6 +39,18 @@ public class TagUtil {
                 fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
             });
             return fluidSet.get();
+        });
+    }
+
+    public static Lazy<FluidStack> getLazyFluidStack(ResourceLocation fluidTagLocation, int amount){
+        TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
+        return Lazy.of(() -> {
+            HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
+            AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
+            holderSet.stream().forEach(fluidHolder -> {
+                fluidSet.get().add(new FluidStack(fluidHolder.value(), amount));
+            });
+            return fluidSet.get().get(0);
         });
     }
 

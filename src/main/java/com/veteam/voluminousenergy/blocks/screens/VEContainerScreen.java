@@ -1,5 +1,8 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
+import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -8,6 +11,9 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -17,11 +23,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraft.world.inventory.Slot;
 
 import java.util.UUID;
 
 public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
+
+    private VETileEntity tileEntity;
 
     public static final int WHITE_TEXT_COLOUR = 16777215;
     public static final int GREY_TEXT_COLOUR = 0x606060;
@@ -31,6 +39,9 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        if (menu instanceof VoluminousContainer voluminousContainer) {
+            this.tileEntity = voluminousContainer.getTileEntity();
+        }
     }
 
     @Override
@@ -42,7 +53,88 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         });
     }
 
-    protected abstract void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY);
+    public void renderIOMenu(VEFluidTileEntity tileEntity) {
+        renderIOMenu(tileEntity,64 + (this.width / 2),this.topPos - 18);
+    }
+
+    public void renderIOMenu(VEFluidTileEntity tileEntity, int menuButtonX, int menuButtonY) {
+
+        // Buttons
+        addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+
+        for (RelationalTank tank : tileEntity.getRelationalTanks()) {
+            // Input Tank
+            addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+
+            addRenderableWidget(new TankDirectionButton(tank, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+                // Do nothing
+            }));
+            increase++;
+        }
+    }
+
+
+    public void renderIOMenu(VETileEntity tileEntity, int menuButtonX, int menuButtonY) {
+
+        // Buttons
+        addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+    }
+
+    public void renderIOMenu(VETileEntity tileEntity) {
+        // Buttons
+        addRenderableWidget(new ioMenuButton(64 + (this.width / 2), this.topPos - 18, buttons -> {
+
+        }));
+
+
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
+    }
+
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+        for (int i = 0; i < this.tileEntity.getSlotManagers().size(); i++) {
+            Slot slot = this.menu.getSlot(i);
+            TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append(String.valueOf(i))), slot.x, slot.y, WHITE_TEXT_STYLE);
+        }
+    }
 
     /* GuiGraphics matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
     public void drawIOSideHelper(){
@@ -104,8 +196,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
-
-        VENetwork.channel.send(new UuidPacket(uuid, connection), PacketDistributor.SERVER.noArg());
+        VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
     }
 
     protected boolean isHovering(Rect2i rect, double x, double y) {

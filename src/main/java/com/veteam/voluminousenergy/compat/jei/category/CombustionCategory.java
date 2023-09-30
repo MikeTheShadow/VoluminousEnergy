@@ -6,8 +6,9 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
-import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
@@ -26,18 +27,19 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
 
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
 
     public CombustionCategory(IGuiHelper guiHelper){
@@ -54,22 +56,22 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.combustion");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics matrixStack, double mouseX, double mouseY){
+    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY){
 
         // Volumetric Energy label
         TextUtil.renderShadowedText(
@@ -97,7 +99,19 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
 
         if (oxiStack.isPresent()){
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = RecipeUtil.getOxidizerCombustionRecipeWithoutLevel(oxiStack.get());
+
+            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+
+            CombustionGeneratorOxidizerRecipe oxidizerRecipe = null;
+
+            for(VEFluidRecipe veFluidRecipe : recipes) {
+                if(veFluidRecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
+                    if(cor.getFluidIngredient(0).test(oxiStack.get())) {
+                        oxidizerRecipe = cor;
+                    }
+                }
+            }
+            if(oxidizerRecipe == null) throw new IllegalStateException("No matching oxidizer for category: " + this.getClass().getName());
 
             int fePerTick = recipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
             Component fePerTickComponent = Component.nullToEmpty(fePerTick+"");
@@ -141,18 +155,12 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
                                   IIngredientAcceptor fuelAcceptor,
                                   IIngredientAcceptor oxidizerAcceptor) {
 
-        ArrayList<FluidStack> fuelStacks = new ArrayList<>();
-        for (Fluid fluid : recipe.rawFluidInputList.get()){
-            fuelStacks.add(new FluidStack(fluid, 1000));
-        }
-
-        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, fuelStacks);
+        List<FluidStack> inputList = new ArrayList<>(Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
+        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
-        for (CombustionGeneratorOxidizerRecipe oxidizerRecipe : CombustionGeneratorOxidizerRecipe.oxidizerRecipes) {
-            for (Fluid fluid : oxidizerRecipe.rawFluidInputList.get()){
-                oxiStacks.add(new FluidStack(fluid, 1000));
-            }
+        for (VEFluidRecipe oxidizerRecipe : RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
+            oxiStacks.addAll(Arrays.asList(oxidizerRecipe.getFluidIngredient(0).getFluids()));
         }
 
         oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);
@@ -161,7 +169,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, CombustionGeneratorFuelRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull CombustionGeneratorFuelRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Init
         IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 18, 36);
         IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 86, 36);

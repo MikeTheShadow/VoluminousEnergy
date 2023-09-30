@@ -4,11 +4,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
-import com.veteam.voluminousenergy.util.RecipeUtil;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +35,7 @@ public class ToolingStationContainer extends VoluminousContainer {
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
         super(TOOLING_STATION_CONTAINER.get(), id);
-        this.tileEntity = world.getBlockEntity(pos);
+        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
         this.tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
@@ -153,9 +153,9 @@ public class ToolingStationContainer extends VoluminousContainer {
                     // Handle bucket with fluid
                     Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
-                        return ItemStack.EMPTY;
-                    }
+//                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
+//                        return ItemStack.EMPTY;
+//                    } TODO FIX ME
                 } catch (Exception e){
                     VoluminousEnergy.LOGGER.error("Item: " + RegistryLookups.lookupItem(slotStack) + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
                             "This may be a modded bucket that extends BucketItem, but contains no fluid. If not, here's the stacktrace: ");

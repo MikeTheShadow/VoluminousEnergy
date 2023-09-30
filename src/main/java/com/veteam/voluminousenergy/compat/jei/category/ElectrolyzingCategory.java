@@ -27,6 +27,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe> {
 
@@ -37,19 +38,19 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     private IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.ELECTROLYZING_UID, ElectrolyzerRecipe.class);
 
-    public ElectrolyzingCategory(IGuiHelper guiHelper){
+    public ElectrolyzingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 78).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
 
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -70,29 +71,31 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
     @Override
     public void draw(ElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,25, 30);
-        emptyArrow.draw(matrixStack,25,30);
-        slotDrawable.draw(matrixStack,5,20); // Input
-        slotDrawable.draw(matrixStack,5,38); // Bucket
-        slotDrawable.draw(matrixStack,49,2); // First Output
-        slotDrawable.draw(matrixStack,49,20); // First RNG
-        slotDrawable.draw(matrixStack,49,38); // Second RNG
-        slotDrawable.draw(matrixStack,49,56); // Third RNG
+        arrow.draw(matrixStack, 25, 30);
+        emptyArrow.draw(matrixStack, 25, 30);
+        slotDrawable.draw(matrixStack, 5, 20); // Input
+        slotDrawable.draw(matrixStack, 5, 38); // Bucket
+        slotDrawable.draw(matrixStack, 49, 2); // First Output
+        slotDrawable.draw(matrixStack, 49, 20); // First RNG
+        slotDrawable.draw(matrixStack, 49, 38); // Second RNG
+        slotDrawable.draw(matrixStack, 49, 56); // Third RNG
 
-        if (recipe.getRngItemSlot0() != null && recipe.getRngItemSlot0().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance0()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 26, VEContainerScreen.GREY_TEXT_STYLE);
+        float[] chances = recipe.getRNGOutputs();
+
+        if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR) {
+            int chance = (int) (chances[1] * 100);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getRngItemSlot1() != null && recipe.getRngItemSlot1().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance1()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 44, VEContainerScreen.GREY_TEXT_STYLE);
+        if (recipe.getResult(2) != null && recipe.getResult(2).getItem() != Items.AIR) {
+            int chance = (int) (chances[2] * 100);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 44, VEContainerScreen.GREY_TEXT_STYLE);
 
         }
 
-        if (recipe.getRngItemSlot2() != null && recipe.getRngItemSlot2().getItem() != Items.AIR){
-            int chance = (int)(recipe.getChance2()*100);
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 62, VEContainerScreen.GREY_TEXT_STYLE);
+        if (recipe.getResult(3) != null && recipe.getResult(3).getItem() != Items.AIR) {
+            int chance = (int) (chances[3] * 100);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }
@@ -104,34 +107,26 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
                                   IIngredientAcceptor rng0OutputAcceptor,
                                   IIngredientAcceptor rng1OutputAcceptor,
                                   IIngredientAcceptor rng2OutputAcceptor) {
-        ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.ingredient.get().getItems()){
-            itemStack.setCount(recipe.ingredientCount);
-            inputStacks.add(itemStack);
-        }
+        ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (recipe.needsBuckets() > 0){
-            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.needsBuckets());
+        if (!recipe.getIngredient(1).isEmpty()) {
+            ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.getIngredient(1).getItems()[0].getCount());
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
 
         // Output --> ItemStacks here are not guaranteed to have correct amount; must do so manually
-        ItemStack primaryOutputStack = recipe.result.copy();
-        primaryOutputStack.setCount(recipe.getOutputAmount());
+        ItemStack primaryOutputStack = recipe.getResult(0).copy();
         primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
 
-        ItemStack rng0 = recipe.getRngItemSlot0().copy();
-        rng0.setCount(recipe.getOutputRngAmount0());
+        ItemStack rng0 = recipe.getResult(1).copy();
         rng0OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng0);
 
-        ItemStack rng1 = recipe.getRngItemSlot1().copy();
-        rng1.setCount(recipe.getOutputRngAmount1());
+        ItemStack rng1 = recipe.getResult(2).copy();
         rng1OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng1);
 
-        ItemStack rng2 = recipe.getRngItemSlot2().copy();
-        rng2.setCount(recipe.getOutputRngAmount2());
+        ItemStack rng2 = recipe.getResult(3).copy();
         rng2OutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, rng2);
     }
 
@@ -142,10 +137,10 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         IRecipeSlotBuilder bucketInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 6, 39);
 
         // Output
-        IRecipeSlotBuilder itemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50,3);
-        IRecipeSlotBuilder rng0Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50,21);
-        IRecipeSlotBuilder rng1Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50,39);
-        IRecipeSlotBuilder rng2Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50,57);
+        IRecipeSlotBuilder itemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 3);
+        IRecipeSlotBuilder rng0Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 21);
+        IRecipeSlotBuilder rng1Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 39);
+        IRecipeSlotBuilder rng2Output = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 50, 57);
 
         itemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
         bucketInput.setSlotName(TextUtil.TRANSLATED_BUCKET_SLOT.getString());

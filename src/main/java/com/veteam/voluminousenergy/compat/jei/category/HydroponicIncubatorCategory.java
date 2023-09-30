@@ -26,15 +26,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIncubatorRecipe> {
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.HYDROPONIC_INCUBATOR_UID,HydroponicIncubatorRecipe.class);
 
     public HydroponicIncubatorCategory(IGuiHelper guiHelper){
@@ -53,17 +52,17 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.hydroponic_incubating");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
@@ -79,24 +78,26 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         slotDrawable.draw(matrixStack,138,10); // RNG2 output
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getInputAmount() + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
-        if (recipe.getChance0() > 0) {
-            int chance = (int) (recipe.getChance0()*100);
+        float[] chances = recipe.getRNGOutputs();
+
+        if (chances[1] > 0) {
+            int chance = (int) (chances[1]*100);
             int xPos = calculateXPos(94, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getChance1() > 0) {
-            int chance = (int) (recipe.getChance1()*100);
+        if (chances[2] > 0) {
+            int chance = (int) (chances[2]*100);
             int xPos = calculateXPos(116, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (recipe.getChance2() > 0) {
-            int chance = (int) (recipe.getChance2()*100);
+        if (chances[3] > 0) {
+            int chance = (int) (chances[3]*100);
             int xPos = calculateXPos(138, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
@@ -122,36 +123,19 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
                                   IIngredientAcceptor rng2OutputAccepter) {
 
         // INPUT
-        List<ItemStack> inputList = new ArrayList<>();
-        for (ItemStack testStack : recipe.getIngredient().getItems()){
-            testStack.setCount(recipe.getIngredientCount());
-            inputList.add(testStack);
-        }
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputList);
-
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInputList.get());
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getItemIngredient(0).getItems()));
+        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT
-        ItemStack primaryOutputStack = recipe.getResult().copy();
-        primaryOutputStack.setCount(recipe.getOutputAmount());
-        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, primaryOutputStack);
-
-        ItemStack rng0Stack = recipe.getRngItemSlot0().copy();
-        rng0Stack.setCount(recipe.getOutputRngAmount0());
-        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng0Stack);
-
-        ItemStack rng1Stack = recipe.getRngItemSlot1().copy();
-        rng1Stack.setCount(recipe.getOutputRngAmount1());
-        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng1Stack);
-
-        ItemStack rng2Stack = recipe.getRngItemSlot2().copy();
-        rng2Stack.setCount(recipe.getOutputRngAmount2());
-        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, rng2Stack);
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(0));
+        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(1));
+        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(2));
+        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(3));
 
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, HydroponicIncubatorRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull HydroponicIncubatorRecipe recipe, IFocusGroup focusGroup) {
 
         // init
         // Inputs
