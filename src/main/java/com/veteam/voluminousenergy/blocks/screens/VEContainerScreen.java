@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
 
@@ -196,7 +197,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
-        VENetwork.channel.sendToServer(new UuidPacket(uuid, connection));
+        VENetwork.channel.send(new UuidPacket(uuid, connection), PacketDistributor.SERVER.noArg());
     }
 
     protected boolean isHovering(Rect2i rect, double x, double y) {
