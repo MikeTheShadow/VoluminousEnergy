@@ -30,7 +30,7 @@ public class VELoot {
 
     private VELoot() {}
 
-    public static final LootItemFunctionType MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION = new LootItemFunctionType(new MysteriousMultiplierLootFunction.Serializer());
+//    public static final LootItemFunctionType MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION = new LootItemFunctionType(MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC.get());
     public static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
             BuiltInLootTables.BASTION_BRIDGE,
             BuiltInLootTables.END_CITY_TREASURE,
@@ -58,16 +58,16 @@ public class VELoot {
             BuiltInLootTables.UNDERWATER_RUIN_SMALL
     );
 
-    public static void registerLoot(IEventBus modEventBus){
-        modEventBus.addListener(VELoot::registerLootFunctions);
-    }
+//    public static void registerLoot(IEventBus modEventBus){
+//        modEventBus.addListener(VELoot::registerLootFunctions);
+//    }
 
-    private static void registerLootFunctions(RegisterEvent event){
-
-        event.register(Registries.LOOT_FUNCTION_TYPE, registerer -> registerer.register(
-                ResourceKey.create(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot")),
-                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
-        ));
-
-    }
+//    private static void registerLootFunctions(RegisterEvent event){
+//
+//        event.register(Registries.LOOT_FUNCTION_TYPE, registerer -> registerer.register(
+//                ResourceKey.create(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation(VoluminousEnergy.MODID, "mysterious_multiplier_loot")),
+//                MYSTERIOUS_MULTIPLIER_LOOT_FUNCTION
+//        ));
+//
+//    }
 }
