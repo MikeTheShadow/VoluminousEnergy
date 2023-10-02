@@ -10,6 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,13 +35,13 @@ public class RecipeCache {
             var levelCache = veRecipeCache.getOrDefault(level, new HashMap<>());
             var fluidLevelCache = veFluidRecipeCache.getOrDefault(level, new HashMap<>());
 
-            for (Recipe<?> recipe : level.getRecipeManager().getRecipes()) {
-                if (recipe instanceof VERecipe veRecipe) {
+            for (RecipeHolder<?> recipe : level.getRecipeManager().getRecipes()) {
+                if (recipe.value() instanceof VERecipe veRecipe) {
                     var cache = levelCache.getOrDefault(veRecipe.getType(), new ArrayList<>());
                     cache.add(veRecipe);
                     levelCache.put(veRecipe.getType(), cache);
                     cached++;
-                } else if (recipe instanceof VEFluidRecipe veFluidRecipe) {
+                } else if (recipe.value() instanceof VEFluidRecipe veFluidRecipe) {
                     var cache = fluidLevelCache.getOrDefault(veFluidRecipe.getType(), new ArrayList<>());
                     cache.add(veFluidRecipe);
                     fluidLevelCache.put(veFluidRecipe.getType(), cache);
