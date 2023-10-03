@@ -9,7 +9,8 @@
     "fluid": "minecraft:water",
     "amount": 250
   },
-  "result": [
-    {"" : "", "" : 50}
-  ]
+  "result": {
+    "fluid": "voluminousenergy:biofuel",
+    "amount": 250
+  }
 }
