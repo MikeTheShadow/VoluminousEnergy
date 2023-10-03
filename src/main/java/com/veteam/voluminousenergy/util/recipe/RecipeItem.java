@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Due to potential modification of already-existing objects
  * this class exists to provide an extracted check for
- * stack size and item type for recipe checks in tile entities
+ * item size and item type for recipe checks in tile entities
  */
 public class RecipeItem {
 
@@ -28,7 +28,7 @@ public class RecipeItem {
      * frontend code
      *
      * @param itemStack The new ItemStack
-     * @return returns a value based on if the stack size or material has changed (true) or
+     * @return returns a value based on if the item size or material has changed (true) or
      * has remained unchanged (false)
      */
     public boolean isDifferent(ItemStack itemStack) {

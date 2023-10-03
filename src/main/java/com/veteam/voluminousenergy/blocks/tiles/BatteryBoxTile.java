@@ -196,7 +196,7 @@ public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity
             ItemStack itemStack = inventory.getStackInSlot(i).copy();
             if(inventory.getStackInSlot(i+6).isEmpty()){
                 //VoluminousEnergy.LOGGER.debug("Empty check passed");
-                // Remove stack in the ith, slot and move it to i+6th slot indicating it's discharged
+                // Remove item in the ith, slot and move it to i+6th slot indicating it's discharged
                 itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy -> {
                     //VoluminousEnergy.LOGGER.debug("Item has Energy Capability");
                     if((!switchManagers[i].isFlipped() && energy.getEnergyStored() == energy.getMaxEnergyStored())

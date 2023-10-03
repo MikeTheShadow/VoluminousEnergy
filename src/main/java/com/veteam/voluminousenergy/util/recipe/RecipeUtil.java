@@ -64,8 +64,8 @@ public class RecipeUtil {
         if (logStack.isEmpty()) return null;
         AtomicReference<ItemStack> atomicItemStack = new AtomicReference<>(null);
 
-        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof CraftingRecipe){
+        world.getRecipeManager().getRecipes().parallelStream().forEach(r -> {
+            if (r.value() instanceof CraftingRecipe recipe){
                 if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
                     recipe.getIngredients().forEach(ingredient -> {
                         for (ItemStack itemStack : ingredient.getItems()){
@@ -85,8 +85,8 @@ public class RecipeUtil {
         if (plankStack.isEmpty()) return null;
         AtomicReference<ArrayList<ItemStack>> atomicItemStackArray = new AtomicReference<>(new ArrayList<ItemStack>());
 
-        world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof CraftingRecipe){
+        world.getRecipeManager().getRecipes().parallelStream().forEach(r -> {
+            if (r.value() instanceof CraftingRecipe recipe){
                 if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
                     if (recipe.getResultItem(world.registryAccess()).is(plankStack.getItem())){
                         recipe.getIngredients().forEach(ingredient -> {
@@ -104,7 +104,7 @@ public class RecipeUtil {
         if (logStack.isEmpty()) return null;
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if(recipe instanceof SawmillingRecipe sawmillingRecipe){
+            if(recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
                 if (!sawmillingRecipe.isLogRecipe()){
                     for (ItemStack ingredientStack : sawmillingRecipe.getItemIngredient(0).getItems()){
                         if (ingredientStack.getItem().equals(logStack.getItem())){

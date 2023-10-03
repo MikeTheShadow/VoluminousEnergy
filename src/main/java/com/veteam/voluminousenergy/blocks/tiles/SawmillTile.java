@@ -178,8 +178,8 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                     }
                     inventory.insertItem(1, resolvedPlankOutput.copy(), false);
                 } else { // Assuming the recipe output item is already in the output slot
-                   // currentPlankStack.setCount(.getCount()); // Simply change the stack to equal the output amount
-                    inventory.insertItem(1, resolvedPlankOutput.copy(),false); // Place the new output stack on top of the old one
+                   // currentPlankStack.setCount(.getCount()); // Simply change the item to equal the output amount
+                    inventory.insertItem(1, resolvedPlankOutput.copy(),false); // Place the new output item on top of the old one
                 }
 
                 // Second output
@@ -190,8 +190,8 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                     }
                     inventory.insertItem(2, secondItemOutput.copy(), false);
                 } else { // Assuming the recipe output item is already in the output slot
-                    //currentSecondOutput.setCount(secondItemOutput.getCount()); // Simply change the stack to equal the output amount
-                    inventory.insertItem(2, secondItemOutput.copy(),false); // Place the new output stack on top of the old one
+                    //currentSecondOutput.setCount(secondItemOutput.getCount()); // Simply change the item to equal the output amount
+                    inventory.insertItem(2, secondItemOutput.copy(),false); // Place the new output item on top of the old one
                 }
 
                 // Output Tank

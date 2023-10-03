@@ -11,7 +11,8 @@ public class VEFluidIngredientSerializer
 
     public FluidIngredient parse(FriendlyByteBuf buffer)
     {
-        return FluidIngredient.fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(buffer.readFluidStack())).limit(buffer.readVarInt()));
+        FluidStack stack = buffer.readFluidStack();
+        return FluidIngredient.fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(buffer.readFluidStack(),stack.getAmount(),stack.getFluid())).limit(buffer.readVarInt()));
     }
 
     public void write(FriendlyByteBuf buffer, FluidIngredient ingredient)

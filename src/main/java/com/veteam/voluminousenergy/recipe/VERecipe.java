@@ -1,33 +1,49 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.VEIngredientItem;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VERecipe implements Recipe<Container> {
 
     public List<Lazy<Ingredient>> lazyIngredients = new ArrayList<>();
-    public NonNullList<Ingredient> ingredients;
-    int processTime;
+    public NonNullList<VEIngredientItem> ingredients;
+    public int processTime;
     public List<ItemStack> results = new ArrayList<>();
+
+    public static final Serializer SERIALIZER = new Serializer();
     ResourceLocation recipeId;
 
+    public VERecipe() {
+
+    }
+
+    public VERecipe(List<ItemStack> results,int processTime,List<VEIngredientItem> ingredients) {
+        this.results = results;
+        this.processTime = processTime;
+        this.ingredients = NonNullList.create();
+        this.ingredients.addAll(ingredients);
+    }
 
     public Ingredient getIngredient(int id) {
         return getIngredients().get(id);
@@ -69,13 +85,8 @@ public class VERecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ResourceLocation getId() {
-        throw new NotImplementedException("Class" + this.getClass().getName() + " missing getId impl!");
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
-        throw new NotImplementedException("Class" + this.getClass().getName() + " missing getSerializer impl!");
+    public @NotNull RecipeSerializer<VERecipe> getSerializer() {
+        return SERIALIZER;
     }
 
     @Override
@@ -88,32 +99,22 @@ public class VERecipe implements Recipe<Container> {
         throw new NotImplementedException("Class" + this.getClass().getName() + " missing getToastSymbol impl!");
     }
 
-    @Override
-    public @NotNull NonNullList<Ingredient> getIngredients() {
-        if(this.ingredients == null) {
-            this.ingredients = unwrapIngredients();
+    // TODO see if we really need this!
+    private final List<Ingredient> rawItemIngredients = new ArrayList<>();
+    public List<Ingredient> getItemIngredients() {
+        if (rawItemIngredients.isEmpty()) {
+            for (VEIngredientItem item : ingredients) {
+                for (ItemStack stack : item.ingredient().getItems()) {
+                    stack.setCount(item.count());
+                }
+                rawItemIngredients.add(item.ingredient());
+            }
         }
-        return this.ingredients;
-    }
-
-    private NonNullList<Ingredient> unwrapIngredients() {
-        NonNullList<Ingredient> ingredientList = NonNullList.create();
-        for (Lazy<Ingredient> ingredient : this.lazyIngredients) {
-            ingredientList.add(ingredient.get());
-        }
-        return ingredientList;
+        return this.rawItemIngredients;
     }
 
     public boolean matches(@NotNull VETileEntity veTileEntity) {
         throw new NotImplementedException("Matches is not impl'd for: " + this.getClass().getName());
-    }
-
-    public void addLazyIngredient(Lazy<Ingredient> ingredientLazy) {
-        this.lazyIngredients.add(ingredientLazy);
-    }
-
-    public void addResult(ItemStack output) {
-        this.results.add(output);
     }
 
     public int getResultCount(int slot) {
@@ -121,27 +122,42 @@ public class VERecipe implements Recipe<Container> {
     }
 
     public int getIngredientCount(int slot) {
-        return this.ingredients.get(slot).getItems()[0].getCount();
-    }
-
-    public void setProcessTime(int processTime) {
-        this.processTime = processTime;
+        return this.ingredients.get(slot).count();
     }
 
     public int getProcessTime() {
         return processTime;
     }
-
-    public void setIngredients(NonNullList<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
     public void setResults(List<ItemStack> results) {
         this.results = results;
     }
 
-    public List<Lazy<Ingredient>> getLazyIngredients() {
-        return lazyIngredients;
-    }
+    public static class Serializer implements RecipeSerializer<VERecipe> {
 
+        public static final Codec<VERecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
+                VERecipeCodecs.VE_INGREDIENT_ITEM_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients)
+        ).apply(instance, VERecipe::new));
+
+        IngredientSerializerHelper<VERecipe> helper = new IngredientSerializerHelper<>();
+
+        @Nullable
+        @Override
+        public VERecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            VERecipe recipe = new VERecipe();
+            helper.fromNetwork(recipe, buffer);
+            return recipe;
+        }
+
+        @Override
+        public @NotNull Codec<VERecipe> codec() {
+            return VE_RECIPE_CODEC;
+        }
+
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull VERecipe recipe) {
+            helper.toNetwork(buffer,recipe);
+        }
+    }
 }

@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Due to potential modification of already-existing objects
  * this class exists to provide an extracted check for
- * stack size and fluid type for recipe checks in tile entities
+ * item size and fluid type for recipe checks in tile entities
  */
 public class RecipeFluid {
 
@@ -28,7 +28,7 @@ public class RecipeFluid {
      * frontend code
      *
      * @param fluidStack The new fluidstack
-     * @return returns a value based on if the stack size or material has changed (true) or
+     * @return returns a value based on if the item size or material has changed (true) or
      * has remained unchanged (false)
      */
     public boolean isDifferent(FluidStack fluidStack) {

@@ -13,8 +13,10 @@ import java.util.List;
 
 public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
+    // TODO fix me
+
     @Nullable
-    public T fromNetwork(T recipe, FriendlyByteBuf buffer) {
+    public T fromNetwork(FriendlyByteBuf buffer) {
 
         // Read ingredients
         int ingredientSize = buffer.readInt();
@@ -62,12 +64,12 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
     }
 
     public void toNetwork(FriendlyByteBuf buffer, T recipe) {
-        buffer.writeInt(recipe.getLazyIngredientList().size());
+        buffer.writeInt(recipe.getItemIngredients().size());
         for (Ingredient ingredient : recipe.getItemIngredients()) {
             ingredient.toNetwork(buffer);
         }
 
-        buffer.writeInt(recipe.getLazyFluidIngredientList().size());
+        buffer.writeInt(recipe.getFluidIngredientList().size());
 
         for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
             fluidIngredient.toNetwork(buffer);

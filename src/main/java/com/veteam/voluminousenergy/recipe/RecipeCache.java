@@ -85,7 +85,7 @@ public class RecipeCache {
             for (int i = 0; i < items.size(); i++) {
                 if(recipe.getIngredient(i).isEmpty()) continue;
                 if (!recipe.getIngredient(i).test(items.get(i))
-                        || items.get(i).getCount() < recipe.getIngredient(i).getItems()[0].getCount()) {
+                        || items.get(i).getCount() < recipe.getIngredientCount(i)) {
                     isValid = false;
                     break;
                 }
@@ -114,7 +114,7 @@ public class RecipeCache {
 
             for (int i = 0; i < items.size(); i++) {
                 if (!recipe.getItemIngredient(i).test(items.get(i))
-                        || items.get(i).getCount() < recipe.getItemIngredient(i).getItems()[0].getCount()) {
+                        || items.get(i).getCount() < recipe.getItemIngredientCount(i)) {
                     isValid = false;
                     break;
                 }

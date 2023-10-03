@@ -103,7 +103,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                                 }
                                 inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // CRASH the game if this is not empty!
                             } else { // Assuming the recipe output item is already in the output slot
-                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // Place the new output stack on top of the old one
+                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // Place the new output item on top of the old one
                             }
                         }
 
@@ -154,20 +154,20 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
 //                if (slot == 0 || slot == 1) {
-//                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE, new SimpleContainer(stack), level).orElse(null);
-//                    return recipe != null || stack.getItem() == Items.BUCKET;
-//                } else if (slot == 2 || slot == 3 && stack.getItem() instanceof BucketItem) {
-//                    if (stack.getItem() == Items.BUCKET) return true;
+//                    VEFluidRecipe recipe = level.getRecipeManager().getRecipeFor(DistillationRecipe.RECIPE_TYPE, new SimpleContainer(item), level).orElse(null);
+//                    return recipe != null || item.getItem() == Items.BUCKET;
+//                } else if (slot == 2 || slot == 3 && item.getItem() instanceof BucketItem) {
+//                    if (item.getItem() == Items.BUCKET) return true;
 //
-//                    return RecipeUtil.getDistillationRecipeFromResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
-//                } else if (slot == 4 || slot == 5 && stack.getItem() instanceof BucketItem) {
-//                    if (stack.getItem() == Items.BUCKET) return true;
+//                    return RecipeUtil.getDistillationRecipeFromResult(level, new FluidStack(((BucketItem) item.getItem()).getFluid(), 1000)) != null;
+//                } else if (slot == 4 || slot == 5 && item.getItem() instanceof BucketItem) {
+//                    if (item.getItem() == Items.BUCKET) return true;
 //
-//                    return RecipeUtil.getDistillationRecipeFromSecondResult(level, new FluidStack(((BucketItem) stack.getItem()).getFluid(), 1000)) != null;
+//                    return RecipeUtil.getDistillationRecipeFromSecondResult(level, new FluidStack(((BucketItem) item.getItem()).getFluid(), 1000)) != null;
 //                } else if (slot == 6) {
-//                    return RecipeUtil.getDistillationRecipeFromThirdResult(level, stack) != null;
+//                    return RecipeUtil.getDistillationRecipeFromThirdResult(level, item) != null;
 //                } else if (slot == 7) {
-//                    return TagUtil.isTaggedMachineUpgradeItem(stack);
+//                    return TagUtil.isTaggedMachineUpgradeItem(item);
 //                }
                 // TODO fix me
                 return true;
