@@ -113,8 +113,8 @@ public class RecipeCache {
             }
 
             for (int i = 0; i < items.size(); i++) {
-                if (!recipe.getItemIngredient(i).test(items.get(i))
-                        || items.get(i).getCount() < recipe.getItemIngredientCount(i)) {
+                if (!recipe.getIngredient(i).test(items.get(i))
+                        || items.get(i).getCount() < recipe.getIngredientCount(i)) {
                     isValid = false;
                     break;
                 }
@@ -176,8 +176,8 @@ public class RecipeCache {
                     if (manager.getSlotType() != SlotType.INPUT) continue;
                     ItemStack stack = manager.getItem(handler);
                     if (ignoreEmpty && stack.isEmpty()) continue;
-                    if(recipe.getItemIngredient(manager.getRecipePos()).isEmpty()) continue;
-                    if (!recipe.getItemIngredient(manager.getRecipePos()).test(stack)) {
+                    if(recipe.getIngredient(manager.getRecipePos()).isEmpty()) continue;
+                    if (!recipe.getIngredient(manager.getRecipePos()).test(stack)) {
                         isValid = false;
                         break;
                     }

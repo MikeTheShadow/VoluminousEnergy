@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.serializers.VEFluidRecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -28,7 +29,7 @@ import static com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile.C
 public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
-    public static final Serializer SERIALIZER = new Serializer();
+    public static final VEFluidRecipeSerializer SERIALIZER = new VEFluidRecipeSerializer();
 
     private final ResourceLocation recipeId;
     private int volumetricEnergy;
