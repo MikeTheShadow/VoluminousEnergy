@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util.recipe;
 
-import com.veteam.voluminousenergy.recipe.IRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;

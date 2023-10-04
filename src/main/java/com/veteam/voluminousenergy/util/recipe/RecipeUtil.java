@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
@@ -36,11 +37,11 @@ public class RecipeUtil {
 
     public static ToolingRecipe getToolingRecipeFromBitAndBase(Level world, ItemStack bitStack, ItemStack baseStack){
         if(baseStack.isEmpty() || bitStack.isEmpty()) return null;
-        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if(recipe instanceof ToolingRecipe){
-                if (((ToolingRecipe) recipe).getBits().contains(bitStack.getItem())
-                        && ((ToolingRecipe) recipe).getBases().contains(baseStack.getItem())) {
-                    return (ToolingRecipe) recipe;
+        for (RecipeHolder<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe.value() instanceof ToolingRecipe toolingRecipe){
+                if (toolingRecipe.getBits().contains(bitStack.getItem())
+                        && toolingRecipe.getBases().contains(baseStack.getItem())) {
+                    return toolingRecipe;
                 }
             }
         }
@@ -49,10 +50,10 @@ public class RecipeUtil {
 
     public static ToolingRecipe getToolingRecipeFromResult(Level world, ItemStack resultStack){
         if(resultStack.isEmpty()) return null;
-        for (Recipe<?> recipe : world.getRecipeManager().getRecipes()){
-            if(recipe instanceof ToolingRecipe){
-                if(((ToolingRecipe) recipe).getResult(0).is(resultStack.getItem())){
-                    return (ToolingRecipe) recipe;
+        for (RecipeHolder<?> recipe : world.getRecipeManager().getRecipes()){
+            if(recipe.value() instanceof ToolingRecipe toolingRecipe){
+                if(toolingRecipe.getResult(0).is(resultStack.getItem())){
+                    return toolingRecipe;
                 }
             }
         }
@@ -106,7 +107,7 @@ public class RecipeUtil {
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
             if(recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
                 if (!sawmillingRecipe.isLogRecipe()){
-                    for (ItemStack ingredientStack : sawmillingRecipe.getItemIngredient(0).getItems()){
+                    for (ItemStack ingredientStack : sawmillingRecipe.getIngredient(0).getItems()){
                         if (ingredientStack.getItem().equals(logStack.getItem())){
                             atomicRecipe.set(sawmillingRecipe);
                             break;
@@ -124,10 +125,10 @@ public class RecipeUtil {
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+            if (recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
                 if (!sawmillingRecipe.isLogRecipe()){
-                    if (sawmillingRecipe.getOutputItem(0).getItem().equals(plankStack.getItem())){
-                        atomicRecipe.set((SawmillingRecipe) recipe);
+                    if (sawmillingRecipe.getResult(0).getItem().equals(plankStack.getItem())){
+                        atomicRecipe.set(sawmillingRecipe);
                     }
                 }
             }
@@ -141,9 +142,9 @@ public class RecipeUtil {
         AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
 
         level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof SawmillingRecipe sawmillingRecipe){
+            if (recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
                 if (!sawmillingRecipe.isLogRecipe()){
-                    Item item = sawmillingRecipe.getOutputItem(0).getItem();
+                    Item item = sawmillingRecipe.getResult(0).getItem();
                     if (itemStack.getItem().equals(item)){
                         atomicRecipe.set(sawmillingRecipe);
                     }
@@ -157,7 +158,7 @@ public class RecipeUtil {
         if (solidFuelStack.isEmpty()) return null;
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof StirlingGeneratorRecipe stirlingGeneratorRecipe){
+            if (recipe.value() instanceof StirlingGeneratorRecipe stirlingGeneratorRecipe){
                 for (ItemStack itemStack : stirlingGeneratorRecipe.getIngredient(0).getItems()) {
                     if(RegistryLookups.lookupItem(itemStack.getItem()) == null) continue;
                     stirlingGeneratorRecipeMap.put(RegistryLookups.lookupItem(itemStack.getItem()).hashCode(),stirlingGeneratorRecipe);
@@ -189,8 +190,8 @@ public class RecipeUtil {
     private static ArrayList<CrusherRecipe> cachedCrusherRecipes = new ArrayList<>();
     public static ArrayList<CrusherRecipe> getCrusherRecipes(Level level){
         if (cachedCrusherRecipes.isEmpty()){
-            for (Recipe recipe : level.getRecipeManager().getRecipes()){
-                if (recipe instanceof CrusherRecipe crusherRecipe){
+            for (RecipeHolder<?> recipe : level.getRecipeManager().getRecipes()){
+                if (recipe.value() instanceof CrusherRecipe crusherRecipe){
                     cachedCrusherRecipes.add(crusherRecipe);
                 }
             }
