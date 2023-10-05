@@ -59,7 +59,7 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<ToolingRecipe>> TOOLING =
                 VE_RECIPE_TYPES_REGISTRY.register("tooling", () -> new VERecipeType<>(RecipeConstants.TOOLING));
 
-        public static final RegistryObject<RecipeType<SawmillingRecipe>> SAWMILLING =
+        public static final RegistryObject<RecipeType<VEFluidSawmillRecipe>> SAWMILLING =
                 VE_RECIPE_TYPES_REGISTRY.register("sawmilling", () -> new VERecipeType<>(RecipeConstants.SAWMILLING));
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> DIMENSIONAL_LASING =
@@ -76,41 +76,41 @@ public class VERecipes {
     }
 
     public static final RegistryObject<RecipeSerializer<?>> PRIMITIVE_BLAST_FURNACING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("primitive_blast_furnacing", () -> PrimitiveBlastFurnaceRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("primitive_blast_furnacing", () -> new PrimitiveBlastFurnaceRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> CRUSHING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("crushing", () -> CrusherRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("crushing", () -> new CrusherRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> ELECTROLYZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("electrolyzing", () -> ElectrolyzerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("electrolyzing", () -> new ElectrolyzerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> CENTRIFUGAL_AGITATING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("centrifugal_agitating", () -> CentrifugalAgitatorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("centrifugal_agitating", () -> new CentrifugalAgitatorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> COMPRESSING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("compressing", () -> CompressorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("compressing", () -> new CompressorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> STIRLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("stirling", () -> StirlingGeneratorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("stirling", () -> new StirlingGeneratorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> OXIDIZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("oxidizer_combustion", () -> CombustionGeneratorOxidizerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("oxidizer_combustion", () -> new CombustionGeneratorOxidizerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> FUEL_COMBUSTION =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("fuel_combustion", () -> CombustionGeneratorFuelRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fuel_combustion", () -> new CombustionGeneratorFuelRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> AQUEOULIZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("aqueoulizing", () -> AqueoulizerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("aqueoulizing", () -> new AqueoulizerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> DISTILLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("distilling", () -> DistillationRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("distilling", () -> new DistillationRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> CENTRIFUGAL_SEPARATION =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("centrifugal_separation", () -> CentrifugalSeparatorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("centrifugal_separation", () -> new CentrifugalSeparatorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> IMPLOSION_COMPRESSING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("implosion_compressing", () -> ImplosionCompressorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("implosion_compressing", () -> new ImplosionCompressorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> INDUSTRIAL_BLASTING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("industrial_blasting", () -> IndustrialBlastingRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("industrial_blasting", () -> new IndustrialBlastingRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> TOOLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("tooling", () -> ToolingRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("tooling", () -> new ToolingRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> SAWMILLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> SawmillingRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> new VEFluidSawmillRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> DIMENSIONAL_LASING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("dimensional_lasing", () -> DimensionalLaserRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("dimensional_lasing", () -> new DimensionalLaserRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> FLUID_ELECTROLYZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_electrolyzing", () -> FluidElectrolyzerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_electrolyzing", () -> new FluidElectrolyzerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> FLUID_MIXING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_mixing", () -> FluidMixerRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fluid_mixing", () -> new FluidMixerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> HYDROPONIC_INCUBATING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("hydroponic_incubating", () -> HydroponicIncubatorRecipe.SERIALIZER);
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("hydroponic_incubating", () -> new HydroponicIncubatorRecipe().getSerializer());
 }

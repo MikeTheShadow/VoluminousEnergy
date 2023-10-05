@@ -2,8 +2,9 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
-import com.veteam.voluminousenergy.recipe.IRNGRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -107,8 +108,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                         }
                     }
 
-                    IRNGRecipe irngRecipe = null;
-                    if(recipe instanceof IRNGRecipe rec) {
+                    VERNGRecipe irngRecipe = null;
+                    if(recipe instanceof VERNGRecipe rec) {
                         irngRecipe = rec;
                     }
                     Random r = new Random();
@@ -119,7 +120,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
                             if(irngRecipe != null) {
-                                float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
+                                float randomness = irngRecipe.getRNGOutputs().get(slotManager.getRecipePos());
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
                                     if(random > randomness) continue;

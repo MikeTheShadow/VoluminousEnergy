@@ -97,7 +97,7 @@ public class WorldUtil {
         if (sampledClimate.isEmpty()) return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
 
         level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
+            if (recipe.value() instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
                 FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
                 if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
                     fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate, pos, level)));

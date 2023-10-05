@@ -9,10 +9,6 @@ import org.jetbrains.annotations.NotNull;
 public class FluidMixerRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_MIXING.get();
 
-    public FluidMixerRecipe(ResourceLocation recipeId) {
-        this.recipeId = recipeId;
-    }
-
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType() {
         return RECIPE_TYPE;

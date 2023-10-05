@@ -71,7 +71,7 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, I
                                     inventory.getStackInSlot(0).getItem(), level);
 
                     if (crusherRecipe.isPresent()) {
-                        if (!(crusherRecipe.get().getMinExperience() == 0)) {
+                        if (!(crusherRecipe.get().minExp == 0)) {
                             level.addFreshEntity(new ExperienceOrb(
                                     level,
                                     worldPosition.getX(),
@@ -79,8 +79,8 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, I
                                     worldPosition.getZ(),
                                     amount * Mth.nextInt(
                                             rand,
-                                            crusherRecipe.get().getMinExperience(),
-                                            crusherRecipe.get().getMaxExperience()
+                                            crusherRecipe.get().minExp,
+                                            crusherRecipe.get().maxExp
                                     )
                             ));
 

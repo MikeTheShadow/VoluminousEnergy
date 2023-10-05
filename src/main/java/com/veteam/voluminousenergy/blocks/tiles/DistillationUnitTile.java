@@ -84,7 +84,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
 
             // Tank fluid amount check + tank cap checks
-            if (thirdOutput.getCount() < recipe.getOutputItem(0).getMaxStackSize()) {
+            if (thirdOutput.getCount() < recipe.getResult(0).getMaxStackSize()) {
                 // Check for power
                 if (canConsumeEnergy()) {
                     if (counter == 1) {
@@ -96,14 +96,14 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                         // Second Output Tank
                         fluidManagers[2].fillOutput(recipe,1);
 
-                        if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getThirdChance()) {
-                            if (thirdOutput.getItem() != recipe.getOutputItem(0).getItem()) {
+                        if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getRNGOutputs().get(2)) {
+                            if (thirdOutput.getItem() != recipe.getResult(0).getItem()) {
                                 if (thirdOutput.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
                                     thirdOutput.setCount(1);
                                 }
-                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // CRASH the game if this is not empty!
+                                inventory.insertItem(6, recipe.getResult(0).copy(), false); // CRASH the game if this is not empty!
                             } else { // Assuming the recipe output item is already in the output slot
-                                inventory.insertItem(6, recipe.getOutputItem(0).copy(), false); // Place the new output item on top of the old one
+                                inventory.insertItem(6, recipe.getResult(0).copy(), false); // Place the new output item on top of the old one
                             }
                         }
 

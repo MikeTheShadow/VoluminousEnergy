@@ -4,6 +4,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.entity.raid.Raids;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -53,7 +55,7 @@ public class ChunkFluids extends SavedData {
         ListTag listtag = compoundTag.getList("ChunkFluids", 10);
         for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
-            ChunkFluid cf = new ChunkFluid( compoundtag);
+            ChunkFluid cf = new ChunkFluid(compoundtag);
             chunkFluid.chunkFluidSet.add(cf);
         }
         return chunkFluid;
@@ -103,11 +105,18 @@ public class ChunkFluids extends SavedData {
 
     public static void loadInstance(ServerLevel serverLevel) {
         if (CHUNK_FLUIDS == null) {
-            CHUNK_FLUIDS = serverLevel.getDataStorage().computeIfAbsent((compoundTag)
-                            -> ChunkFluids.load(serverLevel, compoundTag),
-                    () -> new ChunkFluids(serverLevel),
-                    ChunkFluids.getFileId(serverLevel.dimensionTypeRegistration()));
+            CHUNK_FLUIDS = factory(serverLevel).constructor().get();
+            CHUNK_FLUIDS = serverLevel.getDataStorage()
+                    .computeIfAbsent(ChunkFluids.factory(serverLevel), ChunkFluids.getFileId(serverLevel.dimensionTypeRegistration()));
         }
+    }
+
+    public static SavedData.Factory<ChunkFluids> factory(ServerLevel serverLevel) {
+        return new SavedData.Factory<>(() -> {
+            return new ChunkFluids(serverLevel);
+        }, (p_296865_) -> {
+            return load(serverLevel, p_296865_);
+        }, DataFixTypes.SAVED_DATA_RAIDS);
     }
 
     public static ChunkFluids getInstance() {
@@ -120,7 +129,7 @@ public class ChunkFluids extends SavedData {
 
     public ChunkFluid getOrElse(ChunkFluid fluid) {
         return chunkFluidSet.stream().filter(
-                chunkFluid -> chunkFluid.getChunkPos().equals(fluid.getChunkPos()))
+                        chunkFluid -> chunkFluid.getChunkPos().equals(fluid.getChunkPos()))
                 .findFirst().orElse(fluid);
     }
 }

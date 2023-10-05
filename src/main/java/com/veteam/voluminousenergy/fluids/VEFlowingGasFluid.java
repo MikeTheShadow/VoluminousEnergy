@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -273,7 +274,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         if (!this.canPassThroughWall(Direction.UP, getter, pos0, blockState0, pos1, blockState1)) {
             return false;
         } else {
-            return blockState1.getFluidState().getType().isSame(this) || this.canHoldFluid(getter, pos1, blockState1, fluid);
+            return blockState1.getFluidState().getType().isSame(this) || this.canHoldFluid(null,getter, pos1, blockState1, fluid);
         }
     }
 
@@ -310,10 +311,11 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         return flag;
     }
 
-    private boolean canHoldFluid(BlockGetter getter, BlockPos pos, BlockState blockState, Fluid fluid) {
+
+    private boolean canHoldFluid(Player player, BlockGetter getter, BlockPos pos, BlockState blockState, Fluid fluid) {
         Block block = blockState.getBlock();
         if (block instanceof LiquidBlockContainer) {
-            return ((LiquidBlockContainer)block).canPlaceLiquid(getter, pos, blockState, fluid);
+            return ((LiquidBlockContainer)block).canPlaceLiquid(player, getter, pos, blockState, fluid);
         } else if (!(block instanceof DoorBlock) && !blockState.is(BlockTags.SIGNS) && !blockState.is(Blocks.LADDER) && !blockState.is(Blocks.SUGAR_CANE) && !blockState.is(Blocks.BUBBLE_COLUMN)) {
             if (!blockState.is(Blocks.NETHER_PORTAL) && !blockState.is(Blocks.END_PORTAL) && !blockState.is(Blocks.END_GATEWAY) && !blockState.is(Blocks.STRUCTURE_VOID)) {
                 return !blockState.blocksMotion();

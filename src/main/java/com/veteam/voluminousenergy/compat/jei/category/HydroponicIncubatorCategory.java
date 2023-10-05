@@ -80,24 +80,24 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
-        float[] chances = recipe.getRNGOutputs();
+        List<Float> chances = recipe.getRNGOutputs();
 
-        if (chances[1] > 0) {
-            int chance = (int) (chances[1]*100);
+        if (chances.get(1) > 0) {
+            int chance = (int) (chances.get(1)*100);
             int xPos = calculateXPos(94, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (chances[2] > 0) {
-            int chance = (int) (chances[2]*100);
+        if (chances.get(2) > 0) {
+            int chance = (int) (chances.get(2)*100);
             int xPos = calculateXPos(116, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (chances[3] > 0) {
-            int chance = (int) (chances[3]*100);
+        if (chances.get(3) > 0) {
+            int chance = (int) (chances.get(3)*100);
             int xPos = calculateXPos(138, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
@@ -123,14 +123,14 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
                                   IIngredientAcceptor rng2OutputAccepter) {
 
         // INPUT
-        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getItemIngredient(0).getItems()));
+        itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredient(0).getItems()));
         fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // OUTPUT
-        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(0));
-        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(1));
-        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(2));
-        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem(3));
+        primaryOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, recipe.getResult(0));
+        rng0OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getResult(1));
+        rng1OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getResult(2));
+        rng2OutputAccepter.addIngredient(VanillaTypes.ITEM_STACK, recipe.getResult(3));
 
     }
 

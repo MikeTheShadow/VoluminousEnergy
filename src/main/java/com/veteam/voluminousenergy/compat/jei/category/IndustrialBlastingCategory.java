@@ -89,17 +89,17 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
                                   IIngredientAcceptor heatFluidAcceptor,
                                   IIngredientAcceptor outputItemAcceptor) {
         // Inputs
-        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(0).getItems()));
+        ArrayList<ItemStack> firstInputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
         firstInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, firstInputStacks);
 
-        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(1).getItems()));
+        ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredient(1).getItems()));
         secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
         heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.getFluidIngredient(0).getFluids()).toList());
 
         // Output
-        ItemStack resultStack = recipe.getOutputItem(0).copy();
-        resultStack.setCount(recipe.getOutputItem(0).getCount());
+        ItemStack resultStack = recipe.getResult(0).copy();
+        resultStack.setCount(recipe.getResult(0).getCount());
         outputItemAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
     }
 

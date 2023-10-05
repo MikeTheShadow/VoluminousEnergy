@@ -10,8 +10,6 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
     public static final RecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
 
-    public StirlingGeneratorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
-
     @Override
     public @NotNull RecipeType<?> getType(){
         return RECIPE_TYPE;

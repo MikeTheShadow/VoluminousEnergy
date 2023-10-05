@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.NotImplementedException;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -101,15 +101,15 @@ public class RecipeUtil {
         return atomicItemStackArray.get();
     }
 
-    public static SawmillingRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack){ // Parallel by default
+    public static VEFluidSawmillRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack){ // Parallel by default
         if (logStack.isEmpty()) return null;
-        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if(recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
-                if (!sawmillingRecipe.isLogRecipe()){
-                    for (ItemStack ingredientStack : sawmillingRecipe.getIngredient(0).getItems()){
+            if(recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe){
+                if (!VEFluidSawmillRecipe.isLogRecipe()){
+                    for (ItemStack ingredientStack : VEFluidSawmillRecipe.getIngredient(0).getItems()){
                         if (ingredientStack.getItem().equals(logStack.getItem())){
-                            atomicRecipe.set(sawmillingRecipe);
+                            atomicRecipe.set(VEFluidSawmillRecipe);
                             break;
                         }
                     }
@@ -120,15 +120,15 @@ public class RecipeUtil {
         return atomicRecipe.get();
     }
 
-    public static SawmillingRecipe getSawmillingRecipeFromPlank(Level world, ItemStack plankStack){ // Parallel by default
+    public static VEFluidSawmillRecipe getSawmillingRecipeFromPlank(Level world, ItemStack plankStack){ // Parallel by default
         if (plankStack.isEmpty()) return null;
-        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
-                if (!sawmillingRecipe.isLogRecipe()){
-                    if (sawmillingRecipe.getResult(0).getItem().equals(plankStack.getItem())){
-                        atomicRecipe.set(sawmillingRecipe);
+            if (recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe){
+                if (!VEFluidSawmillRecipe.isLogRecipe()){
+                    if (VEFluidSawmillRecipe.getResult(0).getItem().equals(plankStack.getItem())){
+                        atomicRecipe.set(VEFluidSawmillRecipe);
                     }
                 }
             }
@@ -137,16 +137,16 @@ public class RecipeUtil {
         return atomicRecipe.get();
     }
 
-    public static SawmillingRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack){
+    public static VEFluidSawmillRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack){
         if (itemStack.isEmpty()) return null;
-        AtomicReference<SawmillingRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
 
         level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof SawmillingRecipe sawmillingRecipe){
-                if (!sawmillingRecipe.isLogRecipe()){
-                    Item item = sawmillingRecipe.getResult(0).getItem();
+            if (recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe){
+                if (!VEFluidSawmillRecipe.isLogRecipe()){
+                    Item item = VEFluidSawmillRecipe.getResult(0).getItem();
                     if (itemStack.getItem().equals(item)){
-                        atomicRecipe.set(sawmillingRecipe);
+                        atomicRecipe.set(VEFluidSawmillRecipe);
                     }
                 }
             }
@@ -180,11 +180,13 @@ public class RecipeUtil {
     }
 
     public static int getVolumetricEnergyWithoutLevel(Fluid fluid){
-        AtomicInteger atomicInteger = new AtomicInteger(0);
-        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
-            if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
-        });
-        return atomicInteger.get();
+        // TODO FIX ME
+        throw new NotImplementedException("Error report this to the mod author as a bug!");
+//        AtomicInteger atomicInteger = new AtomicInteger(0);
+//        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
+//            if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
+//        });
+//        return atomicInteger.get();
     }
 
     private static ArrayList<CrusherRecipe> cachedCrusherRecipes = new ArrayList<>();
@@ -238,11 +240,13 @@ public class RecipeUtil {
     }
 
     public static boolean isCombustibleFuelWithoutLevel(Fluid fluid){
-        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
-            if (lazyPair.get().getA().contains(fluid)) atomicBoolean.set(true);
-        });
-        return atomicBoolean.get();
+        // TODO FIX ME
+        throw new NotImplementedException("Please contact the mod author in regards to this error!");
+//        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+//        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
+//            if (lazyPair.get().getA().contains(fluid)) atomicBoolean.set(true);
+//        });
+//        return atomicBoolean.get();
     }
 
     public static FluidStack pullFluidFromJSON(String id, JsonObject json) {

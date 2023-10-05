@@ -195,6 +195,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
+    @Deprecated
     public void informTileOfIOButton(boolean connection){
         UUID uuid = Minecraft.getInstance().player.getUUID();
         VENetwork.channel.send(new UuidPacket(uuid, connection), PacketDistributor.SERVER.noArg());

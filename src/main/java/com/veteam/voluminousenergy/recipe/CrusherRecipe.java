@@ -10,12 +10,6 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
 
-    public final ResourceLocation recipeId;
-
-    public CrusherRecipe(ResourceLocation recipeId) {
-        this.recipeId = recipeId;
-    }
-
     @Override
     public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;

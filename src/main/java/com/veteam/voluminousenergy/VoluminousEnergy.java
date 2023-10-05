@@ -119,7 +119,7 @@ public class VoluminousEnergy {
         // TODO: Port registering of Features to use Deferred register
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEOreGeneration::OreGeneration);
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
-        VELoot.registerLoot(modEventBus);
+//        VELoot.registerLoot(modEventBus);
 
         //Register triggers
         VECriteriaTriggers.init();

@@ -1,202 +1,167 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.gson.JsonObject;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.serializers.VEDimensionalLaserRecipeSerializer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.List;
 
 public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
 
-    public static final DimensionalLaserRecipe.Serializer SERIALIZER = new DimensionalLaserRecipe.Serializer();
-
-    private final ResourceLocation recipeId;
-
-    private FluidStack result;
-
-    private Fluid fluid;
+    public static final VEDimensionalLaserRecipeSerializer SERIALIZER = new VEDimensionalLaserRecipeSerializer();
 
     private int maximumAmount;
     private int minimumAmount;
 
-    private Pair<Float,Float> continentalnessRange;
-    private Pair<Float,Float> erosionRange;
-    private Pair<Float,Float> humidityRange;
-    private Pair<Float,Float> temperatureRange;
-
-    private FluidClimateSpawn fluidClimateSpawn;
+    private float continentalnessMin;
+    private float continentalnessMax;
+    private float erosionMin;
+    private float erosionMax;
+    private float humidityMin;
+    private float humidityMax;
+    private float temperatureMin;
+    private float temperatureMax;
 
     public DimensionalLaserRecipe() {
-        recipeId = null;
+
     }
 
-    public DimensionalLaserRecipe(ResourceLocation recipeId){
-        this.recipeId = recipeId;
+    public DimensionalLaserRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi,
+                                  int processTime, int maximumAmount, int minimumAmount, float continentalnessMin,
+                                  float continentalnessMax, float erosionMin, float erosionMax, float humidityMin,
+                                  float humidityMax, float temperatureMin, float temperatureMax) {
+        super(i, fi, of, oi, processTime);
+        this.maximumAmount = maximumAmount;
+        this.minimumAmount = minimumAmount;
+        this.continentalnessMin = continentalnessMin;
+        this.continentalnessMax = continentalnessMax;
+        this.erosionMin = erosionMin;
+        this.erosionMax = erosionMax;
+        this.humidityMin = humidityMin;
+        this.humidityMax = humidityMax;
+        this.temperatureMin = temperatureMin;
+        this.temperatureMax = temperatureMax;
     }
 
-    public FluidStack getInputFluid(){
-        return new FluidStack(this.fluid, 1000);
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId(){return recipeId;}
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
-
-    @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
-
-    @Override
-    public int getProcessTime() { return 0; }
+    private FluidClimateSpawn fluidClimateSpawn = null;
 
     public FluidClimateSpawn getFluidClimateSpawn() {
-        return fluidClimateSpawn;
+        if (this.fluidClimateSpawn == null) {
+            this.fluidClimateSpawn = new FluidClimateSpawn(
+                    new Pair<>(this.continentalnessMin, this.continentalnessMax),
+                    new Pair<>(this.erosionMin, this.erosionMax),
+                    new Pair<>(this.humidityMin, this.humidityMax),
+                    new Pair<>(this.temperatureMin, this.temperatureMax),
+                    this.getOutputFluid(0).getFluid(),
+                    this.minimumAmount,
+                    this.maximumAmount
+            );
+        }
+        return this.fluidClimateSpawn;
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
     }
 
-    public static class Serializer implements RecipeSerializer<DimensionalLaserRecipe>{
-        @Override
-        public @NotNull DimensionalLaserRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-            DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
+    @Override
+    public @NotNull RecipeType<VEFluidRecipe> getType() {
+        return RECIPE_TYPE;
+    }
 
-            ResourceLocation fluidResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json,"fluid","minecraft:air"),':');
-            recipe.fluid = ForgeRegistries.FLUIDS.getValue(fluidResourceLocation);
+    public int getMaximumAmount() {
+        return maximumAmount;
+    }
 
-            // Second: get amounts:
-            JsonObject amountsJson = json.get("amounts").getAsJsonObject();
+    public int getMinimumAmount() {
+        return minimumAmount;
+    }
 
-            recipe.minimumAmount = GsonHelper.getAsInt(amountsJson, "minimum", 1);
-            recipe.maximumAmount = GsonHelper.getAsInt(amountsJson, "maximum", 1);
+    public float getContinentalnessMin() {
+        return continentalnessMin;
+    }
 
-            // Third: get spans
-            float min, max;
-            JsonObject spansJson = json.get("climate").getAsJsonObject();
+    public float getContinentalnessMax() {
+        return continentalnessMax;
+    }
 
-            JsonObject continentalness = spansJson.get("continentalness").getAsJsonObject();
-            min = GsonHelper.getAsFloat(continentalness, "minimum", 0);
-            max = GsonHelper.getAsFloat(continentalness, "maximum", 0);
-            recipe.continentalnessRange = new Pair<>(min, max);
+    public float getErosionMin() {
+        return erosionMin;
+    }
 
-            JsonObject erosion = spansJson.get("erosion").getAsJsonObject();
-            min = GsonHelper.getAsFloat(erosion, "minimum", 0);
-            max = GsonHelper.getAsFloat(erosion, "maximum", 0);
-            recipe.erosionRange = new Pair<>(min, max);
+    public float getErosionMax() {
+        return erosionMax;
+    }
 
-            JsonObject humidity = spansJson.get("humidity").getAsJsonObject();
-            min = GsonHelper.getAsFloat(humidity, "minimum", 0);
-            max = GsonHelper.getAsFloat(humidity, "maximum", 0);
-            recipe.humidityRange = new Pair<>(min, max);
+    public float getHumidityMin() {
+        return humidityMin;
+    }
 
-            JsonObject temperature = spansJson.get("temperature").getAsJsonObject();
-            min = GsonHelper.getAsFloat(temperature, "minimum", 0);
-            max = GsonHelper.getAsFloat(temperature, "maximum", 0);
-            recipe.temperatureRange = new Pair<>(min, max);
+    public float getHumidityMax() {
+        return humidityMax;
+    }
 
-            recipe.fluidClimateSpawn = new FluidClimateSpawn(
-                    recipe.continentalnessRange,
-                    recipe.erosionRange,
-                    recipe.humidityRange,
-                    recipe.temperatureRange,
-                    recipe.fluid,
-                    recipe.minimumAmount,
-                    recipe.maximumAmount
-            );
+    public float getTemperatureMin() {
+        return temperatureMin;
+    }
 
-            recipe.lazyIngredientList.add(Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1))));
-            recipe.fluidOutputList.add(new FluidStack(Objects.requireNonNull(recipe.fluid), 1000));
+    public float getTemperatureMax() {
+        return temperatureMax;
+    }
 
-            recipe.fluidOutputList.add(recipe.result);
+    public void setMaximumAmount(int maximumAmount) {
+        this.maximumAmount = maximumAmount;
+    }
 
-            return recipe;
-        }
+    public void setMinimumAmount(int minimumAmount) {
+        this.minimumAmount = minimumAmount;
+    }
 
-        @Nullable
-        @Override
-        public DimensionalLaserRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer){
-            DimensionalLaserRecipe recipe = new DimensionalLaserRecipe(recipeId);
-            recipe.fluid = buffer.readFluidStack().getRawFluid();
+    public void setContinentalnessMin(float continentalnessMin) {
+        this.continentalnessMin = continentalnessMin;
+    }
 
-            recipe.minimumAmount = buffer.readInt();
-            recipe.maximumAmount = buffer.readInt();
+    public void setContinentalnessMax(float continentalnessMax) {
+        this.continentalnessMax = continentalnessMax;
+    }
 
-            float tempA, tempB;
+    public void setErosionMin(float erosionMin) {
+        this.erosionMin = erosionMin;
+    }
 
-            // Continentalness
-            tempA = buffer.readFloat();
-            tempB = buffer.readFloat();
-            recipe.continentalnessRange = new Pair<>(tempA, tempB);
+    public void setErosionMax(float erosionMax) {
+        this.erosionMax = erosionMax;
+    }
 
-            // Erosion
-            tempA = buffer.readFloat();
-            tempB = buffer.readFloat();
-            recipe.erosionRange = new Pair<>(tempA, tempB);
+    public void setHumidityMin(float humidityMin) {
+        this.humidityMin = humidityMin;
+    }
 
-            // Humidity
-            tempA = buffer.readFloat();
-            tempB = buffer.readFloat();
-            recipe.humidityRange = new Pair<>(tempA, tempB);
+    public void setHumidityMax(float humidityMax) {
+        this.humidityMax = humidityMax;
+    }
 
-            // Temperature
-            tempA = buffer.readFloat();
-            tempB = buffer.readFloat();
-            recipe.temperatureRange = new Pair<>(tempA, tempB);
+    public void setTemperatureMin(float temperatureMin) {
+        this.temperatureMin = temperatureMin;
+    }
 
-            recipe.fluidClimateSpawn = new FluidClimateSpawn(
-                    recipe.continentalnessRange,
-                    recipe.erosionRange,
-                    recipe.humidityRange,
-                    recipe.temperatureRange,
-                    recipe.fluid,
-                    recipe.minimumAmount,
-                    recipe.maximumAmount
-            );
+    public void setTemperatureMax(float temperatureMax) {
+        this.temperatureMax = temperatureMax;
+    }
 
-            recipe.lazyIngredientList.add(Lazy.of(() -> Ingredient.of(new ItemStack(Items.BUCKET,1))));
-            recipe.result = new FluidStack(recipe.fluid, 1000);
-            recipe.fluidOutputList.add(recipe.result);
-
-            return recipe;
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, DimensionalLaserRecipe recipe){
-            buffer.writeFluidStack(new FluidStack(recipe.fluid, 1000));
-            buffer.writeInt(recipe.minimumAmount);
-            buffer.writeInt(recipe.maximumAmount);
-
-            buffer.writeFloat(recipe.continentalnessRange.getA());
-            buffer.writeFloat(recipe.continentalnessRange.getB());
-
-            buffer.writeFloat(recipe.erosionRange.getA());
-            buffer.writeFloat(recipe.erosionRange.getB());
-
-            buffer.writeFloat(recipe.humidityRange.getA());
-            buffer.writeFloat(recipe.humidityRange.getB());
-
-            buffer.writeFloat(recipe.temperatureRange.getA());
-            buffer.writeFloat(recipe.temperatureRange.getB());
-        }
+    @Override
+    public @NotNull ItemStack getToastSymbol() {
+        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
     }
 }

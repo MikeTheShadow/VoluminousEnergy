@@ -80,7 +80,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
         if (blockstate.getBlock() instanceof BonemealableBlock) {
             Block block = blockstate.getBlock();
             BonemealableBlock bonemealableblock = (BonemealableBlock)blockstate.getBlock();
-            if (bonemealableblock.isValidBonemealTarget(level, pos, blockstate, level.isClientSide)) {
+            if (bonemealableblock.isValidBonemealTarget(level, pos, blockstate)) {
 
 
                 // TODO: Add more checks to ensure more powerful than bonemeal

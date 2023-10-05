@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -57,12 +58,12 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public static final Component SHOW_RECIPES = TextUtil.translateString("jei.tooltip.show.recipes");
 
     @Override
-    public @NotNull ResourceLocation getPluginUid(){
+    public @NotNull ResourceLocation getPluginUid() {
         return PLUGIN_UID;
     }
 
     @Override
-    public void registerCategories(IRecipeCategoryRegistration registration){
+    public void registerCategories(IRecipeCategoryRegistration registration) {
         IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new CrushingCategory(guiHelper));
         registration.addRecipeCategories(new ElectrolyzingCategory(guiHelper));
@@ -85,7 +86,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registration){// Add recipes
+    public void registerRecipes(IRecipeRegistration registration) {// Add recipes
         registration.addRecipes(CrushingCategory.RECIPE_TYPE, getRecipesOfType(CrusherRecipe.RECIPE_TYPE));
         registration.addRecipes(ElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(ElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(CompressingCategory.RECIPE_TYPE, getRecipesOfType(CompressorRecipe.RECIPE_TYPE));
@@ -98,7 +99,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(ImplosionCompressionCategory.RECIPE_TYPE, getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE));
         registration.addRecipes(IndustrialBlastingCategory.RECIPE_TYPE, getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE));
         registration.addRecipes(ToolingCategory.RECIPE_TYPE, getRecipesOfType(ToolingRecipe.RECIPE_TYPE));
-        registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillingRecipe.RECIPE_TYPE));
+        registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(VEFluidSawmillRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
         registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));
@@ -109,7 +110,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registerInfo(registration);
     }
 
-    private void registerInfo(IRecipeRegistration registration){
+    private void registerInfo(IRecipeRegistration registration) {
         // Compressed Air Info
         registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
 
@@ -120,7 +121,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
 
         // Crude Oil info
-        registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(),1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
+        registration.addIngredientInfo(new FluidStack(VEFluids.CRUDE_OIL_REG.get(), 1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
         registration.addIngredientInfo(new ItemStack(VEFluids.CRUDE_OIL_BUCKET_REG.get()), VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.crude_oil_info"));
 
         // Quartz Multiplier info
@@ -128,13 +129,13 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
         // Mysterious Multiplier info
         ArrayList<ItemStack> tieredMysteriousMultipliers = new ArrayList<>();
-        for (MysteriousMultiplier.QualityTier tier : MysteriousMultiplier.QUALITY_TIERS){
+        for (MysteriousMultiplier.QualityTier tier : MysteriousMultiplier.QUALITY_TIERS) {
             ItemStack multiplier = new ItemStack(VEItems.MYSTERIOUS_MULTIPLIER.get());
             multiplier.getOrCreateTag().putFloat("multiplier", MysteriousMultiplier.REFERENCE_MULTIPLIER_VALUES.get(tier));
-            multiplier.getOrCreateTag().putBoolean("jei",true);
+            multiplier.getOrCreateTag().putBoolean("jei", true);
             tieredMysteriousMultipliers.add(multiplier);
         }
-        registration.addIngredientInfo(tieredMysteriousMultipliers,VanillaTypes.ITEM_STACK,TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));
+        registration.addIngredientInfo(tieredMysteriousMultipliers, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));
 
         ArrayList<ItemStack> fluidScannerDimensionalLaserInfo = new ArrayList<>();
         fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.FLUID_SCANNER.get()));
@@ -146,8 +147,10 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     private static List<Recipe<?>> getRecipesOfType(RecipeType<?> recipeType) {
         return Minecraft.getInstance().level.getRecipeManager().getRecipes().stream()
-                .filter(recipe -> recipe.getType() == recipeType)
+                .filter(recipe -> recipe.value().getType() == recipeType)
+                .map(RecipeHolder::value)
                 .collect(Collectors.toList());
+
     }
 
     @Override
@@ -189,7 +192,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(ImplosionCompressorContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, ImplosionCompressorContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(BlastFurnaceContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, BlastFurnaceContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
-        registration.addRecipeTransferHandler(SawmillContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE,0,3,SawmillContainer.NUMBER_OF_SLOTS,36);
+        registration.addRecipeTransferHandler(SawmillContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE, 0, 3, SawmillContainer.NUMBER_OF_SLOTS, 36);
         registration.addRecipeTransferHandler(PrimitiveBlastFurnaceContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, 3, 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
@@ -201,7 +204,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER_BLOCK.get()).copy(), CrushingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get()).copy(), ElectrolyzingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get()).copy(),CompressingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get()).copy(), CompressingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK.get()).copy(), CentrifugalAgitationCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get()).copy(), AqueoulizingCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get()).copy(), StirlingCategory.RECIPE_TYPE);
