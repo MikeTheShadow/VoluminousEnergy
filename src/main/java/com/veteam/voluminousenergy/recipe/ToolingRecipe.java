@@ -1,7 +1,8 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.mojang.serialization.Codec;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.serializers.VERecipeSerializer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,9 +19,22 @@ import java.util.Map;
 public class ToolingRecipe extends VERecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
-//    public static final Serializer SERIALIZER = new Serializer();
+    public static final RecipeSerializer<ToolingRecipe> SERIALIZER = new RecipeSerializer<>() {
+        @Override
+        public Codec<ToolingRecipe> codec() {
+            return null;
+        }
 
-    public static final VERecipeSerializer SERIALIZER = new VERecipeSerializer();
+        @Override
+        public @Nullable ToolingRecipe fromNetwork(@NotNull FriendlyByteBuf buf) {
+            return null;
+        }
+
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull ToolingRecipe recipe) {
+
+        }
+    };
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 

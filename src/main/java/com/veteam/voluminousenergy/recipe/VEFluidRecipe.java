@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
-import com.veteam.voluminousenergy.util.recipe.serializers.VEFluidRecipeSerializer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -10,12 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class VEFluidRecipe extends VERecipe {
+public abstract class VEFluidRecipe extends VERecipe {
 
     public List<FluidIngredient> fluidIngredientList;
     public List<FluidStack> fluidOutputList;
-
-    private static final VEFluidRecipeSerializer SERIALIZER = new VEFluidRecipeSerializer();
 
     public VEFluidRecipe() {
 
@@ -26,11 +23,6 @@ public class VEFluidRecipe extends VERecipe {
         fluidIngredientList = fi;
         fluidOutputList = of;
         this.processTime = processTime;
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
-        return SERIALIZER;
     }
 
     public List<FluidStack> getOutputFluids() {

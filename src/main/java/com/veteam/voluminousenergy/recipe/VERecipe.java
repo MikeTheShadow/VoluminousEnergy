@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.util.recipe.serializers.VERecipeSerializer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
@@ -19,12 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VERecipe implements Recipe<Container> {
+public abstract class VERecipe implements Recipe<Container> {
     public NonNullList<Ingredient> ingredients;
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
-
-    public static final VERecipeSerializer SERIALIZER = new VERecipeSerializer();
 
     public VERecipe() {
 
@@ -73,11 +70,6 @@ public class VERecipe implements Recipe<Container> {
 
     public List<ItemStack> getResults() {
         return this.results;
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
-        return SERIALIZER;
     }
 
     @Override

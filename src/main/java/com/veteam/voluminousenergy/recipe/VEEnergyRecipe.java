@@ -1,26 +1,25 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.veteam.voluminousenergy.util.recipe.serializers.VEEnergyRecipeSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VEEnergyRecipe extends VERecipe {
+public abstract class VEEnergyRecipe extends VERecipe {
 
     private int energyPerTick;
 
     public VEEnergyRecipe() {
 
-    }
-
-    private static final VEEnergyRecipeSerializer SERIALIZER = new VEEnergyRecipeSerializer();
-
-    @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
-        return SERIALIZER;
     }
 
     public VEEnergyRecipe(List<Ingredient> ingredients, int processTime, int energy_per_tick) {
