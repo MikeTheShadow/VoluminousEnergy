@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<ConstructDimensionalLaserTrigger.TriggerInstance> {
-   static final ResourceLocation ID = new ResourceLocation(VoluminousEnergy.MODID,"construct_dimensional_laser");
+   public static final ResourceLocation ID = new ResourceLocation(VoluminousEnergy.MODID,"construct_dimensional_laser");
 
    public @NotNull ResourceLocation getId() {
       return ID;
@@ -24,8 +24,8 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
       return new ConstructDimensionalLaserTrigger.TriggerInstance(contextAwarePredicate, minmaxbounds$ints);
    }
 
-   public void trigger(ServerPlayer serverPlayer, int p_148031_) {
-      this.trigger(serverPlayer, (p_148028_) -> p_148028_.matches(p_148031_));
+   public void trigger(ServerPlayer serverPlayer, int i) {
+      this.trigger(serverPlayer, (instance) -> instance.matches(i));
    }
 
    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
