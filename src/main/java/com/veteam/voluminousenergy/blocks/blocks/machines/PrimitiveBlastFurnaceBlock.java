@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -65,8 +66,8 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
     {
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider) {
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Primitive Blast named container provider is missing!");
             }
