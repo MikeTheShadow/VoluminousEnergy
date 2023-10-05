@@ -19,9 +19,9 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
    }
 
 
-   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject p_286465_, Optional<ContextAwarePredicate> p_300541_, DeserializationContext p_286803_) {
-      MinMaxBounds.Ints minmaxbounds$ints = MinMaxBounds.Ints.fromJson(p_286465_.get("level"));
-      return new ConstructDimensionalLaserTrigger.TriggerInstance(p_300541_, minmaxbounds$ints);
+   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject jsonObject, Optional<ContextAwarePredicate> contextAwarePredicate, DeserializationContext deserializationContext) {
+      MinMaxBounds.Ints minmaxbounds$ints = MinMaxBounds.Ints.fromJson(jsonObject.get("level"));
+      return new ConstructDimensionalLaserTrigger.TriggerInstance(contextAwarePredicate, minmaxbounds$ints);
    }
 
    public void trigger(ServerPlayer serverPlayer, int p_148031_) {

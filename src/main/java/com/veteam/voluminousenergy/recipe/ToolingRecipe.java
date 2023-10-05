@@ -1,40 +1,67 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
-public class ToolingRecipe extends VERecipe {
+public class ToolingRecipe extends VEFluidRecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
+    public ToolingRecipe() {
+
+    }
+
+    public ToolingRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime) {
+        super(i, fi, of, oi, processTime);
+    }
+
+    // TODO fix me and make me right!
     public static final RecipeSerializer<ToolingRecipe> SERIALIZER = new RecipeSerializer<>() {
+
+        public static final Codec<ToolingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.fluidIngredientList),
+                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
+                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+        ).apply(instance, ToolingRecipe::new));
+
+        private static final FluidSerializerHelper<ToolingRecipe> helper = new FluidSerializerHelper<>();
+
+        @Nullable
         @Override
-        public Codec<ToolingRecipe> codec() {
-            return null;
+        public ToolingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            return helper.fromNetwork(new ToolingRecipe(), buffer);
         }
 
         @Override
-        public @Nullable ToolingRecipe fromNetwork(@NotNull FriendlyByteBuf buf) {
-            return null;
+        public @NotNull Codec<ToolingRecipe> codec() {
+            return VE_RECIPE_CODEC;
         }
 
         @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull ToolingRecipe recipe) {
-
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ToolingRecipe recipe) {
+            helper.toNetwork(buffer, recipe);
         }
     };
+
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 
@@ -44,8 +71,6 @@ public class ToolingRecipe extends VERecipe {
 
     protected boolean usesTagKey;
     protected String tagKeyString;
-
-    private final Map<Ingredient, Integer> ingredients = new LinkedHashMap<>();
 
     @Override
     public @NotNull RecipeType<?> getType(){
