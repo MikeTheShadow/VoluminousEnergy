@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.serializers.VEFluidSawmillRecipeSerializer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,6 +35,11 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
         return SERIALIZER;
+    }
+
+    @Override
+    public @NotNull RecipeType<? extends Recipe<?>> getType() {
+        return RECIPE_TYPE;
     }
 
     @Override
