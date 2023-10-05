@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.serializers.VEEnergyRecipeSerializer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;

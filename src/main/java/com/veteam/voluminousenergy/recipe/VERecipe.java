@@ -26,7 +26,6 @@ public class VERecipe implements Recipe<Container> {
     public List<ItemStack> results = new ArrayList<>();
 
     public static final VERecipeSerializer SERIALIZER = new VERecipeSerializer();
-    ResourceLocation recipeId;
 
     public VERecipe() {
 

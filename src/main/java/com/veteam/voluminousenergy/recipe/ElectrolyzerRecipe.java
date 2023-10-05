@@ -1,13 +1,19 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.util.recipe.serializers.VERNGRecipeSerializer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 public class ElectrolyzerRecipe extends VERNGRecipe {
 
     public static final RecipeType<ElectrolyzerRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.ELECTROLYZING.get();
+
+    public static final VERNGRecipeSerializer SERIALIZER = new VERNGRecipeSerializer();
+    @Override
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 
     @Override
     public @NotNull RecipeType<?> getType() {
