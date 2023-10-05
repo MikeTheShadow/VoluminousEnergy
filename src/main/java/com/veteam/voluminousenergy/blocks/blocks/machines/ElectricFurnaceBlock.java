@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -59,10 +60,10 @@ public class ElectricFurnaceBlock extends FaceableBlock implements EntityBlock {
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider) {
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Electric Furnace named container provider is missing!");
+                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
             }
             player.awardStat(Stats.INTERACT_WITH_FURNACE);
             return InteractionResult.SUCCESS;

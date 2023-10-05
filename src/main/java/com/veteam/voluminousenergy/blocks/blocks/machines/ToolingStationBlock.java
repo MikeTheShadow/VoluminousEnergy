@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.ToolingStationTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -59,10 +60,10 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
         if(!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider) {
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Tooling Station named container provider is missing!");
+                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }

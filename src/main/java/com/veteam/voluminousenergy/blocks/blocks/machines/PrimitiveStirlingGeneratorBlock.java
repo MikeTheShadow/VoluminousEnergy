@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -60,10 +61,10 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!world.isClientSide){
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof MenuProvider){
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Primitive Stirling named container provider is missing!");
+                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }

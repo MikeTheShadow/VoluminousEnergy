@@ -69,7 +69,7 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
             if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Primitive Blast named container provider is missing!");
+                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
