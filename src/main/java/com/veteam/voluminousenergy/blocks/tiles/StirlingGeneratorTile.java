@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -44,17 +45,22 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
 
     public StirlingGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.STIRLING_GENERATOR_TILE.get(), pos, state, null);
+        this.energyCap = this.getCapability(ForgeCapabilities.ENERGY);
+        this.maxPower = Config.STIRLING_GENERATOR_MAX_POWER.get();
     }
 
     StirlingGeneratorRecipe recipe;
 
+    @NotNull LazyOptional<IEnergyStorage> energyCap;
+
+    private final int maxPower;
     @Override
     public void tick() {
         updateClients();
         validateRecipe();
 
         if (counter > 0) {
-            if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.STIRLING_GENERATOR_MAX_POWER.get()) {
+            if (energyCap.map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= maxPower) {
                 counter--;
                 energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
             }
@@ -66,7 +72,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
             }
             setChanged();
         } else if (recipe != null) {
-            if ((recipe.getEnergyPerTick() * recipe.getProcessTime()) + getEnergy().map(IEnergyStorage::getEnergyStored).orElse(0) <= Config.STIRLING_GENERATOR_MAX_POWER.get()) {
+            if ((recipe.getEnergyPerTick() * recipe.getProcessTime()) + getEnergy().map(IEnergyStorage::getEnergyStored).orElse(0) <= maxPower) {
                 inventory.extractItem(0, recipe.getIngredientCount(0), false);
                 this.counter = recipe.getProcessTime();
                 this.energyRate = recipe.getEnergyPerTick();

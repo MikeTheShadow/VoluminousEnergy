@@ -21,14 +21,14 @@ public class CompressorRecipe extends VERecipe {
     public CompressorRecipe() {
     }
 
-    public CompressorRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime) {
+    public CompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
         super(ingredients, results, processTime);
     }
 
     public static final RecipeSerializer<CompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<CompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, CompressorRecipe::new));

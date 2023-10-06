@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -13,7 +14,7 @@ public abstract class VERNGRecipe extends VERecipe {
 
     }
 
-    public VERNGRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
+    public VERNGRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
         super(ingredients, results, processTime);
         this.rngValues = rngOutputs;
 

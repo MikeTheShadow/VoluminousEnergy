@@ -7,9 +7,9 @@ import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,17 +22,17 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     public PrimitiveBlastFurnaceRecipe() {
     }
 
-    public PrimitiveBlastFurnaceRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime) {
+    public PrimitiveBlastFurnaceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
         super(ingredients, results, processTime);
     }
 
     public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<PrimitiveBlastFurnaceRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+        public static final Lazy<Codec<PrimitiveBlastFurnaceRecipe>> VE_RECIPE_CODEC = Lazy.of(() -> RecordCodecBuilder.create((instance) -> instance.group(
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, PrimitiveBlastFurnaceRecipe::new));
+        ).apply(instance, PrimitiveBlastFurnaceRecipe::new)));
 
         private static final IngredientSerializerHelper<PrimitiveBlastFurnaceRecipe> helper = new IngredientSerializerHelper<>();
 
@@ -44,7 +44,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
         @Override
         public @NotNull Codec<PrimitiveBlastFurnaceRecipe> codec() {
-            return VE_RECIPE_CODEC;
+            return VE_RECIPE_CODEC.get();
         }
 
         @Override

@@ -1,26 +1,29 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class VEFluidRecipe extends VERecipe {
 
-    public List<FluidIngredient> fluidIngredientList;
+    private List<FluidIngredient> fluidIngredientList = null;
+    public List<VERecipeCodecs.RegistryFluidIngredient> registryFluidIngredients;
     public List<FluidStack> fluidOutputList;
 
     public VEFluidRecipe() {
 
     }
 
-    public VEFluidRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi,int processTime) {
+    public VEFluidRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime) {
         super(i,oi,processTime);
-        fluidIngredientList = fi;
+        registryFluidIngredients = fi;
         fluidOutputList = of;
         this.processTime = processTime;
     }
@@ -35,7 +38,14 @@ public abstract class VEFluidRecipe extends VERecipe {
 
 
     public List<FluidIngredient> getFluidIngredients() {
-        return this.fluidIngredientList;
+        if(fluidIngredientList == null) {
+            List<FluidIngredient> fluidIngredients = new ArrayList<>();
+            for(VERecipeCodecs.RegistryFluidIngredient ingredient : registryFluidIngredients) {
+                fluidIngredients.add(ingredient.getIngredient());
+                this.fluidIngredientList = fluidIngredients;
+            }
+        }
+        return fluidIngredientList;
     }
 
     public FluidIngredient getFluidIngredient(int slot) {
@@ -44,10 +54,6 @@ public abstract class VEFluidRecipe extends VERecipe {
 
     public int getFluidIngredientAmount(int slot) {
         return getFluidIngredients().get(slot).getFluids()[0].getAmount();
-    }
-
-    public List<FluidIngredient> getFluidIngredientList() {
-        return fluidIngredientList;
     }
 
     public void setFluidOutputList(List<FluidStack> fluidOutputList) {

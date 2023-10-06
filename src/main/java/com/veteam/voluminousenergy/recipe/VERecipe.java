@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
@@ -9,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.NotImplementedException;
@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class VERecipe implements Recipe<Container> {
-    public NonNullList<Ingredient> ingredients;
+    public List<VERecipeCodecs.RegistryIngredient> registryIngredients;
+
+    private NonNullList<Ingredient> ingredients = NonNullList.create();
+
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
 
@@ -27,11 +30,11 @@ public abstract class VERecipe implements Recipe<Container> {
 
     }
 
-    public VERecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime) {
+    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
         this.results = results;
         this.processTime = processTime;
-        this.ingredients = NonNullList.create();
-        this.ingredients.addAll(ingredients);
+        this.registryIngredients = NonNullList.create();
+        this.registryIngredients.addAll(ingredients);
     }
 
     public Ingredient getIngredient(int id) {
@@ -108,6 +111,13 @@ public abstract class VERecipe implements Recipe<Container> {
 
     @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
+
+        if(ingredients.isEmpty()) {
+            for(VERecipeCodecs.RegistryIngredient ingredient : registryIngredients) {
+                ingredients.add(ingredient.getIngredient());
+            }
+        }
+
         return ingredients;
     }
 

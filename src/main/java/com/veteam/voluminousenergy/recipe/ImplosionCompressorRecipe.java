@@ -21,14 +21,14 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public ImplosionCompressorRecipe() {
     }
 
-    public ImplosionCompressorRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime) {
+    public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
         super(ingredients, results, processTime);
     }
 
     public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<ImplosionCompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, ImplosionCompressorRecipe::new));

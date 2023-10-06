@@ -24,7 +24,7 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
 
     }
 
-    public VEFluidSawmillRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime, boolean isLogRecipe) {
+    public VEFluidSawmillRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime, boolean isLogRecipe) {
         super(i,fi,of,oi,processTime);
         this.isLogRecipe = isLogRecipe;
     }
@@ -32,8 +32,8 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
     private static final RecipeSerializer<VEFluidSawmillRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<VEFluidSawmillRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.fluidIngredientList),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
                 CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),

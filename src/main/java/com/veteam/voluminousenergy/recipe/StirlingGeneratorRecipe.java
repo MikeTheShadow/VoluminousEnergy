@@ -22,14 +22,14 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
     public StirlingGeneratorRecipe() {
     }
 
-    public StirlingGeneratorRecipe(List<Ingredient> ingredients, int processTime, int energy_per_tick) {
+    public StirlingGeneratorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, int processTime, int energy_per_tick) {
         super(ingredients, processTime, energy_per_tick);
     }
 
     public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<StirlingGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("energy_per_tick").forGetter((getter) -> getter.processTime)
         ).apply(instance, StirlingGeneratorRecipe::new));

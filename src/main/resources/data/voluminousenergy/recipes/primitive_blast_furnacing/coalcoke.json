@@ -2,9 +2,7 @@
   "type": "voluminousenergy:primitive_blast_furnacing",
   "ingredients": [
     {
-      "ingredient": {
-        "item": "minecraft:coal"
-      },
+      "item": "minecraft:coal",
       "count": 1
     }
   ],

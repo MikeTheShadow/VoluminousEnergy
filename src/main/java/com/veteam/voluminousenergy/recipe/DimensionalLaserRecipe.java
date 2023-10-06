@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DimensionalLaserRecipe extends VEFluidRecipe {
@@ -27,10 +28,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     public static final RecipeSerializer<DimensionalLaserRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.fluidIngredientList),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("min_amount").forGetter(DimensionalLaserRecipe::getMinimumAmount),
                 Codec.INT.fieldOf("max_amount").forGetter(DimensionalLaserRecipe::getMaximumAmount),
@@ -112,11 +110,11 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     }
 
-    public DimensionalLaserRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi,
+    public DimensionalLaserRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi,
                                   int processTime, int maximumAmount, int minimumAmount, float continentalnessMin,
                                   float continentalnessMax, float erosionMin, float erosionMax, float humidityMin,
                                   float humidityMax, float temperatureMin, float temperatureMax) {
-        super(i, fi, of, oi, processTime);
+        super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), processTime);
         this.maximumAmount = maximumAmount;
         this.minimumAmount = minimumAmount;
         this.continentalnessMin = continentalnessMin;

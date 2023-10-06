@@ -257,7 +257,7 @@ public class RecipeUtil {
 
     public static ItemStack pullItemFromJSON(String id, JsonObject json) {
         ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get(id).getAsJsonObject(),"item","minecraft:empty"),':');
-        int count = GsonHelper.getAsInt(json.get(id).getAsJsonObject(),"count",1);
+        int count = GsonHelper.getAsInt(json.get(id).getAsJsonObject(),"amount",1);
 
         return new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation),count);
     }

@@ -22,14 +22,14 @@ public class ElectrolyzerRecipe extends VERNGRecipe {
     public ElectrolyzerRecipe() {
     }
 
-    public ElectrolyzerRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
+    public ElectrolyzerRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
         super(ingredients, results, processTime, rngOutputs);
     }
 
     public static final RecipeSerializer<ElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<ElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.FLOAT.listOf().fieldOf("rng_values").forGetter((getter) -> getter.rngValues)

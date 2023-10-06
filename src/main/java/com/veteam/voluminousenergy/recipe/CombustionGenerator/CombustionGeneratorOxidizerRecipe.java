@@ -24,13 +24,13 @@ public class CombustionGeneratorOxidizerRecipe extends VEFluidRecipe {
 
     }
 
-    public CombustionGeneratorOxidizerRecipe(List<FluidIngredient> fi, int processTime) {
+    public CombustionGeneratorOxidizerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, int processTime) {
         super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), processTime);
     }
 
     public static final RecipeSerializer<CombustionGeneratorOxidizerRecipe> SERIALIZER = new RecipeSerializer<>() {
         public static final Codec<CombustionGeneratorOxidizerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.fluidIngredientList),
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, CombustionGeneratorOxidizerRecipe::new));
 

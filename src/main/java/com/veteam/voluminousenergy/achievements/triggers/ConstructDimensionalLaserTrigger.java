@@ -19,7 +19,7 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
    }
 
 
-   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject jsonObject, Optional<ContextAwarePredicate> contextAwarePredicate, DeserializationContext deserializationContext) {
+   public ConstructDimensionalLaserTrigger.@NotNull TriggerInstance createInstance(JsonObject jsonObject, @NotNull Optional<ContextAwarePredicate> contextAwarePredicate, @NotNull DeserializationContext deserializationContext) {
       MinMaxBounds.Ints minmaxbounds$ints = MinMaxBounds.Ints.fromJson(jsonObject.get("level"));
       return new ConstructDimensionalLaserTrigger.TriggerInstance(contextAwarePredicate, minmaxbounds$ints);
    }
@@ -30,9 +30,9 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
 
    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
       private final MinMaxBounds.Ints level;
-      public TriggerInstance(Optional<ContextAwarePredicate> p_297785_, MinMaxBounds.Ints p_286272_) {
-         super(p_297785_);
-         this.level = p_286272_;
+      public TriggerInstance(Optional<ContextAwarePredicate> contextAwarePredicate, MinMaxBounds.Ints minMaxBounds) {
+         super(contextAwarePredicate);
+         this.level = minMaxBounds;
       }
 
       public static Criterion<ConstructBeaconTrigger.TriggerInstance> constructedDimensionalLaser() {

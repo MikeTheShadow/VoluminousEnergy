@@ -22,14 +22,14 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
     public CentrifugalSeparatorRecipe() {
     }
 
-    public CentrifugalSeparatorRecipe(List<Ingredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
+    public CentrifugalSeparatorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
         super(ingredients, results, processTime, rngOutputs);
     }
 
     public static final RecipeSerializer<CentrifugalSeparatorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<CentrifugalSeparatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.FLOAT.listOf().fieldOf("rng_values").forGetter((getter) -> getter.rngValues)

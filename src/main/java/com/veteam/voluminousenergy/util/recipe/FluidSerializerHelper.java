@@ -69,7 +69,7 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
             ingredient.toNetwork(buffer);
         }
 
-        buffer.writeInt(recipe.getFluidIngredientList().size());
+        buffer.writeInt(recipe.getFluidIngredients().size());
 
         for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
             fluidIngredient.toNetwork(buffer);

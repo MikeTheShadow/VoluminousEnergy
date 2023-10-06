@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IndustrialBlastingRecipe extends VEFluidRecipe {
@@ -24,9 +25,8 @@ public class IndustrialBlastingRecipe extends VEFluidRecipe {
     private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                VERecipeCodecs.VE_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.ingredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.fluidIngredientList),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("minimum_heat").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
@@ -60,8 +60,8 @@ public class IndustrialBlastingRecipe extends VEFluidRecipe {
 
     }
 
-    public IndustrialBlastingRecipe(List<Ingredient> i, List<FluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime,int minimumHeat) {
-        super(i,fi,of,oi,processTime);
+    public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<ItemStack> oi, int processTime, int minimumHeat) {
+        super(i,fi,new ArrayList<>(),oi,processTime);
         this.minimumHeat = minimumHeat;
     }
 
