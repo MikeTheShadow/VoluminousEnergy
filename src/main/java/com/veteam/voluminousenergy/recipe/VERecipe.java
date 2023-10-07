@@ -107,7 +107,10 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public int getIngredientCount(int slot) {
-        return this.ingredients.get(slot).getItems()[0].getCount();
+        if (slot >= this.ingredients.size()){
+            return 0;
+        }
+        return this.ingredients.get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
     }
 
     public int getProcessTime() {

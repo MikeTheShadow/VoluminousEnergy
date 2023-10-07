@@ -1,9 +1,11 @@
 {
   "type": "voluminousenergy:stirling",
-  "ingredient": {
-    "item": "minecraft:dried_kelp",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:dried_kelp",
+      "count": 1
+    }
+  ],
   "process_time": 444,
   "energy_per_tick": 128
 }

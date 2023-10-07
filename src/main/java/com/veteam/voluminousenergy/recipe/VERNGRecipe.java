@@ -25,11 +25,16 @@ public abstract class VERNGRecipe extends VERecipe {
 
     }
 
+    @Deprecated
+    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getOutputChance(id) INSTEAD
     public List<Float> getRNGOutputs() {
         return rngValues;
     }
 
     public float getOutputChance(int i) {
+        if (i >= rngValues.size()) {
+            return 1;
+        }
         return rngValues.get(i);
     }
 
