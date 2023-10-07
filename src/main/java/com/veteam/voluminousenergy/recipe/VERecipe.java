@@ -38,6 +38,10 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public Ingredient getIngredient(int id) {
+        // Sometimes recipes define less that what a machine can pull in (not utilizing all input slots). Therefore, return Empty Ingredient when querying beyond input length
+        if (id >= this.getIngredients().size()) {
+            return Ingredient.EMPTY;
+        }
         return getIngredients().get(id);
     }
 

@@ -1,28 +1,31 @@
 {
   "type": "voluminousenergy:electrolyzing",
-  "ingredient": {
-    "item": "voluminousenergy:bauxite_dust",
-    "count": 12
-  },
+  "ingredients": [
+    {
+      "item": "voluminousenergy:bauxite_dust",
+      "count": 12
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:aluminum_dust",
-    "count": 8,
-    "consumes_bucket": 0
-  },
-  "rng_slot_0": {
-    "item": "voluminousenergy:iron_dust",
-    "count": 4,
-    "chance": 0.25
-  },
-  "rng_slot_1": {
-    "item": "voluminousenergy:rutile_dust",
-    "count": 2,
-    "chance": 0.10
-  },
-  "rng_slot_2": {
-    "item": "voluminousenergy:titanium_dust",
-    "count": 1,
-    "chance": 0.05
-  }
+  "item_results": [
+    {
+      "item": "voluminousenergy:aluminum_dust",
+      "count": 8
+    },
+    {
+      "item": "voluminousenergy:iron_dust",
+      "count": 4,
+      "chance": 0.25
+    },
+    {
+      "item": "voluminousenergy:rutile_dust",
+      "count": 2,
+      "chance": 0.10
+    },
+    {
+      "item": "voluminousenergy:titanium_dust",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
 }
