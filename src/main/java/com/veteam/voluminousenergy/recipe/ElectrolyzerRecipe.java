@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
@@ -22,17 +21,16 @@ public class ElectrolyzerRecipe extends VERNGRecipe {
     public ElectrolyzerRecipe() {
     }
 
-    public ElectrolyzerRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs) {
-        super(ingredients, results, processTime, rngOutputs);
+    public ElectrolyzerRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.VEChancedItemWithCount> results, int processTime) {
+        super(ingredients, results, processTime);
     }
 
     public static final RecipeSerializer<ElectrolyzerRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<ElectrolyzerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
-                Codec.FLOAT.listOf().fieldOf("rng_values").forGetter((getter) -> getter.rngValues)
+                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultsWithChance),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, ElectrolyzerRecipe::new));
 
         private static final IngredientSerializerHelper<ElectrolyzerRecipe> helper = new IngredientSerializerHelper<>();

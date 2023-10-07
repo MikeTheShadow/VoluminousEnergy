@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:redstone_ores",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:redstone_ores",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:redstone",
-    "count": 6
-  },
-  "rng": {
-    "item": "minecraft:glowstone_dust",
-    "count": 1,
-    "chance": 0.5
-  },
+  "item_results": [
+    {
+      "item": "minecraft:redstone",
+      "count": 6
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 1,
+      "chance": 0.5
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 1

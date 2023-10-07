@@ -1,19 +1,18 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "item": "minecraft:polished_basalt",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:polished_basalt",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:basalt_dust",
-    "count": 2
-  },
-  "rng": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:basalt_dust",
+      "count": 2
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

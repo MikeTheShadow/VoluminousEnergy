@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:ores/galena",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:ores/galena",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:galena_dust",
-    "count": 2
-  },
-  "rng": {
-    "item": "voluminousenergy:sulfurdust",
-    "count": 1,
-    "chance": 0.5
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:galena_dust",
+      "count": 2
+    },
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 1,
+      "chance": 0.5
+    }
+  ],
   "experience": {
     "minimum": 2,
     "maximum": 5

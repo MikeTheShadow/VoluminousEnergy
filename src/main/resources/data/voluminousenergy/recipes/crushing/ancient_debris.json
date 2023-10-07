@@ -1,19 +1,18 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "item": "minecraft:ancient_debris",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:ancient_debris",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:netherite_dust",
-    "count": 2
-  },
-  "rng": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:netherite_dust",
+      "count": 2
+    }
+  ],
   "experience": {
     "minimum": 6,
     "maximum": 9

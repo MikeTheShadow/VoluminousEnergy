@@ -18,29 +18,30 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class VERecipeCodecs {
-    private static final Codec<Item> ITEM_NONAIR_CODEC = ExtraCodecs.validate(BuiltInRegistries.ITEM.byNameCodec(), (p_297750_) -> {
-        return p_297750_ == Items.AIR ? DataResult.error(() -> {
+    private static final Codec<Item> ITEM_NONAIR_CODEC = ExtraCodecs.validate(BuiltInRegistries.ITEM.byNameCodec(), (instance) -> {
+        return instance == Items.AIR ? DataResult.error(() -> {
             return "Crafting result must not be minecraft:air";
-        }) : DataResult.success(p_297750_);
+        }) : DataResult.success(instance);
     });
 
-    public static final Codec<RegistryIngredient> VE_LAZY_INGREDIENT_CODEC = RecordCodecBuilder.create((p_298321_) -> {
-        return p_298321_.group(
+    public static final Codec<RegistryIngredient> VE_LAZY_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
                 ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
                         .forGetter(RegistryIngredient::tag),
                 ExtraCodecs.strictOptionalField(Codec.STRING, "item", "")
                         .forGetter(RegistryIngredient::item),
-                ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "count", 1)
+                ExtraCodecs.strictOptionalField(Codec.INT, "count", 1)
                         .forGetter((ingredient) -> 1)
-        ).apply(p_298321_, RegistryIngredient::new);
+        ).apply(instance, RegistryIngredient::new);
     });
 
-    public record RegistryIngredient(String tag,String item, int count) {
+    public record RegistryIngredient(String tag, String item, int count) {
         public Ingredient getIngredient() {
 
             if (!tag.isBlank()) {
@@ -66,11 +67,15 @@ public class VERecipeCodecs {
         }
     }
 
-    public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((p_298321_) -> {
-        return p_298321_.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItem), ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(ItemStack::getCount)).apply(p_298321_, ItemStack::new);
+    public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItem), ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1).forGetter(ItemStack::getCount)).apply(instance, ItemStack::new);
     });
 
-    // ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_FLOAT,"chance",1.0F).forGetter(Float::new)
+    public static final Codec<VEChancedItemWithCount> VE_CHANCED_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            ITEM_NONAIR_CODEC.fieldOf("item").forGetter(VEChancedItemWithCount::item),
+            ExtraCodecs.strictOptionalField(Codec.INT, "count", 1).forGetter(VEChancedItemWithCount::count),
+            ExtraCodecs.strictOptionalField(Codec.FLOAT, "chance", 1.0F).forGetter(VEChancedItemWithCount::chance)
+    ).apply(instance, VEChancedItemWithCount::new));
 
     public static final Codec<Fluid> FLUID_NONAIR_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(), (p_297750_) -> {
         return p_297750_ == Fluids.EMPTY ? DataResult.error(() -> {
@@ -78,20 +83,19 @@ public class VERecipeCodecs {
         }) : DataResult.success(p_297750_);
     });
 
-    public static final Codec<RegistryFluidIngredient> VE_FLUID_INGREDIENT_CODEC = RecordCodecBuilder.create((p_298321_) -> {
-        return p_298321_.group(
+    public static final Codec<RegistryFluidIngredient> VE_FLUID_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
                 ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
                         .forGetter(RegistryFluidIngredient::tag),
                 ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
                         .forGetter(RegistryFluidIngredient::fluid),
-                ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1)
+                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1)
                         .forGetter((ingredient) -> 1)
-        ).apply(p_298321_, RegistryFluidIngredient::new);
+        ).apply(instance, RegistryFluidIngredient::new);
     });
 
     public record RegistryFluidIngredient(String tag,String fluid,int amount) {
         public FluidIngredient getIngredient() {
-
 
             if (!tag.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(tag, ':');
@@ -116,15 +120,32 @@ public class VERecipeCodecs {
         }
     }
 
-    public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((p_298321_) -> {
-        return p_298321_.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidStack::getFluid),
-                ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1)
-                        .forGetter(FluidStack::getAmount)).apply(p_298321_, FluidStack::new);
+    public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidStack::getFluid),
+                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1)
+                        .forGetter(FluidStack::getAmount)).apply(instance, FluidStack::new);
     });
+
+    public static final Codec<VERecipeExperience> VE_EXPERIENCE_RANGE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0).forGetter(VERecipeExperience::minimum),
+            ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0).forGetter(VERecipeExperience::maximum)
+    ).apply(instance, VERecipeExperience::new));
 
     private static JsonElement getBadItemElement() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("ingredient", "minecraft:barrier");
         return jsonObject;
     }
+
+    public record VEChancedItemWithCount(Item item, int count, float chance) {
+        public ItemStack getAsItemStack() {
+            return new ItemStack(item,count);
+        }
+
+        public Pair<ItemStack,Float> getItemStackWithChance() {
+            return new Pair<>(new ItemStack(item, count), chance);
+        }
+    }
+
+    public record VERecipeExperience(int minimum, int maximum) { }
 }
