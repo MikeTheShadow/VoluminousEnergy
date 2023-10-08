@@ -89,7 +89,7 @@ public class VERecipeCodecs {
                         .forGetter(RegistryFluidIngredient::tag),
                 ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
                         .forGetter(RegistryFluidIngredient::fluid),
-                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1)
+                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1000)
                         .forGetter((ingredient) -> 1)
         ).apply(instance, RegistryFluidIngredient::new);
     });

@@ -23,8 +23,8 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public CombustionGeneratorFuelRecipe() {
     }
 
-    public CombustionGeneratorFuelRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi,int processTime,int volumetricEnergy) {
-        super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), processTime);
+    public CombustionGeneratorFuelRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi,int volumetricEnergy) {
+        super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), volumetricEnergy);
         this.volumetricEnergy = volumetricEnergy;
     }
 
@@ -32,7 +32,6 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         public static final Codec<CombustionGeneratorFuelRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("volumetric_energy").forGetter((getter) -> getter.volumetricEnergy)
         ).apply(instance, CombustionGeneratorFuelRecipe::new));
 
