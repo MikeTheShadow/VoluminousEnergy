@@ -79,7 +79,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getFluidIngredientAmount(0)  + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(0).getAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(1).getAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getRNGOutputs().get(2)*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getOutputChance(0)*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(DistillationRecipe recipe,

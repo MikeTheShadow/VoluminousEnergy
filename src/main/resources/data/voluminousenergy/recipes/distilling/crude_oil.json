@@ -1,24 +1,27 @@
 {
   "type": "voluminousenergy:distilling",
   "process_time": 200,
-  "ingredient": {
-    "item": "voluminousenergy:crude_oil_bucket"
-  },
-  "input_fluid": {
-    "tag": "forge:crude_oil",
-    "amount": 250
-  },
-  "first_result": {
-    "fluid": "voluminousenergy:light_fuel",
-    "amount": 200
-  },
-  "second_result": {
-    "fluid": "voluminousenergy:naphtha",
-    "amount": 50
-  },
-  "third_result": {
-    "item": "voluminousenergy:raw_sulfur",
-    "count": 1,
-    "chance": 0.05
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:crude_oil",
+      "amount": 250
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:light_fuel",
+      "amount": 200
+    },
+    {
+      "fluid": "voluminousenergy:naphtha",
+      "amount": 50
+    }
+  ],
+  "item_results": [
+    {
+      "item": "voluminousenergy:raw_sulfur",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
 }
