@@ -96,37 +96,30 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         int xMiddle = (int) Math.ceil(arrayMap.length / 2F);
         int zMiddle = (int) Math.ceil(arrayMap[0].length / 2F);
 
-        int completion = tile.getTickTimer() / 5;
+        // Calculate the completion percentage
+        float completionPercentage = (float) tile.getTickTimer() / 600;
 
-        for (int xPos = 0; xPos < arrayMap.length - 1; xPos++) {
-            for (int zPos = 0; zPos < arrayMap[xPos].length - 1; zPos++) {
-                if (arrayMap[xPos][zPos] == 0) continue;
+        // Calculate the max radius for the spiral based on the completion percentage
+        float maxRadius = (float) Math.sqrt(arrayMap.length * arrayMap.length + arrayMap[0].length * arrayMap[0].length) * completionPercentage;
 
-                if (tile.isComplete()) {
+        // Determine the center of the array
+        int centerX = arrayMap.length / 2;
+        int centerY = arrayMap[0].length / 2;
+
+        for (int xPos = 0; xPos < arrayMap.length; xPos++) {
+            for (int zPos = 0; zPos < arrayMap[xPos].length; zPos++) {
+                int dx = xPos - centerX;
+                int dy = zPos - centerY;
+
+                // Calculate the radius for the current point
+                float r = (float) Math.sqrt(dx * dx + dy * dy);
+
+                // Check if the current point should be rendered
+                if (arrayMap[xPos][zPos] != 0 && r <= maxRadius) {
                     renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
                             0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
                             0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
                             Direction.DOWN);
-                } else {
-                    int extra = completion + 1;
-                    if (xPos < xMiddle + completion && xPos > xMiddle - completion) {
-                        if (zPos < zMiddle + completion && zPos > zMiddle - completion) {
-                            renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
-                                    0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
-                                    Direction.DOWN);
-                        }
-                    }
-                    if (xPos < xMiddle + extra && xPos > xMiddle - extra) {
-                        if (zPos < zMiddle + extra && zPos > zMiddle - extra) {
-                            Random random = new Random();
-                            if (random.nextInt(10) > 5) continue;
-                            renderFace(matrix4f, multiBufferSource.getBuffer(RenderType.endPortal()),
-                                    0.0F + xPos - xMiddle, 1.0F + xPos - xMiddle, height, height,
-                                    0.0F + zPos - zMiddle, 0.0F + zPos - zMiddle, 1.0F + zPos - zMiddle, 1.0F + zPos - zMiddle,
-                                    Direction.DOWN);
-                        }
-                    }
                 }
             }
         }
