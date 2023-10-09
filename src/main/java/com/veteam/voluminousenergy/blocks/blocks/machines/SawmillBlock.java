@@ -52,12 +52,12 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     }
 
     public InteractionResult use(BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        if(!world.isClientSide) {
+        if (!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
+            if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
+                throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
@@ -84,7 +84,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends SawmillTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+        return blockEntityType == tile ? (BlockEntityTicker<T>) serverTick : null;
     }
 
     @Nullable

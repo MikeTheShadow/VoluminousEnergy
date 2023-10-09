@@ -47,21 +47,22 @@ public class StirlingGeneratorBlock extends FaceableBlock implements EntityBlock
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends StirlingGeneratorTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+        return blockEntityType == tile ? (BlockEntityTicker<T>) serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.STIRLING_GENERATOR_TILE.get());
     }
+
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
-        if(!world.isClientSide) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
+            if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
+                throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }

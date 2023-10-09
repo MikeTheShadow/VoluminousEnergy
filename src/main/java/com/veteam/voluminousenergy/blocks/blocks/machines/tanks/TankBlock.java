@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -28,16 +29,18 @@ public class TankBlock extends FaceableBlock {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###,###");
 
-    public TankBlock(Properties properties){ super(properties); }
+    public TankBlock(Properties properties) {
+        super(properties);
+    }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
-        if(!world.isClientSide) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider) {
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("TankBlock named container provider is missing!");
+                throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
@@ -58,9 +61,9 @@ public class TankBlock extends FaceableBlock {
         } else {
             fluid = FluidStack.EMPTY;
         }
-        int tankCapacity = this.getTankCapacity()*1000;
+        int tankCapacity = this.getTankCapacity() * 1000;
 
-        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
+        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
             tooltip.add(
                     TextUtil.translateString(fluid.getTranslationKey()).copy()
                             .append(": ")
@@ -74,7 +77,7 @@ public class TankBlock extends FaceableBlock {
             tooltip.add(TextUtil.translateString(fluid.getTranslationKey()).copy().append(": " + amount + " / " + capacity));
         }
     }
-    
+
     public int getTankCapacity() {
         return 0;
     }

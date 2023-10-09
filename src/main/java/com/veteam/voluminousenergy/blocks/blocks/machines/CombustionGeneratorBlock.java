@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public class CombustionGeneratorBlock extends VEFaceableMachineBlock {
-    public CombustionGeneratorBlock(){
+    public CombustionGeneratorBlock() {
         super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f)
@@ -30,16 +30,6 @@ public class CombustionGeneratorBlock extends VEFaceableMachineBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
         return new CombustionGeneratorTile(pos, state);
-    }
-
-    // NEW TICK SYSTEM
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CombustionGeneratorTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, CombustionGeneratorTile::serverTick);
-    }
-
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends CombustionGeneratorTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
     }
 
     @Nullable

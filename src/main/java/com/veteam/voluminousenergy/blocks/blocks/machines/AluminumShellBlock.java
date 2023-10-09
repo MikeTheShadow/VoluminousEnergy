@@ -7,9 +7,9 @@ import net.minecraft.world.level.block.SoundType;
 public class AluminumShellBlock extends VEBlock {
     public AluminumShellBlock() {
         super(Properties.of()
-            .sound(SoundType.METAL)
-            .strength(2.0f)
-            .requiresCorrectToolForDrops()
+                .sound(SoundType.METAL)
+                .strength(2.0f)
+                .requiresCorrectToolForDrops()
         );
         setRName("aluminum_shell");
         VETagDataGenerator.setRequiresPickaxe(this);

@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class NighaliteTankBlock extends TankBlock implements EntityBlock {
 
-    public NighaliteTankBlock(){
+    public NighaliteTankBlock() {
         super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(10.0f)
@@ -42,7 +42,7 @@ public class NighaliteTankBlock extends TankBlock implements EntityBlock {
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends NighaliteTankTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+        return blockEntityType == tile ? (BlockEntityTicker<T>) serverTick : null;
     }
 
     @Nullable
