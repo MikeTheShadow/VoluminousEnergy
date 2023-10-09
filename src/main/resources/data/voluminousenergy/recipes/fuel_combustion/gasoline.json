@@ -1,10 +1,9 @@
 {
   "type": "voluminousenergy:fuel_combustion",
-  "ingredient": {
-    "item": "voluminousenergy:gasoline_bucket",
-    "volumetric_energy": 204800
-  },
-  "input_fluid": {
-    "tag": "forge:gasoline"
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:gasoline"
+    }
+  ],
+  "volumetric_energy": 204800
 }
