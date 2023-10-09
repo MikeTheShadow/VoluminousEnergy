@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 public class VELootInjectionData implements DataProvider {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
