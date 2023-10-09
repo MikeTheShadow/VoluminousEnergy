@@ -1,31 +1,27 @@
 {
   "type": "voluminousenergy:hydroponic_incubating",
   "process_time": 200,
-  "ingredient": {
-    "item": "minecraft:carrot",
-    "count": 1
-  },
-  "input_fluid": {
-    "fluid": "voluminousenergy:ammonium_nitrate_solution",
-    "amount": 250
-  },
-  "result": {
-    "item": "minecraft:carrot",
-    "count": 2
-  },
-  "rng_slot_0": {
-    "item": "minecraft:carrot",
-    "count": 3,
-    "chance": 0.75
-  },
-  "rng_slot_1": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
-  "rng_slot_2": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  }
+  "ingredients": [
+    {
+      "item": "minecraft:carrot",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:carrot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:carrot",
+      "count": 3,
+      "chance": 0.75
+    }
+  ]
 }

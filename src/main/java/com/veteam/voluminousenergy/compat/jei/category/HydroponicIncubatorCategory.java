@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -80,24 +81,22 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
 
-        List<Float> chances = recipe.getRNGOutputs();
-
-        if (chances.get(1) > 0) {
-            int chance = (int) (chances.get(1)*100);
+        if (recipe.getOutputChance(1) > 0 && recipe.getResult(1).getItem() != Items.AIR) {
+            int chance = (int) (recipe.getOutputChance(1)*100);
             int xPos = calculateXPos(94, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (chances.get(2) > 0) {
-            int chance = (int) (chances.get(2)*100);
+        if (recipe.getOutputChance(2) > 0 && recipe.getResult(2).getItem() != Items.AIR) {
+            int chance = (int) (recipe.getOutputChance(2)*100);
             int xPos = calculateXPos(116, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
         }
 
-        if (chances.get(3) > 0) {
-            int chance = (int) (chances.get(3)*100);
+        if (recipe.getOutputChance(3) > 0 && recipe.getResult(3).getItem() != Items.AIR) {
+            int chance = (int) (recipe.getOutputChance(3)*100);
             int xPos = calculateXPos(138, chance);
 
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);

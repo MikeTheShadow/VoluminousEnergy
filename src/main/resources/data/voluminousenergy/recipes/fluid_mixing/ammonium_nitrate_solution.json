@@ -1,19 +1,20 @@
 {
   "type": "voluminousenergy:fluid_mixing",
   "process_time": 200,
-  "ingredient": {
-    "item": "voluminousenergy:white_fuming_nitric_acid_bucket"
-  },
-  "first_input_fluid": {
-    "fluid": "voluminousenergy:white_fuming_nitric_acid",
-    "amount": 250
-  },
-  "second_input_fluid": {
-    "fluid": "voluminousenergy:ammonia",
-    "amount": 250
-  },
-  "result": {
-    "fluid": "voluminousenergy:ammonium_nitrate_solution",
-    "amount": 500
-  }
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:white_fuming_nitric_acid",
+      "amount": 250
+    },
+    {
+      "fluid": "voluminousenergy:ammonia",
+      "amount": 250
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 500
+    }
+  ]
 }
