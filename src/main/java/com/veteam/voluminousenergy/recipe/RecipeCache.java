@@ -36,15 +36,16 @@ public class RecipeCache {
             var fluidLevelCache = veFluidRecipeCache.getOrDefault(level, new HashMap<>());
 
             for (RecipeHolder<?> recipe : level.getRecipeManager().getRecipes()) {
-                if (recipe.value() instanceof VERecipe veRecipe) {
-                    var cache = levelCache.getOrDefault(veRecipe.getType(), new ArrayList<>());
-                    cache.add(veRecipe);
-                    levelCache.put(veRecipe.getType(), cache);
-                    cached++;
-                } else if (recipe.value() instanceof VEFluidRecipe veFluidRecipe) {
+
+                if (recipe.value() instanceof VEFluidRecipe veFluidRecipe) {
                     var cache = fluidLevelCache.getOrDefault(veFluidRecipe.getType(), new ArrayList<>());
                     cache.add(veFluidRecipe);
                     fluidLevelCache.put(veFluidRecipe.getType(), cache);
+                    cached++;
+                } else if (recipe.value() instanceof VERecipe veRecipe) {
+                    var cache = levelCache.getOrDefault(veRecipe.getType(), new ArrayList<>());
+                    cache.add(veRecipe);
+                    levelCache.put(veRecipe.getType(), cache);
                     cached++;
                 }
             }
@@ -263,4 +264,6 @@ public class RecipeCache {
         return null;
     }
 
+    public static void printDebugData() {
+    }
 }
