@@ -426,7 +426,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             Direction modifiedSide = normalizeDirection(side);
             List<RelationalTank> relationalTanks = veFluidTileEntity.getRelationalTanks().stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue() || manager.isIgnoreDirection()).toList();
             if (relationalTanks.isEmpty()) return super.getCapability(cap, side);
-            MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
+            MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks,this);
             return LazyOptional.of(() -> slotWrapper).cast();
         } else {
             return super.getCapability(cap, side);

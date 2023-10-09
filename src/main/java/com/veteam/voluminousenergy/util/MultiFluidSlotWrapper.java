@@ -16,9 +16,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     List<RelationalTank> tanks;
     VETileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks) {
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VETileEntity tileEntity) {
         Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
         this.tanks = tanks;
+        this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
     }
 
