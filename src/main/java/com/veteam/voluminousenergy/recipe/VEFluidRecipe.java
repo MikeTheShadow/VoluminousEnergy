@@ -3,10 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +39,8 @@ public abstract class VEFluidRecipe extends VERecipe {
             List<FluidIngredient> fluidIngredients = new ArrayList<>();
             for(VERecipeCodecs.RegistryFluidIngredient ingredient : registryFluidIngredients) {
                 fluidIngredients.add(ingredient.getIngredient());
-                this.fluidIngredientList = fluidIngredients;
             }
+            this.fluidIngredientList = fluidIngredients;
         }
         return fluidIngredientList;
     }
