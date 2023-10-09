@@ -1,19 +1,18 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:iron_ores",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:iron_ores",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:iron_dust",
-    "count": 2
-  },
-  "rng": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:iron_dust",
+      "count": 2
+    }
+  ],
   "experience": {
     "minimum": 1,
     "maximum": 3

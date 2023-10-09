@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "item": "minecraft:tall_grass",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:tall_grass",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:shredded_biomass",
-    "count": 2
-  },
-  "rng": {
-    "item": "minecraft:grass",
-    "count": 1,
-    "chance": 0.75
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:shredded_biomass",
+      "count": 2
+    },
+    {
+      "item": "minecraft:grass",
+      "count": 1,
+      "chance": 0.75
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

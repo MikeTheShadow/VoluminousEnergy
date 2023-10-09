@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AqueoulizerRecipe extends VEFluidRecipe {
@@ -25,8 +26,8 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
     public AqueoulizerRecipe() {
     }
 
-    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime) {
-        super(i, fi, of, oi, processTime);
+    public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+        super(i, fi, of, List.of(), processTime);
     }
 
     public static final RecipeSerializer<AqueoulizerRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -35,7 +36,6 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, AqueoulizerRecipe::new));
 

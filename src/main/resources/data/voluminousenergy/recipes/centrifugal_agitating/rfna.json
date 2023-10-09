@@ -1,19 +1,20 @@
 {
   "type": "voluminousenergy:centrifugal_agitating",
   "process_time": 200,
-  "ingredient": {
-    "item": "voluminousenergy:red_fuming_nitric_acid_bucket"
-  },
-  "input_fluid": {
-    "tag": "forge:red_fuming_nitric_acid",
-    "amount": 250
-  },
-  "first_result": {
-    "fluid": "voluminousenergy:dinitrogen_tetroxide",
-    "amount": 25
-  },
-  "second_result": {
-    "fluid": "voluminousenergy:white_fuming_nitric_acid",
-    "amount": 225
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:red_fuming_nitric_acid",
+      "amount": 250
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:dinitrogen_tetroxide",
+      "amount": 25
+    },
+    {
+      "fluid": "voluminousenergy:white_fuming_nitric_acid",
+      "amount": 225
+    }
+  ]
 }

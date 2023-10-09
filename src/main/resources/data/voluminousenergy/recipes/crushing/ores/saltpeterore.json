@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:ores/saltpeter",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:ores/saltpeter",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:saltpeterchunk",
-    "count": 6
-  },
-  "rng": {
-    "item": "voluminousenergy:sand_dust",
-    "count": 3,
-    "chance": 1
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:saltpeterchunk",
+      "count": 6
+    },
+    {
+      "item": "voluminousenergy:sand_dust",
+      "count": 3,
+      "chance": 1
+    }
+  ],
   "experience": {
     "minimum": 1,
     "maximum": 3

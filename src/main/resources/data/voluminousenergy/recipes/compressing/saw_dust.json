@@ -1,12 +1,16 @@
 {
   "type": "voluminousenergy:compressing",
-  "ingredient": {
-    "tag": "forge:dusts/saw",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:dusts/saw",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:stick",
-    "count": 1
-  }
+  "item_results": [
+    {
+      "item": "minecraft:stick",
+      "count": 1
+    }
+  ]
 }

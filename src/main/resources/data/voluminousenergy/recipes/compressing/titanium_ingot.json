@@ -1,12 +1,16 @@
 {
   "type": "voluminousenergy:compressing",
-  "ingredient": {
-    "tag": "forge:ingots/titanium",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:ingots/titanium",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:titanium_plate",
-    "count": 1
-  }
+  "item_results": [
+    {
+      "item": "voluminousenergy:titanium_plate",
+      "count": 1
+    }
+  ]
 }

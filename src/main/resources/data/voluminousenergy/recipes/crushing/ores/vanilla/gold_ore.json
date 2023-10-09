@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:gold_ores",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:gold_ores",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:gold_dust",
-    "count": 2
-  },
-  "rng": {
-    "item": "voluminousenergy:quartz_dust",
-    "count": 1,
-    "chance": 0.25
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:gold_dust",
+      "count": 2
+    },
+    {
+      "item": "voluminousenergy:quartz_dust",
+      "count": 1,
+      "chance": 0.25
+    }
+  ],
   "experience": {
     "minimum": 2,
     "maximum": 4

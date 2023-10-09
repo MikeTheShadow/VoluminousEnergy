@@ -96,7 +96,7 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
                         // Second Output Tank
                         fluidManagers[2].fillOutput(recipe,1);
 
-                        if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getRNGOutputs().get(2)) {
+                        if (Mth.abs(0 + level.getRandom().nextFloat() * (-1)) < recipe.getOutputChance(0)) {
                             if (thirdOutput.getItem() != recipe.getResult(0).getItem()) {
                                 if (thirdOutput.getItem() == Items.AIR) { // To prevent the slot from being jammed by air
                                     thirdOutput.setCount(1);

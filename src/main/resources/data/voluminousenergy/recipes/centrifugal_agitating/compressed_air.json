@@ -1,19 +1,20 @@
 {
   "type": "voluminousenergy:centrifugal_agitating",
   "process_time": 200,
-  "ingredient": {
-    "item": "voluminousenergy:compressed_air_bucket"
-  },
-  "input_fluid": {
-    "fluid": "voluminousenergy:compressed_air",
-    "amount": 500
-  },
-  "first_result": {
-    "fluid": "voluminousenergy:oxygen",
-    "amount": 125
-  },
-  "second_result": {
-    "fluid": "voluminousenergy:nitrogen",
-    "amount": 375
-  }
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:compressed_air",
+      "amount": 500
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:oxygen",
+      "amount": 125
+    },
+    {
+      "fluid": "voluminousenergy:nitrogen",
+      "amount": 375
+    }
+  ]
 }

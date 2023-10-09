@@ -38,6 +38,10 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public Ingredient getIngredient(int id) {
+        // Sometimes recipes define less that what a machine can pull in (not utilizing all input slots). Therefore, return Empty Ingredient when querying beyond input length
+        if (id >= this.getIngredients().size()) {
+            return Ingredient.EMPTY;
+        }
         return getIngredients().get(id);
     }
 
@@ -67,10 +71,15 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public ItemStack getResult(int id) {
+        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
+        if (id >= this.getResults().size()) {
+            return ItemStack.EMPTY;
+        }
         return this.getResults().get(id);
     }
 
-
+    @Deprecated
+    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getResult(id) INSTEAD
     public List<ItemStack> getResults() {
         return this.results;
     }
@@ -90,11 +99,18 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public int getResultCount(int slot) {
+        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
+        if (slot >= this.getResults().size()) {
+            return 0;
+        }
         return this.results.get(slot).getCount();
     }
 
     public int getIngredientCount(int slot) {
-        return this.ingredients.get(slot).getItems()[0].getCount();
+        if (slot >= this.ingredients.size()){
+            return 0;
+        }
+        return this.ingredients.get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
     }
 
     public int getProcessTime() {

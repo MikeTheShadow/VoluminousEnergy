@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:coals",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:coals",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:coaldust",
-    "count": 1
-  },
-  "rng": {
-    "item": "voluminousenergy:carbondust",
-    "count": 1,
-    "chance": 0.25
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:coaldust",
+      "count": 1
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 1,
+      "chance": 0.25
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

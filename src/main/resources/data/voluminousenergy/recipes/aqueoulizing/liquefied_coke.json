@@ -1,16 +1,22 @@
 {
   "type": "voluminousenergy:aqueoulizing",
   "process_time": 200,
-  "ingredient": {
-    "tag": "forge:dusts/coke",
-    "count": 1
-  },
-  "input_fluid": {
-    "fluid": "minecraft:water",
-    "amount": 250
-  },
-  "result": {
-    "fluid": "voluminousenergy:liquefied_coke",
-    "amount": 250
-  }
+  "ingredients": [
+    {
+      "tag": "forge:dusts/coke",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "minecraft:water",
+      "amount": 250
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:liquefied_coke",
+      "amount": 250
+    }
+  ]
 }

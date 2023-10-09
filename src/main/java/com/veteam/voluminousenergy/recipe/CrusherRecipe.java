@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
@@ -22,19 +21,17 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
     public CrusherRecipe() {
     }
 
-    public CrusherRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime, List<Float> rngOutputs, int minExp, int maxExp) {
-        super(ingredients, results, processTime, rngOutputs, minExp, maxExp);
+    public CrusherRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.VEChancedItemWithCount> results, int processTime, VERecipeCodecs.VERecipeExperience experience) {
+        super(ingredients, results, processTime, experience);
     }
 
     public static final RecipeSerializer<CrusherRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<CrusherRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultsWithChance),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
-                Codec.FLOAT.listOf().fieldOf("rng_values").forGetter((getter) -> getter.rngValues),
-                Codec.INT.fieldOf("min_exp").forGetter((getter) -> getter.processTime),
-                Codec.INT.fieldOf("max_exp").forGetter((getter) -> getter.processTime)
+                VERecipeCodecs.VE_EXPERIENCE_RANGE_CODEC.fieldOf("experience").forGetter((getter) -> getter.experience)
         ).apply(instance, CrusherRecipe::new));
 
         private static final IngredientSerializerHelper<CrusherRecipe> helper = new IngredientSerializerHelper<>();

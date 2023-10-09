@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:storage_blocks/raw_cinnabar",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/raw_cinnabar",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:cinnabar_dust",
-    "count": 45
-  },
-  "rng": {
-    "item": "minecraft:redstone",
-    "count": 18,
-    "chance": 0.25
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:cinnabar_dust",
+      "count": 45
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 18,
+      "chance": 0.25
+    }
+  ],
   "experience": {
     "minimum": 1,
     "maximum": 3

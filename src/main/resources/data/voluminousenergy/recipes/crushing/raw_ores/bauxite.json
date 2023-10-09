@@ -1,19 +1,18 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:raw_materials/bauxite",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:raw_materials/bauxite",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:bauxite_dust",
-    "count": 1
-  },
-  "rng": {
-    "item": "voluminousenergy:bauxite_dust",
-    "count": 1,
-    "chance": 0.333
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:bauxite_dust",
+      "count": 2
+    }
+  ],
   "experience": {
     "minimum": 1,
     "maximum": 3

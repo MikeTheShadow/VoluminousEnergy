@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "item": "voluminousenergy:petcoke",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "voluminousenergy:petcoke",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:cokedust",
-    "count": 2
-  },
-  "rng": {
-    "item": "voluminousenergy:carbondust",
-    "count": 1,
-    "chance": 0.25
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:cokedust",
+      "count": 2
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 1,
+      "chance": 0.25
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

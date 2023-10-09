@@ -1,11 +1,10 @@
 {
   "type": "voluminousenergy:oxidizer_combustion",
   "process_time": 1600,
-  "ingredient": {
-    "item": "voluminousenergy:compressed_air_bucket"
-  },
-  "input_fluid": {
-    "tag": "forge:compressed_air",
-    "amount": 250
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:compressed_air",
+      "amount": 250
+    }
+  ]
 }

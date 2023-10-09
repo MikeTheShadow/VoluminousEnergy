@@ -1,28 +1,31 @@
 {
   "type": "voluminousenergy:centrifugal_separation",
-  "ingredient": {
-    "tag": "forge:dusts/netherrack",
-    "count": 16
-  },
+  "ingredients": [
+    {
+      "tag": "forge:dusts/netherrack",
+      "count": 16
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:sulfurdust",
-    "count": 4,
-    "buckets": 0
-  },
-  "rng_slot_0": {
-    "item": "minecraft:redstone",
-    "count": 1,
-    "chance": 1
-  },
-  "rng_slot_1": {
-    "item": "voluminousenergy:carbondust",
-    "count": 1,
-    "chance": 1
-  },
-  "rng_slot_2": {
-    "item": "minecraft:gold_nugget",
-    "count": 1,
-    "chance": 1
-  }
+  "item_results": [
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1,
+      "chance": 1
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 1,
+      "chance": 1
+    },
+    {
+      "item": "minecraft:gold_nugget",
+      "count": 1,
+      "chance": 1
+    }
+  ]
 }

@@ -47,7 +47,7 @@ public class IngredientSerializerHelper<T extends VERecipe> {
         if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
             int min = buffer.readInt();
             int max = buffer.readInt();
-            iExperienceRecipe.setBoth(min,max);
+            iExperienceRecipe.setExperience(min,max);
         }
 
         return recipe;
