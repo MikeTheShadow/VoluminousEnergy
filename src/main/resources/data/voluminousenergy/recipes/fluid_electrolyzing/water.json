@@ -1,19 +1,20 @@
 {
   "type": "voluminousenergy:fluid_electrolyzing",
   "process_time": 200,
-  "ingredient": {
-    "item": "minecraft:water_bucket"
-  },
-  "input_fluid": {
-    "fluid": "minecraft:water",
-    "amount": 500
-  },
-  "first_result": {
-    "fluid": "voluminousenergy:oxygen",
-    "amount": 125
-  },
-  "second_result": {
-    "fluid": "voluminousenergy:hydrogen",
-    "amount": 375
-  }
+  "fluid_ingredients": [
+    {
+      "fluid": "minecraft:water",
+      "amount": 500
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:oxygen",
+      "amount": 125
+    },
+    {
+      "fluid": "voluminousenergy:hydrogen",
+      "amount": 375
+    }
+  ]
 }

@@ -3,20 +3,16 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FluidMixerRecipe extends VEFluidRecipe {
@@ -25,8 +21,8 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     public FluidMixerRecipe() {
     }
 
-    public FluidMixerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime) {
-        super(new ArrayList<>(), fi, of, oi, processTime);
+    public FluidMixerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+        super(List.of(), fi, of, List.of(), processTime);
     }
 
     public static final RecipeSerializer<FluidMixerRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -34,7 +30,6 @@ public class FluidMixerRecipe extends VEFluidRecipe {
         public static final Codec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, FluidMixerRecipe::new));
 

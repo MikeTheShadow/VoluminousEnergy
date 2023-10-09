@@ -1,31 +1,27 @@
 {
   "type": "voluminousenergy:hydroponic_incubating",
   "process_time": 200,
-  "ingredient": {
-    "item": "minecraft:bamboo",
-    "count": 1
-  },
-  "input_fluid": {
-    "fluid": "voluminousenergy:ammonium_nitrate_solution",
-    "amount": 250
-  },
-  "result": {
-    "item": "minecraft:bamboo",
-    "count": 9
-  },
-  "rng_slot_0": {
-    "item": "minecraft:stick",
-    "count": 1,
-    "chance": 0.25
-  },
-  "rng_slot_1": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
-  "rng_slot_2": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  }
+  "ingredients": [
+    {
+      "item": "minecraft:bamboo",
+      "count": 1
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "fluid": "voluminousenergy:ammonium_nitrate_solution",
+      "amount": 250
+    }
+  ],
+  "item_results": [
+    {
+      "item": "minecraft:bamboo",
+      "count": 9
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 1,
+      "chance": 0.25
+    }
+  ]
 }
