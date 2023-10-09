@@ -21,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements EntityBlock {
+public class PrimitiveStirlingGeneratorBlock extends VEFaceableMachineBlock {
 
     public PrimitiveStirlingGeneratorBlock() {
 
@@ -55,19 +55,5 @@ public class PrimitiveStirlingGeneratorBlock extends FaceableBlock implements En
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get());
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (!world.isClientSide){
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
-            } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.SUCCESS;
     }
 }
