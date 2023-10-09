@@ -70,7 +70,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
 
         if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){ // Check RNG if it's not air
-            int chance = (int)(recipe.getRNGOutputs().get(1) * 100);
+            int chance = (int)(recipe.getOutputChance(1) * 100);
             int xPos = 20;
             if (chance < 100 && chance >= 10){
                 xPos += 3;

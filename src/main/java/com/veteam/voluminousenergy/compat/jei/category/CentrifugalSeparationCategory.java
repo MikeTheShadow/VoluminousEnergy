@@ -81,17 +81,17 @@ public class CentrifugalSeparationCategory implements IRecipeCategory<Centrifuga
         slotDrawable.draw(matrixStack,49,56); // Third RNG
 
         if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){
-            int chance = (int)(recipe.getRNGOutputs().get(1) * 100);
+            int chance = (int)(recipe.getOutputChance(1) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getResult(2) != null && recipe.getResult(2).getItem() != Items.AIR){
-            int chance = (int)(recipe.getRNGOutputs().get(2) * 100);
+            int chance = (int)(recipe.getOutputChance(2) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 44, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getResult(3) != null && recipe.getResult(3).getItem() != Items.AIR){
-            int chance = (int)(recipe.getRNGOutputs().get(3) * 100);
+            int chance = (int)(recipe.getOutputChance(3) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"),  74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 

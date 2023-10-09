@@ -25,8 +25,11 @@ public abstract class VERNGRecipe extends VERecipe {
 
     }
 
-    @Deprecated
-    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getOutputChance(id) INSTEAD
+    /**
+     * A variable list of rng floats of variable length that can change depending on the recipe requirements
+     * Should only be used in serialization
+     * @return the raw rng values
+     */
     public List<Float> getRNGOutputs() {
         return rngValues;
     }

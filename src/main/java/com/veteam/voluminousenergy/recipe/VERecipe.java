@@ -78,8 +78,11 @@ public abstract class VERecipe implements Recipe<Container> {
         return this.getResults().get(id);
     }
 
-    @Deprecated
-    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getResult(id) INSTEAD
+    /**
+     * A variable list of results of variable length that can change depending on the recipe requirements
+     * Should only be used in serialization
+     * @return the raw results
+     */
     public List<ItemStack> getResults() {
         return this.results;
     }

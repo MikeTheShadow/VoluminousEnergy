@@ -74,8 +74,8 @@ public class IngredientSerializerHelper<T extends VERecipe> {
         }
 
         if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
-            buffer.writeInt(iExperienceRecipe.minExp);
-            buffer.writeInt(iExperienceRecipe.maxExp);
+            buffer.writeInt(iExperienceRecipe.getMinExp());
+            buffer.writeInt(iExperienceRecipe.getMaxExp());
         }
     }
 

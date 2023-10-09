@@ -24,6 +24,22 @@ public abstract class VERNGExperienceRecipe extends VERNGRecipe {
         this.maxExp = experience.maximum();
     }
 
+    public int getMinExp() {
+        return minExp;
+    }
+
+    public void setMinExp(int minExp) {
+        this.minExp = minExp;
+    }
+
+    public int getMaxExp() {
+        return maxExp;
+    }
+
+    public void setMaxExp(int maxExp) {
+        this.maxExp = maxExp;
+    }
+
     public void setExperience(int min, int max) {
         this.experience = new VERecipeCodecs.VERecipeExperience(min, max);
     }

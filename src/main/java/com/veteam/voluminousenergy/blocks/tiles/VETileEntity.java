@@ -108,9 +108,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                         }
                     }
 
-                    VERNGRecipe irngRecipe = null;
+                    VERNGRecipe rngRecipe = null;
                     if(recipe instanceof VERNGRecipe rec) {
-                        irngRecipe = rec;
+                        rngRecipe = rec;
                     }
                     Random r = new Random();
                     // process recipe
@@ -119,8 +119,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                             ItemStack output = recipe.getResult(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
-                            if(irngRecipe != null) {
-                                float randomness = irngRecipe.getRNGOutputs().get(slotManager.getRecipePos());
+                            if(rngRecipe != null) {
+                                float randomness = rngRecipe.getOutputChance(slotManager.getRecipePos());
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
                                     if(random > randomness) continue;
