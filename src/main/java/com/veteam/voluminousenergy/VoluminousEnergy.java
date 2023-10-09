@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
-import com.veteam.voluminousenergy.datagen.VELootInjectionData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEBlockItems;
@@ -214,7 +213,6 @@ public class VoluminousEnergy {
 
             if(event.includeServer()) {
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
-                dataGenerator.addProvider(true, new VELootInjectionData(dataGenerator));
                 dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput()));
             }
         }
