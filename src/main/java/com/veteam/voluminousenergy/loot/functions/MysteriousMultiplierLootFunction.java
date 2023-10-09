@@ -7,11 +7,11 @@ public class MysteriousMultiplierLootFunction /*extends LootItemConditionalFunct
 //    }
 //
 //    @Override
-//    protected ItemStack run(ItemStack stack, LootContext context) {
+//    protected ItemStack run(ItemStack item, LootContext context) {
 //        BlockEntity tile = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
 ////        VoluminousEnergy.LOGGER.debug("Loot Tile: " + tile.getType().getRegistryName());
 //
-//        return stack;
+//        return item;
 //    }
 //
 //    @Override

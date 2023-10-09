@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
-import com.veteam.voluminousenergy.recipe.SawmillingRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
+public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
-    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.SAWMILL_UID, SawmillingRecipe.class);
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.SAWMILL_UID, VEFluidSawmillRecipe.class);
     //protected static ArrayList<Pair<ItemStack, ItemStack>> logPlankPairList = new ArrayList<>();
 
 
@@ -76,7 +76,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
     }
 
     @Override
-    public void draw(SawmillingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(VEFluidSawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack,2,10);
         slotDrawable.draw(matrixStack,48,1);
         slotDrawable.draw(matrixStack,48,19);
@@ -85,7 +85,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
         emptyArrow.draw(matrixStack,24,11);
     }
 
-    public void ingredientHandler(SawmillingRecipe recipe,
+    public void ingredientHandler(VEFluidSawmillRecipe recipe,
                                   IIngredientAcceptor inputItemAcceptor,
                                   IIngredientAcceptor primaryItemOutputAcceptor,
                                   IIngredientAcceptor secondaryItemOutputAcceptor,
@@ -122,15 +122,15 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
-            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getItemIngredient(0).getItems()));
+            ArrayList<ItemStack> inputStacks = new ArrayList<>(Arrays.asList(recipe.getIngredient(0).getItems()));
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
             // First Item Output (Typically Planks)
-            ItemStack resultStack = recipe.getOutputItem(0).copy();
+            ItemStack resultStack = recipe.getResult(0).copy();
             primaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, resultStack);
 
             // Second Item Output
-            ItemStack secondOutputStack = recipe.getOutputItem(1).copy();
+            ItemStack secondOutputStack = recipe.getResult(1).copy();
             secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, secondOutputStack);
 
             // Fluid Output
@@ -140,7 +140,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillingRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, SawmillingRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, VEFluidSawmillRecipe recipe, IFocusGroup focusGroup) {
         IRecipeSlotBuilder inputItem = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3, 11);
 
         IRecipeSlotBuilder primaryOutputItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49,2);

@@ -1,9 +1,11 @@
 {
   "type": "voluminousenergy:stirling",
-  "ingredient": {
-    "tag": "forge:rosin",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:rosin",
+      "count": 1
+    }
+  ],
   "process_time": 800,
   "energy_per_tick": 128
 }

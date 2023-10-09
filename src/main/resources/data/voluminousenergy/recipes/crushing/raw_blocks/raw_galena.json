@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:storage_blocks/raw_galena",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/raw_galena",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:galena_dust",
-    "count": 18
-  },
-  "rng": {
-    "item": "voluminousenergy:sulfurdust",
-    "count": 9,
-    "chance": 0.5
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:galena_dust",
+      "count": 18
+    },
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 9,
+      "chance": 0.5
+    }
+  ],
   "experience": {
     "minimum": 2,
     "maximum": 5

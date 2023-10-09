@@ -1,28 +1,21 @@
 {
   "type": "voluminousenergy:centrifugal_separation",
-  "ingredient": {
-    "item": "minecraft:glowstone_dust",
-    "count": 16
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 16
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:redstone",
-    "count": 8,
-    "buckets": 0
-  },
-  "rng_slot_0": {
-    "item": "voluminousenergy:gold_dust",
-    "count": 8,
-    "chance": 1
-  },
-  "rng_slot_1": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  },
-  "rng_slot_2": {
-    "item": "minecraft:air",
-    "count": 0,
-    "chance": 0
-  }
+  "item_results": [
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+    {
+      "item": "voluminousenergy:gold_dust",
+      "count": 8,
+      "chance": 1
+    }
+  ]
 }

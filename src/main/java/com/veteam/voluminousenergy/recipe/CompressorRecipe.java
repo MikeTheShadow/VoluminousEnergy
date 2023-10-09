@@ -1,87 +1,69 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.List;
 
 public class CompressorRecipe extends VERecipe {
     public static final RecipeType<CompressorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING.get();
 
-    public static final Serializer SERIALIZER = new Serializer();
-
-
-    public CompressorRecipe(ResourceLocation recipeId){ this.recipeId = recipeId; }
-
-    @Override
-    public @NotNull ResourceLocation getId(){
-        return recipeId;
+    public CompressorRecipe() {
     }
 
+    public CompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
+        super(ingredients, results, processTime);
+    }
+
+    public static final RecipeSerializer<CompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
+
+        public static final Codec<CompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
+                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+        ).apply(instance, CompressorRecipe::new));
+
+        private static final IngredientSerializerHelper<CompressorRecipe> helper = new IngredientSerializerHelper<>();
+
+        @Nullable
+        @Override
+        public CompressorRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            return helper.fromNetwork(new CompressorRecipe(), buffer);
+        }
+
+        @Override
+        public @NotNull Codec<CompressorRecipe> codec() {
+            return VE_RECIPE_CODEC;
+        }
+
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CompressorRecipe recipe) {
+            helper.toNetwork(buffer, recipe);
+        }
+    };
+
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer(){
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
         return SERIALIZER;
     }
 
     @Override
-    public @NotNull RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get());
-    }
-
-    public static class Serializer implements RecipeSerializer<CompressorRecipe>{
-
-        @Override
-        public @NotNull CompressorRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json){
-
-            CompressorRecipe recipe = new CompressorRecipe(recipeId);
-
-            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
-
-            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
-            Lazy<Ingredient> ingredientLazy = Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount));
-            recipe.addLazyIngredient(ingredientLazy);
-
-            recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
-
-            ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "item", "minecraft:air"),':');
-            int itemAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "count", 1);
-            ItemStack result = new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(itemResourceLocation)),itemAmount);
-            recipe.results.add(result);
-
-            return recipe;
-        }
-
-        IngredientSerializerHelper<CompressorRecipe> helper = new IngredientSerializerHelper<>();
-
-        @Nullable
-        @Override
-        public CompressorRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer){
-            CompressorRecipe recipe = new CompressorRecipe(recipeId);
-            helper.fromNetwork(recipe,buffer);
-            return recipe;
-        }
-
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CompressorRecipe recipe){
-            helper.toNetwork(buffer,recipe);
-        }
     }
 }

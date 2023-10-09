@@ -1,28 +1,35 @@
 {
   "type": "voluminousenergy:centrifugal_separation",
-  "ingredient": {
-    "tag": "forge:dusts/soulsand",
-    "count": 16
-  },
+  "ingredients": [
+    {
+      "tag": "forge:dusts/soulsand",
+      "count": 16
+    },
+    {
+      "item": "minecraft:bucket",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:sand_dust",
-    "count": 10,
-    "buckets": 1
-  },
-  "rng_slot_0": {
-    "item": "voluminousenergy:carbondust",
-    "count": 4,
-    "chance": 1
-  },
-  "rng_slot_1": {
-    "item": "voluminousenergy:crude_oil_bucket",
-    "count": 1,
-    "chance": 1
-  },
-  "rng_slot_2": {
-    "item": "voluminousenergy:sulfurdust",
-    "count": 1,
-    "chance": 1
-  }
+  "item_results": [
+    {
+      "item": "voluminousenergy:sand_dust",
+      "count": 10
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 4,
+      "chance": 1
+    },
+    {
+      "item": "voluminousenergy:crude_oil_bucket",
+      "count": 1,
+      "chance": 1
+    },
+    {
+      "item": "voluminousenergy:sulfurdust",
+      "count": 1,
+      "chance": 1
+    }
+  ]
 }

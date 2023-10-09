@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
@@ -23,17 +24,21 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import org.stringtemplate.v4.ST;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
@@ -68,7 +73,6 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
         super(VEBlocks.TOOLING_STATION_TILE.get(), pos, state, null);
-//        fuelTank.setValidFluids(RecipeUtil.getCombustibleFuelsWithoutLevel()); TODO fix me
     }
 
     VEFluidRecipe fuelRecipe;
@@ -78,18 +82,9 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
         updateClients();
         processFluidIO();
         validateRecipe();
-
-        ItemStack fuelInput = inventory.getStackInSlot(0).copy(); // Fuel bucket insert
-        ItemStack fuelOutput = inventory.getStackInSlot(1).copy(); // Fuel bucket extract
         ItemStack mainTool = inventory.getStackInSlot(2); // This will act like a POINTER, not a clone
         ItemStack toolBit = inventory.getStackInSlot(3).copy(); // this is where the bit would be put into
         ItemStack toolBase = inventory.getStackInSlot(4).copy(); // this is where the base of the tool would be put into
-
-        fuelTank.setInput(fuelInput.copy());
-        fuelTank.setOutput(fuelOutput.copy());
-
-        if (this.inputFluid(fuelTank, 0, 1)) return;
-        if (this.outputFluid(fuelTank, 0, 1)) return;
 
         if (fuelRecipe != null) {
             // Logic for refueling the base
@@ -176,7 +171,6 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
             protected void onContentsChanged(int slot) {
                 if (slot == 2 && this.getStackInSlot(2).isEmpty()) { // If the crafted multitool is removed, delete the components
                     if (this.getStackInSlot(3).isEmpty() || this.getStackInSlot(4).isEmpty()) {
-
                     } else {
                         this.setStackInSlot(3, ItemStack.EMPTY);
                         this.setStackInSlot(4, ItemStack.EMPTY);
@@ -192,8 +186,15 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (slot < 2) return stack.getItem() instanceof BucketItem;
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot == 0) {
+                    if (stack.getItem() instanceof BucketItem bucketItem && !bucketItem.getFluid().isSame(Fluids.EMPTY)) {
+                        return (RecipeUtil.isCombustibleFuel(bucketItem.getFluid(), null));
+                    }
+                    return stack.getItem() instanceof BucketItem;
+                } else if (slot == 1) {
+                    return stack.getItem() instanceof BucketItem;
+                }
                 if (slot == 2)
                     return stack.getItem() instanceof Multitool && stack.getItem() != VEMultitools.EMPTY_MULTITOOL.get(); // TODO: Remove Multitool base?
                 if (slot == 3) return stack.getItem() instanceof BitItem;
@@ -204,10 +205,8 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                if (slot == 2 && (!this.getStackInSlot(3).isEmpty() || !this.getStackInSlot(4).isEmpty())) { // main Multitool slot
-                    return stack;
-                }
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if (!isItemValid(slot, stack)) return stack;
                 return super.insertItem(slot, stack, simulate);
             }
         };

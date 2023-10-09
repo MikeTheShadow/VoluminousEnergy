@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util.recipe;
 
-import com.veteam.voluminousenergy.recipe.IRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
+import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,27 +35,26 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
         recipe.setProcessTime(buffer.readInt());
 
-        if (recipe instanceof IRNGRecipe irngRecipe) {
+        if (recipe instanceof VERNGRecipe irngRecipe) {
             int totalRandom = buffer.readInt();
-            float[] randomValues = new float[totalRandom];
+            List<Float> values = new ArrayList<>();
             for (int i = 0; i < totalRandom; i++) {
-                randomValues[i] = buffer.readFloat();
+                values.add(buffer.readFloat());
             }
-
-            irngRecipe.setRNGOutputs(randomValues);
+            irngRecipe.setRNGOutputs(values);
         }
 
-        if(recipe instanceof IExperienceRecipe iExperienceRecipe) {
+        if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
             int min = buffer.readInt();
             int max = buffer.readInt();
-            iExperienceRecipe.setBoth(min,max);
+            iExperienceRecipe.setExperience(min,max);
         }
 
         return recipe;
     }
 
     public void toNetwork(FriendlyByteBuf buffer, T recipe) {
-        buffer.writeInt(recipe.getLazyIngredients().size());
+        buffer.writeInt(recipe.getIngredients().size());
         for (Ingredient ingredient : recipe.getIngredients()) {
             ingredient.toNetwork(buffer);
         }
@@ -66,16 +66,16 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
         buffer.writeInt(recipe.getProcessTime());
 
-        if (recipe instanceof IRNGRecipe irngRecipe) {
-            buffer.writeInt(irngRecipe.getRNGOutputs().length);
+        if (recipe instanceof VERNGRecipe irngRecipe) {
+            buffer.writeInt(irngRecipe.getRNGOutputs().size());
             for(float f : irngRecipe.getRNGOutputs()) {
                 buffer.writeFloat(f);
             }
         }
 
-        if(recipe instanceof IExperienceRecipe iExperienceRecipe) {
-            buffer.writeInt(iExperienceRecipe.getMinExperience());
-            buffer.writeInt(iExperienceRecipe.getMaxExperience());
+        if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
+            buffer.writeInt(iExperienceRecipe.minExp);
+            buffer.writeInt(iExperienceRecipe.maxExp);
         }
     }
 

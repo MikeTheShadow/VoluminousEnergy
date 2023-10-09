@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -41,15 +42,23 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
 
     public PrimitiveStirlingGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE.get(), pos, state, null);
+        this.energyCap = this.getCapability(ForgeCapabilities.ENERGY);
+        this.maxPower = Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get();
+        this.generateAmount = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
     }
+
+    @NotNull LazyOptional<IEnergyStorage> energyCap;
+
+    private final int maxPower;
+    private final int generateAmount;
 
     @Override
     public void tick() {
         updateClients();
         if (counter > 0) {
             counter--;
-            if (this.getEnergy().map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()) {
-                energy.ifPresent(e -> e.addEnergy(Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get())); //Amount of energy to add per tick
+            if (energyCap.map(IEnergyStorage::getEnergyStored).orElse(0) < maxPower) {
+                energy.ifPresent(e -> e.addEnergy(generateAmount)); //Amount of energy to add per tick
             }
             if (++sound_tick == 19) {
                 sound_tick = 0;

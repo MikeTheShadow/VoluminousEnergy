@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe> {
 
@@ -80,21 +81,21 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
         slotDrawable.draw(matrixStack, 49, 38); // Second RNG
         slotDrawable.draw(matrixStack, 49, 56); // Third RNG
 
-        float[] chances = recipe.getRNGOutputs();
+        List<Float> chances = recipe.getRNGOutputs();
 
         if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR) {
-            int chance = (int) (chances[1] * 100);
+            int chance = (int) (chances.get(1) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 26, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getResult(2) != null && recipe.getResult(2).getItem() != Items.AIR) {
-            int chance = (int) (chances[2] * 100);
+            int chance = (int) (chances.get(2) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 44, VEContainerScreen.GREY_TEXT_STYLE);
 
         }
 
         if (recipe.getResult(3) != null && recipe.getResult(3).getItem() != Items.AIR) {
-            int chance = (int) (chances[3] * 100);
+            int chance = (int) (chances.get(3) * 100);
             TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), 74, 62, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
@@ -111,7 +112,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (!recipe.getIngredient(1).isEmpty()) {
+        if (recipe.getIngredient(1).getItems().length > 0) {
             ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.getIngredient(1).getItems()[0].getCount());
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }

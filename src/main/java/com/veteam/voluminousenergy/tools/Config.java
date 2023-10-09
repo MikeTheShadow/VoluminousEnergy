@@ -622,12 +622,12 @@ public class Config {
                 .defineInRange("Fluid Amount", 250, 0, 4_000);
         SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION = COMMON_BUILDER.comment("Resource Location of the second output item when processing a log without a recipe")
                 .define("Second output item resource location", "voluminousenergy:saw_dust");
-        SAWMILL_SECOND_OUTPUT_COUNT = COMMON_BUILDER.comment("Item count of the second output item when processing a log without a recipe")
-                .defineInRange("Second output count", 1, 0, 64);
+        SAWMILL_SECOND_OUTPUT_COUNT = COMMON_BUILDER.comment("Item amount of the second output item when processing a log without a recipe")
+                .defineInRange("Second output amount", 1, 0, 64);
         SAWMILL_PROCESSING_TIME = COMMON_BUILDER.comment("Processing time when processing a log without a recipe")
                 .defineInRange("Processing time", 200, 0, Integer.MAX_VALUE);
         SAWMILL_PRIMARY_OUTPUT_COUNT = COMMON_BUILDER.comment("Amount of the primary item (typically a plank) that will be generated when finished processing a log without a recipe")
-                .defineInRange("Primary output count", 6, 1, 64);
+                .defineInRange("Primary output amount", 6, 1, 64);
         SAWMILL_LOG_CONSUMPTION_RATE = COMMON_BUILDER.comment("Amount of the input item (typically a log) that will be consumed when finished processing a log without a recipe")
                 .defineInRange("Number of logs to consume", 1, 1, 64);
         }

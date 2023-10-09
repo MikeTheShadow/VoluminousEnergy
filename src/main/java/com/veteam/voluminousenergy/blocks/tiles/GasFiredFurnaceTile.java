@@ -165,8 +165,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
         }
         this.isRecipeDirty = false;
         ItemStack furnaceInput = slotManagers.get(2).getItem(this.inventory);
-        furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
-        blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+        var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+        var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+
+        if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
         fuelRecipe = (CombustionGeneratorFuelRecipe)
                 RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());
         VoluminousEnergy.LOGGER.info((furnaceRecipe != null) + " | " + (blastingRecipe != null) + " | " + (fuelRecipe != null));
@@ -213,13 +216,13 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
                             || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;
                 } else if (slot == 3) {
-                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    var furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    var blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
 
-                    return stack.getItem() == Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).getResultItem(level.registryAccess()).getItem();
+                    return stack.getItem() == Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).value().getResultItem(level.registryAccess()).getItem();
 
                 } else if (slot == 4) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
@@ -239,18 +242,18 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 if (level != null && !simulate) {
-                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    var furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    var blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if (blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem(level.registryAccess()).getItem()) {
-                            if (blastingRecipe.getExperience() > 0) {
-                                generateXP(amount, blastingRecipe.getExperience());
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.value().getResultItem(level.registryAccess()).getItem()) {
+                            if (blastingRecipe.value().getExperience() > 0) {
+                                generateXP(amount, blastingRecipe.value().getExperience());
                             }
                         }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem(level.registryAccess()).getItem()) {
-                            if (furnaceRecipe.getExperience() > 0) {
-                                generateXP(amount, furnaceRecipe.getExperience());
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.value().getResultItem(level.registryAccess()).getItem()) {
+                            if (furnaceRecipe.value().getExperience() > 0) {
+                                generateXP(amount, furnaceRecipe.value().getExperience());
                             }
                         }
                     }

@@ -1,24 +1,27 @@
 {
   "type": "voluminousenergy:distilling",
   "process_time": 200,
-  "ingredient": {
-    "item": "voluminousenergy:tree_sap_bucket"
-  },
-  "input_fluid": {
-    "tag": "forge:tree_sap",
-    "amount": 500
-  },
-  "first_result": {
-    "fluid": "voluminousenergy:treethanol",
-    "amount": 375
-  },
-  "second_result": {
-    "fluid": "minecraft:water",
-    "amount": 125
-  },
-  "third_result": {
-    "item": "voluminousenergy:rosin",
-    "count": 1,
-    "chance": 0.25
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:tree_sap",
+      "amount": 500
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:treethanol",
+      "amount": 375
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 125
+    }
+  ],
+  "item_results": [
+    {
+      "item": "voluminousenergy:rosin",
+      "count": 1,
+      "chance": 0.25
+    }
+  ]
 }

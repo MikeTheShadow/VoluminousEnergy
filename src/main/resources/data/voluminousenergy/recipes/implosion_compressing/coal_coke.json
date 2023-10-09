@@ -1,12 +1,16 @@
 {
   "type": "voluminousenergy:implosion_compressing",
-  "ingredient": {
-    "tag": "forge:dusts/coke",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:dusts/coke",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:coalcoke",
-    "count": 1
-  }
+  "item_results": [
+    {
+      "item": "voluminousenergy:coalcoke",
+      "count": 1
+    }
+  ]
 }

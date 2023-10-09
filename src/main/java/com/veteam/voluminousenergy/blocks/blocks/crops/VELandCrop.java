@@ -69,7 +69,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Handle bonemeal
     @Override
-    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos pos, BlockState state, boolean isRemote) {
+    public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos pos, BlockState state) {
         return state.getValue(BlockStateProperties.AGE_2) < 2; // valid if age is less than 2
     }
 

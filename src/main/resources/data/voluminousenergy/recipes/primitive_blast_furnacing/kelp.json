@@ -1,12 +1,16 @@
 {
   "type": "voluminousenergy:primitive_blast_furnacing",
-  "ingredient": {
-    "item": "minecraft:kelp",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:kelp",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:dried_kelp",
-    "count": 1
-  }
+  "item_results": [
+    {
+      "item": "minecraft:dried_kelp",
+      "count": 1
+    }
+  ]
 }

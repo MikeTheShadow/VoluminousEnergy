@@ -7,10 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class DirectionButtonPacket {
     private int direction;
@@ -37,18 +35,18 @@ public class DirectionButtonPacket {
         buffer.writeInt(this.slotId);
     }
 
-    public static void handle(DirectionButtonPacket packet, Supplier<NetworkEvent.Context> contextSupplier){
-        NetworkDirection packetDirection = contextSupplier.get().getDirection();
+    public static void handle(DirectionButtonPacket packet, CustomPayloadEvent.Context contextSupplier){
+        NetworkDirection packetDirection = contextSupplier.getDirection();
         switch(packetDirection){
             case PLAY_TO_CLIENT:
                 AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.get().enqueueWork(() -> handlePacket(packet,clientContainer,false));
-                contextSupplier.get().setPacketHandled(true);
+                contextSupplier.enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.setPacketHandled(true);
                 break;
             default:
-                AbstractContainerMenu serverContainer = (contextSupplier.get().getSender()).containerMenu;
-                contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer,true));
-                contextSupplier.get().setPacketHandled(true);
+                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
+                contextSupplier.enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.setPacketHandled(true);
         }
 
     }

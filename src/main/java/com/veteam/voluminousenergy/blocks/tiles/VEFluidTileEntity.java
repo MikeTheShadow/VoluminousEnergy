@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.recipe.IRNGRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -89,7 +89,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                 } else if (manager.getSlotType() == SlotType.INPUT) {
                     for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
                         VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                        if (veFluidRecipe.getItemIngredient(manager.getRecipePos()).test(stack)) {
+                        if (veFluidRecipe.getIngredient(manager.getRecipePos()).test(stack)) {
                             return true;
                         }
                     }
@@ -192,7 +192,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                     // Validate output
                     for (VESlotManager slotManager : getSlotManagers()) {
                         if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
-                        ItemStack recipeStack = recipe.getOutputItem(slotManager.getRecipePos());
+                        ItemStack recipeStack = recipe.getResult(slotManager.getRecipePos());
                         ItemStack currentItem = slotManager.getItem(handler);
                         if(currentItem.isEmpty()) continue;
                         // If the output item amount won't fit, then you must acquit
@@ -202,8 +202,8 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                         }
                     }
 
-                    IRNGRecipe irngRecipe = null;
-                    if(recipe instanceof IRNGRecipe rec) {
+                    VEFluidRNGRecipe irngRecipe = null;
+                    if(recipe instanceof VEFluidRNGRecipe rec) {
                         irngRecipe = rec;
                     }
                     Random r = new Random();
@@ -211,11 +211,11 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                     // process recipe
                     for(VESlotManager slotManager : getSlotManagers()) {
                         if(slotManager.getSlotType() == SlotType.OUTPUT) {
-                            ItemStack output = recipe.getOutputItem(slotManager.getRecipePos());
+                            ItemStack output = recipe.getResult(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
                             if(irngRecipe != null) {
-                                float randomness = irngRecipe.getRNGOutputs()[slotManager.getRecipePos()];
+                                float randomness = irngRecipe.getRNGOutputs().get(slotManager.getRecipePos());
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
                                     if(random > randomness) continue;
@@ -225,7 +225,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                             if(currentStack.isEmpty()) slotManager.setItem(output,handler);
                             else currentStack.setCount(currentStack.getCount() + output.getCount());
                         } else if(slotManager.getSlotType() == SlotType.INPUT) {
-                            Ingredient ingredient = recipe.getItemIngredient(slotManager.getRecipePos());
+                            Ingredient ingredient = recipe.getIngredient(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
                             currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
                         }

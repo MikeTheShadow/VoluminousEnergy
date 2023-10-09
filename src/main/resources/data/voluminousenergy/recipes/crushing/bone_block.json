@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "forge:storage_blocks/bone",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/bone",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:bone",
-    "count": 3
-  },
-  "rng": {
-    "item": "minecraft:bone_meal",
-    "count": 5,
-    "chance": 0.05
-  },
+  "item_results": [
+    {
+      "item": "minecraft:bone",
+      "count": 3
+    },
+    {
+      "item": "minecraft:bone_meal",
+      "count": 5,
+      "chance": 0.05
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

@@ -3,7 +3,9 @@ package com.veteam.voluminousenergy.items.tools;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.WorldUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -65,7 +67,10 @@ public class CreativeFluidScanner extends Item {
         climateString.append("\nT: " + climateMap.get(WorldUtil.ClimateParameters.TEMPERATURE));
 
         // Print out message to chat
-        player.sendSystemMessage(Component.nullToEmpty("Scanning...")); // TODO: Make translatable
+        player.sendSystemMessage(TextUtil.translateString(ChatFormatting.YELLOW, "text.voluminousenergy.fluid_scanner.scanning")
+                .copy()
+                .append(Component.nullToEmpty(ChatFormatting.YELLOW + "..."))
+        );
         player.sendSystemMessage(Component.nullToEmpty(climateString.toString()));
 
         ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);

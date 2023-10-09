@@ -1,4 +1,8 @@
 {
   "type": "voluminousenergy:sawmilling",
-  "auto_log_to_plank": "true"
+  "is_log_recipe": true,
+  "ingredients": [],
+  "process_time": 200,
+  "item_results": [],
+  "fluid_results": []
 }

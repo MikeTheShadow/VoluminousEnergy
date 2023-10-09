@@ -90,7 +90,7 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
                                   IIngredientAcceptor fluidOutputAcceptor) {
 
         // INPUT
-        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(recipe.getItemIngredient(0).getItems()).get(0));
+        itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredient(0).getItems()).get(0));
 
         fluidInputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()).get(0));
 

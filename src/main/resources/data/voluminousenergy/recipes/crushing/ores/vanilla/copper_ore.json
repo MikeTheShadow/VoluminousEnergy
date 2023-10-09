@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:copper_ores",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:copper_ores",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:copper_dust",
-    "count": 1
-  },
-  "rng": {
-    "item": "voluminousenergy:copper_carbonate_dust",
-    "count": 1,
-    "chance": 1
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:copper_dust",
+      "count": 1
+    },
+    {
+      "item": "voluminousenergy:copper_carbonate_dust",
+      "count": 1,
+      "chance": 1
+    }
+  ],
   "experience": {
     "minimum": 1,
     "maximum": 3

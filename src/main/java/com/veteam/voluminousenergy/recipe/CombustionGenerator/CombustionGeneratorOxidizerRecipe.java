@@ -1,69 +1,66 @@
 package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CombustionGeneratorOxidizerRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.OXIDIZING.get();
 
-    public static final Serializer SERIALIZER = new Serializer();
+    public CombustionGeneratorOxidizerRecipe() {
 
-    private final ResourceLocation recipeId;
-
-    public CombustionGeneratorOxidizerRecipe(ResourceLocation recipeId){
-        this.recipeId = recipeId;
     }
-    @Override
-    public @NotNull ResourceLocation getId(){return recipeId;}
+
+    public CombustionGeneratorOxidizerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, int processTime) {
+        super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), processTime);
+    }
+
+    public static final RecipeSerializer<CombustionGeneratorOxidizerRecipe> SERIALIZER = new RecipeSerializer<>() {
+        public static final Codec<CombustionGeneratorOxidizerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+        ).apply(instance, CombustionGeneratorOxidizerRecipe::new));
+
+        private static final FluidSerializerHelper<CombustionGeneratorOxidizerRecipe> helper = new FluidSerializerHelper<>();
+
+        @Nullable
+        @Override
+        public CombustionGeneratorOxidizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            return helper.fromNetwork(new CombustionGeneratorOxidizerRecipe(), buffer);
+        }
+
+        @Override
+        public @NotNull Codec<CombustionGeneratorOxidizerRecipe> codec() {
+            return VE_RECIPE_CODEC;
+        }
+
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombustionGeneratorOxidizerRecipe recipe) {
+            helper.toNetwork(buffer, recipe);
+        }
+    };
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType() {
         return RECIPE_TYPE;
-    }
-
-    public static class Serializer implements RecipeSerializer<CombustionGeneratorOxidizerRecipe> {
-        @Override
-        public @NotNull CombustionGeneratorOxidizerRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-            CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe(recipeId);
-
-            int processTime = GsonHelper.getAsInt(json,"process_time",1600);
-            recipe.setProcessTime(processTime);
-
-            JsonObject inputFluid = json.get("input_fluid").getAsJsonObject();
-            recipe.getLazyFluidIngredientList().add(Lazy.of(() -> FluidIngredient.fromJson(inputFluid)));
-            return recipe;
-        }
-
-        FluidSerializerHelper<CombustionGeneratorOxidizerRecipe> helper = new FluidSerializerHelper<>();
-
-        @Nullable
-        @Override
-        public CombustionGeneratorOxidizerRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer){
-            CombustionGeneratorOxidizerRecipe recipe = new CombustionGeneratorOxidizerRecipe((recipeId));
-            helper.fromNetwork(recipe,buffer);
-            return recipe;
-        }
-
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombustionGeneratorOxidizerRecipe recipe){
-            helper.toNetwork(buffer,recipe);
-        }
-
     }
 
 }

@@ -89,10 +89,10 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
                     inventory.insertItem(1, newOutputStack.copy(), false); // CRASH the game if this is not empty!
 
                 } else { // Assuming the recipe output item is already in the output slot
-                    // Simply change the stack to equal the output amount
+                    // Simply change the item to equal the output amount
                     furnaceOutput.setCount(Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).getResultItem(level.registryAccess()).getCount());
                     //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
-                    inventory.insertItem(1, furnaceOutput.copy(), false); // Place the new output stack on top of the old one
+                    inventory.insertItem(1, furnaceOutput.copy(), false); // Place the new output item on top of the old one
                 }
 
                 consumeEnergy();
@@ -122,9 +122,6 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
             return;
         }
         this.isRecipeDirty = false;
-        ItemStack furnaceInput = inventory.getStackInSlot(0).copy();
-        furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
-        blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
     }
 
     private ItemStackHandler createHandler() {
@@ -141,17 +138,14 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
                             || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;
                 } else if (slot == 1) {
-                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    var furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
+                    var blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(inputItemStack.get()), level).orElse(null);
 
                     // If both recipes are null, then don't bother
                     if (blastingRecipe == null && furnaceRecipe == null) return false;
 
-                    if (furnaceRecipe != null) {
-                        return stack.getItem() == furnaceRecipe.getResultItem(level.registryAccess()).getItem();
-                    }
+                    return stack.getItem() == Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).value().getResultItem(level.registryAccess()).getItem();
 
-                    return stack.getItem() == blastingRecipe.getResultItem(level.registryAccess()).getItem();
                 } else if (slot == 2) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
@@ -164,8 +158,8 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
                 if (slot == 0) {
                     ItemStack referenceStack = stack.copy();
                     referenceStack.setCount(64);
-                    SmeltingRecipe recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack), level).orElse(null);
+                    SmeltingRecipe recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack), level).orElse(null).value();
+                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack), level).orElse(null).value();
 
                     if (recipe != null || blastingRecipe != null) {
                         return super.insertItem(slot, stack, simulate);
@@ -183,18 +177,18 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
             @Nonnull
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 if (level != null && !simulate) {
-                    SmeltingRecipe furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
-                    BlastingRecipe blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    var furnaceRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
+                    var blastingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(referenceStack.get()), level).orElse(null);
                     if (blastingRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.getResultItem(level.registryAccess()).getItem()) {
-                            if (blastingRecipe.getExperience() > 0) {
-                                generateXP(amount, blastingRecipe.getExperience());
+                        if (inventory.getStackInSlot(slot).getItem() == blastingRecipe.value().getResultItem(level.registryAccess()).getItem()) {
+                            if (blastingRecipe.value().getExperience() > 0) {
+                                generateXP(amount, blastingRecipe.value().getExperience());
                             }
                         }
                     } else if (furnaceRecipe != null) {
-                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.getResultItem(level.registryAccess()).getItem()) {
-                            if (furnaceRecipe.getExperience() > 0) {
-                                generateXP(amount, furnaceRecipe.getExperience());
+                        if (inventory.getStackInSlot(slot).getItem() == furnaceRecipe.value().getResultItem(level.registryAccess()).getItem()) {
+                            if (furnaceRecipe.value().getExperience() > 0) {
+                                generateXP(amount, furnaceRecipe.value().getExperience());
                             }
                         }
                     }

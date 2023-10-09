@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "tag": "minecraft:diamond_ores",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "tag": "minecraft:diamond_ores",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "minecraft:diamond",
-    "count": 1
-  },
-  "rng": {
-    "item": "voluminousenergy:carbon_dust",
-    "count": 2,
-    "chance": 1
-  },
+  "item_results": [
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    },
+    {
+      "item": "voluminousenergy:carbondust",
+      "count": 2,
+      "chance": 1
+    }
+  ],
   "experience": {
     "minimum": 2,
     "maximum": 5

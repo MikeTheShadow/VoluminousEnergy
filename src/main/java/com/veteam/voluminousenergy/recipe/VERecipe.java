@@ -2,34 +2,46 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VERecipe implements Recipe<Container> {
+public abstract class VERecipe implements Recipe<Container> {
+    public List<VERecipeCodecs.RegistryIngredient> registryIngredients;
 
-    public List<Lazy<Ingredient>> lazyIngredients = new ArrayList<>();
-    public NonNullList<Ingredient> ingredients;
-    int processTime;
+    private NonNullList<Ingredient> ingredients = NonNullList.create();
+
+    public int processTime;
     public List<ItemStack> results = new ArrayList<>();
-    ResourceLocation recipeId;
 
+    public VERecipe() {
+
+    }
+
+    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
+        this.results = results;
+        this.processTime = processTime;
+        this.registryIngredients = NonNullList.create();
+        this.registryIngredients.addAll(ingredients);
+    }
 
     public Ingredient getIngredient(int id) {
+        // Sometimes recipes define less that what a machine can pull in (not utilizing all input slots). Therefore, return Empty Ingredient when querying beyond input length
+        if (id >= this.getIngredients().size()) {
+            return Ingredient.EMPTY;
+        }
         return getIngredients().get(id);
     }
 
@@ -54,28 +66,22 @@ public class VERecipe implements Recipe<Container> {
 
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        VoluminousEnergy.LOGGER.warn("Dangerous getResultItem call from class: " + this.getClass().getName());
-        return new ItemStack(Items.DIRT,1);
+        VoluminousEnergy.LOGGER.warn("Suspicious call to getResultItem in " + this.getClass().getName() + ".");
+        return new ItemStack(Items.BUCKET, 1);
     }
 
     public ItemStack getResult(int id) {
+        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
+        if (id >= this.getResults().size()) {
+            return ItemStack.EMPTY;
+        }
         return this.getResults().get(id);
     }
 
-
-
+    @Deprecated
+    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getResult(id) INSTEAD
     public List<ItemStack> getResults() {
         return this.results;
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId() {
-        throw new NotImplementedException("Class" + this.getClass().getName() + " missing getId impl!");
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
-        throw new NotImplementedException("Class" + this.getClass().getName() + " missing getSerializer impl!");
     }
 
     @Override
@@ -88,60 +94,50 @@ public class VERecipe implements Recipe<Container> {
         throw new NotImplementedException("Class" + this.getClass().getName() + " missing getToastSymbol impl!");
     }
 
-    @Override
-    public @NotNull NonNullList<Ingredient> getIngredients() {
-        if(this.ingredients == null) {
-            this.ingredients = unwrapIngredients();
-        }
-        return this.ingredients;
-    }
-
-    private NonNullList<Ingredient> unwrapIngredients() {
-        NonNullList<Ingredient> ingredientList = NonNullList.create();
-        for (Lazy<Ingredient> ingredient : this.lazyIngredients) {
-            ingredientList.add(ingredient.get());
-        }
-        return ingredientList;
-    }
-
     public boolean matches(@NotNull VETileEntity veTileEntity) {
         throw new NotImplementedException("Matches is not impl'd for: " + this.getClass().getName());
     }
 
-    public void addLazyIngredient(Lazy<Ingredient> ingredientLazy) {
-        this.lazyIngredients.add(ingredientLazy);
-    }
-
-    public void addResult(ItemStack output) {
-        this.results.add(output);
-    }
-
     public int getResultCount(int slot) {
+        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
+        if (slot >= this.getResults().size()) {
+            return 0;
+        }
         return this.results.get(slot).getCount();
     }
 
     public int getIngredientCount(int slot) {
-        return this.ingredients.get(slot).getItems()[0].getCount();
-    }
-
-    public void setProcessTime(int processTime) {
-        this.processTime = processTime;
+        if (slot >= this.ingredients.size()){
+            return 0;
+        }
+        return this.ingredients.get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
     }
 
     public int getProcessTime() {
         return processTime;
     }
 
-    public void setIngredients(NonNullList<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+    public void setProcessTime(int processTime) {
+        this.processTime = processTime;
     }
 
     public void setResults(List<ItemStack> results) {
         this.results = results;
     }
 
-    public List<Lazy<Ingredient>> getLazyIngredients() {
-        return lazyIngredients;
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+
+        if(ingredients.isEmpty()) {
+            for(VERecipeCodecs.RegistryIngredient ingredient : registryIngredients) {
+                ingredients.add(ingredient.getIngredient());
+            }
+        }
+
+        return ingredients;
     }
 
+    public void setIngredients(NonNullList<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

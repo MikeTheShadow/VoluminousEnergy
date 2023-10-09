@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -51,12 +52,12 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     }
 
     public InteractionResult use(BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        if(!world.isClientSide) {
+        if (!world.isClientSide) {
             BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider) {
-                player.openMenu(tileEntity.getBlockState().getMenuProvider(world, tileEntity.getBlockPos()));
+            if (tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(menuProvider, tileEntity.getBlockPos());
             } else {
-                throw new IllegalStateException("Sawmill named container provider is missing!");
+                throw new IllegalStateException(this.getClass().getName() + " named container provider is missing!");
             }
             return InteractionResult.SUCCESS;
         }
@@ -83,7 +84,7 @@ public class SawmillBlock extends VEBlock implements EntityBlock { // Based on t
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends SawmillTile> tile, BlockEntityTicker<E> serverTick) {
-        return blockEntityType == tile ? (BlockEntityTicker<T>)serverTick : null;
+        return blockEntityType == tile ? (BlockEntityTicker<T>) serverTick : null;
     }
 
     @Nullable

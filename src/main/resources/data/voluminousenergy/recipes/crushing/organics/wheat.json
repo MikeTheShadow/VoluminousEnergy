@@ -1,19 +1,23 @@
 {
   "type": "voluminousenergy:crushing",
-  "ingredient": {
-    "item": "minecraft:wheat",
-    "count": 1
-  },
+  "ingredients": [
+    {
+      "item": "minecraft:wheat",
+      "count": 1
+    }
+  ],
   "process_time": 200,
-  "result": {
-    "item": "voluminousenergy:flour_dust",
-    "count": 1
-  },
-  "rng": {
-    "item": "minecraft:wheat_seeds",
-    "count": 1,
-    "chance": 0.15
-  },
+  "item_results": [
+    {
+      "item": "voluminousenergy:flour_dust",
+      "count": 1
+    },
+    {
+      "item": "minecraft:wheat_seeds",
+      "count": 1,
+      "chance": 0.15
+    }
+  ],
   "experience": {
     "minimum": 0,
     "maximum": 0

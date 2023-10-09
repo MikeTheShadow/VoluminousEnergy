@@ -1,48 +1,59 @@
 package com.veteam.voluminousenergy.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.List;
 
 public class FluidMixerRecipe extends VEFluidRecipe {
     public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_MIXING.get();
 
-    public static final FluidMixerRecipe.Serializer SERIALIZER = new FluidMixerRecipe.Serializer();
-
-    private final ResourceLocation recipeId;
-    private int processTime;
-
-    // Second input (Fluid Mixer specific)
-
-    public FluidMixerRecipe(ResourceLocation recipeId) {
-        this.recipeId = recipeId;
+    public FluidMixerRecipe() {
     }
+
+    public FluidMixerRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
+        super(List.of(), fi, of, List.of(), processTime);
+    }
+
+    public static final RecipeSerializer<FluidMixerRecipe> SERIALIZER = new RecipeSerializer<>() {
+
+        public static final Codec<FluidMixerRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
+                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
+                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+        ).apply(instance, FluidMixerRecipe::new));
+
+        private static final FluidSerializerHelper<FluidMixerRecipe> helper = new FluidSerializerHelper<>();
+
+        @Nullable
+        @Override
+        public FluidMixerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            return helper.fromNetwork(new FluidMixerRecipe(), buffer);
+        }
+
+        @Override
+        public @NotNull Codec<FluidMixerRecipe> codec() {
+            return VE_RECIPE_CODEC;
+        }
+
+        @Override
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull FluidMixerRecipe recipe) {
+            helper.toNetwork(buffer, recipe);
+        }
+    };
 
     @Override
-    public @NotNull ResourceLocation getId() {
-        return recipeId;
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
-    }
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 
     @Override
     public @NotNull RecipeType<VEFluidRecipe> getType() {
@@ -50,56 +61,7 @@ public class FluidMixerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public int getProcessTime() {
-        return processTime;
-    }
-
-    @Override
     public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get());
-    }
-
-    public static class Serializer implements RecipeSerializer<FluidMixerRecipe> {
-        @Override
-        public @NotNull FluidMixerRecipe fromJson(@NotNull ResourceLocation recipeId, JsonObject json) {
-            FluidMixerRecipe recipe = new FluidMixerRecipe(recipeId);
-
-            JsonObject ingredientJson = json.get("ingredient").getAsJsonObject();
-            int ingredientCount = GsonHelper.getAsInt(ingredientJson, "count", 1);
-            recipe.lazyIngredientList.add(Lazy.of(() -> RecipeUtil.modifyIngredientAmounts(Ingredient.fromJson(ingredientJson), ingredientCount)));
-
-            recipe.processTime = GsonHelper.getAsInt(json, "process_time", 200);
-
-            // First Input fluid
-            recipe.lazyFluidIngredientList.add(Lazy.of(() -> FluidIngredient.fromJson(json.get("first_input_fluid").getAsJsonObject())));
-
-            // Second input fluid
-//            recipe.secondInputAmount = GsonHelper.getAsInt(inputFluid,"amount",0);
-            recipe.lazyFluidIngredientList.add(Lazy.of(() -> FluidIngredient.fromJson(json.get("second_input_fluid").getAsJsonObject())));
-
-
-            ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get("result").getAsJsonObject(), "fluid", "minecraft:empty"), ':');
-            int firstOutputFluidAmount = GsonHelper.getAsInt(json.get("result").getAsJsonObject(), "amount", 0);
-            FluidStack result = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)), firstOutputFluidAmount);
-
-            recipe.fluidOutputList.add(result);
-
-            return recipe;
-        }
-
-        FluidSerializerHelper<FluidMixerRecipe> helper = new FluidSerializerHelper<>();
-
-        @Nullable
-        @Override
-        public FluidMixerRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            FluidMixerRecipe recipe = new FluidMixerRecipe((recipeId));
-            helper.fromNetwork(recipe, buffer);
-            return recipe;
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, FluidMixerRecipe recipe) {
-           helper.toNetwork(buffer,recipe);
-        }
     }
 }

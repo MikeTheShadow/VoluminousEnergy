@@ -31,7 +31,6 @@ public class RelationalTank {
     private int recipePos;
     /**
      * nbtName follows the format TANKNAME:ENABLEDNAME
-     * //TODO switch tank name to follow the ENABLEDNAME format of snake case and remove the need for tankname
      */
     private String nbt;
 
@@ -91,12 +90,10 @@ public class RelationalTank {
     }
 
     /**
-     * // TODO make sure that anything that calls this method properly marks the tiles recipe and fluid input as dirty!
      * @param recipe The fluid recipe to use
      * @param id     The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
      *               especially if there are multiple outputs
      */
-    @Deprecated()
     public void fillOutput(VEFluidRecipe recipe, int id) {
 
         FluidStack stack = recipe.getOutputFluid(id);
@@ -123,7 +120,6 @@ public class RelationalTank {
     }
 
     /**
-     * TODO make sure that anything that calls this method properly marks the tiles recipe and fluid input as dirty!
      * The id will be located in the Recipe file itself.
      * To find the id the easiest way is to go to the fromJson in a recipe's serializer.
      * From there look at the fluidInputList being built and check for the position of
@@ -132,7 +128,6 @@ public class RelationalTank {
      * @param recipe The recipe to pull the input from
      * @param id     The id of the input fluid
      */
-    @Deprecated
     public void drainInput(VEFluidRecipe recipe, int id) {
         this.tank.drain(recipe.getFluidIngredients().get(id).getFluids()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
     }

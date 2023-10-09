@@ -8,7 +8,7 @@ public class VECriteriaTriggers {
     public static final ConstructDimensionalLaserTrigger CONSTRUCT_DIMENSIONAL_LASER_TRIGGER = register(new ConstructDimensionalLaserTrigger());
 
     public static <T extends CriterionTrigger<?>> T register(T p_10596_) {
-        return CriteriaTriggers.register(p_10596_);
+        return CriteriaTriggers.register(ConstructDimensionalLaserTrigger.ID.toString(),p_10596_);
     }
 
     public static void init() {

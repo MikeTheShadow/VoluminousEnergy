@@ -1,11 +1,10 @@
 {
   "type": "voluminousenergy:oxidizer_combustion",
   "process_time": 400,
-  "ingredient": {
-    "item": "voluminousenergy:dinitrogen_tetroxide_bucket"
-  },
-  "input_fluid": {
-    "tag": "forge:dinitrogen_tetroxide",
-    "amount": 250
-  }
+  "fluid_ingredients": [
+    {
+      "tag": "forge:dinitrogen_tetroxide",
+      "amount": 250
+    }
+  ]
 }

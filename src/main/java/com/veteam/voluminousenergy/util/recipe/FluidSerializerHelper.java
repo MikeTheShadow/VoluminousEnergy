@@ -1,7 +1,8 @@
 package com.veteam.voluminousenergy.util.recipe;
 
-import com.veteam.voluminousenergy.recipe.IRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -15,14 +16,13 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
     @Nullable
     public T fromNetwork(T recipe, FriendlyByteBuf buffer) {
-
         // Read ingredients
         int ingredientSize = buffer.readInt();
-        List<Ingredient> ingredients = new ArrayList<>();
+        NonNullList<Ingredient> ingredients = NonNullList.create();
         for (int i = 0; i < ingredientSize; i++) {
             ingredients.add(Ingredient.fromNetwork(buffer));
         }
-        recipe.setIngredientList(ingredients);
+        recipe.setIngredients(ingredients);
 
         // Read fluid ingredients
         int fluidIngredientSize = buffer.readInt();
@@ -37,7 +37,7 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
         for (int i = 0; i < outputItemSize; i++) {
             outputItems.add(buffer.readItem());
         }
-        recipe.setItemOutputList(outputItems);
+        recipe.setResults(outputItems);
 
         int outputFluidSize = buffer.readInt();
         List<FluidStack> outputFluids = new ArrayList<>();
@@ -48,11 +48,11 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
         recipe.setProcessTime(buffer.readInt());
 
-        if (recipe instanceof IRNGRecipe irngRecipe) {
+        if (recipe instanceof VEFluidRNGRecipe irngRecipe) {
             int totalRandom = buffer.readInt();
-            float[] randomValues = new float[totalRandom];
+            List<Float> randomValues = new ArrayList<>();
             for (int i = 0; i < totalRandom; i++) {
-                randomValues[i] = buffer.readFloat();
+                randomValues.add(buffer.readFloat());
             }
 
             irngRecipe.setRNGOutputs(randomValues);
@@ -62,19 +62,19 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
     }
 
     public void toNetwork(FriendlyByteBuf buffer, T recipe) {
-        buffer.writeInt(recipe.getLazyIngredientList().size());
-        for (Ingredient ingredient : recipe.getItemIngredients()) {
+        buffer.writeInt(recipe.getIngredients().size());
+        for (Ingredient ingredient : recipe.getIngredients()) {
             ingredient.toNetwork(buffer);
         }
 
-        buffer.writeInt(recipe.getLazyFluidIngredientList().size());
+        buffer.writeInt(recipe.getFluidIngredients().size());
 
         for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
             fluidIngredient.toNetwork(buffer);
         }
 
-        buffer.writeInt(recipe.getOutputItems().size());
-        for (ItemStack stack : recipe.getOutputItems()) {
+        buffer.writeInt(recipe.getResults().size());
+        for (ItemStack stack : recipe.getResults()) {
             buffer.writeItemStack(stack, true);
         }
 
@@ -85,8 +85,8 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
         buffer.writeInt(recipe.getProcessTime());
 
-        if (recipe instanceof IRNGRecipe irngRecipe) {
-            buffer.writeInt(irngRecipe.getRNGOutputs().length);
+        if (recipe instanceof VEFluidRNGRecipe irngRecipe) {
+            buffer.writeInt(irngRecipe.getRNGOutputs().size());
             for(float f : irngRecipe.getRNGOutputs()) {
                 buffer.writeFloat(f);
             }
