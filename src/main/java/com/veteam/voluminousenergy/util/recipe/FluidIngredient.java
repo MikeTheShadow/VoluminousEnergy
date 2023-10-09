@@ -98,6 +98,20 @@ public class FluidIngredient {
         }
     }
 
+    public boolean test(@Nullable Fluid fluid) {
+        if (fluid == null) {
+            return false;
+        } else {
+            for (FluidStack stack : this.getFluids()) {
+                if (stack.getFluid().isSame(fluid)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     public IntList getStackingIds() {
         if (this.stackingIds == null || checkInvalidation()) {
             this.markValid();

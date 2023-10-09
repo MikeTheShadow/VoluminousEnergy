@@ -2,11 +2,8 @@ package com.veteam.voluminousenergy.util.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
-import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -25,12 +22,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.NotImplementedException;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {
@@ -239,14 +232,20 @@ public class RecipeUtil {
         }
     }
 
-    public static boolean isCombustibleFuelWithoutLevel(Fluid fluid){
-        // TODO FIX ME
-        throw new NotImplementedException("Please contact the mod author in regards to this error!");
-//        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-//        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
-//            if (lazyPair.get().getA().contains(fluid)) atomicBoolean.set(true);
-//        });
-//        return atomicBoolean.get();
+    public static boolean isCombustibleFuel(Fluid fluid,@Nullable Level level){
+        if(level == null) {
+            List<VEFluidRecipe> recipeList = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+            for(VEFluidRecipe recipe : recipeList) {
+                if(recipe.getFluidIngredients().stream().anyMatch(fluidIngredient -> fluidIngredient.test(fluid))) return true;
+            }
+        }
+        else {
+            List<VEFluidRecipe> recipeList = RecipeCache.getFluidRecipesFromLevelWithClass(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+            for(VEFluidRecipe recipe : recipeList) {
+                if(recipe.getFluidIngredients().stream().anyMatch(fluidIngredient -> fluidIngredient.test(fluid))) return true;
+            }
+        }
+        return false;
     }
 
     public static FluidStack pullFluidFromJSON(String id, JsonObject json) {

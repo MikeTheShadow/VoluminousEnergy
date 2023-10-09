@@ -104,7 +104,7 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
+                if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
                         //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
@@ -125,7 +125,7 @@ public class CombustionMultitool extends Multitool {
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-                if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
                         volumetricEnergy.set(RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid())/50);
@@ -147,7 +147,7 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
+                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
                     if (fluid.getFluidInTank(0).getAmount() >= 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
                         volumetricEnergy.set(RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid())/50);
@@ -176,7 +176,7 @@ public class CombustionMultitool extends Multitool {
         itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-            if (RecipeUtil.isCombustibleFuelWithoutLevel(itemFluid.getRawFluid())){
+            if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
                 if (fluid.getFluidInTank(0).getAmount() > 50){
                     fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
                     int volumetricEnergy = RecipeUtil.getVolumetricEnergyWithoutLevel(fluid.getFluidInTank(0).getRawFluid());
