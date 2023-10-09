@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlock {
+public class ImplosionCompressorBlock extends VEFaceableMachineBlock {
     public ImplosionCompressorBlock() {
         super(Properties.of()
                 .sound(SoundType.METAL)
@@ -55,20 +55,4 @@ public class ImplosionCompressorBlock extends FaceableBlock implements EntityBlo
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.IMPLOSION_COMPRESSOR_TILE.get());
     }
-
-    @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit){
-        if(!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
-            } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.SUCCESS;
-
-    }
-
 }

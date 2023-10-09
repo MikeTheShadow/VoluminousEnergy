@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityBlock {
+public class PrimitiveBlastFurnaceBlock extends VEFaceableMachineBlock {
 
     public PrimitiveBlastFurnaceBlock() {
         super(Properties.of()
@@ -60,20 +60,6 @@ public class PrimitiveBlastFurnaceBlock extends FaceableBlock implements EntityB
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE.get());
-    }
-    @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit)
-    {
-        if(!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
-            } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.SUCCESS;
     }
 
     @Override

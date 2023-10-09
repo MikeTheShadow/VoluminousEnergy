@@ -75,13 +75,13 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         float beaconColorG = beaconColor[1];
         float beaconColorB = beaconColor[2];
         poseStack.pushPose();
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(somethingToDoWithTimeAndRotation * 2.25F - 45.0F)); // uncomment and comment below to activate rotation
         poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
         float f9 = -static02F;
         float f12 = -static02F;
         float f15 = staticRotationNumber + downwardMovement;
         float f16 = (float) beaconListSize * static10F * (0.5F / static02F) + f15;
-        // TODO mess around with RenderTypes energyswirl looks really cool
+        // People really like the current effect. The below comment was a to-do that is now a regular comment
+        // Mess around with RenderTypes energyswirl looks really cool
         renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), beaconColorR, beaconColorG, beaconColorB, 1.0F, totalHeight, height, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
         poseStack.popPose();
         PoseStack.Pose pose = poseStack.last();
@@ -128,14 +128,10 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
                         }
                     }
                 }
-
-
             }
         }
         poseStack.popPose();
     }
-
-    private static float increase = 0;
 
     private static final int[][] arrayMap =
             {

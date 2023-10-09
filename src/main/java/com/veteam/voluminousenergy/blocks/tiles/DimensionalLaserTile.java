@@ -89,13 +89,13 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
             setChanged();
             if (!firstStageComplete) {
                 tickTimer();
-                if (tickTimer >= 20 * 20) {
+                if (tickTimer >= 400) {
                     setFirstStageComplete();
                     resetTickTimer();
                 }
             } else {
                 tickTimer();
-                if (tickTimer >= 20 * 30) complete = true;
+                if (tickTimer >= 600) complete = true;
                 if (tickTimer % 12 == 0 && (new Random()).nextInt(2) == 1) {
                     BlockPos blockPos = level.getBlockRandomPos(this.getBlockPos().getX(), 0, this.getBlockPos().getZ(), 5);
 

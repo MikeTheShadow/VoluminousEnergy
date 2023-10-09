@@ -22,7 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class FluidElectrolyzerBlock extends FaceableBlock implements EntityBlock {
+public class FluidElectrolyzerBlock extends VEFaceableMachineBlock {
 
     public FluidElectrolyzerBlock() {
         super(BlockBehaviour.Properties.of()
@@ -55,19 +55,4 @@ public class FluidElectrolyzerBlock extends FaceableBlock implements EntityBlock
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.FLUID_ELECTROLYZER_TILE.get());
     }
-
-    @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
-        if(!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof MenuProvider menuProvider && player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(menuProvider,tileEntity.getBlockPos());
-            } else {
-                throw new IllegalStateException( this.getClass().getName() + " named container provider is missing!");
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.SUCCESS;
-    }
-
 }
