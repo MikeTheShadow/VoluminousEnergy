@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
+import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
@@ -24,6 +25,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -95,7 +98,11 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         ArrayList<ItemStack> secondInputStack = new ArrayList<>(Arrays.asList(recipe.getIngredient(1).getItems()));
         secondInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, secondInputStack);
 
-        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, Arrays.stream(recipe.getFluidIngredient(0).getFluids()).toList());
+        ArrayList<FluidStack> hotEnoughFluidStacks = new ArrayList<>();
+        for (Fluid fluid : recipe.getHotEnoughFluids()) {
+            hotEnoughFluidStacks.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
+        }
+        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, hotEnoughFluidStacks);
 
         // Output
         ItemStack resultStack = recipe.getResult(0).copy();
