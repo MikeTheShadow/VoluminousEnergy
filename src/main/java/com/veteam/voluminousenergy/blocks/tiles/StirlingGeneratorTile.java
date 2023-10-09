@@ -178,8 +178,6 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
     }
-
-    // TODO check if this is indentical to super method
     public int progressCounterPX(int px) {
         if (counter == 0) {
             return 0;

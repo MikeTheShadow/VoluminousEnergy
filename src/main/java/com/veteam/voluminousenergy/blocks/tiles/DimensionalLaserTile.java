@@ -143,7 +143,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
             ItemStack rfidStack = inventory.getStackInSlot(2);
 
-            if (rfidStack.getItem() instanceof RFIDChip) { // TODO: Better error/sanity checking
+            if (rfidStack.getItem() instanceof RFIDChip) {
                 CompoundTag rfidTag = rfidStack.getOrCreateTag();
                 Tag veX = rfidTag.get("ve_x");
                 Tag veZ = rfidTag.get("ve_z");

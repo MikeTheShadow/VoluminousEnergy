@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class ChunkFluids extends SavedData {
-
-    // TODO consider moving this somewhere
     private static ChunkFluids CHUNK_FLUIDS;
 
     private final Set<ChunkFluid> chunkFluidSet = new HashSet<>();

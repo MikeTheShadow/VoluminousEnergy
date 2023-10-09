@@ -229,7 +229,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * TODO another method to check if it's need along with updatePacketFromGui();
      *
      * @param status boolean status of the slot
      * @param slotId int id of the slot
@@ -418,7 +417,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                     .filter(manager -> manager.getStatus()
                             && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue())
                     .toList();
-            if (managerList.size() == 0) return super.getCapability(cap, side);
+            if (managerList.isEmpty()) return super.getCapability(cap, side);
             MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
             return LazyOptional.of(() -> slotWrapper).cast();
         } else if (cap == ForgeCapabilities.ENERGY && energy != null) {
@@ -426,7 +425,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         } else if (cap == ForgeCapabilities.FLUID_HANDLER && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
             Direction modifiedSide = normalizeDirection(side);
             List<RelationalTank> relationalTanks = veFluidTileEntity.getRelationalTanks().stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue() || manager.isIgnoreDirection()).toList();
-            if (relationalTanks.size() == 0) return super.getCapability(cap, side);
+            if (relationalTanks.isEmpty()) return super.getCapability(cap, side);
             MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks);
             return LazyOptional.of(() -> slotWrapper).cast();
         } else {

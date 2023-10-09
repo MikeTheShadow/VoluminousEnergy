@@ -14,8 +14,6 @@ import java.util.List;
 
 public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
-    // TODO fix me
-
     @Nullable
     public T fromNetwork(T recipe, FriendlyByteBuf buffer) {
         // Read ingredients
