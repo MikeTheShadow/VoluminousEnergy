@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class VERecipe implements Recipe<Container> {
     public List<VERecipeCodecs.RegistryIngredient> registryIngredients;
 
-    private NonNullList<Ingredient> ingredients = NonNullList.create();
+    private NonNullList<Ingredient> ingredients = null;
 
     public int processTime;
     public List<ItemStack> results = new ArrayList<>();
@@ -110,10 +110,10 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public int getIngredientCount(int slot) {
-        if (slot >= this.ingredients.size()){
+        if (slot >= this.getIngredients().size()){
             return 0;
         }
-        return this.ingredients.get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
+        return this.getIngredients().get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
     }
 
     public int getProcessTime() {
@@ -131,7 +131,8 @@ public abstract class VERecipe implements Recipe<Container> {
     @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
 
-        if(ingredients.isEmpty()) {
+        if(ingredients == null) {
+            ingredients = NonNullList.create();
             for(VERecipeCodecs.RegistryIngredient ingredient : registryIngredients) {
                 ingredients.add(ingredient.getIngredient());
             }
