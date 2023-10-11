@@ -1,14 +1,80 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class VESolarTile extends VETileEntity {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class VESolarTile extends VETileEntity implements IVEPowerGenerator {
+    int generation;
+    int currentEnergy;
 
     public VESolarTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state,null);
+    }
+
+    @Override
+    public void tick() {
+        updateClients();
+        if (this.level != null){
+            if (level.dimensionType().hasSkyLight() && isClear()) {
+                this.generation = this.getGeneration();
+                generateEnergy(this.generation);
+                setChanged();
+            }
+        }
+        sendOutPower();
+    }
+
+    void generateEnergy(int fe){
+        if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < getMaxPower()){
+            energy.ifPresent(e -> e.addEnergy(fe)); //Amount of energy to add per tick
+        }
+    }
+
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
+
+    @Override
+    public int getPowerUsage() {
+        return 0;
+    }
+
+    private void sendOutPower() {
+        energy.ifPresent(energy -> {
+            for (Direction dir : Direction.values()){
+                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+                Direction opposite = dir.getOpposite();
+                if(tileEntity != null){
+                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                    int smallest = Math.min(getTransferRate(), energy.getEnergyStored());
+                    int received = receiveEnergy(tileEntity, opposite, smallest);
+                    energy.consumeEnergy(received);
+                    if (energy.getEnergyStored() <=0){
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -38,11 +104,54 @@ public abstract class VESolarTile extends VETileEntity {
         return intensity;
     }
 
-    @Override
-    public void tick() {}
-
     protected boolean isClear(){
         if (level == null) return false;
         return level.canSeeSky(new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY()+1, this.getBlockPos().getZ()));
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        tag.putInt("generation_rate", this.generation);
+        super.load(tag);
+        this.currentEnergy = this.energy.resolve().get().getEnergyStored();
+
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        this.generation = tag.getInt("generation_rate");
+        super.saveAdditional(tag);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ENERGY){
+            return energy.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+   public abstract int getGeneration();
+
+    @Override
+    public int getUpgradeSlotId() {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public ItemStackHandler getInventoryHandler() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<VESlotManager> getSlotManagers() {
+        return new ArrayList<>();
+    }
+
+    public int getCurrentEnergy() {
+        return currentEnergy;
     }
 }

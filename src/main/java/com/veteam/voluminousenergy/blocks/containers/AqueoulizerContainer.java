@@ -46,7 +46,6 @@ public class AqueoulizerContainer extends VoluminousContainer {
 
             @Override
             public void set(int value) {
-                tileEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> ((VEEnergyStorage) h).setEnergy(value));
             }
         });
     }
