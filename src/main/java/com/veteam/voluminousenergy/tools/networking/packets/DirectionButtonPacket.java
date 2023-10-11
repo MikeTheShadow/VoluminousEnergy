@@ -52,6 +52,7 @@ public class DirectionButtonPacket {
     }
 
     public static void handlePacket(DirectionButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
+
         if(openContainer != null){
             if(openContainer instanceof VoluminousContainer voluminousContainer){
                 if(onServer){

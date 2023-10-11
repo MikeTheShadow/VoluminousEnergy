@@ -30,7 +30,7 @@ public class BatteryBoxBlock extends VEFaceableMachineBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new BatteryBoxTile(VEBlocks.BATTERY_BOX_TILE.get(), pos, state);
+        return new BatteryBoxTile(pos, state);
     }
 
     @Nullable

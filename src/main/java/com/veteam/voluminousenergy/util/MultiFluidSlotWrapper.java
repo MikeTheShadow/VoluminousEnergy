@@ -17,7 +17,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     VETileEntity tileEntity;
 
     public MultiFluidSlotWrapper(List<RelationalTank> tanks,VETileEntity tileEntity) {
-        Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
         this.tanks = tanks;
         this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
@@ -94,5 +93,12 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             }
         }
         return FluidStack.EMPTY;
+    }
+
+    public void addRelationalTank(RelationalTank tank) {
+        tankHashMap.put(tank.getSlotNum(),tank);
+    }
+    public void removeRelationalTank(RelationalTank tank) {
+        tankHashMap.remove(tank.getSlotNum());
     }
 }

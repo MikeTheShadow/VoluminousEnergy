@@ -1,9 +1,9 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.tiles.CapabilityMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -46,6 +47,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
@@ -228,29 +230,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
-    /**
-     *
-     * @param status boolean status of the slot
-     * @param slotId int id of the slot
-     */
-    public void updatePacketFromGui(boolean status, int slotId) {
-        for (VESlotManager slot : getSlotManagers()) {
-            if (slotId == slot.getSlotNum()) {
-                slot.setStatus(status);
-                return;
-            }
-        }
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        for (VESlotManager slot : getSlotManagers()) {
-            if (slotId == slot.getSlotNum()) {
-                slot.setDirection(direction);
-                return;
-            }
-        }
-    }
-
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
@@ -396,8 +375,32 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
+     *
+     * @param status boolean status of the slot
+     * @param slotId int id of the slot
+     */
+    public void updatePacketFromGui(boolean status, int slotId) {
+        for (VESlotManager slot : getSlotManagers()) {
+            if (slotId == slot.getSlotNum()) {
+                slot.setStatus(status);
+                return;
+            }
+        }
+    }
+
+    public void updatePacketFromGui(int direction, int slotId) {
+        for (VESlotManager slot : getSlotManagers()) {
+            if (slotId == slot.getSlotNum()) {
+                this.capabilityMap.moveSlotManagerPos(slot,direction);
+                return;
+            }
+        }
+    }
+
+    CapabilityMap capabilityMap = null;
+
+    /**
      * This handles items,energy and fluids. Handling fluids could be moved to VEFluidTileEntity
-     * TODO cache the capabilities by side. This way constant IO does not cause lots of lag
      * @param cap  Base capability
      * @param side Base Direction
      * @param <T>  T the type of capability
@@ -408,35 +411,20 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         ItemStackHandler inventory = getInventoryHandler();
         List<VESlotManager> itemManagers = getSlotManagers();
-
-        if (inventory != null && cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (side == null) return LazyOptional.of(() -> inventory).cast();
-            Direction modifiedSide = normalizeDirection(side);
-            List<VESlotManager> managerList = itemManagers
-                    .stream()
-                    .filter(manager -> manager.getStatus()
-                            && manager.getDirection().get3DDataValue() == modifiedSide.get3DDataValue())
-                    .toList();
-            if (managerList.isEmpty()) return super.getCapability(cap, side);
-            MultiSlotWrapper slotWrapper = new MultiSlotWrapper(inventory, managerList);
-            return LazyOptional.of(() -> slotWrapper).cast();
-        } else if (cap == ForgeCapabilities.ENERGY && energy != null) {
-            return energy.cast();
-        } else if (cap == ForgeCapabilities.FLUID_HANDLER && side != null && this instanceof VEFluidTileEntity veFluidTileEntity) {
-            Direction modifiedSide = normalizeDirection(side);
-            List<RelationalTank> relationalTanks = veFluidTileEntity.getRelationalTanks().stream().filter(manager -> manager.getSideStatus() && manager.getSideDirection().get3DDataValue() == modifiedSide.get3DDataValue() || manager.isIgnoreDirection()).toList();
-            if (relationalTanks.isEmpty()) return super.getCapability(cap, side);
-            MultiFluidSlotWrapper slotWrapper = new MultiFluidSlotWrapper(relationalTanks,this);
-            return LazyOptional.of(() -> slotWrapper).cast();
-        } else {
-            return super.getCapability(cap, side);
+        if(capabilityMap == null) {
+            if(this instanceof VEFluidTileEntity fluidTileEntity) {
+                capabilityMap = new CapabilityMap(inventory,itemManagers,fluidTileEntity.getRelationalTanks(), energy,this);
+            } else {
+                capabilityMap = new CapabilityMap(inventory,itemManagers,new ArrayList<>(), energy,this);
+            }
         }
+        return this.capabilityMap.getCapability(cap,side,this);
     }
 
     /**
      * @return a VEEnergyStorage object or null if this tile is not an instance of poweredTileEntity
      */
-    public @Nullable LazyOptional<VEEnergyStorage> createEnergy() {
+    public LazyOptional<VEEnergyStorage> createEnergy() {
         if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
             VEEnergyStorage storage = new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
             if (this instanceof IVEPowerGenerator) {
@@ -444,7 +432,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             }
             return LazyOptional.of(() -> storage);
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     /**
@@ -563,19 +551,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    public Direction normalizeDirection(Direction direction) {
-        Direction currentDirection = this.getBlockState().getValue(BlockStateProperties.FACING);
-        int directionInt = direction.get3DDataValue();
-        if (directionInt == 0 || directionInt == 1) return direction;
-        Direction rotated = currentDirection;
-        for (int i = 0; i < 4; i++) {
-            rotated = rotated.getClockWise();
-            direction = direction.getClockWise();
-            if (rotated.get3DDataValue() == 2) break;
-        }
-        return direction.getClockWise().getClockWise();
     }
 
     public LazyOptional<VEEnergyStorage> getEnergy() {

@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -284,7 +285,9 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
     public void updateTankPacketFromGui(int direction, int id) {
         for (RelationalTank tank : getRelationalTanks()) {
-            if (id == tank.getSlotNum()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+            if (id == tank.getSlotNum()) {
+                this.capabilityMap.moveFluidSlotManagerPos(tank,IntToDirection.IntegerToDirection(direction));
+            }
         }
     }
 

@@ -33,24 +33,51 @@ import java.util.List;
 
 public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity {
 
-    // Slot Managers
-    public VESlotManager topManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-    public VESlotManager bottomManager = new VESlotManager(1,Direction.DOWN, true,SlotType.OUTPUT);
-
     private final int POWER_MAX_TX = Config.BATTERY_BOX_TRANSFER.get();
     private final int MAX_POWER = Config.BATTERY_BOX_MAX_POWER.get();
 
-    // Sided Item Handlers
-    private final LazyOptional<ItemStackHandler> handler = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<IItemHandlerModifiable> topHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 6));
-    private final LazyOptional<IItemHandlerModifiable> bottomHandler = LazyOptional.of(() -> new RangedWrapper(this.inventory, 6, 12));
-
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
-            add(topManager);
-            add(bottomManager);
+            add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(1, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(2, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(3, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(4, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(5, Direction.UP, true, SlotType.INPUT));
+            add(new VESlotManager(6,Direction.DOWN, true,SlotType.OUTPUT));
+            add(new VESlotManager(7,Direction.DOWN, true,SlotType.OUTPUT));
+            add(new VESlotManager(8,Direction.DOWN, true,SlotType.OUTPUT));
+            add(new VESlotManager(9,Direction.DOWN, true,SlotType.OUTPUT));
+            add(new VESlotManager(10,Direction.DOWN, true,SlotType.OUTPUT));
+            add(new VESlotManager(11,Direction.DOWN, true,SlotType.OUTPUT));
         }
     };
+
+    @Override
+    public void updatePacketFromGui(boolean status, int slotId) {
+        if(slotId < 6) {
+            for(int i = 0; i < 6;i++) {
+                slotManagers.get(i).setStatus(status);
+            }
+        } else if(slotId < 12) {
+            for(int i = 6; i < 12; i++) {
+                slotManagers.get(i).setStatus(status);
+            }
+        }
+    }
+
+    @Override
+    public void updatePacketFromGui(int direction, int slotId) {
+        if(slotId < 6) {
+            for(int i = 0; i < 6;i++) {
+                this.capabilityMap.moveSlotManagerPos(slotManagers.get(i),direction);
+            }
+        } else if(slotId < 12) {
+            for(int i = 6; i < 12; i++) {
+                this.capabilityMap.moveSlotManagerPos(slotManagers.get(i),direction);
+            }
+        }
+    }
 
     // Modes and meta stuff for the battery box
     private final VEBatterySwitchManager[] switchManagers = {
@@ -68,11 +95,6 @@ public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity
     private final VEPowerIOManager powerIOManager = new VEPowerIOManager(true);
 
     public BatteryBoxTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
-    }
-
-    @Deprecated
-    public BatteryBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state){
         super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state,null);
     }
 
@@ -271,29 +293,6 @@ public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity
 
         tag.putBoolean("send_out_power", powerIOManager.isFlipped());
         super.saveAdditional(tag);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (side == null) {
-                return handler.cast();
-            } else {
-                // VoluminousEnergy.LOGGER.debug("GET CAPABILITY: " + inputSlotProp.getDirection() + " " + inputSlotProp.getStatus() + " " + outputSlotProp.getDirection() + " " + outputSlotProp.getStatus() + " " + rngSlotProp.getDirection() + " " + rngSlotProp.getStatus());
-                // 1 = top, 0 = bottom, 2 = north, 3 = south, 4 = west, 5 = east
-                if (side.get3DDataValue() == topManager.getDirection().get3DDataValue() && topManager.getStatus()){
-                    return topIsIngress ? topHandler.cast() : bottomHandler.cast();
-                }
-                if (side.get3DDataValue() == bottomManager.getDirection().get3DDataValue() && bottomManager.getStatus()){
-                    return topIsIngress ? bottomHandler.cast() : topHandler.cast();
-                }
-            }
-        }
-        if (cap == ForgeCapabilities.ENERGY){
-            return energy.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Nullable

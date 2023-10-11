@@ -121,7 +121,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(isItemValid(slot,stack)) return stack;
+                if(!isItemValid(slot,stack)) return stack;
                 return super.insertItem(slot,stack,simulate);
             }
         };

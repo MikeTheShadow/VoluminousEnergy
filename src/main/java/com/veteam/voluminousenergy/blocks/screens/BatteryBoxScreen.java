@@ -42,20 +42,20 @@ public class BatteryBoxScreen extends VEContainerScreen<BatteryBoxContainer> {
         }));
 
         // Top row
-        addRenderableWidget(new SlotBoolButton(tileEntity.topManager, (this.width/2)-198, this.topPos, button->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(0), (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.topManager, (this.width/2)-184, this.topPos, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(0), (this.width/2)-184, this.topPos, button ->{
             // Do nothing
         }));
 
         // Bottom Row
-        addRenderableWidget(new SlotBoolButton(tileEntity.bottomManager, (this.width/2)-198, this.topPos+20, button ->{
+        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(8), (this.width/2)-198, this.topPos+20, button ->{
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bottomManager, (this.width/2)-184, this.topPos+20, button ->{
+        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(8), (this.width/2)-184, this.topPos+20, button ->{
             // Do nothing
         }));
 
