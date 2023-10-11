@@ -38,7 +38,7 @@ public class PumpBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new PumpTile(VEBlocks.PUMP_TILE.get(), pos, state);
+        return new PumpTile(pos, state);
     }
 
     // NEW TICK SYSTEM

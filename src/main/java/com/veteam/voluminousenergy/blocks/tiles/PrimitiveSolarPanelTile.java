@@ -46,9 +46,11 @@ public class PrimitiveSolarPanelTile extends VESolarTile implements IVEPowerGene
         sendOutPower();
     }
 
+    LazyOptional<IEnergyStorage> e = null;
     private void generateEnergy(int fe){
-        if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()){
-            energy.ifPresent(e -> e.addEnergy(fe)); //Amount of energy to add per tick
+        if(e == null) e = this.getCapability(ForgeCapabilities.ENERGY);
+        if (e.map(IEnergyStorage::getEnergyStored).orElse(0) < Config.SOLAR_PANEL_MAX_POWER.get()){
+            energy.ifPresent(e -> e.addEnergy(fe));
         }
     }
 

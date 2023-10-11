@@ -48,17 +48,6 @@ public class CentrifugalSeparatorContainer extends VoluminousContainer {
         });
     }
 
-    public int getEnergy(){
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-    }
-
-    public int powerScreen(int px){
-        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
-    }
-
     @Override
     public boolean stillValid(Player playerIn) {
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get());

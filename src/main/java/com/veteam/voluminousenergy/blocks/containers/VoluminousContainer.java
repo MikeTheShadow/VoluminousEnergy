@@ -70,8 +70,7 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
     public int powerScreen(int px){
         int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
+        return (((stored*100/max*100)/100)*px)/100;
     }
 
     public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack){
@@ -137,15 +136,16 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
+    public ItemStack quickMoveStack(final @NotNull Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 
         int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity instanceof IVEPoweredTileEntity ? 1 : 0);
 
+        // TODO why is this a dangling if?
         if(this.tileEntity instanceof IVEPoweredTileEntity)
 
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 

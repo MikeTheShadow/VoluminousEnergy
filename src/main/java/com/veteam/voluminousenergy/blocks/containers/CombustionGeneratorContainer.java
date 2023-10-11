@@ -46,12 +46,6 @@ public class CombustionGeneratorContainer extends VoluminousContainer {
         });
     }
 
-    public int powerScreen(int px) {
-        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        return (((stored * 100 / max * 100) / 100) * px) / 100;
-    }
-
     @Override
     public boolean stillValid(Player playerIn) {
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.COMBUSTION_GENERATOR_BLOCK.get());
