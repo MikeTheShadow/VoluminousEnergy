@@ -53,25 +53,27 @@ public class RecipeUtil {
         return null;
     }
 
-    // Parallel query of global recipes, will this improve performance?
+    private static final HashMap<Item,ItemStack> plankToRecipeMap = new HashMap<>();
+    @Nullable
     public static ItemStack getPlankFromLogParallel(Level world, ItemStack logStack){
-        if (logStack.isEmpty()) return null;
-        AtomicReference<ItemStack> atomicItemStack = new AtomicReference<>(null);
 
-        world.getRecipeManager().getRecipes().parallelStream().forEach(r -> {
-            if (r.value() instanceof CraftingRecipe recipe){
-                if (RegistryLookups.lookupItem(recipe.getResultItem(world.registryAccess())).toString().contains("plank")){
-                    recipe.getIngredients().forEach(ingredient -> {
-                        for (ItemStack itemStack : ingredient.getItems()){
-                            if (itemStack.getItem().equals(logStack.getItem())){
-                                atomicItemStack.set(recipe.getResultItem(world.registryAccess()).copy());
+        if(plankToRecipeMap.isEmpty()) {
+            world.getRecipeManager().getRecipes().parallelStream().forEach(r -> {
+                if (r.value() instanceof CraftingRecipe recipe) {
+                    ItemStack result = recipe.getResultItem(world.registryAccess());
+                    if (RegistryLookups.lookupItem(result).toString().contains("plank")){
+                        recipe.getIngredients().forEach(ingredient -> {
+                            for (ItemStack ingredientItem : ingredient.getItems()){
+                                plankToRecipeMap.put(ingredientItem.getItem(),result);
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
-        return atomicItemStack.get();
+            });
+        }
+        if(!plankToRecipeMap.containsKey(logStack.getItem())) return null;
+
+        return plankToRecipeMap.get(logStack.getItem()).copy();
     }
 
     // Parallel query of global recipes, will this improve performance?

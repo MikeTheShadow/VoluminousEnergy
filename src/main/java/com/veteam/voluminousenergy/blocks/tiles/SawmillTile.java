@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.SawmillContainer;
 import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
@@ -21,6 +22,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -38,14 +42,13 @@ import java.util.Objects;
 public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEntity,IVECountable {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
-        add(new VESlotManager(1, Direction.DOWN, true,SlotType.OUTPUT));
-        add(new VESlotManager(2, Direction.NORTH, true,SlotType.OUTPUT));
-        add(new VESlotManager(3, Direction.SOUTH,true,SlotType.INPUT));
-        add(new VESlotManager(4, Direction.EAST,true,SlotType.OUTPUT));
+        add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
+        add(new VESlotManager(1,0, Direction.DOWN, true,SlotType.OUTPUT));
+        add(new VESlotManager(2,1, Direction.NORTH, true,SlotType.OUTPUT));
+        add(new VESlotManager(3, Direction.SOUTH,true,SlotType.FLUID_INPUT,4,0));
+        add(new VESlotManager(4, Direction.EAST,true,SlotType.FLUID_OUTPUT));
     }};
-
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,null,null, TankType.OUTPUT,0,"outputTank:output_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
     private final FluidStack configuredFluidForNoRecipe = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get()))), Config.SAWMILL_FLUID_AMOUNT.get());
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
@@ -70,42 +73,35 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         outputTank.setAllowAny(true);
     }
 
-    VEFluidSawmillRecipe VEFluidSawmillRecipe;
+    VEFluidSawmillRecipe recipe;
 
     @Override
     public void tick() {
         updateClients();
         validateRecipe();
+        processFluidIO();
 
         ItemStack logInput = inventory.getStackInSlot(0).copy(); // Log input
         //ItemStack plankOutput = inventory.getStackInSlot(1).copy(); // Plank Output
         //ItemStack secondOutput = inventory.getStackInSlot(2).copy(); // Second output
-        ItemStack topBucketInput = inventory.getStackInSlot(3).copy(); // Top bucket input slot
-        ItemStack bottomBucketOutput = inventory.getStackInSlot(4).copy(); // Bottom bucket output slot
-
-        outputTank.setInput(topBucketInput.copy());
-        outputTank.setOutput(bottomBucketOutput.copy());
-
-        if(this.inputFluid(outputTank,3,4)) return;
-        if(this.outputFluid(outputTank,3,4)) return;
 
         // Resolve recipes:
         if (!logInput.isEmpty()){
             ItemStack plankOutputStack;
             ItemStack secondOutputStack;
 
-            if ((VEFluidSawmillRecipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())
-                    || (VEFluidSawmillRecipe != null && VEFluidSawmillRecipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())){ // Recipe is null, use alternative method if allowed, or dummy recipe
+            if ((recipe == null && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())
+                    || (recipe != null && recipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get())){ // Recipe is null, use alternative method if allowed, or dummy recipe
                 plankOutputStack = RecipeUtil.getPlankFromLogParallel(level, logInput.copy()); //RecipeUtil.getPlankFromLogParallel(level, logInput.copy());
                 secondOutputStack = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get())), Config.SAWMILL_SECOND_OUTPUT_COUNT.get());
 
                 if (plankOutputStack != null){ // Valid Item!
                     if (this.configuredFluidForNoRecipe != null
-                        && (outputTank.getTank().getFluidAmount() + Config.SAWMILL_FLUID_AMOUNT.get()) <= TANK_CAPACITY
-                        && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
-                        && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
-                        && (inventory.getStackInSlot(1).getCount() + Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()) <= 64
-                        && (inventory.getStackInSlot(2).getCount() + Config.SAWMILL_SECOND_OUTPUT_COUNT.get()) <= 64){
+                            && (outputTank.getTank().getFluidAmount() + Config.SAWMILL_FLUID_AMOUNT.get()) <= TANK_CAPACITY
+                            && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
+                            && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
+                            && (inventory.getStackInSlot(1).getCount() + Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()) <= 64
+                            && (inventory.getStackInSlot(2).getCount() + Config.SAWMILL_SECOND_OUTPUT_COUNT.get()) <= 64){
 
                         if (outputTank.getTank().getFluid().isFluidEqual(this.configuredFluidForNoRecipe.copy()) || outputTank.getTank().getFluid().isEmpty()){
                             plankOutputStack.setCount(Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get());
@@ -125,18 +121,18 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                     counter = 0;
                 }
 
-            } else if (VEFluidSawmillRecipe != null && !VEFluidSawmillRecipe.isLogRecipe()){ // Using Recipe
-                plankOutputStack = VEFluidSawmillRecipe.getResult(0).copy();
-                secondOutputStack = VEFluidSawmillRecipe.getResult(1).copy();
-                FluidStack outputFluid = VEFluidSawmillRecipe.getOutputFluid(0).copy();
+            } else if (recipe != null && !recipe.isLogRecipe()){ // Using Recipe
+                plankOutputStack = recipe.getResult(0).copy();
+                secondOutputStack = recipe.getResult(1).copy();
+                FluidStack outputFluid = recipe.getOutputFluid(0).copy();
 
                 if ((outputTank.getTank().getFluidAmount() + outputFluid.getAmount()) <= TANK_CAPACITY
                         && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
                         && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
-                        && (inventory.getStackInSlot(1).getCount() + VEFluidSawmillRecipe.getResult(0).getCount()) <= 64
-                        && (inventory.getStackInSlot(2).getCount() + VEFluidSawmillRecipe.getResult(1).getCount()) <= 64){
+                        && (inventory.getStackInSlot(1).getCount() + recipe.getResult(0).getCount()) <= 64
+                        && (inventory.getStackInSlot(2).getCount() + recipe.getResult(1).getCount()) <= 64){
                     if (outputTank.getTank().getFluid().isFluidEqual(outputFluid.copy()) || outputTank.getTank().getFluid().isEmpty()){
-                        coreTickProcessing(VEFluidSawmillRecipe, logInput, plankOutputStack, secondOutputStack, outputFluid);
+                        coreTickProcessing(recipe, logInput, plankOutputStack, secondOutputStack, outputFluid);
                     } else {
                         counter = 0;
                     }
@@ -156,7 +152,36 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
         }
         this.isRecipeDirty = false;
         ItemStack logInput = inventory.getStackInSlot(0).copy();
-        VEFluidSawmillRecipe = RecipeUtil.getSawmillingRecipeFromLog(level, logInput.copy());
+        recipe = RecipeUtil.getSawmillingRecipeFromLog(level, logInput.copy());
+    }
+
+    private ItemStackHandler createHandler() {
+        return new ItemStackHandler(6) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                markRecipeDirty();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if (slot == 0 || slot == 1 || slot == 2){
+                    return true;
+                } else if (slot == 3 || slot == 4) {
+                    return stack.getItem() instanceof BucketItem;
+                } else if (slot == 5){
+                    return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
+                }
+                return true;
+            }
+
+            @Nonnull
+            @Override
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+                if(!isItemValid(slot,stack)) return stack;
+                return super.insertItem(slot, stack, simulate);
+            }
+        };
     }
 
     private void coreTickProcessing(@Nullable VEFluidSawmillRecipe VEFluidSawmillRecipe,
@@ -219,53 +244,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
                                 : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());// Use default values when null
                 length = counter;
             }
-        } else decrementSuperCounterOnNoPower();
-    }
-
-    private ItemStackHandler createHandler() {
-        SawmillTile tile = this;
-        return new ItemStackHandler(6) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                tile.markRecipeDirty();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if(slot == 0){ // Log inputted into the input slot
-                    VEFluidSawmillRecipe recipe = RecipeUtil.getSawmillingRecipeFromLog(level, stack);
-                    if (recipe != null) return true;
-                    if (Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){
-                        ItemStack altPlankStack = RecipeUtil.getPlankFromLogParallel(level, stack.copy());
-                        if (altPlankStack != null) return true;
-                    }
-                    return false;
-                } else if (slot == 1){
-                    VEFluidSawmillRecipe recipe = RecipeUtil.getSawmillingRecipeFromPlank(level, stack);
-                    if (recipe != null) return true;
-                    if (Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){
-                        ArrayList<ItemStack> plankList = RecipeUtil.getLogFromPlankParallel(level, stack.copy());
-                        return plankList != null && !plankList.isEmpty();
-                    }
-                    return false;
-                } else if (slot == 2){
-                    VEFluidSawmillRecipe recipe = RecipeUtil.getSawmillingRecipeFromSecondOutput(level, stack.copy());
-                    return recipe != null;
-                } else if (slot == 3 || slot == 4) {
-                    return stack.getItem() instanceof BucketItem;
-                } else if (slot == 5){
-                    return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
-                }
-                return true;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
+        }
     }
 
     @Nullable
@@ -279,10 +258,6 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
             return outputTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
-    }
-
-    public RelationalTank getOutputTank(){
-        return this.outputTank;
     }
 
     @Override
@@ -308,5 +283,10 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     @Override
     public int getUpgradeSlotId() {
         return 5;
+    }
+
+    @Override
+    public RecipeType<? extends Recipe<?>> getRecipeType() {
+        return VEFluidSawmillRecipe.RECIPE_TYPE;
     }
 }

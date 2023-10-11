@@ -3,6 +3,9 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.HydroponicIncubatorContainer;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -11,9 +14,12 @@ import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -24,6 +30,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static net.minecraft.util.Mth.abs;
 
 public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
 
@@ -84,8 +93,96 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
         return FluidStack.EMPTY;
     }
 
-    public RelationalTank getInputTank() {
-        return this.inputTank;
+    // We copy the whole method to prevent the input from being decremented
+    @Override
+    void processRecipe() {
+        if (selectedRecipe == null) return;
+        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
+
+        if (canConsumeEnergy()) {
+
+            if (counter == 1) {
+                // Validate output
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
+                        FluidTank tank = relationalTank.getTank();
+                        FluidStack currentFluid = tank.getFluid();
+                        if(currentFluid.isEmpty()) continue;
+                        // If the output fluid amount won't fit, then you must acquit
+                        if (!recipeFluid.isFluidEqual(currentFluid)
+                                || tank.getFluidAmount() + recipeFluid.getAmount() > tank.getCapacity()) {
+                            return;
+                        }
+                    }
+                }
+
+                ItemStackHandler handler = getInventoryHandler();
+
+                if (handler != null) {
+                    // Validate output
+                    for (VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
+                        ItemStack recipeStack = recipe.getResult(slotManager.getRecipePos());
+                        ItemStack currentItem = slotManager.getItem(handler);
+                        if(currentItem.isEmpty()) continue;
+                        // If the output item amount won't fit, then you must acquit
+                        if(!recipeStack.is(currentItem.getItem())
+                                || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
+                            return;
+                        }
+                    }
+
+                    VEFluidRNGRecipe irngRecipe = null;
+                    if(recipe instanceof VEFluidRNGRecipe rec) {
+                        irngRecipe = rec;
+                    }
+                    Random r = new Random();
+
+                    // process recipe
+                    for(VESlotManager slotManager : getSlotManagers()) {
+                        if(slotManager.getSlotType() == SlotType.OUTPUT) {
+                            ItemStack output = recipe.getResult(slotManager.getRecipePos());
+                            ItemStack currentStack = slotManager.getItem(handler);
+                            // rng calculations
+                            if(irngRecipe != null) {
+                                float randomness = irngRecipe.getOutputChance(slotManager.getRecipePos());
+                                if(randomness != 1) {
+                                    float random = abs(0 + r.nextFloat() * (-1));
+                                    if(random > randomness) continue;
+                                }
+
+                            }
+                            if(currentStack.isEmpty()) slotManager.setItem(output,handler);
+                            else currentStack.setCount(currentStack.getCount() + output.getCount());
+                        }
+                    }
+                }
+
+                // process recipe
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        relationalTank.fillOutput(recipe,relationalTank.getRecipePos());
+                    } else if(relationalTank.getTankType() == TankType.INPUT) {
+                        relationalTank.drainInput(recipe,relationalTank.getRecipePos());
+                    }
+                }
+                doExtraRecipeProcessing();
+
+                this.markRecipeDirty();
+                this.markFluidInputDirty();
+                this.setChanged();
+            } else if (counter > 0) {
+                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
+                    sound_tick = 0;
+                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            } else {
+                counter = length;
+            }
+            counter--;
+            consumeEnergy();
+        }
     }
 
     @Override
