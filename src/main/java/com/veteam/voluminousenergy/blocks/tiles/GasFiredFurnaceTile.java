@@ -53,7 +53,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
         add(new VESlotManager(3, Direction.WEST, true, SlotType.OUTPUT));
     }};
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "fuel_tank:fuel_tank_gui");
+    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.INPUT, "fuel_tank:fuel_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
@@ -172,7 +172,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
         if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
         fuelRecipe = (CombustionGeneratorFuelRecipe)
                 RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());
-        VoluminousEnergy.LOGGER.info((furnaceRecipe != null) + " | " + (blastingRecipe != null) + " | " + (fuelRecipe != null));
     }
 
     @Override

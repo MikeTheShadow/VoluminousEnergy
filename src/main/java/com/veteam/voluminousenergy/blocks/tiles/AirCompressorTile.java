@@ -103,7 +103,6 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
                 if (tileEntity.getUpgradeSlotId() == slot) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
-                VoluminousEnergy.LOGGER.info("Slot id: " + slot);
                 if(slot == 0 && stack.getItem() instanceof BucketItem bucketItem) {
                     return bucketItem.getFluid().isSame(Fluids.EMPTY);
                 }

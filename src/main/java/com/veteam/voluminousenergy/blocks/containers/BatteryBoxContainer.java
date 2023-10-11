@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -60,17 +61,6 @@ public class BatteryBoxContainer extends VoluminousContainer {
         });
     }
 
-    public int getEnergy(){
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-    }
-
-    public int powerScreen(int px){
-        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        int ret = (((stored*100/max*100)/100)*px)/100;
-        return ret;
-    }
-
     @Override
     public boolean stillValid(Player playerIn) {
         return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(),tileEntity.getBlockPos()),playerEntity, VEBlocks.BATTERY_BOX_BLOCK.get());
@@ -87,7 +77,7 @@ public class BatteryBoxContainer extends VoluminousContainer {
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(final Player player, final int index) {
+    public @NotNull ItemStack quickMoveStack(final @NotNull Player player, final int index) {
         ItemStack returnStack = ItemStack.EMPTY;
         final Slot slot = this.slots.get(index);
 

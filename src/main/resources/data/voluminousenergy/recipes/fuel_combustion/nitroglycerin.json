@@ -2,7 +2,8 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:nitroglycerin"
+      "tag": "forge:nitroglycerin",
+      "amount" : 250
     }
   ],
   "volumetric_energy": 374400

@@ -2,7 +2,8 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:liquefied_coal"
+      "tag": "forge:liquefied_coal",
+      "amount" : 250
     }
   ],
   "volumetric_energy": 102400

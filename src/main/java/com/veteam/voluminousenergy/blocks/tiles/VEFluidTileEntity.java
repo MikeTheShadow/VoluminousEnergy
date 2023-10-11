@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -215,7 +216,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
                             if(irngRecipe != null) {
-                                float randomness = irngRecipe.getRNGOutputs().get(slotManager.getRecipePos());
+                                float randomness = irngRecipe.getOutputChance(slotManager.getRecipePos());
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
                                     if(random > randomness) continue;
@@ -284,7 +285,9 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
 
     public void updateTankPacketFromGui(int direction, int id) {
         for (RelationalTank tank : getRelationalTanks()) {
-            if (id == tank.getSlotNum()) tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+            if (id == tank.getSlotNum()) {
+                this.capabilityMap.moveFluidSlotManagerPos(tank,IntToDirection.IntegerToDirection(direction));
+            }
         }
     }
 
@@ -298,7 +301,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         this.fluidInputDirty = true;
     }
 
-    void processFluidIO() {
+    protected void processFluidIO() {
         if (!fluidInputDirty) return;
         fluidInputDirty = false;
         for (VESlotManager manager : this.getSlotManagers()) {

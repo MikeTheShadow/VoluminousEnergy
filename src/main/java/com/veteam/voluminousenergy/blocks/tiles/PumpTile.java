@@ -63,11 +63,6 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
         fluidTank.setAllowAny(true);
     }
 
-    @Deprecated
-    public PumpTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE.get(), pos, state,null);
-    }
-
     @Override
     public void tick(){
         updateClients();
@@ -191,7 +186,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return true;
             }
 
@@ -298,15 +293,6 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
 
     public RelationalTank getTank(){
         return this.fluidTank;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
     }
 
     @Override

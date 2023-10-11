@@ -42,7 +42,7 @@ public abstract class VEFluidRNGRecipe extends VEFluidRecipe {
     @Override
     public ItemStack getResult(int id) {
         // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
-        if (id>=this.itemResultsWithChance.size()) {
+        if (id >= this.itemResultsWithChance.size()) {
             return ItemStack.EMPTY;
         }
         return this.itemResultsWithChance.get(id).getAsItemStack();

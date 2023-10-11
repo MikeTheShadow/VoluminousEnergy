@@ -1,7 +1,9 @@
 package com.veteam.voluminousenergy.blocks.tiles.tank;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -17,7 +19,9 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankTile extends VEFluidTileEntity {
-    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.OUTPUT, "tank:tank_gui");
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 0, 1);
+    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.TANK, "tank:tank_gui");
+    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0);
     public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
@@ -73,15 +77,7 @@ public class TankTile extends VEFluidTileEntity {
     @Override
     public void tick() {
         updateClients();
-
-        ItemStack bucketTop = inventory.getStackInSlot(0).copy(); // Bucket Top slot
-        ItemStack bucketBottom = inventory.getStackInSlot(1).copy(); // Bucket Bottom slot
-
-        tank.setInput(bucketTop.copy());
-        tank.setOutput(bucketBottom.copy());
-
-        if (this.inputFluid(tank, 0, 1)) return;
-        if (this.outputFluid(tank, 0, 1)) return;
+        processFluidIO();
 
         if (!tank.getSideStatus() || tank.getTank().getFluidAmount() == tank.getTank().getCapacity()) return;
 
@@ -115,6 +111,7 @@ public class TankTile extends VEFluidTileEntity {
         return new ItemStackHandler(2) {
             @Override
             protected void onContentsChanged(int slot) {
+                markFluidInputDirty();
                 setChanged();
             }
 
@@ -126,7 +123,8 @@ public class TankTile extends VEFluidTileEntity {
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                if(!isItemValid(slot,stack)) return stack;
                 return super.insertItem(slot, stack, simulate);
             }
         };
@@ -160,11 +158,25 @@ public class TankTile extends VEFluidTileEntity {
         return this.tank.getTank().getCapacity();
     }
 
+    private LazyOptional<MultiFluidSlotWrapper> multiFluidSlotWrapperLazyOptional = null;
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+
+        if(cap == ForgeCapabilities.FLUID_HANDLER) {
+            if(multiFluidSlotWrapperLazyOptional == null) {
+                multiFluidSlotWrapperLazyOptional = LazyOptional.of(() -> new MultiFluidSlotWrapper(getRelationalTanks(),this));
+            }
+            return multiFluidSlotWrapperLazyOptional.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
-
 
     private record PosPair(BlockPos pos, Direction direction) {
 

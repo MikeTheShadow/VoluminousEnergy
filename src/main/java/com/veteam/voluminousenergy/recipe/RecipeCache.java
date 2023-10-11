@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +28,36 @@ public class RecipeCache {
     private static final HashMap<Level, HashMap<RecipeType<? extends Recipe<?>>, List<VEFluidRecipe>>> veFluidRecipeCache = new HashMap<>();
 
     public static void buildCache(Iterable<ServerLevel> levels) {
+
+        int cached = 0;
+
+        for (Level level : levels) {
+
+            var levelCache = veRecipeCache.getOrDefault(level, new HashMap<>());
+            var fluidLevelCache = veFluidRecipeCache.getOrDefault(level, new HashMap<>());
+
+            for (RecipeHolder<?> recipe : level.getRecipeManager().getRecipes()) {
+
+                if (recipe.value() instanceof VEFluidRecipe veFluidRecipe) {
+                    var cache = fluidLevelCache.getOrDefault(veFluidRecipe.getType(), new ArrayList<>());
+                    cache.add(veFluidRecipe);
+                    fluidLevelCache.put(veFluidRecipe.getType(), cache);
+                    cached++;
+                } else if (recipe.value() instanceof VERecipe veRecipe) {
+                    var cache = levelCache.getOrDefault(veRecipe.getType(), new ArrayList<>());
+                    cache.add(veRecipe);
+                    levelCache.put(veRecipe.getType(), cache);
+                    cached++;
+                }
+            }
+            veRecipeCache.put(level, levelCache);
+            veFluidRecipeCache.put(level, fluidLevelCache);
+        }
+
+        VoluminousEnergy.LOGGER.info("Built recipe cache for " + cached + " recipes!");
+    }
+
+    public static void buildCacheClientLevel(Iterable<ClientLevel> levels) {
 
         int cached = 0;
 
@@ -100,14 +131,13 @@ public class RecipeCache {
     public static VEFluidRecipe getFluidRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<FluidStack> fluids, List<ItemStack> items) {
 
         var recipes = getFluidRecipesFromLevelWithClass(level, type);
-
         for (VEFluidRecipe recipe : recipes) {
             boolean isValid = true;
 
             for (int i = 0; i < fluids.size(); i++) {
                 if(recipe.getFluidIngredient(i).isEmpty()) continue;
                 if (!recipe.getFluidIngredient(i).test(fluids.get(i))
-                        || fluids.get(i).getAmount() < recipe.getFluidIngredient(i).getFluids()[0].getAmount()) {
+                        || fluids.get(i).getAmount() < recipe.getFluidIngredientAmount(i)) {
                     isValid = false;
                     break;
                 }
@@ -193,7 +223,10 @@ public class RecipeCache {
     /* You really only want to use this on the client. You should never attempt to use this on the server because you should always
      have access to level*/
     public static List<VEFluidRecipe> getFluidRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
-
+        if(veRecipeCache.isEmpty()) {
+            VoluminousEnergy.LOGGER.info("Building client recipe cache");
+            RecipeCache.buildCacheClientLevel(List.of(Minecraft.getInstance().level));
+        }
         Set<VEFluidRecipe> veFluidRecipes = new HashSet<>();
 
         for (var map : veFluidRecipeCache.entrySet()) {
@@ -204,7 +237,10 @@ public class RecipeCache {
     }
 
     public static List<VERecipe> getRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
-
+        if(veRecipeCache.isEmpty()) {
+            VoluminousEnergy.LOGGER.info("Building client recipe cache");
+            RecipeCache.buildCacheClientLevel(List.of(Minecraft.getInstance().level));
+        }
         Set<VERecipe> veFluidRecipes = new HashSet<>();
 
         for (var map : veRecipeCache.entrySet()) {

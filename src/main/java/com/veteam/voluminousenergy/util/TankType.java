@@ -1,5 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
 public enum TankType {
-    OUTPUT,INPUT,BOTH
+    OUTPUT,INPUT,BOTH,TANK
 }

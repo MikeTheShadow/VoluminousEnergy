@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -28,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -122,6 +125,12 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
             return;
         }
         this.isRecipeDirty = false;
+        ItemStack furnaceInput = slotManagers.get(0).getItem(this.inventory);
+        var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+        var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+
+        if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
     }
 
     private ItemStackHandler createHandler() {
@@ -250,23 +259,6 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
 
     public int getCounter() {
         return counter;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId) {
-        if (slotId == inputSlotManager.getSlotNum()) {
-            inputSlotManager.setStatus(status);
-        } else if (slotId == outputSlotManager.getSlotNum()) {
-            outputSlotManager.setStatus(status);
-        }
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        if (slotId == inputSlotManager.getSlotNum()) {
-            inputSlotManager.setDirection(direction);
-        } else if (slotId == outputSlotManager.getSlotNum()) {
-            outputSlotManager.setDirection(direction);
-        }
     }
 
     @Override

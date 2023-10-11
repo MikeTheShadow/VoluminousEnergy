@@ -12,11 +12,12 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarPanelContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
-    private PrimitiveSolarPanelTile tileEntity;
+    private final PrimitiveSolarPanelTile tileEntity;
 
     public PrimitiveSolarPanelScreen(PrimitiveSolarPanelContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -25,14 +26,14 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<PrimitiveSolarP
     }
 
     @Override
-    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
         this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
         super.render(matrixStack,mouseX,mouseY,partialTicks);
         this.renderTooltip(matrixStack,mouseX,mouseY);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
+    protected void renderTooltip(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
                 matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);

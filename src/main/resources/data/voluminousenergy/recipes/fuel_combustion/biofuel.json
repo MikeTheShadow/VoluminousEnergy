@@ -2,7 +2,8 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:biofuel"
+      "tag": "forge:biofuel",
+      "amount" : 250
     }
   ],
   "volumetric_energy": 115200
