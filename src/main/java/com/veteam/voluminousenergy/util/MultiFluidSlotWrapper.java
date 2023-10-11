@@ -52,6 +52,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         RelationalTank relationalTank = tankHashMap.get(tank);
+        if(relationalTank.isAllowAny()) return true;
         for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
             VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
             if (veFluidRecipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
@@ -66,7 +67,8 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public int fill(FluidStack resource, FluidAction action) {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
-            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid())) && tank.getSideStatus()) {
+            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
+                if(!tank.getSideStatus() && tank.getTankType() != TankType.TANK) return 0;
                 if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }

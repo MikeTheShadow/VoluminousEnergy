@@ -301,7 +301,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
         this.fluidInputDirty = true;
     }
 
-    void processFluidIO() {
+    protected void processFluidIO() {
         if (!fluidInputDirty) return;
         fluidInputDirty = false;
         for (VESlotManager manager : this.getSlotManagers()) {

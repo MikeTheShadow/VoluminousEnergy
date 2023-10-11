@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
@@ -132,7 +131,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             return;
         }
         this.isRecipeDirty = false;
-        VoluminousEnergy.LOGGER.info("Recipe is dirty!");
         oxidizerRecipe =
                 RecipeCache.getFluidRecipeFromCache(level,
                         CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,
@@ -181,12 +179,11 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     }
 
     private ItemStackHandler createHandler() {
-        VEFluidTileEntity tileEntity = this;
         return new ItemStackHandler(4) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
-                tileEntity.markFluidInputDirty();
+                markFluidInputDirty();
             }
 
             @Override
@@ -205,7 +202,6 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
                     }
                     return true;
                 }
-                VoluminousEnergy.LOGGER.info("Failed to insert item " + stack.getItem().getDescriptionId());
                 return false;
             }
         };
