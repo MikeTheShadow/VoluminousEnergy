@@ -2,7 +2,8 @@
   "type": "voluminousenergy:fuel_combustion",
   "fluid_ingredients": [
     {
-      "tag": "forge:liquefied_coke"
+      "tag": "forge:liquefied_coke",
+      "amount" : 250
     }
   ],
   "volumetric_energy": 204800

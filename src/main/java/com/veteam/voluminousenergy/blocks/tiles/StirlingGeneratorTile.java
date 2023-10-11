@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
@@ -33,11 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator, IVECountable {
-
-    public VESlotManager slotManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(slotManager);
+        add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
     }};
 
     private int energyRate;
@@ -95,7 +93,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
         recipe = RecipeUtil.getStirlingGeneratorRecipe(level, input.copy());
     }
 
-    public static int recieveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
         return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -108,7 +106,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
                 if (tileEntity != null) {
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(Config.STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = recieveEnergy(tileEntity, opposite, smallest);
+                    int received = receiveEnergy(tileEntity, opposite, smallest);
                     energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <= 0) {
                         break;
@@ -149,7 +147,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                return RecipeCache.getRecipesWithoutLevelDangerous(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(stack));
+                return RecipeCache.getRecipesWithoutLevelDangerous(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(referenceStack));
             }
 
             @Nonnull
@@ -188,16 +186,6 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
 
     public int getEnergyRate() {
         return energyRate;
-    }
-
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId) {
-        if (slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        if (slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
     }
 
     @Override

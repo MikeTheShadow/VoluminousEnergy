@@ -413,9 +413,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         List<VESlotManager> itemManagers = getSlotManagers();
         if(capabilityMap == null) {
             if(this instanceof VEFluidTileEntity fluidTileEntity) {
-                capabilityMap = new CapabilityMap(inventory,itemManagers,fluidTileEntity.getRelationalTanks(), energy,this);
+                capabilityMap = new CapabilityMap(inventory,itemManagers,fluidTileEntity.getRelationalTanks(), energy,fluidTileEntity);
             } else {
-                capabilityMap = new CapabilityMap(inventory,itemManagers,new ArrayList<>(), energy,this);
+                capabilityMap = new CapabilityMap(inventory,itemManagers,new ArrayList<>(), energy,null);
             }
         }
         return this.capabilityMap.getCapability(cap,side,this);

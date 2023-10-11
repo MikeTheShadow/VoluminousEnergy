@@ -1,8 +1,11 @@
 package com.veteam.voluminousenergy.util;
 
-import com.google.common.base.Preconditions;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -14,9 +17,9 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
     List<RelationalTank> tanks;
-    VETileEntity tileEntity;
+    VEFluidTileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VETileEntity tileEntity) {
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VEFluidTileEntity tileEntity) {
         this.tanks = tanks;
         this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
@@ -49,8 +52,13 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         RelationalTank relationalTank = tankHashMap.get(tank);
-        if (relationalTank == null) return false;
-        return relationalTank.getTank() != null && relationalTank.getTank().isFluidValid(stack);
+        for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+            VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
+            if (veFluidRecipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
+                return true;
+            }
+        }
+        return relationalTank.getTank().isFluidValid(stack);
     }
 
 
@@ -58,8 +66,8 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public int fill(FluidStack resource, FluidAction action) {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
-            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
-                tileEntity.markRecipeDirty();
+            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid())) && tank.getSideStatus()) {
+                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
@@ -73,9 +81,9 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             return FluidStack.EMPTY;
         }
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
+            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny() && !tank.getSideStatus()) continue;
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
-                tileEntity.markRecipeDirty();
+                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
             }
         }
@@ -86,9 +94,9 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny()) continue;
+            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny() && !tank.getSideStatus()) continue;
             if (tank.getTank().getFluidAmount() > 0) {
-                tileEntity.markRecipeDirty();
+                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(maxDrain, action);
             }
         }
@@ -97,8 +105,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     public void addRelationalTank(RelationalTank tank) {
         tankHashMap.put(tank.getSlotNum(),tank);
+        tanks.add(tank);
     }
     public void removeRelationalTank(RelationalTank tank) {
         tankHashMap.remove(tank.getSlotNum());
+        tanks.remove(tank);
     }
 }

@@ -301,15 +301,6 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId){
-        if(slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId){
-        if(slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
-    }
-
-    @Override
     public int getMaxPower() {
         return Config.PUMP_MAX_POWER.get();
     }

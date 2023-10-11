@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankTile extends VEFluidTileEntity {
-    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.OUTPUT, "tank:tank_gui");
+    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.BOTH, "tank:tank_gui");
     public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 0, 1);
     public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
 
@@ -164,7 +164,6 @@ public class TankTile extends VEFluidTileEntity {
     public @NotNull List<RelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
-
 
     private record PosPair(BlockPos pos, Direction direction) {
 

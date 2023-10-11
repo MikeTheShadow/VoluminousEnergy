@@ -48,11 +48,11 @@ public class StirlingGeneratorScreen extends VEContainerScreen<StirlingGenerator
         }));
 
         // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.slotManager, (this.width / 2) - 198, this.topPos, button -> {
+        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(0), (this.width / 2) - 198, this.topPos, button -> {
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.slotManager, (this.width / 2) - 184, this.topPos, button -> {
+        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(0), (this.width / 2) - 184, this.topPos, button -> {
             // Do nothing
         }));
     }

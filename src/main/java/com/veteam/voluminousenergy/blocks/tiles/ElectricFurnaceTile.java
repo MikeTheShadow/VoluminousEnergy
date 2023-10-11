@@ -253,23 +253,6 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
     }
 
     @Override
-    public void updatePacketFromGui(boolean status, int slotId) {
-        if (slotId == inputSlotManager.getSlotNum()) {
-            inputSlotManager.setStatus(status);
-        } else if (slotId == outputSlotManager.getSlotNum()) {
-            outputSlotManager.setStatus(status);
-        }
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        if (slotId == inputSlotManager.getSlotNum()) {
-            inputSlotManager.setDirection(direction);
-        } else if (slotId == outputSlotManager.getSlotNum()) {
-            outputSlotManager.setDirection(direction);
-        }
-    }
-
-    @Override
     public int getMaxPower() {
         return Config.ELECTRIC_FURNACE_MAX_POWER.get();
     }

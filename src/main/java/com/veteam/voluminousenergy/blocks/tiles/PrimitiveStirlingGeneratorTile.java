@@ -32,10 +32,8 @@ import java.util.List;
 
 public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator, IVECountable {
 
-    public VESlotManager slotManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(slotManager);
+        add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
     }};
 
     private final ItemStackHandler inventory = this.createHandler();
@@ -162,15 +160,6 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
 
     public int getEnergyRate() {
         return 40;
-    }
-
-    @Override
-    public void updatePacketFromGui(boolean status, int slotId) {
-        if (slotId == slotManager.getSlotNum()) slotManager.setStatus(status);
-    }
-
-    public void updatePacketFromGui(int direction, int slotId) {
-        if (slotId == slotManager.getSlotNum()) slotManager.setDirection(direction);
     }
 
     @Override

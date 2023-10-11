@@ -18,23 +18,24 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
     private final ItemStackHandler inventory = createHandler(6);
 
-    public RelationalTank[] fluidManagers = new RelationalTank[]{
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"),
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0,  TankType.OUTPUT, "outputTank:output_tank_gui")
-    };
+    public List<RelationalTank> fluidManagers = new ArrayList<>() {{
+        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"));
+        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0,  TankType.OUTPUT, "outputTank:output_tank_gui"));
+    }};
 
-    public VESlotManager[] slotManagers = new VESlotManager[]{
-            new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0),
-            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 3, 1),
-            new VESlotManager(3, Direction.SOUTH, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(4, 0, Direction.EAST, true, SlotType.INPUT)
-    };
+    public List<VESlotManager> slotManagers = new ArrayList<>(){{
+        add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
+        add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
+        add(new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 3, 1));
+        add(new VESlotManager(3, Direction.SOUTH, true, SlotType.FLUID_OUTPUT));
+        add(new VESlotManager(4, 0, Direction.EAST, true, SlotType.INPUT));
+    }};
 
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
@@ -43,8 +44,8 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AQUEOULIZER_TILE.get(), pos, state, AqueoulizerRecipe.RECIPE_TYPE);
-        fluidManagers[0].setValidator(this, true);
-        fluidManagers[1].setValidator(this, false);
+        fluidManagers.get(0).setValidator(this, true);
+        fluidManagers.get(1).setValidator(this, false);
     }
 
     @Override
@@ -61,12 +62,12 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
 
     @Override
     public @Nonnull List<RelationalTank> getRelationalTanks() {
-        return List.of(this.fluidManagers);
+        return fluidManagers;
     }
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
-        return List.of(slotManagers);
+        return slotManagers;
     }
 
     @Override

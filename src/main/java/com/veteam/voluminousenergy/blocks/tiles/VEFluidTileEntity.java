@@ -216,7 +216,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
                             if(irngRecipe != null) {
-                                float randomness = irngRecipe.getRNGOutputs().get(slotManager.getRecipePos());
+                                float randomness = irngRecipe.getOutputChance(slotManager.getRecipePos());
                                 if(randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
                                     if(random > randomness) continue;

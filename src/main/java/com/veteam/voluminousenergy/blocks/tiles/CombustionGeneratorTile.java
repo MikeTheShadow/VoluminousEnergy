@@ -55,13 +55,10 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     private final int tankCapacity = 4000;
 
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
-
-    private final RelationalTank fuelTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.INPUT, "fuelTank:fuel_tank_gui");
-    private final RelationalTank oxidizerTank = new RelationalTank(new FluidTank(tankCapacity), 1, null, null, TankType.INPUT, "oxidizerTank:oxidizer_tank_gui");
     List<RelationalTank> fluidManagers = new ArrayList<>() {
         {
-            add(fuelTank);
-            add(oxidizerTank);
+            add(new RelationalTank(new FluidTank(tankCapacity), 0, 0, TankType.INPUT, "oxidizerTank:oxidizer_tank_gui"));
+            add(new RelationalTank(new FluidTank(tankCapacity), 1, 0, TankType.INPUT, "fuelTank:fuel_tank_gui"));
         }
     };
     private int energyRate;
@@ -70,6 +67,14 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
+        fluidManagers.get(0).getTank().setValidator(fluid -> {
+            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
+        });
+        fluidManagers.get(1).getTank().setValidator(fluid -> {
+            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
+        });
     }
 
     private LazyOptional<IEnergyStorage> energyCapability = null;
@@ -79,7 +84,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     @Override
     public void tick() {
-        super.tick();
+        updateClients();
+        processFluidIO();
+        validateRecipe();
 
         // Main Combustion Generator tick logic
         if (counter > 0) {
@@ -97,10 +104,10 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
                 }
             }
             setChanged();
-        } else if (!oxidizerTank.getTank().isEmpty()) {
+        } else if (!fluidManagers.get(0).getTank().isEmpty()) {
             if (oxidizerRecipe != null && fuelRecipe != null) {
-                oxidizerTank.getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
-                fuelTank.getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
+                fluidManagers.get(0).getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
+                fluidManagers.get(1).getTank().drain(COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
                 if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
                     counter = (oxidizerRecipe.getProcessTime()) / 4;
                 } else {
@@ -125,15 +132,16 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
             return;
         }
         this.isRecipeDirty = false;
+        VoluminousEnergy.LOGGER.info("Recipe is dirty!");
         oxidizerRecipe =
                 RecipeCache.getFluidRecipeFromCache(level,
                         CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,
-                        Collections.singletonList(this.oxidizerTank.getTank().getFluid()),
+                        Collections.singletonList(fluidManagers.get(1).getTank().getFluid()),
                         new ArrayList<>());
 
         fuelRecipe = RecipeCache.getFluidRecipeFromCache(level,
                 CombustionGeneratorFuelRecipe.RECIPE_TYPE,
-                Collections.singletonList(this.fuelTank.getTank().getFluid()),
+                Collections.singletonList(fluidManagers.get(0).getTank().getFluid()),
                 new ArrayList<>());
     }
 
@@ -229,9 +237,9 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
 
     public FluidStack getFluidStackFromTank(int num) {
         if (num == 0) {
-            return oxidizerTank.getTank().getFluid();
+            return fluidManagers.get(0).getTank().getFluid();
         } else if (num == 1) {
-            return fuelTank.getTank().getFluid();
+            return fluidManagers.get(1).getTank().getFluid();
         }
         return FluidStack.EMPTY;
     }
@@ -245,28 +253,8 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
         return fluidManagers;
     }
 
-    public int progressCounterPercent() {
-        if (length != 0) {
-            return (int) (100 - (((float) counter / (float) length) * 100));
-        } else {
-            return 0;
-        }
-    }
-
-    public int ticksLeft() {
-        return counter;
-    }
-
     public int getEnergyRate() {
         return energyRate;
-    }
-
-    public RelationalTank getOxidizerTank() {
-        return oxidizerTank;
-    }
-
-    public RelationalTank getFuelTank() {
-        return fuelTank;
     }
 
     @Override

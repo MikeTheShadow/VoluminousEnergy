@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.util.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -29,16 +30,13 @@ public class CapabilityMap {
     private final ItemStackHandler inventory;
     private final LazyOptional<VEEnergyStorage> energyStorage;
 
-    private final VETileEntity tileEntity;
-
-    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<RelationalTank> tanks, LazyOptional<VEEnergyStorage> energy, VETileEntity tileEntity) {
+    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<RelationalTank> tanks, LazyOptional<VEEnergyStorage> energy, @Nullable VEFluidTileEntity tileEntity) {
         this.inventory = inventory;
         this.energyStorage = energy;
-        this.tileEntity = tileEntity;
 
         for(Direction direction : Direction.values()) {
             if(inventory != null) itemMap.put(direction,new MultiSlotWrapper(inventory,new ArrayList<>()));
-            fluidMap.put(direction,new MultiFluidSlotWrapper(new ArrayList<>(),tileEntity));
+            if(tileEntity != null) fluidMap.put(direction,new MultiFluidSlotWrapper(new ArrayList<>(),tileEntity));
         }
 
         for(VESlotManager manager : managerList) {
