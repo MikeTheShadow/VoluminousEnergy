@@ -36,7 +36,7 @@ public class AirCompressorScreen extends VEContainerScreen<AirCompressorContaine
     protected void init(){
         super.init();
         // Buttons go here
-        renderIOMenu(tileEntity);
+        renderIOMenu(tileEntity, 64 + (this.width/2), this.topPos + 4);
 
     }
 
