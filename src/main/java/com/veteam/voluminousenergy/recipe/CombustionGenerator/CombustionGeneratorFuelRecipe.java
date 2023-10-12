@@ -40,7 +40,9 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
         @Nullable
         @Override
         public CombustionGeneratorFuelRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new CombustionGeneratorFuelRecipe(), buffer);
+            CombustionGeneratorFuelRecipe recipe = new CombustionGeneratorFuelRecipe();
+            recipe.volumetricEnergy = buffer.readInt();
+            return helper.fromNetwork(recipe, buffer);
         }
 
         @Override
@@ -50,6 +52,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombustionGeneratorFuelRecipe recipe) {
+            buffer.writeInt(recipe.volumetricEnergy);
             helper.toNetwork(buffer, recipe);
         }
     };

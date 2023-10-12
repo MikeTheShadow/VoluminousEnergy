@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -22,8 +21,6 @@ public abstract class VEFluidRNGRecipe extends VEFluidRecipe {
         this.rngValues = oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::chance).toList();
     }
 
-    @Deprecated
-    // DANGEROUS: AVOID OUTSIDE RECIPE CODE DUE TO VARIABLE LENGTHS WITH MACHINE OUTPUTS THAT YOU MUST CHECK, USE getOutputChance(id) INSTEAD
     public List<Float> getRNGOutputs() {
         return rngValues;
     }
@@ -37,14 +34,5 @@ public abstract class VEFluidRNGRecipe extends VEFluidRecipe {
             return 1;
         }
         return rngValues.get(i);
-    }
-
-    @Override
-    public ItemStack getResult(int id) {
-        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
-        if (id >= this.itemResultsWithChance.size()) {
-            return ItemStack.EMPTY;
-        }
-        return this.itemResultsWithChance.get(id).getAsItemStack();
     }
 }
