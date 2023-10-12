@@ -3,8 +3,9 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
+import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
@@ -14,22 +15,52 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class ToolingRecipe extends VEFluidRecipe {
+public class ToolingRecipe extends VERecipe {
     public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
     public ToolingRecipe() {
 
     }
 
-    public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<ItemStack> oi, int processTime) {
-        super(i, fi, of, oi, processTime);
+    public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
+        super(i, oi, 0);
+
+        this.bits = Lazy.of(() -> {
+            ArrayList<Item> foundBits = new ArrayList<>();
+
+            for (var rawData : i) {
+                Ingredient ingredient = rawData.getIngredient();
+                for (Item input : Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).toList()) {
+                    if (input instanceof BitItem bitItem) {
+                        foundBits.add(bitItem);
+                    }
+                }
+            }
+
+            return foundBits;
+        });
+
+        this.bases = Lazy.of(() -> {
+            ArrayList<Item> foundBases = new ArrayList<>();
+
+            for (var rawData : i) {
+                Ingredient ingredient = rawData.getIngredient();
+                for (Item input : Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).toList()) {
+                    if (input instanceof Multitool multitoolItem && multitoolItem.getBit() == null) {
+                        foundBases.add(multitoolItem);
+                    }
+                }
+            }
+
+            return foundBases;
+        });
     }
 
     // TODO fix me and make me right!
@@ -37,13 +68,10 @@ public class ToolingRecipe extends VEFluidRecipe {
 
         public static final Codec<ToolingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
-                VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
-                Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
+                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results)
         ).apply(instance, ToolingRecipe::new));
 
-        private static final FluidSerializerHelper<ToolingRecipe> helper = new FluidSerializerHelper<>();
+        private static final IngredientSerializerHelper<ToolingRecipe> helper = new IngredientSerializerHelper<>();
 
         @Nullable
         @Override
@@ -66,7 +94,7 @@ public class ToolingRecipe extends VEFluidRecipe {
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 
     protected Lazy<ArrayList<Item>> bits;
-    protected Lazy<ArrayList<Item>> basesAndBits;
+    protected ArrayList<Item> basesAndBits;
     protected Lazy<ArrayList<Item>> bases;
 
     protected boolean usesTagKey;
@@ -87,7 +115,12 @@ public class ToolingRecipe extends VEFluidRecipe {
     }
 
     public ArrayList<Item> getBasesAndBits(){
-        return this.basesAndBits.get();
+        if (this.basesAndBits == null || this.basesAndBits.isEmpty()) {
+            this.basesAndBits = new ArrayList<>();
+            this.basesAndBits.addAll(bits.get());
+            this.basesAndBits.addAll(bases.get());
+        }
+        return this.basesAndBits;
     }
 
     public ArrayList<Item> getBases(){

@@ -1,13 +1,17 @@
 {
   "type": "voluminousenergy:tooling",
-  "ingredient": {
-    "item": "voluminousenergy:solarium_trimmer_bit",
-    "count": 1
-  },
-  "tool_base": {
-    "item": "voluminousenergy:empty_multitool"
-  },
-  "result": {
-    "item": "voluminousenergy:solarium_trimmer_multitool"
-  }
+  "ingredients": [
+    {
+      "item": "voluminousenergy:solarium_trimmer_bit",
+      "count": 1
+    },
+    {
+      "item": "voluminousenergy:empty_multitool"
+    }
+  ],
+  "item_results": [
+    {
+      "item": "voluminousenergy:solarium_trimmer_multitool"
+    }
+  ]
 }
