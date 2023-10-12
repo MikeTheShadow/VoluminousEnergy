@@ -20,7 +20,6 @@ public abstract class VERNGRecipe extends VERecipe {
                 results.stream().map(VERecipeCodecs.VEChancedItemWithCount::getAsItemStack).toList(),
                 processTime
         );
-        this.resultsWithChance = results;
         this.rngValues = results.stream().map(VERecipeCodecs.VEChancedItemWithCount::chance).toList();
 
     }
@@ -43,15 +42,6 @@ public abstract class VERNGRecipe extends VERecipe {
 
     public void setRNGOutputs(List<Float> rngOutputs) {
         this.rngValues = rngOutputs;
-    }
-
-    @Override
-    public ItemStack getResult(int id) {
-        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
-        if (id>=this.resultsWithChance.size()) {
-            return ItemStack.EMPTY;
-        }
-        return this.resultsWithChance.get(id).getAsItemStack();
     }
 
 }

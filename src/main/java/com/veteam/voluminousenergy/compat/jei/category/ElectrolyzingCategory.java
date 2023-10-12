@@ -56,22 +56,22 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.electrolyzing");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(ElectrolyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(ElectrolyzerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack, 25, 30);
         emptyArrow.draw(matrixStack, 25, 30);
         slotDrawable.draw(matrixStack, 5, 20); // Input
@@ -110,7 +110,7 @@ public class ElectrolyzingCategory implements IRecipeCategory<ElectrolyzerRecipe
 
         itemInputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, inputStacks);
 
-        if (recipe.getIngredient(1).getItems().length > 0) {
+        if (!recipe.getIngredient(1).isEmpty()) {
             ItemStack bucketStack = new ItemStack(Items.BUCKET, recipe.getIngredient(1).getItems()[0].getCount());
             bucketInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, bucketStack);
         }
