@@ -35,7 +35,7 @@ public class CentrifugalSeparatorBlock extends VEFaceableMachineBlock {
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         return createTicker(level, blockEntityType, VEBlocks.CENTRIFUGAL_SEPARATOR_TILE.get());
     }
 }
