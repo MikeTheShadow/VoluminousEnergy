@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:dimensional_lasing",
-  "fluid": "voluminousenergy:crude_oil",
-  "amounts": {
+  "region_fluid": {
+    "fluid": "voluminousenergy:crude_oil",
     "minimum": 48,
     "maximum": 128
   },

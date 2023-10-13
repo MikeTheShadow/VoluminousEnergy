@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
+import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
@@ -95,9 +96,8 @@ public class WorldUtil {
 
         HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
         if (sampledClimate.isEmpty()) return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
-
-        level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
+        RecipeCache.getFluidRecipesFromLevelWithClass(level,DimensionalLaserRecipe.RECIPE_TYPE).parallelStream().forEach(recipe -> {
+            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
                 FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
                 if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
                     fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate, pos, level)));

@@ -30,10 +30,10 @@ import org.jetbrains.annotations.NotNull;
 public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLaserRecipe> {
 
     private final IDrawable background;
-    private IDrawable icon;
-    private IDrawable slotDrawable;
-    private IDrawable arrow;
-    private IDrawable emptyArrow;
+    private final IDrawable icon;
+    private final IDrawable slotDrawable;
+    private final IDrawable arrow;
+    private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.DIMENSIONAL_LASER_UID, DimensionalLaserRecipe.class);
 
     public DimensionalLasingCategory(IGuiHelper guiHelper) {
@@ -52,22 +52,22 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         return TextUtil.translateString("jei.voluminousenergy.dimensional_lasing");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public @NotNull IDrawable getBackground() {
         return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return icon;
     }
 
     @Override
-    public void draw(DimensionalLaserRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(DimensionalLaserRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
         arrow.draw(matrixStack,9, 4);
         emptyArrow.draw(matrixStack,9,4);
         slotDrawable.draw(matrixStack,8,22);

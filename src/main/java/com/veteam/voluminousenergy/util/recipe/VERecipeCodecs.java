@@ -53,7 +53,7 @@ public class VERecipeCodecs {
                     itemSet.get().add(new ItemStack(itemHolder.value(), this.count));
                 });
                 return Ingredient.of(itemSet.get().stream());
-            } else if(!item.isBlank()){
+            } else if (!item.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(item, ':');
                 Item single = ForgeRegistries.ITEMS.getValue(res);
                 if (single == null) {
@@ -94,7 +94,58 @@ public class VERecipeCodecs {
         ).apply(instance, RegistryFluidIngredient::new);
     });
 
-    public record RegistryFluidIngredient(String tag,String fluid,int amount) {
+    public static final Codec<FloatPair> VE_MIN_MAX_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
+                ExtraCodecs.strictOptionalField(Codec.FLOAT, "minimum", 0.0F)
+                        .forGetter(FloatPair::min),
+                ExtraCodecs.strictOptionalField(Codec.FLOAT, "maximum", 0.0F)
+                        .forGetter(FloatPair::max)
+        ).apply(instance, FloatPair::new);
+    });
+
+    public static final Codec<FluidMinMax> VE_MIN_MAX_FLUID_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
+                FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidMinMax::fluid),
+                ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0)
+                        .forGetter(FluidMinMax::min),
+                ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0)
+                        .forGetter(FluidMinMax::max)
+        ).apply(instance, FluidMinMax::new);
+    });
+
+    public static final Codec<IntPair> VE_MIN_MAX_INT_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
+                ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0)
+                        .forGetter(IntPair::min),
+                ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0)
+                        .forGetter(IntPair::max)
+        ).apply(instance, IntPair::new);
+    });
+
+    public static final Codec<ClimateData> VE_CLIMATE_CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "continentalness", new FloatPair(0,0))
+                        .forGetter(ClimateData::continentalness),
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "erosion", new FloatPair(0,0))
+                        .forGetter(ClimateData::continentalness),
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "humidity", new FloatPair(0,0))
+                        .forGetter(ClimateData::continentalness),
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "temperature", new FloatPair(0,0))
+                        .forGetter(ClimateData::continentalness)
+                ).apply(instance, ClimateData::new);
+    });
+
+    public record FloatPair(float min, float max) {}
+
+    public record IntPair(int min, int max) {}
+
+    public record ClimateData(FloatPair continentalness,FloatPair erosion, FloatPair humidity, FloatPair temperature ) {}
+
+    public record FluidMinMax(Fluid fluid,int min,int max) {
+
+    }
+
+    public record RegistryFluidIngredient(String tag, String fluid, int amount) {
         public FluidIngredient getIngredient() {
 
             if (!tag.isBlank()) {
@@ -106,7 +157,7 @@ public class VERecipeCodecs {
                     fluidSet.get().add(new FluidStack(itemHolder.value(), amount));
                 });
                 return FluidIngredient.of(fluidSet.get().stream());
-            } else if(!fluid.isBlank()) {
+            } else if (!fluid.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(fluid, ':');
                 Fluid single = ForgeRegistries.FLUIDS.getValue(res);
                 if (single == null) {
@@ -139,13 +190,14 @@ public class VERecipeCodecs {
 
     public record VEChancedItemWithCount(Item item, int count, float chance) {
         public ItemStack getAsItemStack() {
-            return new ItemStack(item,count);
+            return new ItemStack(item, count);
         }
 
-        public Pair<ItemStack,Float> getItemStackWithChance() {
+        public Pair<ItemStack, Float> getItemStackWithChance() {
             return new Pair<>(new ItemStack(item, count), chance);
         }
     }
 
-    public record VERecipeExperience(int minimum, int maximum) { }
+    public record VERecipeExperience(int minimum, int maximum) {
+    }
 }

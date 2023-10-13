@@ -1,7 +1,7 @@
 {
   "type": "voluminousenergy:dimensional_lasing",
-  "fluid": "voluminousenergy:light_fuel",
-  "amounts": {
+  "region_fluid": {
+    "fluid": "voluminousenergy:light_fuel",
     "minimum": 125,
     "maximum": 155
   },

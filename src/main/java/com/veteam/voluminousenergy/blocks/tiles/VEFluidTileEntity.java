@@ -75,6 +75,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if (slot == finalUpgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
                 VESlotManager manager = tileEntity.getSlotManagers().get(slot);
+                if(manager.getAllowedItems().contains(stack.getItem())) return true;
                 if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
                     if (bucketItem.getFluid() == Fluids.EMPTY) return true;
                     RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());

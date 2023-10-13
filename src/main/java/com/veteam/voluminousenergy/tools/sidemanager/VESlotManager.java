@@ -3,10 +3,13 @@ package com.veteam.voluminousenergy.tools.sidemanager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,6 +22,8 @@ public class VESlotManager {
     private int output = -1;
     private int tankId = -1;
     private int recipePos = -1;
+
+    private final Set<Item> allowedItems = new HashSet<>();
 
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType) {
         this.side.set(direction);
@@ -142,5 +147,13 @@ public class VESlotManager {
 
     public int getTankId() {
         return tankId;
+    }
+
+    public Set<Item> getAllowedItems() {
+        return allowedItems;
+    }
+
+    public void addAllowedItem(Item item) {
+        this.allowedItems.add(item);
     }
 }

@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
+import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
@@ -43,8 +44,8 @@ import java.util.Random;
 
 public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
-    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
+    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT,1,0);
+    public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
     public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
@@ -53,7 +54,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         add(RFIDsm);
     }};
 
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.OUTPUT, "outputTank:output_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
@@ -71,6 +72,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     public DimensionalLaserTile(BlockPos pos, BlockState state) {
         super(VEBlocks.DIMENSIONAL_LASER_TILE.get(), pos, state, null);
         this.outputTank.setAllowAny(true);
+        this.RFIDsm.addAllowedItem(VEItems.RFID_CHIP.get());
     }
 
     public ItemStackHandler inventory = createHandler(4);
@@ -129,16 +131,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
             }
 
             // Main tick code
-
-            // Tank setup
-            ItemStack bucketTop = inventory.getStackInSlot(0);
-            ItemStack bucketBottom = inventory.getStackInSlot(1);
-
-            outputTank.setInput(bucketTop.copy());
-            outputTank.setOutput(bucketBottom.copy());
-
-            if (this.inputFluid(outputTank, 0, 1)) return;
-            if (this.outputFluid(outputTank, 0, 1)) return;
+            processFluidIO();
 
 
             ItemStack rfidStack = inventory.getStackInSlot(2);
