@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -54,9 +54,9 @@ public class TankBoolPacket {
     public static void handlePacket(TankBoolPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
 
-            if(openContainer instanceof VoluminousContainer voluminousContainer) {
+            if(openContainer instanceof VEContainer VEContainer) {
                 if (onServer) {
-                    BlockEntity tileEntity = voluminousContainer.getTileEntity();
+                    BlockEntity tileEntity = VEContainer.getTileEntity();
                     if (tileEntity instanceof VEFluidTileEntity veFluidTileEntity) {
                         veFluidTileEntity.updateTankPacketFromGui(packet.status, packet.id);
                         veFluidTileEntity.setChanged();

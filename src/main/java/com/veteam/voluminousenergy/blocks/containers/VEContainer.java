@@ -8,23 +8,26 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class VoluminousContainer extends AbstractContainerMenu {
+public abstract class VEContainer extends AbstractContainerMenu {
 
     VETileEntity tileEntity;
 
@@ -32,14 +35,57 @@ public abstract class VoluminousContainer extends AbstractContainerMenu {
     IItemHandler playerInventory;
 
     VEContainerScreen<?> screen;
+    Block block;
 
-    protected VoluminousContainer(@Nullable MenuType<?> p_i50105_1_, int p_i50105_2_) {
-        super(p_i50105_1_, p_i50105_2_);
+    ContainerLevelAccess access;
+    Level world;
+
+    protected VEContainer(@Nullable MenuType<?> menuType, int id, Level world, BlockPos pos, Inventory inventory, Player player, Block block) {
+        super(menuType, id);
+        this.tileEntity = (VETileEntity) world.getBlockEntity(pos);
+        this.playerEntity = player;
+        this.playerInventory = new InvWrapper(inventory);
+        this.block = block;
+        this.access = ContainerLevelAccess.create(this.tileEntity.getLevel(),this.tileEntity.getBlockPos());
+        this.world = world;
+        // we add slots to GUI here
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(this::addSlotsToGUI);
+
+        // layout player inventory slots here
+        layoutPlayerInventorySlots();
+
+        // We assume if it's a powered tile entity that it requires a dataslot for energy
+        if(this.tileEntity instanceof IVEPoweredTileEntity) {
+            addDataSlot(new DataSlot() {
+                @Override
+                public int get() {
+                    return getEnergy();
+                }
+
+                @Override
+                public void set(int value) {
+                }
+            });
+        }
+    }
+
+    protected abstract void addSlotsToGUI(IItemHandler h);
+
+    /**
+     * Override this if you wish to move where the inventory is displayed or disable the inventory display entirely
+     */
+    void layoutPlayerInventorySlots() {
+        // Player inventory
+        addSlotBox(playerInventory, 9, 8, 84, 9, 18, 3, 18);
+
+        // Hotbar
+        int hotBar = 84 + 58;
+        addSlotRange(playerInventory, 0, 8, hotBar, 9, 18);
     }
 
     @Override
-    public boolean stillValid(Player p_75145_1_) {
-        return false;
+    public boolean stillValid(@NotNull Player player) {
+        return stillValid(this.access,this.playerEntity, this.block);
     }
 
     public VETileEntity getTileEntity(){

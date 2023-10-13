@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -55,15 +55,15 @@ public class BoolButtonPacket {
     public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
         if(openContainer != null){
 
-            if(openContainer instanceof VoluminousContainer voluminousContainer){
+            if(openContainer instanceof VEContainer VEContainer){
                 if(onServer){
-                    BlockEntity tileEntity = voluminousContainer.getTileEntity();
+                    BlockEntity tileEntity = VEContainer.getTileEntity();
                     if (tileEntity instanceof VETileEntity VETileEntity){
                         VETileEntity.updatePacketFromGui(packet.status, packet.slotId);
                         VETileEntity.setChanged();
                     }
                 } else {
-                    voluminousContainer.updateStatusButton(packet.status, packet.slotId);
+                    VEContainer.updateStatusButton(packet.status, packet.slotId);
                 }
             }
         else {

@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -46,8 +46,8 @@ public class UuidPacket {
 
     public static void handlePacket(UuidPacket packet, AbstractContainerMenu openContainer){
         if (openContainer == null) return;
-        if (openContainer instanceof VoluminousContainer voluminousContainer) {
-            VETileEntity VETileEntity = (VETileEntity) voluminousContainer.getTileEntity();
+        if (openContainer instanceof VEContainer VEContainer) {
+            VETileEntity VETileEntity = (VETileEntity) VEContainer.getTileEntity();
             //voluminousTileEntity.uuidPacket(packet.uuid, packet.connection);
             VETileEntity.setChanged();
         }

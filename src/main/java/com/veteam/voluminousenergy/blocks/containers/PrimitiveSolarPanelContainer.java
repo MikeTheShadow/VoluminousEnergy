@@ -1,58 +1,26 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER;
 
-public class PrimitiveSolarPanelContainer extends VoluminousContainer {
+public class PrimitiveSolarPanelContainer extends VEContainer {
 
     public PrimitiveSolarPanelContainer(int windowID, Level world, BlockPos pos, Inventory playerInventory, Player player) {
-        super(PRIMITIVE_SOLAR_PANEL_CONTAINER.get(), windowID);
-        this.tileEntity =(VETileEntity) world.getBlockEntity(pos);
-        this.playerEntity = player;
-        this.playerInventory = new InvWrapper(playerInventory);
-
-        layoutPlayerInventorySlots(8, 84);
-
-        addDataSlot(new DataSlot() {
-            @Override
-            public int get() {
-                return getEnergy();
-            }
-
-            @Override
-            public void set(int value) {
-            }
-        });
+        super(PRIMITIVE_SOLAR_PANEL_CONTAINER.get(), windowID,world,pos,playerInventory,player,VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK.get());
     }
 
+    // We need an empty call here
     @Override
-    public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()), playerEntity, VEBlocks.PRIMITIVE_SOLAR_PANEL_BLOCK.get());
-    }
-
-    private void layoutPlayerInventorySlots(int leftCol, int topRow){
-        //Player inventory
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
-
-        //Hotbar
-        topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9,18);
-
-    }
+    protected void addSlotsToGUI(IItemHandler h) {}
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn, int index) {

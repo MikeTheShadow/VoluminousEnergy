@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens;
 
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
@@ -40,8 +40,8 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
 
     public VEContainerScreen(T menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
-        if (menu instanceof VoluminousContainer voluminousContainer) {
-            this.tileEntity = voluminousContainer.getTileEntity();
+        if (menu instanceof VEContainer VEContainer) {
+            this.tileEntity = VEContainer.getTileEntity();
         }
     }
 

@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers.tank;
 
-import com.veteam.voluminousenergy.blocks.containers.VoluminousContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -10,40 +9,25 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public class TankContainer extends VoluminousContainer {
+public class TankContainer extends VEContainer {
 
     //private Player playerEntity;
-    private final IItemHandler playerInventory;
     private static final int NUMBER_OF_SLOTS = 2;
 
-    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType){
-        super(menuType,id);
-        setTileEntity((VETileEntity) world.getBlockEntity(pos));
-        getTileEntity().getCapability(ForgeCapabilities.ITEM_HANDLER);
-        //this.playerEntity = player;
-        this.playerInventory = new InvWrapper(inventory);
-
-        getTileEntity().getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top slot
-            addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom slot
-        });
-        layoutPlayerInventorySlots(8, 84);
+    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType, Block block){
+        super(menuType,id,world,pos,inventory,player,block);
     }
 
-    private void layoutPlayerInventorySlots(int leftCol, int topRow) {
-        // Player inventory
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
-
-        // Hotbar
-        topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+    @Override
+    protected void addSlotsToGUI(IItemHandler h) {
+        addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top slot
+        addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom slot
     }
 
     @Nonnull
