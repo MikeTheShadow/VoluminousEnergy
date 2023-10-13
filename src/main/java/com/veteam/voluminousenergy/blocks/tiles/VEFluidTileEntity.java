@@ -312,8 +312,8 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
                 RelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
                 tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
                 tank.setOutput(inventory.getStackInSlot(manager.getOutputSlotId()));
-                if(inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId())) continue;
-                outputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
+                if(tank.getTankType() == TankType.INPUT || tank.getTankType() == TankType.BOTH) inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
+                if(tank.getTankType() == TankType.OUTPUT || tank.getTankType() == TankType.BOTH) outputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
             }
         }
     }
