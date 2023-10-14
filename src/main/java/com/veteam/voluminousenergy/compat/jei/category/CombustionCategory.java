@@ -8,6 +8,7 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
@@ -100,11 +101,11 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
         if (oxiStack.isPresent()){
 
-            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+            List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
 
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = null;
 
-            for(VEFluidRecipe veFluidRecipe : recipes) {
+            for(VERecipe veFluidRecipe : recipes) {
                 if(veFluidRecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
                     if(cor.getFluidIngredient(0).test(oxiStack.get())) {
                         oxidizerRecipe = cor;
@@ -159,8 +160,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
         fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
-        for (VEFluidRecipe oxidizerRecipe : RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
-            oxiStacks.addAll(Arrays.asList(oxidizerRecipe.getFluidIngredient(0).getFluids()));
+        for (VERecipe oxidizerRecipe : VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
+            oxiStacks.addAll(Arrays.asList(((VEFluidRecipe)oxidizerRecipe).getFluidIngredient(0).getFluids()));
         }
 
         oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);

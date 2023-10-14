@@ -6,6 +6,8 @@ import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -210,7 +212,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                 if ((slot == 0 || slot == 1) && stack.getItem() instanceof BucketItem bucketItem) {
                     if (bucketItem.getFluid().isSame(Fluids.EMPTY)) return true;
                     FluidStack fluidStack = new FluidStack(bucketItem.getFluid(), 250);
-                    return RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getFluidIngredient(0).test(fluidStack));
+                    return VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE).stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluidStack));
                 } else if (slot == 2) {
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
                             || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;

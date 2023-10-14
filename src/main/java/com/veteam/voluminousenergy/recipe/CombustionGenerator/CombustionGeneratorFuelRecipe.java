@@ -5,8 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.util.items.CombustionFuelRecipeCache;
-import com.veteam.voluminousenergy.util.items.CombustionFuelRecipeCache.CombustionRecipePair;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,8 +26,6 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public CombustionGeneratorFuelRecipe(List<VERecipeCodecs.RegistryFluidIngredient> fi,int volumetricEnergy) {
         super(new ArrayList<>(), fi, new ArrayList<>(), new ArrayList<>(), volumetricEnergy);
         this.volumetricEnergy = volumetricEnergy;
-        CombustionRecipePair pair = new CombustionRecipePair(fi.get(0),volumetricEnergy);
-        CombustionFuelRecipeCache.addPair(pair);
     }
 
     public static final RecipeSerializer<CombustionGeneratorFuelRecipe> SERIALIZER = new RecipeSerializer<>() {

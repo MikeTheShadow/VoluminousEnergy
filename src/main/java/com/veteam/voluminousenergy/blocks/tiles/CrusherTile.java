@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -54,7 +55,7 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, I
 
                 VESlotManager manager = slotManagers.get(slot);
                 if (manager.getSlotType() == SlotType.OUTPUT) return true;
-                return RecipeCache.getRecipesWithoutLevelDangerous(CrusherRecipe.RECIPE_TYPE)
+                return VERecipe.getCachedRecipes(CrusherRecipe.RECIPE_TYPE)
                         .stream().anyMatch(r -> r.getIngredient(0).test(stack));
             }
 

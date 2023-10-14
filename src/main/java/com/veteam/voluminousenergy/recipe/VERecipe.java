@@ -15,11 +15,13 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class VERecipe implements Recipe<Container> {
+
     public List<VERecipeCodecs.RegistryIngredient> registryIngredients;
+    private static HashMap<RecipeType<?>,List<VERecipe>> recipeCache = new HashMap<>();
+    private static final HashMap<RecipeType<?>,List<VERecipe>> newCache = new HashMap<>();
 
     private NonNullList<Ingredient> ingredients = null;
 
@@ -35,6 +37,16 @@ public abstract class VERecipe implements Recipe<Container> {
         this.processTime = processTime;
         this.registryIngredients = NonNullList.create();
         this.registryIngredients.addAll(ingredients);
+
+        VERecipe recipe = this;
+        if(newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
+        if(newCache.containsKey(this.getType())) {
+            newCache.get(this.getType()).add(this);
+        } else {
+            newCache.put(this.getType(), new ArrayList<>() {{
+                add(recipe);
+            }});
+        }
     }
 
     public Ingredient getIngredient(int id) {
@@ -140,5 +152,17 @@ public abstract class VERecipe implements Recipe<Container> {
 
     public void setIngredients(NonNullList<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public static List<VERecipe> getCachedRecipes(RecipeType<?> recipeType) {
+        if(!recipeCache.containsKey(recipeType)) return new ArrayList<>();
+        return recipeCache.get(recipeType);
+    }
+
+    // Call after cache has been populated
+    public static void updateCache() {
+        recipeCache.clear();
+        recipeCache.putAll(newCache);
+        newCache.clear();
     }
 }

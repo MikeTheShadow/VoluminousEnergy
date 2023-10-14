@@ -19,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.NotImplementedException;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -222,22 +221,6 @@ public class RecipeUtil {
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    public static boolean isCombustibleFuel(Fluid fluid,@Nullable Level level){
-        if(level == null) {
-            List<VEFluidRecipe> recipeList = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-            for(VEFluidRecipe recipe : recipeList) {
-                if(recipe.getFluidIngredients().stream().anyMatch(fluidIngredient -> fluidIngredient.test(fluid))) return true;
-            }
-        }
-        else {
-            List<VEFluidRecipe> recipeList = RecipeCache.getFluidRecipesFromLevelWithClass(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-            for(VEFluidRecipe recipe : recipeList) {
-                if(recipe.getFluidIngredients().stream().anyMatch(fluidIngredient -> fluidIngredient.test(fluid))) return true;
-            }
-        }
-        return false;
     }
 
     public static FluidStack pullFluidFromJSON(String id, JsonObject json) {

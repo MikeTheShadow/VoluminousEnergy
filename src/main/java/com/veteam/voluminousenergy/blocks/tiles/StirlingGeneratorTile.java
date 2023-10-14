@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.StirlingGeneratorContainer;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -147,7 +148,7 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                return RecipeCache.getRecipesWithoutLevelDangerous(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(referenceStack));
+                return VERecipe.getCachedRecipes(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(referenceStack));
             }
 
             @Nonnull

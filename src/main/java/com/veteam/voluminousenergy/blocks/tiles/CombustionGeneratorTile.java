@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -67,12 +68,12 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
         fluidManagers.get(0).getTank().setValidator(fluid -> {
-            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
+            List<VERecipe> recipes = CombustionGeneratorFuelRecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+            return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluid));
         });
         fluidManagers.get(1).getTank().setValidator(fluid -> {
-            List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
+            List<VERecipe> recipes = CombustionGeneratorOxidizerRecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+            return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluid));
         });
     }
 
@@ -194,11 +195,11 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
                     if(fluid.isSame(Fluids.EMPTY)) return true;
                     FluidStack testFluid = new FluidStack(fluid,COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
                     if(slot == 0) {
-                        List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
+                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(testFluid));
                     } else if(slot == 2) {
-                        List<VEFluidRecipe> recipes = RecipeCache.getFluidRecipesWithoutLevelDangerous(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
+                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(testFluid));
                     }
                     return true;
                 }

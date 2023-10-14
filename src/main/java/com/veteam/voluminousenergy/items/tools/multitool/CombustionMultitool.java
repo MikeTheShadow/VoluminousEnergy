@@ -2,9 +2,11 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
+import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.items.CombustionFuelRecipeCache;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,7 +25,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -106,11 +108,11 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (!itemFluid.isEmpty() && RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
+                if (!itemFluid.isEmpty() && isCombustibleFuel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
                         //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
-                        volumetricEnergy.set(CombustionFuelRecipeCache.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
+                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
                     }
                 }
             });
@@ -127,10 +129,10 @@ public class CombustionMultitool extends Multitool {
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
+                if (isCombustibleFuel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() > 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionFuelRecipeCache.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
+                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
                         stack.getOrCreateTag().putInt("damage", volumetricEnergy.get()); // does nothing
                     }
                 }
@@ -149,10 +151,10 @@ public class CombustionMultitool extends Multitool {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
                 FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
+                if (isCombustibleFuel(itemFluid.getRawFluid())){
                     if (fluid.getFluidInTank(0).getAmount() >= 50){
                         fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(CombustionFuelRecipeCache.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
+                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid())/50);
                     }
                 }
 
@@ -178,10 +180,10 @@ public class CombustionMultitool extends Multitool {
         itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack itemFluid = fluid.getFluidInTank(0).copy();
 
-            if (RecipeUtil.isCombustibleFuel(itemFluid.getRawFluid(),null)){
+            if (isCombustibleFuel(itemFluid.getRawFluid())){
                 if (fluid.getFluidInTank(0).getAmount() > 50){
                     fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    int volumetricEnergy = CombustionFuelRecipeCache.getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid());
+                    int volumetricEnergy = getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid());
                     itemFluid.getOrCreateTag().putInt("energy", volumetricEnergy);
                 }
             }
@@ -208,5 +210,22 @@ public class CombustionMultitool extends Multitool {
             }
         }
         return 0; // disables the tool
+    }
+
+
+    private static int getVolumetricEnergyFromFluid(Fluid fluid) {
+        for(VERecipe r : VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)) {
+            VEFluidRecipe recipe = (VEFluidRecipe) r;
+            if(recipe.getFluidIngredient(0).test(fluid)) return recipe.getFluidIngredientAmount(0);
+        }
+        return 0;
+    }
+
+    public static boolean isCombustibleFuel(Fluid fluid) {
+        for(VERecipe r : VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)) {
+            VEFluidRecipe recipe = (VEFluidRecipe) r;
+            if(recipe.getFluidIngredient(0).test(fluid)) return true;
+        }
+        return false;
     }
 }

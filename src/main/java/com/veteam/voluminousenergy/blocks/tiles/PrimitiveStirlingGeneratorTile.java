@@ -113,7 +113,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 ItemStack referenceStack = stack.copy();
                 referenceStack.setCount(64);
-                return RecipeCache.getRecipesWithoutLevelDangerous(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(stack));
+                return StirlingGeneratorRecipe.getCachedRecipes(StirlingGeneratorRecipe.RECIPE_TYPE).stream().anyMatch(r -> r.getIngredient(0).test(stack));
             }
 
             @Nonnull

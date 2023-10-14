@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool.isCombustibleFuel;
+
 public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
 
     // Slot Managers
@@ -189,7 +191,7 @@ public class ToolingStationTile extends VEFluidTileEntity implements IVEPoweredT
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if (slot == 0) {
                     if (stack.getItem() instanceof BucketItem bucketItem && !bucketItem.getFluid().isSame(Fluids.EMPTY)) {
-                        return (RecipeUtil.isCombustibleFuel(bucketItem.getFluid(), null));
+                        return (isCombustibleFuel(bucketItem.getFluid()));
                     }
                     return stack.getItem() instanceof BucketItem;
                 } else if (slot == 1) {
