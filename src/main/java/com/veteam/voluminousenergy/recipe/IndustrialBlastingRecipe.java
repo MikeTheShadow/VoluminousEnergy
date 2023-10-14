@@ -10,15 +10,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class IndustrialBlastingRecipe extends VERecipe {
 
@@ -55,7 +56,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     };
 
     private int minimumHeat;
-    private List<Fluid> hotEnoughFluids;
+    private static List<Fluid> hotEnoughFluids;
 
     public IndustrialBlastingRecipe() {
 
@@ -64,13 +65,6 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat) {
         super(i,oi,processTime);
         this.minimumHeat = minimumHeat;
-
-        AtomicReference<ArrayList<Fluid>> hotEnoughFluids = new AtomicReference<>(new ArrayList<>());
-        ForgeRegistries.FLUIDS.getValues().parallelStream().forEach(fluid -> {
-            if (fluid.getFluidType().getTemperature() > minimumHeat) hotEnoughFluids.get().add(fluid);
-        });
-
-        this.hotEnoughFluids = hotEnoughFluids.get();
     }
 
     @Override
@@ -97,6 +91,14 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public List<Fluid> getHotEnoughFluids() {
+        HashSet<Fluid> fluidHashSet = new HashSet<>();
+        if(hotEnoughFluids == null) {
+            for(Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
+                if(fluid.getFluidType().getTemperature() > minimumHeat)
+                    fluidHashSet.add(fluid);
+            }
+            hotEnoughFluids = fluidHashSet.stream().toList();
+        }
         return hotEnoughFluids;
     }
 
@@ -105,8 +107,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public boolean isFluidHotEnough(FluidType fluidType) {
-        if (fluidType.getTemperature() > this.minimumHeat) return true;
-        return false;
+        return fluidType.getTemperature() > this.minimumHeat;
     }
 
 
