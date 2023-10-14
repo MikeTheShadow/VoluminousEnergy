@@ -174,16 +174,6 @@ public class RecipeUtil {
         });
     }
 
-    public static int getVolumetricEnergyWithoutLevel(Fluid fluid){
-        // TODO FIX ME
-        throw new NotImplementedException("Error report this to the mod author as a bug!");
-//        AtomicInteger atomicInteger = new AtomicInteger(0);
-//        CombustionGeneratorFuelRecipe.lazyFluidsWithVolumetricEnergy.parallelStream().forEach(lazyPair -> {
-//            if (lazyPair.get().getA().contains(fluid)) atomicInteger.set(lazyPair.get().getB());
-//        });
-//        return atomicInteger.get();
-    }
-
     private static ArrayList<CrusherRecipe> cachedCrusherRecipes = new ArrayList<>();
     public static ArrayList<CrusherRecipe> getCrusherRecipes(Level level){
         if (cachedCrusherRecipes.isEmpty()){

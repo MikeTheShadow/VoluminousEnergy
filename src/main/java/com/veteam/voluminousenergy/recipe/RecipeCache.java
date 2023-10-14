@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.cache.Cache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
@@ -22,42 +23,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class RecipeCache {
+public class RecipeCache implements Cache {
 
     private static final HashMap<Level, HashMap<RecipeType<? extends Recipe<?>>, List<VERecipe>>> veRecipeCache = new HashMap<>();
     private static final HashMap<Level, HashMap<RecipeType<? extends Recipe<?>>, List<VEFluidRecipe>>> veFluidRecipeCache = new HashMap<>();
 
-    public static void buildCache(Iterable<ServerLevel> levels) {
-
-        int cached = 0;
-
-        for (Level level : levels) {
-
-            var levelCache = veRecipeCache.getOrDefault(level, new HashMap<>());
-            var fluidLevelCache = veFluidRecipeCache.getOrDefault(level, new HashMap<>());
-
-            for (RecipeHolder<?> recipe : level.getRecipeManager().getRecipes()) {
-
-                if (recipe.value() instanceof VEFluidRecipe veFluidRecipe) {
-                    var cache = fluidLevelCache.getOrDefault(veFluidRecipe.getType(), new ArrayList<>());
-                    cache.add(veFluidRecipe);
-                    fluidLevelCache.put(veFluidRecipe.getType(), cache);
-                    cached++;
-                } else if (recipe.value() instanceof VERecipe veRecipe) {
-                    var cache = levelCache.getOrDefault(veRecipe.getType(), new ArrayList<>());
-                    cache.add(veRecipe);
-                    levelCache.put(veRecipe.getType(), cache);
-                    cached++;
-                }
-            }
-            veRecipeCache.put(level, levelCache);
-            veFluidRecipeCache.put(level, fluidLevelCache);
-        }
-
-        VoluminousEnergy.LOGGER.info("Built recipe cache for " + cached + " recipes!");
-    }
-
-    public static void buildCacheClientLevel(Iterable<ClientLevel> levels) {
+    public static void buildCache(Iterable<? extends Level> levels) {
 
         int cached = 0;
 
@@ -225,7 +196,7 @@ public class RecipeCache {
     public static List<VEFluidRecipe> getFluidRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
         if(veRecipeCache.isEmpty()) {
             VoluminousEnergy.LOGGER.info("Building client recipe cache");
-            RecipeCache.buildCacheClientLevel(List.of(Minecraft.getInstance().level));
+            RecipeCache.buildCache(List.of(Minecraft.getInstance().level));
         }
         Set<VEFluidRecipe> veFluidRecipes = new HashSet<>();
 
@@ -239,7 +210,7 @@ public class RecipeCache {
     public static List<VERecipe> getRecipesWithoutLevelDangerous(RecipeType<? extends Recipe<?>> type) {
         if(veRecipeCache.isEmpty()) {
             VoluminousEnergy.LOGGER.info("Building client recipe cache");
-            RecipeCache.buildCacheClientLevel(List.of(Minecraft.getInstance().level));
+            RecipeCache.buildCache(List.of(Minecraft.getInstance().level));
         }
         Set<VERecipe> veFluidRecipes = new HashSet<>();
 
@@ -301,5 +272,11 @@ public class RecipeCache {
     }
 
     public static void printDebugData() {
+    }
+
+    @Override
+    public void invalidate() {
+        veRecipeCache.clear();
+        veFluidRecipeCache.clear();
     }
 }
