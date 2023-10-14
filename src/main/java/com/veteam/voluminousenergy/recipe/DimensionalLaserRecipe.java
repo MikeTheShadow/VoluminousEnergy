@@ -16,7 +16,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -236,17 +235,25 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public List<FluidStack> getOutputFluids() {
-        throw new IllegalStateException("Unexpected call to getOutputFluids from DimensionalLaserRecipe!");
+        if (this.fluidMinMax == null) {
+            return List.of( new FluidStack(this.regionFluid, 1000));
+//            throw new IllegalStateException("Unexpected call to getOutputFluids from DimensionalLaserRecipe!");
+        }
+
+        return List.of(new FluidStack(this.fluidMinMax.fluid(), 1000));
     }
 
 
     @Override
     public FluidStack getOutputFluid(int slot) {
+        if (this.getOutputFluids().size() > 0) {
+            return this.getOutputFluids().get(0);
+        }
         throw new IllegalStateException("Unexpected call to getOutputFluid from DimensionalLaserRecipe!");
     }
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
+        return new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get());
     }
 }

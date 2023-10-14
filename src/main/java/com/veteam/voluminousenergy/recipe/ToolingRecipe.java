@@ -76,7 +76,26 @@ public class ToolingRecipe extends VERecipe {
         @Nullable
         @Override
         public ToolingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new ToolingRecipe(), buffer);
+
+            ArrayList<Item> bitItems = new ArrayList<>();
+            ArrayList<Item> baseItems = new ArrayList<>();
+
+            int bitsToRead = buffer.readInt();
+            for (int i = 0; i < bitsToRead; i++) {
+                bitItems.add(buffer.readItem().getItem());
+            }
+
+            int basesToRead = buffer.readInt();
+            for (int i = 0; i < basesToRead; i++) {
+                baseItems.add(buffer.readItem().getItem());
+            }
+
+            ToolingRecipe toolingRecipe = new ToolingRecipe();
+
+            toolingRecipe.bits = Lazy.of(() -> bitItems);
+            toolingRecipe.bases = Lazy.of(() -> baseItems);
+
+            return helper.fromNetwork(toolingRecipe, buffer);
         }
 
         @Override
@@ -86,6 +105,27 @@ public class ToolingRecipe extends VERecipe {
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ToolingRecipe recipe) {
+
+            ArrayList<Item> bitItems = recipe.bits.get();
+            ArrayList<Item> baseItems = recipe.bases.get();
+
+            int bitLength = bitItems.size();
+            int baseLength = baseItems.size();
+
+            // Write bits to network
+            buffer.writeInt(bitLength);
+
+            for (Item bitItem : bitItems) {
+                buffer.writeItem(new ItemStack(bitItem));
+            }
+
+            // Write bases to network
+            buffer.writeInt(baseLength);
+
+            for (Item baseItem : baseItems) {
+                buffer.writeItem(new ItemStack(baseItem));
+            }
+
             helper.toNetwork(buffer, recipe);
         }
     };
