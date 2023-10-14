@@ -3,7 +3,7 @@
   "process_time": 200,
   "ingredients": [
     {
-      "item": "minecraft:beetroot_seeds",
+      "item": "minecraft:allium",
       "count": 1
     }
   ],
@@ -15,18 +15,13 @@
   ],
   "item_results": [
     {
-      "item": "minecraft:beetroot",
+      "item": "minecraft:allium",
       "count": 9
     },
     {
-      "item": "minecraft:beetroot_seeds",
-      "count": 4,
-      "chance": 0.75
-    },
-    {
-      "item": "minecraft:beetroot",
-      "count": 6,
-      "chance": 0.25
+      "item": "minecraft:allium",
+      "count": 9,
+      "chance": 0.33
     }
   ]
 }

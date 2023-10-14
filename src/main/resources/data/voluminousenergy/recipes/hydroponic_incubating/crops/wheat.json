@@ -16,7 +16,7 @@
   "item_results": [
     {
       "item": "minecraft:wheat",
-      "count": 2
+      "count": 9
     },
     {
       "item": "minecraft:wheat_seeds",
@@ -25,7 +25,7 @@
     },
     {
       "item": "minecraft:wheat",
-      "count": 3,
+      "count": 6,
       "chance": 0.25
     }
   ]

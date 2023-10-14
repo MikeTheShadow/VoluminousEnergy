@@ -16,16 +16,16 @@
   "item_results": [
     {
       "item": "minecraft:pumpkin",
-      "count": 2
+      "count": 9
     },
     {
       "item": "minecraft:pumpkin_seeds",
-      "count": 2,
+      "count": 4,
       "chance": 0.75
     },
     {
       "item": "minecraft:pumpkin",
-      "count": 3,
+      "count": 6,
       "chance": 0.25
     }
   ]

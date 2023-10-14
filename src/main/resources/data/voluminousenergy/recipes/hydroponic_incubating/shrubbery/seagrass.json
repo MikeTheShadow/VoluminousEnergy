@@ -3,7 +3,7 @@
   "process_time": 200,
   "ingredients": [
     {
-      "item": "minecraft:beetroot_seeds",
+      "item": "minecraft:seagrass",
       "count": 1
     }
   ],
@@ -15,18 +15,18 @@
   ],
   "item_results": [
     {
-      "item": "minecraft:beetroot",
+      "item": "minecraft:seagrass",
       "count": 9
     },
     {
-      "item": "minecraft:beetroot_seeds",
+      "item": "minecraft:seagrass",
       "count": 4,
-      "chance": 0.75
+      "chance": 0.66
     },
     {
-      "item": "minecraft:beetroot",
-      "count": 6,
-      "chance": 0.25
+      "item": "minecraft:sea_pickle",
+      "count": 1,
+      "chance": 0.05
     }
   ]
 }

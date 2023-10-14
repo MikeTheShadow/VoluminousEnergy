@@ -3,7 +3,7 @@
   "process_time": 200,
   "ingredients": [
     {
-      "item": "minecraft:beetroot_seeds",
+      "item": "minecraft:torchflower_seeds",
       "count": 1
     }
   ],
@@ -15,18 +15,13 @@
   ],
   "item_results": [
     {
-      "item": "minecraft:beetroot",
-      "count": 9
+      "item": "minecraft:torchflower",
+      "count": 3
     },
     {
-      "item": "minecraft:beetroot_seeds",
-      "count": 4,
-      "chance": 0.75
-    },
-    {
-      "item": "minecraft:beetroot",
-      "count": 6,
-      "chance": 0.25
+      "item": "minecraft:torchflower_seeds",
+      "count": 2,
+      "chance": 1.0
     }
   ]
 }
