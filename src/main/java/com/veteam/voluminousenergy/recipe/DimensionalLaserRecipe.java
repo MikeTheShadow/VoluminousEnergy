@@ -235,21 +235,13 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
 
     @Override
     public List<FluidStack> getOutputFluids() {
-        if (this.fluidMinMax == null) {
-            return List.of( new FluidStack(this.regionFluid, 1000));
-//            throw new IllegalStateException("Unexpected call to getOutputFluids from DimensionalLaserRecipe!");
-        }
-
-        return List.of(new FluidStack(this.fluidMinMax.fluid(), 1000));
+        return new ArrayList<>();
     }
 
 
     @Override
     public FluidStack getOutputFluid(int slot) {
-        if (this.getOutputFluids().size() > 0) {
-            return this.getOutputFluids().get(0);
-        }
-        throw new IllegalStateException("Unexpected call to getOutputFluid from DimensionalLaserRecipe!");
+        return FluidStack.EMPTY;
     }
 
     @Override
