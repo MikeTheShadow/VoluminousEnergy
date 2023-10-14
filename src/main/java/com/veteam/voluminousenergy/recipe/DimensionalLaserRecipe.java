@@ -55,8 +55,10 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
                 VE_CLIMATE_CODEC.fieldOf("climate").forGetter((getter) -> getter.climateData)
         ).apply(instance, DimensionalLaserRecipe::new));
 
+        private static final FluidSerializerHelper<DimensionalLaserRecipe> helper = new FluidSerializerHelper<>();
+
         @Override
-        public @NotNull DimensionalLaserRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+        public DimensionalLaserRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
             DimensionalLaserRecipe recipe = new DimensionalLaserRecipe();
             recipe.setMinimumAmount(buffer.readInt());
             recipe.setMaximumAmount(buffer.readInt());
@@ -73,7 +75,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
             recipe.setTemperatureMin(buffer.readFloat());
             recipe.setTemperatureMax(buffer.readFloat());
             recipe.regionFluid = buffer.readRegistryId();
-            return recipe;
+            return helper.fromNetwork(recipe,buffer);
         }
 
         @Override
@@ -98,6 +100,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
             buffer.writeFloat(recipe.getTemperatureMin());
             buffer.writeFloat(recipe.getTemperatureMax());
             buffer.writeRegistryId(ForgeRegistries.FLUIDS, recipe.getRegionFluid());
+            helper.toNetwork(buffer,recipe);
         }
     };
 
