@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.util.recipe;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -57,7 +58,7 @@ public class FluidSerializerHelper<T extends VEFluidRecipe> {
 
             irngRecipe.setRNGOutputs(randomValues);
         }
-
+        VERecipe.addRecipeToCacheClient(recipe);
         return recipe;
     }
 

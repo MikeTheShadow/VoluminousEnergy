@@ -20,7 +20,7 @@ import java.util.*;
 public abstract class VERecipe implements Recipe<Container> {
 
     public List<VERecipeCodecs.RegistryIngredient> registryIngredients;
-    private static HashMap<RecipeType<?>,List<VERecipe>> recipeCache = new HashMap<>();
+    private static final HashMap<RecipeType<?>,List<VERecipe>> recipeCache = new HashMap<>();
     private static final HashMap<RecipeType<?>,List<VERecipe>> newCache = new HashMap<>();
 
     private NonNullList<Ingredient> ingredients = null;
@@ -29,7 +29,6 @@ public abstract class VERecipe implements Recipe<Container> {
     public List<ItemStack> results = new ArrayList<>();
 
     public VERecipe() {
-
     }
 
     public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
@@ -164,5 +163,16 @@ public abstract class VERecipe implements Recipe<Container> {
         recipeCache.clear();
         recipeCache.putAll(newCache);
         newCache.clear();
+    }
+
+    public static void addRecipeToCacheClient(VERecipe recipe) {
+        if(newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
+        if(newCache.containsKey(recipe.getType())) {
+            newCache.get(recipe.getType()).add(recipe);
+        } else {
+            newCache.put(recipe.getType(), new ArrayList<>() {{
+                add(recipe);
+            }});
+        }
     }
 }
