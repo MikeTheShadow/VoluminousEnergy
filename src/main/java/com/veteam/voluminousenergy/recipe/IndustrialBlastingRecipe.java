@@ -107,7 +107,7 @@ public class IndustrialBlastingRecipe extends VEFluidRecipe {
     @Override
     public List<FluidIngredient> getFluidIngredients() {
         List<FluidStack> fluidStacks = new ArrayList<>();
-        for(Fluid fluid : hotEnoughFluids) {
+        for(Fluid fluid : getHotEnoughFluids()) {
             if(fluid.getFluidType().getTemperature() > minimumHeat) {
                 fluidStacks.add(new FluidStack(fluid,Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
             }
