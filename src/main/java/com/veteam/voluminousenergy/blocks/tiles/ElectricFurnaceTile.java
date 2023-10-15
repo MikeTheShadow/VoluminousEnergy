@@ -97,7 +97,7 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
                     //LOGGER.debug("About to insert in pt2: " + furnaceOutput);
                     inventory.insertItem(1, furnaceOutput.copy(), false); // Place the new output item on top of the old one
                 }
-
+                markRecipeDirty();
                 consumeEnergy();
                 counter--;
                 this.setChanged();
@@ -130,7 +130,9 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
 
         if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        else furnaceRecipe = null;
         if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
+        else blastingRecipe = null;
     }
 
     private ItemStackHandler createHandler() {

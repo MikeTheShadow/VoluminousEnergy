@@ -31,6 +31,7 @@ import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -114,12 +115,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                             furnaceOutput.setCount(1);
                         }
                         inventory.insertItem(3, newOutputStack.copy(), false);
-
                     } else {
                         furnaceOutput.setCount(Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).getResultItem(level.registryAccess()).getCount());
                         inventory.insertItem(3, furnaceOutput.copy(), false);
                     }
-
+                    markRecipeDirty();
                     counter--;
                     this.setChanged();
                 } else if (counter > 0) {
@@ -146,7 +146,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
                             if (upgradeStack.getTag() != null && !upgradeStack.getTag().isEmpty()) {
                                 float multiplier = upgradeStack.getTag().getFloat("multiplier");
                                 multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
-                                fuelCounter = (int) ((float) (fuelCounter * multiplier));
+                                fuelCounter = (int) (fuelCounter * multiplier);
                             }
                         }
                         fuelLength = fuelCounter;
@@ -169,9 +169,10 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
         ItemStack furnaceInput = slotManagers.get(2).getItem(this.inventory);
         var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
-
         if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        else furnaceRecipe = null;
         if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
+        else blastingRecipe = null;
         fuelRecipe = (CombustionGeneratorFuelRecipe)
                 RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());
     }
@@ -210,9 +211,11 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 if ((slot == 0 || slot == 1) && stack.getItem() instanceof BucketItem bucketItem) {
-                    if (bucketItem.getFluid().isSame(Fluids.EMPTY)) return true;
-                    FluidStack fluidStack = new FluidStack(bucketItem.getFluid(), 250);
-                    return VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE).stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluidStack));
+                    Fluid fluid = bucketItem.getFluid();
+                    if (fluid.isSame(Fluids.EMPTY)) return true;
+                    FluidStack fluidStack = new FluidStack(bucketItem.getFluid(), 1000);
+                    return VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)
+                            .stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluidStack));
                 } else if (slot == 2) {
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
                             || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;
@@ -234,7 +237,6 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) { //ALSO DO THIS PER SLOT BASIS TO SAVE DEBUG HOURS!!!
-
                 if (!isItemValid(slot, stack)) return stack;
                 return super.insertItem(slot, stack, simulate);
             }

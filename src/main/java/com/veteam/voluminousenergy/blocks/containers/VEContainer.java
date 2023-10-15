@@ -189,7 +189,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity instanceof IVEPoweredTileEntity ? 1 : 0);
 
         // TODO why is this a dangling if?
-        if(this.tileEntity instanceof IVEPoweredTileEntity)
+        if(this.tileEntity instanceof IVEPoweredTileEntity){}
 
         if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
