@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.util;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.item.crafting.Recipe;
@@ -68,7 +69,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for(RelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
-                if(!tank.getSideStatus() && tank.getTankType() != TankType.TANK) return 0;
+                if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) return 0;
                 if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
@@ -83,7 +84,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             return FluidStack.EMPTY;
         }
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny() && !tank.getSideStatus()) continue;
+            if(!tank.getSideStatus() && !tank.isIgnoreDirection()) continue;
+            if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
+            }
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
                 if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
@@ -96,7 +100,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         for(RelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.INPUT && !Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get() && !tank.isAllowAny() && !tank.getSideStatus()) continue;
+            if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) continue;
+            if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
+            }
             if (tank.getTank().getFluidAmount() > 0) {
                 if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(maxDrain, action);

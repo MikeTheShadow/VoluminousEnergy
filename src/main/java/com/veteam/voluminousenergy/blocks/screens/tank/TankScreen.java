@@ -6,7 +6,6 @@ import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.tools.VERender;
-import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.buttons.tanks.TankBoolButton;
@@ -47,37 +46,8 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     @Override
     protected void init(){
         super.init();
-        // Buttons
-        addRenderableWidget(new ioMenuButton(64 + (this.width/2), this.topPos + 4, buttons ->{
 
-        }));
-
-        // Input Bucket Slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketTopSlotManager, (this.width/2)-198, this.topPos, button->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketTopSlotManager, (this.width/2)-184, this.topPos, button ->{
-            // Do nothing
-        }));
-
-        // Output Bucket Slot
-        addRenderableWidget(new SlotBoolButton(tileEntity.bucketBottomSlotManager, (this.width/2)-198, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new SlotDirectionButton(tileEntity.bucketBottomSlotManager, (this.width/2)-184, this.topPos+20, button ->{
-            // Do nothing
-        }));
-
-        // Output Tank
-        addRenderableWidget(new TankBoolButton(tileEntity.getTank(), (this.width/2)-198, this.topPos+40, button ->{
-            // Do nothing
-        }));
-
-        addRenderableWidget(new TankDirectionButton(tileEntity.getTank(), (this.width/2)-184, this.topPos+40, button ->{
-            // Do nothing
-        }));
+        renderIOMenu(tileEntity,64 + (this.width/2), this.topPos + 4);
     }
 
     @Override

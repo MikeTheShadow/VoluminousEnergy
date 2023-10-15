@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
+import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.RelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
@@ -42,11 +43,10 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
-    // Capability is unique. Can't add new impl to this
-    public VESlotManager[] slotManagers = new VESlotManager[]{
-            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),
-            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
-    };
+    public List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0));
+        add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
+    }};
 
     private final int tankCapacity = 4000;
 
@@ -63,24 +63,14 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     public PumpTile(BlockPos pos, BlockState state) {
         super(VEBlocks.PUMP_TILE.get(), pos, state,null);
         fluidTank.setAllowAny(true);
+        fluidTank.setIgnoreDirection(true);
     }
 
     @Override
     public void tick(){
         updateClients();
+        processFluidIO();
         handler.ifPresent(h -> {
-            ItemStack slotStack = h.getStackInSlot(0).copy();
-
-            // Check item in the slot to see if it's a bucket. If it is--and there is fluid for it--fill it.
-            if (slotStack.copy() != ItemStack.EMPTY) { // TODO: Consider 2 slot system like the Combustion Generator/Distillation Unit
-                if (slotStack.getItem() == Items.BUCKET && fluidTank.getTank().getFluidAmount() >= 1000 && slotStack.getCount() == 1) {
-                    ItemStack bucketStack = new ItemStack(fluidTank.getTank().getFluid().getRawFluid().getBucket(), 1);
-                    fluidTank.getTank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                    h.extractItem(0, 1, false);
-                    h.insertItem(0, bucketStack, false);
-                }
-            }
-
             if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
                 for(int i = 0; i < 50; i++) {
                     if(fluidPumpMethod()) break;
@@ -105,16 +95,12 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
 
     @Override
     public void load(CompoundTag tag) {
-        /*
-            We super first because we need to load those fluids before we get the fluid here
-         */
-        super.load(tag);
-        pumpingFluid = fluidTank.getTank().getFluid().getRawFluid();
-
         lX = tag.getInt("lx");
         lY = tag.getInt("ly");
         lZ = tag.getInt("lz");
         initDone = tag.getBoolean("init_done");
+        super.load(tag);
+        pumpingFluid = fluidTank.getTank().getFluid().getRawFluid();
     }
 
     @Override
@@ -124,6 +110,23 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
         tag.putInt("lz", lZ);
         tag.putBoolean("init_done", initDone);
         super.saveAdditional(tag);
+    }
+
+    public void updatePacketFromGui(int direction, int slotId) {
+        for (VESlotManager slot : getSlotManagers()) {
+            if (slotId == slot.getSlotNum()) {
+                slot.setDirection(direction);
+                return;
+            }
+        }
+    }
+
+    public void updateTankPacketFromGui(int direction, int id) {
+        for (RelationalTank tank : getRelationalTanks()) {
+            if (id == tank.getSlotNum()) {
+                tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
+            }
+        }
     }
 
     private @Nonnull IFluidHandler createFluid() {
@@ -229,7 +232,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
-        return List.of(slotManagers);
+        return slotManagers;
     }
 
     public FluidStack getAirTankFluid(){

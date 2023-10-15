@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -109,29 +108,27 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
     }
 
     //use for inputting a fluid
-    public boolean inputFluid(RelationalTank tank, int slot1, int slot2) {
-        ItemStack input = tank.getInput();
-        ItemStack output = tank.getOutput();
+    public void inputFluid(RelationalTank tank, int slot1, int slot2) {
+        ItemStack input = tank.getInput().copy();
+        ItemStack output = tank.getOutput().copy();
         FluidTank inputTank = tank.getTank();
         ItemStackHandler handler = getInventoryHandler();
-        if (input.copy().getItem() instanceof BucketItem && input.copy().getItem() != Items.BUCKET) {
-            if ((output.copy().getItem() == Items.BUCKET && output.copy().getCount() < 16) || checkOutputSlotForEmptyOrBucket(output.copy())) {
-                Fluid fluid = ((BucketItem) input.copy().getItem()).getFluid();
+        if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
+            if ((output.getItem() == Items.BUCKET && output.getCount() < 16) || checkOutputSlotForEmptyOrBucket(output)) {
+                Fluid fluid = ((BucketItem) input.getItem()).getFluid();
                 if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
                     inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
                     this.markRecipeDirty();
-                    return true;
                 }
             }
         }
-        return false;
     }
 
 
     //use for when the input and output slot are different
-    public boolean outputFluid(RelationalTank tank, int slot1, int slot2) {
+    public void outputFluid(RelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
@@ -142,9 +139,7 @@ public abstract class VEFluidTileEntity extends VETileEntity implements IFluidTi
             handler.extractItem(slot1, 1, false);
             handler.insertItem(slot2, bucketStack, false);
             this.markRecipeDirty();
-            return true;
         }
-        return false;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles.tank;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
@@ -32,13 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankTile extends VEFluidTileEntity {
-    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.TANK, "tank:tank_gui");
-    public VESlotManager bucketTopSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0);
-    public VESlotManager bucketBottomSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
+    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.BOTH, "tank:tank_gui");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(bucketBottomSlotManager);
-        add(bucketTopSlotManager);
+        add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
+        add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
     }};
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
@@ -117,8 +114,7 @@ public class TankTile extends VEFluidTileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) { //IS ITEM VALID PLEASE DO THIS PER SLOT TO SAVE DEBUG HOURS!!!!
-                if (stack.getItem() instanceof BucketItem) return true;
-                return stack.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent();
+                return (stack.getItem() instanceof BucketItem);
             }
 
             @Nonnull

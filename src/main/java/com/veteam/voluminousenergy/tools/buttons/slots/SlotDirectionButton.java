@@ -68,7 +68,7 @@ public class SlotDirectionButton extends VEIOButton {
     public void onPress(){
         if(!render) return;
         cycle();
-        this.slotManager.setDirection(direction);
+//        this.slotManager.setDirection(direction);
         VENetwork.channel.send(new DirectionButtonPacket(this.getDirection().get3DDataValue(),this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
     }
 

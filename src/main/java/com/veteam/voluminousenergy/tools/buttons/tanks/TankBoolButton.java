@@ -47,7 +47,6 @@ public class TankBoolButton extends VEIOButton {
     public void onPress(){
         if(!render) return;
         cycle();
-        this.tank.setSideStatus(enable);
         VENetwork.channel.send(new TankBoolPacket(this.status(), this.getId()), PacketDistributor.SERVER.noArg());
     }
 

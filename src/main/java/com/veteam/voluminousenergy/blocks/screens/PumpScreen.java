@@ -6,6 +6,10 @@ import com.veteam.voluminousenergy.blocks.containers.PumpContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PumpTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
+import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
+import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
+import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -36,7 +40,19 @@ public class PumpScreen extends VEContainerScreen<PumpContainer> {
     protected void init(){
         super.init();
         // Buttons
-        renderIOMenu(tileEntity, 64 + (this.width/2), this.topPos + 4);
+        addRenderableWidget(new ioMenuButton(64 + (this.width/2),this.topPos + 4 , buttons -> {
+
+        }));
+        int increase = 0;
+
+        for (VESlotManager manager : tileEntity.getSlotManagers()) {
+            addRenderableWidget(new SlotBoolButton(manager, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
+            }));
+
+            addRenderableWidget(new SlotDirectionButton(manager, (this.width / 2) - 184, this.topPos + (20 * increase), button -> {
+            }));
+            increase++;
+        }
 
     }
 

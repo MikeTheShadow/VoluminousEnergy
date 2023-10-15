@@ -236,7 +236,6 @@ public class RelationalTank {
                 case INPUT -> "tank.voluminousenergy.input_tank";
                 case OUTPUT -> "tank.voluminousenergy.output_tank";
                 case BOTH -> "tank.voluminousenergy.both_tank";
-                case TANK -> "tank.voluminousenergy.tank_tank";
                 default ->
                         throw new NotImplementedException("Warning! Tank type " + tankType + " does not have a valid key!");
             };

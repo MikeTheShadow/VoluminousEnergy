@@ -36,7 +36,7 @@ public class SolarPanelScreen extends VEContainerScreen<SolarPanelContainer> {
     protected void renderTooltip(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
             tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, /*temp modified*/Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, /*temp modified*/Config.SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
             }));
         }
         super.renderTooltip(matrixStack,mouseX, mouseY);

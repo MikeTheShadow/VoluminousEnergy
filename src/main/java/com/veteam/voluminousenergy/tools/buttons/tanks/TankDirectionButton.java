@@ -80,7 +80,6 @@ public class TankDirectionButton extends VEIOButton {
     public void onPress(){
         if(!render) return;
         cycle();
-        this.tank.setSideDirection(direction);
         VENetwork.channel.send(new TankDirectionPacket(this.getDirection().get3DDataValue(),this.getId()), PacketDistributor.SERVER.noArg());
     }
 

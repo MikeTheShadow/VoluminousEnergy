@@ -20,24 +20,24 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+    List<VESlotManager> slotManagers = new ArrayList<>() {{
+        add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
+                add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
+                add(new VESlotManager(2, Direction.EAST, true, SlotType.FLUID_INPUT, 3, 1));
+                add(new VESlotManager(3, Direction.WEST, true, SlotType.FLUID_OUTPUT));
+                add(new VESlotManager(4, Direction.NORTH, true, SlotType.FLUID_INPUT, 5, 2));
+                add(new VESlotManager(5, Direction.SOUTH, true, SlotType.FLUID_OUTPUT));
+    }};
 
-    VESlotManager[] slotManagers = new VESlotManager[] {
-            new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0),
-            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(2, Direction.EAST, true, SlotType.FLUID_INPUT, 3, 1),
-            new VESlotManager(3, Direction.WEST, true, SlotType.FLUID_OUTPUT),
-            new VESlotManager(4, Direction.NORTH, true, SlotType.FLUID_INPUT, 5, 2),
-            new VESlotManager(5, Direction.SOUTH, true, SlotType.FLUID_OUTPUT)
-    };
-
-    RelationalTank[] fluidManagers = new RelationalTank[] {
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, TankType.INPUT, "inputTank0:input_tank_0_gui"),
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 1, TankType.INPUT, "inputTank1:input_tank_1_gui"),
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 2, 0, TankType.OUTPUT, "outputTank0:output_tank_0_gui")
-    };
+    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, TankType.INPUT, "inputTank0:input_tank_0_gui"));
+                add(new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 1, TankType.INPUT, "inputTank1:input_tank_1_gui"));
+                add(new RelationalTank(new FluidTank(TANK_CAPACITY), 2, 0, TankType.OUTPUT, "outputTank0:output_tank_0_gui"));
+    }};
 
     public FluidMixerTile(BlockPos pos, BlockState state) {
         super(VEBlocks.FLUID_MIXER_TILE.get(), pos, state, FluidMixerRecipe.RECIPE_TYPE);
@@ -58,7 +58,7 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
     @Nonnull
     @Override
     public List<VESlotManager> getSlotManagers() {
-        return List.of(slotManagers);
+        return slotManagers;
     }
 
     @Nullable
@@ -69,7 +69,7 @@ public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileE
 
     @Override
     public @NotNull List<RelationalTank> getRelationalTanks() {
-        return List.of(fluidManagers);
+        return fluidManagers;
     }
 
     @Override

@@ -60,7 +60,6 @@
     "tank.voluminousenergy.input_tank": "Tank",
     "tank.voluminousenergy.output_tank": "Tank",
     "tank.voluminousenergy.both_tank" : "Tank",
-    "tank.voluminousenergy.tank_tank" : "Tank",
     "tank.voluminousenergy.invalid": "INVALID",
     "tank.voluminousenergy.null": "NULL",
 
