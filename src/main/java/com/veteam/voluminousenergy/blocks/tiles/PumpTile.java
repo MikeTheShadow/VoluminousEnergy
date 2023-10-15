@@ -18,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -44,7 +43,10 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     // Capability is unique. Can't add new impl to this
-    public VESlotManager slotManager = new VESlotManager(0,Direction.UP,true, SlotType.INPUT);
+    public VESlotManager[] slotManagers = new VESlotManager[]{
+            new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),
+            new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT)
+    };
 
     private final int tankCapacity = 4000;
 
@@ -179,7 +181,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(1) {
+        return new ItemStackHandler(2) {
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -227,7 +229,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
-        return new ArrayList<>();
+        return List.of(slotManagers);
     }
 
     public FluidStack getAirTankFluid(){

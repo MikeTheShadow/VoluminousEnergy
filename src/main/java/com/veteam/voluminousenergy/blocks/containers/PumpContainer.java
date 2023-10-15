@@ -17,7 +17,7 @@ import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.PUMP_CONTAINER;
 
 public class PumpContainer extends VEContainer {
 
-    private static final int NUMBER_OF_SLOTS = 1;
+    private static final int NUMBER_OF_SLOTS = 2;
 
     public PumpContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player){
         super(PUMP_CONTAINER.get(),id,world,pos,inventory,player,VEBlocks.PUMP_BLOCK.get());
@@ -25,7 +25,8 @@ public class PumpContainer extends VEContainer {
 
     @Override
     protected void addSlotsToGUI(IItemHandler h) {
-        addSlot(new VEBucketSlot(h, 0, 70, 49)); // Extract slot
+        addSlot(new VEBucketSlot(h, 0, 70, 18)); // Pump bucket input slot
+        addSlot(new VEBucketSlot(h, 1, 70, 49)); // Pump bucket output slot
     }
 
     @Nonnull
