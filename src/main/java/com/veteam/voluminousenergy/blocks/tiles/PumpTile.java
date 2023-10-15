@@ -54,7 +54,7 @@ public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity 
     private int lY = 0;
     private int lZ = 0;
 
-    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, null, null, TankType.OUTPUT,"tank:tank_gui");
+    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, TankType.OUTPUT,"tank:tank_gui");
     private Fluid pumpingFluid = Fluids.EMPTY;
     private final ItemStackHandler inventory = this.createHandler();
 
