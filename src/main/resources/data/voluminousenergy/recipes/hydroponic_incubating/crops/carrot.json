@@ -16,12 +16,12 @@
   "item_results": [
     {
       "item": "minecraft:carrot",
-      "count": 2
+      "count": 9
     },
     {
       "item": "minecraft:carrot",
-      "count": 3,
-      "chance": 0.75
+      "count": 9,
+      "chance": 0.25
     }
   ]
 }

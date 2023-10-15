@@ -19,9 +19,14 @@
       "count": 9
     },
     {
+      "item": "minecraft:bamboo",
+      "count": 6,
+      "chance": 0.66
+    },
+    {
       "item": "minecraft:stick",
-      "count": 1,
-      "chance": 0.25
+      "count": 4,
+      "chance": 0.20
     }
   ]
 }

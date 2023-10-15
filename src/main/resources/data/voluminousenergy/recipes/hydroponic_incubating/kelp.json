@@ -17,6 +17,11 @@
     {
       "item": "minecraft:kelp",
       "count": 9
+    },
+    {
+      "item": "minecraft:kelp",
+      "count": 9,
+      "chance": 0.33
     }
   ]
 }

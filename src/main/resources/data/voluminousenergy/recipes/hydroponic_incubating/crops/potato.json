@@ -16,12 +16,12 @@
   "item_results": [
     {
       "item": "minecraft:potato",
-      "count": 3
+      "count": 9
     },
     {
       "item": "minecraft:potato",
-      "count": 2,
-      "chance": 0.75
+      "count": 9,
+      "chance": 0.25
     }
   ]
 }
