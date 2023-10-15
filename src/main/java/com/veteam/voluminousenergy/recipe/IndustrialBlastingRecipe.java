@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -99,6 +102,18 @@ public class IndustrialBlastingRecipe extends VEFluidRecipe {
             hotEnoughFluids = fluidHashSet.stream().toList();
         }
         return hotEnoughFluids;
+    }
+
+    @Override
+    public List<FluidIngredient> getFluidIngredients() {
+        List<FluidStack> fluidStacks = new ArrayList<>();
+        for(Fluid fluid : hotEnoughFluids) {
+            if(fluid.getFluidType().getTemperature() > minimumHeat) {
+                fluidStacks.add(new FluidStack(fluid,Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
+            }
+        }
+        FluidIngredient fluidIngredient = FluidIngredient.of(fluidStacks.stream());
+        return List.of(fluidIngredient);
     }
 
     public boolean isFluidHotEnough(Fluid fluid) {

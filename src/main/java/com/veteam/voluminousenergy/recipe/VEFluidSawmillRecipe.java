@@ -50,6 +50,8 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
         @Nullable
         @Override
         public VEFluidSawmillRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+            VEFluidSawmillRecipe recipe = new VEFluidSawmillRecipe();
+            recipe.isLogRecipe = buffer.readBoolean();
             return helper.fromNetwork(new VEFluidSawmillRecipe(), buffer);
         }
 
@@ -60,6 +62,7 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull VEFluidSawmillRecipe recipe) {
+            buffer.writeBoolean(recipe.isLogRecipe);
             helper.toNetwork(buffer, recipe);
         }
     };
