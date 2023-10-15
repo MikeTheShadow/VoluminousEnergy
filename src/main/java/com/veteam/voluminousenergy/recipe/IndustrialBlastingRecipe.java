@@ -10,18 +10,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class IndustrialBlastingRecipe extends VERecipe {
+public class IndustrialBlastingRecipe extends VEFluidRecipe {
 
     public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
     private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -63,7 +62,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat) {
-        super(i,oi,processTime);
+        super(i,List.of(),List.of(),oi,processTime);
         this.minimumHeat = minimumHeat;
     }
 
@@ -109,6 +108,5 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public boolean isFluidHotEnough(FluidType fluidType) {
         return fluidType.getTemperature() > this.minimumHeat;
     }
-
 
 }
