@@ -34,11 +34,6 @@ public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity
         super(VEBlocks.COMPRESSOR_TILE.get(), pos, state, null);
     }
 
-    @Deprecated
-    public CompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(VEBlocks.COMPRESSOR_TILE.get(), pos, state, null);
-    }
-
     private final ItemStackHandler inventory = createHandler(3);
 
     @Nullable

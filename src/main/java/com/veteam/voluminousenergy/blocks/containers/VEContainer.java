@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RegistryLookups;
@@ -216,10 +217,16 @@ public abstract class VEContainer extends AbstractContainerMenu {
     public ItemStack handleItemMove(final int index, final int containerSlots, ItemStack slotStack, int slotId){
         if(index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
             this.tileEntity.markRecipeDirty();
+            if(this.tileEntity instanceof VEFluidTileEntity fluidTileEntity) {
+                fluidTileEntity.markFluidInputDirty();
+            }
             return ItemStack.EMPTY;
         }
         else if(!moveItemStackTo(slotStack,this.slots.size(),slotId)) {
             this.tileEntity.markRecipeDirty();
+            if(this.tileEntity instanceof VEFluidTileEntity fluidTileEntity) {
+                fluidTileEntity.markFluidInputDirty();
+            }
             return ItemStack.EMPTY;
         }
         return null;

@@ -3,22 +3,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
-import com.veteam.voluminousenergy.util.TagUtil;
-import com.veteam.voluminousenergy.util.randoms.JavaRandomSource;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
@@ -40,65 +30,6 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, I
 
     public CrusherTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CRUSHER_TILE.get(), pos, state, CrusherRecipe.RECIPE_TYPE);
-    }
-
-    @Override
-    public ItemStackHandler createHandler(int slots) {
-        CrusherTile tileEntity = this;
-        return new ItemStackHandler(4) {
-
-
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == tileEntity.getUpgradeSlotId()) return TagUtil.isTaggedMachineUpgradeItem(stack);
-
-                VESlotManager manager = slotManagers.get(slot);
-                if (manager.getSlotType() == SlotType.OUTPUT) return true;
-                return VERecipe.getCachedRecipes(CrusherRecipe.RECIPE_TYPE)
-                        .stream().anyMatch(r -> r.getIngredient(0).test(stack));
-            }
-
-            @Override
-            @Nonnull
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-
-                if (level != null && slot > 0 && !simulate) {
-                    JavaRandomSource rand = new JavaRandomSource(new Random().nextLong());
-
-                    Optional<CrusherRecipe> crusherRecipe = RecipeUtil
-                            .getCrusherRecipeFromAnyOutputAndTryInput(
-                                    inventory.getStackInSlot(slot).copy().getItem(),
-                                    inventory.getStackInSlot(0).getItem(), level);
-
-                    if (crusherRecipe.isPresent()) {
-                        if (!(crusherRecipe.get().minExp == 0)) {
-                            level.addFreshEntity(new ExperienceOrb(
-                                    level,
-                                    worldPosition.getX(),
-                                    worldPosition.getY(),
-                                    worldPosition.getZ(),
-                                    amount * Mth.nextInt(
-                                            rand,
-                                            crusherRecipe.get().minExp,
-                                            crusherRecipe.get().maxExp
-                                    )
-                            ));
-
-                        }
-                    }
-                }
-
-                return super.extractItem(slot, amount, simulate);
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                super.onContentsChanged(slot);
-                CrusherTile.this.setChanged();
-                tileEntity.markRecipeDirty();
-            }
-        };
     }
 
     public ItemStackHandler inventory = createHandler(4);

@@ -3,8 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.DistillationUnitContainer;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -15,11 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -52,20 +46,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
 
     public DistillationUnitTile(BlockPos pos, BlockState state) {
         super(VEBlocks.DISTILLATION_UNIT_TILE.get(), pos, state, DistillationRecipe.RECIPE_TYPE);
-    }
-
-    @Override
-    public void tick() {
-        updateClients();
-        tick++;
-        if (tick == 20) {
-            tick = 0;
-            validity = isMultiBlockValid(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.get());
-        }
-        if (!(validity)) {
-            return;
-        }
-        super.tick();
     }
 
     @NotNull

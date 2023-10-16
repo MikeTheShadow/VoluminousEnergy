@@ -40,8 +40,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
             new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.INPUT, "heatTank:heat_tank_gui")
     };
 
-    private byte tick = 19;
-
     public ItemStackHandler inventory = createHandler(6);
 
     @Override
@@ -57,21 +55,6 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     public BlastFurnaceTile(BlockPos pos, BlockState state) {
         super(VEBlocks.BLAST_FURNACE_TILE.get(), pos, state, IndustrialBlastingRecipe.RECIPE_TYPE);
         fluidManagers[0].setAllowAny(true);
-    }
-
-    @Override
-    public void tick() {
-        updateClients();
-        tick++;
-        if (tick == 20) {
-            tick = 0;
-            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get());
-        }
-        if (!(validity)) {
-            return;
-        }
-
-        super.tick();
     }
 
     @Nullable

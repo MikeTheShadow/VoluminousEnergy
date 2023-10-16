@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.crafting.Recipe;
@@ -43,6 +44,21 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
             }
         }
         return true;
+    }
+
+    private byte tick = 19;
+
+    @Override
+    public void tick() {
+        tick++;
+        if (tick == 20) {
+            tick = 0;
+            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get());
+        }
+        if (!(validity)) {
+            return;
+        }
+        super.tick();
     }
 
     @Override
