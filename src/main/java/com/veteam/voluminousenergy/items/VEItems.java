@@ -28,8 +28,9 @@ import com.veteam.voluminousenergy.items.tank_frames.StandardTankFrame;
 import com.veteam.voluminousenergy.items.tools.CreativeFluidScanner;
 import com.veteam.voluminousenergy.items.tools.FluidScanner;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
-import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
-import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
+import com.veteam.voluminousenergy.items.upgrades.machine.MysteriousMultiplier;
+import com.veteam.voluminousenergy.items.upgrades.machine.QuartzMultiplier;
+import com.veteam.voluminousenergy.items.upgrades.multitool.RangeExtenderUpgrade;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -122,9 +123,12 @@ public class VEItems {
     public static RegistryObject<Item> GOLD_MICROCHIP = VE_ITEM_REGISTRY.register("gold_microchip",GoldMicrochip::new);
     public static RegistryObject<Item> SILVER_MICROCHIP = VE_ITEM_REGISTRY.register("silver_microchip",SilverMicrochip::new);
 
-    //Upgrades
+    //Machine Upgrades
     public static RegistryObject<Item> QUARTZ_MULTIPLIER = VE_ITEM_REGISTRY.register("quartz_multiplier",QuartzMultiplier::new);
     public static RegistryObject<Item> MYSTERIOUS_MULTIPLIER = VE_ITEM_REGISTRY.register("mysterious_multiplier",MysteriousMultiplier::new);
+
+    //Multitool Upgrades
+    public static RegistryObject<Item> RANGE_EXTENDER_UPGRADE = VE_ITEM_REGISTRY.register("range_extender_upgrade", RangeExtenderUpgrade::new);
 
     //Batteries
     public static RegistryObject<Item> MERCURY_BATTERY = VE_ITEM_REGISTRY.register("mercury_battery",MercuryBattery::new);

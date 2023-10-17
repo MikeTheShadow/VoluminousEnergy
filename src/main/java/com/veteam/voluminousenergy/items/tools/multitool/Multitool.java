@@ -6,9 +6,11 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.TrimmerBit;
 import com.veteam.voluminousenergy.util.TagUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +75,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
         System.out.println("OnBlockStartBreak");
-        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer)) {
+        if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer) || player.isCrouching()) {
             System.out.println("Client side or player is not server player");
             return super.onBlockStartBreak(itemstack, pos, player);
         } else {
@@ -97,51 +100,123 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
         // Tree Felling -- CHAIN BIT
         if (this.canPerformAction(new ItemStack(this), ToolActions.AXE_DIG)) {
+            treeFelling(pos, player, level, miningBlock);
+        }
 
-            ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
-            if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
+        if (/*true && */level.getBlockState(pos).canHarvestBlock(level, pos, player)) { // TODO: AOE Upgrade item check // This is only checking the validity of the current block to mine, not subsequent blocks
+            Direction cameraDirection = ((ServerPlayer) player).getCamera().getDirection();
+            Vec3 angle = ((ServerPlayer) player).getCamera().getLookAngle();
 
-                BlockPos offsetPos = pos;
+            if (angle.y < -0.8 || angle.y > 0.8) { // Y
 
-                System.out.println("Should be activating Tree Felling");
-                for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
-                    offsetPos = offsetPos.above();
-                    BlockState potentialStateToFell = level.getBlockState(offsetPos);
+                for (int x = -1; x < 2; x++) {
+                    for (int z = -1; z < 2; z++) {
+                        BlockPos offsetPos = pos.offset(x, 0, z);
 
-                    if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
+                        mineIfHarvestable(player, level, offsetPos);
+                    }
+                }
 
-                        if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
-                            System.out.println("Calling player destroy");
-                            potentialStateToFell.getBlock()
-                                    .playerDestroy(
-                                            level,
-                                            player,
-                                            offsetPos,
-                                            potentialStateToFell,
-                                            null,
-                                            player.getMainHandItem()
-                                    );
-                            level.destroyBlock(offsetPos, true, player);
-                        } else {
-                            System.out.println("Cannot harvest block!");
-                        }
+            } else if (cameraDirection == Direction.EAST || cameraDirection == Direction.WEST) { // Z
 
+                for (int z = -1; z < 2; z++) {
+                    for (int y = 1; y > -2; y--) { // Init top left
+                        BlockPos offsetPos = pos.offset(0,y,z);
+
+                        mineIfHarvestable(player, level, offsetPos);
+                    }
+                }
+
+            } else if (cameraDirection == Direction.NORTH || cameraDirection == Direction.SOUTH) { // X
+
+                for (int x = -1; x < 2; x++) {
+                    for (int y = 1; y > -2; y--) { // Init top left
+                        BlockPos offsetPos = pos.offset(x,y,0);
+
+                        mineIfHarvestable(player, level, offsetPos);
+                    }
+                }
+            }
+        }
+
+//        // Drill bit AoE
+//        for (var action : ToolActions.DEFAULT_PICKAXE_ACTIONS) { // TODO: Upgrade item check
+//            if (this.canPerformAction(new ItemStack(this), action)) {
+//
+//                Direction cameraDirection = ((ServerPlayer) player).getCamera().getDirection();
+//                Vec3 angle = ((ServerPlayer) player).getCamera().getLookAngle();
+//
+//                if (angle.y < -0.8 || angle.y > 0.8) {
+//
+//                    for (int x = -1; x < 2; x++) {
+//                        for (int z = -1; z < 2; z++) {
+//                            BlockPos offsetPos = pos.offset(x, 0, z);
+//
+//                            mineIfHarvestable(player, level, offsetPos);
+//                        }
+//                    }
+//                } else if (cameraDirection == Direction.EAST || cameraDirection == Direction.WEST) { // Z
+//
+//                    for (int z = -1; z < 2; z++) {
+//                        for (int y = 1; y > -2; y--) { // Init top left
+//                            BlockPos offsetPos = pos.offset(0,y,z);
+//
+//                            mineIfHarvestable(player, level, offsetPos);
+//                        }
+//                    }
+//
+//                } else if (cameraDirection == Direction.NORTH || cameraDirection == Direction.SOUTH) { // X
+//
+//                    for (int x = -1; x < 2; x++) {
+//                        for (int y = 1; y > -2; y--) { // Init top left
+//                            BlockPos offsetPos = pos.offset(x,y,0);
+//
+//                            mineIfHarvestable(player, level, offsetPos);
+//                        }
+//                    }
+//                }
+//
+//                break;
+//            }
+//        }
+
+
+        return super.onBlockStartBreak(itemstack, pos, player);
+    }
+
+    private static void mineIfHarvestable(Player player, ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+
+        if (state.getBlock().canHarvestBlock(state, level, pos, player)) {
+            player.awardStat( Stats.BLOCK_MINED.get(state.getBlock()));
+            level.destroyBlock(pos, true, player);
+        }
+    }
+
+    private static void treeFelling(BlockPos pos, Player player, ServerLevel level, BlockState miningBlock) { // Extracted vertical Tree Felling code
+        ArrayList<Item> taggedAsWood = TagUtil.getItemListFromTagResourceLocation("minecraft:logs");
+        if (taggedAsWood.contains(miningBlock.getBlock().asItem())) {
+
+            BlockPos offsetPos = pos;
+
+            for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
+                offsetPos = offsetPos.above();
+                BlockState potentialStateToFell = level.getBlockState(offsetPos);
+
+                if (taggedAsWood.contains(potentialStateToFell.getBlock().asItem())) {
+
+                    if (potentialStateToFell.getBlock().canHarvestBlock(potentialStateToFell, level.getLevel(), offsetPos, player)) {
+                        player.awardStat( Stats.BLOCK_MINED.get(potentialStateToFell.getBlock()));
+                        level.destroyBlock(offsetPos, true, player);
                     } else {
-                        System.out.println("Found block is not present in taggedAsWood. Mined block is: " + potentialStateToFell + ", valid entries are: ");
-                        taggedAsWood.forEach(System.out::println);
                         break;
                     }
 
+                } else {
+                    break;
                 }
-
-            } else {
-                System.out.println("Mined block is not present in taggedAsWood. Mined block is: " + miningBlock + ", valid entries are: ");
-                taggedAsWood.forEach(System.out::println);
             }
-
         }
-
-        return super.onBlockStartBreak(itemstack, pos, player);
     }
 
     @Override
