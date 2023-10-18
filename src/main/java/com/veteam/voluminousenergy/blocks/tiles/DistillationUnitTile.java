@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
@@ -39,8 +40,6 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
         add(new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0, TankType.OUTPUT, "outputTank0:output_tank_0_gui"));
         add(new RelationalTank(new FluidTank(TANK_CAPACITY), 2, 1, TankType.OUTPUT, "outputTank1:output_tank_1_gui"));
     }};
-
-    private byte tick = 19;
 
     public ItemStackHandler inventory = createHandler(8);
 
@@ -92,5 +91,10 @@ public class DistillationUnitTile extends VEMultiBlockTileEntity implements IVEP
     @Override
     public int getUpgradeSlotId() {
         return 7;
+    }
+
+    @Override
+    public Block getCasingBlock() {
+        return VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK.get();
     }
 }

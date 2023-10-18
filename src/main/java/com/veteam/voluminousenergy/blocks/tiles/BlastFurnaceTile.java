@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -109,5 +110,10 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     @Override
     public int getUpgradeSlotId() {
         return 5;
+    }
+
+    @Override
+    public Block getCasingBlock() {
+        return VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get();
     }
 }

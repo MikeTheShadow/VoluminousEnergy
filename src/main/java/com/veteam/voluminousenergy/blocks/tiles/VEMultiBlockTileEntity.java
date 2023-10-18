@@ -1,11 +1,13 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.blocks.VEBlock;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -19,7 +21,7 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
 
     public boolean validity = false;
 
-    public boolean isMultiBlockValid(Block block) {
+    public boolean isMultiBlockValid() {
 
         int rawDirection = this.getBlockState().getValue(BlockStateProperties.FACING).get2DDataValue();
 
@@ -39,7 +41,7 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         for (final BlockPos blockPos : BlockPos.betweenClosed(worldPosition.offset(sX, 0, sZ), worldPosition.offset(lX, 2, lZ))) {
             final BlockState blockState = level.getBlockState(blockPos);
 
-            if (blockState.getBlock() != block) { // Fails MultiBlock condition
+            if (blockState.getBlock() != getCasingBlock()) { // Fails MultiBlock condition
                 return false;
             }
         }
@@ -53,7 +55,7 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         tick++;
         if (tick == 20) {
             tick = 0;
-            validity = isMultiBlockValid(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK.get());
+            validity = isMultiBlockValid();
         }
         if (!(validity)) {
             return;
@@ -72,4 +74,7 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         tag.putBoolean("validity", this.validity);
         super.saveAdditional(tag);
     }
+
+    public abstract Block getCasingBlock();
+
 }
