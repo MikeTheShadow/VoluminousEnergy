@@ -55,7 +55,9 @@ public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
         tick++;
         if (tick == 20) {
             tick = 0;
-            validity = isMultiBlockValid();
+            boolean valid = isMultiBlockValid();
+            if(valid != validity && !valid) updateClients();
+            validity = valid;
         }
         if (!(validity)) {
             return;
