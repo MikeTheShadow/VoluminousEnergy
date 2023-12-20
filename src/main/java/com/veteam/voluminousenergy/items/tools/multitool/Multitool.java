@@ -21,6 +21,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
@@ -103,11 +105,14 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
             treeFelling(pos, player, level, miningBlock);
         }
 
+        Direction lookingAt = getLookedAtBlockFace(player);
+        System.out.println("Looking at the following direction: " + lookingAt.toString());
+
         if (/*true && */level.getBlockState(pos).canHarvestBlock(level, pos, player)) { // TODO: AOE Upgrade item check // This is only checking the validity of the current block to mine, not subsequent blocks
             Direction cameraDirection = ((ServerPlayer) player).getCamera().getDirection();
             Vec3 angle = ((ServerPlayer) player).getCamera().getLookAngle();
 
-            if (angle.y < -0.8 || angle.y > 0.8) { // Y
+            if (lookingAt == Direction.UP || lookingAt == Direction.DOWN) { // Y
 
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++) {
@@ -248,5 +253,17 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
             return net.minecraft.world.InteractionResult.SUCCESS;
         }
         return super.interactLivingEntity(stack, playerIn, entity, hand); // Revert to previous super code if not trimmer
+    }
+
+    @Nullable
+    public Direction getLookedAtBlockFace(Player player) {
+//        double reachDistance = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE).getValue();
+        double reachDistance = 10;
+        HitResult result = player.pick(reachDistance, 0.0F, false);
+        if (result.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) result;
+            return blockHitResult.getDirection();
+        }
+        return null;
     }
 }
