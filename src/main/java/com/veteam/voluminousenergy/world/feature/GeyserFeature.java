@@ -25,7 +25,7 @@ public class GeyserFeature extends Feature<GeyserFeature.Configuration> {
     public final ArrayList<Block> allowList = new ArrayList<>(Arrays.asList(
             Blocks.SNOW,Blocks.ICE,Blocks.PACKED_ICE,Blocks.SANDSTONE,Blocks.SAND,Blocks.RED_SAND,Blocks.GRAVEL,
             Blocks.WATER,Blocks.LAVA,Blocks.CLAY,Blocks.MOSS_BLOCK,Blocks.MOSS_CARPET,Blocks.FLOWERING_AZALEA,
-            Blocks.AZALEA,Blocks.GRASS_BLOCK,Blocks.GRASS,Blocks.BIG_DRIPLEAF,Blocks.BIG_DRIPLEAF_STEM,
+            Blocks.AZALEA,Blocks.GRASS_BLOCK,Blocks.SHORT_GRASS,Blocks.TALL_GRASS,Blocks.BIG_DRIPLEAF,Blocks.BIG_DRIPLEAF_STEM,
             Blocks.SMALL_DRIPLEAF,Blocks.CAVE_VINES,Blocks.CAVE_VINES_PLANT,Blocks.SCULK,Blocks.SCULK_VEIN,
             Blocks.SCULK_CATALYST
     ));

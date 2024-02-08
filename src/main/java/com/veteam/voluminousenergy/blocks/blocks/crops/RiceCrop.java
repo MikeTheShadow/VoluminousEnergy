@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class RiceCrop extends VEWaterCrop {
 
     public RiceCrop() {
-        super(BlockBehaviour.Properties.copy(Blocks.ALLIUM)); // TODO: Rice Properties
+        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ALLIUM)); // TODO: Rice Properties
     }
 
     @Override

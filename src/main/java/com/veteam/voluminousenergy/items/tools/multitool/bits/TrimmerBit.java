@@ -34,7 +34,7 @@ public class TrimmerBit extends MultitoolBit{
                     || blockState.is(Blocks.WEEPING_VINES)
                     || blockState.is(Blocks.WEEPING_VINES_PLANT)
                     || blockState.is(Blocks.DEAD_BUSH)
-                    || blockState.is(Blocks.GRASS)
+                    || blockState.is(Blocks.SHORT_GRASS)
                     || blockState.is(Blocks.TALL_GRASS)
                     || blockState.is(Blocks.FERN)
                     || blockState.is(Blocks.TRIPWIRE)
