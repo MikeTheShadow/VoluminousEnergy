@@ -19,7 +19,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
-import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -34,11 +33,11 @@ import java.util.List;
 public class PressureLadder extends LadderBlock {
     private String registryName; // Voluminous Energy 1.19 port
     protected static final AABB TOUCH_AABB = new AABB(0.125D, 0.0D, 0.125D, 0.875D, 0.25D, 0.875D);
+
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    private final PressurePlateBlock.Sensitivity sensitivity = PressurePlateBlock.Sensitivity.MOBS;
 
     public PressureLadder() {
-        super(BlockBehaviour.Properties.copy(Blocks.LADDER)
+        super(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)
                 .requiresCorrectToolForDrops()
                 .randomTicks()
                 .pushReaction(PushReaction.DESTROY)
@@ -100,17 +99,7 @@ public class PressureLadder extends LadderBlock {
 
     protected int getSignalStrength(Level level, BlockPos blockPos) {
         AABB aabb = TOUCH_AABB.move(blockPos);
-        List<? extends Entity> list;
-        switch (this.sensitivity) {
-            case EVERYTHING:
-                list = level.getEntities((Entity) null, aabb);
-                break;
-            case MOBS:
-                list = level.getEntitiesOfClass(LivingEntity.class, aabb);
-                break;
-            default:
-                return 0;
-        }
+        List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, aabb);
 
         if (!list.isEmpty()) {
             for (Entity entity : list) {

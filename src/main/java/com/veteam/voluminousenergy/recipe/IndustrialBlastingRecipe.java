@@ -9,7 +9,6 @@ import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
@@ -30,7 +29,7 @@ public class IndustrialBlastingRecipe extends VEFluidRecipe {
 
         public static final Codec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                ItemStack.ITEM_WITH_COUNT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
         ).apply(instance, IndustrialBlastingRecipe::new));
