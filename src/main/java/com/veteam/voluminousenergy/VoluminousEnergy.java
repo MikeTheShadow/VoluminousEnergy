@@ -120,9 +120,6 @@ public class VoluminousEnergy {
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH,VEFeatureGeneration::addFeaturesToBiomes);
 //        VELoot.registerLoot(modEventBus);
 
-        //Register triggers
-        VECriteriaTriggers.init();
-
         // Config Files to load
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
@@ -164,6 +161,9 @@ public class VoluminousEnergy {
         setup.init();
         proxy.init();
         VENetwork.init();
+
+        //Register triggers
+        VECriteriaTriggers.init();
 
 //        event.enqueueWork(() -> {
 //           VEOres.registerConfiguredFeatures();
