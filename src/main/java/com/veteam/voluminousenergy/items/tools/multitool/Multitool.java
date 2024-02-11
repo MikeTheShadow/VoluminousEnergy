@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -42,8 +43,8 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
         return this.bit != null ? this.bit.getDestroySpeed(itemStack, blockStateToMine) : 0;
     }
 
-    public boolean hurtEnemy(ItemStack p_40994_, LivingEntity p_40995_, LivingEntity p_40996_) {
-        p_40994_.hurtAndBreak(2, p_40996_, (p_41007_) -> {
+    public boolean hurtEnemy(ItemStack itemStack, LivingEntity entity0, LivingEntity entity1) {
+        itemStack.hurtAndBreak(2, entity1, (p_41007_) -> {
             p_41007_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
         });
         return true;
@@ -75,11 +76,11 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+    public boolean onBlockStartBreak(ItemStack itemStack, BlockPos pos, Player player) {
         System.out.println("OnBlockStartBreak");
         if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer) || player.isCrouching()) {
             System.out.println("Client side or player is not server player");
-            return super.onBlockStartBreak(itemstack, pos, player);
+            return super.onBlockStartBreak(itemStack, pos, player);
         } else {
             System.out.println("Player is server side");
         }
@@ -88,13 +89,13 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
         if (!tag.contains("energy")) {
             System.out.println("Energy is empty or null");
-            return super.onBlockStartBreak(itemstack, pos, player);
+            return super.onBlockStartBreak(itemStack, pos, player);
         }
 
         int energyLeft = tag.getInt("energy");
         if (!(energyLeft > 0)) {
             System.out.println("Energy is not greater than zero: " + energyLeft);
-            return super.onBlockStartBreak(itemstack, pos, player);
+            return super.onBlockStartBreak(itemStack, pos, player);
         }
 
         ServerLevel level = serverPlayer.server.getLevel(player.level().dimension());
@@ -118,7 +119,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                     for (int z = -1; z < 2; z++) {
                         BlockPos offsetPos = pos.offset(x, 0, z);
 
-                        mineIfHarvestable(player, level, offsetPos);
+                        mineIfHarvestable(player, level, offsetPos, itemStack);
                     }
                 }
 
@@ -128,7 +129,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                     for (int y = 1; y > -2; y--) { // Init top left
                         BlockPos offsetPos = pos.offset(0,y,z);
 
-                        mineIfHarvestable(player, level, offsetPos);
+                        mineIfHarvestable(player, level, offsetPos, itemStack);
                     }
                 }
 
@@ -138,7 +139,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                     for (int y = 1; y > -2; y--) { // Init top left
                         BlockPos offsetPos = pos.offset(x,y,0);
 
-                        mineIfHarvestable(player, level, offsetPos);
+                        mineIfHarvestable(player, level, offsetPos, itemStack);
                     }
                 }
             }
@@ -186,15 +187,18 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 //        }
 
 
-        return super.onBlockStartBreak(itemstack, pos, player);
+        return super.onBlockStartBreak(itemStack, pos, player);
     }
 
-    private static void mineIfHarvestable(Player player, ServerLevel level, BlockPos pos) {
+    private void mineIfHarvestable(Player player, ServerLevel level, BlockPos pos, ItemStack stack) {
         BlockState state = level.getBlockState(pos);
 
-        if (state.getBlock().canHarvestBlock(state, level, pos, player)) {
+        if (state.getBlock().canHarvestBlock(state, level, pos, player) && this.bit.getDestroySpeed(ItemStack.EMPTY, state) > 1.0F) {
             player.awardStat( Stats.BLOCK_MINED.get(state.getBlock()));
-            level.destroyBlock(pos, true, player);
+
+            Block.dropResources(state, level, pos, null, player, stack);
+            level.destroyBlock(pos, false, player); // Disable handling of loot here
+
         }
     }
 
