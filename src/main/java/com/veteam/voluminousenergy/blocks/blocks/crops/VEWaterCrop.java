@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +32,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleWaterloggedBlock{
+public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleWaterloggedBlock {
+    public static final MapCodec<VEWaterCrop> CODEC = simpleCodec(VEWaterCrop::new);
 
     private String registryName;
 
@@ -39,6 +41,11 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2,0)); // set the age of the crop to 0 by default
         //setRegistryName("water_crop");
+    }
+
+    @Override
+    protected MapCodec<? extends BushBlock> codec() {
+        return CODEC;
     }
 
     public Item cropItem(){

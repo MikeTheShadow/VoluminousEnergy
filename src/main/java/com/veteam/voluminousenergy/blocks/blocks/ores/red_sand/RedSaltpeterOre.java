@@ -2,16 +2,19 @@ package com.veteam.voluminousenergy.blocks.blocks.ores.red_sand;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.Fallable;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RedSaltpeterOre extends FallingBlock implements Fallable {
+public class RedSaltpeterOre extends ColoredFallingBlock {
     public RedSaltpeterOre(){
-        super(Properties.of()
+        super( new ColorRGBA(-8356741),
+                Properties.of()
                 .sound(SoundType.SAND)
                 .strength(0.6f)
                 .requiresCorrectToolForDrops()

@@ -127,7 +127,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         if (this.complete) {
 
             for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
-                VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+//                VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3); // TODO: Port to 1.20.4
             }
 
             // Main tick code

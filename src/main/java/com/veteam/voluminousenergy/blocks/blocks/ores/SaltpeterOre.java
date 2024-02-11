@@ -2,16 +2,17 @@ package com.veteam.voluminousenergy.blocks.blocks.ores;
 
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Fallable;
-import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SaltpeterOre extends FallingBlock implements Fallable {
+public class SaltpeterOre extends ColoredFallingBlock {
     public SaltpeterOre(){
-        super(Properties.of()
+        super(new ColorRGBA(14406560),
+            Properties.of()
             .sound(SoundType.SAND)
             .strength(0.6f)
             .requiresCorrectToolForDrops()

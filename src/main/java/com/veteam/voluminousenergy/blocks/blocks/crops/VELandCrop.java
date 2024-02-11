@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.crops;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -25,12 +26,19 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class VELandCrop extends BushBlock implements BonemealableBlock {
 
+    public static final MapCodec<VELandCrop> CODEC = simpleCodec(VELandCrop::new);
+
     private String registryName;
 
     public VELandCrop(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2,0)); // set the age of the crop to 0 by default
         setRegistryName("land_crop");
+    }
+
+    @Override
+    protected MapCodec<? extends BushBlock> codec() {
+        return CODEC;
     }
 
     // Voxel shape
