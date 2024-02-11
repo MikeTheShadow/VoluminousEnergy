@@ -94,7 +94,6 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
 
             AtomicReference<ArrayList<ItemStack>> atomicLogStacks = new AtomicReference<>(new ArrayList<>());
             AtomicReference<ArrayList<ItemStack>> atomicPlankStacks = new AtomicReference<>(new ArrayList<>());
-
             // Calculate Logs and Planks based on registry
             ForgeRegistries.ITEMS.getValues().parallelStream().forEach(registeredItem -> {
                 if (RegistryLookups.lookupItem(registeredItem).getPath().contains("log")){
@@ -103,6 +102,7 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
                     atomicPlankStacks.get().add(new ItemStack(registeredItem, Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()));
                 }
             });
+
             inputItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicLogStacks.get());
             primaryItemOutputAcceptor.addIngredients(VanillaTypes.ITEM_STACK, atomicPlankStacks.get());
 

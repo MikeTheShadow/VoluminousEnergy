@@ -74,7 +74,7 @@ public abstract class VERecipe implements Recipe<Container> {
 
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        VoluminousEnergy.LOGGER.warn("Suspicious call to getResultItem in " + this.getClass().getName() + ".");
+        //VoluminousEnergy.LOGGER.warn("Suspicious call to getResultItem in " + this.getClass().getName() + ".");
         return new ItemStack(Items.BUCKET, 1);
     }
 

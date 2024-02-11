@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.blocks.machines.SolariumMachineCasingBlock;
 import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
@@ -44,7 +45,7 @@ import java.util.Random;
 
 public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
 
-    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT,1,0);
+    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0);
     public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
     public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
 
@@ -54,7 +55,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         add(RFIDsm);
     }};
 
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
+    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, TankType.OUTPUT, "outputTank:output_tank_gui");
 
     List<RelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
@@ -83,7 +84,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         multiblockTickChecker++;
         if (multiblockTickChecker == 20) {
             multiblockTickChecker = 0;
-            validity = isMultiBlockValid(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK.get());
+            validity = isMultiBlockValid();
         }
         if (!validity) return;
 
@@ -119,67 +120,64 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                 initialized = false;
                 level.playSound(null, this.getBlockPos(), VESounds.ENERGY_BEAM_FIRED, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
+            return;
         }
+
 
         int x = this.getBlockPos().getX();
         int y = this.getBlockPos().getY();
         int z = this.getBlockPos().getZ();
-        if (this.complete) {
+        for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
+            VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+        }
 
-            for (ServerPlayer serverplayer : level.getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
-                VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
-            }
+        // Main tick code
+        processFluidIO();
 
-            // Main tick code
-            processFluidIO();
+        ItemStack rfidStack = inventory.getStackInSlot(2);
 
+        if (rfidStack.getItem() instanceof RFIDChip) {
+            CompoundTag rfidTag = rfidStack.getOrCreateTag();
+            Tag veX = rfidTag.get("ve_x");
+            Tag veZ = rfidTag.get("ve_z");
 
-            ItemStack rfidStack = inventory.getStackInSlot(2);
+            if (veX != null && veZ != null) {
 
-            if (rfidStack.getItem() instanceof RFIDChip) {
-                CompoundTag rfidTag = rfidStack.getOrCreateTag();
-                Tag veX = rfidTag.get("ve_x");
-                Tag veZ = rfidTag.get("ve_z");
+                int veXi = Integer.valueOf(veX.toString());
+                int veZi = Integer.valueOf(veZ.toString());
 
-                if (veX != null && veZ != null) {
+                ChunkPos chunkPos = new ChunkPos(veXi, veZi);
+                BlockPos blockPos = chunkPos.getBlockAt(0, 64, 0);
 
-                    int veXi = Integer.valueOf(veX.toString());
-                    int veZi = Integer.valueOf(veZ.toString());
+                ChunkFluid fluidFromPos = WorldUtil.getFluidFromPosition(level, blockPos);
 
-                    ChunkPos chunkPos = new ChunkPos(veXi, veZi);
-                    BlockPos blockPos = chunkPos.getBlockAt(0, 64, 0);
+                SingleChunkFluid fluid = fluidFromPos.getFluids().get(0);
 
-                    ChunkFluid fluidFromPos = WorldUtil.getFluidFromPosition(level, blockPos);
+                if (super.canConsumeEnergy() && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
+                    if (counter == 1) {
 
-                    SingleChunkFluid fluid = fluidFromPos.getFluids().get(0);
-
-                    if (super.canConsumeEnergy() && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
-                        if (counter == 1) {
-
-                            if (outputTank.isFluidValid(fluid.getFluid())) {
-                                int fillSize = Math.min(fluid.getAmount(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
-                                fillSize = Math.min(fillSize, fluid.getAmount());
-                                outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
-                            }
-                            counter--;
-                            consumeEnergy();
-                            this.setChanged();
-                        } else if (counter > 0) {
-                            counter--;
-                            consumeEnergy();
-                        } else {
-                            int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
-                            counter = counterTemp != 0 ? counterTemp : 1;
-                            length = counter;
+                        if (outputTank.isFluidValid(fluid.getFluid())) {
+                            int fillSize = Math.min(fluid.getAmount(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
+                            fillSize = Math.min(fillSize, fluid.getAmount());
+                            outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
                         }
-                    } else { // Energy Check
+                        counter--;
+                        consumeEnergy();
+                        this.setChanged();
+                    } else if (counter > 0) {
+                        counter--;
+                        consumeEnergy();
+                    } else {
+                        int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                        counter = counterTemp != 0 ? counterTemp : 1;
+                        length = counter;
                     }
-                } else { // If no RFID chip, set counter to 0
-                    counter = 0;
                 }
-            } else {
+            } else { // If no RFID chip, set counter to 0
                 counter = 0;
             }
+        } else {
+            counter = 0;
         }
     }
 
@@ -278,17 +276,22 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     }
 
     @Override
-    public boolean isMultiBlockValid(Block block) {
+    public boolean isMultiBlockValid() {
 
         // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
         for (final BlockPos blockPos : BlockPos.betweenClosed(worldPosition.offset(-1, -3, -1), worldPosition.offset(1, -1, 1))) {
             final BlockState blockState = level.getBlockState(blockPos);
 
-            if (blockState.getBlock() != block) { // Fails MultiBlock condition
+            if (blockState.getBlock() != getCasingBlock()) { // Fails MultiBlock condition
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public Block getCasingBlock() {
+        return VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK.get();
     }
 
     public boolean getMultiblockValidity() {

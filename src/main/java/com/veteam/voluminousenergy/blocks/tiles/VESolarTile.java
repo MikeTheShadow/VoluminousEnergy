@@ -9,21 +9,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class VESolarTile extends VETileEntity implements IVEPowerGenerator {
     int generation;
-    int currentEnergy;
 
     public VESolarTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state,null);
@@ -43,12 +38,10 @@ public abstract class VESolarTile extends VETileEntity implements IVEPowerGenera
     }
 
     void generateEnergy(int fe){
-        if (this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) < getMaxPower()){
-            energy.ifPresent(e -> e.addEnergy(fe)); //Amount of energy to add per tick
-        }
+        energy.ifPresent(e -> e.addEnergy(fe));
     }
 
-    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive){
+    public static int sendToTile(BlockEntity tileEntity, Direction from, int maxReceive){
         return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
@@ -67,7 +60,7 @@ public abstract class VESolarTile extends VETileEntity implements IVEPowerGenera
                 if(tileEntity != null){
                     // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
                     int smallest = Math.min(getTransferRate(), energy.getEnergyStored());
-                    int received = receiveEnergy(tileEntity, opposite, smallest);
+                    int received = sendToTile(tileEntity, opposite, smallest);
                     energy.consumeEnergy(received);
                     if (energy.getEnergyStored() <=0){
                         break;
@@ -111,25 +104,14 @@ public abstract class VESolarTile extends VETileEntity implements IVEPowerGenera
 
     @Override
     public void load(CompoundTag tag) {
-        tag.putInt("generation_rate", this.generation);
         super.load(tag);
-        this.currentEnergy = this.energy.resolve().get().getEnergyStored();
-
+        this.generation = tag.getInt("generation_rate");
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag tag) {
-        this.generation = tag.getInt("generation_rate");
         super.saveAdditional(tag);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY){
-            return energy.cast();
-        }
-        return super.getCapability(cap, side);
+        tag.putInt("generation_rate", this.generation);
     }
 
    public abstract int getGeneration();
@@ -149,9 +131,5 @@ public abstract class VESolarTile extends VETileEntity implements IVEPowerGenera
     @Override
     public List<VESlotManager> getSlotManagers() {
         return new ArrayList<>();
-    }
-
-    public int getCurrentEnergy() {
-        return currentEnergy;
     }
 }

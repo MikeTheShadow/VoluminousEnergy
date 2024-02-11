@@ -48,12 +48,6 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
         fluidManagers.get(1).setValidator(this, false);
     }
 
-    @Override
-    public void tick() {
-        updateClients();
-        super.tick();
-    }
-
     @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
