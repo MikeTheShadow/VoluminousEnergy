@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
@@ -50,8 +51,8 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
         @Override
         public VEFluidSawmillRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
             VEFluidSawmillRecipe recipe = new VEFluidSawmillRecipe();
-            recipe.isLogRecipe = buffer.readBoolean();
-            return helper.fromNetwork(new VEFluidSawmillRecipe(), buffer);
+            recipe.setLogRecipe(buffer.readBoolean());
+            return helper.fromNetwork(recipe, buffer);
         }
 
         @Override
@@ -61,7 +62,7 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
 
         @Override
         public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull VEFluidSawmillRecipe recipe) {
-            buffer.writeBoolean(recipe.isLogRecipe);
+            buffer.writeBoolean(recipe.isLogRecipe());
             helper.toNetwork(buffer, recipe);
         }
     };
@@ -83,6 +84,10 @@ public class VEFluidSawmillRecipe extends VEFluidRecipe {
 
     public boolean isLogRecipe() {
         return isLogRecipe;
+    }
+
+    public void setLogRecipe(boolean isLogRecipe) {
+        this.isLogRecipe = isLogRecipe;
     }
 
     @Override
