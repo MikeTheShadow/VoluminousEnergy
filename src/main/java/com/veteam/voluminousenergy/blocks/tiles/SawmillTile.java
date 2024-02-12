@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.SawmillContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -250,7 +250,7 @@ public class SawmillTile extends VEFluidTileEntity implements IVEPoweredTileEnti
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new SawmillContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.SAWMILL_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getFluidStackFromTank(int num){

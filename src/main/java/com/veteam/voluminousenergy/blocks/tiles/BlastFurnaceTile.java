@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.BlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -77,7 +77,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new BlastFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.BLAST_FURNACE_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getFluidStackFromTank(int num) {

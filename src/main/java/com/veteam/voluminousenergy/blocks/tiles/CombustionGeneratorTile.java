@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
@@ -211,7 +211,7 @@ public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPow
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new CombustionGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.COMBUSTION_GENERATOR_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

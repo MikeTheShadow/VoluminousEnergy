@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.ElectricFurnaceTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
@@ -19,14 +19,14 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class ElectricFurnaceScreen extends VEContainerScreen<ElectricFurnaceContainer> {
+public class ElectricFurnaceScreen extends VEContainerScreen<VEContainer> {
 
     private ElectricFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/electric_furnace_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public ElectricFurnaceScreen(ElectricFurnaceContainer screenContainer, Inventory inv, Component titleIn){
+    public ElectricFurnaceScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (ElectricFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalSeparatorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -16,13 +16,13 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class CentrifugalSeparatorScreen extends VEContainerScreen<CentrifugalSeparatorContainer> {
+public class CentrifugalSeparatorScreen extends VEContainerScreen<VEContainer> {
     private CentrifugalSeparatorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_separator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public CentrifugalSeparatorScreen(CentrifugalSeparatorContainer screenContainer, Inventory inv, Component titleIn){
+    public CentrifugalSeparatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CentrifugalSeparatorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CentrifugalSeparatorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CentrifugalSeparatorRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -39,7 +39,7 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new CentrifugalSeparatorContainer(i,level,worldPosition,playerInventory,playerEntity);
+        return VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

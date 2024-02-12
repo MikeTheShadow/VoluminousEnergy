@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveBlastFurnaceTile;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -18,13 +18,13 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<PrimitiveBlastFurnaceContainer> {
+public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> {
     private PrimitiveBlastFurnaceTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID,"textures/gui/primitiveblastgui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public PrimitiveBlastFurnaceScreen(PrimitiveBlastFurnaceContainer screenContainer, Inventory inv, Component titleIn) {
+    public PrimitiveBlastFurnaceScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = (PrimitiveBlastFurnaceTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

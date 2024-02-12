@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.GasFiredFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
@@ -282,7 +281,7 @@ public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountab
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new GasFiredFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.GAS_FIRED_FURNACE_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int progressFuelCounterPX(int px) {

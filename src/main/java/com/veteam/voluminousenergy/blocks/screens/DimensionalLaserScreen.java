@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
@@ -23,14 +23,14 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import java.util.Arrays;
 import java.util.List;
 
-public class DimensionalLaserScreen extends VEContainerScreen<DimensionalLaserContainer> {
+public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     private final DimensionalLaserTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/dimensional_laser_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
 
 
-    public DimensionalLaserScreen(DimensionalLaserContainer screenContainer, Inventory inv, Component titleIn) {
+    public DimensionalLaserScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = (DimensionalLaserTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

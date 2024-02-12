@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.CentrifugalAgitatorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CentrifugalAgitatorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
@@ -17,13 +17,13 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class CentrifugalAgitatorScreen extends VEContainerScreen<CentrifugalAgitatorContainer> {
+public class CentrifugalAgitatorScreen extends VEContainerScreen<VEContainer> {
     private final CentrifugalAgitatorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/centrifugal_agitator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public CentrifugalAgitatorScreen(CentrifugalAgitatorContainer screenContainer, Inventory inv, Component titleIn){
+    public CentrifugalAgitatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CentrifugalAgitatorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

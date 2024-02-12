@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
@@ -20,14 +20,14 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<PrimitiveStirlingGeneratorContainer> {
+public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/primitivestirlinggenerator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private PrimitiveStirlingGeneratorTile tileEntity;
     
 
-    public PrimitiveStirlingGeneratorScreen(PrimitiveStirlingGeneratorContainer container, Inventory inv, Component name) {
+    public PrimitiveStirlingGeneratorScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = (PrimitiveStirlingGeneratorTile) container.getTileEntity();
         container.setScreen(this);

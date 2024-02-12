@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.FluidElectrolyzerContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.FluidElectrolyzerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
@@ -17,13 +17,13 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluidElectrolyzerScreen extends VEContainerScreen<FluidElectrolyzerContainer> {
+public class FluidElectrolyzerScreen extends VEContainerScreen<VEContainer> {
     private final FluidElectrolyzerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/fluid_electrolyzer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
-    public FluidElectrolyzerScreen(FluidElectrolyzerContainer screenContainer, Inventory inv, Component titleIn){
+    public FluidElectrolyzerScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (FluidElectrolyzerTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

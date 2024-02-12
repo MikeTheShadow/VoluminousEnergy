@@ -1,9 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.CrusherContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -106,7 +105,7 @@ public class CrusherTile extends VETileEntity implements IVEPoweredTileEntity, I
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new CrusherContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.CRUSHER_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

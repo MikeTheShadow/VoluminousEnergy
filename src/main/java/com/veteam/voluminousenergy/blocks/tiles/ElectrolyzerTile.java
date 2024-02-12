@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.ElectrolyzerContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -40,7 +40,7 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new ElectrolyzerContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.ELECTROLYZER_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

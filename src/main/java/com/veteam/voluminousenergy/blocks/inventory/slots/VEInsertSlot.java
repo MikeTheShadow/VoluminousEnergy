@@ -7,7 +7,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class VEInsertSlot  extends SlotItemHandler {
+public class VEInsertSlot extends SlotItemHandler {
 
     public VEInsertSlot(IItemHandler itemHandler, int index, int xPos, int yPos){
         super(itemHandler, index, xPos, yPos);

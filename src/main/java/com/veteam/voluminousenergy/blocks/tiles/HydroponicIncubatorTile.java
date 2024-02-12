@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.HydroponicIncubatorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -83,7 +82,7 @@ public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPow
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new HydroponicIncubatorContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.HYDROPONIC_INCUBATOR_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getFluidStackFromTank(int num) {

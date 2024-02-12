@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.AirCompressorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -130,7 +129,7 @@ public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTi
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new AirCompressorContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.AIR_COMPRESSOR_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public FluidStack getAirTankFluid() {

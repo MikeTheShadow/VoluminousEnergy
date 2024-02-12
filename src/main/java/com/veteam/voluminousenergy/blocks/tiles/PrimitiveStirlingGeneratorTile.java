@@ -2,8 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveStirlingGeneratorContainer;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -128,7 +127,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-        return new PrimitiveStirlingGeneratorContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Nonnull

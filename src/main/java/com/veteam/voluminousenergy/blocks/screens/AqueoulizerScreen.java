@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
@@ -19,13 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
-public class AqueoulizerScreen extends VEContainerScreen<AqueoulizerContainer> {
+public class AqueoulizerScreen extends VEContainerScreen<VEContainer> {
     private final AqueoulizerTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/aqueoulizer_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
-    public AqueoulizerScreen(AqueoulizerContainer screenContainer, Inventory inv, Component titleIn) {
+    public AqueoulizerScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         tileEntity = (AqueoulizerTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

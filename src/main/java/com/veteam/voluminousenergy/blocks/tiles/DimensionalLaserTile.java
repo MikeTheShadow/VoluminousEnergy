@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.DimensionalLaserContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
@@ -226,7 +226,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, @Nonnull Inventory playerInventory, @Nonnull Player player) {
-        return new DimensionalLaserContainer(id, level, worldPosition, playerInventory, player);
+        return VEContainers.DIMENSIONAL_LASER_FACTORY.create(id, level, worldPosition, playerInventory, player);
     }
 
     @Nullable

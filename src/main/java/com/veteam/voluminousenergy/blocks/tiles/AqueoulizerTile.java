@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.AqueoulizerContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -57,7 +57,7 @@ public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTile
     @Nonnull
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new AqueoulizerContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.AQUEOULIZER_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

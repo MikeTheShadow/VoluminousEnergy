@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.SolarPanelContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.SolarPanelTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -14,12 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class SolarPanelScreen extends VEContainerScreen<SolarPanelContainer> {
+public class SolarPanelScreen extends VEContainerScreen<VEContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
     private final SolarPanelTile tileEntity;
 
-    public SolarPanelScreen(SolarPanelContainer  container, Inventory inv, Component name) {
+    public SolarPanelScreen(VEContainer  container, Inventory inv, Component name) {
         super(container, inv, name);
         tileEntity = (SolarPanelTile) container.getTileEntity();
         container.setScreen(this);

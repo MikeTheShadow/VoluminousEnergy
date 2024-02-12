@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.CombustionGeneratorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
@@ -18,13 +18,13 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class CombustionGeneratorScreen extends VEContainerScreen<CombustionGeneratorContainer> {
+public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
     private CombustionGeneratorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/combustion_generator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public CombustionGeneratorScreen(CombustionGeneratorContainer screenContainer, Inventory inv, Component titleIn){
+    public CombustionGeneratorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (CombustionGeneratorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

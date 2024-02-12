@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.ImplosionCompressorContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
@@ -19,14 +19,14 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.Arrays;
 import java.util.List;
 
-public class ImplosionCompressorScreen  extends VEContainerScreen<ImplosionCompressorContainer> {
+public class ImplosionCompressorScreen  extends VEContainerScreen<VEContainer> {
 
     private ImplosionCompressorTile tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     
 
-    public ImplosionCompressorScreen(ImplosionCompressorContainer screenContainer, Inventory inv, Component titleIn){
+    public ImplosionCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
         tileEntity = (ImplosionCompressorTile) screenContainer.getTileEntity();
         screenContainer.setScreen(this);

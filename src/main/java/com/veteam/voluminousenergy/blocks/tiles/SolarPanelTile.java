@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.SolarPanelContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +22,7 @@ public class SolarPanelTile extends VESolarTile {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player playerEntity){
-        return new SolarPanelContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.SOLAR_PANEL_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     public int getGeneration(){

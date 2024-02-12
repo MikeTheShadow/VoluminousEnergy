@@ -1,9 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.ElectricFurnaceContainer;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -225,7 +223,7 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new ElectricFurnaceContainer(i, level, worldPosition, playerInventory, playerEntity);
+        return VEContainers.ELECTRIC_FURNACE_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

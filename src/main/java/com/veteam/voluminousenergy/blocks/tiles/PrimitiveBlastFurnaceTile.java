@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.PrimitiveBlastFurnaceContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.PrimitiveBlastFurnaceRecipe;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -52,7 +52,7 @@ public class PrimitiveBlastFurnaceTile extends VETileEntity implements IVECounta
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new PrimitiveBlastFurnaceContainer(i,level,worldPosition,playerInventory,playerEntity);
+        return VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override
