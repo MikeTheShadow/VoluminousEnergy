@@ -187,13 +187,13 @@ public class VEBlocks {
             }));
 
     // Battery Box
-    public static RegistryObject<BatteryBoxBlock> BATTERY_BOX_BLOCK = VE_BLOCKS_REGISTRY.register("battery_box", BatteryBoxBlock::new);
+    public static RegistryObject<Block> BATTERY_BOX_BLOCK = VE_BLOCKS_REGISTRY.register("battery_box", BatteryBoxBlock::new);
     public static RegistryObject<BlockEntityType<BatteryBoxTile>> BATTERY_BOX_TILE = VE_TILE_REGISTRY.register("battery_box",
             () -> BlockEntityType.Builder.of(BatteryBoxTile::new,VEBlocks.BATTERY_BOX_BLOCK.get()).build(null));
-    public static RegistryObject<MenuType<BatteryBoxContainer>> BATTERY_BOX_CONTAINER = VE_CONTAINER_REGISTRY.register("battery_box", () ->
+    public static RegistryObject<MenuType<VEContainer>> BATTERY_BOX_CONTAINER = VE_CONTAINER_REGISTRY.register("battery_box", () ->
             IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
-                return new BatteryBoxContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+                return VEContainers.BATTERY_BOX_FACTORY.create(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
             }));
 
     // Primitive Solar Panel
@@ -247,10 +247,10 @@ public class VEBlocks {
             }));
 
     // Tooling Station
-    public static RegistryObject<ToolingStationBlock> TOOLING_STATION_BLOCK = VE_BLOCKS_REGISTRY.register("tooling_station", ToolingStationBlock::new);
+    public static RegistryObject<Block> TOOLING_STATION_BLOCK = VE_BLOCKS_REGISTRY.register("tooling_station", ToolingStationBlock::new);
     public static RegistryObject<BlockEntityType<ToolingStationTile>> TOOLING_STATION_TILE = VE_TILE_REGISTRY.register("tooling_station",
             () -> BlockEntityType.Builder.of(ToolingStationTile::new,VEBlocks.TOOLING_STATION_BLOCK.get()).build(null));
-    public static RegistryObject<MenuType<ToolingStationContainer>> TOOLING_STATION_CONTAINER = VE_CONTAINER_REGISTRY.register("tooling_station", () ->
+    public static RegistryObject<MenuType<VEContainer>> TOOLING_STATION_CONTAINER = VE_CONTAINER_REGISTRY.register("tooling_station", () ->
             IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
                 return new ToolingStationContainer(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
