@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -51,7 +51,7 @@ public class BatteryBoxSlotPairPacket {
 
     public static void handlePacket(BatteryBoxSlotPairPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
         if (openContainer != null) {
-            if (openContainer instanceof BatteryBoxContainer batteryBoxContainer) {
+            if (openContainer instanceof VEContainer batteryBoxContainer) {
                 if (onServer) {
                     BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
                     if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {

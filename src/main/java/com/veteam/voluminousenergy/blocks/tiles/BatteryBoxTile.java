@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.BatteryBoxContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
@@ -16,14 +16,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -298,7 +293,7 @@ public class BatteryBoxTile extends VETileEntity implements IVEPoweredTileEntity
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
-        return new BatteryBoxContainer(i,level,worldPosition,playerInventory,playerEntity);
+        return VEContainers.BATTERY_BOX_FACTORY.create(i, level, worldPosition, playerInventory, playerEntity);
     }
 
     @Override

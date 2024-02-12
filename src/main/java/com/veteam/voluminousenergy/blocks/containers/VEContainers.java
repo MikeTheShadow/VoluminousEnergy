@@ -1,10 +1,8 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory.VEContainerFactoryBuilder;
-import com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots.StirlingGeneratorInputSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
-import net.minecraftforge.items.SlotItemHandler;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.*;
 
@@ -27,7 +25,22 @@ public class VEContainers {
             .addSlot(5, 130, -14) // Upgrade Slot
             .build();
 
-    // TODO Decide if battery box can or should be converted. Put it here
+    public static final VEContainerFactory BATTERY_BOX_FACTORY = new VEContainerFactoryBuilder()
+            .create(BATTERY_BOX_CONTAINER, BATTERY_BOX_BLOCK)
+            .addSlot(0, 35, 17)
+            .addSlot(1, 53, 17)
+            .addSlot(2, 71, 17)
+            .addSlot(3, 89, 17)
+            .addSlot(4, 107, 17)
+            .addSlot(5, 125, 17)
+            //Bottom Slots
+            .addSlot(6, 35, 54)
+            .addSlot(7, 53, 54)
+            .addSlot(8, 71, 54)
+            .addSlot(9, 89, 54)
+            .addSlot(10, 107, 54)
+            .addSlot(11, 125, 54)
+            .build();
 
     public static final VEContainerFactory BLAST_FURNACE_FACTORY = new VEContainerFactoryBuilder()
             .create(BLAST_FURNACE_CONTAINER, BLAST_FURNACE_BLOCK)
@@ -195,7 +208,7 @@ public class VEContainers {
             .build();
 
     public static final VEContainerFactory SAWMILL_FACTORY = new VEContainerFactoryBuilder()
-            .create(SAWMILL_CONTAINER,SAWMILL_BLOCK)
+            .create(SAWMILL_CONTAINER, SAWMILL_BLOCK)
             .addSlot(0, 44, 32) // Log input slot
             .addSlot(1, 80, 24) // Plank Output
             .addSlot(2, 80, 42) // Secondary Output
@@ -205,11 +218,22 @@ public class VEContainers {
             .build();
 
     public static final VEContainerFactory SOLAR_PANEL_FACTORY = new VEContainerFactoryBuilder()
-            .create(SOLAR_PANEL_CONTAINER,SOLAR_PANEL_BLOCK)
+            .create(SOLAR_PANEL_CONTAINER, SOLAR_PANEL_BLOCK)
             .build();
 
     public static final VEContainerFactory STIRLING_GENERATOR_FACTORY = new VEContainerFactoryBuilder()
-            .create(STIRLING_GENERATOR_CONTAINER,STIRLING_GENERATOR_BLOCK)
+            .create(STIRLING_GENERATOR_CONTAINER, STIRLING_GENERATOR_BLOCK)
             .addSlot(0, 80, 35)
+            .build();
+
+    // TOOLING STATION UNUSED
+    public static final VEContainerFactory TOOLING_STATION_FACTORY = new VEContainerFactoryBuilder()
+            .create(TOOLING_STATION_CONTAINER,TOOLING_STATION_BLOCK)
+            .addSlot(0, 38, 18) // Fluid input slot
+            .addSlot(1, 38, 49) // Extract fluid from input
+            .addSlot(2, 86, 32) // Main Tool slot
+            .addSlot(3, 134, 18) // Bit Slot
+            .addSlot(4, 134,49) // Base Slot
+            .addSlot(5,154, -14) // Upgrade Slot
             .build();
 }

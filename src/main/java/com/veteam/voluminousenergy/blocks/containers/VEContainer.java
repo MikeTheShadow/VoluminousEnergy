@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
@@ -117,6 +118,13 @@ public abstract class VEContainer extends AbstractContainerMenu {
         int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
         return (((stored*100/max*100)/100)*px)/100;
+    }
+
+    // For the battery box. Might remove later
+    public void updateSendOutPowerButton(boolean status){
+        if(this.screen instanceof BatteryBoxScreen batteryBoxScreen) {
+            batteryBoxScreen.updateSendOutPowerButton(status);
+        }
     }
 
     public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack){
