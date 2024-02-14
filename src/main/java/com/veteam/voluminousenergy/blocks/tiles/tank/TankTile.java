@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles.tank;
 
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.RelationalTank;
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TankTile extends VEFluidTileEntity {
+public class TankTile extends VETileEntity {
     private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.BOTH, "tank:tank_gui");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{

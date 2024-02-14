@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PumpTile extends VEFluidTileEntity implements IVEPoweredTileEntity {
+public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 

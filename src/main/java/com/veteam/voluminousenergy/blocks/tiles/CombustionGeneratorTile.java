@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CombustionGeneratorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {

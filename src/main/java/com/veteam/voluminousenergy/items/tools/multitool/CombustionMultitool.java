@@ -1,13 +1,12 @@
 package com.veteam.voluminousenergy.items.tools.multitool;
 
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
-import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -33,7 +32,7 @@ import java.util.function.Consumer;
 
 public class CombustionMultitool extends Multitool {
 
-    public final int TANK_CAPACITY = VEFluidTileEntity.TANK_CAPACITY;
+    public final int TANK_CAPACITY = VETileEntity.TANK_CAPACITY;
 
     public CombustionMultitool(MultitoolBit bit, String registryName, Properties itemProperties) {
         super(bit, registryName, itemProperties);

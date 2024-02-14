@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class VEMultiBlockTileEntity extends VEFluidTileEntity {
+public abstract class VEMultiBlockTileEntity extends VETileEntity {
 
     public VEMultiBlockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
         super(type, pos, state, recipeType);

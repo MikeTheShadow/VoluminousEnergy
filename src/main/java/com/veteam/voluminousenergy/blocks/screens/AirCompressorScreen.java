@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
 
@@ -41,7 +42,7 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
 
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("air_compressor"), 8, 6, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);

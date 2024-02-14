@@ -1,10 +1,10 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VERNGRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -24,7 +24,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -32,12 +34,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +52,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.util.Mth.abs;
 
@@ -72,78 +76,202 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         voluminousTile.tick();
     }
 
+    // Fluid methods to subclass
+
+    public void inputFluid(RelationalTank tank, int slot1, int slot2) {
+        ItemStack input = tank.getInput().copy();
+        ItemStack output = tank.getOutput().copy();
+        FluidTank inputTank = tank.getTank();
+        ItemStackHandler handler = getInventoryHandler();
+        if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
+            if ((output.getItem() == Items.BUCKET && output.getCount() < 16) || checkOutputSlotForEmptyOrBucket(output)) {
+                Fluid fluid = ((BucketItem) input.getItem()).getFluid();
+                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
+                    inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                    handler.extractItem(slot1, 1, false);
+                    handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
+                    this.markRecipeDirty();
+                }
+            }
+        }
+    }
+
+
+    //use for when the input and output slot are different
+    public void outputFluid(RelationalTank tank, int slot1, int slot2) {
+        ItemStack inputSlot = tank.getInput();
+        ItemStack outputSlot = tank.getOutput();
+        FluidTank outputTank = tank.getTank();
+        ItemStackHandler handler = getInventoryHandler();
+        if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY) {
+            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
+            outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            handler.extractItem(slot1, 1, false);
+            handler.insertItem(slot2, bucketStack, false);
+            this.markRecipeDirty();
+        }
+    }
+
+
+    public int getTankCapacity() {
+        return TANK_CAPACITY;
+    }
+
+    public void updateTankPacketFromGui(boolean status, int id) {
+        for (RelationalTank tank : getRelationalTanks()) {
+            if (id == tank.getSlotNum()) tank.setSideStatus(status);
+        }
+    }
+
+    public void updateTankPacketFromGui(int direction, int id) {
+        for (RelationalTank tank : getRelationalTanks()) {
+            if (id == tank.getSlotNum()) {
+                this.capabilityMap.moveFluidSlotManagerPos(tank, IntToDirection.IntegerToDirection(direction));
+            }
+        }
+    }
+
+    @Deprecated
+    public static final int TANK_CAPACITY = 4000;
+    boolean fluidInputDirty;
+
+    public @Nonnull List<RelationalTank> getRelationalTanks() {
+
+        return new ArrayList<>();
+    }
+
+    public static boolean checkOutputSlotForEmptyOrBucket(ItemStack slotStack) {
+        return slotStack.copy() == ItemStack.EMPTY || ((slotStack.copy().getItem() == Items.BUCKET) && slotStack.copy().getCount() < 16);
+    }
+
+    public void markFluidInputDirty() {
+        this.fluidInputDirty = true;
+    }
+
+    protected void processFluidIO() {
+        if (!fluidInputDirty) return;
+        fluidInputDirty = false;
+        for (VESlotManager manager : this.getSlotManagers()) {
+            ItemStackHandler inventory = this.getInventoryHandler();
+            if (manager.getSlotType() == SlotType.FLUID_INPUT) {
+
+                RelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
+                tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
+                tank.setOutput(inventory.getStackInSlot(manager.getOutputSlotId()));
+                if (tank.getTankType() == TankType.INPUT || tank.getTankType() == TankType.BOTH)
+                    inputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
+                outputFluid(tank, manager.getSlotNum(), manager.getOutputSlotId());
+            }
+        }
+    }
+
+    public FluidStack getFluidStackFromTank(int num) {
+        if (num >= getRelationalTanks().size() || num < 0) {
+            return FluidStack.EMPTY;
+        }
+        return getRelationalTanks().get(num).getTank().getFluid();
+    }
+
+    //  END OF FLUID STUFF
+
     int counter = 0;
     int length = 0;
     int sound_tick = 0;
     boolean isRecipeDirty;
+
 
     /**
      * Must include a call to updateClients();
      * This message can be removed if updateClients(); is found to be useless
      */
     public void tick() {
+        processFluidIO();
         updateClients();
         validateRecipe();
         processRecipe();
     }
 
+
     void processRecipe() {
         if (selectedRecipe == null) return;
-        VERecipe recipe = (VERecipe) selectedRecipe;
+        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
 
         if (canConsumeEnergy()) {
 
             if (counter == 1) {
                 // Validate output
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
+                        FluidTank tank = relationalTank.getTank();
+                        FluidStack currentFluid = tank.getFluid();
+                        if (currentFluid.isEmpty()) continue;
+                        // If the output fluid amount won't fit, then you must acquit
+                        if (!recipeFluid.isFluidEqual(currentFluid)
+                                || tank.getFluidAmount() + recipeFluid.getAmount() > tank.getCapacity()) {
+                            return;
+                        }
+                    }
+                }
+
                 ItemStackHandler handler = getInventoryHandler();
+
                 if (handler != null) {
                     // Validate output
                     for (VESlotManager slotManager : getSlotManagers()) {
-                        if(slotManager.getSlotType() != SlotType.OUTPUT) continue;
+                        if (slotManager.getSlotType() != SlotType.OUTPUT) continue;
                         ItemStack recipeStack = recipe.getResult(slotManager.getRecipePos());
                         ItemStack currentItem = slotManager.getItem(handler);
-                        if(currentItem.isEmpty()) continue;
+                        if (currentItem.isEmpty()) continue;
                         // If the output item amount won't fit, then you must acquit
-                        if(!recipeStack.is(currentItem.getItem())
+                        if (!recipeStack.is(currentItem.getItem())
                                 || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
                             return;
                         }
                     }
 
-                    VERNGRecipe rngRecipe = null;
-                    if(recipe instanceof VERNGRecipe rec) {
-                        rngRecipe = rec;
+                    VEFluidRNGRecipe irngRecipe = null;
+                    if (recipe instanceof VEFluidRNGRecipe rec) {
+                        irngRecipe = rec;
                     }
                     Random r = new Random();
+
                     // process recipe
-                    for(VESlotManager slotManager : getSlotManagers()) {
-                        if(slotManager.getSlotType() == SlotType.OUTPUT) {
+                    for (VESlotManager slotManager : getSlotManagers()) {
+                        if (slotManager.getSlotType() == SlotType.OUTPUT) {
                             ItemStack output = recipe.getResult(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
                             // rng calculations
-                            if(rngRecipe != null) {
-                                float randomness = rngRecipe.getOutputChance(slotManager.getRecipePos());
-                                if(randomness != 1) {
+                            if (irngRecipe != null) {
+                                float randomness = irngRecipe.getOutputChance(slotManager.getRecipePos());
+                                if (randomness != 1) {
                                     float random = abs(0 + r.nextFloat() * (-1));
-                                    if(random > randomness) continue;
+                                    if (random > randomness) continue;
                                 }
 
                             }
-
-                            if(currentStack.isEmpty()) slotManager.setItem(output,handler);
+                            if (currentStack.isEmpty()) slotManager.setItem(output, handler);
                             else currentStack.setCount(currentStack.getCount() + output.getCount());
-                        } else if(slotManager.getSlotType() == SlotType.INPUT) {
+                        } else if (slotManager.getSlotType() == SlotType.INPUT) {
                             Ingredient ingredient = recipe.getIngredient(slotManager.getRecipePos());
                             ItemStack currentStack = slotManager.getItem(handler);
-                            // This is to support recipes with empty slots
-                            if(ingredient.isEmpty()) continue;
                             currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
                         }
                     }
-                    this.doExtraRecipeProcessing();
                 }
 
+                // process recipe
+                for (RelationalTank relationalTank : getRelationalTanks()) {
+                    if (relationalTank.getTankType() == TankType.OUTPUT) {
+                        relationalTank.fillOutput(recipe, relationalTank.getRecipePos());
+                    } else if (relationalTank.getTankType() == TankType.INPUT) {
+                        relationalTank.drainInput(recipe, relationalTank.getRecipePos());
+                    }
+                }
+                doExtraRecipeProcessing();
+
                 this.markRecipeDirty();
+                this.markFluidInputDirty();
                 this.setChanged();
             } else if (counter > 0) {
                 if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
@@ -253,7 +381,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             handler.deserializeNBT(inv);
         }
 
-        if (energy != null) energy.ifPresent(h -> h.deserializeNBT(tag));
+        energy.ifPresent(h -> h.deserializeNBT(tag));
 
         if (this instanceof IVECountable) {
             counter = tag.getInt("counter");
@@ -262,6 +390,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
+        }
+
+        for (RelationalTank relationalTank : getRelationalTanks()) {
+            CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
+            relationalTank.getTank().readFromNBT(compoundTag);
+            relationalTank.readGuiProperties(tag);
         }
 
         super.load(tag);
@@ -291,11 +425,20 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             tag.putInt("counter", counter);
             tag.putInt("length", length);
         }
+
+        for (RelationalTank relationalTank : getRelationalTanks()) {
+            CompoundTag compoundTag = new CompoundTag();
+            relationalTank.getTank().writeToNBT(compoundTag);
+            tag.put(relationalTank.getTankName(), compoundTag);
+            relationalTank.writeGuiProperties(tag);
+        }
+
         super.saveAdditional(tag);
     }
 
     /**
      * A default ItemStackHandler creator. Passing in an int size creates it for us
+     *
      * @param slots the size of the inventory
      * @return a new inventory
      */
@@ -315,7 +458,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 setChanged();
                 List<VESlotManager> managers = getSlotManagers();
 
-                if(slot == finalUpgradeSlotLocation) tileEntity.markRecipeDirty();
+                if (slot == finalUpgradeSlotLocation) tileEntity.markRecipeDirty();
                 else if (slot < managers.size()) {
                     SlotType slotType = getSlotManagers().get(slot).getSlotType();
                     if (slotType == SlotType.INPUT) {
@@ -375,7 +518,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     *
      * @param status boolean status of the slot
      * @param slotId int id of the slot
      */
@@ -391,7 +533,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void updatePacketFromGui(int direction, int slotId) {
         for (VESlotManager slot : getSlotManagers()) {
             if (slotId == slot.getSlotNum()) {
-                this.capabilityMap.moveSlotManagerPos(slot,direction);
+                this.capabilityMap.moveSlotManagerPos(slot, direction);
                 return;
             }
         }
@@ -400,7 +542,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     CapabilityMap capabilityMap = null;
 
     /**
-     * This handles items,energy and fluids. Handling fluids could be moved to VEFluidTileEntity
+     * This handles items,energy and fluids. Handling fluids could be moved to VETileEntity
+     *
      * @param cap  Base capability
      * @param side Base Direction
      * @param <T>  T the type of capability
@@ -411,14 +554,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         ItemStackHandler inventory = getInventoryHandler();
         List<VESlotManager> itemManagers = getSlotManagers();
-        if(capabilityMap == null) {
-            if(this instanceof VEFluidTileEntity fluidTileEntity) {
-                capabilityMap = new CapabilityMap(inventory,itemManagers,fluidTileEntity.getRelationalTanks(), energy,fluidTileEntity);
-            } else {
-                capabilityMap = new CapabilityMap(inventory,itemManagers,new ArrayList<>(), energy,null);
-            }
+        if (capabilityMap == null) {
+            capabilityMap = new CapabilityMap(inventory, itemManagers, getRelationalTanks(), energy, this);
         }
-        return this.capabilityMap.getCapability(cap,side,this);
+        return this.capabilityMap.getCapability(cap, side, this);
     }
 
     /**
@@ -453,18 +592,19 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
 
-
     private LazyOptional<IEnergyStorage> capability;
+
     /**
      * Like consumeEnergy this requires that the object has an inventory
+     *
      * @return True if the object has enough energy to be able to continue
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public boolean canConsumeEnergy() {
         if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
-            if(ivePoweredTileEntity.getMaxPower() == 0) return true; // For tiles that do not consume power
-            if(capability == null) {
-                capability = this.getCapability(ForgeCapabilities.ENERGY,null);
+            if (ivePoweredTileEntity.getMaxPower() == 0) return true; // For tiles that do not consume power
+            if (capability == null) {
+                capability = this.getCapability(ForgeCapabilities.ENERGY, null);
             }
             return capability.map(IEnergyStorage::getEnergyStored).orElse(0)
                     > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
@@ -525,7 +665,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if (energy != null) energy.ifPresent(e -> e.setEnergy(pkt.getTag().getInt("energy")));
+        energy.ifPresent(e -> {
+            if (pkt.getTag() != null && pkt.getTag().contains("energy")) e.setEnergy(pkt.getTag().getInt("energy"));
+        });
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
@@ -557,16 +699,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return energy;
     }
 
-    public int decrementCounterOnNoPower(int localCounter) {
-        return localCounter < this.length ? localCounter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
-    }
-
-    public void decrementSuperCounterOnNoPower() {
-        throw new IllegalStateException("This method is currently disabled!");
-//        this.counter = this.counter < this.length ? this.counter + Config.DECREMENT_SPEED_ON_NO_POWER.get() : this.length;
-//        this.setChanged();
-    }
-
     public void markRecipeDirty() {
         this.isRecipeDirty = true;
     }
@@ -577,8 +709,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
         this.isRecipeDirty = false;
 
-        this.potentialRecipes = RecipeCache.getRecipesFromCache(level, this.getRecipeType(), getSlotManagers(),this,true);
+        this.potentialRecipes = RecipeCache.getFluidRecipesFromCache(level, this.getRecipeType(), getSlotManagers(), getRelationalTanks(), this, true);
         if (this.potentialRecipes.size() == 1) {
+            List<FluidStack> inputFluids = this.getRelationalTanks().stream()
+                    .filter(tank -> tank.getTankType() == TankType.INPUT)
+                    .map(tank -> tank.getTank().getFluid()).toList();
 
             ItemStackHandler handler = this.getInventoryHandler();
             List<ItemStack> inputItems = new ArrayList<>();
@@ -587,7 +722,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                         .filter(manager -> manager.getSlotType() == SlotType.INPUT)
                         .map(manager -> manager.getItem(handler)).toList();
             }
-            VERecipe newRecipe = RecipeCache.getRecipeFromCache(level, getRecipeType(), inputItems);
+            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, getRecipeType(), inputFluids, inputItems);
 
             if (newRecipe == null) {
                 counter = 0;

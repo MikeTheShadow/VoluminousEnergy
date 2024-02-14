@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

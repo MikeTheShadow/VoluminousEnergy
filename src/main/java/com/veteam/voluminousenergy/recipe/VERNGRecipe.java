@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 

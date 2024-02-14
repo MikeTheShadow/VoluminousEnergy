@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AqueoulizerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class AqueoulizerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
     private final ItemStackHandler inventory = createHandler(6);
 
     public List<RelationalTank> fluidManagers = new ArrayList<>() {{

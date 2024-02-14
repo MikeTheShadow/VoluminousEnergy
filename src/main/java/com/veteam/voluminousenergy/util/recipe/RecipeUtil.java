@@ -2,8 +2,10 @@ package com.veteam.voluminousenergy.util.recipe;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.veteam.voluminousenergy.recipe.*;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CrusherRecipe;
+import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
+import com.veteam.voluminousenergy.recipe.ToolingRecipe;
+import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -15,14 +17,16 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeUtil {

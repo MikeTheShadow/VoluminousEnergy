@@ -33,7 +33,7 @@ import java.util.Random;
 
 import static net.minecraft.util.Mth.abs;
 
-public class HydroponicIncubatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
     private final ItemStackHandler inventory = createHandler(8);
 

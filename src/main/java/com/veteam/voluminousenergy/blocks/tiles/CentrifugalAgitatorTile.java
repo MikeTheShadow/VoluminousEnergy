@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalAgitatorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class CentrifugalAgitatorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));

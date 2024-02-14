@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class AirCompressorTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
     public VESlotManager[] slotManagers = new VESlotManager[]{
             new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),

@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidMixerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class FluidMixerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
                 add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));

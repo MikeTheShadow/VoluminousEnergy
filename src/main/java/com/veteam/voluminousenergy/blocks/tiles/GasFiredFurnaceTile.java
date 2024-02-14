@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GasFiredFurnaceTile extends VEFluidTileEntity implements IVECountable {
+public class GasFiredFurnaceTile extends VETileEntity implements IVECountable {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));

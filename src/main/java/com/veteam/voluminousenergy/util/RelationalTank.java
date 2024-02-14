@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -105,7 +105,7 @@ public class RelationalTank {
         }
     }
 
-    public void setValidator(VEFluidTileEntity tileEntity,boolean isInput) {
+    public void setValidator(VETileEntity tileEntity,boolean isInput) {
         this.tank.setValidator(t -> {
             for(Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
                 VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;

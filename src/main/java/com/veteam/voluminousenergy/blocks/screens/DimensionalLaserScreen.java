@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -89,7 +90,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (tileEntity.getMultiblockValidity()) {
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("dimensional_laser"),  8, 6, WHITE_TEXT_STYLE);
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"),  8, (this.imageWidth - 96 - 8), WHITE_TEXT_STYLE);

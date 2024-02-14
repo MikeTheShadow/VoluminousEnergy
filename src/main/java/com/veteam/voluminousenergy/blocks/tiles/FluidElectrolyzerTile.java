@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidElectrolyzerTile extends VEFluidTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class FluidElectrolyzerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
 
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{

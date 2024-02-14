@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -18,9 +16,9 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
     List<RelationalTank> tanks;
-    VEFluidTileEntity tileEntity;
+    VETileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VEFluidTileEntity tileEntity) {
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VETileEntity tileEntity) {
         this.tanks = tanks;
         this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));

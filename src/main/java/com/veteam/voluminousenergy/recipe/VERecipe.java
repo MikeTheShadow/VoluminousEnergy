@@ -15,7 +15,9 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class VERecipe implements Recipe<Container> {
 

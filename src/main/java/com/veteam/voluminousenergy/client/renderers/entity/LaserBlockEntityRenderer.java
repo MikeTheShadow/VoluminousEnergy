@@ -27,7 +27,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class LaserBlockEntityRenderer implements BlockEntityRenderer<DimensionalLaserTile> {

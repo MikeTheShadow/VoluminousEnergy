@@ -1,8 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory.VEContainerFactoryBuilder;
-import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
-import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.*;
 

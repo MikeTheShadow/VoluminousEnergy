@@ -12,7 +12,9 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileO
 import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
-import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.containers.tank.*;
 import com.veteam.voluminousenergy.blocks.tiles.*;
 import com.veteam.voluminousenergy.blocks.tiles.tank.*;

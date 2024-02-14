@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +45,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics matrixStack,int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (tileEntity.getMultiblockValidity()){
             TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("blast_furnace"),  8, 6, WHITE_TEXT_STYLE);
 

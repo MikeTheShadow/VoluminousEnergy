@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.achievements.triggers;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.ConstructBeaconTrigger;
 
 public class VECriteriaTriggers {
 

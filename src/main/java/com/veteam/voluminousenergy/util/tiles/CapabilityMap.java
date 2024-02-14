@@ -1,7 +1,5 @@
 package com.veteam.voluminousenergy.util.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -30,7 +28,7 @@ public class CapabilityMap {
     private final ItemStackHandler inventory;
     private final LazyOptional<VEEnergyStorage> energyStorage;
 
-    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<RelationalTank> tanks, LazyOptional<VEEnergyStorage> energy, @Nullable VEFluidTileEntity tileEntity) {
+    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<RelationalTank> tanks, LazyOptional<VEEnergyStorage> energy, @Nullable VETileEntity tileEntity) {
         this.inventory = inventory;
         this.energyStorage = energy;
 

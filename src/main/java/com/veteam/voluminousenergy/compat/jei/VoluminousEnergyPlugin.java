@@ -2,7 +2,9 @@ package com.veteam.voluminousenergy.compat.jei;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.containers.*;
+import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.screens.*;
 import com.veteam.voluminousenergy.compat.jei.category.*;
 import com.veteam.voluminousenergy.compat.jei.containerHandler.*;
