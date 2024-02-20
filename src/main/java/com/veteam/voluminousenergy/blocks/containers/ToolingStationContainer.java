@@ -107,9 +107,9 @@ public class ToolingStationContainer extends VEContainer {
                     // Handle bucket with fluid
                     Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
 
-//                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
-//                        return ItemStack.EMPTY;
-//                    } TODO FIX ME
+                    if (CombustionMultitool.isCombustibleFuel(slotFluid) && !moveItemStackTo(slotStack, 0, 1, false)){
+                        return ItemStack.EMPTY;
+                    }
                 } catch (Exception e){
                     VoluminousEnergy.LOGGER.error("Item: " + RegistryLookups.lookupItem(slotStack) + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
                             "This may be a modded bucket that extends BucketItem, but contains no fluid. If not, here's the stacktrace: ");

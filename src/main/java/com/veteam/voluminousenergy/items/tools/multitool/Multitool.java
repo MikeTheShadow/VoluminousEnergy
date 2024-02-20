@@ -77,24 +77,18 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemStack, BlockPos pos, Player player) {
-        System.out.println("OnBlockStartBreak");
         if (player.level().isClientSide() || !(player instanceof ServerPlayer serverPlayer) || player.isCrouching()) {
-            System.out.println("Client side or player is not server player");
             return super.onBlockStartBreak(itemStack, pos, player);
-        } else {
-            System.out.println("Player is server side");
         }
 
         CompoundTag tag = player.getMainHandItem().getTag();
 
         if (!tag.contains("energy")) {
-            System.out.println("Energy is empty or null");
             return super.onBlockStartBreak(itemStack, pos, player);
         }
 
         int energyLeft = tag.getInt("energy");
         if (!(energyLeft > 0)) {
-            System.out.println("Energy is not greater than zero: " + energyLeft);
             return super.onBlockStartBreak(itemStack, pos, player);
         }
 
@@ -107,7 +101,6 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
         }
 
         Direction lookingAt = getLookedAtBlockFace(player);
-        System.out.println("Looking at the following direction: " + lookingAt.toString());
 
         if (/*true && */level.getBlockState(pos).canHarvestBlock(level, pos, player)) { // TODO: AOE Upgrade item check // This is only checking the validity of the current block to mine, not subsequent blocks
             Direction cameraDirection = ((ServerPlayer) player).getCamera().getDirection();
@@ -144,48 +137,6 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                 }
             }
         }
-
-//        // Drill bit AoE
-//        for (var action : ToolActions.DEFAULT_PICKAXE_ACTIONS) { // TODO: Upgrade item check
-//            if (this.canPerformAction(new ItemStack(this), action)) {
-//
-//                Direction cameraDirection = ((ServerPlayer) player).getCamera().getDirection();
-//                Vec3 angle = ((ServerPlayer) player).getCamera().getLookAngle();
-//
-//                if (angle.y < -0.8 || angle.y > 0.8) {
-//
-//                    for (int x = -1; x < 2; x++) {
-//                        for (int z = -1; z < 2; z++) {
-//                            BlockPos offsetPos = pos.offset(x, 0, z);
-//
-//                            mineIfHarvestable(player, level, offsetPos);
-//                        }
-//                    }
-//                } else if (cameraDirection == Direction.EAST || cameraDirection == Direction.WEST) { // Z
-//
-//                    for (int z = -1; z < 2; z++) {
-//                        for (int y = 1; y > -2; y--) { // Init top left
-//                            BlockPos offsetPos = pos.offset(0,y,z);
-//
-//                            mineIfHarvestable(player, level, offsetPos);
-//                        }
-//                    }
-//
-//                } else if (cameraDirection == Direction.NORTH || cameraDirection == Direction.SOUTH) { // X
-//
-//                    for (int x = -1; x < 2; x++) {
-//                        for (int y = 1; y > -2; y--) { // Init top left
-//                            BlockPos offsetPos = pos.offset(x,y,0);
-//
-//                            mineIfHarvestable(player, level, offsetPos);
-//                        }
-//                    }
-//                }
-//
-//                break;
-//            }
-//        }
-
 
         return super.onBlockStartBreak(itemStack, pos, player);
     }
