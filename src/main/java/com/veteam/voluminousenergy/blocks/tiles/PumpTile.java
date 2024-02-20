@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -38,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
+public class PumpTile extends VETileEntity  {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
@@ -55,7 +54,7 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
     private int lY = 0;
     private int lZ = 0;
 
-    private final RelationalTank fluidTank = new RelationalTank(new FluidTank(tankCapacity), 0, TankType.OUTPUT,"tank:tank_gui");
+    private final VERelationalTank fluidTank = new VERelationalTank(new FluidTank(tankCapacity), 0, TankType.OUTPUT,"tank:tank_gui");
     private Fluid pumpingFluid = Fluids.EMPTY;
     private final ItemStackHandler inventory = this.createHandler();
 
@@ -87,7 +86,7 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
 
     public void addFluidToTank() {
         if ((fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity) {
-            energy.ifPresent(e -> e.consumeEnergy(Config.PUMP_POWER_USAGE.get()));
+            energy.consumeEnergy(Config.PUMP_POWER_USAGE.get());
             fluidTank.getTank().fill(new FluidStack(this.pumpingFluid, 1000), IFluidHandler.FluidAction.EXECUTE);
         }
     }
@@ -121,7 +120,7 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
     }
 
     public void updateTankPacketFromGui(int direction, int id) {
-        for (RelationalTank tank : getRelationalTanks()) {
+        for (VERelationalTank tank : getRelationalTanks()) {
             if (id == tank.getSlotNum()) {
                 tank.setSideDirection(IntToDirection.IntegerToDirection(direction));
             }
@@ -202,21 +201,6 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
         };
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return handler.cast();
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER){
-            return fluid.cast();
-        }
-        return super.getCapability(cap, side);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity) {
@@ -243,7 +227,7 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return Collections.singletonList(fluidTank);
     }
 
@@ -295,27 +279,7 @@ public class PumpTile extends VETileEntity implements IVEPoweredTileEntity {
         return false;
     }
 
-    public RelationalTank getTank(){
+    public VERelationalTank getTank(){
         return this.fluidTank;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.PUMP_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.PUMP_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.PUMP_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 0;
     }
 }

@@ -2,11 +2,9 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.recipe.processor.RecipeProcessor;
+import com.veteam.voluminousenergy.recipe.validator.RecipeValidator;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -19,7 +17,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +24,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -50,35 +46,43 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
-
-import static net.minecraft.util.Mth.abs;
 
 public abstract class VETileEntity extends BlockEntity implements MenuProvider {
+
+    VEItemStackHandler inventory;
     private final RecipeType<? extends Recipe<?>> recipeType;
-    Recipe<?> selectedRecipe = null;
-    List<? extends Recipe<?>> potentialRecipes = new ArrayList<>();
+    VEFluidRecipe selectedRecipe = null;
+    List<VEFluidRecipe> potentialRecipes = new ArrayList<>();
+
+    final List<VERelationalTank> tanks = new ArrayList<>();
+    final List<VESlotManager> managers = new ArrayList<>();
+    final HashMap<String,Integer> dataMap = new HashMap<>();
+    RecipeProcessor recipeProcessor;
+    RecipeValidator recipeValidator;
+    boolean sendsOutPower;
 
     public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
         super(type, pos, state);
         this.recipeType = recipeType;
-        this.isRecipeDirty = true;
     }
 
     /**
-     * Lazy Optional of getEnergy which cannot be null but can contain a null VEEnergyStorage
-     * for the ifpresent to fail
+     * Nullable VEEnergyStorage.
      */
-    LazyOptional<VEEnergyStorage> energy = createEnergy();
+    VEEnergyStorage energy;
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, VETileEntity voluminousTile) {
         voluminousTile.tick();
     }
 
-    // Fluid methods to subclass
+    // Fluid methods to subclass?
 
-    public void inputFluid(RelationalTank tank, int slot1, int slot2) {
+    public static final int DEFAULT_TANK_CAPACITY = 4000;
+    boolean fluidInputDirty = true;
+
+    public void inputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack input = tank.getInput().copy();
         ItemStack output = tank.getOutput().copy();
         FluidTank inputTank = tank.getTank();
@@ -98,7 +102,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
 
     //use for when the input and output slot are different
-    public void outputFluid(RelationalTank tank, int slot1, int slot2) {
+    public void outputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
         FluidTank outputTank = tank.getTank();
@@ -114,30 +118,25 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
 
     public int getTankCapacity() {
-        return TANK_CAPACITY;
+        return DEFAULT_TANK_CAPACITY;
     }
 
     public void updateTankPacketFromGui(boolean status, int id) {
-        for (RelationalTank tank : getRelationalTanks()) {
+        for (VERelationalTank tank : getRelationalTanks()) {
             if (id == tank.getSlotNum()) tank.setSideStatus(status);
         }
     }
 
     public void updateTankPacketFromGui(int direction, int id) {
-        for (RelationalTank tank : getRelationalTanks()) {
+        for (VERelationalTank tank : getRelationalTanks()) {
             if (id == tank.getSlotNum()) {
                 this.capabilityMap.moveFluidSlotManagerPos(tank, IntToDirection.IntegerToDirection(direction));
             }
         }
     }
 
-    @Deprecated
-    public static final int TANK_CAPACITY = 4000;
-    boolean fluidInputDirty;
-
-    public @Nonnull List<RelationalTank> getRelationalTanks() {
-
-        return new ArrayList<>();
+    public @Nonnull List<VERelationalTank> getRelationalTanks() {
+        return tanks;
     }
 
     public static boolean checkOutputSlotForEmptyOrBucket(ItemStack slotStack) {
@@ -155,7 +154,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             ItemStackHandler inventory = this.getInventoryHandler();
             if (manager.getSlotType() == SlotType.FLUID_INPUT) {
 
-                RelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
+                VERelationalTank tank = this.getRelationalTanks().get(manager.getTankId());
                 tank.setInput(inventory.getStackInSlot(manager.getSlotNum()));
                 tank.setOutput(inventory.getStackInSlot(manager.getOutputSlotId()));
                 if (tank.getTankType() == TankType.INPUT || tank.getTankType() == TankType.BOTH)
@@ -177,7 +176,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     int counter = 0;
     int length = 0;
     int sound_tick = 0;
-    boolean isRecipeDirty;
+    boolean isRecipeDirty = true;
 
 
     /**
@@ -187,103 +186,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void tick() {
         processFluidIO();
         updateClients();
-        validateRecipe();
-        processRecipe();
-    }
-
-
-    void processRecipe() {
-        if (selectedRecipe == null) return;
-        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
-
-        if (canConsumeEnergy()) {
-
-            if (counter == 1) {
-                // Validate output
-                for (RelationalTank relationalTank : getRelationalTanks()) {
-                    if (relationalTank.getTankType() == TankType.OUTPUT) {
-                        FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
-                        FluidTank tank = relationalTank.getTank();
-                        FluidStack currentFluid = tank.getFluid();
-                        if (currentFluid.isEmpty()) continue;
-                        // If the output fluid amount won't fit, then you must acquit
-                        if (!recipeFluid.isFluidEqual(currentFluid)
-                                || tank.getFluidAmount() + recipeFluid.getAmount() > tank.getCapacity()) {
-                            return;
-                        }
-                    }
-                }
-
-                ItemStackHandler handler = getInventoryHandler();
-
-                if (handler != null) {
-                    // Validate output
-                    for (VESlotManager slotManager : getSlotManagers()) {
-                        if (slotManager.getSlotType() != SlotType.OUTPUT) continue;
-                        ItemStack recipeStack = recipe.getResult(slotManager.getRecipePos());
-                        ItemStack currentItem = slotManager.getItem(handler);
-                        if (currentItem.isEmpty()) continue;
-                        // If the output item amount won't fit, then you must acquit
-                        if (!recipeStack.is(currentItem.getItem())
-                                || recipeStack.getCount() + currentItem.getCount() > currentItem.getMaxStackSize()) {
-                            return;
-                        }
-                    }
-
-                    VEFluidRNGRecipe irngRecipe = null;
-                    if (recipe instanceof VEFluidRNGRecipe rec) {
-                        irngRecipe = rec;
-                    }
-                    Random r = new Random();
-
-                    // process recipe
-                    for (VESlotManager slotManager : getSlotManagers()) {
-                        if (slotManager.getSlotType() == SlotType.OUTPUT) {
-                            ItemStack output = recipe.getResult(slotManager.getRecipePos());
-                            ItemStack currentStack = slotManager.getItem(handler);
-                            // rng calculations
-                            if (irngRecipe != null) {
-                                float randomness = irngRecipe.getOutputChance(slotManager.getRecipePos());
-                                if (randomness != 1) {
-                                    float random = abs(0 + r.nextFloat() * (-1));
-                                    if (random > randomness) continue;
-                                }
-
-                            }
-                            if (currentStack.isEmpty()) slotManager.setItem(output, handler);
-                            else currentStack.setCount(currentStack.getCount() + output.getCount());
-                        } else if (slotManager.getSlotType() == SlotType.INPUT) {
-                            Ingredient ingredient = recipe.getIngredient(slotManager.getRecipePos());
-                            ItemStack currentStack = slotManager.getItem(handler);
-                            currentStack.setCount(currentStack.getCount() - ingredient.getItems()[0].getCount());
-                        }
-                    }
-                }
-
-                // process recipe
-                for (RelationalTank relationalTank : getRelationalTanks()) {
-                    if (relationalTank.getTankType() == TankType.OUTPUT) {
-                        relationalTank.fillOutput(recipe, relationalTank.getRecipePos());
-                    } else if (relationalTank.getTankType() == TankType.INPUT) {
-                        relationalTank.drainInput(recipe, relationalTank.getRecipePos());
-                    }
-                }
-                doExtraRecipeProcessing();
-
-                this.markRecipeDirty();
-                this.markFluidInputDirty();
-                this.setChanged();
-            } else if (counter > 0) {
-                if (++sound_tick == 19 && Config.PLAY_MACHINE_SOUNDS.get()) {
-                    sound_tick = 0;
-                    level.playSound(null, this.getBlockPos(), VESounds.AQUEOULIZER, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-            } else {
-                counter = length;
-            }
-            counter--;
-            consumeEnergy();
-        }
+        if(this.recipeValidator != null) recipeValidator.validateRecipe(this);
+        if(this.recipeProcessor != null) recipeProcessor.processRecipe(this);
+        if(this.sendsOutPower) sendOutPower();
     }
 
     /**
@@ -297,7 +202,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
 
-    protected int calculateCounter(int processTime, ItemStack upgradeStack) {
+    public int calculateCounter(int processTime, ItemStack upgradeStack) {
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
@@ -312,7 +217,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return processTime;
     }
 
-    protected int consumptionMultiplier(int consumption, ItemStack upgradeStack) {
+    protected int consumptionMultiplier(int consumption, int slot) {
+        ItemStack upgradeStack = slot == -1 ? ItemStack.EMPTY : getInventory().getStackInSlot(slot);
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
@@ -380,19 +286,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (handler != null) {
             handler.deserializeNBT(inv);
         }
+        if(energy != null) energy.deserializeNBT(tag);
 
-        energy.ifPresent(h -> h.deserializeNBT(tag));
-
-        if (this instanceof IVECountable) {
-            counter = tag.getInt("counter");
-            length = tag.getInt("length");
+        for(var entry : dataMap.entrySet()) {
+            dataMap.put(entry.getKey(),tag.getInt(entry.getKey()));
         }
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
         }
 
-        for (RelationalTank relationalTank : getRelationalTanks()) {
+        for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
             relationalTank.getTank().readFromNBT(compoundTag);
             relationalTank.readGuiProperties(tag);
@@ -415,18 +319,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             tag.put("inv", compound);
         }
 
-        if (energy != null) energy.ifPresent(h -> h.serializeNBT(tag));
+        if (energy != null) energy.serializeNBT(tag);
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.write(tag);
         }
 
-        if (this instanceof IVECountable) {
-            tag.putInt("counter", counter);
-            tag.putInt("length", length);
+        for(var entry : dataMap.entrySet()) {
+            tag.putInt(entry.getKey(),entry.getValue());
         }
 
-        for (RelationalTank relationalTank : getRelationalTanks()) {
+        for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = new CompoundTag();
             relationalTank.getTank().writeToNBT(compoundTag);
             tag.put(relationalTank.getTankName(), compoundTag);
@@ -436,62 +339,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         super.saveAdditional(tag);
     }
 
-    /**
-     * A default ItemStackHandler creator. Passing in an int size creates it for us
-     *
-     * @param slots the size of the inventory
-     * @return a new inventory
-     */
-    public ItemStackHandler createHandler(int slots) {
-
-        VETileEntity tileEntity = this;
-        int upgradeSlotLocation = -1;
-        if (tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
-            upgradeSlotLocation = poweredTileEntity.getUpgradeSlotId();
-        }
-
-        int finalUpgradeSlotLocation = upgradeSlotLocation;
-        return new ItemStackHandler(slots) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                List<VESlotManager> managers = getSlotManagers();
-
-                if (slot == finalUpgradeSlotLocation) tileEntity.markRecipeDirty();
-                else if (slot < managers.size()) {
-                    SlotType slotType = getSlotManagers().get(slot).getSlotType();
-                    if (slotType == SlotType.INPUT) {
-                        tileEntity.markRecipeDirty();
-                    }
-                }
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == finalUpgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
-                VESlotManager manager = tileEntity.getSlotManagers().get(slot);
-                if (manager.getSlotType() == SlotType.INPUT) {
-                    for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                        VERecipe veRecipe = (VERecipe) recipe;
-                        if (veRecipe.getIngredient(manager.getRecipePos()).test(stack)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if (!isItemValid(slot, stack)) return stack;
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
+    @Override
+    public void setChanged() {
+        updateClients();
+        super.setChanged();
     }
 
-    public ItemStackHandler createHandler(int size, IVEPoweredTileEntity tileEntity) {
+    public ItemStackHandler createHandler(int size, VETileEntity tileEntity) {
         return new ItemStackHandler(size) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -500,7 +354,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (tileEntity.getUpgradeSlotId() == slot) {
+                if (tileEntity.energy.getUpgradeSlotId() == slot) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return true;
@@ -509,12 +363,33 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if (slot == tileEntity.getUpgradeSlotId()) {
+                if (slot == tileEntity.energy.getUpgradeSlotId()) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack) ? super.insertItem(slot, stack, simulate) : stack;
                 }
                 return super.insertItem(slot, stack, simulate);
             }
         };
+    }
+
+    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
+        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
+                handler.receiveEnergy(maxReceive, false)).orElse(0);
+    }
+
+    void sendOutPower() {
+        for (Direction dir : Direction.values()) {
+            BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+            Direction opposite = dir.getOpposite();
+            if (tileEntity != null) {
+                // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
+                int received = receiveEnergy(tileEntity, opposite, smallest);
+                energy.consumeEnergy(received);
+                if (energy.getEnergyStored() <= 0) {
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -561,56 +436,26 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * @return a VEEnergyStorage object or null if this tile is not an instance of poweredTileEntity
-     */
-    public LazyOptional<VEEnergyStorage> createEnergy() {
-        if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
-            VEEnergyStorage storage = new VEEnergyStorage(IVEPoweredTileEntity.getMaxPower(), IVEPoweredTileEntity.getTransferRate());
-            if (this instanceof IVEPowerGenerator) {
-                storage.setMaxReceive(0);
-            }
-            return LazyOptional.of(() -> storage);
-        }
-        return LazyOptional.empty();
-    }
-
-    /**
      * Call this to consume energy
      * Note that tiles now require an upgrade slot and thus an inventory to properly function here
      * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public void consumeEnergy() {
-        if (this instanceof IVEPoweredTileEntity IVEPoweredTileEntity) {
-            energy.ifPresent(e -> e
-                    .consumeEnergy(
-                            this.consumptionMultiplier(IVEPoweredTileEntity.getPowerUsage(),
-                                    getInventoryHandler().getStackInSlot(IVEPoweredTileEntity.getUpgradeSlotId()).copy())));
-        } else {
-            throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());
-        }
+        if(this.energy == null) return;
+        energy.consumeEnergy(this.consumptionMultiplier(energy.getConsumption(),energy.getUpgradeSlotId()));
     }
 
-
-    private LazyOptional<IEnergyStorage> capability;
-
     /**
-     * Like consumeEnergy this requires that the object has an inventory
-     *
-     * @return True if the object has enough energy to be able to continue
-     * Throws an error if missing the power consumeEnergy IMPL
+     * @return True if the object has enough energy to be able to continue. Or the entity doesn't run on energy
      */
     public boolean canConsumeEnergy() {
-        if (this instanceof IVEPoweredTileEntity ivePoweredTileEntity) {
-            if (ivePoweredTileEntity.getMaxPower() == 0) return true; // For tiles that do not consume power
-            if (capability == null) {
-                capability = this.getCapability(ForgeCapabilities.ENERGY, null);
-            }
-            return capability.map(IEnergyStorage::getEnergyStored).orElse(0)
-                    > this.consumptionMultiplier(ivePoweredTileEntity.getPowerUsage(), getInventoryHandler().getStackInSlot(ivePoweredTileEntity.getUpgradeSlotId()).copy());
-        } else {
-            throw new NotImplementedException("Missing implementation of IVEPoweredTileEntity in class: " + this.getClass().getName());
+        if (energy != null) {
+            if (energy.getMaxEnergyStored() == 0) return true; // For tiles that do not consume power
+            return energy.getEnergyStored()
+                    > this.consumptionMultiplier(energy.getConsumption(), energy.getUpgradeSlotId());
         }
+        return true;
     }
 
     /**
@@ -644,18 +489,19 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * USE EITHER A NEWLY CREATED ONE OR ONE OF THE createHandler's defined here
      *
      * @return a ItemStackHandler or null if the object lacks an inventory
-     * @see #createHandler(int)
-     * @see #createHandler(int, IVEPoweredTileEntity)
      */
-    public abstract @Nullable
-    ItemStackHandler getInventoryHandler();
+    public @Nullable ItemStackHandler getInventoryHandler() {
+        return this.inventory;
+    }
 
     /**
      * Important note. If the entity has no slot managers return a new ArrayList otherwise this will crash
      *
      * @return A not null List<VESlotManager> list
      */
-    public abstract @Nonnull List<VESlotManager> getSlotManagers();
+    public @Nonnull List<VESlotManager> getSlotManagers() {
+        return this.managers;
+    }
 
     /**
      * When a data packet is received load it.
@@ -665,19 +511,29 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      */
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        energy.ifPresent(e -> {
-            if (pkt.getTag() != null && pkt.getTag().contains("energy")) e.setEnergy(pkt.getTag().getInt("energy"));
-        });
+        if (energy != null && pkt.getTag() != null && pkt.getTag().contains("energy"))
+            energy.setEnergy(pkt.getTag().getInt("energy"));
         this.load(pkt.getTag());
         super.onDataPacket(net, pkt);
     }
 
-    public int progressCounterPX(int px) {
+    public int progressBurnCounterPX(int px) {
+        int counter = dataMap.get("counter");
+        int length = dataMap.get("length");
+        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;;
+        return 0;
+    }
+
+    public int progressProcessingCounterPX(int px) {
+        int counter = dataMap.get("counter");
+        int length = dataMap.get("length");
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
 
     public int progressCounterPercent() {
+        int counter = dataMap.get("counter");
+        int length = dataMap.get("length");
         if (length != 0) {
             return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
@@ -686,7 +542,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public int ticksLeft() {
-        return counter;
+        return dataMap.get("counter");
     }
 
     @Nullable
@@ -695,7 +551,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public LazyOptional<VEEnergyStorage> getEnergy() {
+    @Nullable
+    public VEEnergyStorage getEnergy() {
         return energy;
     }
 
@@ -703,68 +560,86 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.isRecipeDirty = true;
     }
 
-    public void validateRecipe() {
-        if (!this.isRecipeDirty) {
-            return;
-        }
-        this.isRecipeDirty = false;
-
-        this.potentialRecipes = RecipeCache.getFluidRecipesFromCache(level, this.getRecipeType(), getSlotManagers(), getRelationalTanks(), this, true);
-        if (this.potentialRecipes.size() == 1) {
-            List<FluidStack> inputFluids = this.getRelationalTanks().stream()
-                    .filter(tank -> tank.getTankType() == TankType.INPUT)
-                    .map(tank -> tank.getTank().getFluid()).toList();
-
-            ItemStackHandler handler = this.getInventoryHandler();
-            List<ItemStack> inputItems = new ArrayList<>();
-            if (handler != null) {
-                inputItems = this.getSlotManagers().stream()
-                        .filter(manager -> manager.getSlotType() == SlotType.INPUT)
-                        .map(manager -> manager.getItem(handler)).toList();
-            }
-            VEFluidRecipe newRecipe = RecipeCache.getFluidRecipeFromCache(level, getRecipeType(), inputFluids, inputItems);
-
-            if (newRecipe == null) {
-                counter = 0;
-                length = 0;
-                this.selectedRecipe = null;
-                return;
-            }
-
-            int newLength;
-
-            if (this instanceof IVEPoweredTileEntity poweredTileEntity && handler != null) {
-                newLength = this.calculateCounter(newRecipe.getProcessTime(),
-                        handler.getStackInSlot(poweredTileEntity.getUpgradeSlotId()).copy());
-            } else {
-                newLength = this.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
-            }
-
-
-            double ratio = (double) length / (double) newLength;
-            length = newLength;
-            counter = (int) (counter / ratio);
-
-            if (this.selectedRecipe != newRecipe) {
-                this.selectedRecipe = newRecipe;
-                counter = newLength;
-            }
-        } else {
-            counter = 0;
-            length = 0;
-            this.selectedRecipe = null;
-        }
-    }
-
-    public void doExtraRecipeProcessing() {
-
-    }
-
     public RecipeType<? extends Recipe<?>> getRecipeType() {
         return this.recipeType;
     }
 
-    public List<? extends Recipe<?>> getPotentialRecipes() {
+    public List<VEFluidRecipe> getPotentialRecipes() {
         return potentialRecipes;
+    }
+
+    void addTanks(List<VERelationalTank> tanks) {
+        this.tanks.addAll(tanks);
+    }
+
+    void addSlots(List<VESlotManager> managers) {
+        this.managers.addAll(managers);
+    }
+
+    public VEItemStackHandler getInventory() {
+        return inventory;
+    }
+
+    @Nullable
+    public VEFluidRecipe getSelectedRecipe() {
+        return selectedRecipe;
+    }
+
+    public List<VERelationalTank> getTanks() {
+        return tanks;
+    }
+
+    public List<VESlotManager> getManagers() {
+        return managers;
+    }
+
+    public boolean isFluidInputDirty() {
+        return fluidInputDirty;
+    }
+
+    public boolean isRecipeDirty() {
+        return isRecipeDirty;
+    }
+
+    public int getData(String key) {
+        return this.dataMap.getOrDefault(key,-1);
+    }
+
+    public void setData(String key, int value) {
+        this.dataMap.put(key,value);
+    }
+
+    public void setRecipeDirty(boolean dirty) {
+        this.isRecipeDirty = dirty;
+    }
+
+    public void setPotentialRecipes(List<VEFluidRecipe> recipes) {
+        this.potentialRecipes = recipes;
+    }
+
+    @Deprecated
+    void processRecipe() {
+
+    }
+
+    @Deprecated
+    void doExtraRecipeProcessing() {
+
+    }
+
+    @Deprecated
+    public void validateRecipe() {
+    }
+
+    public boolean sendsOutPower() {
+        return sendsOutPower;
+    }
+
+    public void setSendsOutPower(boolean sendsOutPower) {
+        this.sendsOutPower = sendsOutPower;
+    }
+
+    public void setSelectedRecipe(VEFluidRecipe recipe) {
+        this.selectedRecipe = recipe;
     }
 }

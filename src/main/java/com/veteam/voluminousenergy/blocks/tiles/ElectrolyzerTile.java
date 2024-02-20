@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.ElectrolyzerRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class ElectrolyzerTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
@@ -35,7 +34,7 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
         super(VEBlocks.ELECTROLYZER_TILE.get(), pos, state, ElectrolyzerRecipe.RECIPE_TYPE);
     }
 
-    public ItemStackHandler inventory = createHandler(7);
+    public ItemStackHandler inventory = new VEItemStackHandler(this,7);
 
     @Nullable
     @Override
@@ -52,26 +51,5 @@ public class ElectrolyzerTile extends VETileEntity implements IVEPoweredTileEnti
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-
-    @Override
-    public int getMaxPower() {
-        return Config.ELECTROLYZER_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.ELECTROLYZER_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.ELECTROLYZER_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 6;
     }
 }

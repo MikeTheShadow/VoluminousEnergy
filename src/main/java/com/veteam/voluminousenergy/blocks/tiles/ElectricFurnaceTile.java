@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class ElectricFurnaceTile extends VETileEntity {
 
     public VESlotManager inputSlotManager = new VESlotManager(0, Direction.UP, true, SlotType.INPUT);
     public VESlotManager outputSlotManager = new VESlotManager(1, Direction.DOWN, true, SlotType.OUTPUT);
@@ -108,7 +108,7 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
                     }
                 }
             } else {
-                counter = this.calculateCounter(200, inventory.getStackInSlot(this.getUpgradeSlotId()));
+                counter = this.calculateCounter(200, inventory.getStackInSlot(this.energy.getUpgradeSlotId()));
                 length = counter;
                 this.referenceStack.set(furnaceInput.copy());
             }
@@ -258,25 +258,5 @@ public class ElectricFurnaceTile extends VETileEntity implements IVEPoweredTileE
 
     public int getCounter() {
         return counter;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.ELECTRIC_FURNACE_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.ELECTRIC_FURNACE_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.ELECTRIC_FURNACE_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 2;
     }
 }

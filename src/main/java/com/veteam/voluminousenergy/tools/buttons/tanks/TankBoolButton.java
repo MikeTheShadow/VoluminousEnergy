@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -14,10 +14,10 @@ import net.minecraftforge.network.PacketDistributor;
 
 public class TankBoolButton extends VEIOButton {
     private boolean enable = false;
-    private RelationalTank tank;
+    private VERelationalTank tank;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public TankBoolButton(RelationalTank tank, int x, int y, Button.OnPress onPress) {
+    public TankBoolButton(VERelationalTank tank, int x, int y, Button.OnPress onPress) {
         super(x, y, 16, 15, Component.nullToEmpty(""), button -> {
             ((TankBoolButton) button).cycle();
             onPress.onPress(button);

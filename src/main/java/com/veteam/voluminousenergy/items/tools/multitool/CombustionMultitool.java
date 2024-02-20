@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 
 public class CombustionMultitool extends Multitool {
 
-    public final int TANK_CAPACITY = VETileEntity.TANK_CAPACITY;
+    public final int TANK_CAPACITY = VETileEntity.DEFAULT_TANK_CAPACITY;
 
     public CombustionMultitool(MultitoolBit bit, String registryName, Properties itemProperties) {
         super(bit, registryName, itemProperties);

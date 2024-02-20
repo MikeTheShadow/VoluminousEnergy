@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BucketInputOutputUtil {
 
-    public static void processBucketInput(ItemStack oxidizerInput, ItemStack oxidizerOutput, RelationalTank oxidizerTank, List<Fluid> rawFluidInputList, int tankCapacity, IItemHandler inventory) {
+    public static void processBucketInput(ItemStack oxidizerInput, ItemStack oxidizerOutput, VERelationalTank oxidizerTank, List<Fluid> rawFluidInputList, int tankCapacity, IItemHandler inventory) {
         // Input fluid into the oxidizer tank
         if (oxidizerInput.copy() != ItemStack.EMPTY && oxidizerOutput.copy() == ItemStack.EMPTY) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {

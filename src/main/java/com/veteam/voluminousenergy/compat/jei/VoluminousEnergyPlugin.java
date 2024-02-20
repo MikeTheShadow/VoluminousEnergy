@@ -184,18 +184,18 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CRUSHER_CONTAINER.get(), CrushingCategory.RECIPE_TYPE, 0, 1, VEContainers.CRUSHER_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.ELECTROLYZER_CONTAINER.get(), ElectrolyzingCategory.RECIPE_TYPE, 0, 2,  VEContainers.ELECTROLYZER_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.COMPRESSOR_CONTAINER.get(), CompressingCategory.RECIPE_TYPE, 0, 1, VEContainers.COMPRESSOR_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.STIRLING_GENERATOR_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2,  VEContainers.AQUEOULIZER_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.numberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CRUSHER_CONTAINER.get(), CrushingCategory.RECIPE_TYPE, 0, 1, VEContainers.CRUSHER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.ELECTROLYZER_CONTAINER.get(), ElectrolyzingCategory.RECIPE_TYPE, 0, 2,  VEContainers.ELECTROLYZER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.COMPRESSOR_CONTAINER.get(), CompressingCategory.RECIPE_TYPE, 0, 1, VEContainers.COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2,  VEContainers.AQUEOULIZER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
         registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.numberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.numberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
         // TODO: Hydroponic Incubator

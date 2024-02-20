@@ -14,11 +14,11 @@ import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
 
-    HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
-    List<RelationalTank> tanks;
+    HashMap<Integer, VERelationalTank> tankHashMap = new HashMap<>();
+    List<VERelationalTank> tanks;
     VETileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks,VETileEntity tileEntity) {
+    public MultiFluidSlotWrapper(List<VERelationalTank> tanks, VETileEntity tileEntity) {
         this.tanks = tanks;
         this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
@@ -33,7 +33,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack getFluidInTank(int tank) {
         if (tankHashMap.containsKey(tank)) {
-            RelationalTank fluidTank = tankHashMap.get(tank);
+            VERelationalTank fluidTank = tankHashMap.get(tank);
             return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
         }
         return FluidStack.EMPTY;
@@ -42,7 +42,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public int getTankCapacity(int tank) {
         if (tankHashMap.containsKey(tank)) {
-            RelationalTank fluidTank = tankHashMap.get(tank);
+            VERelationalTank fluidTank = tankHashMap.get(tank);
             return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
         }
         return 0;
@@ -50,7 +50,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        RelationalTank relationalTank = tankHashMap.get(tank);
+        VERelationalTank relationalTank = tankHashMap.get(tank);
         if(relationalTank.isAllowAny()) return true;
         for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
             VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
@@ -64,7 +64,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        for(RelationalTank tank : tanks) {
+        for(VERelationalTank tank : tanks) {
             if(tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
                 if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) return 0;
@@ -81,7 +81,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         if (resource.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        for(RelationalTank tank : tanks) {
+        for(VERelationalTank tank : tanks) {
             if(!tank.getSideStatus() && !tank.isIgnoreDirection()) continue;
             if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
                 if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
@@ -97,7 +97,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        for(RelationalTank tank : tanks) {
+        for(VERelationalTank tank : tanks) {
             if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) continue;
             if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
                 if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
@@ -110,11 +110,11 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         return FluidStack.EMPTY;
     }
 
-    public void addRelationalTank(RelationalTank tank) {
+    public void addRelationalTank(VERelationalTank tank) {
         tankHashMap.put(tank.getSlotNum(),tank);
         tanks.add(tank);
     }
-    public void removeRelationalTank(RelationalTank tank) {
+    public void removeRelationalTank(VERelationalTank tank) {
         tankHashMap.remove(tank.getSlotNum());
         tanks.remove(tank);
     }

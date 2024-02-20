@@ -112,9 +112,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, tileEntity.getMaxPower()), mouseX, mouseY);
-            }));
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
@@ -147,7 +145,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null && tileEntity.getMultiblockValidity()) {
-            int progress = tileEntity.progressCounterPX(17); // 17 vertical, 15 horz for Dimensional Laser
+            int progress = tileEntity.progressProcessingCounterPX(17); // 17 vertical, 15 horz for Dimensional Laser
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:

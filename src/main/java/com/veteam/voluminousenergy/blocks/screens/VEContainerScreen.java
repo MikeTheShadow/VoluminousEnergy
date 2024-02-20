@@ -2,7 +2,6 @@ package com.veteam.voluminousenergy.blocks.screens;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
@@ -12,7 +11,7 @@ import com.veteam.voluminousenergy.tools.buttons.tanks.TankDirectionButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.UuidPacket;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -74,7 +73,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
             increase++;
         }
 
-        for (RelationalTank tank : tileEntity.getRelationalTanks()) {
+        for (VERelationalTank tank : tileEntity.getRelationalTanks()) {
             // Input Tank
             addRenderableWidget(new TankBoolButton(tank, (this.width / 2) - 198, this.topPos + (20 * increase), button -> {
                 // Do nothing

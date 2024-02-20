@@ -1,7 +1,8 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileFactory.TileSlot;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,14 +18,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class VEContainerFactory {
     private RegistryObject<MenuType<VEContainer>> menuTypeRegistryObject;
     private RegistryObject<Block> block;
     private final List<Slot> slots = new ArrayList<>();
+    private final List<TileSlot> tileSlots = new ArrayList<>();
 
-    public int numberOfSlots() {
+    private int upgradeSlotId = -1;
+
+    public int getNumberOfSlots() {
         return VEContainerFactory.this.slots.size();
+    }
+
+    public int upgradeSlotId() {
+        return upgradeSlotId;
     }
 
     public VEContainer create(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
@@ -35,8 +44,8 @@ public class VEContainerFactory {
 
                 int energySlotId = -1;
 
-                if( this.tileEntity instanceof IVEPoweredTileEntity poweredTileEntity) {
-                    energySlotId = poweredTileEntity.getUpgradeSlotId();
+                if( this.tileEntity.getEnergy() != null) {
+                    energySlotId = this.tileEntity.getEnergy().getUpgradeSlotId();
                 }
 
                 for(int i = 0; i < slots.size(); i++) {
@@ -58,6 +67,11 @@ public class VEContainerFactory {
         };
     }
 
+    public List<VESlotManager> getTileSlotsAsManagers() {
+        AtomicInteger i = new AtomicInteger(0);
+        return tileSlots.stream().map(t -> t.asManager(i.getAndIncrement())).toList();
+    }
+
     public static class VEContainerFactoryBuilder {
 
         private VEContainerFactory factory;
@@ -69,8 +83,22 @@ public class VEContainerFactory {
             return this;
         }
 
-        public VEContainerFactoryBuilder addSlot(int index, int x, int y) {
+        private int index = 0;
+
+        public VEContainerFactoryBuilder addSlot(int x, int y) {
+            this.factory.slots.add(new Slot(index++, x, y));
+            return this;
+        }
+
+        public VEContainerFactoryBuilder addUpgradeSlot(int x, int y) {
             this.factory.slots.add(new Slot(index, x, y));
+            this.factory.upgradeSlotId = index++;
+            return this;
+        }
+
+        public VEContainerFactoryBuilder addSlot(int x, int y,TileSlot slot) {
+            this.factory.slots.add(new Slot(index++, x, y));
+            this.factory.tileSlots.add(slot);
             return this;
         }
 

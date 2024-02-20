@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class GasFiredFurnaceTile extends VETileEntity implements IVECountable {
+public class GasFiredFurnaceTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
@@ -55,9 +55,9 @@ public class GasFiredFurnaceTile extends VETileEntity implements IVECountable {
         add(new VESlotManager(3, Direction.WEST, true, SlotType.OUTPUT));
     }};
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.INPUT, "fuel_tank:fuel_tank_gui");
+    VERelationalTank fuelTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.INPUT, "fuel_tank:fuel_tank_gui");
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
     }};
 
@@ -305,7 +305,7 @@ public class GasFiredFurnaceTile extends VETileEntity implements IVECountable {
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
@@ -346,7 +346,7 @@ public class GasFiredFurnaceTile extends VETileEntity implements IVECountable {
         return false;
     }
 
-    public RelationalTank getFuelTank() {
+    public VERelationalTank getFuelTank() {
         return fuelTank;
     }
 }

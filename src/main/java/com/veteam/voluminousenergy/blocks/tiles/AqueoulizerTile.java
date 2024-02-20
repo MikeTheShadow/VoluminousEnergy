@@ -3,9 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -21,12 +20,12 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AqueoulizerTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
-    private final ItemStackHandler inventory = createHandler(6);
+public class AqueoulizerTile extends VETileEntity {
+    private final ItemStackHandler inventory = new VEItemStackHandler(this,6);
 
-    public List<RelationalTank> fluidManagers = new ArrayList<>() {{
-        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"));
-        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0,  TankType.OUTPUT, "outputTank:output_tank_gui"));
+    public List<VERelationalTank> fluidManagers = new ArrayList<>() {{
+        add(new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, 0,  TankType.INPUT, "inputTank:input_tank_gui"));
+        add(new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 1, 0,  TankType.OUTPUT, "outputTank:output_tank_gui"));
     }};
 
     public List<VESlotManager> slotManagers = new ArrayList<>(){{
@@ -44,14 +43,6 @@ public class AqueoulizerTile extends VETileEntity implements IVEPoweredTileEntit
 
     public AqueoulizerTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AQUEOULIZER_TILE.get(), pos, state, AqueoulizerRecipe.RECIPE_TYPE);
-        fluidManagers.get(0).setValidator(this, true);
-        fluidManagers.get(1).setValidator(this, false);
-    }
-
-    @Override
-    public void tick() {
-        updateClients();
-        super.tick();
     }
 
     @Nonnull
@@ -61,32 +52,12 @@ public class AqueoulizerTile extends VETileEntity implements IVEPoweredTileEntit
     }
 
     @Override
-    public @Nonnull List<RelationalTank> getRelationalTanks() {
+    public @Nonnull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.AQUEOULIZER_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.AQUEOULIZER_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.AQUEOULIZER_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 5;
     }
 }

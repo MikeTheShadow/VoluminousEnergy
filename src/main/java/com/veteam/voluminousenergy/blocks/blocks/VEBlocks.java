@@ -60,8 +60,8 @@ public class VEBlocks {
 
     //Primitive Stirling
     public static RegistryObject<Block> PRIMITIVE_STIRLING_GENERATOR_BLOCK = VE_BLOCKS_REGISTRY.register("primitivestirlinggenerator", PrimitiveStirlingGeneratorBlock::new);
-    public static RegistryObject<BlockEntityType<PrimitiveStirlingGeneratorTile>> PRIMITIVE_STIRLING_GENERATOR_TILE = VE_TILE_REGISTRY.register("primitivestirlinggenerator",
-            () -> BlockEntityType.Builder.of(PrimitiveStirlingGeneratorTile::new,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK.get()).build(null));
+    public static RegistryObject<BlockEntityType<VETileEntity>> PRIMITIVE_STIRLING_GENERATOR_TILE = VE_TILE_REGISTRY.register("primitivestirlinggenerator",
+            () -> BlockEntityType.Builder.of(VETileEntities.PRIMITIVE_STIRLING_GENERATOR_TILE_FACTORY::create,VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK.get()).build(null));
     public static RegistryObject<MenuType<VEContainer>> PRIMITIVE_STIRLING_GENERATOR_CONTAINER = VE_CONTAINER_REGISTRY.register("primitivestirlinggenerator", () ->
             IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();
@@ -130,8 +130,8 @@ public class VEBlocks {
 
     // Aqueoulizer
     public static RegistryObject<Block> AQUEOULIZER_BLOCK = VE_BLOCKS_REGISTRY.register("aqueoulizer", AqueoulizerBlock::new);
-    public static RegistryObject<BlockEntityType<AqueoulizerTile>> AQUEOULIZER_TILE = VE_TILE_REGISTRY.register("aqueoulizer",
-            () -> BlockEntityType.Builder.of(AqueoulizerTile::new,VEBlocks.AQUEOULIZER_BLOCK.get()).build(null));
+    public static RegistryObject<BlockEntityType<VETileEntity>> AQUEOULIZER_TILE = VE_TILE_REGISTRY.register("aqueoulizer",
+            () -> BlockEntityType.Builder.of(VETileEntities.AQUEOULIZER_TILE_FACTORY::create,VEBlocks.AQUEOULIZER_BLOCK.get()).build(null));
     public static RegistryObject<MenuType<VEContainer>> AQUEOULIZER_CONTAINER = VE_CONTAINER_REGISTRY.register("aqueoulizer", () ->
             IForgeMenuType.create((id, inv, data)-> {
                 BlockPos pos = data.readBlockPos();

@@ -28,15 +28,4 @@ public class PrimitiveSolarPanelTile extends VESolarTile {
     public int getGeneration(){
         return (int)(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()*this.solarIntensity());
     }
-
-    @Override
-    public int getMaxPower() {
-        return Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get();
-    }
-
-
-    @Override
-    public int getTransferRate() {
-        return Config.PRIMITIVE_SOLAR_PANEL_SEND.get();
-    }
 }

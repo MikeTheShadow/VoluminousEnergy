@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles.tank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankTile extends VETileEntity {
-    private final RelationalTank tank = new RelationalTank(new FluidTank(0), 0, TankType.BOTH, "tank:tank_gui");
+    private final VERelationalTank tank = new VERelationalTank(new FluidTank(0), 0, TankType.BOTH, "tank:tank_gui");
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
         add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
     }};
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(tank);
     }};
 
@@ -126,7 +126,7 @@ public class TankTile extends VETileEntity {
         };
     }
 
-    public RelationalTank getTank() {
+    public VERelationalTank getTank() {
         return this.tank;
     }
 
@@ -170,7 +170,7 @@ public class TankTile extends VETileEntity {
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 

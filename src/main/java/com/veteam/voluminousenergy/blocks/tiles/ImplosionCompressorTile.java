@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
+public class ImplosionCompressorTile extends VETileEntity {
 
     public VESlotManager inputSlotManager = new VESlotManager(0,0,Direction.UP,true, SlotType.INPUT);
     public VESlotManager gunpowderSlotManager = new VESlotManager(1,1, Direction.EAST, true,SlotType.INPUT);
@@ -38,7 +38,7 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
         super(VEBlocks.IMPLOSION_COMPRESSOR_TILE.get(), pos, state,ImplosionCompressorRecipe.RECIPE_TYPE);
     }
 
-    private final ItemStackHandler inventory = createHandler(4);
+    private final ItemStackHandler inventory = new VEItemStackHandler(this,4);
 
     @Nullable
     @Override
@@ -56,26 +56,6 @@ public class ImplosionCompressorTile extends VETileEntity implements IVEPoweredT
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-    
-    @Override
-    public int getMaxPower() {
-        return Config.IMPLOSION_COMPRESSOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.IMPLOSION_COMPRESSOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.IMPLOSION_COMPRESSOR_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 3;
     }
 
     @Override

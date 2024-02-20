@@ -32,7 +32,7 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<CompressorRecipe>> COMPRESSING =
                 VE_RECIPE_TYPES_REGISTRY.register("compressing", () -> new VERecipeType<>(RecipeConstants.COMPRESSING));
 
-        public static final RegistryObject<RecipeType<StirlingGeneratorRecipe>> STIRLING =
+        public static final RegistryObject<RecipeType<VEFluidRecipe>> STIRLING =
                 VE_RECIPE_TYPES_REGISTRY.register("stirling", () -> new VERecipeType<>(RecipeConstants.STIRLING));
 
         public static final RegistryObject<RecipeType<VEFluidRecipe>> OXIDIZING =

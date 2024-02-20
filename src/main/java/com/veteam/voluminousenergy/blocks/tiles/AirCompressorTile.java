@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class AirCompressorTile extends VETileEntity {
 
     public VESlotManager[] slotManagers = new VESlotManager[]{
             new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0),
@@ -40,7 +40,7 @@ public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEnt
 
     private final ItemStackHandler inventory = createHandler(3, this);
 
-    private final RelationalTank airTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, TankType.OUTPUT, "air_tank:air_tank_properties");
+    private final VERelationalTank airTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, TankType.OUTPUT, "air_tank:air_tank_properties");
 
     public AirCompressorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.AIR_COMPRESSOR_TILE.get(), pos, state, null);
@@ -82,7 +82,7 @@ public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEnt
                         level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                 }
-                counter = (byte) this.calculateCounter(20, this.inventory.getStackInSlot(this.getUpgradeSlotId()));
+                counter = (byte) this.calculateCounter(20, this.inventory.getStackInSlot(this.energy.getUpgradeSlotId()));
             }
         } else {
             counter--;
@@ -99,7 +99,7 @@ public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEnt
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (tileEntity.getUpgradeSlotId() == slot) {
+                if (tileEntity.energy.getUpgradeSlotId() == slot) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 if(slot == 0 && stack.getItem() instanceof BucketItem bucketItem) {
@@ -137,11 +137,11 @@ public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEnt
     }
 
     @Override
-    public @Nonnull List<RelationalTank> getRelationalTanks() {
+    public @Nonnull List<VERelationalTank> getRelationalTanks() {
         return Collections.singletonList(airTank);
     }
 
-    public RelationalTank getAirTank() {
+    public VERelationalTank getAirTank() {
         return this.airTank;
     }
 
@@ -153,25 +153,5 @@ public class AirCompressorTile extends VETileEntity implements IVEPoweredTileEnt
     @Override
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return List.of(slotManagers);
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.AIR_COMPRESSOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.AIR_COMPRESSOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.AIR_COMPRESSOR_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 2;
     }
 }

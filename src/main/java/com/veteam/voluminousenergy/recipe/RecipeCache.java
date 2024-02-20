@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.world.item.ItemStack;
@@ -95,16 +95,16 @@ public class RecipeCache {
         return recipeList;
     }
 
-    public static @NotNull List<VEFluidRecipe> getFluidRecipesFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<VESlotManager> slots, List<RelationalTank> tanks, VETileEntity entity, boolean ignoreEmpty) {
+    public static @NotNull List<VEFluidRecipe> getFluidRecipesFromCache(VETileEntity tile, boolean ignoreEmpty) {
 
-        var recipes = VERecipe.getCachedRecipes(type);
+        var recipes = VERecipe.getCachedRecipes(tile.getRecipeType());
 
         List<VEFluidRecipe> recipeList = new ArrayList<>();
 
         for (VERecipe recipe : recipes) {
             boolean isValid = true;
 
-            for (RelationalTank tank : tanks) {
+            for (VERelationalTank tank : tile.getTanks()) {
                 if (ignoreEmpty && tank.getTank().isEmpty()) continue;
                 if (tank.getTankType() != TankType.INPUT) continue;
                 FluidStack currentFluid = tank.getTank().getFluid();
@@ -114,9 +114,9 @@ public class RecipeCache {
                 }
             }
 
-            ItemStackHandler handler = entity.getInventoryHandler();
+            ItemStackHandler handler = tile.getInventoryHandler();
             if (handler != null) {
-                for (VESlotManager manager : slots) {
+                for (VESlotManager manager : tile.getSlotManagers()) {
                     if (manager.getSlotType() != SlotType.INPUT) continue;
                     ItemStack stack = manager.getItem(handler);
                     if (ignoreEmpty && stack.isEmpty()) continue;

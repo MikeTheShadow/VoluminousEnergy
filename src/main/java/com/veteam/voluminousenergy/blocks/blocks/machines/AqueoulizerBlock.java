@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.AqueoulizerTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -31,7 +31,7 @@ public class AqueoulizerBlock extends VEFaceableMachineBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
-        return new AqueoulizerTile(pos, state);
+        return VETileEntities.AQUEOULIZER_TILE_FACTORY.create(pos, state);
     }
 
     @Nullable

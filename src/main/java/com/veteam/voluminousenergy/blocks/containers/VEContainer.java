@@ -3,8 +3,8 @@ package com.veteam.voluminousenergy.blocks.containers;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.screens.BatteryBoxScreen;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
-import com.veteam.voluminousenergy.blocks.tiles.IVEPoweredTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -56,13 +56,14 @@ public abstract class VEContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots();
 
         // We assume if it's a powered tile entity that it requires a dataslot for energy
-        if(this.tileEntity instanceof IVEPoweredTileEntity) {
+        if(this.tileEntity.getEnergy() != null) {
             addDataSlot(new DataSlot() {
                 @Override
                 public int get() {
                     return getEnergy();
                 }
 
+                // Setting anything here seems to cause a flickering on the client
                 @Override
                 public void set(int value) {
                 }
@@ -181,8 +182,9 @@ public abstract class VEContainer extends AbstractContainerMenu {
     }
 
     public int getUpgradeSlotId(){
-        if (tileEntity instanceof IVEPoweredTileEntity){
-            return ((IVEPoweredTileEntity) tileEntity).getUpgradeSlotId();
+        VEEnergyStorage storage = this.tileEntity.getEnergy();
+        if (storage != null){
+            return storage.getUpgradeSlotId();
         }
         VoluminousEnergy.LOGGER.error("A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: " + RegistryLookups.getBlockEntityTypeKey(tileEntity.getType()));
         return 0;
@@ -196,10 +198,10 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
         VoluminousEnergy.LOGGER.info("testing!");
 
-        int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity instanceof IVEPoweredTileEntity ? 1 : 0);
+        int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity.getEnergy() != null ? 1 : 0);
 
         // TODO why is this a dangling if?
-        if(this.tileEntity instanceof IVEPoweredTileEntity){}
+        if(this.tileEntity.getEnergy() != null){}
 
         if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
@@ -242,7 +244,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         List<VESlotManager> slotManagers = this.tileEntity.getSlotManagers();
         ItemStackHandler handler = this.tileEntity.getInventoryHandler();
         int powerId = -1;
-        if(tileEntity instanceof IVEPoweredTileEntity ivePoweredTileEntity) powerId = ivePoweredTileEntity.getUpgradeSlotId();
+        if(tileEntity.getEnergy() != null) powerId = tileEntity.getEnergy().getUpgradeSlotId();
         if (stackToMove.isStackable()) {
             while (!stackToMove.isEmpty()) {
                 if (currentPos >= endPos) {

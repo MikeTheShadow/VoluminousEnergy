@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -14,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator, IVECountable {
+public class StirlingGeneratorTile extends VETileEntity {
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
     }};
@@ -51,35 +49,11 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
     @NotNull LazyOptional<IEnergyStorage> energyCap;
 
     private final int maxPower;
+
     @Override
     public void tick() {
         updateClients();
         validateRecipe();
-
-        if (counter > 0) {
-            if (energyCap.map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= maxPower) {
-                counter--;
-                energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
-            }
-            if (++sound_tick == 19) {
-                sound_tick = 0;
-                if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                    level.playSound(null, this.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-            }
-            setChanged();
-        } else if (recipe != null) {
-            if ((recipe.getEnergyPerTick() * recipe.getProcessTime()) + getEnergy().map(IEnergyStorage::getEnergyStored).orElse(0) <= maxPower) {
-                inventory.extractItem(0, recipe.getIngredientCount(0), false);
-                this.counter = recipe.getProcessTime();
-                this.energyRate = recipe.getEnergyPerTick();
-                this.length = this.counter;
-                setChanged();
-            }
-        }
-        if (counter == 0) {
-            energyRate = 0;
-        }
         sendOutPower();
     }
 
@@ -97,22 +71,20 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 
-    private void sendOutPower() {
-        energy.ifPresent(energy -> {
-            for (Direction dir : Direction.values()) {
-                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
-                Direction opposite = dir.getOpposite();
-                if (tileEntity != null) {
-                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
-                    int smallest = Math.min(Config.STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = receiveEnergy(tileEntity, opposite, smallest);
-                    energy.consumeEnergy(received);
-                    if (energy.getEnergyStored() <= 0) {
-                        break;
-                    }
+    void sendOutPower() {
+        for (Direction dir : Direction.values()) {
+            BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+            Direction opposite = dir.getOpposite();
+            if (tileEntity != null) {
+                // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                int smallest = Math.min(Config.STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
+                int received = receiveEnergy(tileEntity, opposite, smallest);
+                energy.consumeEnergy(received);
+                if (energy.getEnergyStored() <= 0) {
+                    break;
                 }
             }
-        });
+        }
     }
 
     @Override
@@ -152,8 +124,8 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(!isItemValid(slot,stack)) return stack;
-                return super.insertItem(slot,stack,simulate);
+                if (!isItemValid(slot, stack)) return stack;
+                return super.insertItem(slot, stack, simulate);
             }
         };
     }
@@ -175,35 +147,12 @@ public class StirlingGeneratorTile extends VETileEntity implements IVEPowerGener
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
     }
-    public int progressCounterPX(int px) {
+
+    public int progressBurnCounterPX(int px) {
         if (counter == 0) {
             return 0;
         } else {
             return (px * (((counter * 100) / length))) / 100;
         }
-    }
-
-    public int getEnergyRate() {
-        return energyRate;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.STIRLING_GENERATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return 0;
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.STIRLING_GENERATOR_SEND.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 0;
     }
 }

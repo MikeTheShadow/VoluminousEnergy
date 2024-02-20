@@ -3,8 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveStirlingGeneratorTile;
-import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
@@ -25,12 +24,12 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/primitivestirlinggenerator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
-    private PrimitiveStirlingGeneratorTile tileEntity;
+    private VETileEntity tileEntity;
     
 
     public PrimitiveStirlingGeneratorScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        tileEntity = (PrimitiveStirlingGeneratorTile) container.getTileEntity();
+        tileEntity = container.getTileEntity();
         container.setScreen(this);
     }
 
@@ -62,9 +61,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
     @Override
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get()), mouseX, mouseY);
-            }));
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), tileEntity.getEnergy().getMaxEnergyStored()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)){
             matrixStack.renderComponentTooltip(this.font, getTooltips(), mouseX, mouseY);
         }
@@ -79,16 +76,14 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"));
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergy().getProduction() + " FE/t"));
     }
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY){
         TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("primitivestirlinggenerator"),  8, 6, WHITE_TEXT_STYLE);
 
-        int generationRate;
-        if (tileEntity.ticksLeft() > 0) generationRate = Config.PRIMITIVE_STIRLING_GENERATOR_GENERATE.get();
-        else generationRate = 0;
+        int generationRate = tileEntity.getEnergy().getProduction();
         TextUtil.renderCenteredShadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + generationRate + " FE/t"), 90, 18, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
 
@@ -111,7 +106,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
         matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui
         if (tileEntity != null) {
             int power = menu.powerScreen(49);
-            int progress = tileEntity.progressCounterPX(14);
+            int progress = tileEntity.progressBurnCounterPX(14);
             matrixStack.blit(GUI,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
             matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
             RenderSystem.setShaderTexture(0, GUI_TOOLS);

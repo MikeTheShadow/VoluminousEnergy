@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEPowerGenerator, IVECountable {
+public class PrimitiveStirlingGeneratorTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.INPUT));
@@ -55,7 +55,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
         if (counter > 0) {
             counter--;
             if (energyCap.map(IEnergyStorage::getEnergyStored).orElse(0) < maxPower) {
-                energy.ifPresent(e -> e.addEnergy(generateAmount)); //Amount of energy to add per tick
+                energy.addEnergy(generateAmount); //Amount of energy to add per tick
             }
             if (++sound_tick == 19) {
                 sound_tick = 0;
@@ -78,29 +78,6 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
         sendOutPower();
     }
 
-    public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
-                handler.receiveEnergy(maxReceive, false)).orElse(0);
-    }
-
-    private void sendOutPower() {
-        energy.ifPresent(energy -> {
-            for (Direction dir : Direction.values()) {
-                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
-                Direction opposite = dir.getOpposite();
-                if (tileEntity != null) {
-                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
-                    int smallest = Math.min(Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = receiveEnergy(tileEntity, opposite, smallest);
-                    energy.consumeEnergy(received);
-                    if (energy.getEnergyStored() <= 0) {
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
     private ItemStackHandler createHandler() {
         return new ItemStackHandler(1) {
             @Override
@@ -118,8 +95,8 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(!isItemValid(slot,stack)) return stack;
-                return super.insertItem(slot,stack,simulate);
+                if (!isItemValid(slot, stack)) return stack;
+                return super.insertItem(slot, stack, simulate);
             }
         };
     }
@@ -144,7 +121,7 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
 
 
     // TODO check if these methods are identical to super. If they are remove them
-    public int progressCounterPX(int px) {
+    public int progressBurnCounterPX(int px) {
         if (counter == 0) {
             return 0;
         } else {
@@ -159,25 +136,5 @@ public class PrimitiveStirlingGeneratorTile extends VETileEntity implements IVEP
 
     public int getEnergyRate() {
         return 40;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return 0;
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 0;
     }
 }

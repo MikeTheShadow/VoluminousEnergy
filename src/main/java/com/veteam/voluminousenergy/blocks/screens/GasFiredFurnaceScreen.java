@@ -105,7 +105,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
         matrixStack.blit(GUI,i,j,0,0,this.imageWidth,this.imageHeight);
         final int flameHeight = 14;
         if(tileEntity!=null){
-            int progress = tileEntity.progressCounterPX(9);
+            int progress = tileEntity.progressProcessingCounterPX(9);
             int fuelProgress = tileEntity.progressFuelCounterPX(flameHeight);
 
             /*Note for this.blit below:

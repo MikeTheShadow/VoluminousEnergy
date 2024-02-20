@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
+public class SawmillTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
@@ -46,10 +46,10 @@ public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IV
         add(new VESlotManager(3, Direction.SOUTH,true,SlotType.FLUID_INPUT,4,0));
         add(new VESlotManager(4, Direction.EAST,true,SlotType.FLUID_OUTPUT));
     }};
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY),0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
+    VERelationalTank outputTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY),0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
     private final FluidStack configuredFluidForNoRecipe = new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get()))), Config.SAWMILL_FLUID_AMOUNT.get());
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
     }};
 
@@ -95,7 +95,7 @@ public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IV
 
                 if (plankOutputStack != null){ // Valid Item!
                     if (this.configuredFluidForNoRecipe != null
-                            && (outputTank.getTank().getFluidAmount() + Config.SAWMILL_FLUID_AMOUNT.get()) <= TANK_CAPACITY
+                            && (outputTank.getTank().getFluidAmount() + Config.SAWMILL_FLUID_AMOUNT.get()) <= DEFAULT_TANK_CAPACITY
                             && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
                             && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
                             && (inventory.getStackInSlot(1).getCount() + Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()) <= 64
@@ -124,7 +124,7 @@ public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IV
                 secondOutputStack = recipe.getResult(1).copy();
                 FluidStack outputFluid = recipe.getOutputFluid(0).copy();
 
-                if ((outputTank.getTank().getFluidAmount() + outputFluid.getAmount()) <= TANK_CAPACITY
+                if ((outputTank.getTank().getFluidAmount() + outputFluid.getAmount()) <= DEFAULT_TANK_CAPACITY
                         && (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(1).getItem() == plankOutputStack.getItem())
                         && (inventory.getStackInSlot(2).isEmpty() || inventory.getStackInSlot(2).getItem() == secondOutputStack.getItem())
                         && (inventory.getStackInSlot(1).getCount() + recipe.getResult(0).getCount()) <= 64
@@ -238,8 +238,8 @@ public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IV
                 }
             } else {
                 counter = VEFluidSawmillRecipe != null
-                                ? this.calculateCounter(VEFluidSawmillRecipe.getProcessTime(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy())    // Sawmill recipe not null
-                                : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());// Use default values when null
+                                ? this.calculateCounter(VEFluidSawmillRecipe.getProcessTime(), inventory.getStackInSlot(this.energy.getUpgradeSlotId()).copy())    // Sawmill recipe not null
+                                : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(this.energy.getUpgradeSlotId()).copy());// Use default values when null
                 length = counter;
             }
         }
@@ -259,28 +259,8 @@ public class SawmillTile extends VETileEntity implements IVEPoweredTileEntity,IV
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.SAWMILL_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.SAWMILL_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.SAWMILL_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 5;
     }
 
     @Override

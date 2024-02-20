@@ -71,9 +71,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.FLUID_ELECTROLYZER_MAX_POWER.get()), mouseX, mouseY);
-            }));
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.FLUID_ELECTROLYZER_MAX_POWER.get()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
@@ -118,7 +116,7 @@ public class FluidElectrolyzerScreen extends VEContainerScreen<VEContainer> {
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(9);
+            int progress = tileEntity.progressProcessingCounterPX(9);
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:

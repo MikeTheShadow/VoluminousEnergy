@@ -112,9 +112,7 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.BATTERY_BOX_MAX_POWER.get()), mouseX, mouseY);
-            }));
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.BATTERY_BOX_MAX_POWER.get()), mouseX, mouseY);
         }
 
         if (isHovering(10,4,15,10, mouseX, mouseY)){

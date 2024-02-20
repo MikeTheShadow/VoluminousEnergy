@@ -111,7 +111,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
         if(tileEntity != null){
-            int progress = tileEntity.progressCounterPX(24);
+            int progress = tileEntity.progressProcessingCounterPX(24);
             /*Note for this.blit below:
                 x = starting x for blit on screen
                 y = starting y for blit on screen

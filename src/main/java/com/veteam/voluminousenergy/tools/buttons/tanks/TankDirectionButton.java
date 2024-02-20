@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
 import com.veteam.voluminousenergy.util.IntToDirection;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,11 +16,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.PacketDistributor;
 
 public class TankDirectionButton extends VEIOButton {
-    private RelationalTank tank;
+    private VERelationalTank tank;
     private Direction direction;
     private final ResourceLocation texture = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/crushergui.png");
 
-    public TankDirectionButton(RelationalTank tank, int x, int y, OnPress onPress) {
+    public TankDirectionButton(VERelationalTank tank, int x, int y, OnPress onPress) {
         super(x, y, 96, 20, Component.nullToEmpty(""), button -> {
             ((TankDirectionButton) button).cycle();
             onPress.onPress(button);

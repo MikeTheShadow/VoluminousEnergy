@@ -10,7 +10,7 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class CombustionGeneratorTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -55,10 +55,10 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
     private final int tankCapacity = 4000;
 
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
-    List<RelationalTank> fluidManagers = new ArrayList<>() {
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {
         {
-            add(new RelationalTank(new FluidTank(tankCapacity), 0, 0, TankType.INPUT, "oxidizerTank:oxidizer_tank_gui"));
-            add(new RelationalTank(new FluidTank(tankCapacity), 1, 0, TankType.INPUT, "fuelTank:fuel_tank_gui"));
+            add(new VERelationalTank(new FluidTank(tankCapacity), 0, 0, TankType.INPUT, "oxidizerTank:oxidizer_tank_gui"));
+            add(new VERelationalTank(new FluidTank(tankCapacity), 1, 0, TankType.INPUT, "fuelTank:fuel_tank_gui"));
         }
     };
     private int energyRate;
@@ -69,11 +69,11 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
         fluidManagers.get(0).getTank().setValidator(fluid -> {
             List<VERecipe> recipes = CombustionGeneratorFuelRecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluid));
+            return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(fluid));
         });
         fluidManagers.get(1).getTank().setValidator(fluid -> {
             List<VERecipe> recipes = CombustionGeneratorOxidizerRecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluid));
+            return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(fluid));
         });
     }
 
@@ -95,7 +95,7 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
             }
             if (energyCapability.map(IEnergyStorage::getEnergyStored).orElse(0) + energyRate <= Config.COMBUSTION_GENERATOR_MAX_POWER.get()) {
                 counter--;
-                energy.ifPresent(e -> e.addEnergy(energyRate)); //Amount of energy to add per tick
+                energy.addEnergy(energyRate); //Amount of energy to add per tick
                 if (++sound_tick == 19) {
                     sound_tick = 0;
                     if (Config.PLAY_MACHINE_SOUNDS.get()) {
@@ -161,22 +161,20 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
                 handler.receiveEnergy(maxReceive, false)).orElse(0);
     }
 
-    private void sendOutPower() {
-        energy.ifPresent(energy -> {
-            for (Direction dir : Direction.values()) {
-                BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
-                Direction opposite = dir.getOpposite();
-                if (tileEntity != null) {
-                    // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
-                    int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
-                    int received = receiveEnergy(tileEntity, opposite, smallest);
-                    energy.consumeEnergy(received);
-                    if (energy.getEnergyStored() <= 0) {
-                        break;
-                    }
+    void sendOutPower() {
+        for (Direction dir : Direction.values()) {
+            BlockEntity tileEntity = level.getBlockEntity(getBlockPos().relative(dir));
+            Direction opposite = dir.getOpposite();
+            if (tileEntity != null) {
+                // If less energy stored then max transfer send the all the energy stored rather than the max transfer amount
+                int smallest = Math.min(Config.COMBUSTION_GENERATOR_SEND.get(), energy.getEnergyStored());
+                int received = receiveEnergy(tileEntity, opposite, smallest);
+                energy.consumeEnergy(received);
+                if (energy.getEnergyStored() <= 0) {
+                    break;
                 }
             }
-        });
+        }
     }
 
     private ItemStackHandler createHandler() {
@@ -190,16 +188,16 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
 
-                if(stack.getItem() instanceof BucketItem bucketItem) {
+                if (stack.getItem() instanceof BucketItem bucketItem) {
                     Fluid fluid = bucketItem.getFluid();
-                    if(fluid.isSame(Fluids.EMPTY)) return true;
-                    FluidStack testFluid = new FluidStack(fluid,COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
-                    if(slot == 0) {
+                    if (fluid.isSame(Fluids.EMPTY)) return true;
+                    FluidStack testFluid = new FluidStack(fluid, COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
+                    if (slot == 0) {
                         List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(testFluid));
-                    } else if(slot == 2) {
+                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(testFluid));
+                    } else if (slot == 2) {
                         List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(testFluid));
+                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(testFluid));
                     }
                     return true;
                 }
@@ -224,7 +222,8 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
     }
-    public int progressCounterPX(int px) {
+
+    public int progressBurnCounterPX(int px) {
         if (counter == 0) {
             return 0;
         } else {
@@ -246,31 +245,11 @@ public class CombustionGeneratorTile extends VETileEntity implements IVEPoweredT
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
     }
 
     public int getEnergyRate() {
         return energyRate;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.COMBUSTION_GENERATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return -1;
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.COMBUSTION_GENERATOR_SEND.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return -1;
     }
 }

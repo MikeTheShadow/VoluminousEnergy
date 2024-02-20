@@ -76,9 +76,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
     @Override
     protected void renderTooltip(GuiGraphics matrixStack,int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-            tileEntity.getEnergy().ifPresent((veEnergyStorage -> {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(veEnergyStorage, Config.PUMP_MAX_POWER.get()), mouseX, mouseY);
-            }));
+                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PUMP_MAX_POWER.get()), mouseX, mouseY);
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank

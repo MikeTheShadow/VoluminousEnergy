@@ -3,9 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CentrifugalAgitatorRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -23,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalAgitatorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class CentrifugalAgitatorTile extends VETileEntity {
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
@@ -34,16 +33,17 @@ public class CentrifugalAgitatorTile extends VETileEntity implements IVEPoweredT
         add(new VESlotManager(5, Direction.WEST, true, SlotType.FLUID_OUTPUT));
     }};
 
-    public List<RelationalTank> fluidManagers = new ArrayList<>() {{
-        add(new RelationalTank(new FluidTank(TANK_CAPACITY), 0, 0, TankType.INPUT, "inputTank:input_tank_gui"));
-                add(new RelationalTank(new FluidTank(TANK_CAPACITY), 1, 0, TankType.OUTPUT,  "outputTank0:output_tank_0_gui"));
-                add(new RelationalTank(new FluidTank(TANK_CAPACITY), 2, 1, TankType.OUTPUT, "outputTank1:output_tank_1_gui"));
+    public List<VERelationalTank> fluidManagers = new ArrayList<>() {{
+        add(new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, 0, TankType.INPUT, "inputTank:input_tank_gui"));
+        add(new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 1, 0, TankType.OUTPUT, "outputTank0:output_tank_0_gui"));
+        add(new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 2, 1, TankType.OUTPUT, "outputTank1:output_tank_1_gui"));
     }};
+
     public CentrifugalAgitatorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.CENTRIFUGAL_AGITATOR_TILE.get(), pos, state, CentrifugalAgitatorRecipe.RECIPE_TYPE);
     }
 
-    public ItemStackHandler inventory = createHandler(7);
+    public ItemStackHandler inventory = new VEItemStackHandler(this, 7);
 
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
@@ -53,11 +53,6 @@ public class CentrifugalAgitatorTile extends VETileEntity implements IVEPoweredT
     @Override
     public void tick() {
         super.tick();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 6;
     }
 
     @Nonnull
@@ -73,22 +68,7 @@ public class CentrifugalAgitatorTile extends VETileEntity implements IVEPoweredT
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.CENTRIFUGAL_AGITATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.CENTRIFUGAL_AGITATOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.CENTRIFUGAL_AGITATOR_TRANSFER.get();
     }
 }

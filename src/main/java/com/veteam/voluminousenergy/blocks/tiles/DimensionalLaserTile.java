@@ -10,7 +10,7 @@ import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.WorldUtil;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class DimensionalLaserTile extends VEMultiBlockTileEntity {
 
     public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT,1,0);
     public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
@@ -54,9 +54,9 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         add(RFIDsm);
     }};
 
-    RelationalTank outputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
+    VERelationalTank outputTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
     }};
 
@@ -75,7 +75,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
         this.RFIDsm.addAllowedItem(VEItems.RFID_CHIP.get());
     }
 
-    public ItemStackHandler inventory = createHandler(4);
+    public ItemStackHandler inventory = new VEItemStackHandler(this,4);
 
     @Override
     public void tick() {
@@ -153,11 +153,11 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
                     SingleChunkFluid fluid = fluidFromPos.getFluids().get(0);
 
-                    if (super.canConsumeEnergy() && outputTank.getTank().getFluidAmount() < TANK_CAPACITY) {
+                    if (super.canConsumeEnergy() && outputTank.getTank().getFluidAmount() < DEFAULT_TANK_CAPACITY) {
                         if (counter == 1) {
 
                             if (outputTank.isFluidValid(fluid.getFluid())) {
-                                int fillSize = Math.min(fluid.getAmount(), TANK_CAPACITY - outputTank.getTank().getFluidAmount());
+                                int fillSize = Math.min(fluid.getAmount(), DEFAULT_TANK_CAPACITY - outputTank.getTank().getFluidAmount());
                                 fillSize = Math.min(fillSize, fluid.getAmount());
                                 outputTank.getTank().fill(new FluidStack(fluid.getFluid(), fillSize), IFluidHandler.FluidAction.EXECUTE);
                             }
@@ -168,7 +168,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
                             counter--;
                             consumeEnergy();
                         } else {
-                            int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.getUpgradeSlotId()).copy());
+                            int counterTemp = this.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(), inventory.getStackInSlot(this.energy.getUpgradeSlotId()).copy());
                             counter = counterTemp != 0 ? counterTemp : 1;
                             length = counter;
                         }
@@ -219,7 +219,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
     @Nonnull
     @Override
-    public List<RelationalTank> getRelationalTanks() {
+    public List<VERelationalTank> getRelationalTanks() {
         return this.fluidManagers;
     }
 
@@ -255,26 +255,6 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity implements IVEP
 
     public void resetTickTimer() {
         this.tickTimer = 0;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.DIMENSIONAL_LASER_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.DIMENSIONAL_LASER_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.DIMENSIONAL_LASER_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 3;
     }
 
     @Override

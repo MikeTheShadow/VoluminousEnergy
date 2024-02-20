@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class CompressorTile extends VETileEntity {
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
@@ -39,7 +39,7 @@ public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity
         super(VEBlocks.COMPRESSOR_TILE.get(), pos, state, null);
     }
 
-    private final ItemStackHandler inventory = createHandler(3);
+    private final ItemStackHandler inventory = new VEItemStackHandler(this,3);
 
     @Nullable
     @Override
@@ -56,26 +56,6 @@ public class CompressorTile extends VETileEntity implements IVEPoweredTileEntity
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.COMPRESSOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.COMPRESSOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.COMPRESSOR_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 2;
     }
 
     @Override

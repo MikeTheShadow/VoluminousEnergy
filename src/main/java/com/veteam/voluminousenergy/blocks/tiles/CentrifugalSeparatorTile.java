@@ -20,8 +20,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalSeparatorTile extends VETileEntity implements IVEPoweredTileEntity,IVECountable {
-    private final ItemStackHandler handler = createHandler(7);
+public class CentrifugalSeparatorTile extends VETileEntity {
+    private final ItemStackHandler handler = new VEItemStackHandler(this,7);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
         add(new VESlotManager(0,0, Direction.UP,true, SlotType.INPUT));
@@ -51,25 +51,5 @@ public class CentrifugalSeparatorTile extends VETileEntity implements IVEPowered
     @Override
     public List<VESlotManager> getSlotManagers() {
         return slotManagers;
-    }
-    
-    @Override
-    public int getMaxPower() {
-        return Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.CENTRIFUGAL_SEPARATOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 6;
     }
 }

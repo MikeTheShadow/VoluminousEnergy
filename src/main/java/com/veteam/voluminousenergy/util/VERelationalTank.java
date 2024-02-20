@@ -15,7 +15,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelationalTank {
+public class VERelationalTank {
 
     FluidTank tank;
     int slotNum;
@@ -34,12 +34,12 @@ public class RelationalTank {
      */
     private String nbt;
 
-    public RelationalTank() {
+    public VERelationalTank() {
 
     }
 
     @Deprecated
-    public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, String nbt) {
+    public VERelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.input = input;
@@ -49,7 +49,7 @@ public class RelationalTank {
     }
 
     @Deprecated
-    public RelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
+    public VERelationalTank(FluidTank tank, int slotNum, ItemStack input, ItemStack output, TankType tankType, int id, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.input = input;
@@ -59,7 +59,7 @@ public class RelationalTank {
         this.nbt = nbt;
     }
 
-    public RelationalTank(FluidTank tank, int slotNum,int recipePos, TankType tankType, String nbt) {
+    public VERelationalTank(FluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;
@@ -67,7 +67,7 @@ public class RelationalTank {
         this.nbt = nbt;
     }
 
-    public RelationalTank(FluidTank tank, int slotNum, TankType tankType, String nbt) {
+    public VERelationalTank(FluidTank tank, int slotNum, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;

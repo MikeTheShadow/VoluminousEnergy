@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
@@ -19,18 +19,17 @@ import java.util.List;
 public class VEItemStackHandler extends ItemStackHandler {
 
     private final VETileEntity tileEntity;
-    private final int slots;
     private final int upgradeSlotLocation;
 
     public VEItemStackHandler(VETileEntity tileEntity,int slots) {
+        super(slots);
         this.tileEntity = tileEntity;
-        this.slots = slots;
         upgradeSlotLocation = -1;
     }
 
     public VEItemStackHandler(VETileEntity tileEntity,int slots,int upgradeSlotLocation) {
+        super(slots);
         this.tileEntity = tileEntity;
-        this.slots = slots;
         this.upgradeSlotLocation = upgradeSlotLocation;
     }
 
@@ -57,7 +56,7 @@ public class VEItemStackHandler extends ItemStackHandler {
         if(manager.getAllowedItems().contains(stack.getItem())) return true;
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
             if (bucketItem.getFluid() == Fluids.EMPTY) return true;
-            RelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
+            VERelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
             if(tank.getTankType() == TankType.OUTPUT) {
                 return bucketItem.getFluid().isSame(Fluids.EMPTY);
             }

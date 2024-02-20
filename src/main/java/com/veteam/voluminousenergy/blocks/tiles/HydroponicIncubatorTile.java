@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -33,9 +33,9 @@ import java.util.Random;
 
 import static net.minecraft.util.Mth.abs;
 
-public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredTileEntity, IVECountable {
+public class HydroponicIncubatorTile extends VETileEntity {
 
-    private final ItemStackHandler inventory = createHandler(8);
+    private final ItemStackHandler inventory = new VEItemStackHandler(this, 8);
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -49,9 +49,9 @@ public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredT
         }
     };
 
-    RelationalTank inputTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.INPUT, "inputTank:input_tank_gui");
+    VERelationalTank inputTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.INPUT, "inputTank:input_tank_gui");
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {
         {
             add(inputTank);
         }
@@ -102,7 +102,7 @@ public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredT
 
             if (counter == 1) {
                 // Validate output
-                for (RelationalTank relationalTank : getRelationalTanks()) {
+                for (VERelationalTank relationalTank : getRelationalTanks()) {
                     if (relationalTank.getTankType() == TankType.OUTPUT) {
                         FluidStack recipeFluid = recipe.getOutputFluid(relationalTank.getRecipePos());
                         FluidTank tank = relationalTank.getTank();
@@ -159,7 +159,7 @@ public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredT
                 }
 
                 // process recipe
-                for (RelationalTank relationalTank : getRelationalTanks()) {
+                for (VERelationalTank relationalTank : getRelationalTanks()) {
                     if (relationalTank.getTankType() == TankType.OUTPUT) {
                         relationalTank.fillOutput(recipe,relationalTank.getRecipePos());
                     } else if(relationalTank.getTankType() == TankType.INPUT) {
@@ -185,27 +185,7 @@ public class HydroponicIncubatorTile extends VETileEntity implements IVEPoweredT
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return this.fluidManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.HYDROPONIC_INCUBATOR_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.HYDROPONIC_INCUBATOR_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.HYDROPONIC_INCUBATOR_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 7;
     }
 }

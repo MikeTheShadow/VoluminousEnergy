@@ -16,7 +16,7 @@ import java.util.List;
 
 public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
-    public static final RecipeType<StirlingGeneratorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
+    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
 
     public StirlingGeneratorRecipe() {
     }

@@ -9,9 +9,8 @@ import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGenerato
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
@@ -39,7 +38,7 @@ import java.util.List;
 
 import static com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool.isCombustibleFuel;
 
-public class ToolingStationTile extends VETileEntity implements IVEPoweredTileEntity {
+public class ToolingStationTile extends VETileEntity  {
 
     // Slot Managers
     List<VESlotManager> slotManagers = new ArrayList<>() {{
@@ -50,9 +49,9 @@ public class ToolingStationTile extends VETileEntity implements IVEPoweredTileEn
         add(new VESlotManager(4, Direction.EAST, true, SlotType.INPUT));
     }};
 
-    RelationalTank fuelTank = new RelationalTank(new FluidTank(TANK_CAPACITY), 0, null, null, TankType.INPUT, "fuel_tank:fuel_tank_gui");
+    VERelationalTank fuelTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, null, null, TankType.INPUT, "fuel_tank:fuel_tank_gui");
 
-    List<RelationalTank> fluidManagers = new ArrayList<>() {{
+    List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
     }};
 
@@ -229,32 +228,12 @@ public class ToolingStationTile extends VETileEntity implements IVEPoweredTileEn
         return FluidStack.EMPTY;
     }
 
-    public RelationalTank getInputTank() {
+    public VERelationalTank getInputTank() {
         return this.fuelTank;
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return fluidManagers;
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.TOOLING_STATION_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() { // Tooling Station atm doesn't use power. Transfer to recharge electric tools (if support added) should be capped by this#getTransferRate();
-        return 0;
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.TOOLING_STATION_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 0;
     }
 }

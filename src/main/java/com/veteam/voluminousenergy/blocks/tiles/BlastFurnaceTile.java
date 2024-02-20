@@ -3,9 +3,8 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
-import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.RelationalTank;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
 import net.minecraft.core.BlockPos;
@@ -24,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPoweredTileEntity, IVECountable {
+public class BlastFurnaceTile extends VEMultiBlockTileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {
         {
@@ -36,13 +35,13 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
         }
     };
 
-    RelationalTank[] fluidManagers = new RelationalTank[]{
-            new RelationalTank(new FluidTank(TANK_CAPACITY), 0,0, TankType.INPUT, "heatTank:heat_tank_gui")
+    VERelationalTank[] fluidManagers = new VERelationalTank[]{
+            new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.INPUT, "heatTank:heat_tank_gui")
     };
 
     private byte tick = 19;
 
-    public ItemStackHandler inventory = createHandler(6);
+    public ItemStackHandler inventory = new VEItemStackHandler(this,6);
 
     @Override
     public @Nonnull ItemStackHandler getInventoryHandler() {
@@ -104,27 +103,7 @@ public class BlastFurnaceTile extends VEMultiBlockTileEntity implements IVEPower
     }
 
     @Override
-    public @NotNull List<RelationalTank> getRelationalTanks() {
+    public @NotNull List<VERelationalTank> getRelationalTanks() {
         return List.of(fluidManagers);
-    }
-
-    @Override
-    public int getMaxPower() {
-        return Config.BLAST_FURNACE_MAX_POWER.get();
-    }
-
-    @Override
-    public int getPowerUsage() {
-        return Config.BLAST_FURNACE_POWER_USAGE.get();
-    }
-
-    @Override
-    public int getTransferRate() {
-        return Config.BLAST_FURNACE_TRANSFER.get();
-    }
-
-    @Override
-    public int getUpgradeSlotId() {
-        return 5;
     }
 }
