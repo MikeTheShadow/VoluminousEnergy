@@ -62,9 +62,9 @@ public class ToolingStationContainer extends VEContainer {
 
     @Override
     protected void addSlotsToGUI(IItemHandler h) {
-        addSlot(new VEBucketSlot(h, 0, 38, 18)); // Fluid input slot
+        addSlot(new VEBucketSlot(h, 0, 38, 18)); // Fluid input tilePos
         addSlot(new VEBucketSlot(h, 1, 38, 49)); // Extract fluid from input
-        addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool slot
+        addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool tilePos
         addSlot(new VEInsertSlot(h, 3, 134, 18)); // Bit Slot
         addSlot(new VEInsertSlot(h, 4, 134,49)); // Base Slot
         addSlot(new VEInsertSlot(h, 5,154, -14)); // Upgrade Slot
@@ -86,8 +86,8 @@ public class ToolingStationContainer extends VEContainer {
                     }
                 } else if (!this.slots.get(3).hasItem()
                         && !this.slots.get(4).hasItem()
-                        && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool slot id is 2
-                    // Place the main machine in the main result slot
+                        && !moveItemStackTo(slotStack, 2, 3, false)) { // Multitool tilePos id is 2
+                    // Place the main machine in the main result tilePos
                     return ItemStack.EMPTY;
                 }
             }

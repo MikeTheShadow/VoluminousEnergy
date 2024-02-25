@@ -1,6 +1,9 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -53,23 +56,20 @@ public class VEItemStackHandler extends ItemStackHandler {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (slot == upgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
-        if(manager.getAllowedItems().contains(stack.getItem())) return true;
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
             if (bucketItem.getFluid() == Fluids.EMPTY) return true;
             VERelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
             if(tank.getTankType() == TankType.OUTPUT) {
                 return bucketItem.getFluid().isSame(Fluids.EMPTY);
             }
-            for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                if (veFluidRecipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
+            for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
+                if (recipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
                     return true;
                 }
             }
         } else if (manager.getSlotType() == SlotType.INPUT) {
-            for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                if (veFluidRecipe.getIngredient(manager.getRecipePos()).test(stack)) {
+            for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
+                if(recipe.getParser().canInsertItem(slot,stack)) {
                     return true;
                 }
             }

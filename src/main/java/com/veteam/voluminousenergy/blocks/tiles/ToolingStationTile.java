@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -72,7 +72,7 @@ public class ToolingStationTile extends VETileEntity  {
         super(VEBlocks.TOOLING_STATION_TILE.get(), pos, state, null);
     }
 
-    VEFluidRecipe fuelRecipe;
+    VERecipe fuelRecipe;
 
     @Override
     public void tick() {

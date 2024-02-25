@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -96,7 +96,7 @@ public class HydroponicIncubatorTile extends VETileEntity {
     @Override
     void processRecipe() {
         if (selectedRecipe == null) return;
-        VEFluidRecipe recipe = (VEFluidRecipe) selectedRecipe;
+        VERecipe recipe = selectedRecipe;
 
         if (canConsumeEnergy()) {
 

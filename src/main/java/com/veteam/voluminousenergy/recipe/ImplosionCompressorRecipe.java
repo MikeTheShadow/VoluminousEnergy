@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImplosionCompressorRecipe extends VERecipe {
@@ -21,7 +22,7 @@ public class ImplosionCompressorRecipe extends VERecipe {
     }
 
     public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
-        super(ingredients, results, processTime);
+        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>() {

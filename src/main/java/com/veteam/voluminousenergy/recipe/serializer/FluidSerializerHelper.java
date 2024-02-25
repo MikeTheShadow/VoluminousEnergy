@@ -1,8 +1,9 @@
-package com.veteam.voluminousenergy.util.recipe;
+package com.veteam.voluminousenergy.recipe.serializer;
 
 import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FluidSerializerHelper<T extends VEFluidRecipe> {
+public class FluidSerializerHelper<T extends VERecipe> {
 
     @Nullable
     public T fromNetwork(T recipe, FriendlyByteBuf buffer) {

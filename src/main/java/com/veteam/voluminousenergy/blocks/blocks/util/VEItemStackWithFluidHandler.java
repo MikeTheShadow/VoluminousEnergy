@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.blocks.util;
 
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.TagUtil;
@@ -17,7 +17,7 @@ public class VEItemStackWithFluidHandler extends ItemStackHandler {
     private final VESlotManager[] managers;
     private final VERelationalTank[] relationalTanks;
     private final Class<?> recipeType;
-    private VEFluidRecipe recipe;
+    private VERecipe recipe;
     private final Level level;
     private final int upgradeSlot;
 

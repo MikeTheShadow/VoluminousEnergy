@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VEEnergyRecipe extends VEFluidRecipe {
+public abstract class VEEnergyRecipe extends VERecipe {
 
     private int energyPerTick;
 

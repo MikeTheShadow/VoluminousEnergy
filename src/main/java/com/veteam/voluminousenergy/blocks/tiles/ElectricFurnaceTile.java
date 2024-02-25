@@ -88,7 +88,7 @@ public class ElectricFurnaceTile extends VETileEntity {
                     //LOGGER.debug("About to insert in pt1: " + newOutputStack);
                     inventory.insertItem(1, newOutputStack.copy(), false); // CRASH the game if this is not empty!
 
-                } else { // Assuming the recipe output item is already in the output slot
+                } else { // Assuming the recipe output item is already in the output tilePos
                     // Simply change the item to equal the output amount
                     furnaceOutput.setCount(Objects.requireNonNullElse(furnaceRecipe, blastingRecipe).getResultItem(level.registryAccess()).getCount());
                     //LOGGER.debug("About to insert in pt2: " + furnaceOutput);

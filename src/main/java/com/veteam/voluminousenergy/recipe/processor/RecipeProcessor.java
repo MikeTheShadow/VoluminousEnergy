@@ -6,4 +6,6 @@ public interface RecipeProcessor {
 
     void processRecipe(VETileEntity tile);
 
+    void validateRecipe(VETileEntity tile);
+
 }

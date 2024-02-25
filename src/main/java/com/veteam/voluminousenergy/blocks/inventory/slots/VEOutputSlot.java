@@ -14,8 +14,8 @@ public class VEOutputSlot extends SlotItemHandler {
 
     /*
     We override this and return false since no item can
-    be valid in an output slot. This is to prevent
-    users from putting anything in the output slot
+    be valid in an output tilePos. This is to prevent
+    users from putting anything in the output tilePos
      */
 
     @Override // mayPlace, as in, you may place it if it's valid. (MCP: isItemValid)

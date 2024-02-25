@@ -17,10 +17,10 @@ import javax.annotation.Nullable;
 public class TextUtil {
 
     // Slots
-    public static Component TRANSLATED_INPUT_SLOT = TextUtil.translateString("slot.voluminousenergy.input_slot");
-    public static Component TRANSLATED_OUTPUT_SLOT = TextUtil.translateString("slot.voluminousenergy.output_slot");
-    public static Component TRANSLATED_RNG_SLOT = TextUtil.translateString("slot.voluminousenergy.rng_slot");
-    public static Component TRANSLATED_BUCKET_SLOT = TextUtil.translateString("slot.voluminousenergy.bucket_slot");
+    public static Component TRANSLATED_INPUT_SLOT = TextUtil.translateString("tilePos.voluminousenergy.input_slot");
+    public static Component TRANSLATED_OUTPUT_SLOT = TextUtil.translateString("tilePos.voluminousenergy.output_slot");
+    public static Component TRANSLATED_RNG_SLOT = TextUtil.translateString("tilePos.voluminousenergy.rng_slot");
+    public static Component TRANSLATED_BUCKET_SLOT = TextUtil.translateString("tilePos.voluminousenergy.bucket_slot");
 
     // Tanks
     public static Component TRANSLATED_INPUT_TANK = TextUtil.translateString("tank.voluminousenergy.input_tank");

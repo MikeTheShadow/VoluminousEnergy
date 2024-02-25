@@ -5,7 +5,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public abstract class VEFluidRNGRecipe extends VEFluidRecipe {
+public abstract class VEFluidRNGRecipe extends VERecipe {
 
     public List<Float> rngValues;
     public List<VERecipeCodecs.VEChancedItemWithCount> itemResultsWithChance;

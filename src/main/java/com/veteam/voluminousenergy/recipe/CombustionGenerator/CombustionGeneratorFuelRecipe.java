@@ -2,10 +2,10 @@ package com.veteam.voluminousenergy.recipe.CombustionGenerator;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -16,8 +16,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
+public class CombustionGeneratorFuelRecipe extends VERecipe {
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
     private int volumetricEnergy;
 
     public CombustionGeneratorFuelRecipe() {
@@ -61,7 +61,7 @@ public class CombustionGeneratorFuelRecipe extends VEFluidRecipe {
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
 
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+    public @NotNull RecipeType<VERecipe> getType(){return RECIPE_TYPE;}
 
     public int getVolumetricEnergy() {return volumetricEnergy;}
 

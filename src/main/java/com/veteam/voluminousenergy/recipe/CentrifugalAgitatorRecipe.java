@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_AGITATING.get();
+public class CentrifugalAgitatorRecipe extends VERecipe {
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_AGITATING.get();
 
     public CentrifugalAgitatorRecipe() {
     }
@@ -25,36 +25,36 @@ public class CentrifugalAgitatorRecipe extends VEFluidRecipe {
         super(List.of(), fi, of, List.of(), processTime);
     }
 
-    public static final RecipeSerializer<CentrifugalAgitatorRecipe> SERIALIZER = new RecipeSerializer<>() {
+    public static final RecipeSerializer<VERecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CentrifugalAgitatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final Codec<VERecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, CentrifugalAgitatorRecipe::new));
 
-        private static final FluidSerializerHelper<CentrifugalAgitatorRecipe> helper = new FluidSerializerHelper<>();
+        private static final FluidSerializerHelper<VERecipe> helper = new FluidSerializerHelper<>();
 
         @Nullable
         @Override
-        public CentrifugalAgitatorRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+        public VERecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
             return helper.fromNetwork(new CentrifugalAgitatorRecipe(), buffer);
         }
 
         @Override
-        public @NotNull Codec<CentrifugalAgitatorRecipe> codec() {
+        public @NotNull Codec<VERecipe> codec() {
             return VE_RECIPE_CODEC;
         }
 
         @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CentrifugalAgitatorRecipe recipe) {
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull VERecipe recipe) {
             helper.toNetwork(buffer, recipe);
         }
     };
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType() {
+    public @NotNull RecipeType<VERecipe> getType() {
         return RECIPE_TYPE;
     }
 

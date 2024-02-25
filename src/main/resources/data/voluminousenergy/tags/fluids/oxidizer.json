@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "voluminousenergy:compressed_air",
+    "voluminousenergy:oxygen",
+    "voluminousenergy:dinitrogen_tetroxide"
+  ]
+}

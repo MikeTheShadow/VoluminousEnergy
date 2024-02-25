@@ -48,7 +48,7 @@ public class PrimitiveStirlingGeneratorScreen extends VEContainerScreen<VEContai
 
         }));
 
-        // Input slot
+        // Input tilePos
         addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(0), (this.width/2)-198, this.topPos, button->{
             // Do nothing
         }));

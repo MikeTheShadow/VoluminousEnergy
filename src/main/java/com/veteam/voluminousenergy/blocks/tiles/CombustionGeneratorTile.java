@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -69,18 +69,18 @@ public class CombustionGeneratorTile extends VETileEntity {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
         fluidManagers.get(0).getTank().setValidator(fluid -> {
             List<VERecipe> recipes = CombustionGeneratorFuelRecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(fluid));
+            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
         });
         fluidManagers.get(1).getTank().setValidator(fluid -> {
             List<VERecipe> recipes = CombustionGeneratorOxidizerRecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(fluid));
+            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
         });
     }
 
     private LazyOptional<IEnergyStorage> energyCapability = null;
 
-    VEFluidRecipe oxidizerRecipe;
-    VEFluidRecipe fuelRecipe;
+    VERecipe oxidizerRecipe;
+    VERecipe fuelRecipe;
 
     @Override
     public void tick() {
@@ -194,10 +194,10 @@ public class CombustionGeneratorTile extends VETileEntity {
                     FluidStack testFluid = new FluidStack(fluid, COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
                     if (slot == 0) {
                         List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(testFluid));
+                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
                     } else if (slot == 2) {
                         List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> ((VEFluidRecipe) r).getFluidIngredient(0).test(testFluid));
+                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
                     }
                     return true;
                 }

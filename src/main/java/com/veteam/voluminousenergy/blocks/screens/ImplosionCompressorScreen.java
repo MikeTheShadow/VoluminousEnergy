@@ -134,7 +134,7 @@ public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 78, j + 31, 176, 0, progress, 17);
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
         }
-        // Upgrade slot
+        // Upgrade tilePos
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
         drawIOSideHelper();

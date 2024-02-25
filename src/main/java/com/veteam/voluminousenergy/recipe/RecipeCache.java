@@ -40,11 +40,10 @@ public class RecipeCache {
     }
 
     @Nullable
-    public static VEFluidRecipe getFluidRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<FluidStack> fluids, List<ItemStack> items) {
+    public static VERecipe getFluidRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<FluidStack> fluids, List<ItemStack> items) {
 
         var recipes = VERecipe.getCachedRecipes(type);
-        for (VERecipe r : recipes) {
-            VEFluidRecipe recipe = (VEFluidRecipe) r;
+        for (VERecipe recipe : recipes) {
             boolean isValid = true;
 
             for (int i = 0; i < fluids.size(); i++) {
@@ -95,11 +94,11 @@ public class RecipeCache {
         return recipeList;
     }
 
-    public static @NotNull List<VEFluidRecipe> getFluidRecipesFromCache(VETileEntity tile, boolean ignoreEmpty) {
+    public static @NotNull List<VERecipe> getFluidRecipesFromCache(VETileEntity tile, boolean ignoreEmpty) {
 
         var recipes = VERecipe.getCachedRecipes(tile.getRecipeType());
 
-        List<VEFluidRecipe> recipeList = new ArrayList<>();
+        List<VERecipe> recipeList = new ArrayList<>();
 
         for (VERecipe recipe : recipes) {
             boolean isValid = true;
@@ -108,7 +107,7 @@ public class RecipeCache {
                 if (ignoreEmpty && tank.getTank().isEmpty()) continue;
                 if (tank.getTankType() != TankType.INPUT) continue;
                 FluidStack currentFluid = tank.getTank().getFluid();
-                if (!((VEFluidRecipe) recipe).getFluidIngredient(tank.getRecipePos()).test(currentFluid)) {
+                if (!recipe.getFluidIngredient(tank.getRecipePos()).test(currentFluid)) {
                     isValid = false;
                     break;
                 }
@@ -128,7 +127,7 @@ public class RecipeCache {
                 }
             }
 
-            if (isValid) recipeList.add((VEFluidRecipe) recipe);
+            if (isValid) recipeList.add(recipe);
         }
         return recipeList;
     }

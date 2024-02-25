@@ -3,7 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -15,15 +16,25 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class AqueoulizerRecipe extends VEFluidRecipe {
+public class AqueoulizerRecipe extends VERecipe {
 
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
+
+    private final RecipeParser parser;
 
     public AqueoulizerRecipe() {
+        parser = RecipeParser.forRecipe(this)
+                .addIngredient(new RecipeParser.SlotAndRecipePos(4, 0))
+                .addFluidIngredient(new RecipeParser.SlotAndRecipePos(0, 0))
+                .addFluidResult(new RecipeParser.SlotAndRecipePos(1, 0));
     }
 
     public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
         super(i, fi, of, List.of(), processTime);
+        parser = RecipeParser.forRecipe(this)
+                .addIngredient(new RecipeParser.SlotAndRecipePos(4, 0))
+                .addFluidIngredient(new RecipeParser.SlotAndRecipePos(0, 0))
+                .addFluidResult(new RecipeParser.SlotAndRecipePos(1, 0));
     }
 
     public static final RecipeSerializer<AqueoulizerRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -35,12 +46,12 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, AqueoulizerRecipe::new));
 
-        private static final FluidSerializerHelper<AqueoulizerRecipe> helper = new FluidSerializerHelper<>();
+        private static final FluidSerializerHelper helper = new FluidSerializerHelper();
 
         @Nullable
         @Override
         public AqueoulizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new AqueoulizerRecipe(), buffer);
+            return (AqueoulizerRecipe) helper.fromNetwork(new AqueoulizerRecipe(), buffer);
         }
 
         @Override
@@ -56,16 +67,23 @@ public class AqueoulizerRecipe extends VEFluidRecipe {
 
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType() {
+    public @NotNull RecipeType<VERecipe> getType() {
         return RECIPE_TYPE;
     }
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
+    }
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
     }
 }
 

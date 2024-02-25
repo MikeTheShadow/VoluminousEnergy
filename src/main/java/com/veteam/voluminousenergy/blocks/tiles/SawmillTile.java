@@ -168,7 +168,7 @@ public class SawmillTile extends VETileEntity {
                 } else if (slot == 3 || slot == 4) {
                     return stack.getItem() instanceof BucketItem;
                 } else if (slot == 5){
-                    return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade slot
+                    return TagUtil.isTaggedMachineUpgradeItem(stack); // this is the upgrade tilePos
                 }
                 return true;
             }
@@ -200,7 +200,7 @@ public class SawmillTile extends VETileEntity {
                         currentPlankStack.setCount(1);
                     }
                     inventory.insertItem(1, resolvedPlankOutput.copy(), false);
-                } else { // Assuming the recipe output item is already in the output slot
+                } else { // Assuming the recipe output item is already in the output tilePos
                    // currentPlankStack.setCount(.getCount()); // Simply change the item to equal the output amount
                     inventory.insertItem(1, resolvedPlankOutput.copy(),false); // Place the new output item on top of the old one
                 }
@@ -212,7 +212,7 @@ public class SawmillTile extends VETileEntity {
                         currentSecondOutput.setCount(1);
                     }
                     inventory.insertItem(2, secondItemOutput.copy(), false);
-                } else { // Assuming the recipe output item is already in the output slot
+                } else { // Assuming the recipe output item is already in the output tilePos
                     //currentSecondOutput.setCount(secondItemOutput.getCount()); // Simply change the item to equal the output amount
                     inventory.insertItem(2, secondItemOutput.copy(),false); // Place the new output item on top of the old one
                 }

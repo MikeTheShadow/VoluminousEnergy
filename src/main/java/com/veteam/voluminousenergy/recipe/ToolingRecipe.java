@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
-import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
@@ -29,7 +29,7 @@ public class ToolingRecipe extends VERecipe {
     }
 
     public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
-        super(i, oi, 0);
+        super(i,new ArrayList<>(),new ArrayList<>(), oi, 0);
 
         this.bits = Lazy.of(() -> {
             ArrayList<Item> foundBits = new ArrayList<>();

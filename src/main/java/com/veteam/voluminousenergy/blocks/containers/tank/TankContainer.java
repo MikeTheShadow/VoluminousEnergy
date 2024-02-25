@@ -26,8 +26,8 @@ public class TankContainer extends VEContainer {
 
     @Override
     public void addSlotsToGUI(IItemHandler h) {
-        addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top slot
-        addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom slot
+        addSlot(new VEInsertSlot(h, 0, 70, 19)); // Bucket top tilePos
+        addSlot(new VEInsertSlot(h, 1, 70, 50)); // Bucket bottom tilePos
     }
 
     @Nonnull

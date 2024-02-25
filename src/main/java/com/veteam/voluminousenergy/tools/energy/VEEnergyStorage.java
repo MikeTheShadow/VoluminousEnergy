@@ -117,5 +117,8 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         return capacity;
     }
 
+    public boolean isFullyCharged() {
+        return this.capacity == this.energy;
+    }
 
 }

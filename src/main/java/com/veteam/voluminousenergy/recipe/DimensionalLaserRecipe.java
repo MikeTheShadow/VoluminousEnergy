@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.util.ServerSideOnly;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -21,9 +21,9 @@ import java.util.List;
 
 import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.*;
 
-public class DimensionalLaserRecipe extends VEFluidRecipe {
+public class DimensionalLaserRecipe extends VERecipe {
 
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
 
     @ServerSideOnly
     private ClimateData climateData;
@@ -145,7 +145,7 @@ public class DimensionalLaserRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType() {
+    public @NotNull RecipeType<VERecipe> getType() {
         return RECIPE_TYPE;
     }
 

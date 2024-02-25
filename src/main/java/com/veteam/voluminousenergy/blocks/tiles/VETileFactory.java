@@ -1,9 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.RecipeProcessor;
-import com.veteam.voluminousenergy.recipe.validator.RecipeValidator;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -29,14 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class VETileFactory {
     private List<TileTank> tanks = new ArrayList<>();
-    private RegistryObject<RecipeType<VEFluidRecipe>> recipeType;
+    private RegistryObject<RecipeType<VERecipe>> recipeType;
     private final RegistryObject<BlockEntityType<VETileEntity>> tileRegistry;
     private final VEContainerFactory containerFactory;
     private VEEnergyStorage storage;
 
     private final HashMap<String,Integer> dataMap = new HashMap<>();
     private RecipeProcessor processor;
-    private RecipeValidator validator;
     private boolean sendsOutPower = false;
 
     public VETileFactory(RegistryObject<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
@@ -51,6 +49,9 @@ public class VETileFactory {
             @Nullable
             @Override
             public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
+                // This fixes a race condition issue where the client doesn't have the recipe cache built yet
+                this.markFluidInputDirty();
+                this.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
         };
@@ -62,12 +63,11 @@ public class VETileFactory {
         // Populate the data map
         newTile.dataMap.putAll(dataMap);
 
-        // Set energy before the slot count otherwise we'll run into issues with the data slot
+        // Set energy before the tilePos count otherwise we'll run into issues with the data tilePos
         newTile.energy = storage.copy();
 
         //set processor
         newTile.recipeProcessor = processor;
-        newTile.recipeValidator = validator;
 
         // send out power
         newTile.sendsOutPower = sendsOutPower;
@@ -80,7 +80,7 @@ public class VETileFactory {
         return newTile;
     }
 
-    public VETileFactory withRecipe(RegistryObject<RecipeType<VEFluidRecipe>> recipe) {
+    public VETileFactory withRecipe(RegistryObject<RecipeType<VERecipe>> recipe) {
         this.recipeType = recipe;
         return this;
     }
@@ -100,7 +100,7 @@ public class VETileFactory {
     public VETileFactory addUpgradeSlot(int upgradeSlotId) {
 
         if (storage == null)
-            throw new IllegalStateException("Attempted to add upgrade slot without first adding energy storage!");
+            throw new IllegalStateException("Attempted to add upgrade tilePos without first adding energy storage!");
 
         storage.setUpgradeSlotId(upgradeSlotId);
         return this;
@@ -132,9 +132,8 @@ public class VETileFactory {
         return this;
     }
 
-    public VETileFactory withRecipeProcessing(RecipeProcessor processor, RecipeValidator recipeValidator) {
+    public VETileFactory withRecipeProcessing(RecipeProcessor processor) {
         this.processor = processor;
-        this.validator = recipeValidator;
         return this;
     }
 
@@ -150,6 +149,13 @@ public class VETileFactory {
         }
     }
 
+    public record InputSlot(Direction direction) implements TileSlot {
+        @Override
+        public VESlotManager asManager(int id) {
+            return new VESlotManager(id, direction, true, SlotType.INPUT);
+        }
+    }
+
     public record ItemOutputSlot(Direction direction,int recipePos) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
@@ -157,7 +163,7 @@ public class VETileFactory {
         }
     }
 
-    public record BucketInputSlot(Direction direction, int tankId) implements TileSlot {
+    public record BucketInputSlot(Direction direction,int tankId) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
             return new VESlotManager(id, direction, true, SlotType.FLUID_INPUT, id + 1, tankId);

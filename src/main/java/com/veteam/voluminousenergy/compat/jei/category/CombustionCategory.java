@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -104,8 +104,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
             CombustionGeneratorOxidizerRecipe oxidizerRecipe = null;
 
-            for(VERecipe veFluidRecipe : recipes) {
-                if(veFluidRecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
+            for(VERecipe VERecipe : recipes) {
+                if(VERecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
                     if(cor.getFluidIngredient(0).test(oxiStack.get())) {
                         oxidizerRecipe = cor;
                     }
@@ -160,7 +160,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
         for (VERecipe oxidizerRecipe : VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
-            oxiStacks.addAll(Arrays.asList(((VEFluidRecipe)oxidizerRecipe).getFluidIngredient(0).getFluids()));
+            oxiStacks.addAll(Arrays.asList(oxidizerRecipe.getFluidIngredient(0).getFluids()));
         }
 
         oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);

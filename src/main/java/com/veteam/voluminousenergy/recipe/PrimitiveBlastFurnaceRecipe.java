@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +13,7 @@ import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
@@ -23,7 +24,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     }
 
     public PrimitiveBlastFurnaceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
-        super(ingredients, results, processTime);
+        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>() {

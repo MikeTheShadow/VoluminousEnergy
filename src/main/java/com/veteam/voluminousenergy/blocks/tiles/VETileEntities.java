@@ -4,11 +4,11 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileFactory.FluidInputTank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileFactory.FluidOutputTank;
+import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
+import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.recipe.processor.FluidItemProcessor;
-import com.veteam.voluminousenergy.recipe.processor.GeneratorItemProcessor;
-import com.veteam.voluminousenergy.recipe.validator.FluidItemValidator;
-import com.veteam.voluminousenergy.recipe.validator.GeneratorItemValidator;
+import com.veteam.voluminousenergy.recipe.processor.DefaultProcessor;
+import com.veteam.voluminousenergy.recipe.processor.GeneratorProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 
 public class VETileEntities {
@@ -26,7 +26,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(VERecipes.VERecipeTypes.AQUEOULIZING)
-                    .withRecipeProcessing(new FluidItemProcessor(),new FluidItemValidator());
+                    .withRecipeProcessing(new DefaultProcessor());
 
     public static final VETileFactory PRIMITIVE_STIRLING_GENERATOR_TILE_FACTORY =
             new VETileFactory(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE,VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY)
@@ -37,5 +37,5 @@ public class VETileEntities {
                     .makesSound()
                     .sendsOutPower()
                     .withRecipe(VERecipes.VERecipeTypes.STIRLING)
-                    .withRecipeProcessing(new GeneratorItemProcessor(true,4),new GeneratorItemValidator());
+                    .withRecipeProcessing(new GeneratorProcessor(true,4));
 }

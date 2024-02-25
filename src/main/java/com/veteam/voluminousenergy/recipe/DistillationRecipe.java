@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DistillationRecipe extends VEFluidRNGRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
 
     public DistillationRecipe() {
     }
@@ -55,12 +55,12 @@ public class DistillationRecipe extends VEFluidRNGRecipe {
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
-    
+
     @Override
     public @NotNull ItemStack getToastSymbol(){
         return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get());
     }
 
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType(){return RECIPE_TYPE;}
+    public @NotNull RecipeType<VERecipe> getType(){return RECIPE_TYPE;}
 }

@@ -3,23 +3,42 @@ package com.veteam.voluminousenergy.recipe.processor;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VEEnergyRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.sounds.SoundSource;
 import org.apache.commons.lang3.NotImplementedException;
 
-public class GeneratorItemProcessor implements RecipeProcessor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class GeneratorProcessor implements RecipeProcessor {
 
     private int divisor = 1;
     private boolean allowOverflow = false;
 
-    public GeneratorItemProcessor(boolean allowOverflow,int divisor) {
+    public GeneratorProcessor(boolean allowOverflow, int divisor) {
         this.allowOverflow = allowOverflow;
         this.divisor = divisor;
     }
 
-    public GeneratorItemProcessor() {
+    public GeneratorProcessor(int divisor) {
+        this.divisor = divisor;
+    }
+
+    @Override
+    public void validateRecipe(VETileEntity tile) {
+        if (!tile.isRecipeDirty()) {
+            return;
+        }
+        tile.setRecipeDirty(false);
+        List<VERecipe> potentialRecipes = VERecipe.getPotentialRecipes(tile);
+        tile.setPotentialRecipes(potentialRecipes);
+        if (tile.getPotentialRecipes().size() == 1) {
+            tile.setSelectedRecipe(VERecipe.getCompleteRecipe(tile));
+        }
     }
 
     @Override
@@ -48,11 +67,20 @@ public class GeneratorItemProcessor implements RecipeProcessor {
             }
             tile.setChanged();
         } else if (counter == 0) {
-            if (tile.getSelectedRecipe() instanceof VEEnergyRecipe recipe) {
-                tile.getInventory().extractItem(0, recipe.getIngredientCount(0), false);
-                tile.setData("counter", recipe.getProcessTime());
-                tile.getEnergy().setProduction(recipe.getEnergyPerTick() / divisor);
-                tile.setData("length", recipe.getProcessTime());
+            if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
+                RecipeParser parser = veEnergyRecipe.getParser();
+                if(!parser.canCompleteRecipe(tile)) return;
+                // Check to see if the energy produced will overflow the tile
+                if(tile.getEnergy().isFullyCharged()) return;
+
+                VoluminousEnergy.LOGGER.info("recipe completed!");
+
+                // Since we're a generator we want to subtract the amounts at the start rather than at the end
+                veEnergyRecipe.getParser().completeRecipe(tile);
+
+                tile.setData("counter", veEnergyRecipe.getProcessTime());
+                tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
+                tile.setData("length", veEnergyRecipe.getProcessTime());
                 tile.setSelectedRecipe(null);
                 tile.setChanged();
             } else {

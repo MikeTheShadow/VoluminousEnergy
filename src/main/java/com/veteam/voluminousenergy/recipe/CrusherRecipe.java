@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
         public static final Codec<CrusherRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.resultsWithChance),
+                VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 VERecipeCodecs.VE_EXPERIENCE_RANGE_CODEC.fieldOf("experience").forGetter((getter) -> getter.experience)
         ).apply(instance, CrusherRecipe::new));

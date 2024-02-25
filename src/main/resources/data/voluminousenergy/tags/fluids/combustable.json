@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "voluminousenergy:crude_oil",
+    "voluminousenergy:liquefied_coke",
+    "voluminousenergy:liquefied_coal",
+    "voluminousenergy:nitroglycerin",
+    "voluminousenergy:biofuel",
+    "voluminousenergy:treethanol",
+    "voluminousenergy:naphtha",
+    "voluminousenergy:gasoline",
+    "voluminousenergy:light_fuel",
+    "voluminousenergy:diesel"
+  ]
+}

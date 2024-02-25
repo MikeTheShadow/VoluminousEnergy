@@ -78,7 +78,7 @@ public class FluidIngredient {
         return this.fluidStacks;
     }
 
-    public int getCount() {
+    public int getAmountNeeded() {
         return getFluids()[0].getAmount();
     }
 

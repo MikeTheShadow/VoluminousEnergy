@@ -119,7 +119,7 @@ public class SawmillScreen extends VEContainerScreen<VEContainer> {
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 138, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
-            // Upgrade slot
+            // Upgrade tilePos
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
         }

@@ -1,11 +1,11 @@
 package com.veteam.voluminousenergy.util;
 
 public enum SlotType {
-    INPUT("slot.voluminousenergy.input_slot"),
-    OUTPUT("slot.voluminousenergy.output_slot"),
-    UPGRADE("slot.voluminousenergy.upgrade_slot"),
-    FLUID_INPUT("slot.voluminousenergy.input_slot",true),
-    FLUID_OUTPUT("slot.voluminousenergy.output_slot",true);
+    INPUT("tilePos.voluminousenergy.input_slot"),
+    OUTPUT("tilePos.voluminousenergy.output_slot"),
+    UPGRADE("tilePos.voluminousenergy.upgrade_slot"),
+    FLUID_INPUT("tilePos.voluminousenergy.input_slot",true),
+    FLUID_OUTPUT("tilePos.voluminousenergy.output_slot",true);
     private final String translationKey;
     private boolean isFluidBucketIORelated = false;
     private

@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.VERelationalTank;
@@ -214,7 +214,7 @@ public class GasFiredFurnaceTile extends VETileEntity {
                     if (fluid.isSame(Fluids.EMPTY)) return true;
                     FluidStack fluidStack = new FluidStack(bucketItem.getFluid(), 1000);
                     return VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)
-                            .stream().anyMatch(r -> ((VEFluidRecipe)r).getFluidIngredient(0).test(fluidStack));
+                            .stream().anyMatch(r -> r.getFluidIngredient(0).test(fluidStack));
                 } else if (slot == 2) {
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null
                             || level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(stack), level).orElse(null) != null;

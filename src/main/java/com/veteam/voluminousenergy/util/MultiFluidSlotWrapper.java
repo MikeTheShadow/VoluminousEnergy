@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,9 +52,8 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         VERelationalTank relationalTank = tankHashMap.get(tank);
         if(relationalTank.isAllowAny()) return true;
-        for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-            VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-            if (veFluidRecipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
+        for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
+            if (recipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
                 return true;
             }
         }

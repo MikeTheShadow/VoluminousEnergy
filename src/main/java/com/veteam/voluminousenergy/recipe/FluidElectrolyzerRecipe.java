@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.FluidSerializerHelper;
+import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FluidElectrolyzerRecipe extends VEFluidRecipe {
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_ELECTROLYZING.get();
+public class FluidElectrolyzerRecipe extends VERecipe {
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_ELECTROLYZING.get();
 
     public FluidElectrolyzerRecipe() {
     }
@@ -58,7 +58,7 @@ public class FluidElectrolyzerRecipe extends VEFluidRecipe {
     }
 
     @Override
-    public @NotNull RecipeType<VEFluidRecipe> getType() {
+    public @NotNull RecipeType<VERecipe> getType() {
         return RECIPE_TYPE;
     }
 

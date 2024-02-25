@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -84,7 +84,7 @@ public class VERelationalTank {
      * @param id     The ID which is mapped to the output fluid id in the arraylist for the recipes outputfluids
      * @return true if the fluid can be inserted into the tank
      */
-    public boolean canInsertOutputFluid(VEFluidRecipe recipe, int id) {
+    public boolean canInsertOutputFluid(VERecipe recipe, int id) {
         return (this.getTank().isEmpty() || this.tank.getFluid().equals(recipe.getOutputFluids().get(id)))
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
@@ -94,7 +94,7 @@ public class VERelationalTank {
      * @param id     The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
      *               especially if there are multiple outputs
      */
-    public void fillOutput(VEFluidRecipe recipe, int id) {
+    public void fillOutput(VERecipe recipe, int id) {
 
         FluidStack stack = recipe.getOutputFluid(id);
 
@@ -103,20 +103,6 @@ public class VERelationalTank {
         } else {
             this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
-    }
-
-    public void setValidator(VETileEntity tileEntity,boolean isInput) {
-        this.tank.setValidator(t -> {
-            for(Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                if(isInput && veFluidRecipe.getFluidIngredient(this.getRecipePos()).test(t))  {
-                    return true;
-                } else if(veFluidRecipe.getOutputFluid(this.getRecipePos()).isFluidEqual(t)) {
-                    return true;
-                }
-            }
-            return false;
-        });
     }
 
     /**
@@ -128,7 +114,7 @@ public class VERelationalTank {
      * @param recipe The recipe to pull the input from
      * @param id     The id of the input fluid
      */
-    public void drainInput(VEFluidRecipe recipe, int id) {
+    public void drainInput(VERecipe recipe, int id) {
         this.tank.drain(recipe.getFluidIngredients().get(id).getFluids()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
     }
 

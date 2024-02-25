@@ -2,9 +2,10 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VERNGExperienceRecipe extends VERNGRecipe {
+public abstract class VERNGExperienceRecipe extends VEFluidRNGRecipe {
 
     @Deprecated
     public int minExp;
@@ -18,7 +19,7 @@ public abstract class VERNGExperienceRecipe extends VERNGRecipe {
     }
 
     public VERNGExperienceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.VEChancedItemWithCount> results, int processTime, VERecipeCodecs.VERecipeExperience experience) {
-        super(ingredients, results, processTime);
+        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
         this.experience = experience;
         this.minExp = experience.minimum();
         this.maxExp = experience.maximum();

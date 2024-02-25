@@ -1,10 +1,11 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
-import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.RecipeProcessor;
-import com.veteam.voluminousenergy.recipe.validator.RecipeValidator;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -53,14 +54,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     VEItemStackHandler inventory;
     private final RecipeType<? extends Recipe<?>> recipeType;
-    VEFluidRecipe selectedRecipe = null;
-    List<VEFluidRecipe> potentialRecipes = new ArrayList<>();
+    VERecipe selectedRecipe = null;
+    List<VERecipe> potentialRecipes = new ArrayList<>();
 
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
     final HashMap<String,Integer> dataMap = new HashMap<>();
     RecipeProcessor recipeProcessor;
-    RecipeValidator recipeValidator;
     boolean sendsOutPower;
 
     public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {
@@ -101,7 +101,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
 
-    //use for when the input and output slot are different
+    //use for when the input and output tilePos are different
     public void outputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
@@ -186,8 +186,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void tick() {
         processFluidIO();
         updateClients();
-        if(this.recipeValidator != null) recipeValidator.validateRecipe(this);
-        if(this.recipeProcessor != null) recipeProcessor.processRecipe(this);
+
+        if(this.recipeProcessor != null) {
+            if(this.isRecipeDirty) {
+                recipeProcessor.validateRecipe(this);
+                this.isRecipeDirty = false;
+            }
+            recipeProcessor.processRecipe(this);
+        }
         if(this.sendsOutPower) sendOutPower();
     }
 
@@ -273,7 +279,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Loads inventory, energy, slot managers, counter, and length.
+     * Loads inventory, energy, tilePos managers, counter, and length.
      *
      * @param tag CompoundTag
      */
@@ -306,7 +312,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Saves inventory, energy, slot managers, counter, and length.
+     * Saves inventory, energy, tilePos managers, counter, and length.
      * To save the tile call setChanged();
      *
      * @param tag CompoundTag
@@ -345,6 +351,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         super.setChanged();
     }
 
+    @Deprecated
     public ItemStackHandler createHandler(int size, VETileEntity tileEntity) {
         return new ItemStackHandler(size) {
             @Override
@@ -354,7 +361,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (tileEntity.energy.getUpgradeSlotId() == slot) {
+                if (tileEntity.energy != null && tileEntity.energy.getUpgradeSlotId() == slot) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack);
                 }
                 return true;
@@ -363,7 +370,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if (slot == tileEntity.energy.getUpgradeSlotId()) {
+                if (tileEntity.energy != null && slot == tileEntity.energy.getUpgradeSlotId()) {
                     return TagUtil.isTaggedMachineUpgradeItem(stack) ? super.insertItem(slot, stack, simulate) : stack;
                 }
                 return super.insertItem(slot, stack, simulate);
@@ -372,8 +379,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY, from).map(handler ->
-                handler.receiveEnergy(maxReceive, false)).orElse(0);
+        if(tileEntity instanceof VETileEntity tile && tile.energy != null) {
+            return tile.energy.receiveEnergy(maxReceive,false);
+        }
+        return 0;
     }
 
     void sendOutPower() {
@@ -393,8 +402,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * @param status boolean status of the slot
-     * @param slotId int id of the slot
+     * @param status boolean status of the tilePos
+     * @param slotId int id of the tilePos
      */
     public void updatePacketFromGui(boolean status, int slotId) {
         for (VESlotManager slot : getSlotManagers()) {
@@ -437,8 +446,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     /**
      * Call this to consume energy
-     * Note that tiles now require an upgrade slot and thus an inventory to properly function here
-     * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
+     * Note that tiles now require an upgrade tilePos and thus an inventory to properly function here
+     * If you need to consume energy WITHOUT an upgrade tilePos make a new method that does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public void consumeEnergy() {
@@ -495,12 +504,16 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Important note. If the entity has no slot managers return a new ArrayList otherwise this will crash
+     * Important note. If the entity has no tilePos managers return a new ArrayList otherwise this will crash
      *
      * @return A not null List<VESlotManager> list
      */
     public @Nonnull List<VESlotManager> getSlotManagers() {
         return this.managers;
+    }
+
+    public @Nonnull ItemStack getStackInSlot(int slot) {
+        return this.getSlotManagers().get(slot).getItem(this.inventory);
     }
 
     /**
@@ -564,7 +577,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return this.recipeType;
     }
 
-    public List<VEFluidRecipe> getPotentialRecipes() {
+    public List<VERecipe> getPotentialRecipes() {
         return potentialRecipes;
     }
 
@@ -581,12 +594,20 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     @Nullable
-    public VEFluidRecipe getSelectedRecipe() {
+    public VERecipe getSelectedRecipe() {
         return selectedRecipe;
     }
 
     public List<VERelationalTank> getTanks() {
         return tanks;
+    }
+
+    public VERelationalTank getTank(int id) {
+        return tanks.get(id);
+    }
+
+    public int getTankCapacity(int id) {
+        return this.tanks.get(id).getTank().getCapacity();
     }
 
     public List<VESlotManager> getManagers() {
@@ -613,7 +634,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.isRecipeDirty = dirty;
     }
 
-    public void setPotentialRecipes(List<VEFluidRecipe> recipes) {
+    public void setPotentialRecipes(List<VERecipe> recipes) {
         this.potentialRecipes = recipes;
     }
 
@@ -639,7 +660,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.sendsOutPower = sendsOutPower;
     }
 
-    public void setSelectedRecipe(VEFluidRecipe recipe) {
+    public void setSelectedRecipe(VERecipe recipe) {
         this.selectedRecipe = recipe;
     }
 }

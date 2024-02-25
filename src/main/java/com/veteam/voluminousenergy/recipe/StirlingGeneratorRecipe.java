@@ -3,7 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.util.recipe.IngredientSerializerHelper;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -16,13 +17,19 @@ import java.util.List;
 
 public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
-    public static final RecipeType<VEFluidRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
+
+    private final RecipeParser parser;
 
     public StirlingGeneratorRecipe() {
+        parser = RecipeParser.forRecipe(this)
+                .addIngredient(new RecipeParser.SlotAndRecipePos(0,0));
     }
 
     public StirlingGeneratorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, int processTime, int energy_per_tick) {
         super(ingredients, processTime, energy_per_tick);
+        parser = RecipeParser.forRecipe(this)
+                .addIngredient(new RecipeParser.SlotAndRecipePos(0,0));
     }
 
     public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -68,4 +75,8 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get());
     }
 
+    @Override
+    public RecipeParser getParser() {
+        return parser;
+    }
 }
