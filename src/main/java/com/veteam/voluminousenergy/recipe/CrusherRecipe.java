@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.RNGRecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,7 +18,12 @@ import java.util.List;
 
 public class CrusherRecipe extends VERNGExperienceRecipe {
 
-    public static final RecipeType<CrusherRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
+
+    private final RecipeParser parser = RNGRecipeParser.forRecipe(this)
+            .addChancedItemResult(2,1)
+            .addIngredient(4, 0)
+            .addItemResult(0, 1);
 
     public CrusherRecipe() {
     }
@@ -56,6 +63,12 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
+    }
+
     @Override
     public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;

@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.HydroponicIncubatorRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -132,8 +132,8 @@ public class HydroponicIncubatorTile extends VETileEntity {
                         }
                     }
 
-                    VEFluidRNGRecipe irngRecipe = null;
-                    if(recipe instanceof VEFluidRNGRecipe rec) {
+                    VERNGRecipe irngRecipe = null;
+                    if(recipe instanceof VERNGRecipe rec) {
                         irngRecipe = rec;
                     }
                     Random r = new Random();

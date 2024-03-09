@@ -4,9 +4,8 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -35,12 +34,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFuelRecipe> {
+public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRecipe> {
 
     private final IDrawable background;
     private final IDrawable icon;
     private final IDrawable slotDrawable;
-    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorFuelRecipe.class);
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorRecipe.class);
 
     public CombustionCategory(IGuiHelper guiHelper){
         // 68, 12 | 40, 65 -> 10 px added for chance
@@ -71,7 +70,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void draw(CombustionGeneratorFuelRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY){
+    public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY){
 
         // Volumetric Energy label
         TextUtil.renderShadowedText(
@@ -151,7 +150,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
 
     }
 
-    public void ingredientHandler(CombustionGeneratorFuelRecipe recipe,
+    public void ingredientHandler(CombustionGeneratorRecipe recipe,
                                   IIngredientAcceptor fuelAcceptor,
                                   IIngredientAcceptor oxidizerAcceptor) {
 
@@ -169,7 +168,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorFu
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull CombustionGeneratorFuelRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull CombustionGeneratorRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Init
         IRecipeSlotBuilder fuel = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 18, 36);
         IRecipeSlotBuilder oxidizer = recipeLayout.addSlot(RecipeIngredientRole.CATALYST, 86, 36);

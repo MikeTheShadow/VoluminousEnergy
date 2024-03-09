@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -36,7 +37,7 @@ public class CrusherBlock extends VEFaceableMachineBlock {
 
     // NEW TICK SYSTEM
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createCrusherTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends CrusherTile> crusherTile) {
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createCrusherTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> crusherTile) {
         return level.isClientSide ? null : createTickerHelper(passedBlockEntity, crusherTile, CrusherTile::serverTick);
     }
 

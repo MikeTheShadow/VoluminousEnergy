@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.RNGRecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,9 +17,18 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrifugalSeparatorRecipe extends VEFluidRNGRecipe {
+public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
-    public static final RecipeType<CentrifugalSeparatorRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
+
+    private final RecipeParser parser = RNGRecipeParser.forRecipe(this)
+            .addChancedItemResult(2,0)
+            .addChancedItemResult(3,1)
+            .addChancedItemResult(4,2)
+            .addChancedItemResult(5,3)
+            .addIngredient(0,0)
+            .addIngredient(1,1);
+
 
     public CentrifugalSeparatorRecipe() {
     }
@@ -56,6 +67,12 @@ public class CentrifugalSeparatorRecipe extends VEFluidRNGRecipe {
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
+    }
+
     @Override
     public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;

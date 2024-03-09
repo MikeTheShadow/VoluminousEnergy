@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEItemStackHandler;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -19,7 +18,7 @@ public class RecipeParser {
     List<SlotAndRecipePos> fluidIngredientPositions = new ArrayList<>();
     List<SlotAndRecipePos> fluidResultPositions = new ArrayList<>();
 
-    private final VERecipe recipe;
+    final VERecipe recipe;
 
     public RecipeParser(VERecipe recipe) {
         this.recipe = recipe;
@@ -29,23 +28,23 @@ public class RecipeParser {
         return new RecipeParser(recipe);
     }
 
-    public RecipeParser addIngredient(SlotAndRecipePos pos) {
-        this.ingredientPositions.add(pos);
+    public RecipeParser addIngredient(int tilePos,int recipePos) {
+        this.ingredientPositions.add(new SlotAndRecipePos(tilePos,recipePos));
         return this;
     }
 
-    public RecipeParser addFluidIngredient(SlotAndRecipePos pos) {
-        this.fluidIngredientPositions.add(pos);
+    public RecipeParser addFluidIngredient(int tilePos,int recipePos) {
+        this.fluidIngredientPositions.add(new SlotAndRecipePos(tilePos,recipePos));
         return this;
     }
 
-    public RecipeParser addItemResult(SlotAndRecipePos pos) {
-        this.itemResultPositions.add(pos);
+    public RecipeParser addItemResult(int tilePos,int recipePos) {
+        this.itemResultPositions.add(new SlotAndRecipePos(tilePos,recipePos));
         return this;
     }
 
-    public RecipeParser addFluidResult(SlotAndRecipePos pos) {
-        this.fluidResultPositions.add(pos);
+    public RecipeParser addFluidResult(int tilePos,int recipePos) {
+        this.fluidResultPositions.add(new SlotAndRecipePos(tilePos,recipePos));
         return this;
     }
 
@@ -73,6 +72,7 @@ public class RecipeParser {
             ItemStack stackInSlot = tile.getStackInSlot(pos.tilePos);
             Ingredient ingredient = recipe.getIngredient(pos.recipePos);
             int amountNeeded = recipe.getIngredientCount(pos.recipePos);
+            if(ingredient.isEmpty()) continue;
             if (!ingredient.test(stackInSlot) || stackInSlot.getCount() < amountNeeded)
                 return false;
         }
@@ -80,6 +80,7 @@ public class RecipeParser {
         for (SlotAndRecipePos pos : fluidIngredientPositions) {
             FluidStack stack = tile.getFluidStackFromTank(pos.tilePos);
             FluidIngredient fluidIngredient = recipe.getFluidIngredient(pos.recipePos);
+            if(fluidIngredient.isEmpty()) continue;
             int amountNeeded = fluidIngredient.getAmountNeeded();
             if (!fluidIngredient.test(stack) || stack.getAmount() < amountNeeded)
                 return false;
@@ -92,12 +93,14 @@ public class RecipeParser {
         for (SlotAndRecipePos pos : itemResultPositions) {
             ItemStack stack = tile.getStackInSlot(pos.tilePos);
             ItemStack result = recipe.getResult(pos.recipePos);
+            if(stack.isEmpty()) continue;
             if (!stack.is(result.getItem()) || result.getCount() + stack.getCount() > result.getMaxStackSize())
                 return false;
         }
         for (SlotAndRecipePos pos : fluidResultPositions) {
             FluidStack stack = tile.getFluidStackFromTank(pos.tilePos);
             FluidStack result = recipe.getOutputFluid(pos.recipePos);
+            if(stack.isEmpty()) continue;
             if (!stack.isFluidEqual(result) || result.getAmount() + stack.getAmount() > tile.getTankCapacity(pos.tilePos))
                 return false;
         }
@@ -144,7 +147,7 @@ public class RecipeParser {
         return false;
     }
 
-    public record SlotAndRecipePos(int tilePos, int recipePos) {
+    record SlotAndRecipePos(int tilePos, int recipePos) {
 
     }
 }

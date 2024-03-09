@@ -11,10 +11,9 @@ import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.sounds.SoundSource;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class GeneratorProcessor implements RecipeProcessor {
+public class GeneratorProcessor implements AbstractRecipeProcessor {
 
     private int divisor = 1;
     private boolean allowOverflow = false;
@@ -24,8 +23,9 @@ public class GeneratorProcessor implements RecipeProcessor {
         this.divisor = divisor;
     }
 
-    public GeneratorProcessor(int divisor) {
-        this.divisor = divisor;
+
+
+    public GeneratorProcessor() {
     }
 
     @Override

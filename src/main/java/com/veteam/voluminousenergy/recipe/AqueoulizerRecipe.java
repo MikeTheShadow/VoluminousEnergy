@@ -20,21 +20,16 @@ public class AqueoulizerRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
 
-    private final RecipeParser parser;
+    private final RecipeParser parser = RecipeParser.forRecipe(this)
+            .addIngredient(4, 0)
+            .addFluidIngredient(0, 0)
+            .addFluidResult(1, 0);
 
     public AqueoulizerRecipe() {
-        parser = RecipeParser.forRecipe(this)
-                .addIngredient(new RecipeParser.SlotAndRecipePos(4, 0))
-                .addFluidIngredient(new RecipeParser.SlotAndRecipePos(0, 0))
-                .addFluidResult(new RecipeParser.SlotAndRecipePos(1, 0));
     }
 
     public AqueoulizerRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, int processTime) {
         super(i, fi, of, List.of(), processTime);
-        parser = RecipeParser.forRecipe(this)
-                .addIngredient(new RecipeParser.SlotAndRecipePos(4, 0))
-                .addFluidIngredient(new RecipeParser.SlotAndRecipePos(0, 0))
-                .addFluidResult(new RecipeParser.SlotAndRecipePos(1, 0));
     }
 
     public static final RecipeSerializer<AqueoulizerRecipe> SERIALIZER = new RecipeSerializer<>() {

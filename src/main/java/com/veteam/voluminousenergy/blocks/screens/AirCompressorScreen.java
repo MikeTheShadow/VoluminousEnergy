@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.AirCompressorTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
 
-    private AirCompressorTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
     public AirCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (AirCompressorTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -66,8 +66,8 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)){ // Oxidizer Tank
-            String name = tileEntity.getAirTankFluid().getTranslationKey();
-            int amount = tileEntity.getAirTankFluid().getAmount();
+            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
@@ -97,7 +97,7 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(this.GUI,i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try{
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getAirTankFluid(),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e){ }
             // Upgrade tilePos
             RenderSystem.setShaderTexture(0, GUI_TOOLS);

@@ -5,16 +5,16 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public abstract class VEFluidRNGRecipe extends VERecipe {
+public abstract class VERNGRecipe extends VERecipe {
 
     public List<Float> rngValues;
     public List<VERecipeCodecs.VEChancedItemWithCount> itemResultsWithChance;
 
-    public VEFluidRNGRecipe() {
+    public VERNGRecipe() {
 
     }
 
-    public VEFluidRNGRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
+    public VERNGRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
         super(i,fi,of,oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::getAsItemStack).toList(), processTime);
 
         this.itemResultsWithChance = oi;

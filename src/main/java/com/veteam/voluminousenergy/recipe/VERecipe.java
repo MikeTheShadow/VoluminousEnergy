@@ -245,7 +245,5 @@ public abstract class VERecipe implements Recipe<Container> {
         return null;
     }
 
-    public RecipeParser getParser() {
-        throw new NotImplementedException("Unable to get parser for recipe: " + this.getClass().getName());
-    }
+    public abstract RecipeParser getParser();
 }

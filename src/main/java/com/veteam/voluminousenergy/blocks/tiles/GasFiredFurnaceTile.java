@@ -3,15 +3,14 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.VEItems;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -86,7 +85,7 @@ public class GasFiredFurnaceTile extends VETileEntity {
 
     private SmeltingRecipe furnaceRecipe;
     private BlastingRecipe blastingRecipe;
-    private CombustionGeneratorFuelRecipe fuelRecipe;
+    private CombustionGeneratorRecipe fuelRecipe;
 
     @Override
     public void tick() {
@@ -172,8 +171,8 @@ public class GasFiredFurnaceTile extends VETileEntity {
         else furnaceRecipe = null;
         if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
         else blastingRecipe = null;
-        fuelRecipe = (CombustionGeneratorFuelRecipe)
-                RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());
+        fuelRecipe = (CombustionGeneratorRecipe)
+                RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());
     }
 
     @Override
@@ -213,7 +212,7 @@ public class GasFiredFurnaceTile extends VETileEntity {
                     Fluid fluid = bucketItem.getFluid();
                     if (fluid.isSame(Fluids.EMPTY)) return true;
                     FluidStack fluidStack = new FluidStack(bucketItem.getFluid(), 1000);
-                    return VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)
+                    return VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE)
                             .stream().anyMatch(r -> r.getFluidIngredient(0).test(fluidStack));
                 } else if (slot == 2) {
                     return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level).orElse(null) != null

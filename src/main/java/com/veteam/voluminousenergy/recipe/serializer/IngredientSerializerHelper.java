@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.recipe.serializer;
 
-import com.veteam.voluminousenergy.recipe.VEFluidRNGRecipe;
+import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.NonNullList;
@@ -35,7 +35,7 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
         recipe.setProcessTime(buffer.readInt());
 
-        if (recipe instanceof VEFluidRNGRecipe irngRecipe) {
+        if (recipe instanceof VERNGRecipe irngRecipe) {
             int totalRandom = buffer.readInt();
             List<Float> values = new ArrayList<>();
             for (int i = 0; i < totalRandom; i++) {
@@ -66,7 +66,7 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
         buffer.writeInt(recipe.getProcessTime());
 
-        if (recipe instanceof VEFluidRNGRecipe irngRecipe) {
+        if (recipe instanceof VERNGRecipe irngRecipe) {
             buffer.writeInt(irngRecipe.getRNGOutputs().size());
             for(float f : irngRecipe.getRNGOutputs()) {
                 buffer.writeFloat(f);

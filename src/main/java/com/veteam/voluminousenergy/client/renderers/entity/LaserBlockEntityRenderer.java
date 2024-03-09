@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +30,7 @@ import org.joml.Matrix4f;
 import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
-public class LaserBlockEntityRenderer implements BlockEntityRenderer<DimensionalLaserTile> {
+public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntity> {
 
     public static final ResourceLocation BEAM_RESOURCE_LOCATION = new ResourceLocation(VoluminousEnergy.MODID, "textures/entity/beacon_beam.png");
 
@@ -38,7 +39,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
 
     // If you want to modify things pull it from the DimensionalLaserTile
     @Override
-    public void render(DimensionalLaserTile dimensionalLaserTile, float f1, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i1, int i2) {
+    public void render(VETileEntity dimensionalLaserTile, float f1, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i1, int i2) {
         long gameTime = dimensionalLaserTile.getLevel().getGameTime();
 
         // If this float is not 1,1,1 expect a black screen. You can modify these if you want special colors
@@ -48,13 +49,17 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
 
     }
 
-    public void renderBeaconBeam(DimensionalLaserTile tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
+    public void renderBeaconBeam(VETileEntity tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
+
+        int buildTick = tile.getData("build_tick");
+        boolean fullyBuilt = tile.getData("fully_built") == 1;
+        boolean firstStageBuilt = tile.getData("first_stage_built") == 1;
 
         height += 2;
 
-        if (!tile.isFirstStageComplete()) {
+        if (!fullyBuilt) {
             height = 1;
-        } else if (tile.getTickTimer() < 5) {
+        } else if (buildTick < 5) {
             SoundManager manager = Minecraft.getInstance().getSoundManager();
             manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
         }
@@ -86,7 +91,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
 
-        if (!tile.isFirstStageComplete()) {
+        if (!firstStageBuilt) {
             poseStack.popPose();
             return;
         }
@@ -96,7 +101,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<Dimensional
         int zMiddle = (int) Math.ceil(arrayMap[0].length / 2F);
 
         // Calculate the completion percentage
-        float completionPercentage = (float) tile.getTickTimer() / 600;
+        float completionPercentage = (float) buildTick / 600;
 
         // Calculate the max radius for the spiral based on the completion percentage
         float maxRadius = (float) Math.sqrt(arrayMap.length * arrayMap.length + arrayMap[0].length * arrayMap[0].length) * completionPercentage;

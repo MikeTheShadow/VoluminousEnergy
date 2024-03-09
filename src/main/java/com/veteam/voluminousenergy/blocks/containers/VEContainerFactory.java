@@ -85,6 +85,7 @@ public class VEContainerFactory {
 
         private int index = 0;
 
+        @Deprecated
         public VEContainerFactoryBuilder addSlot(int x, int y) {
             this.factory.slots.add(new Slot(index++, x, y));
             return this;

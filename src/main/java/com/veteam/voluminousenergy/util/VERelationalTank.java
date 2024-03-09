@@ -105,6 +105,14 @@ public class VERelationalTank {
         }
     }
 
+    public void fillTank(FluidStack stack) {
+        this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
+    }
+
+    public int testFillTank(FluidStack stack) {
+        return this.getTank().fill(stack, IFluidHandler.FluidAction.SIMULATE);
+    }
+
     /**
      * The id will be located in the Recipe file itself.
      * To find the id the easiest way is to go to the fromJson in a recipe's serializer.

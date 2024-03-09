@@ -1,8 +1,6 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.util.RecipeConstants;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -20,23 +18,20 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<PrimitiveBlastFurnaceRecipe>> PRIMITIVE_BLAST_FURNACING =
                 VE_RECIPE_TYPES_REGISTRY.register("primitive_blast_furnacing", () -> new VERecipeType<>(RecipeConstants.PRIMITIVE_BLAST_FURNACING));
 
-        public static final RegistryObject<RecipeType<CrusherRecipe>> CRUSHING =
+        public static final RegistryObject<RecipeType<VERecipe>> CRUSHING =
                 VE_RECIPE_TYPES_REGISTRY.register("crushing", () -> new VERecipeType<>(RecipeConstants.CRUSHING));
 
-        public static final RegistryObject<RecipeType<ElectrolyzerRecipe>> ELECTROLYZING =
+        public static final RegistryObject<RecipeType<VERecipe>> ELECTROLYZING =
                 VE_RECIPE_TYPES_REGISTRY.register("electrolyzing", () -> new VERecipeType<>(RecipeConstants.ELECTROLYZING));
 
         public static final RegistryObject<RecipeType<VERecipe>> CENTRIFUGAL_AGITATING =
                 VE_RECIPE_TYPES_REGISTRY.register("centrifugal_agitating", () -> new VERecipeType<>(RecipeConstants.CENTRIFUGAL_AGITATING));
 
-        public static final RegistryObject<RecipeType<CompressorRecipe>> COMPRESSING =
+        public static final RegistryObject<RecipeType<VERecipe>> COMPRESSING =
                 VE_RECIPE_TYPES_REGISTRY.register("compressing", () -> new VERecipeType<>(RecipeConstants.COMPRESSING));
 
         public static final RegistryObject<RecipeType<VERecipe>> STIRLING =
                 VE_RECIPE_TYPES_REGISTRY.register("stirling", () -> new VERecipeType<>(RecipeConstants.STIRLING));
-
-        public static final RegistryObject<RecipeType<VERecipe>> OXIDIZING =
-                VE_RECIPE_TYPES_REGISTRY.register("oxidizer_combustion", () -> new VERecipeType<>(RecipeConstants.OXIDIZING));
 
         public static final RegistryObject<RecipeType<VERecipe>> FUEL_COMBUSTION =
                 VE_RECIPE_TYPES_REGISTRY.register("fuel_combustion", () -> new VERecipeType<>(RecipeConstants.FUEL_COMBUSTION));
@@ -47,19 +42,19 @@ public class VERecipes {
         public static final RegistryObject<RecipeType<VERecipe>> DISTILLING =
                 VE_RECIPE_TYPES_REGISTRY.register("distilling", () -> new VERecipeType<>(RecipeConstants.DISTILLING));
 
-        public static final RegistryObject<RecipeType<CentrifugalSeparatorRecipe>> CENTRIFUGAL_SEPARATION =
+        public static final RegistryObject<RecipeType<VERecipe>> CENTRIFUGAL_SEPARATION =
                 VE_RECIPE_TYPES_REGISTRY.register("centrifugal_separation", () -> new VERecipeType<>(RecipeConstants.CENTRIFUGAL_SEPARATION));
 
-        public static final RegistryObject<RecipeType<ImplosionCompressorRecipe>> IMPLOSION_COMPRESSING =
+        public static final RegistryObject<RecipeType<VERecipe>> IMPLOSION_COMPRESSING =
                 VE_RECIPE_TYPES_REGISTRY.register("implosion_compressing", () -> new VERecipeType<>(RecipeConstants.IMPLOSION_COMPRESSING));
 
-        public static final RegistryObject<RecipeType<IndustrialBlastingRecipe>> INDUSTRIAL_BLASTING =
+        public static final RegistryObject<RecipeType<VERecipe>> INDUSTRIAL_BLASTING =
                 VE_RECIPE_TYPES_REGISTRY.register("industrial_blasting", () -> new VERecipeType<>(RecipeConstants.INDUSTRIAL_BLASTING));
 
-        public static final RegistryObject<RecipeType<ToolingRecipe>> TOOLING =
+        public static final RegistryObject<RecipeType<VERecipe>> TOOLING =
                 VE_RECIPE_TYPES_REGISTRY.register("tooling", () -> new VERecipeType<>(RecipeConstants.TOOLING));
 
-        public static final RegistryObject<RecipeType<VEFluidSawmillRecipe>> SAWMILLING =
+        public static final RegistryObject<RecipeType<VERecipe>> SAWMILLING =
                 VE_RECIPE_TYPES_REGISTRY.register("sawmilling", () -> new VERecipeType<>(RecipeConstants.SAWMILLING));
 
         public static final RegistryObject<RecipeType<VERecipe>> DIMENSIONAL_LASING =
@@ -87,10 +82,9 @@ public class VERecipes {
             VE_RECIPE_SERIALIZERS_REGISTRY.register("compressing", () -> new CompressorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> STIRLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("stirling", () -> new StirlingGeneratorRecipe().getSerializer());
-    public static final RegistryObject<RecipeSerializer<?>> OXIDIZING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("oxidizer_combustion", () -> new CombustionGeneratorOxidizerRecipe().getSerializer());
+
     public static final RegistryObject<RecipeSerializer<?>> FUEL_COMBUSTION =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("fuel_combustion", () -> new CombustionGeneratorFuelRecipe().getSerializer());
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("fuel_combustion", () -> new CombustionGeneratorRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> AQUEOULIZING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("aqueoulizing", () -> new AqueoulizerRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> DISTILLING =

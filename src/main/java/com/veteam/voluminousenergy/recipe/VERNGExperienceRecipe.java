@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VERNGExperienceRecipe extends VEFluidRNGRecipe {
+public abstract class VERNGExperienceRecipe extends VERNGRecipe {
 
     @Deprecated
     public int minExp;

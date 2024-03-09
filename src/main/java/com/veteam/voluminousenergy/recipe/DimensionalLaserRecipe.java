@@ -3,6 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.DimensionalLaserParser;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.util.ServerSideOnly;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
@@ -24,6 +26,7 @@ import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.*;
 public class DimensionalLaserRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
+    private final DimensionalLaserParser parser = new DimensionalLaserParser(this);
 
     @ServerSideOnly
     private ClimateData climateData;
@@ -242,6 +245,11 @@ public class DimensionalLaserRecipe extends VERecipe {
     @Override
     public FluidStack getOutputFluid(int slot) {
         return FluidStack.EMPTY;
+    }
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
     }
 
     @Override

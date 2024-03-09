@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,11 +23,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ToolingRecipe extends VERecipe {
-    public static final RecipeType<ToolingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
     public ToolingRecipe() {
 
     }
+
+    private final RecipeParser parser = RecipeParser.forRecipe(this);
 
     public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
         super(i,new ArrayList<>(),new ArrayList<>(), oi, 0);
@@ -131,6 +134,11 @@ public class ToolingRecipe extends VERecipe {
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
+    }
 
     protected Lazy<ArrayList<Item>> bits;
     protected ArrayList<Item> basesAndBits;

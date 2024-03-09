@@ -21,8 +21,6 @@ public class VESlotManager {
     private final String nbtName;
     private int output = -1;
     private int tankId = -1;
-    private int recipePos = -1;
-
     private final Set<Item> allowedItems = new HashSet<>();
 
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType) {
@@ -52,22 +50,6 @@ public class VESlotManager {
         this.tankId = tankId;
     }
 
-    /**
-     * Use this for an input tilePos or others
-     * @param slotNum The tilePos number is the index in the array of the slotManagers
-     * @param direction The direction it will be facing by default
-     * @param status The status of the IO
-     * @param slotType The type of tilePos
-     */
-    public VESlotManager(int slotNum, int recipePos, Direction direction, boolean status, SlotType slotType) {
-        this.side.set(direction);
-        this.slot = slotNum;
-        this.enabled.set(status);
-        this.slotType = slotType;
-        this.nbtName = slotType.getNBTName(slotNum);
-        this.recipePos = recipePos;
-    }
-
     public void setStatus(boolean bool) {
         this.enabled.set(bool);
     }
@@ -94,10 +76,6 @@ public class VESlotManager {
 
     public String getTranslationKey() {
         return slotType.getTranslationKey();
-    }
-
-    public int getRecipePos() {
-        return recipePos;
     }
 
     public String getNbtName() {

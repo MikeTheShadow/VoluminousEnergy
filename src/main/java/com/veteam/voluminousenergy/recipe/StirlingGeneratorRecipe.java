@@ -19,17 +19,14 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.STIRLING.get();
 
-    private final RecipeParser parser;
+    private final RecipeParser parser = RecipeParser.forRecipe(this)
+            .addIngredient(0, 0);
 
     public StirlingGeneratorRecipe() {
-        parser = RecipeParser.forRecipe(this)
-                .addIngredient(new RecipeParser.SlotAndRecipePos(0,0));
     }
 
     public StirlingGeneratorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, int processTime, int energy_per_tick) {
         super(ingredients, processTime, energy_per_tick);
-        parser = RecipeParser.forRecipe(this)
-                .addIngredient(new RecipeParser.SlotAndRecipePos(0,0));
     }
 
     public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -63,15 +60,17 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
     };
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
-    public @NotNull RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get());
     }
 

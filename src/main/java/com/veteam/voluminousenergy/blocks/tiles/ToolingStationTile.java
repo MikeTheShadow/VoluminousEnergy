@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.ToolingStationContainer;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -158,7 +158,7 @@ public class ToolingStationTile extends VETileEntity  {
         }
         this.isRecipeDirty = false;
         fuelRecipe =
-                RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorFuelRecipe.RECIPE_TYPE,
+                RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorRecipe.RECIPE_TYPE,
                         Collections.singletonList(this.fuelTank.getTank().getFluid()), new ArrayList<>());
     }
 

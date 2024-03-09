@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class DefaultProcessor implements RecipeProcessor {
+public class DefaultProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void validateRecipe(VETileEntity tile) {

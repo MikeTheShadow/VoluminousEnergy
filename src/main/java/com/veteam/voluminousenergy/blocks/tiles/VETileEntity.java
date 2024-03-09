@@ -1,11 +1,9 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.processor.RecipeProcessor;
+import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -60,7 +58,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
     final HashMap<String,Integer> dataMap = new HashMap<>();
-    RecipeProcessor recipeProcessor;
+    AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
     public VETileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends Recipe<?>> recipeType) {

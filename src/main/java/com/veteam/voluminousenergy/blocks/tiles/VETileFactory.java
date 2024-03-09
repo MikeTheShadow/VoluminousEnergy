@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.processor.RecipeProcessor;
+import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -34,7 +34,7 @@ public class VETileFactory {
     private VEEnergyStorage storage;
 
     private final HashMap<String,Integer> dataMap = new HashMap<>();
-    private RecipeProcessor processor;
+    private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
     public VETileFactory(RegistryObject<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
@@ -132,7 +132,7 @@ public class VETileFactory {
         return this;
     }
 
-    public VETileFactory withRecipeProcessing(RecipeProcessor processor) {
+    public VETileFactory withCustomRecipeProcessing(AbstractRecipeProcessor processor) {
         this.processor = processor;
         return this;
     }
@@ -142,10 +142,10 @@ public class VETileFactory {
         return this;
     }
 
-    public record ItemInputSlot(Direction direction,int recipePos) implements TileSlot {
+    public record ItemInputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, recipePos, direction, true, SlotType.INPUT);
+            return new VESlotManager(id, direction, true, SlotType.INPUT);
         }
     }
 
@@ -156,10 +156,10 @@ public class VETileFactory {
         }
     }
 
-    public record ItemOutputSlot(Direction direction,int recipePos) implements TileSlot {
+    public record ItemOutputSlot(Direction direction) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
-            return new VESlotManager(id, recipePos, direction, true, SlotType.OUTPUT);
+            return new VESlotManager(id, direction, true, SlotType.OUTPUT);
         }
     }
 

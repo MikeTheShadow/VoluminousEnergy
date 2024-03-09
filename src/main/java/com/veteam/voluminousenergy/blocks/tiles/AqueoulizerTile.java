@@ -33,7 +33,7 @@ public class AqueoulizerTile extends VETileEntity {
         add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
         add(new VESlotManager(2, Direction.NORTH, true, SlotType.FLUID_INPUT, 3, 1));
         add(new VESlotManager(3, Direction.SOUTH, true, SlotType.FLUID_OUTPUT));
-        add(new VESlotManager(4, 0, Direction.EAST, true, SlotType.INPUT));
+//        add(new VESlotManager(4, 0, Direction.EAST, true, SlotType.INPUT));
     }};
 
     @Override

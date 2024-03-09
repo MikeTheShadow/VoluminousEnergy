@@ -2,10 +2,9 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.RecipeCache;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -68,7 +67,7 @@ public class CombustionGeneratorTile extends VETileEntity {
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
         fluidManagers.get(0).getTank().setValidator(fluid -> {
-            List<VERecipe> recipes = CombustionGeneratorFuelRecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+            List<VERecipe> recipes = CombustionGeneratorRecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE);
             return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
         });
         fluidManagers.get(1).getTank().setValidator(fluid -> {
@@ -139,7 +138,7 @@ public class CombustionGeneratorTile extends VETileEntity {
                         new ArrayList<>());
 
         fuelRecipe = RecipeCache.getFluidRecipeFromCache(level,
-                CombustionGeneratorFuelRecipe.RECIPE_TYPE,
+                CombustionGeneratorRecipe.RECIPE_TYPE,
                 Collections.singletonList(fluidManagers.get(0).getTank().getFluid()),
                 new ArrayList<>());
     }
@@ -193,7 +192,7 @@ public class CombustionGeneratorTile extends VETileEntity {
                     if (fluid.isSame(Fluids.EMPTY)) return true;
                     FluidStack testFluid = new FluidStack(fluid, COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
                     if (slot == 0) {
-                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE);
+                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE);
                         return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
                     } else if (slot == 2) {
                         List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);

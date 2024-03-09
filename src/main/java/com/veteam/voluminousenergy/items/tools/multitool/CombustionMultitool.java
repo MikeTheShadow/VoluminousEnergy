@@ -2,8 +2,7 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.MultitoolBit;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -213,14 +212,14 @@ public class CombustionMultitool extends Multitool {
 
 
     private static int getVolumetricEnergyFromFluid(Fluid fluid) {
-        for(VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)) {
+        for(VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE)) {
             if(recipe.getFluidIngredient(0).test(fluid)) return recipe.getFluidIngredientAmount(0);
         }
         return 0;
     }
 
     public static boolean isCombustibleFuel(Fluid fluid) {
-        for(VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorFuelRecipe.RECIPE_TYPE)) {
+        for(VERecipe recipe : VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE)) {
             if(recipe.getFluidIngredient(0).test(fluid)) return true;
         }
         return false;

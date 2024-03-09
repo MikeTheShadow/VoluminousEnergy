@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,6 +18,11 @@ import java.util.List;
 
 public class FluidElectrolyzerRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_ELECTROLYZING.get();
+
+    private final RecipeParser parser = RecipeParser.forRecipe(this)
+            .addFluidIngredient(0,0)
+            .addFluidResult(1,0)
+            .addFluidResult(2,1);
 
     public FluidElectrolyzerRecipe() {
     }
@@ -55,6 +61,11 @@ public class FluidElectrolyzerRecipe extends VERecipe {
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
         return SERIALIZER;
+    }
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
     }
 
     @Override

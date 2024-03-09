@@ -12,7 +12,7 @@ import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.*;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorFuelRecipe;
+import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -92,7 +92,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(CrushingCategory.RECIPE_TYPE, getRecipesOfType(CrusherRecipe.RECIPE_TYPE));
         registration.addRecipes(ElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(ElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(CompressingCategory.RECIPE_TYPE, getRecipesOfType(CompressorRecipe.RECIPE_TYPE));
-        registration.addRecipes(CombustionCategory.RECIPE_TYPE, getRecipesOfType(CombustionGeneratorFuelRecipe.RECIPE_TYPE));
+        registration.addRecipes(CombustionCategory.RECIPE_TYPE, getRecipesOfType(CombustionGeneratorRecipe.RECIPE_TYPE));
         registration.addRecipes(StirlingCategory.RECIPE_TYPE, getRecipesOfType(StirlingGeneratorRecipe.RECIPE_TYPE));
         registration.addRecipes(CentrifugalAgitationCategory.RECIPE_TYPE, getRecipesOfType(CentrifugalAgitatorRecipe.RECIPE_TYPE));
         registration.addRecipes(AqueoulizingCategory.RECIPE_TYPE, getRecipesOfType(AqueoulizerRecipe.RECIPE_TYPE));

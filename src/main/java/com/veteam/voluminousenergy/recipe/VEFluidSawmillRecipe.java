@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class VEFluidSawmillRecipe extends VERecipe {
 
-    public static final RecipeType<VEFluidSawmillRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.SAWMILLING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.SAWMILLING.get();
     private boolean isLogRecipe;
 
     public VEFluidSawmillRecipe() {
@@ -101,6 +102,11 @@ public class VEFluidSawmillRecipe extends VERecipe {
             return this.getOutputFluid(0);
         }
         return super.getOutputFluid(slot);
+    }
+
+    @Override
+    public RecipeParser getParser() {
+        return null;
     }
 
 }

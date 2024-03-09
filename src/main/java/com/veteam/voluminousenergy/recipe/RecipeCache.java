@@ -20,26 +20,6 @@ import java.util.List;
 public class RecipeCache {
 
     @Nullable
-    public static VERecipe getRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<ItemStack> items) {
-
-        var recipes = VERecipe.getCachedRecipes(type);
-
-        for (VERecipe recipe : recipes) {
-            boolean isValid = true;
-            for (int i = 0; i < items.size(); i++) {
-                if(recipe.getIngredient(i).isEmpty()) continue;
-                if (!recipe.getIngredient(i).test(items.get(i))
-                        || items.get(i).getCount() < recipe.getIngredientCount(i)) {
-                    isValid = false;
-                    break;
-                }
-            }
-            if (isValid) return recipe;
-        }
-        return null;
-    }
-
-    @Nullable
     public static VERecipe getFluidRecipeFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<FluidStack> fluids, List<ItemStack> items) {
 
         var recipes = VERecipe.getCachedRecipes(type);
@@ -67,68 +47,4 @@ public class RecipeCache {
         return null;
     }
 
-    public static @NotNull List<VERecipe> getRecipesFromCache(Level level, RecipeType<? extends Recipe<?>> type, List<VESlotManager> slots, VETileEntity entity, boolean ignoreEmpty) {
-
-        var recipes = VERecipe.getCachedRecipes(type);
-
-        List<VERecipe> recipeList = new ArrayList<>();
-
-        for (VERecipe recipe : recipes) {
-            boolean isValid = true;
-
-            ItemStackHandler handler = entity.getInventoryHandler();
-            if (handler != null) {
-                for (VESlotManager manager : slots) {
-                    if (manager.getSlotType() != SlotType.INPUT) continue;
-                    ItemStack stack = manager.getItem(handler);
-                    if (ignoreEmpty && stack.isEmpty()) continue;
-                    if(recipe.getIngredient(manager.getRecipePos()).isEmpty()) continue;
-                    if (!recipe.getIngredient(manager.getRecipePos()).test(stack)) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-            if (isValid) recipeList.add(recipe);
-        }
-        return recipeList;
-    }
-
-    public static @NotNull List<VERecipe> getFluidRecipesFromCache(VETileEntity tile, boolean ignoreEmpty) {
-
-        var recipes = VERecipe.getCachedRecipes(tile.getRecipeType());
-
-        List<VERecipe> recipeList = new ArrayList<>();
-
-        for (VERecipe recipe : recipes) {
-            boolean isValid = true;
-
-            for (VERelationalTank tank : tile.getTanks()) {
-                if (ignoreEmpty && tank.getTank().isEmpty()) continue;
-                if (tank.getTankType() != TankType.INPUT) continue;
-                FluidStack currentFluid = tank.getTank().getFluid();
-                if (!recipe.getFluidIngredient(tank.getRecipePos()).test(currentFluid)) {
-                    isValid = false;
-                    break;
-                }
-            }
-
-            ItemStackHandler handler = tile.getInventoryHandler();
-            if (handler != null) {
-                for (VESlotManager manager : tile.getSlotManagers()) {
-                    if (manager.getSlotType() != SlotType.INPUT) continue;
-                    ItemStack stack = manager.getItem(handler);
-                    if (ignoreEmpty && stack.isEmpty()) continue;
-                    if(recipe.getIngredient(manager.getRecipePos()).isEmpty()) continue;
-                    if (!recipe.getIngredient(manager.getRecipePos()).test(stack)) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isValid) recipeList.add(recipe);
-        }
-        return recipeList;
-    }
 }

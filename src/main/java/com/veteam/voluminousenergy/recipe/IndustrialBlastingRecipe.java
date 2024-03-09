@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
@@ -24,7 +25,13 @@ import java.util.List;
 
 public class IndustrialBlastingRecipe extends VERecipe {
 
-    public static final RecipeType<IndustrialBlastingRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
+
+    private final RecipeParser parser = RecipeParser.forRecipe(this)
+            .addFluidIngredient(0,0)
+            .addIngredient(0,0)
+            .addItemResult(1,0);
+
     private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
@@ -113,6 +120,11 @@ public class IndustrialBlastingRecipe extends VERecipe {
         }
         FluidIngredient fluidIngredient = FluidIngredient.of(fluidStacks.stream());
         return List.of(fluidIngredient);
+    }
+
+    @Override
+    public RecipeParser getParser() {
+        return parser;
     }
 
     public boolean isFluidHotEnough(Fluid fluid) {
