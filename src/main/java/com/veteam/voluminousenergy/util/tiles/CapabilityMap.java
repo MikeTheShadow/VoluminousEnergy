@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util.tiles;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -30,13 +29,15 @@ public class CapabilityMap {
     private final ItemStackHandler inventory;
     private final LazyOptional<VEEnergyStorage> energyStorage;
 
-    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<RelationalTank> tanks, LazyOptional<VEEnergyStorage> energy, @Nullable VEFluidTileEntity tileEntity) {
+    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, LazyOptional<VEEnergyStorage> energy, @Nullable VETileEntity tileEntity) {
         this.inventory = inventory;
         this.energyStorage = energy;
 
         for(Direction direction : Direction.values()) {
             if(inventory != null) itemMap.put(direction,new MultiSlotWrapper(inventory,new ArrayList<>()));
-            if(tileEntity != null) fluidMap.put(direction,new MultiFluidSlotWrapper(new ArrayList<>(),tileEntity));
+            if(tileEntity instanceof VEFluidTileEntity fluidTileEntity) {
+                fluidMap.put(direction,new MultiFluidSlotWrapper(new ArrayList<>(),fluidTileEntity));
+            }
         }
 
         for(VESlotManager manager : managerList) {
@@ -44,9 +45,11 @@ public class CapabilityMap {
             wrapper.addSlotManager(manager);
         }
 
-        for(RelationalTank tank : tanks) {
-            MultiFluidSlotWrapper wrapper = fluidMap.get(tank.getSideDirection());
-            wrapper.addRelationalTank(tank);
+        if (tileEntity instanceof VEFluidTileEntity tile) {
+            for(RelationalTank tank : tile.getRelationalTanks()) {
+                MultiFluidSlotWrapper wrapper = fluidMap.get(tank.getSideDirection());
+                wrapper.addRelationalTank(tank);
+            }
         }
     }
 
