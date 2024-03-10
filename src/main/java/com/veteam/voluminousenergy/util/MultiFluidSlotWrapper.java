@@ -48,7 +48,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         if (tank >= tanks.size()) {
             return 0;
         }
-        RelationalTank fluidTank = tanks.get(tank);
+        RelationalTank fluidTank = tankHashMap.get(tank);
         return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
     }
 
