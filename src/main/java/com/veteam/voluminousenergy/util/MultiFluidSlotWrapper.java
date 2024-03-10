@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -9,17 +9,19 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
 
-    List<RelationalTank> tanks = new ArrayList<>();
-    VEFluidTileEntity tileEntity;
+    HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
+    List<RelationalTank> tanks;
+    VETileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks, VEFluidTileEntity tileEntity) {
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks, VETileEntity tileEntity) {
+        this.tanks = tanks;
         this.tileEntity = tileEntity;
-        this.tanks.addAll(tanks);
+        tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
     }
 
     @Override
@@ -30,10 +32,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
+
         if (tank >= tanks.size()) {
             return FluidStack.EMPTY;
         }
-
         RelationalTank fluidTank = tanks.get(tank);
         return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
     }
@@ -113,10 +115,12 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     }
 
     public void addRelationalTank(RelationalTank tank) {
+        tankHashMap.put(tank.getSlotNum(), tank);
         tanks.add(tank);
     }
 
     public void removeRelationalTank(RelationalTank tank) {
+        tankHashMap.remove(tank.getSlotNum());
         tanks.remove(tank);
     }
 }
