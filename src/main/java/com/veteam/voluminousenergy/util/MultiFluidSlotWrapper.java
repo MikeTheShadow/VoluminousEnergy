@@ -6,15 +6,18 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
-    List<RelationalTank> tanks = new ArrayList<>();
+
+    HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
+    List<RelationalTank> tanks;
 
     public MultiFluidSlotWrapper(List<RelationalTank> tanks) {
         Preconditions.checkArgument(!tanks.isEmpty(), "You need to have at least one slot defined!");
-        this.tanks.addAll(tanks);
+        this.tanks = tanks;
+        tanks.forEach(m -> tankHashMap.put(m.getId(), m));
     }
 
     @Override
@@ -25,29 +28,25 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        if (tank >= tanks.size()) {
-            return FluidStack.EMPTY;
+        if (tankHashMap.containsKey(tank)) {
+            RelationalTank fluidTank = tankHashMap.get(tank);
+            return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
         }
-
-        RelationalTank fluidTank = tanks.get(tank);
-        return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
+        return FluidStack.EMPTY;
     }
 
     @Override
     public int getTankCapacity(int tank) {
-        if (tank >= tanks.size()) {
-            return 0;
+        if (tankHashMap.containsKey(tank)) {
+            RelationalTank fluidTank = tankHashMap.get(tank);
+            return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
         }
-        RelationalTank fluidTank = tanks.get(tank);
-        return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
+        return 0;
     }
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        if (tank >= tanks.size()) {
-            return false;
-        }
-        RelationalTank relationalTank = tanks.get(tank);
+        RelationalTank relationalTank = tankHashMap.get(tank);
         if (relationalTank == null) return false;
         if(relationalTank.getValidFluids().stream().noneMatch(fluid -> fluid.isSame(stack.getFluid())) && !relationalTank.isAllowAny()) return false;
         return relationalTank.getTank() != null && relationalTank.getTank().isFluidValid(stack);
