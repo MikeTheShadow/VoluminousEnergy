@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
@@ -31,8 +30,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        VoluminousEnergy.LOGGER.info("Call to getFluidInTank " + tank);
-
         if (tank >= tanks.size()) {
             return FluidStack.EMPTY;
         }
@@ -43,13 +40,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public int getTankCapacity(int tank) {
-        VoluminousEnergy.LOGGER.info("Call to getTankCapacity " + tank);
-        if (tank < tanks.size()) {
+        if (tank >= tanks.size()) {
             return 0;
         }
         RelationalTank fluidTank = tanks.get(tank);
-        if (fluidTank.getTank() != null)
-            VoluminousEnergy.LOGGER.info("Capacity: " + fluidTank.getTank().getCapacity());
         return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
     }
 
