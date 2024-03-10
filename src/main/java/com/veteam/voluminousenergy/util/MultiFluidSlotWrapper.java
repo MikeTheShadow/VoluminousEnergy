@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
-import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.VEFluidTileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VEFluidRecipe;
 import com.veteam.voluminousenergy.tools.Config;
@@ -9,17 +9,18 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
 
     HashMap<Integer, RelationalTank> tankHashMap = new HashMap<>();
-    List<RelationalTank> tanks;
-    VETileEntity tileEntity;
+    List<RelationalTank> tanks = new ArrayList<>();
+    VEFluidTileEntity tileEntity;
 
-    public MultiFluidSlotWrapper(List<RelationalTank> tanks, VETileEntity tileEntity) {
-        this.tanks = tanks;
+    public MultiFluidSlotWrapper(List<RelationalTank> tanks, VEFluidTileEntity tileEntity) {
+        this.tanks.addAll(tanks);
         this.tileEntity = tileEntity;
         tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
     }
@@ -38,10 +39,12 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         }
         RelationalTank fluidTank = tanks.get(tank);
         return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
+
     }
 
     @Override
     public int getTankCapacity(int tank) {
+
         if (tank >= tanks.size()) {
             return 0;
         }
@@ -51,18 +54,15 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        for(RelationalTank t : tanks) {
-            if(t.getSlotNum() == tank) {
-                if (t.isAllowAny()) return true;
-                for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
-                    VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
-                    if (veFluidRecipe.getFluidIngredient(t.getRecipePos()).test(stack)) {
-                        return true;
-                    }
-                }
+        RelationalTank relationalTank = tankHashMap.get(tank);
+        if (relationalTank.isAllowAny()) return true;
+        for (Recipe<?> recipe : tileEntity.getPotentialRecipes()) {
+            VEFluidRecipe veFluidRecipe = (VEFluidRecipe) recipe;
+            if (veFluidRecipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
+                return true;
             }
         }
-        return false;
+        return relationalTank.getTank().isFluidValid(stack);
     }
 
 
