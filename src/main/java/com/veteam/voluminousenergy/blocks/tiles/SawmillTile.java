@@ -6,10 +6,10 @@ import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.recipe.RecipeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,9 +40,9 @@ import java.util.Objects;
 public class SawmillTile extends VETileEntity {
 
     List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
-        add(new VESlotManager(1,0, Direction.DOWN, true,SlotType.OUTPUT));
-        add(new VESlotManager(2,1, Direction.NORTH, true,SlotType.OUTPUT));
+//        add(new VESlotManager(0,0, Direction.UP, true, SlotType.INPUT));
+//        add(new VESlotManager(1,0, Direction.DOWN, true,SlotType.OUTPUT));
+//        add(new VESlotManager(2,1, Direction.NORTH, true,SlotType.OUTPUT));
         add(new VESlotManager(3, Direction.SOUTH,true,SlotType.FLUID_INPUT,4,0));
         add(new VESlotManager(4, Direction.EAST,true,SlotType.FLUID_OUTPUT));
     }};

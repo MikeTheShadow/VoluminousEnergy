@@ -29,7 +29,7 @@ public class ToolingRecipe extends VERecipe {
 
     }
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this);
+    private final RecipeParser parser = new RecipeParser(this);
 
     public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
         super(i,new ArrayList<>(),new ArrayList<>(), oi, 0);

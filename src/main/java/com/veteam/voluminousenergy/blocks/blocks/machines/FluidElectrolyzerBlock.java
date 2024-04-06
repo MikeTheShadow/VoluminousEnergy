@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.FluidElectrolyzerTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -31,7 +31,7 @@ public class FluidElectrolyzerBlock extends VEFaceableMachineBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
-        return new FluidElectrolyzerTile(pos, state);
+        return VETileEntities.FLUID_ELECTROLYZER_FACTORY.create(pos, state);
     }
 
     @Nullable

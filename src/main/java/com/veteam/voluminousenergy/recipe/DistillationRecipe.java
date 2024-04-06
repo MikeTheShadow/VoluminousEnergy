@@ -20,7 +20,7 @@ import java.util.List;
 public class DistillationRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
 
-    private final RecipeParser parser = RNGRecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RNGRecipeParser(this)
             .addChancedItemResult(6,0)
             .addFluidIngredient(0,0)
             .addFluidResult(1,0)

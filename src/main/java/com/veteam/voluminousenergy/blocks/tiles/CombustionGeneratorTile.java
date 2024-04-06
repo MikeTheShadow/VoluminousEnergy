@@ -3,15 +3,13 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
-import com.veteam.voluminousenergy.recipe.RecipeCache;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
-import com.veteam.voluminousenergy.util.VERelationalTank;
 import com.veteam.voluminousenergy.util.SlotType;
 import com.veteam.voluminousenergy.util.TankType;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,12 +17,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -37,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CombustionGeneratorTile extends VETileEntity {
@@ -62,16 +55,10 @@ public class CombustionGeneratorTile extends VETileEntity {
     };
     private int energyRate;
 
-    private final ItemStackHandler inventory = createHandler();
-
     public CombustionGeneratorTile(BlockPos pos, BlockState state) {
         super(VEBlocks.COMBUSTION_GENERATOR_TILE.get(), pos, state, null);
         fluidManagers.get(0).getTank().setValidator(fluid -> {
             List<VERecipe> recipes = CombustionGeneratorRecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE);
-            return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
-        });
-        fluidManagers.get(1).getTank().setValidator(fluid -> {
-            List<VERecipe> recipes = CombustionGeneratorOxidizerRecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
             return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(fluid));
         });
     }
@@ -124,25 +111,6 @@ public class CombustionGeneratorTile extends VETileEntity {
         sendOutPower();
     }
 
-
-    @Override
-    public void validateRecipe() {
-        if (!this.isRecipeDirty) {
-            return;
-        }
-        this.isRecipeDirty = false;
-        oxidizerRecipe =
-                RecipeCache.getFluidRecipeFromCache(level,
-                        CombustionGeneratorOxidizerRecipe.RECIPE_TYPE,
-                        Collections.singletonList(fluidManagers.get(1).getTank().getFluid()),
-                        new ArrayList<>());
-
-        fuelRecipe = RecipeCache.getFluidRecipeFromCache(level,
-                CombustionGeneratorRecipe.RECIPE_TYPE,
-                Collections.singletonList(fluidManagers.get(0).getTank().getFluid()),
-                new ArrayList<>());
-    }
-
     @Override
     public void load(CompoundTag tag) {
         energyRate = tag.getInt("energy_rate");
@@ -174,35 +142,6 @@ public class CombustionGeneratorTile extends VETileEntity {
                 }
             }
         }
-    }
-
-    private ItemStackHandler createHandler() {
-        return new ItemStackHandler(4) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                markFluidInputDirty();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-
-                if (stack.getItem() instanceof BucketItem bucketItem) {
-                    Fluid fluid = bucketItem.getFluid();
-                    if (fluid.isSame(Fluids.EMPTY)) return true;
-                    FluidStack testFluid = new FluidStack(fluid, COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT);
-                    if (slot == 0) {
-                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
-                    } else if (slot == 2) {
-                        List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-                        return recipes.stream().anyMatch(r -> r.getFluidIngredient(0).test(testFluid));
-                    }
-                    return true;
-                }
-                return false;
-            }
-        };
     }
 
     @Nullable

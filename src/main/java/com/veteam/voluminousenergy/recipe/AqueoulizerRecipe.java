@@ -20,7 +20,7 @@ public class AqueoulizerRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.AQUEOULIZING.get();
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RecipeParser(this)
             .addIngredient(4, 0)
             .addFluidIngredient(0, 0)
             .addFluidResult(1, 0);

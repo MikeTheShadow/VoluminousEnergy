@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class VETileFactory {
+public class VETileEntityFactory {
     private List<TileTank> tanks = new ArrayList<>();
     private RegistryObject<RecipeType<VERecipe>> recipeType;
     private final RegistryObject<BlockEntityType<VETileEntity>> tileRegistry;
@@ -37,7 +37,7 @@ public class VETileFactory {
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
-    public VETileFactory(RegistryObject<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
+    public VETileEntityFactory(RegistryObject<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
         this.tileRegistry = tileRegistry;
         this.containerFactory = containerFactory;
     }
@@ -80,24 +80,24 @@ public class VETileFactory {
         return newTile;
     }
 
-    public VETileFactory withRecipe(RegistryObject<RecipeType<VERecipe>> recipe) {
+    public VETileEntityFactory withRecipe(RegistryObject<RecipeType<VERecipe>> recipe) {
         this.recipeType = recipe;
         return this;
     }
 
-    public VETileFactory addEnergyStorageWithConsumption(int maxPower, int transferRate, int consumption) {
+    public VETileEntityFactory addEnergyStorageWithConsumption(int maxPower, int transferRate, int consumption) {
         VEEnergyStorage storage = new VEEnergyStorage(maxPower, transferRate);
         storage.setConsumption(consumption);
         this.storage = storage;
         return this;
     }
 
-    public VETileFactory addEnergyStorage(int maxPower, int transferRate) {
+    public VETileEntityFactory addEnergyStorage(int maxPower, int transferRate) {
         this.storage = new VEEnergyStorage(maxPower, transferRate);
         return this;
     }
 
-    public VETileFactory addUpgradeSlot(int upgradeSlotId) {
+    public VETileEntityFactory addUpgradeSlot(int upgradeSlotId) {
 
         if (storage == null)
             throw new IllegalStateException("Attempted to add upgrade tilePos without first adding energy storage!");
@@ -106,38 +106,43 @@ public class VETileFactory {
         return this;
     }
 
-    public VETileFactory countable() {
+    public VETileEntityFactory countable() {
         this.dataMap.put("counter",0);
         this.dataMap.put("length",0);
         return this;
     }
 
-    public VETileFactory withDataFlag(String flag) {
+    public VETileEntityFactory isMultiBlock() {
+        this.dataMap.put("multiblock_complete",0);
+        return this;
+    }
+
+    public VETileEntityFactory withDataFlag(String flag) {
         this.dataMap.put(flag,0);
         return this;
     }
 
-    public VETileFactory includeSoundTick() {
+    public VETileEntityFactory includeSoundTick() {
         this.dataMap.put("sound_tick",0);
         return this;
     }
 
-    public VETileFactory withTanks(TileTank... tanks) {
+    public VETileEntityFactory withTanks(TileTank... tanks) {
         this.tanks = List.of(tanks);
         return this;
     }
 
-    public VETileFactory makesSound() {
+    public VETileEntityFactory makesSound() {
         this.dataMap.put("sound_tick",0);
         return this;
     }
 
-    public VETileFactory withCustomRecipeProcessing(AbstractRecipeProcessor processor) {
+    public VETileEntityFactory withCustomRecipeProcessing(AbstractRecipeProcessor processor) {
         this.processor = processor;
         return this;
     }
 
-    public VETileFactory sendsOutPower() {
+    public VETileEntityFactory sendsOutPower() {
         this.sendsOutPower = true;
         return this;
     }

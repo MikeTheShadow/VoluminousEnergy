@@ -19,7 +19,7 @@ import java.util.List;
 public class CompressorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING.get();
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RecipeParser(this)
             .addIngredient(0,0)
             .addItemResult(1,0);
 

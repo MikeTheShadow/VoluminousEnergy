@@ -7,6 +7,7 @@ import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,6 @@ public class RecipeParser {
 
     public RecipeParser(VERecipe recipe) {
         this.recipe = recipe;
-    }
-
-    public static RecipeParser forRecipe(VERecipe recipe) {
-        return new RecipeParser(recipe);
     }
 
     public RecipeParser addIngredient(int tilePos,int recipePos) {
@@ -117,8 +114,8 @@ public class RecipeParser {
         }
 
         for (SlotAndRecipePos pos : fluidIngredientPositions) {
-            FluidStack fluidStack = tile.getFluidStackFromTank(pos.tilePos);
-            fluidStack.setAmount(fluidStack.getAmount() - recipe.getFluidIngredientAmount(pos.recipePos));
+            tile.getTank(pos.tilePos)
+                    .getTank().drain(recipe.getFluidIngredientAmount(pos.recipePos), IFluidHandler.FluidAction.EXECUTE);
         }
 
         // Insert the results
@@ -129,8 +126,7 @@ public class RecipeParser {
 
         for (SlotAndRecipePos pos : fluidResultPositions) {
             FluidStack result = recipe.getOutputFluid(pos.recipePos);
-            FluidStack tileFluid = tile.getFluidStackFromTank(pos.tilePos);
-            tileFluid.setAmount(tileFluid.getAmount() + result.getAmount());
+            tile.getTank(pos.tilePos).fillTank(result.copy());
         }
 
         // mark fluid IO as dirty
@@ -142,6 +138,12 @@ public class RecipeParser {
             if (pos.tilePos == slot) {
                 Ingredient recipeIngredient = recipe.getIngredient(pos.recipePos);
                 return recipeIngredient.test(stack);
+            }
+        }
+        for(SlotAndRecipePos pos : itemResultPositions) {
+            if (pos.tilePos == slot) {
+                ItemStack itemStack = recipe.getResult(pos.recipePos);
+                return itemStack.is(stack.getItem());
             }
         }
         return false;

@@ -3,11 +3,12 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.ImplosionCompressorTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
+import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -22,14 +23,14 @@ import java.util.List;
 
 public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
 
-    private ImplosionCompressorTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/implosion_compressor_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public ImplosionCompressorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (ImplosionCompressorTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -41,30 +42,32 @@ public class ImplosionCompressorScreen extends VEContainerScreen<VEContainer> {
 
         }));
 
+        List<VESlotManager> managers = tileEntity.getSlotManagers();
+
         // Input insert
-        addRenderableWidget(new SlotBoolButton(tileEntity.inputSlotManager, (this.width / 2) - 198, this.topPos, button -> {
+        addRenderableWidget(new SlotBoolButton(managers.get(0), (this.width / 2) - 198, this.topPos, button -> {
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.inputSlotManager, (this.width / 2) - 184, this.topPos, button -> {
+        addRenderableWidget(new SlotDirectionButton(managers.get(0), (this.width / 2) - 184, this.topPos, button -> {
             // Do nothing
         }));
 
         // Input Gunpowder
-        addRenderableWidget(new SlotBoolButton(tileEntity.gunpowderSlotManager, (this.width / 2) - 198, this.topPos + 20, button -> {
+        addRenderableWidget(new SlotBoolButton(managers.get(1), (this.width / 2) - 198, this.topPos + 20, button -> {
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.gunpowderSlotManager, (this.width / 2) - 184, this.topPos + 20, button -> {
+        addRenderableWidget(new SlotDirectionButton(managers.get(1), (this.width / 2) - 184, this.topPos + 20, button -> {
             // Do nothing
         }));
 
         // Output
-        addRenderableWidget(new SlotBoolButton(tileEntity.outputSlotManager, (this.width / 2) - 198, this.topPos + 40, button -> {
+        addRenderableWidget(new SlotBoolButton(managers.get(2), (this.width / 2) - 198, this.topPos + 40, button -> {
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.outputSlotManager, (this.width / 2) - 184, this.topPos + 40, button -> {
+        addRenderableWidget(new SlotDirectionButton(managers.get(2), (this.width / 2) - 184, this.topPos + 40, button -> {
             // Do nothing
         }));
     }

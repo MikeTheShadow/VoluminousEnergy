@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VEItemStackHandler;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
@@ -17,10 +18,6 @@ public class RNGRecipeParser extends RecipeParser {
         super(recipe);
     }
     List<SlotAndRecipePos> randomItemResultPositions = new ArrayList<>();
-
-    public static RNGRecipeParser forRecipe(VERecipe recipe) {
-        return new RNGRecipeParser(recipe);
-    }
 
     public RNGRecipeParser addChancedItemResult(int tilePos, int recipePos) {
         this.randomItemResultPositions.add(new SlotAndRecipePos(tilePos,recipePos));
@@ -50,16 +47,29 @@ public class RNGRecipeParser extends RecipeParser {
         for (SlotAndRecipePos pos : randomItemResultPositions) {
 
             VERNGRecipe rngRecipe = (VERNGRecipe) recipe;
-
             float randomness = rngRecipe.getOutputChance(pos.recipePos());
+            ItemStack result = rngRecipe.getResult(pos.recipePos());
+            if (result == ItemStack.EMPTY) continue;
             if(randomness != 1) {
                 float random = abs(0 + randomInstance.nextFloat() * (-1));
                 if(random > randomness) continue;
-                ItemStack result = rngRecipe.getResult(pos.recipePos());
+                handler.insertItem(pos.tilePos(), result.copy(), false);
+            } else {
                 handler.insertItem(pos.tilePos(), result.copy(), false);
             }
         }
 
         super.completeRecipe(tile);
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack) {
+        for(SlotAndRecipePos pos : randomItemResultPositions) {
+            if (pos.tilePos() == slot) {
+                ItemStack itemStack = recipe.getResult(pos.recipePos());
+                return itemStack.is(stack.getItem());
+            }
+        }
+        return super.canInsertItem(slot, stack);
     }
 }

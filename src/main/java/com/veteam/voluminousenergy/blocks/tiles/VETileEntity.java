@@ -661,4 +661,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public void setSelectedRecipe(VERecipe recipe) {
         this.selectedRecipe = recipe;
     }
+
+    public AbstractRecipeProcessor getRecipeProcessor() {
+        return recipeProcessor;
+    }
 }

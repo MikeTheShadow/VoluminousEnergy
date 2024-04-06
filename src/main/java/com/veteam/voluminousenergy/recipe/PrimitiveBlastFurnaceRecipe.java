@@ -21,7 +21,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     public static final RecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING.get();
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RecipeParser(this)
             .addIngredient(0,0)
             .addItemResult(1,0);
 

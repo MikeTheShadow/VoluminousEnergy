@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.HydroponicParser;
-import com.veteam.voluminousenergy.recipe.parser.RNGRecipeParser;
 import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
@@ -20,7 +19,7 @@ import java.util.List;
 public class HydroponicIncubatorRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.HYDROPONIC_INCUBATING.get();
 
-    private final RecipeParser parser = HydroponicParser.forRecipe(this)
+    private final RecipeParser parser = new HydroponicParser(this)
             .addChancedItemResult(2,0)
             .addChancedItemResult(3,1)
             .addChancedItemResult(4,2)

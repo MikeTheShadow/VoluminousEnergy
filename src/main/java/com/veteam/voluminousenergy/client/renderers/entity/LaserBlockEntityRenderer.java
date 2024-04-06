@@ -271,16 +271,6 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
     }
 
     @Override
-    public boolean shouldRenderOffScreen(@NonNull DimensionalLaserTile dimensionalLaserTile) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldRender(@NonNull DimensionalLaserTile p_173531_, @Nonnull Vec3 p_173532_) {
-        return Vec3.atCenterOf(p_173531_.getBlockPos()).multiply(1.0D, 0.0D, 1.0D).closerThan(p_173532_.multiply(1.0D, 0.0D, 1.0D), this.getViewDistance());
-    }
-
-    @Override
     public int getViewDistance() {
         return 256;
     }

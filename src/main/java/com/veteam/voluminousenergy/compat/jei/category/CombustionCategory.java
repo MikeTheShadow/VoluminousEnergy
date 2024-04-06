@@ -5,7 +5,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.CombustionGenerator.CombustionGeneratorOxidizerRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -71,82 +70,82 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
 
     @Override
     public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY){
-
-        // Volumetric Energy label
-        TextUtil.renderShadowedText(
-                matrixStack,
-                Minecraft.getInstance().font,
-                TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
-                16,
-                4,
-                VEContainerScreen.WHITE_TEXT_STYLE
-        );
-
-        // Actual Volumetric Energy value + FE/B units added on the end
-        TextUtil.renderUnshadowedText(
-                matrixStack,
-                Minecraft.getInstance().font,
-                Component.nullToEmpty(recipe.getVolumetricEnergy() + " FE/B"),
-                35,
-                16,
-                VEContainerScreen.GREY_TEXT_STYLE
-        );
-
-        slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
-        slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
-
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
-
-        if (oxiStack.isPresent()){
-
-            List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
-
-            CombustionGeneratorOxidizerRecipe oxidizerRecipe = null;
-
-            for(VERecipe VERecipe : recipes) {
-                if(VERecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
-                    if(cor.getFluidIngredient(0).test(oxiStack.get())) {
-                        oxidizerRecipe = cor;
-                    }
-                }
-            }
-            if(oxidizerRecipe == null) throw new IllegalStateException("No matching oxidizer for category: " + this.getClass().getName());
-
-            int fePerTick = recipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
-            Component fePerTickComponent = Component.nullToEmpty(fePerTick+"");
-            int x = 50;
-            if (fePerTick < 100){
-                x = 54;
-            } else if (fePerTick > 999 && fePerTick < 10_000){
-                x = 46;
-            } else if (fePerTick > 9999){
-                NumberUtil.numberToTextComponent4FE(fePerTick);
-                x = 46;
-            }
-
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fePerTickComponent,  x, 45,VEContainerScreen.GREY_TEXT_STYLE);
-        }
-
-        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("FE/t:"), 48,35,VEContainerScreen.WHITE_TEXT_STYLE);
-
-        TextUtil.renderUnshadowedText(
-                matrixStack,
-                Minecraft.getInstance().font,
-                TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
-                16,
-                26,
-                VEContainerScreen.GREY_TEXT_STYLE
-        );
-
-        // Oxidizer Label
-        TextUtil.renderUnshadowedText(
-                matrixStack,
-                Minecraft.getInstance().font,
-                TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
-                76,
-                26,
-                VEContainerScreen.GREY_TEXT_STYLE
-        );
+//
+//        // Volumetric Energy label
+//        TextUtil.renderShadowedText(
+//                matrixStack,
+//                Minecraft.getInstance().font,
+//                TextUtil.translateString("jei.voluminousenergy.volumetric_energy").copy().append(": "),
+//                16,
+//                4,
+//                VEContainerScreen.WHITE_TEXT_STYLE
+//        );
+//
+//        // Actual Volumetric Energy value + FE/B units added on the end
+//        TextUtil.renderUnshadowedText(
+//                matrixStack,
+//                Minecraft.getInstance().font,
+//                Component.nullToEmpty(recipe.getVolumetricEnergy() + " FE/B"),
+//                35,
+//                16,
+//                VEContainerScreen.GREY_TEXT_STYLE
+//        );
+//
+//        slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
+//        slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
+//
+//        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
+//
+//        if (oxiStack.isPresent()){
+//
+//            List<VERecipe> recipes = VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE);
+//
+//            CombustionGeneratorOxidizerRecipe oxidizerRecipe = null;
+//
+//            for(VERecipe VERecipe : recipes) {
+//                if(VERecipe instanceof CombustionGeneratorOxidizerRecipe cor) {
+//                    if(cor.getFluidIngredient(0).test(oxiStack.get())) {
+//                        oxidizerRecipe = cor;
+//                    }
+//                }
+//            }
+//            if(oxidizerRecipe == null) throw new IllegalStateException("No matching oxidizer for category: " + this.getClass().getName());
+//
+//            int fePerTick = recipe.getVolumetricEnergy()/oxidizerRecipe.getProcessTime();
+//            Component fePerTickComponent = Component.nullToEmpty(fePerTick+"");
+//            int x = 50;
+//            if (fePerTick < 100){
+//                x = 54;
+//            } else if (fePerTick > 999 && fePerTick < 10_000){
+//                x = 46;
+//            } else if (fePerTick > 9999){
+//                NumberUtil.numberToTextComponent4FE(fePerTick);
+//                x = 46;
+//            }
+//
+//            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, fePerTickComponent,  x, 45,VEContainerScreen.GREY_TEXT_STYLE);
+//        }
+//
+//        TextUtil.renderShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("FE/t:"), 48,35,VEContainerScreen.WHITE_TEXT_STYLE);
+//
+//        TextUtil.renderUnshadowedText(
+//                matrixStack,
+//                Minecraft.getInstance().font,
+//                TextUtil.translateString("jei.voluminousenergy.fluid.fuel").copy().append(":"),
+//                16,
+//                26,
+//                VEContainerScreen.GREY_TEXT_STYLE
+//        );
+//
+//        // Oxidizer Label
+//        TextUtil.renderUnshadowedText(
+//                matrixStack,
+//                Minecraft.getInstance().font,
+//                TextUtil.translateString("jei.voluminousenergy.fluid.oxidizer").copy().append(":"),
+//                76,
+//                26,
+//                VEContainerScreen.GREY_TEXT_STYLE
+//        );
 
     }
 
@@ -158,9 +157,9 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
 
         ArrayList<FluidStack> oxiStacks = new ArrayList<>();
-        for (VERecipe oxidizerRecipe : VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
-            oxiStacks.addAll(Arrays.asList(oxidizerRecipe.getFluidIngredient(0).getFluids()));
-        }
+//        for (VERecipe oxidizerRecipe : VERecipe.getCachedRecipes(CombustionGeneratorOxidizerRecipe.RECIPE_TYPE)) {
+//            oxiStacks.addAll(Arrays.asList(oxidizerRecipe.getFluidIngredient(0).getFluids()));
+//        }
 
         oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK, oxiStacks);
 

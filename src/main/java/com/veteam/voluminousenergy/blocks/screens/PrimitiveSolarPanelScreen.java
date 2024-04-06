@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.PrimitiveSolarPanelTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.Minecraft;
@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
 
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/solar_panel_gui.png");
-    private final PrimitiveSolarPanelTile tileEntity;
+    private final VETileEntity tileEntity;
 
     public PrimitiveSolarPanelScreen(VEContainer container, Inventory inv, Component name) {
         super(container, inv, name);
-        tileEntity = (PrimitiveSolarPanelTile) container.getTileEntity();
+        tileEntity = container.getTileEntity();
         container.setScreen(this);
     }
 
@@ -44,7 +44,7 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY){
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("primitive_solar_panel"),  8, 6, WHITE_TEXT_STYLE);
         if (tileEntity.getLevel().isDay())
-            TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getGeneration() + " FE/t"), 90, 32, WHITE_TEXT_STYLE);
+            TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergy().getProduction() + " FE/t"), 90, 32, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         //super.renderLabels(matrixStack, mouseX, mouseY);
     }

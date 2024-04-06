@@ -18,7 +18,7 @@ import java.util.List;
 public class CombustionGeneratorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RecipeParser(this)
             .addFluidIngredient(0,0)
             .addFluidIngredient(1,1);
 

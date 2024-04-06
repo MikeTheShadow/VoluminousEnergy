@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.CrusherTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
@@ -32,17 +32,11 @@ public class CrusherBlock extends VEFaceableMachineBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
-        return new CrusherTile(pos, state);
-    }
-
-    // NEW TICK SYSTEM
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createCrusherTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> crusherTile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, crusherTile, CrusherTile::serverTick);
+        return VETileEntities.CRUSHER_FACTORY.create(pos, state);
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
-        return createCrusherTicker(level, blockEntityType, VEBlocks.CRUSHER_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.CRUSHER_TILE.get());
     }
 }

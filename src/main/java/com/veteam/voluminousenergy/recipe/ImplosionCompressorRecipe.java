@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.recipe.parser.ImplosionCompressorParser;
 import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
@@ -19,9 +20,8 @@ import java.util.List;
 public class ImplosionCompressorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.IMPLOSION_COMPRESSING.get();
 
-    private final RecipeParser parser = RecipeParser.forRecipe(this)
+    private final RecipeParser parser = new ImplosionCompressorParser(this)
             .addIngredient(0,0)
-            .addIngredient(1,1)
             .addItemResult(2,0);
 
     public ImplosionCompressorRecipe() {
@@ -29,7 +29,6 @@ public class ImplosionCompressorRecipe extends VERecipe {
 
     public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
         super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
-        ingredients.add(new VERecipeCodecs.RegistryIngredient("","minecraft:gunpowder",1));
     }
 
     public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>() {

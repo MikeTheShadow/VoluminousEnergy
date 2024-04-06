@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory.VEContainerFactoryBuilder;
-import com.veteam.voluminousenergy.blocks.tiles.VETileFactory.*;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.*;
 
 import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.*;
 import static net.minecraft.core.Direction.*;
@@ -12,7 +12,7 @@ public class VEContainers {
             .create(AIR_COMPRESSOR_CONTAINER, AIR_COMPRESSOR_BLOCK)
             .addSlot(70, 18,new BucketInputSlot(UP,0)) // Air Compressor bucket input tilePos
             .addSlot(70, 49,new BucketOutputSlot(DOWN)) // Air Compressor bucket output tilePos
-            .addSlot(154, -14) // Upgrade Slot
+            .addUpgradeSlot(154, -14) // Upgrade Slot
             .build();
 
     public static final VEContainerFactory AQUEOULIZER_FACTORY = new VEContainerFactoryBuilder()

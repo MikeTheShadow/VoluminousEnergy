@@ -21,7 +21,7 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
 
-    private final RecipeParser parser = RNGRecipeParser.forRecipe(this)
+    private final RecipeParser parser = new RNGRecipeParser(this)
             .addChancedItemResult(2,0)
             .addChancedItemResult(3,1)
             .addChancedItemResult(4,2)

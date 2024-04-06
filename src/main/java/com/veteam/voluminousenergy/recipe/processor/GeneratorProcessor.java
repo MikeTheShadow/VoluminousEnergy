@@ -72,9 +72,6 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
                 if(!parser.canCompleteRecipe(tile)) return;
                 // Check to see if the energy produced will overflow the tile
                 if(tile.getEnergy().isFullyCharged()) return;
-
-                VoluminousEnergy.LOGGER.info("recipe completed!");
-
                 // Since we're a generator we want to subtract the amounts at the start rather than at the end
                 veEnergyRecipe.getParser().completeRecipe(tile);
 

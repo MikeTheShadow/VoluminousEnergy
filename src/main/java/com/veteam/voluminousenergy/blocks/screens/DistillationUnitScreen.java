@@ -3,7 +3,8 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.DistillationUnitTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.recipe.processor.MultiBlockRecipeProcessor;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
-    private DistillationUnitTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/distillation_unit_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
     private static final ResourceLocation MULTIBLOCK_WARN = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/multiblock_invalid_warning.png");
@@ -27,7 +28,7 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
 
     public DistillationUnitScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
         super(screenContainer,inv,titleIn);
-        tileEntity = (DistillationUnitTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -47,7 +48,8 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
-        if (tileEntity.getMultiblockValidity()){
+        MultiBlockRecipeProcessor processor = (MultiBlockRecipeProcessor) tileEntity.getRecipeProcessor();
+        if (processor.isMultiBlockValid(tileEntity)){
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateVEBlock("distillation_unit"),  8, 6, WHITE_TEXT_STYLE);
             TextUtil.renderShadowedText(matrixStack, this.font,TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         }
@@ -118,7 +120,8 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
-        if(tileEntity != null && tileEntity.getMultiblockValidity()){
+        MultiBlockRecipeProcessor processor = (MultiBlockRecipeProcessor) tileEntity.getRecipeProcessor();
+        if(tileEntity != null && processor.isMultiBlockValid(tileEntity)){
             int progress = tileEntity.progressProcessingCounterPX(9);
             int power = menu.powerScreen(49);
 
