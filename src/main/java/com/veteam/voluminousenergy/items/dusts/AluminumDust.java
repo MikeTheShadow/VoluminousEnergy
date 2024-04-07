@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class AluminumDust extends VEItem {
-    public AluminumDust (){
+    public AluminumDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Nitroglycerin {
-    public static final ResourceLocation NITROGLYCERIN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitroglycerin_still");
-    public static final ResourceLocation NITROGLYCERIN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitroglycerin_flowing");
+    public static final ResourceLocation NITROGLYCERIN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_still");
+    public static final ResourceLocation NITROGLYCERIN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class Nitroglycerin {
     public static VEFlowingFluidBlock NITROGLYCERIN_BLOCK;
     public static Item NITROGLYCERIN_BUCKET;
 
-    public static FlowingFluid NitroglycerinFluid(){
+    public static FlowingFluid NitroglycerinFluid() {
         NITROGLYCERIN = new ForgeFlowingFluid.Source(Nitroglycerin.properties);
         return NITROGLYCERIN;
     }
 
-    public static FlowingFluid FlowingNitroglycerinFluid(){
+    public static FlowingFluid FlowingNitroglycerinFluid() {
         FLOWING_NITROGLYCERIN = new ForgeFlowingFluid.Flowing(Nitroglycerin.properties);
         return FLOWING_NITROGLYCERIN;
     }
 
-    public static VEFlowingFluidBlock FlowingNitroglycerinBlock(){
+    public static VEFlowingFluidBlock FlowingNitroglycerinBlock() {
         NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(() -> NITROGLYCERIN, stdProp);
         return NITROGLYCERIN_BLOCK;
     }
 
-    public static Item NitroglycerinBucket(){
+    public static Item NitroglycerinBucket() {
         NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGLYCERIN_BUCKET;
     }

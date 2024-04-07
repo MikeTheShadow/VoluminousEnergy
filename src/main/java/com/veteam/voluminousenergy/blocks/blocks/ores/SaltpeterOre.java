@@ -10,12 +10,12 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SaltpeterOre extends ColoredFallingBlock {
-    public SaltpeterOre(){
+    public SaltpeterOre() {
         super(new ColorRGBA(14406560),
-            Properties.of()
-            .sound(SoundType.SAND)
-            .strength(0.6f)
-            .requiresCorrectToolForDrops()
+                Properties.of()
+                        .sound(SoundType.SAND)
+                        .strength(0.6f)
+                        .requiresCorrectToolForDrops()
         );
         VETagDataGenerator.setRequiresShovel(this);
         VETagDataGenerator.setRequiresWood(this);
@@ -27,6 +27,6 @@ public class SaltpeterOre extends ColoredFallingBlock {
 
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.level.LevelReader reader, RandomSource randomSource, BlockPos pos, int fortune, int silktouch) {
-        return silktouch == 0 ? this.xpOnDrop(randomSource)*(1+fortune) : 0;
+        return silktouch == 0 ? this.xpOnDrop(randomSource) * (1 + fortune) : 0;
     }
 }

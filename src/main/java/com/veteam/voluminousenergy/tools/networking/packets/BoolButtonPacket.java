@@ -14,59 +14,58 @@ public class BoolButtonPacket {
     private boolean status;
     private int slotId;
 
-    public BoolButtonPacket(){
+    public BoolButtonPacket() {
         // Do nothing
     }
 
-    public BoolButtonPacket(boolean updatedStatus, int slot){
+    public BoolButtonPacket(boolean updatedStatus, int slot) {
         this.status = updatedStatus;
         this.slotId = slot;
     }
 
-    public static BoolButtonPacket fromBytes(FriendlyByteBuf buffer){
+    public static BoolButtonPacket fromBytes(FriendlyByteBuf buffer) {
         BoolButtonPacket packet = new BoolButtonPacket();
         packet.status = buffer.readBoolean();
         packet.slotId = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(FriendlyByteBuf buffer){
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.status);
         buffer.writeInt(this.slotId);
     }
 
-    public static void handle(BoolButtonPacket packet, CustomPayloadEvent.Context contextSupplier){
+    public static void handle(BoolButtonPacket packet, CustomPayloadEvent.Context contextSupplier) {
         //VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
         NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch(packetDirection){
+        switch (packetDirection) {
             case PLAY_TO_CLIENT:
                 AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
                 contextSupplier.setPacketHandled(true);
                 break;
             default:
                 AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
                 contextSupplier.setPacketHandled(true);
         }
 
     }
 
-    public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer){
-        if(openContainer != null){
+    public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+        if (openContainer != null) {
 
-            if(openContainer instanceof VEContainer VEContainer){
-                if(onServer){
+            if (openContainer instanceof VEContainer VEContainer) {
+                if (onServer) {
                     BlockEntity tileEntity = VEContainer.getTileEntity();
-                    if (tileEntity instanceof VETileEntity VETileEntity){
+                    if (tileEntity instanceof VETileEntity VETileEntity) {
                         VETileEntity.updatePacketFromGui(packet.status, packet.slotId);
                         VETileEntity.setChanged();
                     }
                 } else {
                     VEContainer.updateStatusButton(packet.status, packet.slotId);
                 }
-            }
-        else {
+            } else {
                 VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");
             }
         } else {

@@ -35,20 +35,20 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
     private final IDrawable slotDrawable;
     private final IDrawable arrow;
     private final IDrawable emptyArrow;
-    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.HYDROPONIC_INCUBATOR_UID,HydroponicIncubatorRecipe.class);
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.HYDROPONIC_INCUBATOR_UID, HydroponicIncubatorRecipe.class);
 
-    public HydroponicIncubatorCategory(IGuiHelper guiHelper){
+    public HydroponicIncubatorCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 4, 4, 156, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -69,37 +69,37 @@ public class HydroponicIncubatorCategory implements IRecipeCategory<HydroponicIn
 
     @Override
     public void draw(HydroponicIncubatorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,48, 12);
-        emptyArrow.draw(matrixStack,48,12);
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,24,10);
-        slotDrawable.draw(matrixStack,72,10); // Primary Output
-        slotDrawable.draw(matrixStack,94,10); // RNG0 output
-        slotDrawable.draw(matrixStack,116,10); // RNG1 output
-        slotDrawable.draw(matrixStack,138,10); // RNG2 output
+        arrow.draw(matrixStack, 48, 12);
+        emptyArrow.draw(matrixStack, 48, 12);
+        slotDrawable.draw(matrixStack, 2, 10);
+        slotDrawable.draw(matrixStack, 24, 10);
+        slotDrawable.draw(matrixStack, 72, 10); // Primary Output
+        slotDrawable.draw(matrixStack, 94, 10); // RNG0 output
+        slotDrawable.draw(matrixStack, 116, 10); // RNG1 output
+        slotDrawable.draw(matrixStack, 138, 10); // RNG2 output
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:",  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "",  24, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
 
         if (recipe.getOutputChance(1) > 0 && recipe.getResult(1).getItem() != Items.AIR) {
-            int chance = (int) (recipe.getOutputChance(1)*100);
+            int chance = (int) (recipe.getOutputChance(1) * 100);
             int xPos = calculateXPos(94, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", xPos, 32, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getOutputChance(2) > 0 && recipe.getResult(2).getItem() != Items.AIR) {
-            int chance = (int) (recipe.getOutputChance(2)*100);
+            int chance = (int) (recipe.getOutputChance(2) * 100);
             int xPos = calculateXPos(116, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", xPos, 32, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
         if (recipe.getOutputChance(3) > 0 && recipe.getResult(3).getItem() != Items.AIR) {
-            int chance = (int) (recipe.getOutputChance(3)*100);
+            int chance = (int) (recipe.getOutputChance(3) * 100);
             int xPos = calculateXPos(138, chance);
 
-            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%",  xPos, 32,VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, chance + "%", xPos, 32, VEContainerScreen.GREY_TEXT_STYLE);
         }
     }
 

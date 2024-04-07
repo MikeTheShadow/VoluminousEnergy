@@ -37,12 +37,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PumpTile extends VETileEntity  {
+public class PumpTile extends VETileEntity {
     private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.inventory);
     private final LazyOptional<IFluidHandler> fluid = LazyOptional.of(this::createFluid);
 
     public List<VESlotManager> slotManagers = new ArrayList<>() {{
-        add(new VESlotManager(0,Direction.UP,true, SlotType.FLUID_INPUT,1,0));
+        add(new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0));
         add(new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT));
     }};
 
@@ -54,27 +54,27 @@ public class PumpTile extends VETileEntity  {
     private int lY = 0;
     private int lZ = 0;
 
-    private final VERelationalTank fluidTank = new VERelationalTank(new FluidTank(tankCapacity), 0, TankType.OUTPUT,"tank:tank_gui");
+    private final VERelationalTank fluidTank = new VERelationalTank(new FluidTank(tankCapacity), 0, TankType.OUTPUT, "tank:tank_gui");
     private Fluid pumpingFluid = Fluids.EMPTY;
     private final ItemStackHandler inventory = this.createHandler();
 
     public PumpTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.PUMP_TILE.get(), pos, state,null);
+        super(VEBlocks.PUMP_TILE.get(), pos, state, null);
         fluidTank.setAllowAny(true);
         fluidTank.setIgnoreDirection(true);
     }
 
     @Override
-    public void tick(){
+    public void tick() {
         updateClients();
         processFluidIO();
         handler.ifPresent(h -> {
-            if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0){
-                for(int i = 0; i < 50; i++) {
-                    if(fluidPumpMethod()) break;
+            if (fluidTank.getTank() != null && (fluidTank.getTank().getFluidAmount() + 1000) <= tankCapacity && this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0) > 0) {
+                for (int i = 0; i < 50; i++) {
+                    if (fluidPumpMethod()) break;
                 }
                 setChanged();
-                if(++sound_tick == 19) {
+                if (++sound_tick == 19) {
                     sound_tick = 0;
                     if (Config.PLAY_MACHINE_SOUNDS.get()) {
                         level.playSound(null, this.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -218,11 +218,11 @@ public class PumpTile extends VETileEntity  {
         return slotManagers;
     }
 
-    public FluidStack getAirTankFluid(){
+    public FluidStack getAirTankFluid() {
         return this.fluidTank.getTank().getFluid();
     }
 
-    public int getTankCapacity(){
+    public int getTankCapacity() {
         return tankCapacity;
     }
 
@@ -237,41 +237,41 @@ public class PumpTile extends VETileEntity  {
             lY = -1;
             lZ = -22;
 
-            try{
+            try {
                 this.pumpingFluid = this.level.getBlockState(this.getBlockPos().offset(0, -1, 0)).getFluidState().getType();
                 initDone = true;
-            } catch (Exception e){
+            } catch (Exception e) {
                 return false;
             }
         }
 
-        if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isSame(Fluids.EMPTY) || this.pumpingFluid == null){ // Sanity check to prevent mass destruction
+        if (this.pumpingFluid == Fluids.EMPTY || this.pumpingFluid.isSame(Fluids.EMPTY) || this.pumpingFluid == null) { // Sanity check to prevent mass destruction
             initDone = false;
             return false;
         }
 
-        if (lX < 22){
+        if (lX < 22) {
             lX++;
-            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
-                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState()); // setBlockAndUpdate is the replacement for setBlockState in MCP mappings. This is obvious because of the flag of 3.
+            if (this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState()); // setBlockAndUpdate is the replacement for setBlockState in MCP mappings. This is obvious because of the flag of 3.
                 addFluidToTank();
                 return true;
             }
 
-        } else if (lZ < 22){
+        } else if (lZ < 22) {
             lZ++;
             lX = -22;
-            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
-                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
+            if (this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
                 addFluidToTank();
                 return true;
             }
-        } else if (this.getBlockPos().offset(0, lY, 0).getY() > -63){
+        } else if (this.getBlockPos().offset(0, lY, 0).getY() > -63) {
             lY--;
             lX = -22;
             lZ = -22;
-            if(this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX,lY,lZ)).getFluidState().getType())){
-                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX,lY,lZ),Blocks.AIR.defaultBlockState());
+            if (this.pumpingFluid.isSame(this.level.getBlockState(this.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
+                this.level.setBlockAndUpdate(this.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
                 addFluidToTank();
                 return true;
             }
@@ -279,7 +279,7 @@ public class PumpTile extends VETileEntity  {
         return false;
     }
 
-    public VERelationalTank getTank(){
+    public VERelationalTank getTank() {
         return this.fluidTank;
     }
 }

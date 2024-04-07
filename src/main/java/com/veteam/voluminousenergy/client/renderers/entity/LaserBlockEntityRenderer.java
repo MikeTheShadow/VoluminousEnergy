@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.DimensionalLaserTile;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import net.minecraft.client.Minecraft;
@@ -22,12 +21,9 @@ import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-
-import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
 public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntity> {
@@ -52,14 +48,17 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
     public void renderBeaconBeam(VETileEntity tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
 
         int buildTick = tile.getData("build_tick");
-        boolean fullyBuilt = tile.getData("fully_built") == 1;
-        boolean firstStageBuilt = tile.getData("first_stage_built") == 1;
+        boolean fullyBuilt = buildTick == 1000;
+        boolean firstStageBuilt = buildTick >= 400;
+
+        if (firstStageBuilt) buildTick -= 400;
 
         height += 2;
 
-        if (!fullyBuilt) {
+        if (!firstStageBuilt) {
             height = 1;
-        } else if (buildTick < 5) {
+        }
+        if (buildTick == 0) {
             SoundManager manager = Minecraft.getInstance().getSoundManager();
             manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
         }
@@ -128,6 +127,16 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
             }
         }
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(@NotNull VETileEntity veTileEntity) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(@NotNull VETileEntity veTileEntity, @NotNull Vec3 vec3) {
+        return true;
     }
 
     private static final int[][] arrayMap =

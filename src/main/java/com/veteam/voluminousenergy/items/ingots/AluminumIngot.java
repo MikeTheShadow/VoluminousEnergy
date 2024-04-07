@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class AluminumIngot extends VEItem {
-    public AluminumIngot (){
+    public AluminumIngot() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

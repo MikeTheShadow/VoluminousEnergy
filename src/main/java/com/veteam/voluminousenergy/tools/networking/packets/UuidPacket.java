@@ -17,34 +17,34 @@ public class UuidPacket {
     private UUID uuid;
     private boolean connection;
 
-    public UuidPacket(){
+    public UuidPacket() {
         // Do nothing
     }
 
-    public UuidPacket(UUID uuid, boolean connection){
+    public UuidPacket(UUID uuid, boolean connection) {
         this.uuid = uuid;
         this.connection = connection;
     }
 
-    public static UuidPacket fromBytes(FriendlyByteBuf buffer){
+    public static UuidPacket fromBytes(FriendlyByteBuf buffer) {
         UuidPacket packet = new UuidPacket();
         packet.uuid = buffer.readUUID();
         packet.connection = buffer.readBoolean();
         return packet;
     }
 
-    public void toBytes(FriendlyByteBuf buffer){
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeUUID(this.uuid);
         buffer.writeBoolean(this.connection);
     }
 
-    public static void handle(UuidPacket packet, CustomPayloadEvent.Context contextSupplier){
+    public static void handle(UuidPacket packet, CustomPayloadEvent.Context contextSupplier) {
         AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
         //contextSupplier.get().enqueueWork(() -> handlePacket(packet,serverContainer));
         contextSupplier.setPacketHandled(true);
     }
 
-    public static void handlePacket(UuidPacket packet, AbstractContainerMenu openContainer){
+    public static void handlePacket(UuidPacket packet, AbstractContainerMenu openContainer) {
         if (openContainer == null) return;
         if (openContainer instanceof VEContainer VEContainer) {
             VETileEntity VETileEntity = (VETileEntity) VEContainer.getTileEntity();

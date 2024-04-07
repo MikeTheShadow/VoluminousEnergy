@@ -37,19 +37,19 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
     private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType<>(VoluminousEnergyPlugin.AQUEOULIZING_UID, AqueoulizerRecipe.class);
 
-    public AqueoulizingCategory(IGuiHelper guiHelper){
+    public AqueoulizingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 90, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17)
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17)
                 .buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -70,17 +70,16 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
 
     @Override
     public void draw(AqueoulizerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,48, 12);
-        emptyArrow.draw(matrixStack,48,12);
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,24,10);
-        slotDrawable.draw(matrixStack,72,10);
+        arrow.draw(matrixStack, 48, 12);
+        emptyArrow.draw(matrixStack, 48, 12);
+        slotDrawable.draw(matrixStack, 2, 10);
+        slotDrawable.draw(matrixStack, 24, 10);
+        slotDrawable.draw(matrixStack, 72, 10);
 
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("mB:"),  2, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getFluidIngredientAmount(0) + ""),  24, 32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(0).getAmount() + ""),  72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("mB:"), 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getFluidIngredientAmount(0) + ""), 24, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(recipe.getOutputFluids().get(0).getAmount() + ""), 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
-
 
 
     // NOTE: Needs to be recipe specific; refactoring of setIngredients, which is no longer used

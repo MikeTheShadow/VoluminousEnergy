@@ -21,9 +21,9 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CRUSHING.get();
 
     private final RecipeParser parser = new RNGRecipeParser(this)
-            .addChancedItemResult(2,1)
-            .addIngredient(4, 0)
-            .addItemResult(0, 1);
+            .addChancedItemResult(1, 0)
+            .addChancedItemResult(2, 1)
+            .addIngredient(0, 0);
 
     public CrusherRecipe() {
     }
@@ -62,7 +62,9 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {

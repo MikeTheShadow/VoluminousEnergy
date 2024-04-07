@@ -18,7 +18,7 @@ public class VEServerSideListener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onDataPackSync(OnDatapackSyncEvent event) {
         // When event.getPlayer() != null it's a player joining, so we check to make sure it's a group reload
-        if(event.getPlayer() == null) {
+        if (event.getPlayer() == null) {
             VoluminousEnergy.LOGGER.info("Finalizing recipe cache on server reload!");
             VERecipe.updateCache();
         }

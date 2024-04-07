@@ -31,7 +31,7 @@ public class VEFluidSawmillRecipe extends VERecipe {
     }
 
     public VEFluidSawmillRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<FluidStack> of, List<ItemStack> oi, int processTime, boolean isLogRecipe) {
-        super(i,List.of(),of,oi,processTime);
+        super(i, List.of(), of, oi, processTime);
         this.isLogRecipe = isLogRecipe;
     }
 
@@ -78,7 +78,7 @@ public class VEFluidSawmillRecipe extends VERecipe {
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.SAWMILL_BLOCK.get());
     }
 

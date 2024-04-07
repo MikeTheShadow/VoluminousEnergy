@@ -9,13 +9,33 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class MultiBlockRecipeProcessor extends DefaultProcessor {
 
-    private RegistryObject<? extends Block> block;
+    private RegistryObject<? extends Block> blockRegistry;
+    private Block block;
 
     public MultiBlockRecipeProcessor(RegistryObject<? extends Block> block) {
-        this.block = block;
+        this.blockRegistry = block;
     }
 
+    @Override
+    public void validateRecipe(VETileEntity tile) {
+        super.validateRecipe(tile);
+    }
+
+    @Override
+    public void processRecipe(VETileEntity tile) {
+        if (!isMultiBlockValid(tile)) return;
+        super.processRecipe(tile);
+    }
+
+    private int counter = 0;
+    private boolean lastReading = false;
+
     public boolean isMultiBlockValid(VETileEntity tile) {
+        if (counter != 0) {
+            counter--;
+            return lastReading;
+        }
+        counter = 20;
         int rawDirection = tile.getBlockState().getValue(BlockStateProperties.FACING).get2DDataValue();
 
         int sXMultiplier = 1;
@@ -30,15 +50,23 @@ public class MultiBlockRecipeProcessor extends DefaultProcessor {
         int lX = sX + (lxMultiplier * 2);
         int lZ = sZ + (lzMultiplier * 2);
 
+        lastReading = true;
         // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
         for (final BlockPos blockPos : BlockPos.betweenClosed(tile.getBlockPos().offset(sX, 0, sZ), tile.getBlockPos().offset(lX, 2, lZ))) {
             final BlockState blockState = tile.getLevel().getBlockState(blockPos);
 
-            if (blockState.getBlock() != block.get()) { // Fails MultiBlock condition
-                return false;
+            if (blockState.getBlock() != getBlock()) { // Fails MultiBlock condition
+                lastReading = false;
             }
         }
-        return true;
+        return lastReading;
+    }
+
+    Block getBlock() {
+        if (block == null) {
+            block = blockRegistry.get();
+        }
+        return block;
     }
 
 }

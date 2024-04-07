@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class DeepslateRutileOre extends VEOreBlock {
-    public DeepslateRutileOre(){
+    public DeepslateRutileOre() {
         super(Properties.of()
                 .sound(SoundType.STONE)
                 .strength(4.0f)

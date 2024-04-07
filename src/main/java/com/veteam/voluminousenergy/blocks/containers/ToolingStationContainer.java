@@ -29,7 +29,7 @@ public class ToolingStationContainer extends VEContainer {
     public static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(TOOLING_STATION_CONTAINER.get(), id,world,pos,inventory,player,VEBlocks.TOOLING_STATION_BLOCK.get());
+        super(TOOLING_STATION_CONTAINER.get(), id, world, pos, inventory, player, VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
     @Nonnull
@@ -66,22 +66,22 @@ public class ToolingStationContainer extends VEContainer {
         addSlot(new VEBucketSlot(h, 1, 38, 49)); // Extract fluid from input
         addSlot(new VEInsertSlot(h, 2, 86, 32)); // Main Tool tilePos
         addSlot(new VEInsertSlot(h, 3, 134, 18)); // Bit Slot
-        addSlot(new VEInsertSlot(h, 4, 134,49)); // Base Slot
-        addSlot(new VEInsertSlot(h, 5,154, -14)); // Upgrade Slot
+        addSlot(new VEInsertSlot(h, 4, 134, 49)); // Base Slot
+        addSlot(new VEInsertSlot(h, 5, 154, -14)); // Upgrade Slot
     }
 
     @Override
-    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack){
+    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack) {
         if (index < containerSlots) { // Container --> Inventory
             if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
         } else { // Inventory --> Container
 
-            if (slotStack.getItem() instanceof CombustionMultitool){
+            if (slotStack.getItem() instanceof CombustionMultitool) {
                 if (((CombustionMultitool) slotStack.getItem()).getBit() == null
-                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()){ // Multitool Base Slot id is 4
-                    if (!this.slots.get(2).hasItem() && !this.slots.get(4).hasItem() && !moveItemStackTo(slotStack, 4, 5, false)){
+                        || slotStack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()) { // Multitool Base Slot id is 4
+                    if (!this.slots.get(2).hasItem() && !this.slots.get(4).hasItem() && !moveItemStackTo(slotStack, 4, 5, false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!this.slots.get(3).hasItem()
@@ -92,14 +92,14 @@ public class ToolingStationContainer extends VEContainer {
                 }
             }
 
-            if (slotStack.getItem() instanceof BitItem){ // Bit Slot id is 3
-                if (!this.slots.get(2).hasItem() && !this.slots.get(3).hasItem() && !moveItemStackTo(slotStack, 3, 4, false)){
+            if (slotStack.getItem() instanceof BitItem) { // Bit Slot id is 3
+                if (!this.slots.get(2).hasItem() && !this.slots.get(3).hasItem() && !moveItemStackTo(slotStack, 3, 4, false)) {
                     return ItemStack.EMPTY;
                 }
             }
 
-            if (slotStack.getItem() instanceof BucketItem){
-                if (slotStack.getItem().equals(Items.BUCKET)){
+            if (slotStack.getItem() instanceof BucketItem) {
+                if (slotStack.getItem().equals(Items.BUCKET)) {
                     return !moveItemStackTo(slotStack, 0, 1, false) ? ItemStack.EMPTY : null;
                 }
 
@@ -110,7 +110,7 @@ public class ToolingStationContainer extends VEContainer {
 //                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
 //                        return ItemStack.EMPTY;
 //                    } TODO FIX ME
-                } catch (Exception e){
+                } catch (Exception e) {
                     VoluminousEnergy.LOGGER.error("Item: " + RegistryLookups.lookupItem(slotStack) + " Appears to be a bucket, this error is likely caused by it not containing a fluid. " +
                             "This may be a modded bucket that extends BucketItem, but contains no fluid. If not, here's the stacktrace: ");
                     e.printStackTrace();

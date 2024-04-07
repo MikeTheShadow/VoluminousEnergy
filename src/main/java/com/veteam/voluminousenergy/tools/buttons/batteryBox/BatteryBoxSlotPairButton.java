@@ -16,9 +16,9 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
 
     private int id;
     private boolean isTopIngress;
-    private int u= 0;
-    private int v= 166;
-    private final VEBatterySwitchManager  veBatterySwitchManager;
+    private int u = 0;
+    private int v = 166;
+    private final VEBatterySwitchManager veBatterySwitchManager;
 
     public BatteryBoxSlotPairButton(VEBatterySwitchManager veBatterySwitchManager, int x, int y, int id, OnPress onPress) {
         super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
@@ -35,32 +35,34 @@ public class BatteryBoxSlotPairButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
-        if(!isHovered) v = 166;
+        if (!isHovered) v = 166;
         else v = 186;
 
-        if(isTopIngress) u = 0;
+        if (isTopIngress) u = 0;
         else u = 18;
 
         matrixStack.blit(GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
-    private void cycle(){isTopIngress = !isTopIngress;}
+    private void cycle() {
+        isTopIngress = !isTopIngress;
+    }
 
     @Override
-    public void onPress(){
+    public void onPress() {
         cycle();
         veBatterySwitchManager.setFlipped(isTopIngress);
         VENetwork.channel.send(new BatteryBoxSlotPairPacket(isTopIngress, this.id), PacketDistributor.SERVER.noArg());
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public void setStatus(boolean status){
+    public void setStatus(boolean status) {
         isTopIngress = status;
         this.veBatterySwitchManager.setFlipped(status);
     }

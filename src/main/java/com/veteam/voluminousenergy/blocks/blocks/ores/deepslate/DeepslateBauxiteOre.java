@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class DeepslateBauxiteOre extends VEOreBlock {
-    public DeepslateBauxiteOre(){
+    public DeepslateBauxiteOre() {
         super(Properties.of()
                 .sound(SoundType.STONE)
                 .strength(2.0f)

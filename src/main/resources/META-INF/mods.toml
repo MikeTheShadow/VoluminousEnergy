@@ -1,55 +1,54 @@
-
-modLoader="javafml" #mandatory
+modLoader = "javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[48,)" #mandatory (48 is forge 1.20.2)
+loaderVersion = "[48,)" #mandatory (48 is forge 1.20.2)
 # License is manditory starting in 1.16
-license="GPLv3"
+license = "GPLv3"
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/MikeTheShadow/VoluminousEnergy/issues" #optional
+issueTrackerURL = "https://github.com/MikeTheShadow/VoluminousEnergy/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="voluminousenergy" #mandatory
+modId = "voluminousenergy" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="1.20.2-Experimental" #mandatory
- # A display name for the mod
-displayName="Voluminous Energy" #mandatory
+version = "1.20.2-Experimental" #mandatory
+# A display name for the mod
+displayName = "Voluminous Energy" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="https://github.com/MikeTheShadow/VoluminousEnergy" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://github.com/MikeTheShadow/VoluminousEnergy" #optional
+displayURL = "https://github.com/MikeTheShadow/VoluminousEnergy" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile = "examplemod.png" #optional
 # A text field displayed in the mod UI
-credits=" " #optional
+credits = " " #optional
 # A text field displayed in the mod UI
-authors="Eelt, MikeTheShadow" #optional
+authors = "Eelt, MikeTheShadow" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''Voluminous Energy - A Tech mod focused on resource processing and energy... Or processing resources into more energy?!'''
+description = '''Voluminous Energy - A Tech mod focused on resource processing and energy... Or processing resources into more energy?!'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.voluminousenergy]] #optional
-    # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
-    # The version range of the dependency
-    versionRange="[48.0.23,)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
-    ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
-    side="BOTH"
+# the modid of the dependency
+modId = "forge" #mandatory
+# Does this dependency have to exist - if not, ordering below must be specified
+mandatory = true #mandatory
+# The version range of the dependency
+versionRange = "[48.0.23,)" #mandatory
+# An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+ordering = "NONE"
+# Side this dependency is applied on - BOTH, CLIENT or SERVER
+side = "BOTH"
 
 # Here's another dependency
 [[dependencies.voluminousenergy]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.20.2,1.21)"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.2,1.21)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.voluminousenergy]]
-    modId="jei"
-    mandatory=false
-    versionRange="[16,)"
-    ordering="NONE"
-    side="CLIENT"
+modId = "jei"
+mandatory = false
+versionRange = "[16,)"
+ordering = "NONE"
+side = "CLIENT"

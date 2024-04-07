@@ -15,7 +15,7 @@ public class JavaRandomSource implements RandomSource {
     private final MarsagliaPolarGaussian gaussianSource = new MarsagliaPolarGaussian(this);
 
     // WARN: not 128 bit
-    public JavaRandomSource(long seed){
+    public JavaRandomSource(long seed) {
         this.randomNumberGenerator = new Random(seed);
     }
 
@@ -73,7 +73,7 @@ public class JavaRandomSource implements RandomSource {
     public static class JavaRandomPositionalRandomFactory implements PositionalRandomFactory {
         private final long seed;
 
-        public JavaRandomPositionalRandomFactory(long seed){
+        public JavaRandomPositionalRandomFactory(long seed) {
             this.seed = seed;
         }
 

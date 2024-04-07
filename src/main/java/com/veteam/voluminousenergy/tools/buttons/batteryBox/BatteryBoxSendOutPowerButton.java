@@ -18,8 +18,8 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private final BatteryBoxTile batteryBoxTile;
     private boolean sendOutPower;
-    private int u= 0;
-    private int v= 166;
+    private int u = 0;
+    private int v = 166;
     private final VEPowerIOManager powerIOManager;
 
     public BatteryBoxSendOutPowerButton(VEPowerIOManager powerIOManager, int x, int y, BatteryBoxTile batteryBoxTile, OnPress onPress) {
@@ -36,31 +36,31 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
 
-        if(!isHovered) u = 96;
+        if (!isHovered) u = 96;
         else u = 112;
 
-        if(!sendOutPower) v = 178;
+        if (!sendOutPower) v = 178;
         else v = 166;
 
         matrixStack.blit(GUI_TOOLS, getX(), getY(), this.u, this.v, this.width, this.height);
     }
 
-    private void cycle(){
+    private void cycle() {
         sendOutPower = !sendOutPower;
         powerIOManager.setFlipped(true);
         this.batteryBoxTile.updateSendOutPower(sendOutPower);
     }
 
     @Override
-    public void onPress(){
+    public void onPress() {
         cycle();
         VENetwork.channel.send(new BatteryBoxSendOutPowerPacket(this.sendOutPower), PacketDistributor.SERVER.noArg());
     }
 
-    public void setStatus(boolean status){
+    public void setStatus(boolean status) {
         sendOutPower = status;
         powerIOManager.setFlipped(sendOutPower);
     }

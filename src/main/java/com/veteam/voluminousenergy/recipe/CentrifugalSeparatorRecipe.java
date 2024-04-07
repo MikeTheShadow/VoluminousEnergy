@@ -22,19 +22,19 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
 
     private final RecipeParser parser = new RNGRecipeParser(this)
-            .addChancedItemResult(2,0)
-            .addChancedItemResult(3,1)
-            .addChancedItemResult(4,2)
-            .addChancedItemResult(5,3)
-            .addIngredient(0,0)
-            .addIngredient(1,1);
+            .addChancedItemResult(2, 0)
+            .addChancedItemResult(3, 1)
+            .addChancedItemResult(4, 2)
+            .addChancedItemResult(5, 3)
+            .addIngredient(0, 0)
+            .addIngredient(1, 1);
 
 
     public CentrifugalSeparatorRecipe() {
     }
 
     public CentrifugalSeparatorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.VEChancedItemWithCount> results, int processTime) {
-        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
+        super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<CentrifugalSeparatorRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -66,7 +66,9 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {

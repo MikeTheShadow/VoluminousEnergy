@@ -1,12 +1,12 @@
 {
-    "parent": "block/cube",
-    "textures": {
-        "particle": "minecraft:block/iron_block",
-        "down": "voluminousenergy:block/primitiveblastfurnace_top",
-        "up": "voluminousenergy:block/primitiveblastfurnace_top",
-        "east": "voluminousenergy:block/primitiveblastfurnace_side",
-        "west": "voluminousenergy:block/primitiveblastfurnace_side",
-        "north": "voluminousenergy:block/primitiveblastfurnace_front",
-        "south": "voluminousenergy:block/primitiveblastfurnace_side"
-    }
+  "parent": "block/cube",
+  "textures": {
+    "particle": "minecraft:block/iron_block",
+    "down": "voluminousenergy:block/primitiveblastfurnace_top",
+    "up": "voluminousenergy:block/primitiveblastfurnace_top",
+    "east": "voluminousenergy:block/primitiveblastfurnace_side",
+    "west": "voluminousenergy:block/primitiveblastfurnace_side",
+    "north": "voluminousenergy:block/primitiveblastfurnace_front",
+    "south": "voluminousenergy:block/primitiveblastfurnace_side"
+  }
 }

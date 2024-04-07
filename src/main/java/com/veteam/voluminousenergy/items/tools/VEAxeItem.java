@@ -22,24 +22,24 @@ public class VEAxeItem extends AxeItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
         ToolUtil.SolariumTooltipAppend(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage){
+    public void setDamage(ItemStack stack, int damage) {
         CompoundTag tag = stack.getTag();
 
-        if (tag == null){
+        if (tag == null) {
             stack.getOrCreateTag().putInt("bonus", Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get());
             return;
         }
 
-        if (tag.getInt("bonus") > 0){
+        if (tag.getInt("bonus") > 0) {
             int bonus = tag.getInt("bonus");
-            if (bonus >= damage){
-                stack.getOrCreateTag().putInt("bonus", (bonus-damage));
+            if (bonus >= damage) {
+                stack.getOrCreateTag().putInt("bonus", (bonus - damage));
             } else {
                 int difference = damage - bonus;
                 stack.getOrCreateTag().putInt("bonus", difference);
@@ -59,10 +59,11 @@ public class VEAxeItem extends AxeItem {
         if (level.canSeeSky(entity.getOnPos().above(2)) && bonus < Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()) {
 
             float random = abs(0 + level.getRandom().nextFloat() * (0 - 1));
-            if (random >= Config.SOLARIUM_SHEATH_REGENERATION_CHANCE.get().floatValue()) return; // Inversed due to returning (not executing) if condition is true
+            if (random >= Config.SOLARIUM_SHEATH_REGENERATION_CHANCE.get().floatValue())
+                return; // Inversed due to returning (not executing) if condition is true
 
             bonus++;
-            stack.getTag().putInt("bonus", Math.min(bonus,Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()));
+            stack.getTag().putInt("bonus", Math.min(bonus, Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()));
         }
     }
 }

@@ -66,7 +66,7 @@ public class ClimateSpawn {
 
     public boolean checkValidity(double continentalness, double erosion, double humidity, double temperature) {
 
-        if (Config.PUNCH_HOLES_IN_CLIMATE_SPAWNS.get()){
+        if (Config.PUNCH_HOLES_IN_CLIMATE_SPAWNS.get()) {
             double cumulativeClimateValue = continentalness + erosion + humidity + temperature;
 
             Random random = new Random((int) (cumulativeClimateValue * Config.CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER.get()));

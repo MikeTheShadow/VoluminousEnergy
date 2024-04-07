@@ -19,6 +19,6 @@ public class VEOreBlock extends VEBlock implements IForgeBlock {
 
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.level.LevelReader reader, RandomSource randomSource, BlockPos pos, int fortune, int silktouch) {
-        return silktouch == 0 ? this.xpOnDrop(randomSource)*(1+fortune) : 0;
+        return silktouch == 0 ? this.xpOnDrop(randomSource) * (1 + fortune) : 0;
     }
 }

@@ -25,7 +25,7 @@ public class MultitoolBit {
     private float attackSpeed;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed){
+    public MultitoolBit(Set<ToolAction> action, Tier bitTier, TagKey<Block> mineableBlockTag, float destroySpeedMultiplier, float attackDamage, float attackSpeed) {
         this.action = action;
         this.tier = bitTier;
         this.mineableBlocks = mineableBlockTag;
@@ -51,7 +51,7 @@ public class MultitoolBit {
         return blockState.is(this.mineableBlocks) ? this.destroySpeed : 1.0F;
     }
 
-    public float getAttackDamage(){
+    public float getAttackDamage() {
         return this.attackDamage;
     }
 
@@ -59,11 +59,11 @@ public class MultitoolBit {
         return this.defaultModifiers;
     }
 
-    public boolean canPerformAction(net.minecraftforge.common.ToolAction action){
+    public boolean canPerformAction(net.minecraftforge.common.ToolAction action) {
         return this.action.contains(action);
     }
 
-    public boolean isCorrectToolForDrops(BlockState blockState){
+    public boolean isCorrectToolForDrops(BlockState blockState) {
         return blockState.is(this.mineableBlocks)
                 && net.minecraftforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
     }

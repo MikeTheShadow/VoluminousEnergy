@@ -36,17 +36,17 @@ public class VERender {
     public static void renderGuiTank(Level level, BlockPos tilePos, FluidStack stack, int tankCapacity, double x, double y, double zLevel, double width, double height) {
         // Originally Adapted from Ender IO by Silent's Mechanisms
         int amount;
-        try{
+        try {
             if (stack.getFluid() == null || stack.isEmpty()) {
                 return;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return;
         }
 
-        try{
+        try {
             amount = stack.getAmount();
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.warn("Exception e captured: " + e);
             amount = 0;
 
@@ -62,7 +62,7 @@ public class VERender {
 
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         int color;
-        if ((!Config.USE_BIOME_WATER_COLOUR.get()) || (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER)){
+        if ((!Config.USE_BIOME_WATER_COLOUR.get()) || (stack.getFluid() != Fluids.WATER && stack.getFluid() != Fluids.FLOWING_WATER)) {
             color = IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor();
             float r = ((color >> 16) & 0xFF) / 255f;
             float g = ((color >> 8) & 0xFF) / 255f;
@@ -104,7 +104,7 @@ public class VERender {
             }
         }
         RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f,  1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     @Nullable

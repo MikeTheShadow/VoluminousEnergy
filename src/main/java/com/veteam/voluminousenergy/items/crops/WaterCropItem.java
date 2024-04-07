@@ -23,30 +23,30 @@ import net.minecraft.world.phys.HitResult;
 
 public class WaterCropItem extends BlockItem {
 
-    public WaterCropItem(Block block, Properties properties){
+    public WaterCropItem(Block block, Properties properties) {
         super(block, properties);
         //setRegistryName("water_crop");
     }
 
-    public VEWaterCrop getWaterCrop(){
+    public VEWaterCrop getWaterCrop() {
         return null;
     } // MUST override
 
     @Override
-    public InteractionResult useOn(UseOnContext context){
+    public InteractionResult useOn(UseOnContext context) {
         return InteractionResult.PASS;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand){
+    public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand) {
         ItemStack itemStack = playerEntity.getItemInHand(hand);
         BlockHitResult rayTraceResult = getPlayerPOVHitResult(world, playerEntity, ClipContext.Fluid.SOURCE_ONLY);
 
-        if(rayTraceResult.getType() == HitResult.Type.MISS){
+        if (rayTraceResult.getType() == HitResult.Type.MISS) {
             return InteractionResultHolder.pass(itemStack);
         }
 
-        if (rayTraceResult.getType() == HitResult.Type.BLOCK){
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = rayTraceResult.getBlockPos();
             Direction dir = rayTraceResult.getDirection();
 

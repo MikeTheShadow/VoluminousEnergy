@@ -34,7 +34,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     private IDrawable arrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.TOOLING_UID, ToolingRecipe.class);
 
-    public ToolingCategory(IGuiHelper guiHelper){
+    public ToolingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         ResourceLocation ToolingGUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
@@ -45,7 +45,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -66,10 +66,10 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
 
     @Override
     public void draw(ToolingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
-        slotDrawable.draw(matrixStack,2,14); // Completed Multitool
-        slotDrawable.draw(matrixStack,48,1); // Bit
-        slotDrawable.draw(matrixStack,48,29); // Base
-        arrow.draw(matrixStack,24, 0);
+        slotDrawable.draw(matrixStack, 2, 14); // Completed Multitool
+        slotDrawable.draw(matrixStack, 48, 1); // Bit
+        slotDrawable.draw(matrixStack, 48, 29); // Base
+        arrow.draw(matrixStack, 24, 0);
     }
 
     public void ingredientHandler(ToolingRecipe recipe,
@@ -82,7 +82,7 @@ public class ToolingCategory implements IRecipeCategory<ToolingRecipe> {
 
         // Bases
         ArrayList<ItemStack> baseStacks = new ArrayList<>();
-        for (Item base : recipe.getBases()){
+        for (Item base : recipe.getBases()) {
             baseStacks.add(new ItemStack(base));
         }
         baseItemAcceptor.addIngredients(VanillaTypes.ITEM_STACK, baseStacks);

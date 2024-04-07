@@ -14,47 +14,47 @@ public class TankBoolPacket {
     private boolean status;
     private int id;
 
-    public TankBoolPacket(){
+    public TankBoolPacket() {
         // Do nothing
     }
 
-    public TankBoolPacket(boolean updatedStatus, int id){
+    public TankBoolPacket(boolean updatedStatus, int id) {
         this.status = updatedStatus;
         this.id = id;
     }
 
-    public static TankBoolPacket fromBytes(FriendlyByteBuf buffer){
+    public static TankBoolPacket fromBytes(FriendlyByteBuf buffer) {
         TankBoolPacket packet = new TankBoolPacket();
         packet.status = buffer.readBoolean();
         packet.id = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(FriendlyByteBuf buffer){
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.status);
         buffer.writeInt(this.id);
     }
 
-    public static void handle(TankBoolPacket packet, CustomPayloadEvent.Context contextSupplier){
+    public static void handle(TankBoolPacket packet, CustomPayloadEvent.Context contextSupplier) {
         NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch(packetDirection){
+        switch (packetDirection) {
             case PLAY_TO_CLIENT:
                 AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
                 contextSupplier.setPacketHandled(true);
                 break;
             default:
                 AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
                 contextSupplier.setPacketHandled(true);
         }
 
     }
 
-    public static void handlePacket(TankBoolPacket packet, AbstractContainerMenu openContainer, boolean onServer){
-        if(openContainer != null){
+    public static void handlePacket(TankBoolPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+        if (openContainer != null) {
 
-            if(openContainer instanceof VEContainer VEContainer) {
+            if (openContainer instanceof VEContainer VEContainer) {
                 if (onServer) {
                     BlockEntity tileEntity = VEContainer.getTileEntity();
                     if (tileEntity instanceof VETileEntity VETileEntity) {

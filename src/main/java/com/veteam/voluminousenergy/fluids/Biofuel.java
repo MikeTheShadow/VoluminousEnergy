@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Biofuel {
-    public static final ResourceLocation BIOFUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/biofuel_still");
-    public static final ResourceLocation BIOFUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/biofuel_flowing");
+    public static final ResourceLocation BIOFUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/biofuel_still");
+    public static final ResourceLocation BIOFUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/biofuel_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class Biofuel {
     public static VEFlowingFluidBlock BIOFUEL_BLOCK;
     public static Item BIOFUEL_BUCKET;
 
-    public static FlowingFluid BiofuelFluid(){
+    public static FlowingFluid BiofuelFluid() {
         BIOFUEL = new ForgeFlowingFluid.Source(Biofuel.properties);
         return BIOFUEL;
     }
 
-    public static FlowingFluid FlowingBiofuelFluid(){
+    public static FlowingFluid FlowingBiofuelFluid() {
         FLOWING_BIOFUEL = new ForgeFlowingFluid.Flowing(Biofuel.properties);
         return FLOWING_BIOFUEL;
     }
 
-    public static VEFlowingFluidBlock FlowingBiofuelBlock(){
+    public static VEFlowingFluidBlock FlowingBiofuelBlock() {
         BIOFUEL_BLOCK = new VEFlowingFluidBlock(() -> BIOFUEL, stdProp);
         return BIOFUEL_BLOCK;
     }
 
-    public static Item BiofuelBucket(){
+    public static Item BiofuelBucket() {
         BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return BIOFUEL_BUCKET;
     }

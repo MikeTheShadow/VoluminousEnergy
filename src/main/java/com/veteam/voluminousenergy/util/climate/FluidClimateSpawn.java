@@ -43,7 +43,7 @@ public class FluidClimateSpawn extends ClimateSpawn {
         return this.minAmount;
     }
 
-    public int calculateDepositAmount(HashMap<WorldUtil.ClimateParameters,Double> sampledClimate, BlockPos blockPos, Level level) {
+    public int calculateDepositAmount(HashMap<WorldUtil.ClimateParameters, Double> sampledClimate, BlockPos blockPos, Level level) {
         return this.calculateDepositAmount(
                 sampledClimate.get(WorldUtil.ClimateParameters.CONTINENTALNESS),
                 sampledClimate.get(WorldUtil.ClimateParameters.EROSION),
@@ -55,7 +55,7 @@ public class FluidClimateSpawn extends ClimateSpawn {
     }
 
     // Main number cruncher
-    public int calculateDepositAmount(double continentalness, double erosion, double humidity, double temperature, BlockPos blockPos, Level level){
+    public int calculateDepositAmount(double continentalness, double erosion, double humidity, double temperature, BlockPos blockPos, Level level) {
         if (!this.checkValidity(continentalness, erosion, humidity, temperature) || level.isClientSide()) return 0;
 
         int amount2Return = 0;

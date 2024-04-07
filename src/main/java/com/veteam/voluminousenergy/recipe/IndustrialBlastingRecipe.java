@@ -28,9 +28,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addFluidIngredient(0,0)
-            .addIngredient(0,0)
-            .addItemResult(1,0);
+            .addFluidIngredient(0, 0)
+            .addIngredient(0, 0)
+            .addItemResult(1, 0);
 
     private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
 
@@ -71,7 +71,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     public IndustrialBlastingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi, int processTime, int minimumHeat) {
-        super(i,List.of(),List.of(),oi,processTime);
+        super(i, List.of(), List.of(), oi, processTime);
         this.minimumHeat = minimumHeat;
     }
 
@@ -79,6 +79,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public @NotNull RecipeType<? extends VERecipe> getType() {
         return RECIPE_TYPE;
     }
+
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
         return SERIALIZER;
@@ -100,9 +101,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public List<Fluid> getHotEnoughFluids() {
         HashSet<Fluid> fluidHashSet = new HashSet<>();
-        if(hotEnoughFluids == null) {
-            for(Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
-                if(fluid.getFluidType().getTemperature() > minimumHeat)
+        if (hotEnoughFluids == null) {
+            for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
+                if (fluid.getFluidType().getTemperature() > minimumHeat)
                     fluidHashSet.add(fluid);
             }
             hotEnoughFluids = fluidHashSet.stream().toList();
@@ -113,9 +114,9 @@ public class IndustrialBlastingRecipe extends VERecipe {
     @Override
     public List<FluidIngredient> getFluidIngredients() {
         List<FluidStack> fluidStacks = new ArrayList<>();
-        for(Fluid fluid : getHotEnoughFluids()) {
-            if(fluid.getFluidType().getTemperature() > minimumHeat) {
-                fluidStacks.add(new FluidStack(fluid,Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
+        for (Fluid fluid : getHotEnoughFluids()) {
+            if (fluid.getFluidType().getTemperature() > minimumHeat) {
+                fluidStacks.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
             }
         }
         FluidIngredient fluidIngredient = FluidIngredient.of(fluidStacks.stream());

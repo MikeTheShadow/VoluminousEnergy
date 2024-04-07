@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/solarium_machine_casing"}
+    "": {
+      "model": "voluminousenergy:block/solarium_machine_casing"
+    }
   }
 }

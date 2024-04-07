@@ -24,20 +24,20 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         this.upgradeSlotId = upgradeSlotId;
     }
 
-    public void setEnergy(int energy){
+    public void setEnergy(int energy) {
         this.energy = energy;
     }
 
     public void addEnergy(int energy) {
         this.energy += energy;
-        if (this.energy > capacity){
+        if (this.energy > capacity) {
             this.energy = capacity;
         }
     }
 
-    public void consumeEnergy(int energy){
+    public void consumeEnergy(int energy) {
         this.energy -= energy;
-        if (this.energy < 0){
+        if (this.energy < 0) {
             this.energy = 0;
         }
     }
@@ -51,9 +51,9 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
 
     public void serializeNBT(CompoundTag tag) {
         tag.putInt("energy", getEnergyStored());
-        tag.putInt("energy_production",production);
-        tag.putInt("energy_consumption",consumption);
-        tag.putInt("upgrade_slot",upgradeSlotId);
+        tag.putInt("energy_production", production);
+        tag.putInt("energy_consumption", consumption);
+        tag.putInt("upgrade_slot", upgradeSlotId);
     }
 
     public void deserializeNBT(CompoundTag tag) {
@@ -64,7 +64,7 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
     }
 
     public VEEnergyStorage copy() {
-        return new VEEnergyStorage(capacity,maxReceive,production,consumption,upgradeSlotId);
+        return new VEEnergyStorage(capacity, maxReceive, production, consumption, upgradeSlotId);
     }
 
     public void setMaxReceive(int amount) {
@@ -108,10 +108,10 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
 
     /**
      * How much energy can be stored
+     *
      * @return the int value of the capacity
      */
-    public int getCapacity()
-    {
+    public int getCapacity() {
         return capacity;
     }
 

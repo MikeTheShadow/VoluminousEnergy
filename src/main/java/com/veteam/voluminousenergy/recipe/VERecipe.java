@@ -30,8 +30,8 @@ public abstract class VERecipe implements Recipe<Container> {
     private List<FluidIngredient> fluidIngredientList = null;
     public List<VERecipeCodecs.RegistryFluidIngredient> registryFluidIngredients;
     public List<FluidStack> fluidOutputList;
-    private static final HashMap<RecipeType<?>,List<VERecipe>> recipeCache = new HashMap<>();
-    private static final HashMap<RecipeType<?>,List<VERecipe>> newCache = new HashMap<>();
+    private static final HashMap<RecipeType<?>, List<VERecipe>> recipeCache = new HashMap<>();
+    private static final HashMap<RecipeType<?>, List<VERecipe>> newCache = new HashMap<>();
 
     private NonNullList<Ingredient> ingredients = null;
 
@@ -42,7 +42,7 @@ public abstract class VERecipe implements Recipe<Container> {
 
     }
 
-    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients,List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients,List<FluidStack> fluidResults, List<ItemStack> results, int processTime) {
+    public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStack> fluidResults, List<ItemStack> results, int processTime) {
         this.results = results;
         registryFluidIngredients = fluidIngredients;
         fluidOutputList = fluidResults;
@@ -51,8 +51,8 @@ public abstract class VERecipe implements Recipe<Container> {
         this.registryIngredients.addAll(ingredients);
 
         VERecipe recipe = this;
-        if(newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
-        if(newCache.containsKey(this.getType())) {
+        if (newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
+        if (newCache.containsKey(this.getType())) {
             newCache.get(this.getType()).add(this);
         } else {
             newCache.put(this.getType(), new ArrayList<>() {{
@@ -102,6 +102,7 @@ public abstract class VERecipe implements Recipe<Container> {
     /**
      * A variable list of results of variable length that can change depending on the recipe requirements
      * Should only be used in serialization
+     *
      * @return the raw results
      */
     public List<ItemStack> getResults() {
@@ -136,7 +137,7 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public int getIngredientCount(int slot) {
-        if (slot >= this.getIngredients().size()){
+        if (slot >= this.getIngredients().size()) {
             return 0;
         }
         return this.getIngredients().get(slot).getItems().length > 0 ? this.ingredients.get(slot).getItems()[0].getCount() : 0;
@@ -163,9 +164,9 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public List<FluidIngredient> getFluidIngredients() {
-        if(fluidIngredientList == null) {
+        if (fluidIngredientList == null) {
             List<FluidIngredient> fluidIngredients = new ArrayList<>();
-            for(VERecipeCodecs.RegistryFluidIngredient ingredient : registryFluidIngredients) {
+            for (VERecipeCodecs.RegistryFluidIngredient ingredient : registryFluidIngredients) {
                 fluidIngredients.add(ingredient.getIngredient());
             }
             this.fluidIngredientList = fluidIngredients;
@@ -192,9 +193,9 @@ public abstract class VERecipe implements Recipe<Container> {
     @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
 
-        if(ingredients == null) {
+        if (ingredients == null) {
             ingredients = NonNullList.create();
-            for(VERecipeCodecs.RegistryIngredient ingredient : registryIngredients) {
+            for (VERecipeCodecs.RegistryIngredient ingredient : registryIngredients) {
                 ingredients.add(ingredient.getIngredient());
             }
         }
@@ -207,7 +208,7 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public static List<VERecipe> getCachedRecipes(RecipeType<?> recipeType) {
-        if(!recipeCache.containsKey(recipeType)) return new ArrayList<>();
+        if (!recipeCache.containsKey(recipeType)) return new ArrayList<>();
         return recipeCache.get(recipeType);
     }
 
@@ -219,8 +220,8 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public static void addRecipeToCacheClient(VERecipe recipe) {
-        if(newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
-        if(newCache.containsKey(recipe.getType())) {
+        if (newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
+        if (newCache.containsKey(recipe.getType())) {
             newCache.get(recipe.getType()).add(recipe);
         } else {
             newCache.put(recipe.getType(), new ArrayList<>() {{
@@ -229,18 +230,18 @@ public abstract class VERecipe implements Recipe<Container> {
         }
     }
 
-    public static List<VERecipe> getPotentialRecipes(VETileEntity tile)  {
+    public static List<VERecipe> getPotentialRecipes(VETileEntity tile) {
         List<VERecipe> recipes = new ArrayList<>();
-        for(VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
-            if(recipe.getParser().isPartialRecipe(tile)) recipes.add(recipe);
+        for (VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
+            if (recipe.getParser().isPartialRecipe(tile)) recipes.add(recipe);
         }
         return recipes;
     }
 
     @Nullable
-    public static VERecipe getCompleteRecipe(VETileEntity tile)  {
-        for(VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
-            if(recipe.getParser().isCompleteRecipe(tile)) return recipe;
+    public static VERecipe getCompleteRecipe(VETileEntity tile) {
+        for (VERecipe recipe : getCachedRecipes(tile.getRecipeType())) {
+            if (recipe.getParser().isCompleteRecipe(tile)) return recipe;
         }
         return null;
     }

@@ -9,5 +9,7 @@ public class CrudeOilFlowingFluidSource extends ForgeFlowingFluid.Source {
     }
 
     @Override
-    public int getTickDelay(LevelReader worldReader){return 20;}
+    public int getTickDelay(LevelReader worldReader) {
+        return 20;
+    }
 }

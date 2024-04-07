@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/raw_galena_block"}
+    "": {
+      "model": "voluminousenergy:block/raw_galena_block"
+    }
   }
 }

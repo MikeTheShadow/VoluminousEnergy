@@ -17,32 +17,33 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class WhiteFumingNitricAcid {
-    public static final ResourceLocation WFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/wfna_still");
-    public static final ResourceLocation WFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/wfna_flowing");
+    public static final ResourceLocation WFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/wfna_still");
+    public static final ResourceLocation WFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/wfna_flowing");
 
-    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();;
+    public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
+    ;
 
     public static FlowingFluid WHITE_FUMING_NITRIC_ACID;
     public static FlowingFluid FLOWING_WHITE_FUMING_NITRIC_ACID;
     public static FumingAcidFlowingFluidBlock WHITE_FUMING_NITRIC_ACID_BLOCK;
     public static Item WHITE_FUMING_NITRIC_ACID_BUCKET;
 
-    public static FlowingFluid WhiteFumingNitricAcidFluid(){
+    public static FlowingFluid WhiteFumingNitricAcidFluid() {
         WHITE_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Source(WhiteFumingNitricAcid.properties);
         return WHITE_FUMING_NITRIC_ACID;
     }
 
-    public static FlowingFluid FlowingWhiteFumingNitricAcidFluid(){
+    public static FlowingFluid FlowingWhiteFumingNitricAcidFluid() {
         FLOWING_WHITE_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Flowing(WhiteFumingNitricAcid.properties);
         return FLOWING_WHITE_FUMING_NITRIC_ACID;
     }
 
-    public static FumingAcidFlowingFluidBlock FlowingWhiteFumingNitricAcidBlock(){
+    public static FumingAcidFlowingFluidBlock FlowingWhiteFumingNitricAcidBlock() {
         WHITE_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(() -> WHITE_FUMING_NITRIC_ACID, stdProp);
         return WHITE_FUMING_NITRIC_ACID_BLOCK;
     }
 
-    public static Item WhiteFumingNitricAcidBucket(){
+    public static Item WhiteFumingNitricAcidBucket() {
         WHITE_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> WHITE_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return WHITE_FUMING_NITRIC_ACID_BUCKET;
     }

@@ -68,7 +68,9 @@ public class VERecipeCodecs {
     }
 
     public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItem), ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1).forGetter(ItemStack::getCount)).apply(instance, ItemStack::new);
+        return instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItem),
+                ExtraCodecs.strictOptionalField(Codec.INT, "count", 1)
+                        .forGetter(ItemStack::getCount)).apply(instance, ItemStack::new);
     });
 
     public static final Codec<VEChancedItemWithCount> VE_CHANCED_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
@@ -124,24 +126,27 @@ public class VERecipeCodecs {
 
     public static final Codec<ClimateData> VE_CLIMATE_CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "continentalness", new FloatPair(0,0))
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "continentalness", new FloatPair(0, 0))
                         .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "erosion", new FloatPair(0,0))
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "erosion", new FloatPair(0, 0))
                         .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "humidity", new FloatPair(0,0))
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "humidity", new FloatPair(0, 0))
                         .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "temperature", new FloatPair(0,0))
+                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "temperature", new FloatPair(0, 0))
                         .forGetter(ClimateData::continentalness)
-                ).apply(instance, ClimateData::new);
+        ).apply(instance, ClimateData::new);
     });
 
-    public record FloatPair(float min, float max) {}
+    public record FloatPair(float min, float max) {
+    }
 
-    public record IntPair(int min, int max) {}
+    public record IntPair(int min, int max) {
+    }
 
-    public record ClimateData(FloatPair continentalness,FloatPair erosion, FloatPair humidity, FloatPair temperature ) {}
+    public record ClimateData(FloatPair continentalness, FloatPair erosion, FloatPair humidity, FloatPair temperature) {
+    }
 
-    public record FluidMinMax(Fluid fluid,int min,int max) {
+    public record FluidMinMax(Fluid fluid, int min, int max) {
 
     }
 

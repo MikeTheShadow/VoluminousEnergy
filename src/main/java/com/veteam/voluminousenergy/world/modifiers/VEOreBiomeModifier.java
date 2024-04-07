@@ -17,7 +17,7 @@ public record VEOreBiomeModifier(HolderSet<Biome> biomes, Holder<PlacedFeature> 
     public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
         if (phase != Phase.ADD) return;
 
-        if (Config.WORLD_GEN_LOGGING.get()){
+        if (Config.WORLD_GEN_LOGGING.get()) {
             System.out.println("DEBUG: " + RegistryLookups.lookupBiome(biome) + " ACTIVE KEYS:\n"
                     + biome.getTagKeys().toString());
         }

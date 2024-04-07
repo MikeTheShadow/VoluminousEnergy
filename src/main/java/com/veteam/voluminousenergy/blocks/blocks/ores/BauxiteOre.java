@@ -6,11 +6,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class BauxiteOre extends VEOreBlock {
-    public BauxiteOre(){
+    public BauxiteOre() {
         super(Properties.of()
-            .sound(SoundType.STONE)
-            .strength(2.0f)
-            .requiresCorrectToolForDrops()
+                .sound(SoundType.STONE)
+                .strength(2.0f)
+                .requiresCorrectToolForDrops()
         );
         setRName("bauxiteore");
         VETagDataGenerator.setRequiresPickaxe(this);

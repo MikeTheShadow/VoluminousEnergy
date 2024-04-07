@@ -9,7 +9,7 @@ import net.minecraftforge.common.ToolAction;
 
 import java.util.Set;
 
-public class TrimmerBit extends MultitoolBit{
+public class TrimmerBit extends MultitoolBit {
     private Tier tier;
     private float destroySpeedMultiplier;
 
@@ -26,7 +26,7 @@ public class TrimmerBit extends MultitoolBit{
                 return 5.0F * destroySpeedMultiplier;
             } else if (blockState.is(Blocks.VINE)
                     || blockState.is(Blocks.GLOW_LICHEN)
-            ){
+            ) {
                 return destroySpeedMultiplier * 2.0F;
             } else if (blockState.is(BlockTags.CAVE_VINES)
                     || blockState.is(Blocks.TWISTING_VINES)
@@ -46,7 +46,7 @@ public class TrimmerBit extends MultitoolBit{
                     || blockState.is(Blocks.NETHER_SPROUTS)
                     || blockState.is(Blocks.NETHER_WART)
                     || blockState.is(Blocks.HANGING_ROOTS)
-            ){
+            ) {
                 return destroySpeedMultiplier;
             } else {
                 return 1.0F;
@@ -56,7 +56,7 @@ public class TrimmerBit extends MultitoolBit{
     }
 
     @Override
-    public boolean isCorrectToolForDrops(BlockState blockState){
+    public boolean isCorrectToolForDrops(BlockState blockState) {
         return (blockState.is(Blocks.COBWEB) || blockState.is(Blocks.REDSTONE_WIRE) || blockState.is(Blocks.TRIPWIRE))
                 && net.minecraftforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
     }

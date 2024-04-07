@@ -17,11 +17,11 @@ public class JavaSecureRandomSource implements RandomSource {
     private final MarsagliaPolarGaussian gaussianSource = new MarsagliaPolarGaussian(this);
 
     // WARN: not 128 bit
-    public JavaSecureRandomSource(byte[] seed){
+    public JavaSecureRandomSource(byte[] seed) {
         this.randomNumberGenerator = new SecureRandom(seed);
     }
 
-    public JavaSecureRandomSource(long seed){
+    public JavaSecureRandomSource(long seed) {
         this.randomNumberGenerator = new SecureRandom(longToByte(seed));
     }
 
@@ -76,7 +76,7 @@ public class JavaSecureRandomSource implements RandomSource {
         return this.gaussianSource.nextGaussian();
     }
 
-    public static byte[] longToByte(long seed){
+    public static byte[] longToByte(long seed) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.putLong(seed);
         return buffer.array();
@@ -85,7 +85,7 @@ public class JavaSecureRandomSource implements RandomSource {
     public static class JavaSecureRandomPositionalRandomFactory implements PositionalRandomFactory {
         private final long seed;
 
-        public JavaSecureRandomPositionalRandomFactory(long seed){
+        public JavaSecureRandomPositionalRandomFactory(long seed) {
             this.seed = seed;
         }
 

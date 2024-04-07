@@ -88,7 +88,7 @@ public class FluidSerializerHelper<T extends VERecipe> {
 
         if (recipe instanceof VERNGRecipe irngRecipe) {
             buffer.writeInt(irngRecipe.getRNGOutputs().size());
-            for(float f : irngRecipe.getRNGOutputs()) {
+            for (float f : irngRecipe.getRNGOutputs()) {
                 buffer.writeFloat(f);
             }
         }

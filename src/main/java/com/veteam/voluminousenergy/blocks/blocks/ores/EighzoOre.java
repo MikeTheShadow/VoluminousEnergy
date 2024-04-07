@@ -6,7 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class EighzoOre extends VEOreBlock {
-    public EighzoOre(){
+    public EighzoOre() {
         super(Properties.of()
                 .sound(SoundType.STONE)
                 .strength(30F, 1200F)

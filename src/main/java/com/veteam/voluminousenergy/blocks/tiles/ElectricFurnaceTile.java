@@ -126,9 +126,9 @@ public class ElectricFurnaceTile extends VETileEntity {
         var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
 
-        if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        if (furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
         else furnaceRecipe = null;
-        if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
+        if (blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
         else blastingRecipe = null;
     }
 

@@ -14,18 +14,18 @@ public class MultiBlockStateMatchRuleTest extends BlockStateMatchTest {
         this.stateList = states;
     }
 
-    public MultiBlockStateMatchRuleTest(ArrayList<BlockState> stateList){
+    public MultiBlockStateMatchRuleTest(ArrayList<BlockState> stateList) {
         super(stateList.get(0));
         this.stateList = new BlockState[stateList.size()];
-        for (int i = 0; i < stateList.size(); i++){
+        for (int i = 0; i < stateList.size(); i++) {
             this.stateList[i] = stateList.get(i);
         }
     }
 
     @Override
     public boolean test(BlockState blockState, RandomSource random) {
-        for (BlockState state : stateList){
-            if (state.getBlock() == blockState.getBlock()){
+        for (BlockState state : stateList) {
+            if (state.getBlock() == blockState.getBlock()) {
                 return true;
             }
         }

@@ -47,7 +47,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(inventory);
         this.block = block;
-        this.access = ContainerLevelAccess.create(this.tileEntity.getLevel(),this.tileEntity.getBlockPos());
+        this.access = ContainerLevelAccess.create(this.tileEntity.getLevel(), this.tileEntity.getBlockPos());
         this.world = world;
         // we add slots to GUI here
         tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(this::addSlotsToGUI);
@@ -56,7 +56,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots();
 
         // We assume if it's a powered tile entity that it requires a dataslot for energy
-        if(this.tileEntity.getEnergy() != null) {
+        if (this.tileEntity.getEnergy() != null) {
             addDataSlot(new DataSlot() {
                 @Override
                 public int get() {
@@ -87,15 +87,15 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return stillValid(this.access,this.playerEntity, this.block);
+        return stillValid(this.access, this.playerEntity, this.block);
     }
 
-    public VETileEntity getTileEntity(){
+    public VETileEntity getTileEntity() {
         return tileEntity;
     }
 
     protected int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
-        for (int i = 0 ; i < amount ; i++) {
+        for (int i = 0; i < amount; i++) {
             addSlot(new SlotItemHandler(handler, index, x, y));
             x += dx;
             index++;
@@ -104,48 +104,48 @@ public abstract class VEContainer extends AbstractContainerMenu {
     }
 
     protected int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
-        for (int j = 0 ; j < verAmount ; j++) {
+        for (int j = 0; j < verAmount; j++) {
             index = addSlotRange(handler, index, x, y, horAmount, dx);
             y += dy;
         }
         return index;
     }
 
-    public int getEnergy(){
+    public int getEnergy() {
         return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
-    public int powerScreen(int px){
+    public int powerScreen(int px) {
         int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
         int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
-        return (((stored*100/max*100)/100)*px)/100;
+        return (((stored * 100 / max * 100) / 100) * px) / 100;
     }
 
     // For the battery box. Might remove later
-    public void updateSendOutPowerButton(boolean status){
-        if(this.screen instanceof BatteryBoxScreen batteryBoxScreen) {
+    public void updateSendOutPowerButton(boolean status) {
+        if (this.screen instanceof BatteryBoxScreen batteryBoxScreen) {
             batteryBoxScreen.updateSendOutPowerButton(status);
         }
     }
 
-    public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack){
+    public ItemStack handleCoreQuickMoveStackLogicWithUpgradeSlot(final int index, final int containerSlots, final int upgradeSlotId, ItemStack slotStack) {
         if (index < containerSlots) { // Container --> Inventory
             if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
         } else { // Inventory --> Container
-            if(/*slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId+1, false)) {
+            if (/*slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, upgradeSlotId, upgradeSlotId + 1, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (/*!slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ !TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)){
+            if (/*!slotStack.is(VEItems.QUARTZ_MULTIPLIER)*/ !TagUtil.isTaggedMachineUpgradeItem(slotStack) && !moveItemStackTo(slotStack, 0, upgradeSlotId, false)) {
                 return ItemStack.EMPTY;
             }
         }
         return null;
     }
 
-    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack){
+    public ItemStack handleCoreQuickMoveStackLogic(final int index, final int containerSlots, ItemStack slotStack) {
         if (index < containerSlots) { // Container --> Inventory
             if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
@@ -156,34 +156,34 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return null;
     }
 
-    public void setTileEntity(VETileEntity tileEntity){
+    public void setTileEntity(VETileEntity tileEntity) {
         this.tileEntity = tileEntity;
     }
 
     // Unauthorized call to this method can be dangerous. Can't not be public AFAIK. :(
-    public void setScreen(VEContainerScreen screen){
+    public void setScreen(VEContainerScreen screen) {
         this.screen = screen;
     }
 
-    public void updateDirectionButton(int direction, int slotId){
-        screen.updateButtonDirection(direction,slotId);
+    public void updateDirectionButton(int direction, int slotId) {
+        screen.updateButtonDirection(direction, slotId);
     }
 
-    public void updateStatusButton(boolean status, int slotId){
+    public void updateStatusButton(boolean status, int slotId) {
         screen.updateBooleanButton(status, slotId);
     }
 
-    public void updateStatusTank(boolean status, int id){
+    public void updateStatusTank(boolean status, int id) {
         screen.updateTankStatus(status, id);
     }
 
-    public void updateDirectionTank(int direction, int id){
+    public void updateDirectionTank(int direction, int id) {
         screen.updateTankDirection(direction, id);
     }
 
-    public int getUpgradeSlotId(){
+    public int getUpgradeSlotId() {
         VEEnergyStorage storage = this.tileEntity.getEnergy();
-        if (storage != null){
+        if (storage != null) {
             return storage.getUpgradeSlotId();
         }
         VoluminousEnergy.LOGGER.error("A container called getUpgradeSlotId when tile doesn't support upgrade slots! Offending tile is: " + RegistryLookups.getBlockEntityTypeKey(tileEntity.getType()));
@@ -199,13 +199,14 @@ public abstract class VEContainer extends AbstractContainerMenu {
         int numberOfSlots = this.tileEntity.getSlotManagers().size() + (this.tileEntity.getEnergy() != null ? 1 : 0);
 
         // TODO why is this a dangling if?
-        if(this.tileEntity.getEnergy() != null){}
+        if (this.tileEntity.getEnergy() != null) {
+        }
 
         if (slot.hasItem()) {
             final ItemStack slotStack = slot.getItem();
             returnStack = slotStack.copy();
 
-            if (handleItemMove(index, numberOfSlots, slotStack,index) != null)
+            if (handleItemMove(index, numberOfSlots, slotStack, index) != null)
                 return ItemStack.EMPTY;
 
             if (slotStack.getCount() == 0) {
@@ -223,12 +224,11 @@ public abstract class VEContainer extends AbstractContainerMenu {
         return returnStack;
     }
 
-    public ItemStack handleItemMove(final int index, final int containerSlots, ItemStack slotStack, int slotId){
-        if(index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
+    public ItemStack handleItemMove(final int index, final int containerSlots, ItemStack slotStack, int slotId) {
+        if (index < containerSlots && !super.moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
             this.tileEntity.markRecipeDirty();
             return ItemStack.EMPTY;
-        }
-        else if(!moveItemStackTo(slotStack,this.slots.size(),slotId)) {
+        } else if (!moveItemStackTo(slotStack, this.slots.size(), slotId)) {
             this.tileEntity.markRecipeDirty();
             return ItemStack.EMPTY;
         }
@@ -242,7 +242,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
         List<VESlotManager> slotManagers = this.tileEntity.getSlotManagers();
         ItemStackHandler handler = this.tileEntity.getInventoryHandler();
         int powerId = -1;
-        if(tileEntity.getEnergy() != null) powerId = tileEntity.getEnergy().getUpgradeSlotId();
+        if (tileEntity.getEnergy() != null) powerId = tileEntity.getEnergy().getUpgradeSlotId();
         if (stackToMove.isStackable()) {
             while (!stackToMove.isEmpty()) {
                 if (currentPos >= endPos) {
@@ -254,13 +254,13 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
                 boolean isInput;
 
-                if(currentPos < slotManagers.size()) {
+                if (currentPos < slotManagers.size()) {
                     VESlotManager manager = slotManagers.get(currentPos);
                     isInput = manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.FLUID_INPUT;
-                    if(handler != null && isInput) {
-                        isInput = handler.isItemValid(currentPos,stackToMove.copy());
+                    if (handler != null && isInput) {
+                        isInput = handler.isItemValid(currentPos, stackToMove.copy());
                     }
-                } else if(currentPos == powerId) {
+                } else if (currentPos == powerId) {
                     isInput = TagUtil.isTaggedMachineUpgradeItem(stackToMove);
                 } else {
                     isInput = true;
@@ -296,13 +296,13 @@ public abstract class VEContainer extends AbstractContainerMenu {
 
                 boolean isInput;
 
-                if(currentPos < slotManagers.size()) {
+                if (currentPos < slotManagers.size()) {
                     VESlotManager manager = slotManagers.get(currentPos);
                     isInput = manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.FLUID_INPUT;
-                    if(handler != null && isInput) {
-                        isInput = handler.isItemValid(currentPos,stackToMove.copy());
+                    if (handler != null && isInput) {
+                        isInput = handler.isItemValid(currentPos, stackToMove.copy());
                     }
-                } else if(currentPos == powerId) {
+                } else if (currentPos == powerId) {
                     isInput = TagUtil.isTaggedMachineUpgradeItem(stackToMove);
                 } else {
                     isInput = true;

@@ -15,7 +15,7 @@ public abstract class VERNGRecipe extends VERecipe {
     }
 
     public VERNGRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<VERecipeCodecs.RegistryFluidIngredient> fi, List<FluidStack> of, List<VERecipeCodecs.VEChancedItemWithCount> oi, int processTime) {
-        super(i,fi,of,oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::getAsItemStack).toList(), processTime);
+        super(i, fi, of, oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::getAsItemStack).toList(), processTime);
 
         this.itemResultsWithChance = oi;
         this.rngValues = oi.stream().map(VERecipeCodecs.VEChancedItemWithCount::chance).toList();

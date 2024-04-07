@@ -33,7 +33,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     private final IDrawable slotDrawable;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.STIRLING_UID, StirlingGeneratorRecipe.class);
 
-    public StirlingCategory(IGuiHelper guiHelper){
+    public StirlingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 40, 44).build();
@@ -42,7 +42,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -63,10 +63,10 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
 
     @Override
     public void draw(StirlingGeneratorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        slotDrawable.draw(matrixStack,11,0);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", -1,20, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime() + " t",-1,28, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, recipe.getProcessTime()/20 + " sec",-1,36, VEContainerScreen.GREY_TEXT_STYLE);
+        slotDrawable.draw(matrixStack, 11, 0);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getEnergyPerTick() + " FE/t", -1, 20, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getProcessTime() + " t", -1, 28, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getProcessTime() / 20 + " sec", -1, 36, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(StirlingGeneratorRecipe recipe, IIngredientAcceptor itemInputAcceptor) {
@@ -74,7 +74,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull StirlingGeneratorRecipe recipe, @NotNull IFocusGroup  focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, @NotNull StirlingGeneratorRecipe recipe, @NotNull IFocusGroup focusGroup) {
         // Inputs
         IRecipeSlotBuilder itemInput = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 12, 1);
 

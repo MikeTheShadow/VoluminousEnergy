@@ -9,6 +9,6 @@ import net.minecraft.world.level.Level;
 public class NighaliteTankContainer extends TankContainer {
 
     public NighaliteTankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(id, world, pos, inventory, player, VEBlocks.NIGHALITE_TANK_CONTAINER.get(),VEBlocks.NIGHALITE_TANK_BLOCK.get());
+        super(id, world, pos, inventory, player, VEBlocks.NIGHALITE_TANK_CONTAINER.get(), VEBlocks.NIGHALITE_TANK_BLOCK.get());
     }
 }

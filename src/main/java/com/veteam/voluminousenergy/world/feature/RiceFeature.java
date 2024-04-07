@@ -10,7 +10,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 
-public class RiceFeature extends Feature<BlockStateConfiguration>  {
+public class RiceFeature extends Feature<BlockStateConfiguration> {
     public static RiceFeature INSTANCE = new RiceFeature(BlockStateConfiguration.CODEC);
 
     public RiceFeature(Codec<BlockStateConfiguration> codec) {
@@ -22,9 +22,9 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
         BlockPos pos = context.origin();
         WorldGenLevel worldIn = context.level();
 
-        if(!worldIn.canSeeSky(pos)) return false;
+        if (!worldIn.canSeeSky(pos)) return false;
 
-        if (worldIn.isWaterAt(pos.below()) && worldIn.getBlockState(pos).isAir()){
+        if (worldIn.isWaterAt(pos.below()) && worldIn.getBlockState(pos).isAir()) {
             generateRice(worldIn, pos);
             return true;
         }
@@ -32,7 +32,7 @@ public class RiceFeature extends Feature<BlockStateConfiguration>  {
         return false;
     }
 
-    public void generateRice(WorldGenLevel worldIn, BlockPos pos){
+    public void generateRice(WorldGenLevel worldIn, BlockPos pos) {
 
         worldIn.setBlock(pos, VEBlocks.RICE_CROP.get().defaultBlockState(), 2);
         worldIn.setBlock(

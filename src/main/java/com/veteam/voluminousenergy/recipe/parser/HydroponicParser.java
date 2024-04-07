@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
-import com.veteam.voluminousenergy.blocks.tiles.VEItemStackHandler;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.world.item.ItemStack;
@@ -29,9 +29,9 @@ public class HydroponicParser extends RNGRecipeParser {
             VERNGRecipe rngRecipe = (VERNGRecipe) recipe;
 
             float randomness = rngRecipe.getOutputChance(pos.recipePos());
-            if(randomness != 1) {
+            if (randomness != 1) {
                 float random = abs(0 + randomInstance.nextFloat() * (-1));
-                if(random > randomness) continue;
+                if (random > randomness) continue;
                 ItemStack result = rngRecipe.getResult(pos.recipePos());
                 handler.insertItem(pos.tilePos(), result.copy(), false);
             }

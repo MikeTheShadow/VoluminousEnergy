@@ -45,7 +45,6 @@ public class VEItemStackWithFluidHandler extends ItemStackHandler {
         if (slot == upgradeSlot) return TagUtil.isTaggedMachineUpgradeItem(stack);
 
 
-
         return false;
     }
 

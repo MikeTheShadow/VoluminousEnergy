@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.items.batteries;
 
-public class LeadAcidBattery extends VEEnergyItem{
+public class LeadAcidBattery extends VEEnergyItem {
     private static final int MAX_ENERGY = 250_000;
     private static final int MAX_TX = 1000;
 

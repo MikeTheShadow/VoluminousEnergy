@@ -21,13 +21,13 @@ public class VEFlowingFluidBlock extends LiquidBlock {
 
     @Override
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
-        if(entityIn instanceof LivingEntity){
-            if((entityIn.getY() - entityIn.yOld) > 0 && !entityIn.isCrouching()){
+        if (entityIn instanceof LivingEntity) {
+            if ((entityIn.getY() - entityIn.yOld) > 0 && !entityIn.isCrouching()) {
                 entityIn.makeStuckInBlock(state, new Vec3(0.9F, -0.9F, 0.9F));
             } else if ((entityIn.getY() - entityIn.yOld) <= 0 || entityIn.isCrouching()) {
                 entityIn.makeStuckInBlock(state, new Vec3(0.9F, 0.9F, 0.9F));
             }
-        } else if (entityIn instanceof ItemEntity){
+        } else if (entityIn instanceof ItemEntity) {
             entityIn.makeStuckInBlock(state, new Vec3(0.8F, -1, 0.8F));
         }
 

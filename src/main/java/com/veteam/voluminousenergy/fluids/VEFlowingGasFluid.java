@@ -34,7 +34,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
             protected void rehash(int p_76102_) {
             }
         };
-        object2bytelinkedopenhashmap.defaultReturnValue((byte)127);
+        object2bytelinkedopenhashmap.defaultReturnValue((byte) 127);
         return object2bytelinkedopenhashmap;
     });
     //
@@ -75,7 +75,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         double d1 = 0.0D;
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
-        for(Direction direction : Direction.Plane.HORIZONTAL) {
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
             blockpos$mutableblockpos.setWithOffset(pos, direction);
             FluidState fluidstate = getter.getFluidState(blockpos$mutableblockpos);
             if (this.affectsFlow(fluidstate)) {
@@ -97,15 +97,15 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                 }
 
                 if (f1 != 0.0F) {
-                    d0 += (float)direction.getStepX() * f1;
-                    d1 += (float)direction.getStepZ() * f1;
+                    d0 += (float) direction.getStepX() * f1;
+                    d1 += (float) direction.getStepZ() * f1;
                 }
             }
         }
 
         Vec3 vec3 = new Vec3(d0, 0.0D, d1);
         if (fluidState.getValue(FALLING)) {
-            for(Direction direction1 : Direction.Plane.HORIZONTAL) {
+            for (Direction direction1 : Direction.Plane.HORIZONTAL) {
                 blockpos$mutableblockpos.setWithOffset(pos, direction1);
                 if (this.isSolidFace(getter, blockpos$mutableblockpos, direction1) || this.isSolidFace(getter, blockpos$mutableblockpos.above(), direction1)) {
                     vec3 = vec3.normalize().subtract(0.0D, -6.0D, 0.0D);
@@ -126,7 +126,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
             if (!(blockPos.getY() < 320)) return;
 
             // Preliminary check if not source
-            if (!fluidState.isSource()){
+            if (!fluidState.isSource()) {
                 BlockState belowState = level.getBlockState(blockPos.below());
                 FluidState belowFluidState = level.getFluidState(blockPos.below());
 
@@ -145,21 +145,21 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                      *          based on the observed behaviour I saw in testing? Even though I would imagine
                      *          a source block should be one that can be picked up with a bucket
                      *          (technically, I believe that's considered a liquid block).
-                    ***/
-                    if (fluidStateNorth.is(this) && fluidStateNorth.isSource()){
+                     ***/
+                    if (fluidStateNorth.is(this) && fluidStateNorth.isSource()) {
                         return;
-                    } else if (fluidStateSouth.is(this) && fluidStateSouth.isSource()){
+                    } else if (fluidStateSouth.is(this) && fluidStateSouth.isSource()) {
                         return;
-                    } else if (fluidStateEast.is(this) && fluidStateEast.isSource()){
+                    } else if (fluidStateEast.is(this) && fluidStateEast.isSource()) {
                         return;
-                    } else if (fluidStateWest.is(this) && fluidStateWest.isSource()){
+                    } else if (fluidStateWest.is(this) && fluidStateWest.isSource()) {
                         return;
                     }
 
                     // Find directly North, South, East, West
-                    for (Direction direction : Direction.Plane.HORIZONTAL){
+                    for (Direction direction : Direction.Plane.HORIZONTAL) {
                         if (foundSource) break;
-                        for (int i = 1; i <= this.flowWidth; i++){
+                        for (int i = 1; i <= this.flowWidth; i++) {
                             BlockPos dirPos = blockPos.relative(direction, i);
                             dirPos = dirPos.below();
                             FluidState foundFluidState = level.getFluidState(dirPos);
@@ -169,24 +169,24 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                                 break;
                             }*/
 
-                            if (!foundFluidState.isEmpty() && foundFluidState.is(this)){
+                            if (!foundFluidState.isEmpty() && foundFluidState.is(this)) {
                                 foundSource = true;
                                 break;
 
                                 // Next else if will only fire at the very bottom of the gas pillar
-                            } else if (!(belowState.getBlock() instanceof BucketPickup) && !(belowState.getBlock() instanceof LiquidBlock) && !(belowState.isAir()) && !(belowState.getFluidState() == this.defaultFluidState())){
+                            } else if (!(belowState.getBlock() instanceof BucketPickup) && !(belowState.getBlock() instanceof LiquidBlock) && !(belowState.isAir()) && !(belowState.getFluidState() == this.defaultFluidState())) {
                                 // Plus shaped check
                                 BlockPos xPlusOne = blockPos.offset(1, 0, 0);
                                 BlockPos xMinusOne = blockPos.offset(-1, 0, 0);
-                                BlockPos zPlusOne = blockPos.offset(0,0,1);
-                                BlockPos zMinusOne = blockPos.offset(0,0,-1);
+                                BlockPos zPlusOne = blockPos.offset(0, 0, 1);
+                                BlockPos zMinusOne = blockPos.offset(0, 0, -1);
 
                                 FluidState fluidStateXP1 = level.getFluidState(xPlusOne);
                                 FluidState fluidStateXM1 = level.getFluidState(xMinusOne);
                                 FluidState fluidStateZP1 = level.getFluidState(zPlusOne);
                                 FluidState fluidStateZM1 = level.getFluidState(zMinusOne);
 
-                                if (       (fluidStateXP1.getType().isSame(this.getSource()) || fluidStateXP1.getType().isSame(this.getFlowing()))
+                                if ((fluidStateXP1.getType().isSame(this.getSource()) || fluidStateXP1.getType().isSame(this.getFlowing()))
                                         || (fluidStateXM1.getType().isSame(this.getSource()) || fluidStateXM1.getType().isSame(this.getFlowing()))
                                         || (fluidStateZP1.getType().isSame(this.getSource()) || fluidStateZP1.getType().isSame(this.getFlowing()))
                                         || (fluidStateZM1.getType().isSame(this.getSource()) || fluidStateZM1.getType().isSame(this.getFlowing()))
@@ -204,7 +204,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                     // End of find directly NSEW
 
 
-                    if (!foundSource){
+                    if (!foundSource) {
                         level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                     }
                 }
@@ -239,7 +239,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         if (i > 0) {
             Map<Direction, FluidState> map = this.getSpread(level, pos, blockState);
 
-            for(Map.Entry<Direction, FluidState> entry : map.entrySet()) {
+            for (Map.Entry<Direction, FluidState> entry : map.entrySet()) {
                 Direction direction = entry.getKey();
                 FluidState fluidstate = entry.getValue();
                 BlockPos blockpos = pos.relative(direction);
@@ -255,7 +255,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
     private int sourceNeighborCount(LevelReader levelReader, BlockPos pos) {
         int i = 0;
 
-        for(Direction direction : Direction.Plane.HORIZONTAL) {
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
             BlockPos blockpos = pos.relative(direction);
             FluidState fluidstate = levelReader.getFluidState(blockpos);
             if (this.isSourceBlockOfThisType(fluidstate)) {
@@ -274,7 +274,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
         if (!this.canPassThroughWall(Direction.UP, getter, pos0, blockState0, pos1, blockState1)) {
             return false;
         } else {
-            return blockState1.getFluidState().getType().isSame(this) || this.canHoldFluid(null,getter, pos1, blockState1, fluid);
+            return blockState1.getFluidState().getType().isSame(this) || this.canHoldFluid(null, getter, pos1, blockState1, fluid);
         }
     }
 
@@ -305,7 +305,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
                 object2bytelinkedopenhashmap.removeLastByte();
             }
 
-            object2bytelinkedopenhashmap.putAndMoveToFirst(block$blockstatepairkey, (byte)(flag ? 1 : 0));
+            object2bytelinkedopenhashmap.putAndMoveToFirst(block$blockstatepairkey, (byte) (flag ? 1 : 0));
         }
 
         return flag;
@@ -315,7 +315,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
     private boolean canHoldFluid(Player player, BlockGetter getter, BlockPos pos, BlockState blockState, Fluid fluid) {
         Block block = blockState.getBlock();
         if (block instanceof LiquidBlockContainer) {
-            return ((LiquidBlockContainer)block).canPlaceLiquid(player, getter, pos, blockState, fluid);
+            return ((LiquidBlockContainer) block).canPlaceLiquid(player, getter, pos, blockState, fluid);
         } else if (!(block instanceof DoorBlock) && !blockState.is(BlockTags.SIGNS) && !blockState.is(Blocks.LADDER) && !blockState.is(Blocks.SUGAR_CANE) && !blockState.is(Blocks.BUBBLE_COLUMN)) {
             if (!blockState.is(Blocks.NETHER_PORTAL) && !blockState.is(Blocks.END_PORTAL) && !blockState.is(Blocks.END_GATEWAY) && !blockState.is(Blocks.STRUCTURE_VOID)) {
                 return !blockState.blocksMotion();
@@ -332,7 +332,7 @@ public class VEFlowingGasFluid extends ForgeFlowingFluid {
     protected void spreadTo(LevelAccessor accessor, BlockPos pos, BlockState blockStateInQuestion, Direction p_76008_, FluidState fluidState) {
         if (blockStateInQuestion.getBlock() instanceof LiquidBlockContainer) {
             //System.out.println("spreadTo: instanceof LiquidBlockContainer for pos: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
-            ((LiquidBlockContainer)blockStateInQuestion.getBlock()).placeLiquid(accessor, pos, blockStateInQuestion, fluidState);
+            ((LiquidBlockContainer) blockStateInQuestion.getBlock()).placeLiquid(accessor, pos, blockStateInQuestion, fluidState);
         } else {
             //System.out.println("spreadTo: else hit ");
 

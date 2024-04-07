@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Ammonia {
-    public static final ResourceLocation AMMONIA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonia_still");
-    public static final ResourceLocation AMMONIA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonia_flowing");
+    public static final ResourceLocation AMMONIA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonia_still");
+    public static final ResourceLocation AMMONIA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonia_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
@@ -27,22 +27,22 @@ public class Ammonia {
     public static VEFlowingFluidBlock AMMONIA_BLOCK;
     public static Item AMMONIA_BUCKET;
 
-    public static FlowingFluid AmmoniaFluid(){
+    public static FlowingFluid AmmoniaFluid() {
         AMMONIA = new VEFlowingGasFluid.Source(Ammonia.PROPERTIES, 4);
         return AMMONIA;
     }
 
-    public static FlowingFluid FlowingAmmoniaFluid(){
+    public static FlowingFluid FlowingAmmoniaFluid() {
         FLOWING_AMMONIA = new VEFlowingGasFluid.Flowing(Ammonia.PROPERTIES, 4);
         return FLOWING_AMMONIA;
     }
 
-    public static VEFlowingFluidBlock FlowingAmmoniaBlock(){
+    public static VEFlowingFluidBlock FlowingAmmoniaBlock() {
         AMMONIA_BLOCK = new VEFlowingFluidBlock(() -> AMMONIA, stdProp);
         return AMMONIA_BLOCK;
     }
 
-    public static Item AmmoniaBucket(){
+    public static Item AmmoniaBucket() {
         AMMONIA_BUCKET = new BucketItem(() -> AMMONIA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIA_BUCKET;
     }

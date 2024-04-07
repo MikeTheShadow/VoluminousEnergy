@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class AmmoniumNitrateSolution {
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonium_nitrate_solution_still");
-    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/ammonium_nitrate_solution_flowing");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_still");
+    public static final ResourceLocation AMMONIUM_NITRATE_SOLUTION_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonium_nitrate_solution_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class AmmoniumNitrateSolution {
     public static VEFlowingFluidBlock AMMONIUM_NITRATE_SOLUTION_BLOCK;
     public static Item AMMONIUM_NITRATE_SOLUTION_BUCKET;
 
-    public static FlowingFluid AmmoniumNitrateSolutionFluid(){
+    public static FlowingFluid AmmoniumNitrateSolutionFluid() {
         AMMONIUM_NITRATE_SOLUTION = new ForgeFlowingFluid.Source(AmmoniumNitrateSolution.PROPERTIES);
         return AMMONIUM_NITRATE_SOLUTION;
     }
 
-    public static FlowingFluid FlowingAmmoniumNitrateSolutionFluid(){
+    public static FlowingFluid FlowingAmmoniumNitrateSolutionFluid() {
         FLOWING_AMMONIUM_NITRATE_SOLUTION = new ForgeFlowingFluid.Flowing(AmmoniumNitrateSolution.PROPERTIES);
         return FLOWING_AMMONIUM_NITRATE_SOLUTION;
     }
 
-    public static VEFlowingFluidBlock FlowingAmmoniumNitrateSolutionBlock(){
+    public static VEFlowingFluidBlock FlowingAmmoniumNitrateSolutionBlock() {
         AMMONIUM_NITRATE_SOLUTION_BLOCK = new VEFlowingFluidBlock(() -> AMMONIUM_NITRATE_SOLUTION, stdProp);
         return AMMONIUM_NITRATE_SOLUTION_BLOCK;
     }
 
-    public static Item AmmoniumNitrateSolutionBucket(){
+    public static Item AmmoniumNitrateSolutionBucket() {
         AMMONIUM_NITRATE_SOLUTION_BUCKET = new AmmoniumNitrateBucket(() -> AMMONIUM_NITRATE_SOLUTION, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIUM_NITRATE_SOLUTION_BUCKET;
     }

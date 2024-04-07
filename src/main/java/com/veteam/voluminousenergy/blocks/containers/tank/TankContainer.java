@@ -20,8 +20,8 @@ public class TankContainer extends VEContainer {
     //private Player playerEntity;
     private static final int NUMBER_OF_SLOTS = 2;
 
-    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType, Block block){
-        super(menuType,id,world,pos,inventory,player,block);
+    public TankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player, MenuType<?> menuType, Block block) {
+        super(menuType, id, world, pos, inventory, player, block);
     }
 
     @Override

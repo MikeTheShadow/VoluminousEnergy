@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/aluminum_shell"}
+    "": {
+      "model": "voluminousenergy:block/aluminum_shell"
+    }
   }
 }

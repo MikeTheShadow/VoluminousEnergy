@@ -29,6 +29,6 @@ public class SurfaceMattersLakesFeature extends VELakesFeature {
 
         // TODO: Redo this underground evaluation
         //return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), rand.nextInt(48 + 32) - 32, pos.getZ()), conf); // Should place between -32 and 48
-        return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), (int)(rand.nextInt(48 + 32) - 32), pos.getZ()), fluidState);
+        return !this.isForSurface && super.place(worldIn, generator, rand, new BlockPos(pos.getX(), (int) (rand.nextInt(48 + 32) - 32), pos.getZ()), fluidState);
     }
 }

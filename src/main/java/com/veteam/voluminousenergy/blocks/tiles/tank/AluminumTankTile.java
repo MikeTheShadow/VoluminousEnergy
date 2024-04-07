@@ -20,6 +20,6 @@ public class AluminumTankTile extends TankTile {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int i, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new AluminumTankContainer(i,level,this.worldPosition,playerInventory,player);
+        return new AluminumTankContainer(i, level, this.worldPosition, playerInventory, player);
     }
 }

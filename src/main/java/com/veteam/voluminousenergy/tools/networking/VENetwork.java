@@ -14,6 +14,7 @@ public class VENetwork {
     public static final AttributeKey<ForgePacketHandler> CONTEXT = AttributeKey.newInstance(CHANNEL_ID.toString());
 
     public static SimpleChannel channel;
+
     static {
         channel = ChannelBuilder.named(CHANNEL_ID)
                 .networkProtocolVersion(1)
@@ -62,11 +63,11 @@ public class VENetwork {
                 .add();
     }
 
-    private VENetwork(){
+    private VENetwork() {
 
     }
 
-    public static void init(){
+    public static void init() {
 
     }
 }

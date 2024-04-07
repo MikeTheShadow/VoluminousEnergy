@@ -15,5 +15,7 @@ public class ServerProxy implements IProxy {
     }
 
     @Override
-    public Player getClientPlayer() { throw new IllegalStateException("Only run this on the client!"); }
+    public Player getClientPlayer() {
+        throw new IllegalStateException("Only run this on the client!");
+    }
 }

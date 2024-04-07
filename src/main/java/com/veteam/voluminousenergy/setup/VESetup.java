@@ -82,6 +82,7 @@ public class VESetup {
         return stackStore;
     }
 
-    public void init(){}
+    public void init() {
+    }
 
 }

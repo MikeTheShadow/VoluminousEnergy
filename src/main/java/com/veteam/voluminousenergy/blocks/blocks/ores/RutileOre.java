@@ -6,11 +6,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class RutileOre extends VEOreBlock {
-    public RutileOre(){
+    public RutileOre() {
         super(Properties.of()
-            .sound(SoundType.STONE)
-            .strength(4.0f)
-            .requiresCorrectToolForDrops()
+                .sound(SoundType.STONE)
+                .strength(4.0f)
+                .requiresCorrectToolForDrops()
         );
         setRName("rutileore");
         VETagDataGenerator.setRequiresPickaxe(this);

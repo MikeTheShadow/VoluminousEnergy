@@ -36,7 +36,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     private final IDrawable arrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType<>(VoluminousEnergyPlugin.CRUSHING_UID, CrusherRecipe.class);
 
-    public CrushingCategory(IGuiHelper guiHelper){
+    public CrushingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CRUSHER_BLOCK.get()));
@@ -45,7 +45,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -66,18 +66,18 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
     @Override
     public void draw(CrusherRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,10, 19);
+        arrow.draw(matrixStack, 10, 19);
 
 
-        if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR){ // Check RNG if it's not air
-            int chance = (int)(recipe.getOutputChance(1) * 100);
+        if (recipe.getResult(1) != null && recipe.getResult(1).getItem() != Items.AIR) { // Check RNG if it's not air
+            int chance = (int) (recipe.getOutputChance(1) * 100);
             int xPos = 20;
-            if (chance < 100 && chance >= 10){
+            if (chance < 100 && chance >= 10) {
                 xPos += 3;
-            } else if (chance < 10){
+            } else if (chance < 10) {
                 xPos += 5;
             }
-            TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), xPos,65, VEContainerScreen.GREY_TEXT_STYLE);
+            TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(chance + "%"), xPos, 65, VEContainerScreen.GREY_TEXT_STYLE);
         }
 
     }
@@ -88,7 +88,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
                                   IIngredientAcceptor itemRNGOutputAcceptor) {
         // Input
         ArrayList<ItemStack> inputStacks = new ArrayList<>();
-        for (ItemStack itemStack : recipe.getIngredient(0).getItems()){
+        for (ItemStack itemStack : recipe.getIngredient(0).getItems()) {
             itemStack.setCount(recipe.getIngredientCount(0));
             inputStacks.add(itemStack);
         }
@@ -111,7 +111,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
 
         // Output
         IRecipeSlotBuilder primaryItemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 3, 46);
-        IRecipeSlotBuilder rngItemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT,  21, 46);
+        IRecipeSlotBuilder rngItemOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 21, 46);
 
         itemInput.setSlotName(TextUtil.TRANSLATED_INPUT_SLOT.getString());
         primaryItemOutput.setSlotName(TextUtil.TRANSLATED_OUTPUT_SLOT.getString());

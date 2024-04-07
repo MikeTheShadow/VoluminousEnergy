@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Oxygen {
-    public static final ResourceLocation OXYGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/oxygen_still");
-    public static final ResourceLocation OXYGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/oxygen_flowing");
+    public static final ResourceLocation OXYGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/oxygen_still");
+    public static final ResourceLocation OXYGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/oxygen_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
@@ -27,22 +27,22 @@ public class Oxygen {
     public static VEFlowingFluidBlock OXYGEN_BLOCK;
     public static Item OXYGEN_BUCKET;
 
-    public static FlowingFluid OxygenFluid(){
+    public static FlowingFluid OxygenFluid() {
         OXYGEN = new VEFlowingGasFluid.Source(Oxygen.properties, 4);
         return OXYGEN;
     }
 
-    public static FlowingFluid FlowingOxygenFluid(){
+    public static FlowingFluid FlowingOxygenFluid() {
         FLOWING_OXYGEN = new VEFlowingGasFluid.Flowing(Oxygen.properties, 4);
         return FLOWING_OXYGEN;
     }
 
-    public static VEFlowingFluidBlock FlowingOxygenBlock(){
+    public static VEFlowingFluidBlock FlowingOxygenBlock() {
         OXYGEN_BLOCK = new VEFlowingFluidBlock(() -> OXYGEN, stdProp);
         return OXYGEN_BLOCK;
     }
 
-    public static Item OxygenBucket(){
+    public static Item OxygenBucket() {
         OXYGEN_BUCKET = new BucketItem(() -> OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return OXYGEN_BUCKET;
     }

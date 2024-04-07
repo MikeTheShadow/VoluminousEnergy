@@ -6,7 +6,7 @@ import net.minecraft.world.item.Item;
 public class CarbonGear extends VEItem {
     public CarbonGear() {
         super(new Item.Properties()
-            .stacksTo(64)
+                .stacksTo(64)
         );
         setRegistryName("carbongear");
     }

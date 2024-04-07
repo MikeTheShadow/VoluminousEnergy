@@ -21,7 +21,7 @@ public class CrudeOilFlowingFluidBlock extends VEFlowingFluidBlock {
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         if (entityIn instanceof LivingEntity) {
             entityIn.makeStuckInBlock(state, new Vec3(0.8F, 0.75F, 0.8F));
-        } else if (entityIn instanceof ItemEntity){
+        } else if (entityIn instanceof ItemEntity) {
             entityIn.makeStuckInBlock(state, new Vec3(0.8F, 0.75f, 0.8F));
         }
     }

@@ -43,11 +43,11 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(dimensionalLaserGUI, 97, 34, 15, 16).build();
-        emptyArrow = guiHelper.drawableBuilder(dimensionalLaserGUI,176,0,15,17).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
+        emptyArrow = guiHelper.drawableBuilder(dimensionalLaserGUI, 176, 0, 15, 17).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -68,30 +68,30 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
 
     @Override
     public void draw(DimensionalLaserRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,9, 4);
-        emptyArrow.draw(matrixStack,9,4);
-        slotDrawable.draw(matrixStack,8,22);
+        arrow.draw(matrixStack, 9, 4);
+        emptyArrow.draw(matrixStack, 9, 4);
+        slotDrawable.draw(matrixStack, 8, 22);
 
         int xPos = 36;
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("C: "
-                + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getA()
-                + " ~ "
-                + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getB()
-                ),  xPos, -1, VEContainerScreen.GREY_TEXT_STYLE
+                        + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getA()
+                        + " ~ "
+                        + recipe.getFluidClimateSpawn().getContinentalnessClimateParameter().getB()
+                ), xPos, -1, VEContainerScreen.GREY_TEXT_STYLE
         );
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("E: "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getErosionClimateParameter().getB()
-                ),  xPos, 9, VEContainerScreen.GREY_TEXT_STYLE
+                ), xPos, 9, VEContainerScreen.GREY_TEXT_STYLE
         );
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty("H: "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getHumidityClimateParameter().getB()
-                ),  xPos, 19, VEContainerScreen.GREY_TEXT_STYLE
+                ), xPos, 19, VEContainerScreen.GREY_TEXT_STYLE
         );
 
 
@@ -99,7 +99,7 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getA()
                         + " ~ "
                         + recipe.getFluidClimateSpawn().getTemperatureClimateParameter().getB()
-                ),  xPos, 29, VEContainerScreen.GREY_TEXT_STYLE
+                ), xPos, 29, VEContainerScreen.GREY_TEXT_STYLE
         );
 
     }

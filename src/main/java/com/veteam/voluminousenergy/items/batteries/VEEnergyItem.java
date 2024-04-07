@@ -27,29 +27,29 @@ public class VEEnergyItem extends VEItem {
     private final int maxTransfer;
 
     @Deprecated
-    public VEEnergyItem(Properties properties, int maxEnergy, int maxTransfer){
+    public VEEnergyItem(Properties properties, int maxEnergy, int maxTransfer) {
         super(properties);
         this.maxEnergy = maxEnergy;
         this.maxTransfer = maxTransfer;
     }
 
-    public static float getChargeRatio(ItemStack stack){
+    public static float getChargeRatio(ItemStack stack) {
         LazyOptional<IEnergyStorage> energy = stack.getCapability(ForgeCapabilities.ENERGY);
-        if(energy.isPresent()){
+        if (energy.isPresent()) {
             IEnergyStorage energyStorage = energy.orElseThrow(IllegalStateException::new);
-            return (float) energyStorage.getEnergyStored()/ energyStorage.getMaxEnergyStored();
+            return (float) energyStorage.getEnergyStored() / energyStorage.getMaxEnergyStored();
         }
         return 0;
     }
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundTag nbt){
+    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundTag nbt) {
         return new ICapabilityProvider() {
             @Nonnull
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if(cap == ForgeCapabilities.ENERGY){
+                if (cap == ForgeCapabilities.ENERGY) {
                     return LazyOptional.of(() -> new VEEnergyItemStorage(itemStack, maxEnergy, maxTransfer)).cast();
                 }
                 return LazyOptional.empty();
@@ -58,11 +58,11 @@ public class VEEnergyItem extends VEItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag){
-        if(ForgeCapabilities.ENERGY == null) return; // sanity check
-        itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(e ->{
+    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+        if (ForgeCapabilities.ENERGY == null) return; // sanity check
+        itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(e -> {
             Component textComponent;
-            if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()){
+            if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
                 textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
             } else {
                 textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(e.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(e.getMaxEnergyStored()) + " FE");
@@ -72,10 +72,12 @@ public class VEEnergyItem extends VEItem {
     }
 
     @Override
-    public boolean isBarVisible(ItemStack itemStack){return true;}
+    public boolean isBarVisible(ItemStack itemStack) {
+        return true;
+    }
 
     @Override
-    public int getBarWidth(ItemStack itemStack){
+    public int getBarWidth(ItemStack itemStack) {
         //return Math.round(getChargeRatio(itemStack));
         return Math.round(13 * getChargeRatio(itemStack));
     }
@@ -86,8 +88,12 @@ public class VEEnergyItem extends VEItem {
         return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
     }
 
-    public int getMaxTransfer() {return maxTransfer;}
+    public int getMaxTransfer() {
+        return maxTransfer;
+    }
 
-    public int getMaxEnergy() {return maxEnergy;}
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
 
 }

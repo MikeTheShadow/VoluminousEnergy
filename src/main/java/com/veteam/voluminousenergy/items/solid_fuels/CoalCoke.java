@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public class CoalCoke extends VEItem implements IForgeItem {
     public CoalCoke() {
         super(new Item.Properties()
-            .stacksTo(64)
+                .stacksTo(64)
         );
         setRegistryName("coalcoke");
     }

@@ -20,14 +20,14 @@ public class CompressorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.COMPRESSING.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addIngredient(0,0)
-            .addItemResult(1,0);
+            .addIngredient(0, 0)
+            .addItemResult(1, 0);
 
     public CompressorRecipe() {
     }
 
     public CompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
-        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
+        super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<CompressorRecipe> SERIALIZER = new RecipeSerializer<>() {

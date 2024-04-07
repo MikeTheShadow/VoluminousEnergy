@@ -33,33 +33,37 @@ public class SlotBoolButton extends VEIOButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
-        if(!render) return;
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
+        if (!render) return;
         RenderSystem.setShaderTexture(0, texture);
         enable = slotManager.getStatus();
-        if(!enable){
+        if (!enable) {
             matrixStack.blit(texture, getX(), getY(), 213, 0, this.width, this.height);
         } else {
             matrixStack.blit(texture, getX(), getY(), 213, 15, this.width, this.height);
         }
     }
 
-    private void cycle(){ enable = !enable; }
+    private void cycle() {
+        enable = !enable;
+    }
 
     @Override
-    public void onPress(){
-        if(!render) return;
+    public void onPress() {
+        if (!render) return;
         cycle();
         VENetwork.channel.send(new BoolButtonPacket(this.status(), this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
     }
 
-    public boolean status(){ return enable; }
+    public boolean status() {
+        return enable;
+    }
 
-    public int getAssociatedSlotId(){
+    public int getAssociatedSlotId() {
         return this.slotManager.getSlotNum();
     }
 
-    public void setStatus(boolean status){
+    public void setStatus(boolean status) {
         enable = status;
         slotManager.setStatus(status);
     }

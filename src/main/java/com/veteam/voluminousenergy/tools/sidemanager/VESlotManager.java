@@ -33,12 +33,13 @@ public class VESlotManager {
 
     /**
      * Use this for when you have an input tilePos type
-     * @param slotNum The tilePos number is the index in the array of the slotManagers
-     * @param direction The direction it will be facing by default
-     * @param status The status of the IO
-     * @param slotType The type of tilePos
+     *
+     * @param slotNum    The tilePos number is the index in the array of the slotManagers
+     * @param direction  The direction it will be facing by default
+     * @param status     The status of the IO
+     * @param slotType   The type of tilePos
      * @param outputSlot The slotNum of the tank to which a bucket will be placed when this has processed a bucket
-     * @param tankId The index of the tank in the fluidManagers
+     * @param tankId     The index of the tank in the fluidManagers
      */
     public VESlotManager(int slotNum, Direction direction, boolean status, SlotType slotType, int outputSlot, int tankId) {
         this.side.set(direction);
@@ -115,8 +116,8 @@ public class VESlotManager {
         return handler.getStackInSlot(this.slot);
     }
 
-    public void setItem(ItemStack stack,ItemStackHandler handler) {
-        handler.setStackInSlot(this.slot,stack.copy());
+    public void setItem(ItemStack stack, ItemStackHandler handler) {
+        handler.setStackInSlot(this.slot, stack.copy());
     }
 
     public int getOutputSlotId() {

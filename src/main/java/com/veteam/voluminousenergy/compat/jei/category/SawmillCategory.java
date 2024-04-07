@@ -45,18 +45,18 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
     //protected static ArrayList<Pair<ItemStack, ItemStack>> logPlankPairList = new ArrayList<>();
 
 
-    public SawmillCategory(IGuiHelper guiHelper){
+    public SawmillCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 86, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.SAWMILL_BLOCK.get()));
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
         slotDrawable = guiHelper.getSlotDrawable();
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -77,12 +77,12 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
 
     @Override
     public void draw(VEFluidSawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,48,1);
-        slotDrawable.draw(matrixStack,48,19);
-        slotDrawable.draw(matrixStack,66,9);
-        arrow.draw(matrixStack,24, 11);
-        emptyArrow.draw(matrixStack,24,11);
+        slotDrawable.draw(matrixStack, 2, 10);
+        slotDrawable.draw(matrixStack, 48, 1);
+        slotDrawable.draw(matrixStack, 48, 19);
+        slotDrawable.draw(matrixStack, 66, 9);
+        arrow.draw(matrixStack, 24, 11);
+        emptyArrow.draw(matrixStack, 24, 11);
     }
 
     public void ingredientHandler(VEFluidSawmillRecipe recipe,
@@ -90,14 +90,14 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
                                   IIngredientAcceptor primaryItemOutputAcceptor,
                                   IIngredientAcceptor secondaryItemOutputAcceptor,
                                   IIngredientAcceptor fluidOutputAcceptor) {
-        if (recipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()){
+        if (recipe.isLogRecipe() && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) {
 
             AtomicReference<ArrayList<ItemStack>> atomicLogStacks = new AtomicReference<>(new ArrayList<>());
             AtomicReference<ArrayList<ItemStack>> atomicPlankStacks = new AtomicReference<>(new ArrayList<>());
 
             // Calculate Logs and Planks based on registry
             ForgeRegistries.ITEMS.getValues().parallelStream().forEach(registeredItem -> {
-                if (RegistryLookups.lookupItem(registeredItem).getPath().contains("log")){
+                if (RegistryLookups.lookupItem(registeredItem).getPath().contains("log")) {
                     atomicLogStacks.get().add(new ItemStack(registeredItem, Config.SAWMILL_LOG_CONSUMPTION_RATE.get()));
                 } else if (RegistryLookups.lookupItem(registeredItem).getPath().contains("plank")) {
                     atomicPlankStacks.get().add(new ItemStack(registeredItem, Config.SAWMILL_PRIMARY_OUTPUT_COUNT.get()));
@@ -110,14 +110,14 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
             // Secondary Output
             ResourceLocation secondOutputItemResourceLocation = new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
             Item secondOutput = ForgeRegistries.ITEMS.getValue(secondOutputItemResourceLocation);
-            if (secondOutput != null){
+            if (secondOutput != null) {
                 secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
             }
 
             // Fluid Output
             ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
             Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(fluidLocation);
-            if (outputFluid != null){
+            if (outputFluid != null) {
                 fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
             }
         } else if (!recipe.isLogRecipe()) {
@@ -143,7 +143,7 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
     public void setRecipe(IRecipeLayoutBuilder recipeLayout, VEFluidSawmillRecipe recipe, IFocusGroup focusGroup) {
         IRecipeSlotBuilder inputItem = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3, 11);
 
-        IRecipeSlotBuilder primaryOutputItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49,2);
+        IRecipeSlotBuilder primaryOutputItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49, 2);
         IRecipeSlotBuilder secondaryOutputItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49, 20);
 
         IRecipeSlotBuilder fluidOutput = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 67, 10);

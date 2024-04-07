@@ -6,6 +6,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CompressorInputSlot extends VEInsertSlot {
     public Level world;
+
     public CompressorInputSlot(IItemHandler itemHandler, int index, int xPos, int yPos, Level world) {
         super(itemHandler, index, xPos, yPos);
         this.world = world;

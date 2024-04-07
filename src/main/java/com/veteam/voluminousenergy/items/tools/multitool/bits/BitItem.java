@@ -12,7 +12,7 @@ public class BitItem extends VEItem {
         setRegistryName(registryName);
     }
 
-    public MultitoolBit getBit(){
+    public MultitoolBit getBit() {
         return this.multitoolBit;
     }
 

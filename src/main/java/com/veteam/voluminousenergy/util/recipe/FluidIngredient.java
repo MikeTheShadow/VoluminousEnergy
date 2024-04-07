@@ -186,7 +186,7 @@ public class FluidIngredient {
     public static FluidIngredient of(Stream<FluidStack> p_43922_) {
         return fromValues(p_43922_.filter((p_43944_) -> {
             return !p_43944_.isEmpty();
-        }).map(m -> new FluidValue(m,m.getAmount(),m.getFluid())));
+        }).map(m -> new FluidValue(m, m.getAmount(), m.getFluid())));
     }
 
     public static FluidIngredient of(TagKey<Fluid> key, int amount) {
@@ -198,7 +198,7 @@ public class FluidIngredient {
         VEFluidIngredientSerializer serializer = VEFluidIngredientSerializer.INSTANCE;
         if (size == -1) return serializer.parse(byteBuf);
         FluidStack stack = byteBuf.readFluidStack();
-        return fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(stack,stack.getAmount(),stack.getFluid())).limit(size));
+        return fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(stack, stack.getAmount(), stack.getFluid())).limit(size));
     }
 
     public static FluidIngredient fromJson(@Nullable JsonObject json) {
@@ -277,10 +277,10 @@ public class FluidIngredient {
         });
     }
 
-    public record FluidValue(FluidStack stack,int amount,Fluid fluid) implements FluidIngredient.Value {
+    public record FluidValue(FluidStack stack, int amount, Fluid fluid) implements FluidIngredient.Value {
 
         static FluidValue fromAmounts(Fluid fluid, int amount) {
-            return new FluidValue(new FluidStack(fluid,amount), amount,fluid);
+            return new FluidValue(new FluidStack(fluid, amount), amount, fluid);
         }
 
         static final Codec<FluidValue> CODEC = RecordCodecBuilder.create((p_300421_) -> {
@@ -308,11 +308,11 @@ public class FluidIngredient {
         return fromValues(parts.stream().flatMap(i -> Arrays.stream(i.values)));
     }
 
-    public record TagValue(TagKey<Fluid> tag,int amount) implements FluidIngredient.Value {
+    public record TagValue(TagKey<Fluid> tag, int amount) implements FluidIngredient.Value {
         static final Codec<FluidIngredient.TagValue> CODEC = RecordCodecBuilder.create((p_300241_) -> {
             return p_300241_.group(TagKey.codec(Registries.FLUID).fieldOf("tag").forGetter((p_301340_) -> {
-                return p_301340_.tag;
-            }),ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter((amount) -> amount.amount)
+                        return p_301340_.tag;
+                    }), ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter((amount) -> amount.amount)
             ).apply(p_300241_, FluidIngredient.TagValue::new);
         });
 
@@ -328,12 +328,12 @@ public class FluidIngredient {
             List<FluidStack> list = Lists.newArrayList();
 
             for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
-                list.add(new FluidStack(holder.value(),this.amount));
+                list.add(new FluidStack(holder.value(), this.amount));
             }
 
             if (list.isEmpty()) {
                 // TODO figure out how we produce errors
-                list.add(new FluidStack(Fluids.WATER,1));
+                list.add(new FluidStack(Fluids.WATER, 1));
             }
             return list;
         }

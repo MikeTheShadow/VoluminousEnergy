@@ -57,7 +57,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     public void renderIOMenu(VETileEntity tileEntity, int menuButtonX, int menuButtonY) {
 
         // Buttons
-        addRenderableWidget(new ioMenuButton(menuButtonX,menuButtonY , buttons -> {
+        addRenderableWidget(new ioMenuButton(menuButtonX, menuButtonY, buttons -> {
 
         }));
 
@@ -113,19 +113,19 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     }
 
     /* GuiGraphics matrixStack, int i, int j, int mouseX, int mouseY, float partialTicks old arguments in case you want them back*/
-    public void drawIOSideHelper(){
+    public void drawIOSideHelper() {
 
-        for(Renderable Renderable : this.renderables){
-            if (Renderable instanceof ioMenuButton){
+        for (Renderable Renderable : this.renderables) {
+            if (Renderable instanceof ioMenuButton) {
                 if (((ioMenuButton) Renderable).shouldIOBeOpen()) { // This means IO Should be open
-                    this.renderables.forEach(button ->{
-                        if (button instanceof VEIOButton){
+                    this.renderables.forEach(button -> {
+                        if (button instanceof VEIOButton) {
                             ((VEIOButton) button).toggleRender(true);
                         }
                     });
                 } else {
-                    this.renderables.forEach(button ->{
-                        if(button instanceof VEIOButton){
+                    this.renderables.forEach(button -> {
+                        if (button instanceof VEIOButton) {
                             ((VEIOButton) button).toggleRender(false);
                         }
                     });
@@ -134,17 +134,17 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
-    public void updateButtonDirection(int direction, int slotId){
-        for(Renderable Renderable: this.renderables){
-            if(Renderable instanceof SlotDirectionButton && ((SlotDirectionButton) Renderable).getAssociatedSlotId() == slotId ){
+    public void updateButtonDirection(int direction, int slotId) {
+        for (Renderable Renderable : this.renderables) {
+            if (Renderable instanceof SlotDirectionButton && ((SlotDirectionButton) Renderable).getAssociatedSlotId() == slotId) {
                 ((SlotDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
-    public void updateBooleanButton(boolean status, int slotId){
-        for(Renderable Renderable: this.renderables){
-            if(Renderable instanceof SlotBoolButton && ((SlotBoolButton) Renderable).getAssociatedSlotId() == slotId){
+    public void updateBooleanButton(boolean status, int slotId) {
+        for (Renderable Renderable : this.renderables) {
+            if (Renderable instanceof SlotBoolButton && ((SlotBoolButton) Renderable).getAssociatedSlotId() == slotId) {
                 ((SlotBoolButton) Renderable).toggleRender(true);
                 ((SlotBoolButton) Renderable).setStatus(status);
                 ((SlotBoolButton) Renderable).toggleRender(false);
@@ -152,17 +152,17 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
-    public void updateTankDirection(int direction, int id){
-        for(Renderable Renderable: this.renderables){
-            if(Renderable instanceof TankDirectionButton && ((TankDirectionButton) Renderable).getId() == id ){
+    public void updateTankDirection(int direction, int id) {
+        for (Renderable Renderable : this.renderables) {
+            if (Renderable instanceof TankDirectionButton && ((TankDirectionButton) Renderable).getId() == id) {
                 ((TankDirectionButton) Renderable).setDirectionFromInt(direction);
             }
         }
     }
 
-    public void updateTankStatus(boolean status, int id){
-        for(Renderable Renderable: this.renderables){
-            if(Renderable instanceof TankBoolButton && ((TankBoolButton) Renderable).getId() == id){
+    public void updateTankStatus(boolean status, int id) {
+        for (Renderable Renderable : this.renderables) {
+            if (Renderable instanceof TankBoolButton && ((TankBoolButton) Renderable).getId() == id) {
                 ((TankBoolButton) Renderable).toggleRender(true);
                 ((TankBoolButton) Renderable).setStatus(status);
                 ((TankBoolButton) Renderable).toggleRender(false);
@@ -171,7 +171,7 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
     }
 
     @Deprecated
-    public void informTileOfIOButton(boolean connection){
+    public void informTileOfIOButton(boolean connection) {
         UUID uuid = Minecraft.getInstance().player.getUUID();
         VENetwork.channel.send(new UuidPacket(uuid, connection), PacketDistributor.SERVER.noArg());
     }

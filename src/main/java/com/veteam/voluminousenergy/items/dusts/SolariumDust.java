@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class SolariumDust extends VEItem {
-    public SolariumDust (){
+    public SolariumDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

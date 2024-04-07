@@ -21,7 +21,7 @@ public class ImplosionCompressorParser extends RecipeParser {
     @Override
     public void completeRecipe(VETileEntity tile) {
         super.completeRecipe(tile);
-        tile.getInventory().extractItem(1,1,false);
+        tile.getInventory().extractItem(1, 1, false);
     }
 
     @Override

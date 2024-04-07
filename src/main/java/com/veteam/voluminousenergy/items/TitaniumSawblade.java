@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.items;
 import net.minecraft.world.item.Item;
 
 public class TitaniumSawblade extends VEItem {
-    public TitaniumSawblade (){
+    public TitaniumSawblade() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

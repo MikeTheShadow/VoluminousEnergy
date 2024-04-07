@@ -4,11 +4,38 @@
     "saw": "voluminousenergy:item/titanium_sawblade"
   },
   "elements": [
-    { "from": [ 1, 1, 8 ],
-      "to": [ 15, 15, 8 ],
+    {
+      "from": [
+        1,
+        1,
+        8
+      ],
+      "to": [
+        15,
+        15,
+        8
+      ],
       "faces": {
-        "north": { "uv": [ 1, 1, 15, 15 ], "texture": "#saw", "tintindex": 0 },
-        "south": { "uv": [ 1, 1, 15, 15 ], "texture": "#saw", "tintindex": 0 }
+        "north": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#saw",
+          "tintindex": 0
+        },
+        "south": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#saw",
+          "tintindex": 0
+        }
       }
     }
   ]

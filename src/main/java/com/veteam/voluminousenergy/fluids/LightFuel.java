@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class LightFuel {
-    public static final ResourceLocation LIGHT_FUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/light_fuel_still");
-    public static final ResourceLocation LIGHT_FUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/light_fuel_flowing");
+    public static final ResourceLocation LIGHT_FUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/light_fuel_still");
+    public static final ResourceLocation LIGHT_FUEL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/light_fuel_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).air();
 
@@ -27,22 +27,22 @@ public class LightFuel {
     public static VEFlowingFluidBlock LIGHT_FUEL_BLOCK;
     public static Item LIGHT_FUEL_BUCKET;
 
-    public static FlowingFluid LightFuelFluid(){
-        LIGHT_FUEL = new VEFlowingGasFluid.Source(LightFuel.properties,4);
+    public static FlowingFluid LightFuelFluid() {
+        LIGHT_FUEL = new VEFlowingGasFluid.Source(LightFuel.properties, 4);
         return LIGHT_FUEL;
     }
 
-    public static FlowingFluid FlowingLightFuelFluid(){
-        FLOWING_LIGHT_FUEL = new VEFlowingGasFluid.Flowing(LightFuel.properties,4);
+    public static FlowingFluid FlowingLightFuelFluid() {
+        FLOWING_LIGHT_FUEL = new VEFlowingGasFluid.Flowing(LightFuel.properties, 4);
         return FLOWING_LIGHT_FUEL;
     }
 
-    public static VEFlowingFluidBlock FlowingLightFuelBlock(){
+    public static VEFlowingFluidBlock FlowingLightFuelBlock() {
         LIGHT_FUEL_BLOCK = new VEFlowingFluidBlock(() -> LIGHT_FUEL, stdProp);
         return LIGHT_FUEL_BLOCK;
     }
 
-    public static Item LightFuelBucket(){
+    public static Item LightFuelBucket() {
         LIGHT_FUEL_BUCKET = new BucketItem(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return LIGHT_FUEL_BUCKET;
     }

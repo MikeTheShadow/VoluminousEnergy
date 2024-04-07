@@ -14,45 +14,45 @@ public class TankDirectionPacket {
     private int direction;
     private int tankId;
 
-    public TankDirectionPacket(){
+    public TankDirectionPacket() {
         // Do nothing
     }
 
-    public TankDirectionPacket(int updatedDirection, int id){
+    public TankDirectionPacket(int updatedDirection, int id) {
         this.direction = updatedDirection;
         this.tankId = id;
     }
 
-    public static TankDirectionPacket fromBytes(FriendlyByteBuf buffer){
+    public static TankDirectionPacket fromBytes(FriendlyByteBuf buffer) {
         TankDirectionPacket packet = new TankDirectionPacket();
         packet.direction = buffer.readInt();
         packet.tankId = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(FriendlyByteBuf buffer){
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeInt(this.direction);
         buffer.writeInt(this.tankId);
     }
 
-    public static void handle(TankDirectionPacket packet, CustomPayloadEvent.Context contextSupplier){
+    public static void handle(TankDirectionPacket packet, CustomPayloadEvent.Context contextSupplier) {
         NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch(packetDirection){
+        switch (packetDirection) {
             case PLAY_TO_CLIENT:
                 AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
                 contextSupplier.setPacketHandled(true);
                 break;
             default:
                 AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
                 contextSupplier.setPacketHandled(true);
         }
 
     }
 
-    public static void handlePacket(TankDirectionPacket packet, AbstractContainerMenu openContainer, boolean onServer){
-        if(openContainer != null){
+    public static void handlePacket(TankDirectionPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+        if (openContainer != null) {
 
             if (openContainer instanceof VEContainer VEContainer) {
                 if (onServer) {

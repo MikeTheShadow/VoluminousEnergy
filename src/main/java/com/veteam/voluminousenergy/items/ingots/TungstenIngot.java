@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class TungstenIngot extends VEItem {
-    public TungstenIngot (){
+    public TungstenIngot() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

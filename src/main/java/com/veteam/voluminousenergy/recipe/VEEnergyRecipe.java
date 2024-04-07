@@ -14,7 +14,7 @@ public abstract class VEEnergyRecipe extends VERecipe {
     }
 
     public VEEnergyRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, int processTime, int energy_per_tick) {
-        super(ingredients,new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),processTime);
+        super(ingredients, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), processTime);
         this.energyPerTick = energy_per_tick;
     }
 

@@ -120,7 +120,7 @@ public class TankTile extends VETileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                if(!isItemValid(slot,stack)) return stack;
+                if (!isItemValid(slot, stack)) return stack;
                 return super.insertItem(slot, stack, simulate);
             }
         };
@@ -155,13 +155,14 @@ public class TankTile extends VETileEntity {
     }
 
     private LazyOptional<MultiFluidSlotWrapper> multiFluidSlotWrapperLazyOptional = null;
+
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if(multiFluidSlotWrapperLazyOptional == null) {
-                multiFluidSlotWrapperLazyOptional = LazyOptional.of(() -> new MultiFluidSlotWrapper(getRelationalTanks(),this));
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            if (multiFluidSlotWrapperLazyOptional == null) {
+                multiFluidSlotWrapperLazyOptional = LazyOptional.of(() -> new MultiFluidSlotWrapper(getRelationalTanks(), this));
             }
             return multiFluidSlotWrapperLazyOptional.cast();
         }

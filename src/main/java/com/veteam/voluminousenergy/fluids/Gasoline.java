@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Gasoline {
-    public static final ResourceLocation GASOLINE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/gasoline_still");
-    public static final ResourceLocation GASOLINE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/gasoline_flowing");
+    public static final ResourceLocation GASOLINE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/gasoline_still");
+    public static final ResourceLocation GASOLINE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/gasoline_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class Gasoline {
     public static VEFlowingFluidBlock GASOLINE_BLOCK;
     public static Item GASOLINE_BUCKET;
 
-    public static FlowingFluid GasolineFluid(){
+    public static FlowingFluid GasolineFluid() {
         GASOLINE = new ForgeFlowingFluid.Source(Gasoline.properties);
         return GASOLINE;
     }
 
-    public static FlowingFluid FlowingGasolineFluid(){
+    public static FlowingFluid FlowingGasolineFluid() {
         FLOWING_GASOLINE = new ForgeFlowingFluid.Flowing(Gasoline.properties);
         return FLOWING_GASOLINE;
     }
 
-    public static VEFlowingFluidBlock FlowingGasolineBlock(){
+    public static VEFlowingFluidBlock FlowingGasolineBlock() {
         GASOLINE_BLOCK = new VEFlowingFluidBlock(() -> GASOLINE, stdProp);
         return GASOLINE_BLOCK;
     }
 
-    public static Item GasolineBucket(){
+    public static Item GasolineBucket() {
         GASOLINE_BUCKET = new BucketItem(() -> GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return GASOLINE_BUCKET;
     }

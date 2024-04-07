@@ -3,6 +3,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
@@ -44,7 +45,7 @@ import java.util.Random;
 
 public class DimensionalLaserTile extends VEMultiBlockTileEntity {
 
-    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT,1,0);
+    public VESlotManager bucketTopSm = new VESlotManager(0, Direction.UP, true, SlotType.FLUID_INPUT, 1, 0);
     public VESlotManager bucketBottomSm = new VESlotManager(1, Direction.DOWN, true, SlotType.FLUID_OUTPUT);
     public VESlotManager RFIDsm = new VESlotManager(2, Direction.NORTH, true, SlotType.OUTPUT);
 
@@ -54,7 +55,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity {
         add(RFIDsm);
     }};
 
-    VERelationalTank outputTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.OUTPUT, "outputTank:output_tank_gui");
+    VERelationalTank outputTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, 0, TankType.OUTPUT, "outputTank:output_tank_gui");
 
     List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(outputTank);
@@ -75,7 +76,7 @@ public class DimensionalLaserTile extends VEMultiBlockTileEntity {
         this.RFIDsm.addAllowedItem(VEItems.RFID_CHIP.get());
     }
 
-    public ItemStackHandler inventory = new VEItemStackHandler(this,4);
+    public ItemStackHandler inventory = new VEItemStackHandler(this, 4);
 
     @Override
     public void tick() {

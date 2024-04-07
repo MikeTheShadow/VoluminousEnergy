@@ -41,18 +41,18 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
     private final IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.INDUSTRIAL_BLASTING_UID, IndustrialBlastingRecipe.class);
 
-    public IndustrialBlastingCategory(IGuiHelper guiHelper){
+    public IndustrialBlastingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 120, 60).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build(); // 176, 0, 23, 17
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true); // 199,0,23,17
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true); // 199,0,23,17
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -73,17 +73,17 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
 
     @Override
     public void draw(IndustrialBlastingRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,54, 12); // 24, 12
-        emptyArrow.draw(matrixStack,54,12); // 24, 12
-        slotDrawable.draw(matrixStack,30,1); // 2, 1
-        slotDrawable.draw(matrixStack,30,19); // 2, 19
-        slotDrawable.draw(matrixStack,78,10); // 48, 10
-        slotDrawable.draw(matrixStack,5,10);
+        arrow.draw(matrixStack, 54, 12); // 24, 12
+        emptyArrow.draw(matrixStack, 54, 12); // 24, 12
+        slotDrawable.draw(matrixStack, 30, 1); // 2, 1
+        slotDrawable.draw(matrixStack, 30, 19); // 2, 19
+        slotDrawable.draw(matrixStack, 78, 10); // 48, 10
+        slotDrawable.draw(matrixStack, 5, 10);
 
         TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font,
                 recipe.getMinimumHeat() + " K (" + (recipe.getMinimumHeat() - 273) + " \u00B0C; " +
-                        ((int) ((recipe.getMinimumHeat()-273) * 1.8)+32) + " \u00B0F)",
-                1,45, VEContainerScreen.GREY_TEXT_STYLE);
+                        ((int) ((recipe.getMinimumHeat() - 273) * 1.8) + 32) + " \u00B0F)",
+                1, 45, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(IndustrialBlastingRecipe recipe,

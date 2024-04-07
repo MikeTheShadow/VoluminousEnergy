@@ -8,7 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class DeepslateGalenaOre extends VEOreBlock {
-    public DeepslateGalenaOre(){
+    public DeepslateGalenaOre() {
         super(Properties.of()
                 .sound(SoundType.STONE)
                 .lightLevel(l -> Config.GALENA_ORE_BLOCK_LIGHT_LEVEL.get())

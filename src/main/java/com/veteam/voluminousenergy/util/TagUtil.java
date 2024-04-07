@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TagUtil {
 
-    public static Lazy<ArrayList<Fluid>> getLazyFluids(ResourceLocation fluidTagLocation){
+    public static Lazy<ArrayList<Fluid>> getLazyFluids(ResourceLocation fluidTagLocation) {
         TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
         return Lazy.of(() -> {
             HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
@@ -30,7 +30,7 @@ public class TagUtil {
         });
     }
 
-    public static Lazy<ArrayList<FluidStack>> getLazyFluidStacks(ResourceLocation fluidTagLocation, int amount){
+    public static Lazy<ArrayList<FluidStack>> getLazyFluidStacks(ResourceLocation fluidTagLocation, int amount) {
         TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
         return Lazy.of(() -> {
             HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
@@ -42,7 +42,7 @@ public class TagUtil {
         });
     }
 
-    public static Lazy<FluidStack> getLazyFluidStack(ResourceLocation fluidTagLocation, int amount){
+    public static Lazy<FluidStack> getLazyFluidStack(ResourceLocation fluidTagLocation, int amount) {
         TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
         return Lazy.of(() -> {
             HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
@@ -54,20 +54,20 @@ public class TagUtil {
         });
     }
 
-    public static Lazy<ArrayList<Item>> getLazyItems(ResourceLocation itemTagLocation){
+    public static Lazy<ArrayList<Item>> getLazyItems(ResourceLocation itemTagLocation) {
         TagKey<Item> tag = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), itemTagLocation);
         return Lazy.of(() -> {
-           HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
-           AtomicReference<ArrayList<Item>> itemSet = new AtomicReference<>(new ArrayList<>());
-           holderSet.stream().forEach(itemHolder -> {
-               itemSet.get().add(itemHolder.value());
-           });
-           return itemSet.get();
+            HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
+            AtomicReference<ArrayList<Item>> itemSet = new AtomicReference<>(new ArrayList<>());
+            holderSet.stream().forEach(itemHolder -> {
+                itemSet.get().add(itemHolder.value());
+            });
+            return itemSet.get();
         });
     }
 
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(String fluidTagLocation){
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(String fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
         AtomicReference<ArrayList<Fluid>> atomicFluids = new AtomicReference<>(fluids);
@@ -82,7 +82,7 @@ public class TagUtil {
         return fluids;
     }
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(ResourceLocation fluidTagLocation){
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocationAlternative(ResourceLocation fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
         ArrayList<Fluid> fluids = new ArrayList<>();
         AtomicReference<ArrayList<Fluid>> atomicFluids = new AtomicReference<>(fluids);
@@ -100,59 +100,60 @@ public class TagUtil {
 
     // Original
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation){
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(String fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), new ResourceLocation(fluidTagLocation));
         ArrayList<Fluid> fluids = new ArrayList<>();
 
-        for(Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
+        for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
             fluids.add(holder.value());
         }
         return fluids;
     }
 
-    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(ResourceLocation fluidTagLocation){
+    public static ArrayList<Fluid> getFluidListFromTagResourceLocation(ResourceLocation fluidTagLocation) {
         TagKey<Fluid> fluidTagKey = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
         ArrayList<Fluid> fluids = new ArrayList<>();
 
-        for(Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
+        for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(fluidTagKey)) {
             fluids.add(holder.value());
         }
         return fluids;
     }
 
-    public static ArrayList<Item> getItemListFromTagResourceLocation(String itemTagLocation){
+    public static ArrayList<Item> getItemListFromTagResourceLocation(String itemTagLocation) {
         TagKey<Item> itemTagKey = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), new ResourceLocation(itemTagLocation));
         ArrayList<Item> items = new ArrayList<>();
 
-        for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {
+        for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {
             items.add(holder.value());
         }
         return items;
     }
 
-    public static ArrayList<Item> getItemListFromTagResourceLocation(ResourceLocation itemTagLocation){
+    public static ArrayList<Item> getItemListFromTagResourceLocation(ResourceLocation itemTagLocation) {
         TagKey<Item> itemTagKey = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), itemTagLocation);
         ArrayList<Item> items = new ArrayList<>();
 
-        for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {
+        for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(itemTagKey)) {
             items.add(holder.value());
         }
         return items;
     }
 
     private static ArrayList<Item> cachedUpgrades;
-    public static ArrayList<Item> getTaggedMachineUpgradeItems(){
-        if (cachedUpgrades == null || cachedUpgrades.isEmpty()){
-            cachedUpgrades = getItemListFromTagResourceLocation(new ResourceLocation(VoluminousEnergy.MODID,"machine_upgrades"));
+
+    public static ArrayList<Item> getTaggedMachineUpgradeItems() {
+        if (cachedUpgrades == null || cachedUpgrades.isEmpty()) {
+            cachedUpgrades = getItemListFromTagResourceLocation(new ResourceLocation(VoluminousEnergy.MODID, "machine_upgrades"));
         }
         return cachedUpgrades;
     }
 
-    public static boolean isTaggedMachineUpgradeItem(Item item){
+    public static boolean isTaggedMachineUpgradeItem(Item item) {
         return getTaggedMachineUpgradeItems().contains(item);
     }
 
-    public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack){
+    public static boolean isTaggedMachineUpgradeItem(ItemStack itemStack) {
         return getTaggedMachineUpgradeItems().contains(itemStack.getItem());
     }
 }

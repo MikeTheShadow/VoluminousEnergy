@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class DinitrogenTetroxide {
-    public static final ResourceLocation DINITROGEN_TETROXIDE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/dinitrogen_tetroxide_still");
-    public static final ResourceLocation DINITROGEN_TETROXIDE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/dinitrogen_tetroxide_flowing");
+    public static final ResourceLocation DINITROGEN_TETROXIDE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_still");
+    public static final ResourceLocation DINITROGEN_TETROXIDE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class DinitrogenTetroxide {
     public static VEFlowingFluidBlock DINITROGEN_TETROXIDE_BLOCK;
     public static Item DINITROGEN_TETROXIDE_BUCKET;
 
-    public static FlowingFluid DinitrogenTetroxideFluid(){
+    public static FlowingFluid DinitrogenTetroxideFluid() {
         DINITROGEN_TETROXIDE = new ForgeFlowingFluid.Source(DinitrogenTetroxide.properties);
         return DINITROGEN_TETROXIDE;
     }
 
-    public static FlowingFluid FlowingDinitrogenTetroxideFluid(){
+    public static FlowingFluid FlowingDinitrogenTetroxideFluid() {
         FLOWING_DINITROGEN_TETROXIDE = new ForgeFlowingFluid.Flowing(DinitrogenTetroxide.properties);
         return FLOWING_DINITROGEN_TETROXIDE;
     }
 
-    public static VEFlowingFluidBlock FlowingDinitrogenTetroxideBlock(){
+    public static VEFlowingFluidBlock FlowingDinitrogenTetroxideBlock() {
         DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(() -> DINITROGEN_TETROXIDE, stdProp);
         return DINITROGEN_TETROXIDE_BLOCK;
     }
 
-    public static Item DinitrogenTetroxideBucket(){
+    public static Item DinitrogenTetroxideBucket() {
         DINITROGEN_TETROXIDE_BUCKET = new BucketItem(() -> DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return DINITROGEN_TETROXIDE_BUCKET;
     }

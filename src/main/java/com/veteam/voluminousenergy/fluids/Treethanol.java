@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Treethanol {
-    public static final ResourceLocation TREETHANOL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/treethanol_still");
-    public static final ResourceLocation TREETHANOL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/treethanol_flowing");
+    public static final ResourceLocation TREETHANOL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
+    public static final ResourceLocation TREETHANOL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/treethanol_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class Treethanol {
     public static VEFlowingFluidBlock TREETHANOL_BLOCK;
     public static Item TREETHANOL_BUCKET;
 
-    public static FlowingFluid TreethanolFluid(){
+    public static FlowingFluid TreethanolFluid() {
         TREETHANOL = new ForgeFlowingFluid.Source(Treethanol.properties);
         return TREETHANOL;
     }
 
-    public static FlowingFluid FlowingTreethanolFluid(){
+    public static FlowingFluid FlowingTreethanolFluid() {
         FLOWING_TREETHANOL = new ForgeFlowingFluid.Flowing(Treethanol.properties);
         return FLOWING_TREETHANOL;
     }
 
-    public static VEFlowingFluidBlock FlowingTreethanolBlock(){
+    public static VEFlowingFluidBlock FlowingTreethanolBlock() {
         TREETHANOL_BLOCK = new VEFlowingFluidBlock(() -> TREETHANOL, stdProp);
         return TREETHANOL_BLOCK;
     }
 
-    public static Item TreethanolBucket(){
+    public static Item TreethanolBucket() {
         TREETHANOL_BUCKET = new BucketItem(() -> TREETHANOL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return TREETHANOL_BUCKET;
     }

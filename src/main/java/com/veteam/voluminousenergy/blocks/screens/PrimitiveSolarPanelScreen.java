@@ -26,23 +26,23 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderTooltip(matrixStack,mouseX,mouseY);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderTooltip(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
+            matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.PRIMITIVE_SOLAR_PANEL_MAX_POWER.get()), mouseX, mouseY);
         }
-        super.renderTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY){
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("primitive_solar_panel"),  8, 6, WHITE_TEXT_STYLE);
+    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("primitive_solar_panel"), 8, 6, WHITE_TEXT_STYLE);
         if (tileEntity.getLevel().isDay())
             TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergy().getProduction() + " FE/t"), 90, 32, WHITE_TEXT_STYLE);
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
@@ -50,22 +50,23 @@ public class PrimitiveSolarPanelScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {}
+    protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+    }
 
     @Override
-    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY){
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui
+        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight); // Actual Gui
         if (tileEntity != null) {
             int power = menu.powerScreen(49);
             //int progress = tileEntity.progressCounterPX(14);
             //this.blit(matrixStack,i + 81, j + (55 + (14-progress)), 176, (14-progress), 14, progress); // 55 = full, 55+14 = end
-            matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 14 + (49-power), 12, power);
+            matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 14 + (49 - power), 12, power);
         }
     }
 }

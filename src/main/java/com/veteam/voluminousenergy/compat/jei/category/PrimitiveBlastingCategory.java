@@ -35,18 +35,18 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
     private IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.PRIMITIVE_BLASTING_UID, PrimitiveBlastFurnaceRecipe.class);
 
-    public PrimitiveBlastingCategory(IGuiHelper guiHelper){
+    public PrimitiveBlastingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 70, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -67,10 +67,10 @@ public class PrimitiveBlastingCategory implements IRecipeCategory<PrimitiveBlast
 
     @Override
     public void draw(PrimitiveBlastFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,24, 12);
-        emptyArrow.draw(matrixStack,24,12);
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,48,10);
+        arrow.draw(matrixStack, 24, 12);
+        emptyArrow.draw(matrixStack, 24, 12);
+        slotDrawable.draw(matrixStack, 2, 10);
+        slotDrawable.draw(matrixStack, 48, 10);
     }
 
     public void ingredientHandler(PrimitiveBlastFurnaceRecipe recipe,

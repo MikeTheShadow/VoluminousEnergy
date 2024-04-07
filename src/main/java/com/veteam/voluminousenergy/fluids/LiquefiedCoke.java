@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class LiquefiedCoke {
-    public static final ResourceLocation LIQUEFIED_COKE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/liquefied_coke_still");
-    public static final ResourceLocation LIQUEFIED_COKE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/liquefied_coke_flowing");
+    public static final ResourceLocation LIQUEFIED_COKE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/liquefied_coke_still");
+    public static final ResourceLocation LIQUEFIED_COKE_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/liquefied_coke_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class LiquefiedCoke {
     public static VEFlowingFluidBlock LIQUEFIED_COKE_BLOCK;
     public static Item LIQUEFIED_COKE_BUCKET;
 
-    public static FlowingFluid LiquefiedCokeFluid(){
+    public static FlowingFluid LiquefiedCokeFluid() {
         LIQUEFIED_COKE = new ForgeFlowingFluid.Source(LiquefiedCoke.properties);
         return LIQUEFIED_COKE;
     }
 
-    public static FlowingFluid FlowingLiquefiedCokeFluid(){
+    public static FlowingFluid FlowingLiquefiedCokeFluid() {
         FLOWING_LIQUEFIED_COKE = new ForgeFlowingFluid.Flowing(LiquefiedCoke.properties);
         return FLOWING_LIQUEFIED_COKE;
     }
 
-    public static VEFlowingFluidBlock FlowingLiquefiedCokeBlock(){
+    public static VEFlowingFluidBlock FlowingLiquefiedCokeBlock() {
         LIQUEFIED_COKE_BLOCK = new VEFlowingFluidBlock(() -> LIQUEFIED_COKE, stdProp);
         return LIQUEFIED_COKE_BLOCK;
     }
 
-    public static Item LiquefiedCokeBucket(){
+    public static Item LiquefiedCokeBucket() {
         LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return LIQUEFIED_COKE_BUCKET;
     }

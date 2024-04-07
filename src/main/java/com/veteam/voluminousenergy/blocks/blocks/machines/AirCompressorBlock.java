@@ -30,7 +30,7 @@ public class AirCompressorBlock extends VEFaceableMachineBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) { // Replaces old createBlockEntity method
-        return VETileEntities.AIR_COMPRESSOR_FACTORY.create(pos,state);
+        return VETileEntities.AIR_COMPRESSOR_FACTORY.create(pos, state);
     }
 
     // NEW TICK SYSTEM

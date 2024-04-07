@@ -46,7 +46,7 @@ public class WorldUtil {
         TEMPERATURE
     }
 
-    public static HashMap<ClimateParameters,Double> sampleClimate(Level level, BlockPos pos){
+    public static HashMap<ClimateParameters, Double> sampleClimate(Level level, BlockPos pos) {
         if (level.isClientSide) new HashMap<>();
 
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
@@ -62,15 +62,15 @@ public class WorldUtil {
         double humidity = noiseRouter.vegetation().compute(context);
         double temperature = noiseRouter.temperature().compute(context);
 
-        HashMap<ClimateParameters,Double> climateMap = new HashMap<>();
-        climateMap.put(ClimateParameters.CONTINENTALNESS,continentalness);
-        climateMap.put(ClimateParameters.EROSION,erosion);
-        climateMap.put(ClimateParameters.HUMIDITY,humidity);
-        climateMap.put(ClimateParameters.TEMPERATURE,temperature);
+        HashMap<ClimateParameters, Double> climateMap = new HashMap<>();
+        climateMap.put(ClimateParameters.CONTINENTALNESS, continentalness);
+        climateMap.put(ClimateParameters.EROSION, erosion);
+        climateMap.put(ClimateParameters.HUMIDITY, humidity);
+        climateMap.put(ClimateParameters.TEMPERATURE, temperature);
         return climateMap;
     }
 
-    public static ChunkFluid getFluidFromPosition(Level level,BlockPos pos) {
+    public static ChunkFluid getFluidFromPosition(Level level, BlockPos pos) {
         ServerLevel serverLevel = level.getServer().getLevel(level.dimension());
         ArrayList<Pair<Fluid, Integer>> fluidsList = WorldUtil.queryForFluids(level, pos);
         ChunkAccess chunkAccess = level.getChunk(pos);
@@ -81,25 +81,26 @@ public class WorldUtil {
                 fluidsList
         ));
 
-        if(!chunkFluids.hasChunkFluid(chunkFluid)) {
+        if (!chunkFluids.hasChunkFluid(chunkFluid)) {
             chunkFluids.add(chunkFluid);
             chunkFluids.setDirty();
             DimensionDataStorage storage = serverLevel.getDataStorage();
-            storage.set("chunk_fluids",chunkFluids);
+            storage.set("chunk_fluids", chunkFluids);
             storage.save();
         }
         return chunkFluid;
     }
 
-    public static ArrayList<Pair<Fluid,Integer>> queryForFluids(Level level, BlockPos pos){
-        AtomicReference<ArrayList<Pair<Fluid,Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
+    public static ArrayList<Pair<Fluid, Integer>> queryForFluids(Level level, BlockPos pos) {
+        AtomicReference<ArrayList<Pair<Fluid, Integer>>> fluidsAtLocation = new AtomicReference<>(new ArrayList<>());
 
-        HashMap<ClimateParameters,Double> sampledClimate = sampleClimate(level, pos);
-        if (sampledClimate.isEmpty()) return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
+        HashMap<ClimateParameters, Double> sampledClimate = sampleClimate(level, pos);
+        if (sampledClimate.isEmpty())
+            return fluidsAtLocation.get(); // Return empty as well; Likely client side if this is the case
         VERecipe.getCachedRecipes(DimensionalLaserRecipe.RECIPE_TYPE).parallelStream().forEach(recipe -> {
-            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe){
+            if (recipe instanceof DimensionalLaserRecipe dimensionalLaserRecipe) {
                 FluidClimateSpawn spawn = dimensionalLaserRecipe.getFluidClimateSpawn();
-                if (spawn.checkValidity(sampledClimate)){ // This might be unsafe, would prefer to avoid atomic as this is read-only
+                if (spawn.checkValidity(sampledClimate)) { // This might be unsafe, would prefer to avoid atomic as this is read-only
                     fluidsAtLocation.get().add(new Pair<>(spawn.getFluid(), spawn.calculateDepositAmount(sampledClimate, pos, level)));
                 }
             }
@@ -107,17 +108,16 @@ public class WorldUtil {
 
 
         // Add a fluid to the location if no other fluids exist. Can make this if it's only 1 add a pair
-        if(fluidsAtLocation.get().size() == 0 && level instanceof ServerLevel serverLevel) {
+        if (fluidsAtLocation.get().size() == 0 && level instanceof ServerLevel serverLevel) {
 
             Random random = new Random(randomSeedFromClimate(sampledClimate));
 
-            if(random.nextInt(10) > 4) {
+            if (random.nextInt(10) > 4) {
 
                 fluidsAtLocation.get().add(new Pair<>(Fluids.WATER,
                         fallbackFluidAmount(serverLevel, Fluids.WATER, sampledClimate, pos)
                 ));
-            }
-            else  {
+            } else {
 
                 fluidsAtLocation.get().add(new Pair<>(Fluids.LAVA,
                         fallbackFluidAmount(serverLevel, Fluids.LAVA, sampledClimate, pos)
@@ -137,7 +137,7 @@ public class WorldUtil {
 
     }
 
-    private static int fallbackFluidAmount(ServerLevel serverLevel, Fluid fluid, HashMap<ClimateParameters,Double> sampledClimate, BlockPos pos) {
+    private static int fallbackFluidAmount(ServerLevel serverLevel, Fluid fluid, HashMap<ClimateParameters, Double> sampledClimate, BlockPos pos) {
 
         PerlinSimplexNoise noise = new PerlinSimplexNoise(
                 new XoroshiroRandomSource(serverLevel.getSeed()),

@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.SoundType;
 
 public class GalenaOre extends VEOreBlock {
-    public GalenaOre(){
+    public GalenaOre() {
         super(Properties.of()
                 .sound(SoundType.STONE)
                 .lightLevel(l -> Config.GALENA_ORE_BLOCK_LIGHT_LEVEL.get())

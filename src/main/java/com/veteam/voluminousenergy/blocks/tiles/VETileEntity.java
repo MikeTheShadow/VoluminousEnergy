@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -57,7 +58,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
-    final HashMap<String,Integer> dataMap = new HashMap<>();
+    final HashMap<String, Integer> dataMap = new HashMap<>();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
@@ -185,14 +186,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         processFluidIO();
         updateClients();
 
-        if(this.recipeProcessor != null) {
-            if(this.isRecipeDirty) {
+        if (this.recipeProcessor != null) {
+            if (this.isRecipeDirty) {
                 recipeProcessor.validateRecipe(this);
                 this.isRecipeDirty = false;
             }
             recipeProcessor.processRecipe(this);
         }
-        if(this.sendsOutPower) sendOutPower();
+        if (this.sendsOutPower) sendOutPower();
     }
 
     /**
@@ -290,10 +291,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         if (handler != null) {
             handler.deserializeNBT(inv);
         }
-        if(energy != null) energy.deserializeNBT(tag);
+        if (energy != null) energy.deserializeNBT(tag);
 
-        for(var entry : dataMap.entrySet()) {
-            dataMap.put(entry.getKey(),tag.getInt(entry.getKey()));
+        for (var entry : dataMap.entrySet()) {
+            dataMap.put(entry.getKey(), tag.getInt(entry.getKey()));
         }
 
         for (VESlotManager manager : getSlotManagers()) {
@@ -329,8 +330,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             manager.write(tag);
         }
 
-        for(var entry : dataMap.entrySet()) {
-            tag.putInt(entry.getKey(),entry.getValue());
+        for (var entry : dataMap.entrySet()) {
+            tag.putInt(entry.getKey(), entry.getValue());
         }
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
@@ -377,8 +378,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public static int receiveEnergy(BlockEntity tileEntity, Direction from, int maxReceive) {
-        if(tileEntity instanceof VETileEntity tile && tile.energy != null) {
-            return tile.energy.receiveEnergy(maxReceive,false);
+        if (tileEntity instanceof VETileEntity tile && tile.energy != null) {
+            return tile.energy.receiveEnergy(maxReceive, false);
         }
         return 0;
     }
@@ -449,8 +450,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public void consumeEnergy() {
-        if(this.energy == null) return;
-        energy.consumeEnergy(this.consumptionMultiplier(energy.getConsumption(),energy.getUpgradeSlotId()));
+        if (this.energy == null) return;
+        energy.consumeEnergy(this.consumptionMultiplier(energy.getConsumption(), energy.getUpgradeSlotId()));
     }
 
     /**
@@ -511,7 +512,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public @Nonnull ItemStack getStackInSlot(int slot) {
-        return this.getSlotManagers().get(slot).getItem(this.inventory);
+        return this.inventory.getStackInSlot(slot);
     }
 
     /**
@@ -531,7 +532,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public int progressBurnCounterPX(int px) {
         int counter = dataMap.get("counter");
         int length = dataMap.get("length");
-        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;;
+        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
+        ;
         return 0;
     }
 
@@ -621,11 +623,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public int getData(String key) {
-        return this.dataMap.getOrDefault(key,-1);
+        return this.dataMap.getOrDefault(key, -1);
     }
 
     public void setData(String key, int value) {
-        this.dataMap.put(key,value);
+        this.dataMap.put(key, value);
     }
 
     public void setRecipeDirty(boolean dirty) {

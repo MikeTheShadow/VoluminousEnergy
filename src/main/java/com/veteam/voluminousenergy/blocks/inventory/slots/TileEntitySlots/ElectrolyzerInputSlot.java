@@ -6,8 +6,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public class ElectrolyzerInputSlot extends VEInsertSlot {
     public Level world;
-    public ElectrolyzerInputSlot(IItemHandler itemHandler, int index, int xPos, int yPos, Level world){
-        super(itemHandler,index,xPos,yPos);
+
+    public ElectrolyzerInputSlot(IItemHandler itemHandler, int index, int xPos, int yPos, Level world) {
+        super(itemHandler, index, xPos, yPos);
         this.world = world;
     }
 }

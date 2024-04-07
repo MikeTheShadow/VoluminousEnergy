@@ -32,7 +32,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     public VELandCrop(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2,0)); // set the age of the crop to 0 by default
+        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2, 0)); // set the age of the crop to 0 by default
         setRegistryName("land_crop");
     }
 
@@ -43,8 +43,8 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Voxel shape
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context){
-        if(state.getValue(BlockStateProperties.AGE_2) == 0){
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        if (state.getValue(BlockStateProperties.AGE_2) == 0) {
             return Block.box(7.0D, 0.0D, 7.0D, 9.0D, 2.0D, 9.0D);
         }
         return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
@@ -52,17 +52,17 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Ticks
     @Override
-    public boolean isRandomlyTicking(BlockState state){
+    public boolean isRandomlyTicking(BlockState state) {
         return state.getValue(BlockStateProperties.AGE_2) < 2;
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random){
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         //VoluminousEnergy.LOGGER.debug("LAND CROP TICK RANDOMLY!");
 
         int age = state.getValue(BlockStateProperties.AGE_2);
 
-        if (age < 2 && worldIn.getRawBrightness(pos.above(), 0) > 12){ // light level may need tweaking
+        if (age < 2 && worldIn.getRawBrightness(pos.above(), 0) > 12) { // light level may need tweaking
             //VoluminousEnergy.LOGGER.debug("LAND CROP GOING TO INCREMENT AGE!");
             age++;
             worldIn.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.AGE_2, age));
@@ -71,7 +71,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Add aging property to the block state
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder){
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.AGE_2);
     }
 
@@ -89,7 +89,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
     @Override
     public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2) {
+        if (age < 2) {
             age++;
             serverWorld.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.AGE_2, age));// May need flags
         }
@@ -97,11 +97,11 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Action on use
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)){
+        if (age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)) {
             return InteractionResult.PASS;
-        } else if (age > 1){
+        } else if (age > 1) {
             popResource(world, pos, new ItemStack(Items.WHEAT_SEEDS, 1));
             world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);  // to tweak
             world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.AGE_2, 0)); // may not work

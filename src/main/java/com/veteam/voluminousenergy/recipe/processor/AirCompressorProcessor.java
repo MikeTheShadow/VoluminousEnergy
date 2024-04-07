@@ -45,7 +45,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                 airMultiplier++;
             if (Blocks.AIR == level.getBlockState(new BlockPos(x, y, z - 1)).getBlock())
                 airMultiplier++;
-            if (addAirToTank(airMultiplier,tile.getTank(0))) {
+            if (addAirToTank(airMultiplier, tile.getTank(0))) {
                 tile.consumeEnergy();
                 if (++soundTick == 19) {
                     soundTick = 0;
@@ -53,19 +53,20 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                         level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                 }
-                tile.setData("sound_tick",soundTick);
+                tile.setData("sound_tick", soundTick);
                 counter = (byte) tile.calculateCounter(20, tile.getInventory().getStackInSlot(tile.getEnergy().getUpgradeSlotId()));
                 tile.setChanged();
             }
         } else {
             --counter;
         }
-        tile.setData("counter",--counter);
+        tile.setData("counter", --counter);
     }
 
     // We don't need to validate the recipe because it doesn't have one.
     @Override
-    public void validateRecipe(VETileEntity tile) {}
+    public void validateRecipe(VETileEntity tile) {
+    }
 
     public boolean addAirToTank(int multiplier, VERelationalTank tank) {
 

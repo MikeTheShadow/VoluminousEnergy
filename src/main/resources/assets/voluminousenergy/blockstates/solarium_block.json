@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/solarium_block"}
+    "": {
+      "model": "voluminousenergy:block/solarium_block"
+    }
   }
 }

@@ -39,7 +39,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     public VEWaterCrop(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2,0)); // set the age of the crop to 0 by default
+        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.AGE_2, 0)); // set the age of the crop to 0 by default
         //setRegistryName("water_crop");
     }
 
@@ -48,19 +48,19 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
         return CODEC;
     }
 
-    public Item cropItem(){
+    public Item cropItem() {
         return null; // MUST override this to prevent NPE.
     }
 
     @Override
-    public boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos){
+    public boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos) {
         BlockPos abovePos = pos.above();
         return world.getBlockState(pos).is(Blocks.WATER) && world.getBlockState(abovePos).isAir();
     }
 
     // Voxel shape
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context){
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Vec3 vector3d = state.getOffset(worldIn, pos);
         VoxelShape voxelShape = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
         return voxelShape.move(vector3d.x, vector3d.y, vector3d.z);
@@ -74,16 +74,16 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     //Placement
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos){
-        if(state.getValue(BlockStateProperties.WATERLOGGED)){
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             //worldIn.getFluidState().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
             worldIn.getFluidTicks().hasScheduledTick(currentPos, Fluids.WATER);
         }
 
         DoubleBlockHalf doubleBlockHalf = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
-        if(facing.getAxis() != Direction.Axis.Y || doubleBlockHalf == DoubleBlockHalf.LOWER != (facing == Direction.UP)
-                || facingState.is(this) && facingState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != doubleBlockHalf){
-            if(doubleBlockHalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !state.canSurvive(worldIn, currentPos)){
+        if (facing.getAxis() != Direction.Axis.Y || doubleBlockHalf == DoubleBlockHalf.LOWER != (facing == Direction.UP)
+                || facingState.is(this) && facingState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != doubleBlockHalf) {
+            if (doubleBlockHalf == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !state.canSurvive(worldIn, currentPos)) {
                 return Blocks.AIR.defaultBlockState();
             }
             return super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos); // Excluding this super will cause neighbours to break
@@ -93,20 +93,20 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockPlaceContext context){
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
-        if(pos.getY() <255 && context.getLevel().getBlockState(pos.above()).canBeReplaced(context)){
+        if (pos.getY() < 255 && context.getLevel().getBlockState(pos.above()).canBeReplaced(context)) {
             return super.getStateForPlacement(context);
         }
         return null;
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos){
-        if(state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != DoubleBlockHalf.UPPER)
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+        if (state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != DoubleBlockHalf.UPPER)
             return state.getValue(BlockStateProperties.WATERLOGGED);
 
-        if(state.getBlock() != this) return super.canSurvive(state, worldIn, pos);
+        if (state.getBlock() != this) return super.canSurvive(state, worldIn, pos);
 
         BlockState stateBelow = worldIn.getBlockState(pos.below());
         return (stateBelow.is(this) && stateBelow.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER
@@ -114,7 +114,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     }
 
     // Item place to block
-    public void place(LevelAccessor world, BlockPos pos, int flags){
+    public void place(LevelAccessor world, BlockPos pos, int flags) {
         // Create bottom half/roots in the water
         world.setBlock(pos.below(), this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER).setValue(BlockStateProperties.WATERLOGGED, true).setValue(BlockStateProperties.AGE_2, 0), flags);
 
@@ -124,16 +124,16 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     // Ticks
     @Override
-    public boolean isRandomlyTicking(BlockState state){
+    public boolean isRandomlyTicking(BlockState state) {
         return state.getValue(BlockStateProperties.AGE_2) < 2;
     }
 
     // On a random tick, increment the age of the crop to the next state
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random){
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         int age = state.getValue(BlockStateProperties.AGE_2);
 
-        if (age < 2 && worldIn.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock() && worldIn.getRawBrightness(pos.above(), 0) > 12){ // light level may need tweaking
+        if (age < 2 && worldIn.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock() && worldIn.getRawBrightness(pos.above(), 0) > 12) { // light level may need tweaking
             age++;
             // Perform on bottom half
             worldIn.setBlock(pos.below(), this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER).setValue(BlockStateProperties.WATERLOGGED, true).setValue(BlockStateProperties.AGE_2, age), 18);
@@ -146,7 +146,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     // Add properties to the block state
     // this includes aging, half block, and waterlogged status
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder){
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.AGE_2);
         builder.add(BlockStateProperties.DOUBLE_BLOCK_HALF);
         builder.add(BlockStateProperties.WATERLOGGED);
@@ -154,8 +154,8 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     // The bottom needs to have water as it's fluidstate for the water to retain. Otherwise, it'll be converted to air
     // Additionally, upper half needs to NOT return water or else a new water source block will be generated. Which we don't want.
-    public FluidState getFluidState(BlockState state){
-        if(state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER)
+    public FluidState getFluidState(BlockState state) {
+        if (state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER)
             return Fluids.WATER.getSource(false);
         return super.getFluidState(state);
     }
@@ -173,7 +173,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
     @Override
     public void performBonemeal(ServerLevel serverWorld, RandomSource random, BlockPos pos, BlockState state) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2 && serverWorld.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
+        if (age < 2 && serverWorld.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             age++;
             // Perform on bottom half
             serverWorld.setBlock(pos.below(), this.defaultBlockState().setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER).setValue(BlockStateProperties.WATERLOGGED, true).setValue(BlockStateProperties.AGE_2, age), 18);
@@ -185,11 +185,11 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     // Action on use
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit){
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if(age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)){
+        if (age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)) {
             return InteractionResult.PASS;
-        } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()){ // Make sure the player isn't targetting the bottom
+        } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             popResource(world, pos, new ItemStack(cropItem(), 1));
             world.playSound(null, pos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);  // to tweak
 

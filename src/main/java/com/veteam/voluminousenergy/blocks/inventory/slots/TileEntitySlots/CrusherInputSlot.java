@@ -6,8 +6,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public class CrusherInputSlot extends VEInsertSlot {
     public Level world;
-    public CrusherInputSlot(IItemHandler itemHandler, int index, int xPos, int yPos, Level world){
-        super(itemHandler,index,xPos,yPos);
+
+    public CrusherInputSlot(IItemHandler itemHandler, int index, int xPos, int yPos, Level world) {
+        super(itemHandler, index, xPos, yPos);
         this.world = world;
     }
 }

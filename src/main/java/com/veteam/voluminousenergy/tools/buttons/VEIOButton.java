@@ -11,7 +11,7 @@ public class VEIOButton extends Button {
         super(x, y, width, height, title, pressedAction, DEFAULT_NARRATION);
     }
 
-    public void toggleRender(boolean bool){
+    public void toggleRender(boolean bool) {
         render = bool;
     }
 }

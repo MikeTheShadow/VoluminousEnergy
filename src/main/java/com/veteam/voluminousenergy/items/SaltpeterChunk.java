@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.items;
 import net.minecraft.world.item.Item;
 
 public class SaltpeterChunk extends VEItem {
-    public SaltpeterChunk (){
+    public SaltpeterChunk() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

@@ -13,38 +13,38 @@ public class BatteryBoxSlotPairPacket {
     private boolean status;
     private int id;
 
-    public BatteryBoxSlotPairPacket(){
+    public BatteryBoxSlotPairPacket() {
         // Do nothing
     }
 
-    public BatteryBoxSlotPairPacket(boolean status, int id){
+    public BatteryBoxSlotPairPacket(boolean status, int id) {
         this.status = status;
         this.id = id;
     }
 
-    public static BatteryBoxSlotPairPacket fromBytes(FriendlyByteBuf buffer){
+    public static BatteryBoxSlotPairPacket fromBytes(FriendlyByteBuf buffer) {
         BatteryBoxSlotPairPacket packet = new BatteryBoxSlotPairPacket();
         packet.status = buffer.readBoolean();
         packet.id = buffer.readInt();
         return packet;
     }
 
-    public void toBytes(FriendlyByteBuf buffer){
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeBoolean(this.status);
         buffer.writeInt(this.id);
     }
 
-    public static void handle(BatteryBoxSlotPairPacket packet, CustomPayloadEvent.Context contextSupplier){
+    public static void handle(BatteryBoxSlotPairPacket packet, CustomPayloadEvent.Context contextSupplier) {
         NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection){
+        switch (packetDirection) {
             case PLAY_TO_CLIENT: // Packet is being sent to client
                 AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,clientContainer,false));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
                 contextSupplier.setPacketHandled(true);
                 break;
             default:
                 AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet,serverContainer,true));
+                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
                 contextSupplier.setPacketHandled(true);
         }
     }

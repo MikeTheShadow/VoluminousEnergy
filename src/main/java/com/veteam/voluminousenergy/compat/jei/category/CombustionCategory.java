@@ -2,11 +2,8 @@ package com.veteam.voluminousenergy.compat.jei.category;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
@@ -20,7 +17,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRecipe> {
 
@@ -40,7 +35,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     private final IDrawable slotDrawable;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.COMBUSTING_UID, CombustionGeneratorRecipe.class);
 
-    public CombustionCategory(IGuiHelper guiHelper){
+    public CombustionCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
@@ -49,7 +44,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -69,7 +64,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
     }
 
     @Override
-    public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY){
+    public void draw(CombustionGeneratorRecipe recipe, IRecipeSlotsView slotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
 //
 //        // Volumetric Energy label
 //        TextUtil.renderShadowedText(

@@ -14,7 +14,7 @@ public class EighzoTankScreen extends TankScreen {
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
-        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("eighzo_tank"),  8, 6, WHITE_TEXT_STYLE);
+        TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("eighzo_tank"), 8, 6, WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
     }
 }

@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class CarbonPlate extends VEItem {
-    public CarbonPlate (){
+    public CarbonPlate() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

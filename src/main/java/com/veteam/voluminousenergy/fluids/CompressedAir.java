@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class CompressedAir {
-    public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/compressed_air_still");
-    public static final ResourceLocation COMPRESSED_AIR_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/compressed_air_flowing");
+    public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/compressed_air_still");
+    public static final ResourceLocation COMPRESSED_AIR_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/compressed_air_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,17 +27,17 @@ public class CompressedAir {
     public static VEFlowingFluidBlock COMPRESSED_AIR_BLOCK;
     public static Item COMPRESSED_AIR_BUCKET;
 
-    public static FlowingFluid CompressedAirFluid(){
+    public static FlowingFluid CompressedAirFluid() {
         COMPRESSED_AIR = new ForgeFlowingFluid.Source(CompressedAir.properties);
         return COMPRESSED_AIR;
     }
 
-    public static FlowingFluid FlowingCompressedAirFluid(){
+    public static FlowingFluid FlowingCompressedAirFluid() {
         FLOWING_COMPRESSED_AIR = new ForgeFlowingFluid.Flowing(CompressedAir.properties);
         return FLOWING_COMPRESSED_AIR;
     }
 
-    public static VEFlowingFluidBlock FlowingCompressedAirBlock(){
+    public static VEFlowingFluidBlock FlowingCompressedAirBlock() {
         COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(() -> COMPRESSED_AIR, stdProp);
         return COMPRESSED_AIR_BLOCK;
     }

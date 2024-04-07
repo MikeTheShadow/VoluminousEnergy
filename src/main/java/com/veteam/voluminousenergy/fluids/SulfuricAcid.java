@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class SulfuricAcid {
-    public static final ResourceLocation SULFURIC_ACID_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/sulfuric_acid_still");
-    public static final ResourceLocation SULFURIC_ACID_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/sulfuric_acid_flowing");
+    public static final ResourceLocation SULFURIC_ACID_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_still");
+    public static final ResourceLocation SULFURIC_ACID_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class SulfuricAcid {
     public static AcidFlowingFluidBlock SULFURIC_ACID_BLOCK;
     public static Item SULFURIC_ACID_BUCKET;
 
-    public static FlowingFluid SulfuricAcidFluid(){
+    public static FlowingFluid SulfuricAcidFluid() {
         SULFURIC_ACID = new ForgeFlowingFluid.Source(SulfuricAcid.properties);
         return SULFURIC_ACID;
     }
 
-    public static FlowingFluid FlowingSulfuricAcidFluid(){
+    public static FlowingFluid FlowingSulfuricAcidFluid() {
         FLOWING_SULFURIC_ACID = new ForgeFlowingFluid.Flowing(SulfuricAcid.properties);
         return FLOWING_SULFURIC_ACID;
     }
 
-    public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock(){
+    public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock() {
         SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(() -> SULFURIC_ACID, stdProp);
         return SULFURIC_ACID_BLOCK;
     }
 
-    public static Item SulfuricAcidBucket(){
+    public static Item SulfuricAcidBucket() {
         SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return SULFURIC_ACID_BUCKET;
     }

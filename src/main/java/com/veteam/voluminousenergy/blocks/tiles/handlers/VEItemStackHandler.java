@@ -1,6 +1,6 @@
-package com.veteam.voluminousenergy.blocks.tiles;
+package com.veteam.voluminousenergy.blocks.tiles.handlers;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -20,17 +20,22 @@ public class VEItemStackHandler extends ItemStackHandler {
 
     private final VETileEntity tileEntity;
     private final int upgradeSlotLocation;
+    private AbstractItemStackValidator validator;
 
-    public VEItemStackHandler(VETileEntity tileEntity,int slots) {
+    public VEItemStackHandler(VETileEntity tileEntity, int slots) {
         super(slots);
         this.tileEntity = tileEntity;
         upgradeSlotLocation = -1;
     }
 
-    public VEItemStackHandler(VETileEntity tileEntity,int slots,int upgradeSlotLocation) {
+    public VEItemStackHandler(VETileEntity tileEntity, int slots, int upgradeSlotLocation) {
         super(slots);
         this.tileEntity = tileEntity;
         this.upgradeSlotLocation = upgradeSlotLocation;
+    }
+
+    public void setValidator(AbstractItemStackValidator validator) {
+        this.validator = validator;
     }
 
     @Override
@@ -38,7 +43,7 @@ public class VEItemStackHandler extends ItemStackHandler {
         tileEntity.setChanged();
         List<VESlotManager> managers = tileEntity.getSlotManagers();
 
-        if(slot == upgradeSlotLocation) tileEntity.markRecipeDirty();
+        if (slot == upgradeSlotLocation) tileEntity.markRecipeDirty();
         else if (slot < managers.size()) {
             SlotType slotType = tileEntity.getSlotManagers().get(slot).getSlotType();
             if (slotType == SlotType.INPUT) {
@@ -51,12 +56,16 @@ public class VEItemStackHandler extends ItemStackHandler {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        // For simple custom validation.
+        if (validator != null) {
+            return validator.isItemValid(slot, stack);
+        }
         if (slot == upgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
             if (bucketItem.getFluid() == Fluids.EMPTY) return true;
             VERelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
-            if(tank.getTankType() == TankType.OUTPUT) {
+            if (tank.getTankType() == TankType.OUTPUT) {
                 return bucketItem.getFluid().isSame(Fluids.EMPTY);
             }
             for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
@@ -66,7 +75,7 @@ public class VEItemStackHandler extends ItemStackHandler {
             }
         } else if (manager.getSlotType() == SlotType.INPUT || manager.getSlotType() == SlotType.OUTPUT) {
             for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
-                if(recipe.getParser().canInsertItem(slot,stack)) {
+                if (recipe.getParser().canInsertItem(slot, stack)) {
                     return true;
                 }
             }

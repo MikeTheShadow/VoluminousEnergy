@@ -20,7 +20,7 @@ public class ioMenuButton extends Button {
     private final int x;
     private final int y;
 
-    public ioMenuButton(int x, int y, OnPress onPress){
+    public ioMenuButton(int x, int y, OnPress onPress) {
         super(x, y, 20, 18, Component.nullToEmpty(""), button -> {
             ((ioMenuButton) button).cycleMode();
             onPress.onPress(button);
@@ -31,28 +31,28 @@ public class ioMenuButton extends Button {
         this.height = 18;
     }
 
-    private void cycleMode(){
+    private void cycleMode() {
         cycled = !cycled;
     }
 
     @Override
-    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3){
+    public void renderWidget(GuiGraphics matrixStack, int p_renderButton1, int p_renderButton2, float p_renderButton3) {
         RenderSystem.setShaderTexture(0, texture);
 
-        if(!isHovered){
+        if (!isHovered) {
             matrixStack.blit(texture, this.x, this.y, 193, 0, this.width, this.height);
         } else {
             matrixStack.blit(texture, this.x, this.y, 193, 19, this.width, this.height);
         }
-        TextUtil.renderShadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), (this.x)+5,(this.y)+5, Style.EMPTY.withColor(0xffffff));
+        TextUtil.renderShadowedText(matrixStack, getInstance().font, Component.nullToEmpty("IO"), (this.x) + 5, (this.y) + 5, Style.EMPTY.withColor(0xffffff));
     }
 
     @Override
-    public void onPress(){
+    public void onPress() {
         cycleMode();
     }
 
-    public boolean shouldIOBeOpen(){
+    public boolean shouldIOBeOpen() {
         return cycled;
     }
 }

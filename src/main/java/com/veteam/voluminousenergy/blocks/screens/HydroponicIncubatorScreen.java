@@ -24,24 +24,24 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
-    public HydroponicIncubatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn){
-        super(screenContainer,inv,titleIn);
+    public HydroponicIncubatorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
+        super(screenContainer, inv, titleIn);
         tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks){
+    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
-        super.render(matrixStack,mouseX,mouseY,partialTicks);
-        this.renderTooltip(matrixStack,mouseX,mouseY);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void init(){
+    protected void init() {
         super.init();
 
-        renderIOMenu(this.tileEntity,64 + (this.width/2), this.topPos + 4);
+        renderIOMenu(this.tileEntity, 64 + (this.width / 2), this.topPos + 4);
     }
 
     @Override
@@ -68,19 +68,19 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
 
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
-        if (isHovering(11, 16, 12, 49, mouseX, mouseY)){
-                matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.HYDROPONIC_INCUBATOR_MAX_POWER.get()), mouseX, mouseY);
+        if (isHovering(11, 16, 12, 49, mouseX, mouseY)) {
+            matrixStack.renderTooltip(this.font, TextUtil.powerBarTooltip(tileEntity.getEnergy(), Config.HYDROPONIC_INCUBATOR_MAX_POWER.get()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, this.getTooltips(), mouseX, mouseY);
         }
 
-        if (isHovering(61, 18, 12, 50, mouseX, mouseY)){ // Input Tank
+        if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
-        super.renderTooltip(matrixStack,mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public Rect2i getTooltipArea() {
@@ -94,14 +94,14 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics matrixStack,float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, this.GUI);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(GUI,i, j, 0, 0, this.imageWidth, this.imageHeight);
-        if(tileEntity != null){
+        matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        if (tileEntity != null) {
             int progress = tileEntity.progressProcessingCounterPX(9);
             int power = menu.powerScreen(49);
 
@@ -113,18 +113,19 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
                 p_blit_5_ = width of the x for the blit to be drawn (make variable for progress illusion on the x)
                 p_blit_6_ = width of the y for the blit to be drawn (make variable for progress illusion of the y)
              */
-            matrixStack.blit(GUI,i+109, j+32, 176, 0, progress, 17);
-            matrixStack.blit(GUI,i + 11, j + (16 + (49-power)), 176, 24 + (49-power), 12, power);
+            matrixStack.blit(GUI, i + 109, j + 32, 176, 0, progress, 17);
+            matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
-            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(0),tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
+            VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
-            try{
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(),tileEntity.getFluidStackFromTank(1),tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
-            } catch (Exception e){ }
+            try {
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(1), tileEntity.getTankCapacity(), i + 157, j + 18, 0, 12, 50);
+            } catch (Exception e) {
+            }
             drawIOSideHelper();
             // Upgrade tilePos
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
-            matrixStack.blit(GUI_TOOLS,i+153, j-16,0,0,18,18);
+            matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
         }
 
     }

@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class QuartzDust extends VEItem {
-    public QuartzDust (){
+    public QuartzDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

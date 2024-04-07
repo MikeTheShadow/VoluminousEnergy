@@ -33,8 +33,8 @@ public class RecipeFluid {
      */
     public boolean isDifferent(FluidStack fluidStack) {
 
-        if(this.fluid == null) {
-            if(fluidStack == null) return false;
+        if (this.fluid == null) {
+            if (fluidStack == null) return false;
             this.fluid = fluidStack.getFluid();
             this.amount = fluidStack.getAmount();
             return true;

@@ -5,9 +5,9 @@ import net.minecraft.world.item.Item;
 
 public class IronGear extends VEItem {
     public IronGear() {
-    super(new Item.Properties()
-        .stacksTo(64)
-    );
-    setRegistryName("irongear");
+        super(new Item.Properties()
+                .stacksTo(64)
+        );
+        setRegistryName("irongear");
     }
 }

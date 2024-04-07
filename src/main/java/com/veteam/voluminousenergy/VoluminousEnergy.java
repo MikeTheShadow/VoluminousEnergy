@@ -73,6 +73,7 @@ public class VoluminousEnergy {
         VoluminousEnergy voluminousEnergy = new VoluminousEnergy();
         voluminousEnergy.init();
     }
+
     public void init() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
@@ -128,7 +129,7 @@ public class VoluminousEnergy {
         getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT,Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
         modEventBus.addListener(this::registerRenderers); // Register renderer for Dimensional Laser
 
@@ -137,10 +138,9 @@ public class VoluminousEnergy {
 
     private static Path getOrCreateDirectory(Path dirPath, String dirLabel) { // Extracted from Forge 45
         if (!Files.isDirectory(dirPath.getParent())) {
-            getOrCreateDirectory(dirPath.getParent(), "parent of "+dirLabel);
+            getOrCreateDirectory(dirPath.getParent(), "parent of " + dirLabel);
         }
-        if (!Files.isDirectory(dirPath))
-        {
+        if (!Files.isDirectory(dirPath)) {
             LOGGER.debug("Making {} directory : {}", dirLabel, dirPath);
             try {
                 Files.createDirectory(dirPath);
@@ -181,7 +181,7 @@ public class VoluminousEnergy {
         event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER_TILE.get(), LaserBlockEntityRenderer::new);
     }
 
-    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event){
+    private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event) {
     }
 
     public static MinecraftServer server;
@@ -198,7 +198,7 @@ public class VoluminousEnergy {
     public static class ClientRegister {
 
         @SubscribeEvent
-        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event){
+        public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL_BLOCK.get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
@@ -210,12 +210,12 @@ public class VoluminousEnergy {
     public static class OnDatagenEvent {
 
         @SubscribeEvent
-        public static void onGatherData(GatherDataEvent event){
+        public static void onGatherData(GatherDataEvent event) {
             DataGenerator dataGenerator = event.getGenerator();
             PackOutput packOutput = dataGenerator.getPackOutput();
             CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-            if(event.includeServer()) {
+            if (event.includeServer()) {
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
                 dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput()));
             }

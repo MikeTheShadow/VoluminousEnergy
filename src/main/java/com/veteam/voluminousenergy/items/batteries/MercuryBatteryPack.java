@@ -7,7 +7,7 @@ public class MercuryBatteryPack extends VEEnergyItem {
 
     public MercuryBatteryPack() {
         super(new Properties()
-                .stacksTo(1),
+                        .stacksTo(1),
                 MAX_ENERGY,
                 MAX_TX
         );

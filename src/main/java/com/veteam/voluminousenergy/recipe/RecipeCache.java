@@ -19,7 +19,7 @@ public class RecipeCache {
             boolean isValid = true;
 
             for (int i = 0; i < fluids.size(); i++) {
-                if(recipe.getFluidIngredient(i).isEmpty()) continue;
+                if (recipe.getFluidIngredient(i).isEmpty()) continue;
                 if (!recipe.getFluidIngredient(i).test(fluids.get(i))
                         || fluids.get(i).getAmount() < recipe.getFluidIngredientAmount(i)) {
                     isValid = false;

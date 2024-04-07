@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.AbstractItemStackValidator;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -16,6 +18,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +36,10 @@ public class VETileEntityFactory {
     private final RegistryObject<BlockEntityType<VETileEntity>> tileRegistry;
     private final VEContainerFactory containerFactory;
     private VEEnergyStorage storage;
+    private boolean infiniteRender = false;
+    private AbstractItemStackValidator validator = null;
 
-    private final HashMap<String,Integer> dataMap = new HashMap<>();
+    private final HashMap<String, Integer> dataMap = new HashMap<>();
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
@@ -54,7 +60,25 @@ public class VETileEntityFactory {
                 this.markRecipeDirty();
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
+
+            @Override
+            public AABB getRenderBoundingBox() {
+                if (infiniteRender) {
+                    return INFINITE_EXTENT_AABB;
+                } else {
+                    AABB cbb = null;
+                    try {
+                        VoxelShape collisionShape = state.getCollisionShape(this.getLevel(), pos);
+                        if (!collisionShape.isEmpty())
+                            cbb = collisionShape.bounds().move(pos);
+                    } catch (Exception e) {
+                        cbb = AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
+                    }
+                    return cbb;
+                }
+            }
         };
+
         // Add our tanks and slots
         AtomicInteger index = new AtomicInteger();
         newTile.addSlots(containerFactory.getTileSlotsAsManagers());
@@ -64,7 +88,8 @@ public class VETileEntityFactory {
         newTile.dataMap.putAll(dataMap);
 
         // Set energy before the tilePos count otherwise we'll run into issues with the data tilePos
-        newTile.energy = storage.copy();
+        if (storage != null)
+            newTile.energy = storage.copy();
 
         //set processor
         newTile.recipeProcessor = processor;
@@ -74,8 +99,14 @@ public class VETileEntityFactory {
 
         // build out the inventory
         int inventorySize = containerFactory.getNumberOfSlots();
-        storage.setUpgradeSlotId(containerFactory.upgradeSlotId());
-        newTile.inventory = new VEItemStackHandler(newTile,inventorySize,storage.getUpgradeSlotId());
+        if (storage == null) {
+            newTile.inventory = new VEItemStackHandler(newTile, inventorySize, -1);
+        } else {
+            storage.setUpgradeSlotId(containerFactory.upgradeSlotId());
+            newTile.inventory = new VEItemStackHandler(newTile, inventorySize, storage.getUpgradeSlotId());
+        }
+
+        newTile.inventory.setValidator(validator);
 
         return newTile;
     }
@@ -97,43 +128,34 @@ public class VETileEntityFactory {
         return this;
     }
 
-    public VETileEntityFactory addUpgradeSlot(int upgradeSlotId) {
-
-        if (storage == null)
-            throw new IllegalStateException("Attempted to add upgrade tilePos without first adding energy storage!");
-
-        storage.setUpgradeSlotId(upgradeSlotId);
-        return this;
-    }
-
     public VETileEntityFactory countable() {
-        this.dataMap.put("counter",0);
-        this.dataMap.put("length",0);
+        this.dataMap.put("counter", 0);
+        this.dataMap.put("length", 0);
         return this;
     }
 
     public VETileEntityFactory isMultiBlock() {
-        this.dataMap.put("multiblock_complete",0);
+        this.dataMap.put("multiblock_complete", 0);
         return this;
     }
 
     public VETileEntityFactory withDataFlag(String flag) {
-        this.dataMap.put(flag,0);
+        this.dataMap.put(flag, 0);
         return this;
     }
 
     public VETileEntityFactory includeSoundTick() {
-        this.dataMap.put("sound_tick",0);
+        this.dataMap.put("sound_tick", 0);
         return this;
     }
 
-    public VETileEntityFactory withTanks(TileTank... tanks) {
+    public VETileEntityFactory addTanks(TileTank... tanks) {
         this.tanks = List.of(tanks);
         return this;
     }
 
     public VETileEntityFactory makesSound() {
-        this.dataMap.put("sound_tick",0);
+        this.dataMap.put("sound_tick", 0);
         return this;
     }
 
@@ -144,6 +166,16 @@ public class VETileEntityFactory {
 
     public VETileEntityFactory sendsOutPower() {
         this.sendsOutPower = true;
+        return this;
+    }
+
+    public VETileEntityFactory withInfiniteRender() {
+        infiniteRender = true;
+        return this;
+    }
+
+    public VETileEntityFactory withCustomInventoryValidator(AbstractItemStackValidator validator) {
+        this.validator = validator;
         return this;
     }
 
@@ -168,7 +200,7 @@ public class VETileEntityFactory {
         }
     }
 
-    public record BucketInputSlot(Direction direction,int tankId) implements TileSlot {
+    public record BucketInputSlot(Direction direction, int tankId) implements TileSlot {
         @Override
         public VESlotManager asManager(int id) {
             return new VESlotManager(id, direction, true, SlotType.FLUID_INPUT, id + 1, tankId);

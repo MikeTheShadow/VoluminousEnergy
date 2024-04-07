@@ -10,7 +10,7 @@ public class VEBucketSlot extends VEInsertSlot {
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack){
+    public boolean mayPlace(ItemStack stack) {
         return stack.getItem() instanceof BucketItem;
     }
 }

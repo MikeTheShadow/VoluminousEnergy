@@ -9,6 +9,6 @@ import net.minecraft.world.level.Level;
 public class TitaniumTankContainer extends TankContainer {
 
     public TitaniumTankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(id, world, pos, inventory, player, VEBlocks.TITANIUM_TANK_CONTAINER.get(),VEBlocks.TITANIUM_TANK_BLOCK.get());
+        super(id, world, pos, inventory, player, VEBlocks.TITANIUM_TANK_CONTAINER.get(), VEBlocks.TITANIUM_TANK_BLOCK.get());
     }
 }

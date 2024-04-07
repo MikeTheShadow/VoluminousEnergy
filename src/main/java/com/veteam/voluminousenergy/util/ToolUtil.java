@@ -8,8 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class ToolUtil {
-    
-    public static void SolariumTooltipAppend(ItemStack stack, List<Component> tooltip){
+
+    public static void SolariumTooltipAppend(ItemStack stack, List<Component> tooltip) {
         int bonus = 0;
         CompoundTag tag = stack.getTag();
 
@@ -25,5 +25,5 @@ public class ToolUtil {
         Component textComponent = Component.nullToEmpty(translatedString + ": " + bonus);
         tooltip.add(textComponent);
     }
-    
+
 }

@@ -27,8 +27,8 @@ public class TextUtil {
     public static Component TRANSLATED_OUTPUT_TANK = TextUtil.translateString("tank.voluminousenergy.output_tank");
     public static Component TRANSLATED_BOTH_TANK = TextUtil.translateString("tank.voluminousenergy.both_tank");
 
-    public static Component tankTooltip(String fluidName, int amount, int tankCapacity){
-        if (Config.SHORTEN_TANK_GUI_VALUES.get()){
+    public static Component tankTooltip(String fluidName, int amount, int tankCapacity) {
+        if (Config.SHORTEN_TANK_GUI_VALUES.get()) {
             return TextUtil.translateString(fluidName).copy().append(": " + NumberUtil.numberToString4Fluids(amount) + " / " + NumberUtil.numberToString4Fluids(tankCapacity));
         }
         String stringAmount = String.valueOf(amount);
@@ -45,7 +45,7 @@ public class TextUtil {
         return Component.translatable(fluidName).append(Component.nullToEmpty(": " + stringAmount + " mB / " + stringTankCapacity + " mB"));
     }
 
-    public static Component powerBarTooltip(VEEnergyStorage veEnergyStorage, int configuredMaxPower){
+    public static Component powerBarTooltip(VEEnergyStorage veEnergyStorage, int configuredMaxPower) {
         return Config.SHORTEN_POWER_BAR_VALUES.get() ?
                 Component.nullToEmpty(
                         NumberUtil.numberToString4FE(veEnergyStorage.getEnergyStored())
@@ -59,41 +59,53 @@ public class TextUtil {
                 );
     }
 
-    public static Component slotName(String slotName){
+    public static Component slotName(String slotName) {
         return Component.translatable(slotName);
     }
 
-    public static Component translateDirection(Direction direction){
+    public static Component translateDirection(Direction direction) {
         //return new TranslatableComponent("direction.voluminousenergy." + direction.name().toLowerCase());
         return Component.translatable("direction.voluminousenergy." + directionToLocalDirection(direction));
     }
 
     public static String directionToLocalDirection(Direction direction) {
         switch (direction) {
-            case UP -> {return "up";}
-            case DOWN -> {return "down";}
-            case NORTH -> {return "back";}
-            case EAST -> {return "right";}
-            case SOUTH -> {return "front";}
-            default -> {return "left";}
+            case UP -> {
+                return "up";
+            }
+            case DOWN -> {
+                return "down";
+            }
+            case NORTH -> {
+                return "back";
+            }
+            case EAST -> {
+                return "right";
+            }
+            case SOUTH -> {
+                return "front";
+            }
+            default -> {
+                return "left";
+            }
         }
     }
 
-    public static Component slotNameWithDirection(String slotName, Direction direction, int ordinal){
+    public static Component slotNameWithDirection(String slotName, Direction direction, int ordinal) {
         Component translatedSlot = slotName(slotName);
         Component translatedDirection = translateDirection(direction);
-        return Component.nullToEmpty(translatedSlot.getString() + " " + ordinal + " " +translatedDirection.getString());
+        return Component.nullToEmpty(translatedSlot.getString() + " " + ordinal + " " + translatedDirection.getString());
     }
 
-    public static Component translateString(String toTranslate){
+    public static Component translateString(String toTranslate) {
         return Component.translatable(toTranslate);
     }
 
-    public static Component translateString(ChatFormatting chatFormatting, String toTranslate){
+    public static Component translateString(ChatFormatting chatFormatting, String toTranslate) {
         return translateString(toTranslate).copy().withStyle(chatFormatting);
     }
 
-    public static Component translateVEBlock(String block){
+    public static Component translateVEBlock(String block) {
         return Component.translatable("block.voluminousenergy." + block);
     }
 
@@ -118,7 +130,7 @@ public class TextUtil {
                     + translateString
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
-                    + NumberUtil.numberToString4Fluids(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
+                    + NumberUtil.numberToString4Fluids(((float) amount / (float) Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
                     + "/t"
             );
         } else {
@@ -127,7 +139,7 @@ public class TextUtil {
                     + translateString
                     + ": "
                     + ChatFormatting.LIGHT_PURPLE
-                    + NumberUtil.formatNumber(((float)amount / (float)Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
+                    + NumberUtil.formatNumber(((float) amount / (float) Config.DIMENSIONAL_LASER_PROCESS_TIME.get()))
                     + " mB/t"
             );
         }
@@ -138,10 +150,10 @@ public class TextUtil {
     }
 
     public static void renderShadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
-        veRenderGuiText(graphics, font, component,  x, y, styleOptional, true);
+        veRenderGuiText(graphics, font, component, x, y, styleOptional, true);
     }
 
-    public static void renderShadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional){
+    public static void renderShadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional) {
         renderShadowedText(graphics, font, Component.nullToEmpty(string), x, y, styleOptional);
     }
 
@@ -155,15 +167,15 @@ public class TextUtil {
     }
 
     public static void renderUnshadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
-        veRenderGuiText(graphics, font, component,  x, y, styleOptional, false);
+        veRenderGuiText(graphics, font, component, x, y, styleOptional, false);
     }
 
-    public static void renderUnshadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional){
+    public static void renderUnshadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional) {
         renderUnshadowedText(graphics, font, Component.nullToEmpty(string), x, y, styleOptional);
     }
 
     public static void renderCenteredUnshadowedText(GuiGraphics graphics, Font font, Component component, int x, int y, @Nullable Style styleOptional) {
-        renderUnshadowedText(graphics, font, component,  x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
+        renderUnshadowedText(graphics, font, component, x - font.width(component.getVisualOrderText()) / 2, y, styleOptional);
     }
 
     public static void renderCenteredUnshadowedText(GuiGraphics graphics, Font font, String string, int x, int y, @Nullable Style styleOptional) {

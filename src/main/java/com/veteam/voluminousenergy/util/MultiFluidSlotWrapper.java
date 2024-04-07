@@ -50,7 +50,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
         VERelationalTank relationalTank = tankHashMap.get(tank);
-        if(relationalTank.isAllowAny()) return true;
+        if (relationalTank.isAllowAny()) return true;
         for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
             if (recipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
                 return true;
@@ -62,11 +62,11 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        for(VERelationalTank tank : tanks) {
-            if(tank.getTankType() == TankType.OUTPUT) continue;
+        for (VERelationalTank tank : tanks) {
+            if (tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
-                if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) return 0;
-                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
+                if (!tank.getSideStatus() && !(tileEntity instanceof TankTile)) return 0;
+                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
         }
@@ -79,13 +79,13 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         if (resource.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        for(VERelationalTank tank : tanks) {
-            if(!tank.getSideStatus() && !tank.isIgnoreDirection()) continue;
-            if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
+        for (VERelationalTank tank : tanks) {
+            if (!tank.getSideStatus() && !tank.isIgnoreDirection()) continue;
+            if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
             }
             if (resource.isFluidEqual(tank.getTank().getFluid())) {
-                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
+                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
             }
         }
@@ -95,13 +95,13 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
-        for(VERelationalTank tank : tanks) {
-            if(!tank.getSideStatus() && !(tileEntity instanceof TankTile)) continue;
-            if(!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
-                if(tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
+        for (VERelationalTank tank : tanks) {
+            if (!tank.getSideStatus() && !(tileEntity instanceof TankTile)) continue;
+            if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
+                if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
             }
             if (tank.getTank().getFluidAmount() > 0) {
-                if(tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
+                if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(maxDrain, action);
             }
         }
@@ -109,9 +109,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     }
 
     public void addRelationalTank(VERelationalTank tank) {
-        tankHashMap.put(tank.getSlotNum(),tank);
+        tankHashMap.put(tank.getSlotNum(), tank);
         tanks.add(tank);
     }
+
     public void removeRelationalTank(VERelationalTank tank) {
         tankHashMap.remove(tank.getSlotNum());
         tanks.remove(tank);

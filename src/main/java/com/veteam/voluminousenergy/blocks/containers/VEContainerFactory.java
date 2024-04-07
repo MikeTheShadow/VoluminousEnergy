@@ -44,24 +44,24 @@ public class VEContainerFactory {
 
                 int energySlotId = -1;
 
-                if( this.tileEntity.getEnergy() != null) {
+                if (this.tileEntity.getEnergy() != null) {
                     energySlotId = this.tileEntity.getEnergy().getUpgradeSlotId();
                 }
 
-                for(int i = 0; i < slots.size(); i++) {
-                    if(i == energySlotId) {
+                for (int i = 0; i < slots.size(); i++) {
+                    if (i == energySlotId) {
                         Slot slot = slots.get(i);
-                        addSlot(new VESlot(h, slot.index, slot.x, slot.y,true));
+                        addSlot(new VESlot(h, slot.index, slot.x, slot.y, true));
                         continue;
                     }
-                    if(i >= this.tileEntity.getSlotManagers().size()) {
+                    if (i == this.tileEntity.getSlotManagers().size()) {
                         VoluminousEnergy.LOGGER.error("Unable to properly create " + menuTypeRegistryObject.getId() + ". The VEContainerFactory tried to process more slots than were available.");
-                        continue;
+                        break;
                     }
                     SlotType slotType = this.tileEntity.getSlotManagers().get(i).getSlotType();
                     boolean isOutput = slotType == SlotType.FLUID_OUTPUT || slotType == SlotType.OUTPUT;
                     Slot slot = slots.get(i);
-                    addSlot(new VESlot(h, slot.index, slot.x, slot.y,!isOutput));
+                    addSlot(new VESlot(h, slot.index, slot.x, slot.y, !isOutput));
                 }
             }
         };
@@ -85,19 +85,13 @@ public class VEContainerFactory {
 
         private int index = 0;
 
-        @Deprecated
-        public VEContainerFactoryBuilder addSlot(int x, int y) {
-            this.factory.slots.add(new Slot(index++, x, y));
-            return this;
-        }
-
         public VEContainerFactoryBuilder addUpgradeSlot(int x, int y) {
             this.factory.slots.add(new Slot(index, x, y));
             this.factory.upgradeSlotId = index++;
             return this;
         }
 
-        public VEContainerFactoryBuilder addSlot(int x, int y,TileSlot slot) {
+        public VEContainerFactoryBuilder addSlot(int x, int y, TileSlot slot) {
             this.factory.slots.add(new Slot(index++, x, y));
             this.factory.tileSlots.add(slot);
             return this;
@@ -118,7 +112,7 @@ public class VEContainerFactory {
         private final int index;
         private final boolean allowInsertion;
 
-        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos,boolean allowInsertion) {
+        public VESlot(IItemHandler itemHandler, int index, int xPos, int yPos, boolean allowInsertion) {
             super(itemHandler, index, xPos, yPos);
             this.handler = itemHandler;
             this.index = index;

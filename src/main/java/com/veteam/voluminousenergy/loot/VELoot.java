@@ -22,7 +22,8 @@ public class VELoot {
     public static RegistryObject<Codec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
             "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
 
-    private VELoot() {}
+    private VELoot() {
+    }
 
     public static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
             BuiltInLootTables.BASTION_BRIDGE,

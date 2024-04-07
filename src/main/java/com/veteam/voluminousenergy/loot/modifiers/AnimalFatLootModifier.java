@@ -64,23 +64,23 @@ public class AnimalFatLootModifier extends LootModifier {
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec(){
+    public Codec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 
-    public int getMinAmount(){
+    public int getMinAmount() {
         return this.minAmount;
     }
 
-    public int getMaxAmount(){
+    public int getMaxAmount() {
         return this.maxAmount;
     }
 
-    public ItemStack getItemStackAddition(){
+    public ItemStack getItemStackAddition() {
         return this.itemAddition;
     }
 
-    public LootItemCondition[] getLootItemConditions(){
+    public LootItemCondition[] getLootItemConditions() {
         return super.conditions;
     }
 }

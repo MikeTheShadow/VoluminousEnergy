@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Nitrogen {
-    public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitrogen_still");
-    public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/nitrogen_flowing");
+    public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitrogen_still");
+    public static final ResourceLocation NITROGEN_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitrogen_flowing");
     public static final int NITROGEN_FLUID_WIDTH = 4;
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
@@ -28,22 +28,22 @@ public class Nitrogen {
     public static VEFlowingFluidBlock NITROGEN_BLOCK;
     public static Item NITROGEN_BUCKET;
 
-    public static FlowingFluid NitrogenFluid(){
+    public static FlowingFluid NitrogenFluid() {
         NITROGEN = new VEFlowingGasFluid.Source(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return NITROGEN;
     }
 
-    public static FlowingFluid FlowingNitrogenFluid(){
+    public static FlowingFluid FlowingNitrogenFluid() {
         FLOWING_NITROGEN = new VEFlowingGasFluid.Flowing(Nitrogen.properties, NITROGEN_FLUID_WIDTH);
         return FLOWING_NITROGEN;
     }
 
-    public static VEFlowingFluidBlock FlowingNitrogenBlock(){
+    public static VEFlowingFluidBlock FlowingNitrogenBlock() {
         NITROGEN_BLOCK = new VEFlowingFluidBlock(() -> NITROGEN, stdProp);
         return NITROGEN_BLOCK;
     }
 
-    public static Item NitrogenBucket(){
+    public static Item NitrogenBucket() {
         NITROGEN_BUCKET = new BucketItem(() -> NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGEN_BUCKET;
     }

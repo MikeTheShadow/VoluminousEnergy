@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
@@ -19,17 +20,17 @@ import java.util.List;
 
 public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
-    public static final RecipeType<PrimitiveBlastFurnaceRecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING.get();
+    public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addIngredient(0,0)
-            .addItemResult(1,0);
+            .addIngredient(0, 0)
+            .addItemResult(1, 0);
 
     public PrimitiveBlastFurnaceRecipe() {
     }
 
     public PrimitiveBlastFurnaceRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
-        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
+        super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -58,8 +59,11 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
             helper.toNetwork(buffer, recipe);
         }
     };
+
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {

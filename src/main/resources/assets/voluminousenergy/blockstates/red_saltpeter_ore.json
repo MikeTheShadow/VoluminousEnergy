@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/red_saltpeter_ore"}
+    "": {
+      "model": "voluminousenergy:block/red_saltpeter_ore"
+    }
   }
 }

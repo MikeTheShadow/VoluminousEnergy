@@ -20,9 +20,9 @@ public class FluidElectrolyzerRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FLUID_ELECTROLYZING.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addFluidIngredient(0,0)
-            .addFluidResult(1,0)
-            .addFluidResult(2,1);
+            .addFluidIngredient(0, 0)
+            .addFluidResult(1, 0)
+            .addFluidResult(2, 1);
 
     public FluidElectrolyzerRecipe() {
     }

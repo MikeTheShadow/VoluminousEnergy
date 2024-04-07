@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class CrudeOil {
-    public static final ResourceLocation CRUDE_OIL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/crude_oil_still");
-    public static final ResourceLocation CRUDE_OIL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/crude_oil_flowing");
+    public static final ResourceLocation CRUDE_OIL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/crude_oil_still");
+    public static final ResourceLocation CRUDE_OIL_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/crude_oil_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -28,22 +28,22 @@ public class CrudeOil {
     public static CrudeOilFlowingFluidBlock CRUDE_OIL_BLOCK;
     public static Item CRUDE_OIL_BUCKET;
 
-    public static FlowingFluid CrudeOilFluid(){ // Create custom source here to adjust tick rate for spread speed
+    public static FlowingFluid CrudeOilFluid() { // Create custom source here to adjust tick rate for spread speed
         CRUDE_OIL = new CrudeOilFlowingFluidSource(CrudeOil.properties);
         return CRUDE_OIL;
     }
 
-    public static FlowingFluid FlowingCrudeOilFluid(){
+    public static FlowingFluid FlowingCrudeOilFluid() {
         FLOWING_CRUDE_OIL = new ForgeFlowingFluid.Flowing(CrudeOil.properties);
         return FLOWING_CRUDE_OIL;
     }
 
-    public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock(){ // Create a custom block here for block modifications
+    public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock() { // Create a custom block here for block modifications
         CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(() -> CRUDE_OIL, stdProp);
         return CRUDE_OIL_BLOCK;
     }
 
-    public static Item CrudeOilBucket(){
+    public static Item CrudeOilBucket() {
         CRUDE_OIL_BUCKET = new BucketItem(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return CRUDE_OIL_BUCKET;
     }

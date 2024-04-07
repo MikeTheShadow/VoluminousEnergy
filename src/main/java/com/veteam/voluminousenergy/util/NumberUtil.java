@@ -69,15 +69,15 @@ public class NumberUtil {
         }
     }
 
-    public static Component numberToTextComponent4FE(double num){
+    public static Component numberToTextComponent4FE(double num) {
         return Component.nullToEmpty(numberToString4FE(num));
     }
 
-    public static Component numberToTextComponent4Fluids(double num){
+    public static Component numberToTextComponent4Fluids(double num) {
         return Component.nullToEmpty(numberToString4Fluids(num));
     }
 
-    public static Component numberToTextComponent(double num){
+    public static Component numberToTextComponent(double num) {
         return Component.nullToEmpty(numberToString(num));
     }
 

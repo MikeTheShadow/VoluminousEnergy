@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public class Petcoke extends VEItem implements IForgeItem {
     public Petcoke() {
         super(new Item.Properties()
-            .stacksTo(64)
+                .stacksTo(64)
         );
         setRegistryName("petcoke");
     }

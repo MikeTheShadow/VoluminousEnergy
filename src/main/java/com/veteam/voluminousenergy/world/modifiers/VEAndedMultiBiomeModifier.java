@@ -30,7 +30,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
 
     private String whitelistedBiome;
     private String blacklistedBiome;
-    private Holder<ConfiguredFeature<?,?>> feature;
+    private Holder<ConfiguredFeature<?, ?>> feature;
     private boolean isTriangualar;
     private int count;
     private int bottomAnchor;
@@ -41,7 +41,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
     public VEAndedMultiBiomeModifier(
             String whitelistedBiome,
             String blacklistedBiome,
-            Holder<ConfiguredFeature<?,?>> feature,
+            Holder<ConfiguredFeature<?, ?>> feature,
             boolean isTriangualar,
             int count,
             int bottomAnchor,
@@ -67,39 +67,39 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         if (blacklistedBiomeKeycache.get().isEmpty()) blacklistCacheBuilder();
 
         // Sizes should be identical when filtering, if so, all the tags needed are present
-        if (biome.getTagKeys().filter(b -> whitelistedBiomeKeycache.get().contains(b)).count() != whitelistedBiomeKeycache.get().size()) return;
+        if (biome.getTagKeys().filter(b -> whitelistedBiomeKeycache.get().contains(b)).count() != whitelistedBiomeKeycache.get().size())
+            return;
 
         // If any match, return, as a blacklisted tag has been hit
         if (biome.getTagKeys().anyMatch(b -> blacklistedBiomeKeycache.get().contains(b))) return;
 
-        if (Config.WORLD_GEN_LOGGING.get()){
+        if (Config.WORLD_GEN_LOGGING.get()) {
             VoluminousEnergy.LOGGER.info("Voluminous Energy has received a successful biome modify event. ");
             VoluminousEnergy.LOGGER.info("Biome is: " + RegistryLookups.lookupBiome(biome.value()));
             VoluminousEnergy.LOGGER.info("Biome Keys of biome in question: ");
-            biome.getTagKeys().forEach(key -> System.out.print(key.toString()  + ", "));
+            biome.getTagKeys().forEach(key -> System.out.print(key.toString() + ", "));
             VoluminousEnergy.LOGGER.info("\nWhitelisted Keys for this AND rule: ");
             whitelistedBiomeKeycache.get().forEach(key -> System.out.print(key.toString() + ", "));
             System.out.println();
         }
 
-        List<ConfiguredFeature<?,?>> oreConfiguration = feature.get().getFeatures().toList();
+        List<ConfiguredFeature<?, ?>> oreConfiguration = feature.get().getFeatures().toList();
         Holder<PlacedFeature> modifiedFeature;
-        if (isTriangualar){
-            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)),List.of(
+        if (isTriangualar) {
+            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)), List.of(
                     HeightRangePlacement.triangle(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
                     CountPlacement.of(count),
                     RarityFilter.onAverageOnceEvery(rarity),
                     InSquarePlacement.spread()
             )));
         } else {
-            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)),List.of(
+            modifiedFeature = Holder.direct(new PlacedFeature(Holder.direct(oreConfiguration.get(0)), List.of(
                     HeightRangePlacement.uniform(VerticalAnchor.absolute(bottomAnchor), VerticalAnchor.absolute(topAnchor)),
                     CountPlacement.of(count),
                     RarityFilter.onAverageOnceEvery(rarity),
                     InSquarePlacement.spread()
             )));
         }
-
 
 
 //        System.out.println("\nChecking if features are unique. Start with modified: ");
@@ -112,8 +112,8 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         builder.getGenerationSettings().addFeature(getGenerationStepDecoration(), modifiedFeature);
     }
 
-    public void whitelistCacheBuilder(){
-        if (whitelistedBiome.contains(",")){
+    public void whitelistCacheBuilder() {
+        if (whitelistedBiome.contains(",")) {
             Arrays.stream(whitelistedBiome.split(",")).sequential().forEach(greenBiome -> {
                 TagKey<Biome> biomeTag = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(greenBiome));
                 whitelistedBiomeKeycache.get().add(biomeTag);
@@ -124,13 +124,13 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         }
     }
 
-    public void blacklistCacheBuilder(){
-        if (blacklistedBiome.contains(",")){
+    public void blacklistCacheBuilder() {
+        if (blacklistedBiome.contains(",")) {
             Arrays.stream(blacklistedBiome.split(",")).sequential().forEach(redBiome -> {
                 TagKey<Biome> biomeTag = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(redBiome));
                 blacklistedBiomeKeycache.get().add(biomeTag);
             });
-        } else if (!blacklistedBiome.isEmpty()){
+        } else if (!blacklistedBiome.isEmpty()) {
             TagKey<Biome> biomeTagKey = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), new ResourceLocation(blacklistedBiome));
             blacklistedBiomeKeycache.get().add(biomeTagKey);
         }
@@ -144,7 +144,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
         return blacklistedBiome;
     }
 
-    public Holder<ConfiguredFeature<?,?>> getFeature() {
+    public Holder<ConfiguredFeature<?, ?>> getFeature() {
         return feature;
     }
 

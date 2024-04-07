@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 public class EighzoTankContainer extends TankContainer {
 
     public EighzoTankContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(id, world, pos, inventory, player, VEBlocks.EIGHZO_TANK_CONTAINER.get(),VEBlocks.EIGHZO_TANK_BLOCK.get());
+        super(id, world, pos, inventory, player, VEBlocks.EIGHZO_TANK_CONTAINER.get(), VEBlocks.EIGHZO_TANK_BLOCK.get());
     }
 
 }

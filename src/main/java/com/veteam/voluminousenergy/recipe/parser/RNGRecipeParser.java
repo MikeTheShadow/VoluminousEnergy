@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.VEItemStackHandler;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.world.item.ItemStack;
@@ -17,10 +16,11 @@ public class RNGRecipeParser extends RecipeParser {
     public RNGRecipeParser(VERecipe recipe) {
         super(recipe);
     }
+
     List<SlotAndRecipePos> randomItemResultPositions = new ArrayList<>();
 
     public RNGRecipeParser addChancedItemResult(int tilePos, int recipePos) {
-        this.randomItemResultPositions.add(new SlotAndRecipePos(tilePos,recipePos));
+        this.randomItemResultPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }
 
@@ -29,7 +29,7 @@ public class RNGRecipeParser extends RecipeParser {
         for (SlotAndRecipePos pos : randomItemResultPositions) {
             ItemStack stack = tile.getStackInSlot(pos.tilePos());
             ItemStack result = recipe.getResult(pos.recipePos());
-            if(stack.isEmpty()) continue;
+            if (stack.isEmpty()) continue;
             if (!stack.is(result.getItem()) || result.getCount() + stack.getCount() > result.getMaxStackSize())
                 return false;
         }
@@ -50,9 +50,9 @@ public class RNGRecipeParser extends RecipeParser {
             float randomness = rngRecipe.getOutputChance(pos.recipePos());
             ItemStack result = rngRecipe.getResult(pos.recipePos());
             if (result == ItemStack.EMPTY) continue;
-            if(randomness != 1) {
+            if (randomness != 1) {
                 float random = abs(0 + randomInstance.nextFloat() * (-1));
-                if(random > randomness) continue;
+                if (random > randomness) continue;
                 handler.insertItem(pos.tilePos(), result.copy(), false);
             } else {
                 handler.insertItem(pos.tilePos(), result.copy(), false);
@@ -64,7 +64,7 @@ public class RNGRecipeParser extends RecipeParser {
 
     @Override
     public boolean canInsertItem(int slot, ItemStack stack) {
-        for(SlotAndRecipePos pos : randomItemResultPositions) {
+        for (SlotAndRecipePos pos : randomItemResultPositions) {
             if (pos.tilePos() == slot) {
                 ItemStack itemStack = recipe.getResult(pos.recipePos());
                 return itemStack.is(stack.getItem());

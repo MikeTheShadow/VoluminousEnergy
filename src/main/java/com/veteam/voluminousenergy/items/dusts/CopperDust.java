@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class CopperDust extends VEItem {
-    public CopperDust (){
+    public CopperDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

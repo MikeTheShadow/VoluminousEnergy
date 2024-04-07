@@ -32,7 +32,7 @@ public class ToolingRecipe extends VERecipe {
     private final RecipeParser parser = new RecipeParser(this);
 
     public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
-        super(i,new ArrayList<>(),new ArrayList<>(), oi, 0);
+        super(i, new ArrayList<>(), new ArrayList<>(), oi, 0);
 
         this.bits = Lazy.of(() -> {
             ArrayList<Item> foundBits = new ArrayList<>();
@@ -133,7 +133,9 @@ public class ToolingRecipe extends VERecipe {
     };
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {
@@ -148,20 +150,20 @@ public class ToolingRecipe extends VERecipe {
     protected String tagKeyString;
 
     @Override
-    public @NotNull RecipeType<?> getType(){
+    public @NotNull RecipeType<?> getType() {
         return RECIPE_TYPE;
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get());
     }
 
-    public ArrayList<Item> getBits(){
+    public ArrayList<Item> getBits() {
         return this.bits.get();
     }
 
-    public ArrayList<Item> getBasesAndBits(){
+    public ArrayList<Item> getBasesAndBits() {
         if (this.basesAndBits == null || this.basesAndBits.isEmpty()) {
             this.basesAndBits = new ArrayList<>();
             this.basesAndBits.addAll(bits.get());
@@ -170,7 +172,7 @@ public class ToolingRecipe extends VERecipe {
         return this.basesAndBits;
     }
 
-    public ArrayList<Item> getBases(){
+    public ArrayList<Item> getBases() {
         return this.bases.get();
     }
 

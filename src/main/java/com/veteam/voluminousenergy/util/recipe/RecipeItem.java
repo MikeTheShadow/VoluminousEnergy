@@ -33,8 +33,8 @@ public class RecipeItem {
      */
     public boolean isDifferent(ItemStack itemStack) {
 
-        if(this.item == null) {
-            if(itemStack == null) return false;
+        if (this.item == null) {
+            if (itemStack == null) return false;
             this.item = itemStack.getItem();
             this.amount = itemStack.getCount();
             return true;

@@ -55,12 +55,12 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     }
 
     @Nullable
-    public MultitoolBit getBit(){
+    public MultitoolBit getBit() {
         return this.bit != null ? this.bit : null;
     }
 
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-        if(this.bit != null)
+        if (this.bit != null)
             return equipmentSlot == EquipmentSlot.MAINHAND ? this.bit.getDefaultAttributeModifiers(equipmentSlot) : super.getDefaultAttributeModifiers(equipmentSlot);
         return super.getDefaultAttributeModifiers(equipmentSlot);
     }
@@ -104,7 +104,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                 BlockPos offsetPos = pos;
 
                 System.out.println("Should be activating Tree Felling");
-                for (int yOffset = pos.getY(); yOffset < 320; yOffset++ ) {
+                for (int yOffset = pos.getY(); yOffset < 320; yOffset++) {
                     offsetPos = offsetPos.above();
                     BlockState potentialStateToFell = level.getBlockState(offsetPos);
 
@@ -150,7 +150,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     }
 
     @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState){
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState) {
         return this.bit != null ? this.bit.isCorrectToolForDrops(blockState) : false;
     }
 
@@ -166,7 +166,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
                 java.util.Random rand = new java.util.Random();
                 drops.forEach(d -> {
                     net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
-                    ent.setDeltaMovement(ent.getDeltaMovement().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                    ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
                 stack.hurtAndBreak(1, playerIn, e -> e.broadcastBreakEvent(hand));
             }

@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.DimensionalLaserParser;
 import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.ServerSideOnly;
@@ -26,7 +25,6 @@ import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.*;
 public class DimensionalLaserRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DIMENSIONAL_LASING.get();
-    private final DimensionalLaserParser parser = new DimensionalLaserParser(this);
 
     @ServerSideOnly
     private ClimateData climateData;
@@ -77,7 +75,7 @@ public class DimensionalLaserRecipe extends VERecipe {
             recipe.setTemperatureMin(buffer.readFloat());
             recipe.setTemperatureMax(buffer.readFloat());
             recipe.regionFluid = buffer.readRegistryId();
-            return helper.fromNetwork(recipe,buffer);
+            return helper.fromNetwork(recipe, buffer);
         }
 
         @Override
@@ -102,7 +100,7 @@ public class DimensionalLaserRecipe extends VERecipe {
             buffer.writeFloat(recipe.getTemperatureMin());
             buffer.writeFloat(recipe.getTemperatureMax());
             buffer.writeRegistryId(ForgeRegistries.FLUIDS, recipe.getRegionFluid());
-            helper.toNetwork(buffer,recipe);
+            helper.toNetwork(buffer, recipe);
         }
     };
 
@@ -247,9 +245,12 @@ public class DimensionalLaserRecipe extends VERecipe {
         return FluidStack.EMPTY;
     }
 
+    /*
+        This is null because we want it to explode if someone tries to pull a parser from here.
+     */
     @Override
     public RecipeParser getParser() {
-        return parser;
+        return null;
     }
 
     @Override

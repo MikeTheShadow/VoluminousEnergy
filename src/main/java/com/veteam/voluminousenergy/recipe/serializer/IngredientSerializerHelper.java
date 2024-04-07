@@ -44,10 +44,10 @@ public class IngredientSerializerHelper<T extends VERecipe> {
             irngRecipe.setRNGOutputs(values);
         }
 
-        if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
+        if (recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
             int min = buffer.readInt();
             int max = buffer.readInt();
-            iExperienceRecipe.setExperience(min,max);
+            iExperienceRecipe.setExperience(min, max);
         }
         VERecipe.addRecipeToCacheClient(recipe);
         return recipe;
@@ -68,12 +68,12 @@ public class IngredientSerializerHelper<T extends VERecipe> {
 
         if (recipe instanceof VERNGRecipe irngRecipe) {
             buffer.writeInt(irngRecipe.getRNGOutputs().size());
-            for(float f : irngRecipe.getRNGOutputs()) {
+            for (float f : irngRecipe.getRNGOutputs()) {
                 buffer.writeFloat(f);
             }
         }
 
-        if(recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
+        if (recipe instanceof VERNGExperienceRecipe iExperienceRecipe) {
             buffer.writeInt(iExperienceRecipe.getMinExp());
             buffer.writeInt(iExperienceRecipe.getMaxExp());
         }

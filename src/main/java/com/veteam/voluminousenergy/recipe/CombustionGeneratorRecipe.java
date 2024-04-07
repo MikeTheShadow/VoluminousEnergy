@@ -19,8 +19,8 @@ public class CombustionGeneratorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addFluidIngredient(0,0)
-            .addFluidIngredient(1,1);
+            .addFluidIngredient(0, 0)
+            .addFluidIngredient(1, 1);
 
     public CombustionGeneratorRecipe() {
     }
@@ -55,7 +55,9 @@ public class CombustionGeneratorRecipe extends VERecipe {
     };
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {
@@ -63,6 +65,8 @@ public class CombustionGeneratorRecipe extends VERecipe {
     }
 
     @Override
-    public @NotNull RecipeType<VERecipe> getType(){return RECIPE_TYPE;}
+    public @NotNull RecipeType<VERecipe> getType() {
+        return RECIPE_TYPE;
+    }
 
 }

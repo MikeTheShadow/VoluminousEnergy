@@ -11,11 +11,11 @@ import java.util.List;
 public class MultiSlotWrapper implements IItemHandlerModifiable {
 
     private final IItemHandlerModifiable inventory;
-    HashMap<Integer,VESlotManager> managerHashMap = new HashMap<>();
+    HashMap<Integer, VESlotManager> managerHashMap = new HashMap<>();
 
     public MultiSlotWrapper(IItemHandlerModifiable inventory, List<VESlotManager> slotManager) {
         this.inventory = inventory;
-        slotManager.forEach(m -> managerHashMap.put(m.getSlotNum(),m));
+        slotManager.forEach(m -> managerHashMap.put(m.getSlotNum(), m));
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack getStackInSlot(int slot) {
-        if(managerHashMap.containsKey(slot)) {
+        if (managerHashMap.containsKey(slot)) {
             return inventory.getStackInSlot(slot);
         }
         return ItemStack.EMPTY;
@@ -35,9 +35,9 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if(managerHashMap.containsKey(slot)) {
+        if (managerHashMap.containsKey(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
-            if(manager.getSlotType() == SlotType.OUTPUT || !manager.getStatus()) return stack;
+            if (manager.getSlotType() == SlotType.OUTPUT || !manager.getStatus()) return stack;
             return inventory.insertItem(manager.getSlotNum(), stack, simulate);
         }
         return stack;
@@ -46,9 +46,9 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     @Override
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(managerHashMap.containsKey(slot)) {
+        if (managerHashMap.containsKey(slot)) {
             VESlotManager manager = managerHashMap.get(slot);
-            if(manager.getSlotType() == SlotType.INPUT || !manager.getStatus()) return ItemStack.EMPTY;
+            if (manager.getSlotType() == SlotType.INPUT || !manager.getStatus()) return ItemStack.EMPTY;
             return inventory.extractItem(managerHashMap.get(slot).getSlotNum(), amount, simulate);
         }
         return ItemStack.EMPTY;
@@ -82,8 +82,9 @@ public class MultiSlotWrapper implements IItemHandlerModifiable {
     }
 
     public void addSlotManager(VESlotManager manager) {
-        managerHashMap.put(manager.getSlotNum(),manager);
+        managerHashMap.put(manager.getSlotNum(), manager);
     }
+
     public void removeSlotManager(VESlotManager manager) {
         managerHashMap.remove(manager.getSlotNum());
     }

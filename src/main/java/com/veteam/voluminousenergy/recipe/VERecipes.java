@@ -12,10 +12,10 @@ public class VERecipes {
 
     public static final DeferredRegister<RecipeSerializer<?>> VE_RECIPE_SERIALIZERS_REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, VoluminousEnergy.MODID);
 
-    public static final class VERecipeTypes{
+    public static final class VERecipeTypes {
         public static final DeferredRegister<RecipeType<?>> VE_RECIPE_TYPES_REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, VoluminousEnergy.MODID);
 
-        public static final RegistryObject<RecipeType<PrimitiveBlastFurnaceRecipe>> PRIMITIVE_BLAST_FURNACING =
+        public static final RegistryObject<RecipeType<VERecipe>> PRIMITIVE_BLAST_FURNACING =
                 VE_RECIPE_TYPES_REGISTRY.register("primitive_blast_furnacing", () -> new VERecipeType<>(RecipeConstants.PRIMITIVE_BLAST_FURNACING));
 
         public static final RegistryObject<RecipeType<VERecipe>> CRUSHING =

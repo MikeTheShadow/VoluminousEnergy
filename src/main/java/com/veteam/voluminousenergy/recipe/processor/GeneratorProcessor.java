@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VEEnergyRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -22,7 +21,6 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         this.allowOverflow = allowOverflow;
         this.divisor = divisor;
     }
-
 
 
     public GeneratorProcessor() {
@@ -69,9 +67,9 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         } else if (counter == 0) {
             if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
                 RecipeParser parser = veEnergyRecipe.getParser();
-                if(!parser.canCompleteRecipe(tile)) return;
+                if (!parser.canCompleteRecipe(tile)) return;
                 // Check to see if the energy produced will overflow the tile
-                if(tile.getEnergy().isFullyCharged()) return;
+                if (tile.getEnergy().isFullyCharged()) return;
                 // Since we're a generator we want to subtract the amounts at the start rather than at the end
                 veEnergyRecipe.getParser().completeRecipe(tile);
 

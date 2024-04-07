@@ -17,8 +17,8 @@ public class VEFluidType extends FluidType {
     /**
      * Default constructor.
      *
-     * @param properties the general properties of the fluid type
-     * @param stillTexture is the still texture for the fluid
+     * @param properties     the general properties of the fluid type
+     * @param stillTexture   is the still texture for the fluid
      * @param flowingTexture is the flowing texture for the fluid
      */
     public VEFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
@@ -30,8 +30,8 @@ public class VEFluidType extends FluidType {
     /**
      * Default constructor.
      *
-     * @param properties the general properties of the fluid type
-     * @param stillTexture is the still texture for the fluid
+     * @param properties     the general properties of the fluid type
+     * @param stillTexture   is the still texture for the fluid
      * @param flowingTexture is the flowing texture for the fluid
      * @param overlayTexture is the overlay texture when an entity is in the fluid (I think)
      */
@@ -47,7 +47,7 @@ public class VEFluidType extends FluidType {
     }
 
     @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
+    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
         consumer.accept(new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {

@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class CupricOxideDust extends VEItem {
-    public CupricOxideDust(){
+    public CupricOxideDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

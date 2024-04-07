@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class Naphtha {
-    public static final ResourceLocation NAPHTHA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/naphtha_still");
-    public static final ResourceLocation NAPHTHA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/naphtha_flowing");
+    public static final ResourceLocation NAPHTHA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/naphtha_still");
+    public static final ResourceLocation NAPHTHA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/naphtha_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -28,22 +28,22 @@ public class Naphtha {
     public static VEFlowingFluidBlock NAPHTHA_BLOCK;
     public static Item NAPHTHA_BUCKET;
 
-    public static FlowingFluid NaphthaFluid(){
+    public static FlowingFluid NaphthaFluid() {
         NAPHTHA = new ForgeFlowingFluid.Source(Naphtha.properties);
         return NAPHTHA;
     }
 
-    public static FlowingFluid FlowingNaphthaFluid(){
+    public static FlowingFluid FlowingNaphthaFluid() {
         FLOWING_NAPHTHA = new ForgeFlowingFluid.Flowing(Naphtha.properties);
         return FLOWING_NAPHTHA;
     }
 
-    public static VEFlowingFluidBlock FlowingNaphthaBlock(){
+    public static VEFlowingFluidBlock FlowingNaphthaBlock() {
         NAPHTHA_BLOCK = new VEFlowingFluidBlock(() -> NAPHTHA, stdProp);
         return NAPHTHA_BLOCK;
     }
 
-    public static Item NaphthaBucket(){
+    public static Item NaphthaBucket() {
         NAPHTHA_BUCKET = new BucketItem(() -> NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NAPHTHA_BUCKET;
     }

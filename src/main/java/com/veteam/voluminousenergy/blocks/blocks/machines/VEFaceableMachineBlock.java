@@ -24,7 +24,7 @@ public abstract class VEFaceableMachineBlock extends FaceableBlock implements En
         super(properties);
     }
 
-    public VEFaceableMachineBlock(Properties properties,String rnName) {
+    public VEFaceableMachineBlock(Properties properties, String rnName) {
         super(properties);
         setRName(rnName);
     }
@@ -48,7 +48,7 @@ public abstract class VEFaceableMachineBlock extends FaceableBlock implements En
     public abstract BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state);
 
     @Nullable
-    public abstract  <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType);
+    public abstract <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType);
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tileEntity) {

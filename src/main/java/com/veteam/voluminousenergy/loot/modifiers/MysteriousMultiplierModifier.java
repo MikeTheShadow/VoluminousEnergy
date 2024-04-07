@@ -54,7 +54,7 @@ public class MysteriousMultiplierModifier extends LootModifier implements LootIt
         return CODEC.get();
     }
 
-    public LootItemCondition[] getLootItemConditions(){
+    public LootItemCondition[] getLootItemConditions() {
         return super.conditions;
     }
 

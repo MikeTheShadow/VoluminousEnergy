@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class CinnabarDust extends VEItem {
-    public CinnabarDust (){
+    public CinnabarDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

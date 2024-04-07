@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class DeepslateCinnabarOre extends VEOreBlock {
-    public DeepslateCinnabarOre(){
+    public DeepslateCinnabarOre() {
         super(BlockBehaviour.Properties.of()
                 .sound(SoundType.STONE)
                 .strength(1.5f)

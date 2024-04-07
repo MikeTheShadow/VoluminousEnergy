@@ -54,7 +54,7 @@ public class GasFiredFurnaceTile extends VETileEntity {
         add(new VESlotManager(3, Direction.WEST, true, SlotType.OUTPUT));
     }};
 
-    VERelationalTank fuelTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0,0, TankType.INPUT, "fuel_tank:fuel_tank_gui");
+    VERelationalTank fuelTank = new VERelationalTank(new FluidTank(DEFAULT_TANK_CAPACITY), 0, 0, TankType.INPUT, "fuel_tank:fuel_tank_gui");
 
     List<VERelationalTank> fluidManagers = new ArrayList<>() {{
         add(fuelTank);
@@ -167,9 +167,9 @@ public class GasFiredFurnaceTile extends VETileEntity {
         ItemStack furnaceInput = slotManagers.get(2).getItem(this.inventory);
         var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
         var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
-        if(furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
+        if (furnaceRecipeNew != null) furnaceRecipe = furnaceRecipeNew.value();
         else furnaceRecipe = null;
-        if(blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
+        if (blastingRecipeNew != null) blastingRecipe = blastingRecipeNew.value();
         else blastingRecipe = null;
         fuelRecipe = (CombustionGeneratorRecipe)
                 RecipeCache.getFluidRecipeFromCache(level, CombustionGeneratorRecipe.RECIPE_TYPE, Collections.singletonList(fuelTank.getTank().getFluid()), new ArrayList<>());

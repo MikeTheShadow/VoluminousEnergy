@@ -17,12 +17,12 @@ public class RiceCrop extends VEWaterCrop {
     }
 
     @Override
-    public Item cropItem(){
+    public Item cropItem() {
         return VEItems.RICE_GRAIN.get();
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random){
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
         if (random.nextFloat() <= Config.RICE_TICK_CHANCE.get()) {
             super.randomTick(state, worldIn, pos, random);
         }

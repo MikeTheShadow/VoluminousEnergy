@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 public class RedFumingNitricAcid {
-    public static final ResourceLocation RFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/rfna_still");
-    public static final ResourceLocation RFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID,"block/fluids/rfna_flowing");
+    public static final ResourceLocation RFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/rfna_still");
+    public static final ResourceLocation RFNA_FLOWING_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/rfna_flowing");
 
     public static Block.Properties stdProp = Block.Properties.of().noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid();
 
@@ -27,22 +27,22 @@ public class RedFumingNitricAcid {
     public static FumingAcidFlowingFluidBlock RED_FUMING_NITRIC_ACID_BLOCK;
     public static Item RED_FUMING_NITRIC_ACID_BUCKET;
 
-    public static FlowingFluid RedFumingNitricAcidFluid(){
+    public static FlowingFluid RedFumingNitricAcidFluid() {
         RED_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Source(RedFumingNitricAcid.properties);
         return RED_FUMING_NITRIC_ACID;
     }
 
-    public static FlowingFluid FlowingRedFumingNitricAcidFluid(){
+    public static FlowingFluid FlowingRedFumingNitricAcidFluid() {
         FLOWING_RED_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Flowing(RedFumingNitricAcid.properties);
         return FLOWING_RED_FUMING_NITRIC_ACID;
     }
 
-    public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock(){
+    public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock() {
         RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(() -> RED_FUMING_NITRIC_ACID, stdProp);
         return RED_FUMING_NITRIC_ACID_BLOCK;
     }
 
-    public static Item RedFumingNitricAcidBucket(){
+    public static Item RedFumingNitricAcidBucket() {
         RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }

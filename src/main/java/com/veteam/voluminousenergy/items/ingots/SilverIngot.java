@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class SilverIngot extends VEItem {
-    public SilverIngot (){
+    public SilverIngot() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

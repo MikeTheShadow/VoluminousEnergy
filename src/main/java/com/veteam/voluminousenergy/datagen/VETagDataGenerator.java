@@ -34,7 +34,7 @@ public class VETagDataGenerator extends BlockTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider lookupProvider){
+    protected void addTags(HolderLookup.Provider lookupProvider) {
         // Setup Forge tags
         final TagKey<Block> NEEDS_WOOD_TOOL = TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), new ResourceLocation("forge", "needs_wood_tool"));
         final TagKey<Block> NEEDS_NETHERITE_TOOL = TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), new ResourceLocation("forge", "needs_netherite_tool"));
@@ -59,7 +59,7 @@ public class VETagDataGenerator extends BlockTagsProvider {
     }
 
     @Deprecated
-    public static void addTierBasedOnInt(int tier, Block block){
+    public static void addTierBasedOnInt(int tier, Block block) {
         switch (tier) {
             case 0 -> requiresWood.add(block);
             case 1 -> requiresStone.add(block);
@@ -73,52 +73,52 @@ public class VETagDataGenerator extends BlockTagsProvider {
     }
 
     // Tier setter
-    public static void setRequiresWood(Block block){
+    public static void setRequiresWood(Block block) {
         requiresWood.add(block);
     }
 
-    public static void setRequiresStone(Block block){
+    public static void setRequiresStone(Block block) {
         requiresStone.add(block);
     }
 
-    public static void setRequiresIron(Block block){
+    public static void setRequiresIron(Block block) {
         requiresIron.add(block);
     }
 
-    public static void setRequiresDiamond(Block block){
+    public static void setRequiresDiamond(Block block) {
         requiresDiamond.add(block);
     }
 
-    public static void setRequiresNetherite(Block block){
+    public static void setRequiresNetherite(Block block) {
         requiresNetherite.add(block);
     }
 
-    public static void setRequiresNighalite(Block block){
+    public static void setRequiresNighalite(Block block) {
         requiresNighalite.add(block);
     }
 
-    public static void setRequiresEighzo(Block block){
+    public static void setRequiresEighzo(Block block) {
         requiresEighzo.add(block);
     }
 
-    public static void setRequiresSolarium(Block block){
+    public static void setRequiresSolarium(Block block) {
         requiresSolarium.add(block);
     }
 
     // Tools setter
-    public static void setRequiresAxe(Block block){
+    public static void setRequiresAxe(Block block) {
         mineableWithAxe.add(block);
     }
 
-    public static void setRequiresPickaxe(Block block){
+    public static void setRequiresPickaxe(Block block) {
         mineableWithPickaxe.add(block);
     }
 
-    public static void setRequiresHoe(Block block){
+    public static void setRequiresHoe(Block block) {
         mineableWithHoe.add(block);
     }
 
-    public static void setRequiresShovel(Block block){
+    public static void setRequiresShovel(Block block) {
         mineableWithShovel.add(block);
     }
 

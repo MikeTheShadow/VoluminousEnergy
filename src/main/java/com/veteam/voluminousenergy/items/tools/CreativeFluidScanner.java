@@ -96,16 +96,16 @@ public class CreativeFluidScanner extends Item {
                         16 * (chunkAccess.getPos().x - middle + x),
                         320,
                         16 * (chunkAccess.getPos().z - middle + z));
-                ArrayList<Pair<Fluid,Integer>> items = WorldUtil.queryForFluids(level, pos);
+                ArrayList<Pair<Fluid, Integer>> items = WorldUtil.queryForFluids(level, pos);
                 if (items.size() > 0) {
 
                     fluid = items.get(0).getA();
 
-                    if(fluid.isSame(VEFluids.CRUDE_OIL_REG.get().getFlowing())) {
+                    if (fluid.isSame(VEFluids.CRUDE_OIL_REG.get().getFlowing())) {
                         builder.append(" C |");
-                    } else if(fluid.isSame(WATER.getFlowing())) {
+                    } else if (fluid.isSame(WATER.getFlowing())) {
                         builder.append(" W |");
-                    } else if(fluid.isSame(LAVA.getFlowing())) {
+                    } else if (fluid.isSame(LAVA.getFlowing())) {
                         builder.append(" L |");
                     } else if (fluid.isSame(VEFluids.LIGHT_FUEL_REG.get().getFlowing())) {
                         builder.append(" F |");

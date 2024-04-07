@@ -18,8 +18,8 @@ public class DefaultProcessor implements AbstractRecipeProcessor {
         if (tile.getPotentialRecipes().size() == 1) {
             VERecipe newRecipe = VERecipe.getCompleteRecipe(tile);
             if (newRecipe == null) {
-                tile.setData("counter",0);
-                tile.setData("length",0);
+                tile.setData("counter", 0);
+                tile.setData("length", 0);
                 tile.setSelectedRecipe(null);
                 return;
             }
@@ -34,16 +34,16 @@ public class DefaultProcessor implements AbstractRecipeProcessor {
             }
 
             double ratio = (double) tile.getData("length") / (double) newLength;
-            tile.setData("length",newLength);
+            tile.setData("length", newLength);
             tile.setData("counter", (int) (tile.getData("counter") / ratio));
 
             if (tile.getSelectedRecipe() != newRecipe) {
                 tile.setSelectedRecipe(newRecipe);
-                tile.setData("counter",newLength);
+                tile.setData("counter", newLength);
             }
         } else {
-            tile.setData("counter",0);
-            tile.setData("length",0);
+            tile.setData("counter", 0);
+            tile.setData("length", 0);
             tile.setSelectedRecipe(null);
         }
     }
@@ -59,7 +59,7 @@ public class DefaultProcessor implements AbstractRecipeProcessor {
         if (counter == 1) {
 
             RecipeParser parser = recipe.getParser();
-            if(!parser.canCompleteRecipe(tile)) return;
+            if (!parser.canCompleteRecipe(tile)) return;
             parser.completeRecipe(tile);
             tile.markRecipeDirty();
             tile.markFluidInputDirty();

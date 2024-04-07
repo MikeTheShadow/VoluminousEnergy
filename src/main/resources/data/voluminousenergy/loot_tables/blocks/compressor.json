@@ -46,7 +46,7 @@
                   "target": "BlockEntityTag.output_slot_direction",
                   "op": "replace"
                 }
-                ]
+              ]
             },
             {
               "function": "minecraft:set_contents",

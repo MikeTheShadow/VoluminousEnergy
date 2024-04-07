@@ -20,9 +20,9 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_AGITATING.get();
 
     private final RecipeParser parser = new RecipeParser(this)
-            .addFluidIngredient(0,0)
-            .addFluidResult(1,0)
-            .addFluidResult(2,1);
+            .addFluidIngredient(0, 0)
+            .addFluidResult(1, 0)
+            .addFluidResult(2, 1);
 
     public CentrifugalAgitatorRecipe() {
 
@@ -58,8 +58,12 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
             helper.toNetwork(buffer, recipe);
         }
     };
+
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
+
     @Override
     public @NotNull RecipeType<VERecipe> getType() {
         return RECIPE_TYPE;

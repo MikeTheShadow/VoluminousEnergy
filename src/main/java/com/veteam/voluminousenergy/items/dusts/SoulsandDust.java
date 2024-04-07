@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 
 public class SoulsandDust extends VEItem {
-    public SoulsandDust (){
+    public SoulsandDust() {
         super(new Item.Properties()
                 .stacksTo(64)
         );

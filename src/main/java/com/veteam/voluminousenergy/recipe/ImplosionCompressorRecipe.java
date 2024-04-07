@@ -21,14 +21,14 @@ public class ImplosionCompressorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.IMPLOSION_COMPRESSING.get();
 
     private final RecipeParser parser = new ImplosionCompressorParser(this)
-            .addIngredient(0,0)
-            .addItemResult(2,0);
+            .addIngredient(0, 0)
+            .addItemResult(2, 0);
 
     public ImplosionCompressorRecipe() {
     }
 
     public ImplosionCompressorRecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<ItemStack> results, int processTime) {
-        super(ingredients,new ArrayList<>(),new ArrayList<>(), results, processTime);
+        super(ingredients, new ArrayList<>(), new ArrayList<>(), results, processTime);
     }
 
     public static final RecipeSerializer<ImplosionCompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
@@ -59,7 +59,9 @@ public class ImplosionCompressorRecipe extends VERecipe {
     };
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {

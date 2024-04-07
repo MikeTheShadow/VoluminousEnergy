@@ -24,11 +24,11 @@ public class VEBatterySwitchManager {
         this.flipped = flipped;
     }
 
-    public void write(CompoundTag nbt, String prefix){
+    public void write(CompoundTag nbt, String prefix) {
         nbt.putBoolean(prefix + "_enabled", isFlipped());
     }
 
-    public void read(CompoundTag nbt, String prefix){
+    public void read(CompoundTag nbt, String prefix) {
         setFlipped(nbt.getBoolean(prefix + "_enabled"));
         int sideInt = nbt.getInt(prefix + "_direction");
     }

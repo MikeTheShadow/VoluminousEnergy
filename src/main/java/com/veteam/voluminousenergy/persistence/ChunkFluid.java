@@ -22,7 +22,7 @@ public class ChunkFluid {
             SingleChunkFluid singleChunkFluid =
                     new SingleChunkFluid(
                             ForgeRegistries.FLUIDS.getValue(new ResourceLocation(compoundTag.getString("SCF_" + i)))
-                            ,compoundTag.getInt("FS_" + i));
+                            , compoundTag.getInt("FS_" + i));
             this.chunkFluidList.add(singleChunkFluid);
             i++;
         }
@@ -30,8 +30,8 @@ public class ChunkFluid {
 
     public ChunkFluid(ChunkPos chunkPos, ArrayList<Pair<Fluid, Integer>> fluidPairs) {
         this.chunkPos = chunkPos;
-        for(var value : fluidPairs) {
-            this.chunkFluidList.add(new SingleChunkFluid(value.getA(),value.getB()));
+        for (var value : fluidPairs) {
+            this.chunkFluidList.add(new SingleChunkFluid(value.getA(), value.getB()));
         }
     }
 

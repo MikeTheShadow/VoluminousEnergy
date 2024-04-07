@@ -38,7 +38,7 @@ import java.util.List;
 
 import static com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool.isCombustibleFuel;
 
-public class ToolingStationTile extends VETileEntity  {
+public class ToolingStationTile extends VETileEntity {
 
     // Slot Managers
     List<VESlotManager> slotManagers = new ArrayList<>() {{

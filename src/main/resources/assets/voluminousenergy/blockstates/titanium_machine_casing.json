@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/titanium_machine_casing"}
+    "": {
+      "model": "voluminousenergy:block/titanium_machine_casing"
+    }
   }
 }

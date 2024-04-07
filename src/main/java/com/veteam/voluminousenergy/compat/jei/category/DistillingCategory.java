@@ -36,18 +36,18 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
     private IDrawable emptyArrow;
     public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.DISTILLING_UID, DistillationRecipe.class);
 
-    public DistillingCategory(IGuiHelper guiHelper){
+    public DistillingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/jei.png");
         background = guiHelper.drawableBuilder(GUI, 42, 5, 128, 40).build();
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(GUI, 176, 0, 23, 17).build();
-        emptyArrow = guiHelper.drawableBuilder(GUI,199,0,23,17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
+        emptyArrow = guiHelper.drawableBuilder(GUI, 199, 0, 23, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, true);
     }
 
     @Override
-    public @NotNull RecipeType getRecipeType(){
+    public @NotNull RecipeType getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -68,18 +68,18 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
 
     @Override
     public void draw(DistillationRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics matrixStack, double mouseX, double mouseY) {
-        arrow.draw(matrixStack,24, 12);
-        emptyArrow.draw(matrixStack,24,12);
-        slotDrawable.draw(matrixStack,2,10);
-        slotDrawable.draw(matrixStack,48,10);
-        slotDrawable.draw(matrixStack,72,10);
-        slotDrawable.draw(matrixStack,96,10);
+        arrow.draw(matrixStack, 24, 12);
+        emptyArrow.draw(matrixStack, 24, 12);
+        slotDrawable.draw(matrixStack, 2, 10);
+        slotDrawable.draw(matrixStack, 48, 10);
+        slotDrawable.draw(matrixStack, 72, 10);
+        slotDrawable.draw(matrixStack, 96, 10);
 
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, "mB:", -20,32, VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getFluidIngredientAmount(0)  + "", 2, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(0).getAmount() + "", 48, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font,recipe.getOutputFluid(1).getAmount() + "", 72, 32,VEContainerScreen.GREY_TEXT_STYLE);
-        TextUtil.renderUnshadowedText(matrixStack,Minecraft.getInstance().font, (int)(recipe.getOutputChance(0)*100) + "%", 96, 32,VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, "mB:", -20, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getFluidIngredientAmount(0) + "", 2, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(0).getAmount() + "", 48, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, recipe.getOutputFluid(1).getAmount() + "", 72, 32, VEContainerScreen.GREY_TEXT_STYLE);
+        TextUtil.renderUnshadowedText(matrixStack, Minecraft.getInstance().font, (int) (recipe.getOutputChance(0) * 100) + "%", 96, 32, VEContainerScreen.GREY_TEXT_STYLE);
     }
 
     public void ingredientHandler(DistillationRecipe recipe,
@@ -97,7 +97,7 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
 
         ItemStack itemStackResult = recipe.getResult(0).copy();
         itemStackResult.setCount(recipe.getResult(0).getCount());
-        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK,itemStackResult);
+        itemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, itemStackResult);
     }
 
     @Override

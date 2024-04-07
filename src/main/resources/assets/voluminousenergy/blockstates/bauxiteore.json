@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": {"model": "voluminousenergy:block/bauxiteore"}
+    "": {
+      "model": "voluminousenergy:block/bauxiteore"
+    }
   }
 }

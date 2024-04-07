@@ -21,10 +21,10 @@ public class DistillationRecipe extends VERNGRecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.DISTILLING.get();
 
     private final RecipeParser parser = new RNGRecipeParser(this)
-            .addChancedItemResult(6,0)
-            .addFluidIngredient(0,0)
-            .addFluidResult(1,0)
-            .addFluidResult(2,1);
+            .addChancedItemResult(6, 0)
+            .addFluidIngredient(0, 0)
+            .addFluidResult(1, 0)
+            .addFluidResult(2, 1);
 
     public DistillationRecipe() {
     }
@@ -62,7 +62,9 @@ public class DistillationRecipe extends VERNGRecipe {
     };
 
     @Override
-    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer(){ return SERIALIZER;}
+    public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {
+        return SERIALIZER;
+    }
 
     @Override
     public RecipeParser getParser() {
@@ -70,10 +72,12 @@ public class DistillationRecipe extends VERNGRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol(){
+    public @NotNull ItemStack getToastSymbol() {
         return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get());
     }
 
     @Override
-    public @NotNull RecipeType<VERecipe> getType(){return RECIPE_TYPE;}
+    public @NotNull RecipeType<VERecipe> getType() {
+        return RECIPE_TYPE;
+    }
 }

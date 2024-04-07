@@ -50,7 +50,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
             }
 
             if (context.getPlayer() != null && !level.isClientSide) {
-                if (context.getPlayer().isCreative()){
+                if (context.getPlayer().isCreative()) {
                     context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(VEFluids.AMMONIUM_NITRATE_SOLUTION_BUCKET_REG.get()));
                 } else {
                     context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(Items.BUCKET));
@@ -79,23 +79,24 @@ public class AmmoniumNitrateBucket extends BucketItem {
         if (hook != 0) return hook > 0;
         if (blockstate.getBlock() instanceof BonemealableBlock) {
             Block block = blockstate.getBlock();
-            BonemealableBlock bonemealableblock = (BonemealableBlock)blockstate.getBlock();
+            BonemealableBlock bonemealableblock = (BonemealableBlock) blockstate.getBlock();
             if (bonemealableblock.isValidBonemealTarget(level, pos, blockstate)) {
 
 
                 // TODO: Add more checks to ensure more powerful than bonemeal
-                if (level instanceof ServerLevel){
-                    if (block instanceof SaplingBlock){
+                if (level instanceof ServerLevel) {
+                    if (block instanceof SaplingBlock) {
                         blockstate.setValue(BlockStateProperties.STAGE, 1);
                         ((SaplingBlock) block).advanceTree((ServerLevel) level, pos, blockstate, level.getRandom());
                         try {
                             ((SaplingBlock) block).advanceTree((ServerLevel) level, pos, blockstate, level.getRandom());
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
 
                         itemStack.shrink(1);
                     } else {
                         if (bonemealableblock.isBonemealSuccess(level, level.random, pos, blockstate)) {
-                            bonemealableblock.performBonemeal((ServerLevel)level, level.random, pos, blockstate);
+                            bonemealableblock.performBonemeal((ServerLevel) level, level.random, pos, blockstate);
                         }
 
                         itemStack.shrink(1);
@@ -118,11 +119,11 @@ public class AmmoniumNitrateBucket extends BucketItem {
                 RandomSource random = level.getRandom();
 
                 label78:
-                for(int i = 0; i < 128; ++i) {
+                for (int i = 0; i < 128; ++i) {
                     BlockPos blockpos = pos;
                     BlockState blockstate = Blocks.SEAGRASS.defaultBlockState();
 
-                    for(int j = 0; j < i / 16; ++j) {
+                    for (int j = 0; j < i / 16; ++j) {
                         blockpos = blockpos.offset(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2, random.nextInt(3) - 1);
                         if (level.getBlockState(blockpos).isCollisionShapeFullBlock(level, blockpos)) {
                             continue label78;
@@ -152,7 +153,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                     if (blockstate.is(BlockTags.WALL_CORALS, (p_204093_) -> {
                         return p_204093_.hasProperty(BaseCoralWallFanBlock.FACING);
                     })) {
-                        for(int k = 0; !blockstate.canSurvive(level, blockpos) && k < 4; ++k) {
+                        for (int k = 0; !blockstate.canSurvive(level, blockpos) && k < 4; ++k) {
                             blockstate = blockstate.setValue(BaseCoralWallFanBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(random));
                         }
                     }
@@ -162,7 +163,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
                         if (blockstate1.is(Blocks.WATER) && level.getFluidState(blockpos).getAmount() == 8) {
                             level.setBlock(blockpos, blockstate, 3);
                         } else if (blockstate1.is(Blocks.SEAGRASS) && random.nextInt(10) == 0) {
-                            ((BonemealableBlock)Blocks.SEAGRASS).performBonemeal((ServerLevel)level, random, blockpos, blockstate1);
+                            ((BonemealableBlock) Blocks.SEAGRASS).performBonemeal((ServerLevel) level, random, blockpos, blockstate1);
                         }
                     }
                 }

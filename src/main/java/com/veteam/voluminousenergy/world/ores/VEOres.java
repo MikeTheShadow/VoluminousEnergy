@@ -78,8 +78,9 @@ public class VEOres {
 //        return PlacementUtils.register(registryName, Holder.direct(feature), placementModifiers);
 //    }
 
-    public static class NoPlacement extends PlacementFilter{
-        public NoPlacement(){}
+    public static class NoPlacement extends PlacementFilter {
+        public NoPlacement() {
+        }
 
         @Override
         protected boolean shouldPlace(PlacementContext p_226382_, RandomSource p_226383_, BlockPos p_226384_) {

@@ -5,7 +5,7 @@ import net.minecraft.sounds.SoundEvent;
 
 public class VESounds {
 
-    public static SoundEvent ENERGY_BEAM_ACTIVATE =  SoundEvent.createVariableRangeEvent(new ResourceLocation("voluminousenergy:energy_beam_activate"));
+    public static SoundEvent ENERGY_BEAM_ACTIVATE = SoundEvent.createVariableRangeEvent(new ResourceLocation("voluminousenergy:energy_beam_activate"));
     public static SoundEvent ENERGY_BEAM_FIRED = SoundEvent.createVariableRangeEvent(new ResourceLocation("voluminousenergy:energy_beam_fired"));
     public static SoundEvent AIR_COMPRESSOR = SoundEvent.createVariableRangeEvent(new ResourceLocation("voluminousenergy:air_compressor_active"));
     public static SoundEvent AQUEOULIZER = SoundEvent.createVariableRangeEvent(new ResourceLocation("voluminousenergy:aqueoulizer_active"));
