@@ -57,9 +57,9 @@ public class VETileEntities {
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY)
                     )
                     .countable()
-                    .withDataFlag("temperature_kelvin")
-                    .withDataFlag("temperature_celsius")
-                    .withDataFlag("temperature_fahrenheit")
+                    .addDataFlag("temperature_kelvin")
+                    .addDataFlag("temperature_celsius")
+                    .addDataFlag("temperature_fahrenheit")
                     .makesSound()
                     .withRecipe(INDUSTRIAL_BLASTING)
                     .withCustomRecipeProcessing(new MultiBlockRecipeProcessor(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK));
@@ -139,7 +139,7 @@ public class VETileEntities {
                     )
                     .countable()
                     .makesSound()
-                    .withDataFlag("build_tick")
+                    .addDataFlag("build_tick")
                     .withRecipe(DIMENSIONAL_LASING)
                     .withInfiniteRender()
                     .withCustomInventoryValidator(new DimensionalLaserInventoryValidator())
@@ -295,6 +295,11 @@ public class VETileEntities {
                     )
                     .addTanks(new FluidOutputTank(0, DEFAULT_TANK_CAPACITY))
                     .countable()
+                    .addDataFlag("lx")
+                    .addDataFlag("ly")
+                    .addDataFlag("lz")
+                    .addSavableTag("selected_fluid")
+                    .withCustomRecipeProcessing(new PumpTileProcessor())
                     .makesSound();
 
     // TODO make a custom processor

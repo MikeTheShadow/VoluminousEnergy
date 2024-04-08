@@ -59,6 +59,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
     final HashMap<String, Integer> dataMap = new HashMap<>();
+    final HashMap<String,CompoundTag> tagMap = new HashMap<>();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
@@ -303,6 +304,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             dataMap.put(entry.getKey(), tag.getInt(entry.getKey()));
         }
 
+        for(var entry : tagMap.entrySet()) {
+            tagMap.put(entry.getKey(), tag.getCompound(entry.getKey()));
+        }
+
         for (VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
         }
@@ -338,6 +343,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (var entry : dataMap.entrySet()) {
             tag.putInt(entry.getKey(), entry.getValue());
+        }
+
+        for(var entry: tagMap.entrySet()) {
+            tag.put(entry.getKey(),  entry.getValue());
         }
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
@@ -636,6 +645,15 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.dataMap.put(key, value);
     }
 
+    @NotNull
+    public CompoundTag getCompoundTag(String key) {
+        return this.tagMap.getOrDefault(key,null);
+    }
+
+    public void setCompoundTag(@NotNull String key,@NotNull CompoundTag value) {
+        this.tagMap.put(key, value);
+    }
+
     public void setRecipeDirty(boolean dirty) {
         this.isRecipeDirty = dirty;
     }
@@ -694,7 +712,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * This updates the counter and takes into account an upgrade slot if
      * it exists.
      * @param defaultProcessTime The base processing time in ticks.
-     * @return The new length. Only need to use this if you potentially write to a new length
+     * @return The new length. Only need to use this if you potentially overwrite the changes here (this.setData("length") for example)
      */
     public int updateCounter(int defaultProcessTime) {
         int newLength;

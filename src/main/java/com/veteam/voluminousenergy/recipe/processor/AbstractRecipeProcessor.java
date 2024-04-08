@@ -5,6 +5,15 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 public interface AbstractRecipeProcessor {
 
     /**
+     * Only called when the recipe has been marked as "dirty"
+     * use processRecipe for extra checks if this tile requires
+     * external checks that won't mark the tile as "dirty"
+     *
+     * @param tile The tile to validate the recipe for
+     */
+    void validateRecipe(VETileEntity tile);
+
+    /**
      * Handles the main processing for this tile.
      * For tiles without recipes you can just use this without
      * using validateRecipe as this will *always* be called
@@ -17,13 +26,6 @@ public interface AbstractRecipeProcessor {
      */
     void processRecipe(VETileEntity tile);
 
-    /**
-     * Only called when the recipe has been marked as "dirty"
-     * use processRecipe for extra checks if this tile requires
-     * external checks that won't mark the tile as "dirty"
-     *
-     * @param tile The tile to validate the recipe for
-     */
-    void validateRecipe(VETileEntity tile);
+
 
 }
