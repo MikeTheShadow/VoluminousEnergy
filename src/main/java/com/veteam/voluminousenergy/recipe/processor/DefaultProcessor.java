@@ -24,18 +24,7 @@ public class DefaultProcessor implements AbstractRecipeProcessor {
                 return;
             }
 
-            int newLength;
-            ItemStackHandler handler = tile.getInventoryHandler();
-            if (tile.getEnergy() != null && handler != null) {
-                newLength = tile.calculateCounter(newRecipe.getProcessTime(),
-                        handler.getStackInSlot(tile.getEnergy().getUpgradeSlotId()).copy());
-            } else {
-                newLength = tile.calculateCounter(newRecipe.getProcessTime(), ItemStack.EMPTY);
-            }
-
-            double ratio = (double) tile.getData("length") / (double) newLength;
-            tile.setData("length", newLength);
-            tile.setData("counter", (int) (tile.getData("counter") / ratio));
+            int newLength = tile.updateCounter(newRecipe);
 
             if (tile.getSelectedRecipe() != newRecipe) {
                 tile.setSelectedRecipe(newRecipe);

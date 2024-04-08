@@ -207,7 +207,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
 
-    public int calculateCounter(int processTime, ItemStack upgradeStack) {
+    /**
+     * This is for internal use only. Call this outside at your own peril
+     * @param processTime The base time it takes to process
+     * @param upgradeStack The stack to use to calculate it
+     * @return the new counter int.
+     */
+    private int calculateCounter(int processTime, ItemStack upgradeStack) {
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
@@ -217,7 +223,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             }
         } else if (!upgradeStack.isEmpty() && TagUtil.isTaggedMachineUpgradeItem(upgradeStack)) {
             CompoundTag compound = upgradeStack.getTag();
-            return compound != null ? (int) ((float) (processTime * compound.getFloat("multiplier"))) : processTime;
+            return compound != null ? (int) (processTime * compound.getFloat("multiplier")) : processTime;
         }
         return processTime;
     }
@@ -666,5 +672,46 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public AbstractRecipeProcessor getRecipeProcessor() {
         return recipeProcessor;
+    }
+
+    public int updateCounter(VERecipe recipe) {
+        int newLength;
+        ItemStackHandler handler = this.getInventoryHandler();
+        if (this.getEnergy() != null && handler != null) {
+            newLength = this.calculateCounter(recipe.getProcessTime(),
+                    handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
+        } else {
+            newLength = this.calculateCounter(recipe.getProcessTime(), ItemStack.EMPTY);
+        }
+
+        double ratio = (double) this.getData("length") / (double) newLength;
+        this.setData("length", newLength);
+        this.setData("counter", (int) (this.getData("counter") / ratio));
+        return newLength;
+    }
+
+    /**
+     * This updates the counter and takes into account an upgrade slot if
+     * it exists.
+     * @param defaultProcessTime The base processing time in ticks.
+     * @return The new length. Only need to use this if you potentially write to a new length
+     */
+    public int updateCounter(int defaultProcessTime) {
+        int newLength;
+        ItemStackHandler handler = this.getInventoryHandler();
+        if (this.getEnergy() != null && handler != null) {
+            newLength = this.calculateCounter(defaultProcessTime,
+                    handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
+        } else {
+            newLength = this.calculateCounter(defaultProcessTime, ItemStack.EMPTY);
+        }
+        double ratio = (double) this.getData("length") / (double) newLength;
+        this.setData("length", newLength);
+
+        int ratioedCounter = (int) (this.getData("counter") / ratio);
+
+        this.setData("counter", ratioedCounter == 0 ? newLength : ratioedCounter);
+        this.setChanged();
+        return newLength;
     }
 }

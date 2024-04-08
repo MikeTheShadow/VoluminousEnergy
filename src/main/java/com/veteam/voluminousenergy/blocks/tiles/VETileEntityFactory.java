@@ -50,7 +50,7 @@ public class VETileEntityFactory {
 
     public VETileEntity create(BlockPos pos, BlockState state) {
 
-        VETileEntity newTile = new VETileEntity(tileRegistry.get(), pos, state, recipeType.get()) {
+        VETileEntity newTile = new VETileEntity(tileRegistry.get(), pos, state, recipeType == null ? null : recipeType.get()) {
 
             @Nullable
             @Override

@@ -58,7 +58,7 @@ public class VEItemStackHandler extends ItemStackHandler {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         // For simple custom validation.
         if (validator != null) {
-            return validator.isItemValid(slot, stack);
+            return validator.isItemValid(slot, stack,tileEntity);
         }
         if (slot == upgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);

@@ -238,8 +238,8 @@ public class SawmillTile extends VETileEntity {
                 }
             } else {
                 counter = VEFluidSawmillRecipe != null
-                        ? this.calculateCounter(VEFluidSawmillRecipe.getProcessTime(), inventory.getStackInSlot(this.energy.getUpgradeSlotId()).copy())    // Sawmill recipe not null
-                        : this.calculateCounter(Config.SAWMILL_PROCESSING_TIME.get(), inventory.getStackInSlot(this.energy.getUpgradeSlotId()).copy());// Use default values when null
+                        ? updateCounter(VEFluidSawmillRecipe.getProcessTime())    // Sawmill recipe not null
+                        : updateCounter(Config.SAWMILL_PROCESSING_TIME.get());    // Use default values when null
                 length = counter;
             }
         }

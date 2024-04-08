@@ -71,11 +71,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         if (!tile.canConsumeEnergy()) return;
         ItemStack stack = tile.getStackInSlot(2);
         if (stack.isEmpty()) {
-            int counterTemp = tile.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(),
-                    tile.getStackInSlot(tile.getEnergy().getUpgradeSlotId()).copy());
-            int counter = counterTemp != 0 ? counterTemp : 1;
-            tile.setData("length", counter);
-            tile.setData("counter", counter);
+            tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
             return;
         }
 
@@ -102,19 +98,16 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         int counter = tile.getData("counter");
 
         if (counter == 1) {
+            counter--;
             FluidStack fluidStack = new FluidStack(singleChunkFluid.getFluid(), amount);
             tile.getTank(0).fillTank(fluidStack);
-            counter--;
             tile.consumeEnergy();
             tile.setChanged();
         } else if (counter > 0) {
             counter--;
             tile.consumeEnergy();
         } else {
-            int counterTemp = tile.calculateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get(),
-                    tile.getStackInSlot(tile.getEnergy().getUpgradeSlotId()).copy());
-            counter = counterTemp != 0 ? counterTemp : 1;
-            tile.setData("length", counter);
+            counter = tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
         }
         tile.setData("counter", counter);
 

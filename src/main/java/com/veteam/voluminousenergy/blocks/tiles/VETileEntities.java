@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidInputTank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidOutputTank;
 import com.veteam.voluminousenergy.blocks.tiles.handlers.DimensionalLaserInventoryValidator;
+import com.veteam.voluminousenergy.blocks.tiles.handlers.FurnaceInventoryValidator;
 import com.veteam.voluminousenergy.recipe.processor.*;
 import com.veteam.voluminousenergy.tools.Config;
 
@@ -160,7 +161,6 @@ public class VETileEntities {
                     .withRecipe(DISTILLING)
                     .withCustomRecipeProcessing(new MultiBlockRecipeProcessor(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK));
 
-    // TODO needs a furnace processor
     public static final VETileEntityFactory ELECTRIC_FURNACE_FACTORY =
             new VETileEntityFactory(VEBlocks.ELECTRIC_FURNACE_TILE, VEContainers.ELECTRIC_FURNACE_FACTORY)
                     .addEnergyStorageWithConsumption(Config.ELECTROLYZER_MAX_POWER.get(),
@@ -168,7 +168,8 @@ public class VETileEntities {
                             Config.ELECTRIC_FURNACE_POWER_USAGE.get())
                     .countable()
                     .makesSound()
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomInventoryValidator(new FurnaceInventoryValidator())
+                    .withCustomRecipeProcessing(new ElectricFurnaceProcessor());
 
     public static final VETileEntityFactory ELECTROLYZER_FACTORY =
             new VETileEntityFactory(VEBlocks.ELECTROLYZER_TILE, VEContainers.ELECTROLYZER_FACTORY)
@@ -217,6 +218,7 @@ public class VETileEntities {
                     )
                     .countable()
                     .makesSound()
+                    .withCustomInventoryValidator(new FurnaceInventoryValidator())
                     .withCustomRecipeProcessing(new DefaultProcessor());
 
     public static final VETileEntityFactory HYDROPONIC_INCUBATOR_FACTORY =

@@ -54,7 +54,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                     }
                 }
                 tile.setData("sound_tick", soundTick);
-                counter = (byte) tile.calculateCounter(20, tile.getInventory().getStackInSlot(tile.getEnergy().getUpgradeSlotId()));
+                counter = tile.updateCounter(20);
                 tile.setChanged();
             }
         } else {

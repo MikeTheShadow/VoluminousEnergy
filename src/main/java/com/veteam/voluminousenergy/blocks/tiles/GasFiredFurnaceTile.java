@@ -123,7 +123,7 @@ public class GasFiredFurnaceTile extends VETileEntity {
                 } else if (counter > 0) {
                     counter--;
                 } else {
-                    counter = this.calculateCounter(200, inventory.getStackInSlot(4));
+                    counter = updateCounter(200);
                     length = counter;
                     this.referenceStack.set(furnaceInput.copy());
                 }
