@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.PumpTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.ioMenuButton;
@@ -16,17 +16,18 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class PumpScreen extends VEContainerScreen<VEContainer> {
 
-    private PumpTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/air_compressor_gui.png");
 
 
     public PumpScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (PumpTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -80,8 +81,9 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
-            String name = tileEntity.getAirTankFluid().getTranslationKey();
-            int amount = tileEntity.getAirTankFluid().getAmount();
+            FluidStack stack = tileEntity.getTank(0).getTank().getFluid();
+            String name = stack.getTranslationKey();
+            int amount = stack.getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
@@ -110,7 +112,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
 
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getAirTankFluid(), tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getTank(0).getTank().getFluid(), tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
             drawIOSideHelper();

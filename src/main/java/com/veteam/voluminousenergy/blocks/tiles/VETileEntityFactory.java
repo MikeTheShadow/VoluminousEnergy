@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.util.TankType;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -40,6 +41,7 @@ public class VETileEntityFactory {
     private AbstractItemStackValidator validator = null;
 
     private final HashMap<String, Integer> dataMap = new HashMap<>();
+    private final HashMap<String, CompoundTag> tagMap = new HashMap<>();
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
@@ -86,6 +88,7 @@ public class VETileEntityFactory {
         newTile.addTanks(tanks.stream().map(t -> t.asTank(index.getAndIncrement())).toList());
         // Populate the data map
         newTile.dataMap.putAll(dataMap);
+        newTile.tagMap.putAll(tagMap);
 
         // Set energy before the tilePos count otherwise we'll run into issues with the data tilePos
         if (storage != null)
@@ -139,7 +142,7 @@ public class VETileEntityFactory {
         return this;
     }
 
-    public VETileEntityFactory withDataFlag(String flag) {
+    public VETileEntityFactory addDataFlag(String flag) {
         this.dataMap.put(flag, 0);
         return this;
     }
@@ -176,6 +179,11 @@ public class VETileEntityFactory {
 
     public VETileEntityFactory withCustomInventoryValidator(AbstractItemStackValidator validator) {
         this.validator = validator;
+        return this;
+    }
+
+    public VETileEntityFactory addSavableTag(String tagId) {
+        this.tagMap.put(tagId,new CompoundTag());
         return this;
     }
 
