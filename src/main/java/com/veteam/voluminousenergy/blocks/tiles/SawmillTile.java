@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
-import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
+import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
@@ -67,11 +67,11 @@ public class SawmillTile extends VETileEntity {
     }
 
     public SawmillTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.SAWMILL_TILE.get(), pos, state, com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe.RECIPE_TYPE);
+        super(VEBlocks.SAWMILL_TILE.get(), pos, state, SawmillRecipe.RECIPE_TYPE);
         outputTank.setAllowAny(true);
     }
 
-    VEFluidSawmillRecipe recipe;
+    SawmillRecipe recipe;
 
     @Override
     public void tick() {
@@ -182,7 +182,7 @@ public class SawmillTile extends VETileEntity {
         };
     }
 
-    private void coreTickProcessing(@Nullable VEFluidSawmillRecipe VEFluidSawmillRecipe,
+    private void coreTickProcessing(@Nullable SawmillRecipe SawmillRecipe,
                                     ItemStack logInput,
                                     ItemStack resolvedPlankOutput,
                                     ItemStack secondItemOutput,
@@ -191,7 +191,7 @@ public class SawmillTile extends VETileEntity {
             if (counter == 1) {
                 // Core processing occurs here
 
-                inventory.extractItem(0, (VEFluidSawmillRecipe != null ? VEFluidSawmillRecipe.getIngredient(0).getItems()[0].getCount() : Config.SAWMILL_LOG_CONSUMPTION_RATE.get()), false); // Extract log
+                inventory.extractItem(0, (SawmillRecipe != null ? SawmillRecipe.getIngredient(0).getItems()[0].getCount() : Config.SAWMILL_LOG_CONSUMPTION_RATE.get()), false); // Extract log
 
                 // Plank output
                 ItemStack currentPlankStack = inventory.getStackInSlot(1);
@@ -237,8 +237,8 @@ public class SawmillTile extends VETileEntity {
                     }
                 }
             } else {
-                counter = VEFluidSawmillRecipe != null
-                        ? updateCounter(VEFluidSawmillRecipe.getProcessTime())    // Sawmill recipe not null
+                counter = SawmillRecipe != null
+                        ? updateCounter(SawmillRecipe.getProcessTime())    // Sawmill recipe not null
                         : updateCounter(Config.SAWMILL_PROCESSING_TIME.get());    // Use default values when null
                 length = counter;
             }
@@ -265,6 +265,6 @@ public class SawmillTile extends VETileEntity {
 
     @Override
     public RecipeType<? extends Recipe<?>> getRecipeType() {
-        return VEFluidSawmillRecipe.RECIPE_TYPE;
+        return SawmillRecipe.RECIPE_TYPE;
     }
 }

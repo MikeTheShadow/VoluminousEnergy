@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.compat.jei.category;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
-import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
+import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -34,14 +34,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
+public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
     private final IDrawable background;
     private IDrawable icon;
     private IDrawable slotDrawable;
     private IDrawable arrow;
     private IDrawable emptyArrow;
-    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.SAWMILL_UID, VEFluidSawmillRecipe.class);
+    public static final RecipeType RECIPE_TYPE = new RecipeType(VoluminousEnergyPlugin.SAWMILL_UID, SawmillRecipe.class);
     //protected static ArrayList<Pair<ItemStack, ItemStack>> logPlankPairList = new ArrayList<>();
 
 
@@ -76,7 +76,7 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
     }
 
     @Override
-    public void draw(VEFluidSawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
         slotDrawable.draw(matrixStack, 2, 10);
         slotDrawable.draw(matrixStack, 48, 1);
         slotDrawable.draw(matrixStack, 48, 19);
@@ -85,7 +85,7 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
         emptyArrow.draw(matrixStack, 24, 11);
     }
 
-    public void ingredientHandler(VEFluidSawmillRecipe recipe,
+    public void ingredientHandler(SawmillRecipe recipe,
                                   IIngredientAcceptor inputItemAcceptor,
                                   IIngredientAcceptor primaryItemOutputAcceptor,
                                   IIngredientAcceptor secondaryItemOutputAcceptor,
@@ -140,7 +140,7 @@ public class SawmillCategory implements IRecipeCategory<VEFluidSawmillRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder recipeLayout, VEFluidSawmillRecipe recipe, IFocusGroup focusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder recipeLayout, SawmillRecipe recipe, IFocusGroup focusGroup) {
         IRecipeSlotBuilder inputItem = recipeLayout.addSlot(RecipeIngredientRole.INPUT, 3, 11);
 
         IRecipeSlotBuilder primaryOutputItem = recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 49, 2);

@@ -308,6 +308,8 @@ public class VETileEntities {
                     .addEnergyStorage(
                             Config.SAWMILL_MAX_POWER.get(),
                             Config.SAWMILL_TRANSFER.get()
+                    ).addTanks(
+                            new FluidOutputTank(0, DEFAULT_TANK_CAPACITY)
                     )
                     .countable()
                     .makesSound()

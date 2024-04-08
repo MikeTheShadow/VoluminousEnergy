@@ -3,6 +3,16 @@
   "is_log_recipe": true,
   "ingredients": [],
   "process_time": 200,
-  "item_results": [],
-  "fluid_results": []
+  "item_results": [
+    {
+      "item": "voluminousenergy:saw_dust",
+      "count": 1
+    }
+  ],
+  "fluid_results": [
+    {
+      "fluid": "voluminousenergy:tree_sap",
+      "amount": 250
+    }
+  ]
 }

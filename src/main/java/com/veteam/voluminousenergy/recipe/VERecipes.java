@@ -98,7 +98,7 @@ public class VERecipes {
     public static final RegistryObject<RecipeSerializer<?>> TOOLING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("tooling", () -> new ToolingRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> SAWMILLING =
-            VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> new VEFluidSawmillRecipe().getSerializer());
+            VE_RECIPE_SERIALIZERS_REGISTRY.register("sawmilling", () -> new SawmillRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> DIMENSIONAL_LASING =
             VE_RECIPE_SERIALIZERS_REGISTRY.register("dimensional_lasing", () -> new DimensionalLaserRecipe().getSerializer());
     public static final RegistryObject<RecipeSerializer<?>> FLUID_ELECTROLYZING =

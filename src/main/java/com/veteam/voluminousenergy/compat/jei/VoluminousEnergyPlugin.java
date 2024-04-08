@@ -100,7 +100,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addRecipes(ImplosionCompressionCategory.RECIPE_TYPE, getRecipesOfType(ImplosionCompressorRecipe.RECIPE_TYPE));
         registration.addRecipes(IndustrialBlastingCategory.RECIPE_TYPE, getRecipesOfType(IndustrialBlastingRecipe.RECIPE_TYPE));
         registration.addRecipes(ToolingCategory.RECIPE_TYPE, getRecipesOfType(ToolingRecipe.RECIPE_TYPE));
-        registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(VEFluidSawmillRecipe.RECIPE_TYPE));
+        registration.addRecipes(SawmillCategory.RECIPE_TYPE, getRecipesOfType(SawmillRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidElectrolyzingCategory.RECIPE_TYPE, getRecipesOfType(FluidElectrolyzerRecipe.RECIPE_TYPE));
         registration.addRecipes(FluidMixingCategory.RECIPE_TYPE, getRecipesOfType(FluidMixerRecipe.RECIPE_TYPE));
         registration.addRecipes(PrimitiveBlastingCategory.RECIPE_TYPE, getRecipesOfType(PrimitiveBlastFurnaceRecipe.RECIPE_TYPE));

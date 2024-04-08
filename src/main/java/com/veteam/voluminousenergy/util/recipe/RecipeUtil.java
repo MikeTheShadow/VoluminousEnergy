@@ -5,7 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.veteam.voluminousenergy.recipe.CrusherRecipe;
 import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
-import com.veteam.voluminousenergy.recipe.VEFluidSawmillRecipe;
+import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -101,15 +101,15 @@ public class RecipeUtil {
         return atomicItemStackArray.get();
     }
 
-    public static VEFluidSawmillRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack) { // Parallel by default
+    public static SawmillRecipe getSawmillingRecipeFromLog(Level world, ItemStack logStack) { // Parallel by default
         if (logStack.isEmpty()) return null;
-        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<SawmillRecipe> atomicRecipe = new AtomicReference<>(null);
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe) {
-                if (!VEFluidSawmillRecipe.isLogRecipe()) {
-                    for (ItemStack ingredientStack : VEFluidSawmillRecipe.getIngredient(0).getItems()) {
+            if (recipe.value() instanceof SawmillRecipe SawmillRecipe) {
+                if (!SawmillRecipe.isLogRecipe()) {
+                    for (ItemStack ingredientStack : SawmillRecipe.getIngredient(0).getItems()) {
                         if (ingredientStack.getItem().equals(logStack.getItem())) {
-                            atomicRecipe.set(VEFluidSawmillRecipe);
+                            atomicRecipe.set(SawmillRecipe);
                             break;
                         }
                     }
@@ -120,15 +120,15 @@ public class RecipeUtil {
         return atomicRecipe.get();
     }
 
-    public static VEFluidSawmillRecipe getSawmillingRecipeFromPlank(Level world, ItemStack plankStack) { // Parallel by default
+    public static SawmillRecipe getSawmillingRecipeFromPlank(Level world, ItemStack plankStack) { // Parallel by default
         if (plankStack.isEmpty()) return null;
-        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<SawmillRecipe> atomicRecipe = new AtomicReference<>(null);
 
         world.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe) {
-                if (!VEFluidSawmillRecipe.isLogRecipe()) {
-                    if (VEFluidSawmillRecipe.getResult(0).getItem().equals(plankStack.getItem())) {
-                        atomicRecipe.set(VEFluidSawmillRecipe);
+            if (recipe.value() instanceof SawmillRecipe SawmillRecipe) {
+                if (!SawmillRecipe.isLogRecipe()) {
+                    if (SawmillRecipe.getResult(0).getItem().equals(plankStack.getItem())) {
+                        atomicRecipe.set(SawmillRecipe);
                     }
                 }
             }
@@ -137,16 +137,16 @@ public class RecipeUtil {
         return atomicRecipe.get();
     }
 
-    public static VEFluidSawmillRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack) {
+    public static SawmillRecipe getSawmillingRecipeFromSecondOutput(Level level, ItemStack itemStack) {
         if (itemStack.isEmpty()) return null;
-        AtomicReference<VEFluidSawmillRecipe> atomicRecipe = new AtomicReference<>(null);
+        AtomicReference<SawmillRecipe> atomicRecipe = new AtomicReference<>(null);
 
         level.getRecipeManager().getRecipes().parallelStream().forEach(recipe -> {
-            if (recipe.value() instanceof VEFluidSawmillRecipe VEFluidSawmillRecipe) {
-                if (!VEFluidSawmillRecipe.isLogRecipe()) {
-                    Item item = VEFluidSawmillRecipe.getResult(0).getItem();
+            if (recipe.value() instanceof SawmillRecipe SawmillRecipe) {
+                if (!SawmillRecipe.isLogRecipe()) {
+                    Item item = SawmillRecipe.getResult(0).getItem();
                     if (itemStack.getItem().equals(item)) {
-                        atomicRecipe.set(VEFluidSawmillRecipe);
+                        atomicRecipe.set(SawmillRecipe);
                     }
                 }
             }

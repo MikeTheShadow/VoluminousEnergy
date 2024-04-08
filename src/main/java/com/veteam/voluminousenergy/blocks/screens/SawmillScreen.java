@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.SawmillTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -19,14 +19,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SawmillScreen extends VEContainerScreen<VEContainer> {
-    private SawmillTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/sawmill_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public SawmillScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (SawmillTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 

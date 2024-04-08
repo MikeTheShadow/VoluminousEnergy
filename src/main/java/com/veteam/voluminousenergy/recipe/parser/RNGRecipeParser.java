@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.recipe.parser.AbstractRecipeParser.SlotAndRecipePos;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
