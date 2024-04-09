@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.CombustionGeneratorTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -20,14 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
-    private CombustionGeneratorTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/combustion_generator_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public CombustionGeneratorScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (CombustionGeneratorTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -48,7 +48,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
     protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("combustion_generator"), 8, 6, WHITE_TEXT_STYLE);
 
-        TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergyRate() + " FE/t"), 96, 18, WHITE_TEXT_STYLE);
+        TextUtil.renderCenteredShadowedText(matrixStack, Minecraft.getInstance().font, Component.nullToEmpty(tileEntity.getEnergy().getProduction() + " FE/t"), 96, 18, WHITE_TEXT_STYLE);
 
         TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("container.inventory"), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
         super.renderLabels(matrixStack, mouseX, mouseY);
@@ -100,7 +100,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.ticksLeft()),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergyRate() + " FE/t"));
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.generating").getString() + ": " + tileEntity.getEnergy().getProduction() + " FE/t"));
     }
 
     @Override

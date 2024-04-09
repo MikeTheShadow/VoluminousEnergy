@@ -104,7 +104,7 @@ public class VETileEntities {
                     .makesSound()
                     .sendsOutPower()
                     .withRecipe(FUEL_COMBUSTION)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new CombustionGeneratorProcessor());
 
     public static final VETileEntityFactory COMPRESSOR_FACTORY =
             new VETileEntityFactory(VEBlocks.COMPRESSOR_TILE, VEContainers.COMPRESSOR_FACTORY)

@@ -695,7 +695,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public int updateCounter(VERecipe recipe) {
         int newLength;
         ItemStackHandler handler = this.getInventoryHandler();
-        if (this.getEnergy() != null && handler != null) {
+        if (energy != null && handler != null && energy.getUpgradeSlotId() != -1) {
             newLength = this.calculateCounter(recipe.getProcessTime(),
                     handler.getStackInSlot(energy.getUpgradeSlotId()).copy());
         } else {

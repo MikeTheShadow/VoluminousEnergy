@@ -21,6 +21,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class VERecipeCodecs {
@@ -137,6 +140,24 @@ public class VERecipeCodecs {
         ).apply(instance, ClimateData::new);
     });
 
+    public static final Codec<RegistryFluidValue> REGISTRY_COMBUSTION_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
+                    .forGetter(RegistryFluidValue::tag),
+            ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
+                    .forGetter(RegistryFluidValue::fluid),
+            ExtraCodecs.strictOptionalField(Codec.FLOAT, "energy_per_tick", 0f)
+                    .forGetter((ingredient) -> 1f)
+    ).apply(instance, RegistryFluidValue::new));
+
+    public static final Codec<RegistryFluidValue> REGISTRY_OXIDIZER_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
+                    .forGetter(RegistryFluidValue::tag),
+            ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
+                    .forGetter(RegistryFluidValue::fluid),
+            ExtraCodecs.strictOptionalField(Codec.FLOAT, "multiplier", 0f)
+                    .forGetter((ingredient) -> 1f)
+    ).apply(instance, RegistryFluidValue::new));
+
     public record FloatPair(float min, float max) {
     }
 
@@ -174,6 +195,40 @@ public class VERecipeCodecs {
                 throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
             }
         }
+    }
+
+    public record RegistryFluidValue(String tag, String fluid, float value) {
+        public FluidSetWithValue getAsValuePair() {
+
+            if (!tag.isBlank()) {
+                ResourceLocation res = ResourceLocation.of(tag, ':');
+                TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), res);
+                HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
+                AtomicReference<HashSet<Fluid>> fluidSet = new AtomicReference<>(new HashSet<>());
+                holderSet.stream().forEach(itemHolder -> fluidSet.get().add(itemHolder.value()));
+                return new FluidSetWithValue(fluidSet.get(),value);
+            } else if (!fluid.isBlank()) {
+                ResourceLocation res = ResourceLocation.of(fluid, ':');
+                Fluid single = ForgeRegistries.FLUIDS.getValue(res);
+                if (single == null) {
+                    throw new IllegalStateException("Invalid recipe fluid ingredient object: " + fluid);
+                }
+                return new FluidSetWithValue(Set.of(single),value);
+            } else {
+                throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
+            }
+        }
+    }
+
+    public static class FluidSetWithValue {
+        public Set<Fluid> fluids;
+        public float value;
+
+        public FluidSetWithValue(Set<Fluid> fluids,float value) {
+            this.fluids = fluids;
+            this.value = value;
+        }
+
     }
 
     public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) -> {

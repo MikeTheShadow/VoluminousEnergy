@@ -1,0 +1,13 @@
+{
+  "type": "voluminousenergy:fuel_combustion",
+  "fluid_ingredients": [
+    {
+      "tag": "forge:biofuel",
+      "amount": 250
+    },
+    {
+      "tag": "voluminousenergy:oxidizer",
+      "amount": 250
+    }
+  ]
+}

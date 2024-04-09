@@ -60,8 +60,10 @@ public class SawmillParser extends RecipeParser {
             ItemStack plank = getPlankFromLog(tile);
             ItemStack plankOutput = tile.getStackInSlot(1);
             ItemStack dustOutput = tile.getStackInSlot(2);
-            boolean plankValid = plankOutput.isEmpty() || plank.is(plankOutput.getItem());
-            boolean dustValid = dustOutput.isEmpty() || dustOutput.is(recipe.getResult(0).getItem());
+            boolean plankValid = plankOutput.isEmpty() ||
+                    (plank.is(plankOutput.getItem()) && plankOutput.getCount() + plank.getCount() <= plankOutput.getMaxStackSize());
+            boolean dustValid = dustOutput.isEmpty() ||
+                    (dustOutput.is(recipe.getResult(0).getItem()) && dustOutput.getCount() + recipe.getResultCount(0) <= dustOutput.getMaxStackSize());
             return plankValid && dustValid && tile.getTank(0).canInsertOutputFluid(recipe,0);
         }
         return super.canCompleteRecipe(tile);

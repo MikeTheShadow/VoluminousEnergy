@@ -1,0 +1,78 @@
+package com.veteam.voluminousenergy.items.data;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.REGISTRY_COMBUSTION_FLUID_CODEC;
+
+public class CombustibleFluidsData {
+
+    static final List<VERecipeCodecs.RegistryFluidValue> rawData = new ArrayList<>();
+    static final HashMap<Fluid, Integer> combustibleFluidData = new HashMap<>();
+
+    public static void loadData(ResourceManager manager) {
+        resetCache();
+        ResourceLocation prefix = new ResourceLocation("voluminousenergy", "fluid_data/combustion");
+        Map<ResourceLocation, Resource> resourceLocations = manager.listResources(prefix.getPath(), s -> s.getPath().endsWith(".json"));
+
+        for (Resource resource : resourceLocations.values()) {
+            try (BufferedReader reader = resource.openAsReader()) {
+                JsonElement jsonElement = JsonParser.parseReader(reader);
+                if (jsonElement != null) {
+                    DataResult<VERecipeCodecs.RegistryFluidValue> result = REGISTRY_COMBUSTION_FLUID_CODEC.parse(JsonOps.INSTANCE, jsonElement);
+                    result.resultOrPartial(VoluminousEnergy.LOGGER::error)
+                            .ifPresent(rawData::add);
+                }
+            } catch (IOException e) {
+                VoluminousEnergy.LOGGER.error("Unable to read combustion fluid data ", e);
+            }
+        }
+    }
+
+
+    public static boolean isCombustible(FluidStack stack) {
+        buildCache();
+        return combustibleFluidData.containsKey(stack.getFluid());
+    }
+
+    public static int getEnergyProduced(FluidStack stack) {
+        buildCache();
+        return combustibleFluidData.getOrDefault(stack.getFluid(), 0);
+    }
+
+    public static List<Fluid> getAllCombustibleFluids() {
+        buildCache();
+        return new ArrayList<>(combustibleFluidData.keySet());
+    }
+
+    private static void buildCache() {
+        if (!combustibleFluidData.isEmpty()) {
+            return;
+        }
+        for (VERecipeCodecs.RegistryFluidValue rawItem : rawData) {
+            for (Fluid fluid : rawItem.getAsValuePair().fluids) {
+                combustibleFluidData.put(fluid, (int) rawItem.value());
+            }
+        }
+    }
+
+    private static void resetCache() {
+        combustibleFluidData.clear();
+    }
+}

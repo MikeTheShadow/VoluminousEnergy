@@ -36,7 +36,6 @@ public class BoolButtonPacket {
     }
 
     public static void handle(BoolButtonPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        //VoluminousEnergy.LOGGER.debug(contextSupplier.get().getDirection());
         NetworkDirection packetDirection = contextSupplier.getDirection();
         switch (packetDirection) {
             case PLAY_TO_CLIENT:
