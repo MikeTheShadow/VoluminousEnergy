@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.AbstractRecipeParser.SlotAndRecipePos;

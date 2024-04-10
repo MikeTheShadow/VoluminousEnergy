@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
@@ -9,6 +10,7 @@ import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -36,6 +39,15 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 
         int buildTick = tile.getData("build_tick");
         if (buildTick != 1000) {
+
+            if(buildTick == 999) {
+                int x = tile.getBlockPos().getX();
+                int y = tile.getBlockPos().getY();
+                int z = tile.getBlockPos().getZ();
+                for (ServerPlayer serverplayer : tile.getLevel().getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
+                    VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
+                }
+            }
 
             if (buildTick == 1) {
                 tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.ENERGY_BEAM_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -68,6 +80,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
             tile.setData("build_tick", buildTick + 1);
             return;
         }
+
         if (!tile.canConsumeEnergy()) return;
         ItemStack stack = tile.getStackInSlot(2);
         if (stack.isEmpty()) {
@@ -92,7 +105,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         FluidStack currentFluid = tile.getFluidStackFromTank(0);
         int amount = Math.min(singleChunkFluid.getAmount(), DEFAULT_TANK_CAPACITY - currentFluid.getAmount());
 
-        boolean canFill = tile.getTank(0).testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
+        boolean canFill = tile.getRelationalTank(0).testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
         if (!canFill) return;
 
         int counter = tile.getData("counter");
@@ -100,7 +113,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         if (counter == 1) {
             counter--;
             FluidStack fluidStack = new FluidStack(singleChunkFluid.getFluid(), amount);
-            tile.getTank(0).fillTank(fluidStack);
+            tile.getRelationalTank(0).fillTank(fluidStack);
             tile.consumeEnergy();
             tile.setChanged();
         } else if (counter > 0) {

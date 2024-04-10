@@ -32,7 +32,6 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
             return;
         }
         int counter = tile.getData("counter");
-        VoluminousEnergy.LOGGER.info("Counter: " + counter);
         if (counter == 1) {
             counter--;
             tile.getInventory().extractItem(0, 1, false);

@@ -4,8 +4,9 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidInputTank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidOutputTank;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.DimensionalLaserInventoryValidator;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.FurnaceInventoryValidator;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.DimensionalLaserInventoryValidator;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.FurnaceInventoryValidator;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.GasFiredFurnaceValidator;
 import com.veteam.voluminousenergy.recipe.processor.*;
 import com.veteam.voluminousenergy.tools.Config;
 
@@ -91,7 +92,6 @@ public class VETileEntities {
                     .withRecipe(CENTRIFUGAL_SEPARATION)
                     .withCustomRecipeProcessing(new DefaultProcessor());
 
-    // TODO processing
     public static final VETileEntityFactory COMBUSTION_GENERATOR_FACTORY =
             new VETileEntityFactory(VEBlocks.COMBUSTION_GENERATOR_TILE, VEContainers.COMBUSTION_GENERATOR_FACTORY)
                     .addEnergyStorage(
@@ -210,16 +210,19 @@ public class VETileEntities {
                     .withRecipe(FLUID_MIXING)
                     .withCustomRecipeProcessing(new DefaultProcessor());
 
-    // TODO needs a furnace processor
     public static final VETileEntityFactory GAS_FIRED_FURNACE =
             new VETileEntityFactory(VEBlocks.GAS_FIRED_FURNACE_TILE, VEContainers.GAS_FIRED_FURNACE_FACTORY)
+                    // We have an upgrade slot, so we add an empty energy storage. Less than ideal.
+                    .addEnergyStorage(0,0)
                     .addTanks(
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY)
                     )
                     .countable()
                     .makesSound()
-                    .withCustomInventoryValidator(new FurnaceInventoryValidator())
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .addDataFlag("fuel_length")
+                    .addDataFlag("fuel_counter")
+                    .withCustomInventoryValidator(new GasFiredFurnaceValidator())
+                    .withCustomRecipeProcessing(new GasFiredFurnaceProcessor());
 
     public static final VETileEntityFactory HYDROPONIC_INCUBATOR_FACTORY =
             new VETileEntityFactory(VEBlocks.HYDROPONIC_INCUBATOR_TILE, VEContainers.HYDROPONIC_INCUBATOR_FACTORY)
@@ -302,7 +305,6 @@ public class VETileEntities {
                     .withCustomRecipeProcessing(new PumpTileProcessor())
                     .makesSound();
 
-    // TODO make a custom processor
     public static final VETileEntityFactory SAWMILL_FACTORY =
             new VETileEntityFactory(VEBlocks.SAWMILL_TILE, VEContainers.SAWMILL_FACTORY)
                     .addEnergyStorage(

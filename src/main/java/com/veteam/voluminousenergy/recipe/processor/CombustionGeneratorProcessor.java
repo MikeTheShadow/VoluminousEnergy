@@ -16,6 +16,7 @@ public class CombustionGeneratorProcessor extends DefaultProcessor {
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
     public static final int COMBUSTION_GENERATOR_PROCESS_TIME = 1600;
 
+    // TODO Make sure it doesn't do an extra "empty" process when it's finished processing
     @Override
     public void validateRecipe(VETileEntity tile) {
         tile.setPotentialRecipes(VERecipe.getPotentialRecipes(tile));
@@ -57,8 +58,8 @@ public class CombustionGeneratorProcessor extends DefaultProcessor {
             FluidStack fuel = tile.getFluidStackFromTank(0);
             FluidStack oxi = tile.getFluidStackFromTank(1);
 
-            tile.getTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            tile.getTank(1).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            tile.getRelationalTank(1).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
 
             int powerGeneration = CombustibleFluidsData.getEnergyProduced(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);

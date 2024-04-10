@@ -1,4 +1,4 @@
-package com.veteam.voluminousenergy.blocks.tiles.handlers;
+package com.veteam.voluminousenergy.blocks.tiles.inventory;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;

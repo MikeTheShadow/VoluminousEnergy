@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.ToolingStationTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,14 +15,14 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
-    private ToolingStationTile tileEntity;
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tooling_station_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public ToolingStationScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (ToolingStationTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -87,7 +87,7 @@ public class ToolingStationScreen extends VEContainerScreen<VEContainer> {
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
-            boolean lightArrow = tileEntity.hasValidRecipe();
+            boolean lightArrow = (tileEntity.getSelectedRecipe() == null);
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:

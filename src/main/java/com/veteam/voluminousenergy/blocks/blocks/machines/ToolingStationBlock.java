@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.blocks.machines;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
-import com.veteam.voluminousenergy.blocks.tiles.ToolingStationTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import net.minecraft.core.BlockPos;
@@ -39,13 +39,13 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { // Replaces old createBlockEntity method
-        return new ToolingStationTile(pos, state);
+        return VETileEntities.TOOLING_STATION_FACTORY.create(pos, state);
     }
 
     // NEW TICK SYSTEM
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, ToolingStationTile::serverTick);
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
     }
 
     public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tile, BlockEntityTicker<E> serverTick) {

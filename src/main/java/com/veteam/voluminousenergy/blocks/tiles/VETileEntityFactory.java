@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.AbstractItemStackValidator;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.AbstractItemStackValidator;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.processor.AbstractRecipeProcessor;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;

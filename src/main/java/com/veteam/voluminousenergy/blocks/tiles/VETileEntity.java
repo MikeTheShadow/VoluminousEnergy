@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -617,7 +617,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return tanks;
     }
 
-    public VERelationalTank getTank(int id) {
+    public VERelationalTank getRelationalTank(int id) {
         return tanks.get(id);
     }
 

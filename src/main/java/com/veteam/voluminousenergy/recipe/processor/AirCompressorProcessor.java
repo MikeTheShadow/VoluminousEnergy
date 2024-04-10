@@ -45,7 +45,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                 airMultiplier++;
             if (Blocks.AIR == level.getBlockState(new BlockPos(x, y, z - 1)).getBlock())
                 airMultiplier++;
-            if (addAirToTank(airMultiplier, tile.getTank(0))) {
+            if (addAirToTank(airMultiplier, tile.getRelationalTank(0))) {
                 tile.consumeEnergy();
                 if (++soundTick == 19) {
                     soundTick = 0;

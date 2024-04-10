@@ -64,7 +64,7 @@ public class SawmillParser extends RecipeParser {
                     (plank.is(plankOutput.getItem()) && plankOutput.getCount() + plank.getCount() <= plankOutput.getMaxStackSize());
             boolean dustValid = dustOutput.isEmpty() ||
                     (dustOutput.is(recipe.getResult(0).getItem()) && dustOutput.getCount() + recipe.getResultCount(0) <= dustOutput.getMaxStackSize());
-            return plankValid && dustValid && tile.getTank(0).canInsertOutputFluid(recipe,0);
+            return plankValid && dustValid && tile.getRelationalTank(0).canInsertOutputFluid(recipe,0);
         }
         return super.canCompleteRecipe(tile);
     }
@@ -78,7 +78,7 @@ public class SawmillParser extends RecipeParser {
             tile.getInventory().extractItem(0,1,false);
             tile.getInventory().insertItem(1,plank.copy(), false);
             tile.getInventory().insertItem(2,dust.copy(), false);
-            tile.getTank(0).fillTank(stack.copy());
+            tile.getRelationalTank(0).fillTank(stack.copy());
             return;
         }
         super.completeRecipe(tile);

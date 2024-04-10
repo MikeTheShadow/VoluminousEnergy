@@ -25,11 +25,11 @@ import java.util.List;
 public class ToolingRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.TOOLING.get();
 
+    private final RecipeParser parser = new RecipeParser(this);
+
     public ToolingRecipe() {
 
     }
-
-    private final RecipeParser parser = new RecipeParser(this);
 
     public ToolingRecipe(List<VERecipeCodecs.RegistryIngredient> i, List<ItemStack> oi) {
         super(i, new ArrayList<>(), new ArrayList<>(), oi, 0);

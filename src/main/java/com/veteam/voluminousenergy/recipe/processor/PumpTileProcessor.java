@@ -36,7 +36,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
         lY = tile.getData("ly");
         lZ = tile.getData("lz");
 
-        VERelationalTank fluidTank = tile.getTank(0);
+        VERelationalTank fluidTank = tile.getRelationalTank(0);
 
         if (fluidTank.getTank().getFluidAmount() + 1000 <= DEFAULT_TANK_CAPACITY) {
             for (int i = 0; i < 50; i++) {
@@ -121,7 +121,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     void addFluidToTank(VETileEntity tile,Fluid fluid) {
         tile.getLevel().setBlockAndUpdate(tile.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
         tile.consumeEnergy();
-        tile.getTank(0).getTank()
+        tile.getRelationalTank(0).getTank()
                 .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
     }
 }

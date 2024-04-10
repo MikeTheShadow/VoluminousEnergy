@@ -1,17 +1,121 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
+import com.veteam.voluminousenergy.items.VEItems;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
+import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.TagUtil;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
 
+    private SmeltingRecipe furnaceRecipe;
+    private BlastingRecipe blastingRecipe;
+
     @Override
     public void processRecipe(VETileEntity tile) {
+        if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
+        else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
+    }
 
+    void processForRecipe(Recipe<?> recipe, VETileEntity tile) {
+
+        int fuelCounter = tile.getData("fuel_counter");
+
+        FluidStack fuel = tile.getFluidStackFromTank(0);
+
+        // Gas processing
+        if (fuelCounter > 0) {
+            fuelCounter--;
+        } else if (!fuel.isFluidEqual(FluidStack.EMPTY)) {
+            // Drain Input
+            tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            fuelCounter = 400 * CombustibleFluidsData.getEnergyProduced(fuel);
+            VEItemStackHandler inventory = tile.getInventory();
+            if (inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
+                fuelCounter = fuelCounter / (inventory.getStackInSlot(4).getCount() ^ 2);
+            } else if (!inventory.getStackInSlot(4).isEmpty() && TagUtil.isTaggedMachineUpgradeItem(inventory.getStackInSlot(4))) {
+                ItemStack upgradeStack = inventory.getStackInSlot(4).copy();
+                if (upgradeStack.getTag() != null && !upgradeStack.getTag().isEmpty()) {
+                    float multiplier = upgradeStack.getTag().getFloat("multiplier");
+                    multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
+                    fuelCounter = (int) (fuelCounter * multiplier);
+                }
+            }
+            tile.setData("fuel_length", fuelCounter);
+            tile.setChanged();
+        } else {
+            // No gas? No processing.
+            return;
+        }
+        tile.setData("fuel_counter", fuelCounter);
+
+
+        if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(3))) {
+            return;
+        }
+        int counter = tile.getData("counter");
+        if (counter == 1) {
+            counter--;
+            tile.getInventory().extractItem(2, 1, false);
+            ItemStack output = recipe.getResultItem(tile.getLevel().registryAccess()).copy();
+            tile.getInventory().insertItem(1, output, false);
+        } else if (counter > 0) {
+            counter--;
+            int soundTick = tile.getData("sound_tick");
+            if (++soundTick == 19) {
+                soundTick = 0;
+                if (Config.PLAY_MACHINE_SOUNDS.get()) {
+                    tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            }
+            tile.setData("sound_tick", soundTick);
+        } else {
+            counter = tile.updateCounter(200);
+        }
+        tile.setData("counter", counter);
+        tile.setChanged();
     }
 
     @Override
     public void validateRecipe(VETileEntity tile) {
+        Level level = tile.getLevel();
+        ItemStack furnaceInput = tile.getStackInSlot(2);
+        var blastingRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.BLASTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+        if (blastingRecipeNew != null) {
+            blastingRecipe = blastingRecipeNew.value();
+            tile.updateCounter(200);
+            tile.setChanged();
+            return;
+        } else blastingRecipe = null;
+        var furnaceRecipeNew = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(furnaceInput.copy()), level).orElse(null);
+        if (furnaceRecipeNew != null) {
+            furnaceRecipe = furnaceRecipeNew.value();
+            tile.updateCounter(200);
+            tile.setChanged();
+            return;
+        } else furnaceRecipe = null;
 
+        tile.setData("counter", 0);
+        tile.setData("length", 0);
+        tile.setChanged();
     }
 
+    boolean canInsertIntoResult(Recipe<?> recipe, RegistryAccess access, ItemStack currentStack) {
+        ItemStack result = recipe.getResultItem(access);
+        if (!result.is(currentStack.getItem()) && !currentStack.isEmpty()) return false;
+        return result.getCount() + currentStack.getCount() <= result.getMaxStackSize();
+    }
 }

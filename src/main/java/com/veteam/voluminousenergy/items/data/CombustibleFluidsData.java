@@ -51,6 +51,11 @@ public class CombustibleFluidsData {
         return combustibleFluidData.containsKey(stack.getFluid());
     }
 
+    public static boolean isCombustible(Fluid fluid) {
+        buildCache();
+        return combustibleFluidData.containsKey(fluid);
+    }
+
     public static int getEnergyProduced(FluidStack stack) {
         buildCache();
         return combustibleFluidData.getOrDefault(stack.getFluid(), 0);

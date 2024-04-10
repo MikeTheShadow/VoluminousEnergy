@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.AbstractRecipeParser.SlotAndRecipePos;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
@@ -116,7 +116,7 @@ public class RecipeParser {
         }
 
         for (SlotAndRecipePos pos : fluidIngredientPositions) {
-            tile.getTank(pos.tilePos())
+            tile.getRelationalTank(pos.tilePos())
                     .getTank().drain(recipe.getFluidIngredientAmount(pos.recipePos()), IFluidHandler.FluidAction.EXECUTE);
         }
 
@@ -128,7 +128,7 @@ public class RecipeParser {
 
         for (SlotAndRecipePos pos : fluidResultPositions) {
             FluidStack result = recipe.getOutputFluid(pos.recipePos());
-            tile.getTank(pos.tilePos()).fillTank(result.copy());
+            tile.getRelationalTank(pos.tilePos()).fillTank(result.copy());
         }
 
         // mark fluid IO as dirty

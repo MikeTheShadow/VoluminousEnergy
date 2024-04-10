@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe.parser;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.blocks.tiles.handlers.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import net.minecraft.world.item.ItemStack;
 
 /**
