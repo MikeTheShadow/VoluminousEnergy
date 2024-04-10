@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
+import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
@@ -7,6 +8,7 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -58,11 +60,18 @@ public class CombustionGeneratorProcessor extends DefaultProcessor {
             FluidStack fuel = tile.getFluidStackFromTank(0);
             FluidStack oxi = tile.getFluidStackFromTank(1);
 
-            tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            tile.getRelationalTank(1).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            VERelationalTank fuelTank = tile.getRelationalTank(0);
+            VERelationalTank oxiTank = tile.getRelationalTank(1);
 
             int powerGeneration = CombustibleFluidsData.getEnergyProduced(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
+
+            if(fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
+                return;
+            }
+
+            fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
+            oxiTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
 
             if (Config.COMBUSTION_GENERATOR_BALANCED_MODE.get()) {
                 counter = COMBUSTION_GENERATOR_PROCESS_TIME / 4;
@@ -70,11 +79,15 @@ public class CombustionGeneratorProcessor extends DefaultProcessor {
                 counter = Config.COMBUSTION_GENERATOR_FIXED_TICK_TIME.get() / 4;
             }
 
-            tile.getEnergy().setProduction((int) (powerGeneration * multiplier));
+            int production = (int) (powerGeneration * multiplier);
+
+            VoluminousEnergy.LOGGER.info("Setting production to: " + production);
+
+            storage.setProduction(production);
             tile.setData("length",counter);
             tile.setChanged();
         } else {
-            tile.getEnergy().setProduction(0);
+            storage.setProduction(0);
         }
         tile.setData("counter", counter);
     }
