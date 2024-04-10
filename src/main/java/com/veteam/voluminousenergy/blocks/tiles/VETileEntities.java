@@ -4,9 +4,10 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidInputTank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidOutputTank;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.BatteryBoxInventoryValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.DimensionalLaserInventoryValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.FurnaceInventoryValidator;
-import com.veteam.voluminousenergy.blocks.tiles.inventory.GasFiredFurnaceValidator;
+import com.veteam.voluminousenergy.blocks.tiles.inventory.GasFiredFurnaceInventoryValidator;
 import com.veteam.voluminousenergy.recipe.processor.*;
 import com.veteam.voluminousenergy.tools.Config;
 
@@ -46,7 +47,9 @@ public class VETileEntities {
             new VETileEntityFactory(VEBlocks.BATTERY_BOX_TILE, VEContainers.BATTERY_BOX_FACTORY)
                     .addEnergyStorage(
                             Config.BATTERY_BOX_MAX_POWER.get(),
-                            Config.BATTERY_BOX_TRANSFER.get());
+                            Config.BATTERY_BOX_TRANSFER.get())
+                    .withCustomInventoryValidator(new BatteryBoxInventoryValidator())
+                    .withCustomRecipeProcessing(new BatteryBoxProcessor());
 
     public static final VETileEntityFactory BLAST_FURNACE_FACTORY =
             new VETileEntityFactory(VEBlocks.BLAST_FURNACE_TILE, VEContainers.BLAST_FURNACE_FACTORY)
@@ -221,7 +224,7 @@ public class VETileEntities {
                     .makesSound()
                     .addDataFlag("fuel_length")
                     .addDataFlag("fuel_counter")
-                    .withCustomInventoryValidator(new GasFiredFurnaceValidator())
+                    .withCustomInventoryValidator(new GasFiredFurnaceInventoryValidator())
                     .withCustomRecipeProcessing(new GasFiredFurnaceProcessor());
 
     public static final VETileEntityFactory HYDROPONIC_INCUBATOR_FACTORY =
@@ -289,7 +292,6 @@ public class VETileEntities {
                     .withRecipe(STIRLING)
                     .withCustomRecipeProcessing(new GeneratorProcessor(true, 4));
 
-    // TODO make a custom processor
     public static final VETileEntityFactory PUMP_FACTORY =
             new VETileEntityFactory(VEBlocks.PUMP_TILE, VEContainers.PUMP_FACTORY)
                     .addEnergyStorage(

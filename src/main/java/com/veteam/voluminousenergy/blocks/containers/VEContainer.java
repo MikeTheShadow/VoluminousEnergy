@@ -116,8 +116,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
     }
 
     public int powerScreen(int px) {
-        int stored = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-        int max = tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(0);
+        int stored = tileEntity.getEnergy().getEnergyStored();
+        int max = tileEntity.getEnergy().getMaxEnergyStored();
         return (((stored * 100 / max * 100) / 100) * px) / 100;
     }
 

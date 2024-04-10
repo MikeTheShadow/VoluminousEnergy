@@ -130,7 +130,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getFluidStackFromTank(0), tileEntity.getTankCapacity(), i + 61, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
-            // Upgrade tilePos
+            // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         } else {

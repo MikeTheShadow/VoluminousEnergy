@@ -127,7 +127,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
             //this.blit(i,j,180,1,progress,15);
             drawIOSideHelper();
         }
-        // Upgrade tilePos
+        // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
     }

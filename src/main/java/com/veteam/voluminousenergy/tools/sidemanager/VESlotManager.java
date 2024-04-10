@@ -32,12 +32,12 @@ public class VESlotManager {
     }
 
     /**
-     * Use this for when you have an input tilePos type
+     * Use this for when you have an input slot type
      *
-     * @param slotNum    The tilePos number is the index in the array of the slotManagers
+     * @param slotNum    The slot number is the index in the array of the slotManagers
      * @param direction  The direction it will be facing by default
      * @param status     The status of the IO
-     * @param slotType   The type of tilePos
+     * @param slotType   The type of slot
      * @param outputSlot The slotNum of the tank to which a bucket will be placed when this has processed a bucket
      * @param tankId     The index of the tank in the fluidManagers
      */

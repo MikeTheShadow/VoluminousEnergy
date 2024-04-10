@@ -4,7 +4,6 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.VEBatterySwitchManager;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.SlotType;
@@ -87,8 +86,6 @@ public class BatteryBoxTile extends VETileEntity {
 
     private boolean topIsIngress = true;
 
-    private final VEPowerIOManager powerIOManager = new VEPowerIOManager(true);
-
     public BatteryBoxTile(BlockPos pos, BlockState state) {
         super(VEBlocks.BATTERY_BOX_TILE.get(), pos, state, null);
     }
@@ -116,7 +113,6 @@ public class BatteryBoxTile extends VETileEntity {
         @Override
         protected void onContentsChanged(final int slot) {
             super.onContentsChanged(slot);
-            BatteryBoxTile.this.setChanged();
         }
     };
 
@@ -148,7 +144,7 @@ public class BatteryBoxTile extends VETileEntity {
                 }
             }
         }
-        if (powerIOManager.isFlipped()) {
+        if (this.sendsOutPower) {
             sendOutPower();
         }
     }
@@ -211,7 +207,7 @@ public class BatteryBoxTile extends VETileEntity {
             ItemStack itemStack = inventory.getStackInSlot(i).copy();
             if (inventory.getStackInSlot(i + 6).isEmpty()) {
                 //VoluminousEnergy.LOGGER.debug("Empty check passed");
-                // Remove item in the ith, tilePos and move it to i+6th tilePos indicating it's discharged
+                // Remove item in the ith, slot and move it to i+6th tilePos indicating it's discharged
                 itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy -> {
                     //VoluminousEnergy.LOGGER.debug("Item has Energy Capability");
                     if ((!switchManagers[i].isFlipped() && energy.getEnergyStored() == energy.getMaxEnergyStored())
@@ -267,8 +263,6 @@ public class BatteryBoxTile extends VETileEntity {
         switchManagers[3].setFlipped(tag.getBoolean("slot_pair_mode_3"));
         switchManagers[4].setFlipped(tag.getBoolean("slot_pair_mode_4"));
         switchManagers[5].setFlipped(tag.getBoolean("slot_pair_mode_5"));
-
-        powerIOManager.setFlipped(tag.getBoolean("send_out_power"));
         super.load(tag);
     }
 
@@ -281,8 +275,6 @@ public class BatteryBoxTile extends VETileEntity {
         tag.putBoolean("slot_pair_mode_3", switchManagers[3].isFlipped());
         tag.putBoolean("slot_pair_mode_4", switchManagers[4].isFlipped());
         tag.putBoolean("slot_pair_mode_5", switchManagers[5].isFlipped());
-
-        tag.putBoolean("send_out_power", powerIOManager.isFlipped());
         super.saveAdditional(tag);
     }
 
@@ -307,7 +299,6 @@ public class BatteryBoxTile extends VETileEntity {
     }
 
     public void updateSendOutPower(boolean sendOutPower) {
-        this.powerIOManager.setFlipped(sendOutPower);
         if (sendOutPower) {
             energy.setMaxReceive(0);
         } else {
@@ -317,9 +308,5 @@ public class BatteryBoxTile extends VETileEntity {
 
     public VEBatterySwitchManager[] getSwitchManagers() {
         return switchManagers;
-    }
-
-    public VEPowerIOManager getPowerIOManager() {
-        return powerIOManager;
     }
 }

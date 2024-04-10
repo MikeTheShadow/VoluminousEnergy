@@ -2,9 +2,8 @@ package com.veteam.voluminousenergy.tools.buttons.batteryBox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
-import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,19 +15,17 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
 
-    private final BatteryBoxTile batteryBoxTile;
+    private final VETileEntity tile;
     private boolean sendOutPower;
     private int u = 0;
     private int v = 166;
-    private final VEPowerIOManager powerIOManager;
 
-    public BatteryBoxSendOutPowerButton(VEPowerIOManager powerIOManager, int x, int y, BatteryBoxTile batteryBoxTile, OnPress onPress) {
+    public BatteryBoxSendOutPowerButton(int x, int y, VETileEntity tile, OnPress onPress) {
         super(x, y, 18, 20, Component.nullToEmpty(""), button -> {
             ((BatteryBoxSendOutPowerButton) button).cycle();
             onPress.onPress(button);
         });
-        this.powerIOManager = powerIOManager;
-        this.batteryBoxTile = batteryBoxTile;
+        this.tile = tile;
         setX(x);
         setY(y);
         this.width = 16;
@@ -50,8 +47,7 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     private void cycle() {
         sendOutPower = !sendOutPower;
-        powerIOManager.setFlipped(true);
-        this.batteryBoxTile.updateSendOutPower(sendOutPower);
+        tile.setSendsOutPower(sendOutPower);
     }
 
     @Override
@@ -62,6 +58,5 @@ public class BatteryBoxSendOutPowerButton extends VEIOButton {
 
     public void setStatus(boolean status) {
         sendOutPower = status;
-        powerIOManager.setFlipped(sendOutPower);
     }
 }

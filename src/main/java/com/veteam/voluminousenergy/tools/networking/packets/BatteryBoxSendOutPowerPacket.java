@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -47,15 +47,14 @@ public class BatteryBoxSendOutPowerPacket {
 
     public static void handlePacket(BatteryBoxSendOutPowerPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
         if (openContainer != null) {
-            if (openContainer instanceof VEContainer batteryBoxContainer) {
+            if (openContainer instanceof VEContainer container) {
                 if (onServer) {
-                    BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
-                    if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {
-                        batteryBoxTile.updateSendOutPower(packet.status);
-                        batteryBoxTile.setChanged();
+                    BlockEntity tileEntity = container.getTileEntity();
+                    if(tileEntity instanceof VETileEntity tile) {
+                        tile.setSendsOutPower(packet.status);
                     }
                 } else {
-                    batteryBoxContainer.updateSendOutPowerButton(packet.status);
+                    container.updateSendOutPowerButton(packet.status);
                 }
             }
         }

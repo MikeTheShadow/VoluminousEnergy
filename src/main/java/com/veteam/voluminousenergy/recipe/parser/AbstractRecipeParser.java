@@ -55,7 +55,7 @@ public interface AbstractRecipeParser {
 
     /**
      * A simple util record to help with readability
-     * @param tilePos The position of the item/fluid/etc within the tile (ie tank 0)
+     * @param slot The position of the item/fluid/etc within the tile (ie tank 0)
      * @param recipePos The position of the item/fluid/etc within the recipe (ie result 0)
      */
     record SlotAndRecipePos(int tilePos, int recipePos) {

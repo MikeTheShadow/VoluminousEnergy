@@ -81,8 +81,9 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
 
     public List<Component> getFuelTooltips() {
         return Arrays.asList(
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData("counter")));
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " +
+                        tileEntity.progressCounterPercent(tileEntity.getData("fuel_counter"),tileEntity.getData("fuel_length")) + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData("fuel_counter")));
     }
 
     public Rect2i getCounterTooltipArea() {
@@ -106,7 +107,8 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
         final int flameHeight = 14;
         if (tileEntity != null) {
             int progress = tileEntity.progressProcessingCounterPX(9);
-            int fuelProgress = tileEntity.progressBurnCounterPX(flameHeight);
+            int fuelProgress = tileEntity.progressBurnCounterPX(
+                    flameHeight,tileEntity.getData("fuel_counter"),tileEntity.getData("fuel_length"));
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen

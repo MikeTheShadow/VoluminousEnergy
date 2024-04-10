@@ -3,9 +3,8 @@ package com.veteam.voluminousenergy.blocks.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.tools.buttons.VEPowerIOManager;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSendOutPowerButton;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.BatteryBoxSlotPairButton;
 import com.veteam.voluminousenergy.tools.buttons.batteryBox.VEBatterySwitchManager;
@@ -23,14 +22,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
 
-    private final BatteryBoxTile tileEntity;
+    private final VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/battery_box_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
     public BatteryBoxScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (BatteryBoxTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -52,33 +51,16 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
         }));
 
         // Bottom Row
-        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(8), (this.width / 2) - 198, this.topPos + 20, button -> {
+        addRenderableWidget(new SlotBoolButton(tileEntity.getSlotManagers().get(1), (this.width / 2) - 198, this.topPos + 20, button -> {
             // Do nothing
         }));
 
-        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(8), (this.width / 2) - 184, this.topPos + 20, button -> {
+        addRenderableWidget(new SlotDirectionButton(tileEntity.getSlotManagers().get(1), (this.width / 2) - 184, this.topPos + 20, button -> {
             // Do nothing
-        }));
-
-
-        VEBatterySwitchManager[] switchManagers = this.tileEntity.getSwitchManagers();
-        VEPowerIOManager vePowerIOManager = this.tileEntity.getPowerIOManager();
-        // Slot arrows
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[0], (this.width / 2) - 54, topPos + 34, 0, button -> {
-        }));
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[1], (this.width / 2) - 36, topPos + 34, 1, button -> {
-        }));
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[2], (this.width / 2) - 18, topPos + 34, 2, button -> {
-        }));
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[3], (this.width / 2), topPos + 34, 3, button -> {
-        }));
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[4], (this.width / 2) + 18, topPos + 34, 4, button -> {
-        }));
-        addRenderableWidget(new BatteryBoxSlotPairButton(switchManagers[5], (this.width / 2) + 36, topPos + 34, 5, button -> {
         }));
 
         // Send Out Power Button
-        addRenderableWidget(new BatteryBoxSendOutPowerButton(vePowerIOManager, (this.width / 2) - 79, topPos + 3, tileEntity, button -> {
+        addRenderableWidget(new BatteryBoxSendOutPowerButton((this.width / 2) - 79, topPos + 3, tileEntity, button -> {
         }));
     }
 
@@ -100,19 +82,9 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
     protected void renderSlotAndTankLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
         // Top Row
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 35, 17, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 53, 17, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 71, 17, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 89, 17, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 107, 17, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("0")), 125, 17, WHITE_TEXT_STYLE);
 
         // Bottom Row
         TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 35, 54, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 53, 54, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 71, 54, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 89, 54, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 107, 54, WHITE_TEXT_STYLE);
-        TextUtil.renderShadowedText(matrixStack, this.font, (TextUtil.translateString("gui.voluminousenergy.slot_short").copy().append("1")), 125, 54, WHITE_TEXT_STYLE);
 
     }
 
@@ -123,7 +95,7 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
         }
 
         if (isHovering(10, 4, 15, 10, mouseX, mouseY)) {
-            if (tileEntity.getPowerIOManager().isFlipped()) {
+            if (tileEntity.sendsOutPower()) {
                 matrixStack.renderTooltip(this.font, TextUtil.translateString("text.voluminousenergy.battery_box.sending_out_power"), mouseX, mouseY);
             } else {
                 matrixStack.renderTooltip(this.font, TextUtil.translateString("text.voluminousenergy.battery_box.receiving_power"), mouseX, mouseY);
@@ -155,20 +127,7 @@ public class BatteryBoxScreen extends VEContainerScreen<VEContainer> {
             //this.blit(matrixStack,i+81,j+31,176,0,progress,17);
             matrixStack.blit(this.GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
             drawIOSideHelper();
-            for (VEBatterySwitchManager switchManager : tileEntity.getSwitchManagers()) {
-                updateSlotPairButton(switchManager.isFlipped(), switchManager.getSlot());
-            }
-            updateSendOutPowerButton(tileEntity.getPowerIOManager().isFlipped());
-        }
-    }
-
-    public void updateSlotPairButton(boolean status, int id) {
-        for (Renderable widget : this.renderables) {
-            if (widget instanceof BatteryBoxSlotPairButton batteryBoxSlotPairButton) {
-                if (batteryBoxSlotPairButton.getId() == id) {
-                    batteryBoxSlotPairButton.setStatus(status);
-                }
-            }
+            updateSendOutPowerButton(tileEntity.sendsOutPower());
         }
     }
 

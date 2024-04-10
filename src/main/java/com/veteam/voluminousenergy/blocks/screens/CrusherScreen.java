@@ -102,7 +102,7 @@ public class CrusherScreen extends VEContainerScreen<VEContainer> {
             matrixStack.blit(GUI, i + 11, j + (16 + (49 - power)), 176, 24 + (49 - power), 12, power);
             drawIOSideHelper();
         }
-        // Upgrade tilePos
+        // Upgrade slot
         RenderSystem.setShaderTexture(0, GUI_TOOLS);
         matrixStack.blit(GUI_TOOLS, i + 153, j - 16, 0, 0, 18, 18);
     }

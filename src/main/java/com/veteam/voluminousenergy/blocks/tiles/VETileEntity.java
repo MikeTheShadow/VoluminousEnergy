@@ -1,6 +1,8 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
+import com.veteam.voluminousenergy.blocks.tiles.state.AbstractTileAddon;
+import com.veteam.voluminousenergy.blocks.tiles.state.CustomAddon;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -60,6 +62,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     final List<VESlotManager> managers = new ArrayList<>();
     final HashMap<String, Integer> dataMap = new HashMap<>();
     final HashMap<String,CompoundTag> tagMap = new HashMap<>();
+    final HashMap<CustomAddon, AbstractTileAddon> stateManager = new HashMap<>();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
@@ -101,7 +104,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
 
-    //use for when the input and output tilePos are different
+    //use for when the input and output slot are different
     public void outputFluid(VERelationalTank tank, int slot1, int slot2) {
         ItemStack inputSlot = tank.getInput();
         ItemStack outputSlot = tank.getOutput();
@@ -266,16 +269,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return consumption;
     }
 
-
-    /**
-     * Quickly get the energy stored in the tile
-     *
-     * @return int representing the stored energy of the tile entity
-     */
-    protected int getEnergyStored() {
-        return this.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
-    }
-
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
@@ -285,7 +278,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Loads inventory, energy, tilePos managers, counter, and length.
+     * Loads inventory, energy, slot managers, counter, and length.
      *
      * @param tag CompoundTag
      */
@@ -318,11 +311,15 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             relationalTank.readGuiProperties(tag);
         }
 
+        if(tag.contains("sends_out_power")) {
+            this.sendsOutPower = tag.getBoolean("sends_out_power");
+        }
+
         super.load(tag);
     }
 
     /**
-     * Saves inventory, energy, tilePos managers, counter, and length.
+     * Saves inventory, energy, slot managers, counter, and length.
      * To save the tile call setChanged();
      *
      * @param tag CompoundTag
@@ -355,6 +352,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             tag.put(relationalTank.getTankName(), compoundTag);
             relationalTank.writeGuiProperties(tag);
         }
+
+        tag.putBoolean("sends_out_power", sendsOutPower);
 
         super.saveAdditional(tag);
     }
@@ -416,8 +415,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * @param status boolean status of the tilePos
-     * @param slotId int id of the tilePos
+     * @param status boolean status of the slot
+     * @param slotId int id of the slot
      */
     public void updatePacketFromGui(boolean status, int slotId) {
         for (VESlotManager slot : getSlotManagers()) {
@@ -450,6 +449,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 
+        if(this.sendsOutPower && cap == ForgeCapabilities.ENERGY) return LazyOptional.empty();
+
         ItemStackHandler inventory = getInventoryHandler();
         List<VESlotManager> itemManagers = getSlotManagers();
         if (capabilityMap == null) {
@@ -460,8 +461,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     /**
      * Call this to consume energy
-     * Note that tiles now require an upgrade tilePos and thus an inventory to properly function here
-     * If you need to consume energy WITHOUT an upgrade tilePos make a new method that does not have this.
+     * Note that tiles now require an upgrade slot and thus an inventory to properly function here
+     * If you need to consume energy WITHOUT an upgrade slot make a new method that does not have this.
      * Throws an error if missing the power consumeEnergy IMPL
      */
     public void consumeEnergy() {
@@ -518,7 +519,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     /**
-     * Important note. If the entity has no tilePos managers return a new ArrayList otherwise this will crash
+     * Important note. If the entity has no slot managers return a new ArrayList otherwise this will crash
      *
      * @return A not null List<VESlotManager> list
      */
@@ -548,7 +549,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         int counter = dataMap.get("counter");
         int length = dataMap.get("length");
         if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
-        ;
+        return 0;
+    }
+
+    public int progressBurnCounterPX(int px,int counter, int length) {
+        if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
         return 0;
     }
 
@@ -562,6 +567,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     public int progressCounterPercent() {
         int counter = dataMap.get("counter");
         int length = dataMap.get("length");
+        if (length != 0) {
+            return (int) (100 - (((float) counter / (float) length) * 100));
+        } else {
+            return 0;
+        }
+    }
+
+    public int progressCounterPercent(int counter, int length) {
         if (length != 0) {
             return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
@@ -629,10 +642,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return managers;
     }
 
-    public boolean isFluidInputDirty() {
-        return fluidInputDirty;
-    }
-
     public boolean isRecipeDirty() {
         return isRecipeDirty;
     }
@@ -682,6 +691,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     public void setSendsOutPower(boolean sendsOutPower) {
         this.sendsOutPower = sendsOutPower;
+        this.setChanged();
     }
 
     public void setSelectedRecipe(VERecipe recipe) {
@@ -731,5 +741,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         this.setData("counter", ratioedCounter == 0 ? newLength : ratioedCounter);
         this.setChanged();
         return newLength;
+    }
+
+    @Nullable
+    public AbstractTileAddon getCustomAddon(CustomAddon addon) {
+        return this.stateManager.get(addon);
     }
 }

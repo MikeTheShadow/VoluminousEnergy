@@ -148,7 +148,7 @@ public class DistillationUnitScreen extends VEContainerScreen<VEContainer> {
             } catch (Exception e) {
             }
             drawIOSideHelper();
-            // Upgrade tilePos
+            // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         } else {

@@ -26,12 +26,6 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void processRecipe(VETileEntity tile) {
-        if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
-        else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
-    }
-
-    void processForRecipe(Recipe<?> recipe, VETileEntity tile) {
-
         int fuelCounter = tile.getData("fuel_counter");
 
         FluidStack fuel = tile.getFluidStackFromTank(0);
@@ -57,12 +51,14 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             tile.setData("fuel_length", fuelCounter);
             tile.setChanged();
         } else {
-            // No gas? No processing.
             return;
         }
         tile.setData("fuel_counter", fuelCounter);
+        if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
+        else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
+    }
 
-
+    void processForRecipe(Recipe<?> recipe, VETileEntity tile) {
         if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(3))) {
             return;
         }
@@ -71,7 +67,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             counter--;
             tile.getInventory().extractItem(2, 1, false);
             ItemStack output = recipe.getResultItem(tile.getLevel().registryAccess()).copy();
-            tile.getInventory().insertItem(1, output, false);
+            tile.getInventory().insertItem(3, output, false);
         } else if (counter > 0) {
             counter--;
             int soundTick = tile.getData("sound_tick");

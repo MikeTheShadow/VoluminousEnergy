@@ -112,7 +112,7 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(GUI, i, j, 0, 0, this.imageWidth, this.imageHeight);
         if (tileEntity != null) {
-            int progress = tileEntity.progressProcessingCounterPX(14);
+            int progress = tileEntity.progressBurnCounterPX(14);
             int power = menu.powerScreen(49);
 
             /*Note for this.blit below:

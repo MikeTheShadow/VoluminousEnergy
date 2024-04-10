@@ -90,7 +90,7 @@ public class VETileEntityFactory {
         newTile.dataMap.putAll(dataMap);
         newTile.tagMap.putAll(tagMap);
 
-        // Set energy before the tilePos count otherwise we'll run into issues with the data tilePos
+        // Set energy before the slot count otherwise we'll run into issues with the data slot
         if (storage != null)
             newTile.energy = storage.copy();
 

@@ -74,7 +74,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
             // Do nothing
         }));
 
-        // RFID tilePos
+        // RFID slot
         addRenderableWidget(new SlotBoolButton(slotManagers.get(2), (this.width / 2) - 198, this.topPos + 40, button -> {
             // Do nothing
         }));
@@ -170,7 +170,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
             VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), this.getFluidStackFromTank(), tileEntity.getTankCapacity(), i + 119, j + 18, 0, 12, 50);
 
             drawIOSideHelper();
-            // Upgrade tilePos
+            // Upgrade slot
             RenderSystem.setShaderTexture(0, GUI_TOOLS);
             matrixStack.blit(GUI_TOOLS, i + 129, j - 16, 0, 0, 18, 18);
         } else {

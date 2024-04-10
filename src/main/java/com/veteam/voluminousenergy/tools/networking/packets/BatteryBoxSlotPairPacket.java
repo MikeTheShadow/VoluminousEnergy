@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
-import com.veteam.voluminousenergy.blocks.tiles.BatteryBoxTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -54,10 +53,10 @@ public class BatteryBoxSlotPairPacket {
             if (openContainer instanceof VEContainer batteryBoxContainer) {
                 if (onServer) {
                     BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
-                    if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {
-                        batteryBoxTile.updateSlotPair(packet.status, packet.id);
-                        batteryBoxTile.setChanged();
-                    }
+//                    if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {
+//                        batteryBoxTile.updateSlotPair(packet.status, packet.id);
+//                        batteryBoxTile.setChanged();
+//                    }
                 }
             }
         }
