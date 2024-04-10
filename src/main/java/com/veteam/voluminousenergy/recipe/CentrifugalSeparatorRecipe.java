@@ -3,8 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RNGRecipeParser;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.RNGBasicParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +21,7 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.CENTRIFUGAL_SEPARATION.get();
 
-    private final RecipeParser parser = new RNGRecipeParser(this)
+    private final BasicParser parser = new RNGBasicParser(this)
             .addChancedItemResult(2, 0)
             .addChancedItemResult(3, 1)
             .addChancedItemResult(4, 2)
@@ -71,7 +71,7 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
     }
 
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return parser;
     }
 

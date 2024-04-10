@@ -5,7 +5,7 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class ImplosionCompressorParser extends RecipeParser {
+public class ImplosionCompressorParser extends BasicParser {
 
     public ImplosionCompressorParser(VERecipe recipe) {
         super(recipe);

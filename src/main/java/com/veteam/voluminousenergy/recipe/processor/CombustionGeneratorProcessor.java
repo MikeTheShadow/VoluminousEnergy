@@ -14,11 +14,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 
-public class CombustionGeneratorProcessor extends DefaultProcessor {
+public class CombustionGeneratorProcessor extends BasicProcessor {
     public static final int COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT = 250;
     public static final int COMBUSTION_GENERATOR_PROCESS_TIME = 1600;
 
-    // TODO Make sure it doesn't do an extra "empty" process when it's finished processing
     @Override
     public void validateRecipe(VETileEntity tile) {
         tile.setPotentialRecipes(VERecipe.getPotentialRecipes(tile));

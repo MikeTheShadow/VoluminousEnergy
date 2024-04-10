@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeParser {
+public class BasicParser {
 
     List<SlotAndRecipePos> ingredientPositions = new ArrayList<>();
     List<SlotAndRecipePos> itemResultPositions = new ArrayList<>();
@@ -22,26 +22,26 @@ public class RecipeParser {
 
     final VERecipe recipe;
 
-    public RecipeParser(VERecipe recipe) {
+    public BasicParser(VERecipe recipe) {
         this.recipe = recipe;
     }
 
-    public RecipeParser addIngredient(int tilePos, int recipePos) {
+    public BasicParser addIngredient(int tilePos, int recipePos) {
         this.ingredientPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }
 
-    public RecipeParser addFluidIngredient(int tilePos, int recipePos) {
+    public BasicParser addFluidIngredient(int tilePos, int recipePos) {
         this.fluidIngredientPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }
 
-    public RecipeParser addItemResult(int tilePos, int recipePos) {
+    public BasicParser addItemResult(int tilePos, int recipePos) {
         this.itemResultPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }
 
-    public RecipeParser addFluidResult(int tilePos, int recipePos) {
+    public BasicParser addFluidResult(int tilePos, int recipePos) {
         this.fluidResultPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }

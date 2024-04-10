@@ -3,7 +3,8 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
+import com.veteam.voluminousenergy.recipe.parser.IndustrialBlastFurnaceParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
@@ -27,10 +28,10 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.INDUSTRIAL_BLASTING.get();
 
-    private final RecipeParser parser = new RecipeParser(this)
-            .addFluidIngredient(0, 0)
-            .addIngredient(0, 0)
-            .addItemResult(1, 0);
+    private final BasicParser parser = new IndustrialBlastFurnaceParser(this)
+            .addIngredient(2, 0)
+            .addIngredient(3,1)
+            .addItemResult(4, 0);
 
     private static final RecipeSerializer<IndustrialBlastingRecipe> SERIALIZER = new RecipeSerializer<>() {
 
@@ -124,7 +125,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     }
 
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return parser;
     }
 

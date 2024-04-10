@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -53,11 +54,15 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
         if (processor.isMultiBlockValid(tileEntity)) {
             TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateVEBlock("blast_furnace"), 8, 6, WHITE_TEXT_STYLE);
 
-            TextUtil.renderShadowedText(matrixStack, this.font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.temperature").getString() + ": " +
-                    tileEntity.getData("temperature_kelvin") + " K (" +
-                    tileEntity.getData("temperature_celsius") + " \u00B0C) "), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
+            int temperatureKelvin = getTemperatureKelvin(tileEntity.getFluidStackFromTank(0));
+            int celsius = getTemperatureCelsius(temperatureKelvin);
+            int fahrenheit = getTemperatureFahrenheit(temperatureKelvin);
 
-            TextUtil.renderShadowedText(matrixStack, this.font, Component.nullToEmpty(tileEntity.getData("temperature_fahrenheit") + " \u00B0F"), 101, (this.imageHeight - 103), WHITE_TEXT_STYLE);
+            TextUtil.renderShadowedText(matrixStack, this.font, Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.temperature").getString() + ": " +
+                    temperatureKelvin + " K (" +
+                    celsius + " \u00B0C) "), 8, (this.imageHeight - 96 + 2), WHITE_TEXT_STYLE);
+
+            TextUtil.renderShadowedText(matrixStack, this.font, Component.nullToEmpty(fahrenheit + " \u00B0F"), 101, (this.imageHeight - 103), WHITE_TEXT_STYLE);
 
         }
         super.renderLabels(matrixStack, mouseX, mouseY);
@@ -141,6 +146,18 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
             TextUtil.renderShadowedText(matrixStack, this.font, TextUtil.translateString("text.voluminousenergy.multiblock.needed_behind"), i + 8, j + 48, WHITE_TEXT_STYLE);
         }
 
+    }
+
+    public int getTemperatureKelvin(FluidStack stack) {
+        return stack.getRawFluid().getFluidType().getTemperature();
+    }
+
+    public int getTemperatureCelsius(int kelvin) {
+        return kelvin - 273;
+    }
+
+    public int getTemperatureFahrenheit(int fahrenheit) {
+        return (int) ((fahrenheit - 273) * 1.8) + 32;
     }
 
 }

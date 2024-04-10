@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
 
-public class MultiBlockRecipeProcessor extends DefaultProcessor {
+public class MultiBlockRecipeProcessor extends BasicProcessor {
 
     private RegistryObject<? extends Block> blockRegistry;
     private Block block;

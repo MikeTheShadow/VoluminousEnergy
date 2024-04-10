@@ -2,9 +2,8 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.parser.SawmillParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
@@ -28,7 +27,7 @@ public class SawmillRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.SAWMILLING.get();
     private boolean isLogRecipe;
 
-    private final RecipeParser parser =
+    private final BasicParser parser =
             new SawmillParser(this)
                     .addIngredient(0,0)
                     .addFluidResult(0,0)
@@ -106,7 +105,7 @@ public class SawmillRecipe extends VERecipe {
     }
 
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return parser;
     }
 

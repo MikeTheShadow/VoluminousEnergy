@@ -2,14 +2,12 @@ package com.veteam.voluminousenergy.recipe.processor;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
 
-public class DefaultProcessor implements AbstractRecipeProcessor {
+public class BasicProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void validateRecipe(VETileEntity tile) {
@@ -47,7 +45,7 @@ public class DefaultProcessor implements AbstractRecipeProcessor {
 
         if (counter == 1) {
 
-            RecipeParser parser = recipe.getParser();
+            BasicParser parser = recipe.getParser();
             if (!parser.canCompleteRecipe(tile)) return;
             parser.completeRecipe(tile);
             tile.markRecipeDirty();

@@ -13,14 +13,14 @@ import java.util.Random;
 
 import static net.minecraft.util.Mth.abs;
 
-public class RNGRecipeParser extends RecipeParser {
-    public RNGRecipeParser(VERecipe recipe) {
+public class RNGBasicParser extends BasicParser {
+    public RNGBasicParser(VERecipe recipe) {
         super(recipe);
     }
 
     List<SlotAndRecipePos> randomItemResultPositions = new ArrayList<>();
 
-    public RNGRecipeParser addChancedItemResult(int tilePos, int recipePos) {
+    public RNGBasicParser addChancedItemResult(int tilePos, int recipePos) {
         this.randomItemResultPositions.add(new SlotAndRecipePos(tilePos, recipePos));
         return this;
     }

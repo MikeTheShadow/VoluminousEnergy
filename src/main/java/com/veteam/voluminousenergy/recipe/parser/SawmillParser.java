@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class SawmillParser extends RecipeParser {
+public class SawmillParser extends BasicParser {
 
     private final HashMap<String, LogPlank> cache = new HashMap<>();
     private final SawmillRecipe recipe;

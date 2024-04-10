@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.ServerSideOnly;
 import com.veteam.voluminousenergy.util.climate.FluidClimateSpawn;
@@ -249,7 +249,7 @@ public class DimensionalLaserRecipe extends VERecipe {
         This is null because we want it to explode if someone tries to pull a parser from here.
      */
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return null;
     }
 

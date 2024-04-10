@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CombustionGeneratorRecipe extends VERecipe {
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.FUEL_COMBUSTION.get();
 
-    private final RecipeParser parser = new RecipeParser(this)
+    private final BasicParser parser = new BasicParser(this)
             .addFluidIngredient(0, 0)
             .addFluidIngredient(1, 1);
 
@@ -60,7 +60,7 @@ public class CombustionGeneratorRecipe extends VERecipe {
     }
 
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return parser;
     }
 

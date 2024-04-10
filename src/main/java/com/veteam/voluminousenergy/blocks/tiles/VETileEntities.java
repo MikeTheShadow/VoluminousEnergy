@@ -39,10 +39,8 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(AQUEOULIZING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
-
-    // TODO processing
     public static final VETileEntityFactory BATTERY_BOX_FACTORY =
             new VETileEntityFactory(VEBlocks.BATTERY_BOX_TILE, VEContainers.BATTERY_BOX_FACTORY)
                     .addEnergyStorage(
@@ -82,7 +80,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(CENTRIFUGAL_AGITATING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory CENTRIFUGAL_SEPARATOR_FACTORY =
             new VETileEntityFactory(VEBlocks.CENTRIFUGAL_SEPARATOR_TILE, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY)
@@ -93,7 +91,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(CENTRIFUGAL_SEPARATION)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory COMBUSTION_GENERATOR_FACTORY =
             new VETileEntityFactory(VEBlocks.COMBUSTION_GENERATOR_TILE, VEContainers.COMBUSTION_GENERATOR_FACTORY)
@@ -118,7 +116,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(COMPRESSING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory CRUSHER_FACTORY =
             new VETileEntityFactory(VEBlocks.CRUSHER_TILE, VEContainers.CRUSHER_FACTORY)
@@ -129,7 +127,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(CRUSHING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory DIMENSIONAL_LASER_FACTORY =
             new VETileEntityFactory(VEBlocks.DIMENSIONAL_LASER_TILE, VEContainers.DIMENSIONAL_LASER_FACTORY)
@@ -182,7 +180,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(ELECTROLYZING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory FLUID_ELECTROLYZER_FACTORY =
             new VETileEntityFactory(VEBlocks.FLUID_ELECTROLYZER_TILE, VEContainers.FLUID_ELECTROLYZER_FACTORY)
@@ -194,7 +192,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(ELECTROLYZING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory FLUID_MIXER_FACTORY =
             new VETileEntityFactory(VEBlocks.FLUID_MIXER_TILE, VEContainers.FLUID_MIXER_FACTORY)
@@ -211,7 +209,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(FLUID_MIXING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory GAS_FIRED_FURNACE =
             new VETileEntityFactory(VEBlocks.GAS_FIRED_FURNACE_TILE, VEContainers.GAS_FIRED_FURNACE_FACTORY)
@@ -240,7 +238,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(HYDROPONIC_INCUBATING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory IMPLOSION_COMPRESSOR_FACTORY =
             new VETileEntityFactory(VEBlocks.IMPLOSION_COMPRESSOR_TILE, VEContainers.IMPLOSION_COMPRESSOR_FACTORY)
@@ -252,14 +250,14 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(IMPLOSION_COMPRESSING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory PRIMITIVE_BLAST_FURNACE_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY)
                     .countable()
                     .makesSound()
                     .withRecipe(PRIMITIVE_BLAST_FURNACING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     // TODO needs custom processor
     public static final VETileEntityFactory PRIMITIVE_SOLAR_PANEL_FACTORY =
@@ -269,7 +267,7 @@ public class VETileEntities {
                             Config.PRIMITIVE_SOLAR_PANEL_SEND.get()
                     )
                     .sendsOutPower()
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     // TODO needs a custom processor
     public static final VETileEntityFactory SOLAR_PANEL_FACTORY =
@@ -279,7 +277,7 @@ public class VETileEntities {
                             Config.SOLAR_PANEL_SEND.get()
                     )
                     .sendsOutPower()
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory PRIMITIVE_STIRLING_GENERATOR_TILE_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY)
@@ -318,7 +316,7 @@ public class VETileEntities {
                     .countable()
                     .makesSound()
                     .withRecipe(SAWMILLING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory STIRLING_GENERATOR_FACTORY =
             new VETileEntityFactory(VEBlocks.STIRLING_GENERATOR_TILE, VEContainers.STIRLING_GENERATOR_FACTORY)
@@ -335,5 +333,5 @@ public class VETileEntities {
     public static final VETileEntityFactory TOOLING_STATION_FACTORY =
             new VETileEntityFactory(VEBlocks.TOOLING_STATION_TILE, VEContainers.TOOLING_STATION_FACTORY)
                     .withRecipe(TOOLING)
-                    .withCustomRecipeProcessing(new DefaultProcessor());
+                    .withCustomRecipeProcessing(new BasicProcessor());
 }

@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.NonNullList;
@@ -244,5 +244,5 @@ public abstract class VERecipe implements Recipe<Container> {
         return null;
     }
 
-    public abstract RecipeParser getParser();
+    public abstract BasicParser getParser();
 }

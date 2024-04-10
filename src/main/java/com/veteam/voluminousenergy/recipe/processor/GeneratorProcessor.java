@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.recipe.processor;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.VEEnergyRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
@@ -66,7 +66,7 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
             tile.setChanged();
         } else if (counter == 0) {
             if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
-                RecipeParser parser = veEnergyRecipe.getParser();
+                BasicParser parser = veEnergyRecipe.getParser();
                 if (!parser.canCompleteRecipe(tile)) return;
                 // Check to see if the energy produced will overflow the tile
                 if (tile.getEnergy().isFullyCharged()) return;

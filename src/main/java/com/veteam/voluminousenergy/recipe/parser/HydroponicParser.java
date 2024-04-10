@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static net.minecraft.util.Mth.abs;
 
-public class HydroponicParser extends RNGRecipeParser {
+public class HydroponicParser extends RNGBasicParser {
     public HydroponicParser(VERecipe recipe) {
         super(recipe);
     }

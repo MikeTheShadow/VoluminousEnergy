@@ -2,9 +2,8 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.recipe.parser.RecipeParser;
+import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,7 +21,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     public static final RecipeType<VERecipe> RECIPE_TYPE = VERecipes.VERecipeTypes.PRIMITIVE_BLAST_FURNACING.get();
 
-    private final RecipeParser parser = new RecipeParser(this)
+    private final BasicParser parser = new BasicParser(this)
             .addIngredient(0, 0)
             .addItemResult(1, 0);
 
@@ -66,7 +65,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
     }
 
     @Override
-    public RecipeParser getParser() {
+    public BasicParser getParser() {
         return parser;
     }
 
