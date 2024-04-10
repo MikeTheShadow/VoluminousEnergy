@@ -259,7 +259,6 @@ public class VETileEntities {
                     .withRecipe(PRIMITIVE_BLAST_FURNACING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
-    // TODO needs custom processor
     public static final VETileEntityFactory PRIMITIVE_SOLAR_PANEL_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_SOLAR_PANEL_TILE, VEContainers.PRIMITIVE_SOLAR_PANEL_FACTORY)
                     .addEnergyStorage(
@@ -267,9 +266,8 @@ public class VETileEntities {
                             Config.PRIMITIVE_SOLAR_PANEL_SEND.get()
                     )
                     .sendsOutPower()
-                    .withCustomRecipeProcessing(new BasicProcessor());
+                    .withCustomRecipeProcessing(new SolarPanelProcessor(Config.PRIMITIVE_SOLAR_PANEL_GENERATE.get()));
 
-    // TODO needs a custom processor
     public static final VETileEntityFactory SOLAR_PANEL_FACTORY =
             new VETileEntityFactory(VEBlocks.SOLAR_PANEL_TILE, VEContainers.SOLAR_PANEL_FACTORY)
                     .addEnergyStorage(
@@ -277,7 +275,7 @@ public class VETileEntities {
                             Config.SOLAR_PANEL_SEND.get()
                     )
                     .sendsOutPower()
-                    .withCustomRecipeProcessing(new BasicProcessor());
+                    .withCustomRecipeProcessing(new SolarPanelProcessor(Config.SOLAR_PANEL_GENERATE.get()));
 
     public static final VETileEntityFactory PRIMITIVE_STIRLING_GENERATOR_TILE_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_TILE, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY)
