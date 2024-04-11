@@ -258,6 +258,7 @@ public class VETileEntities {
 
     public static final VETileEntityFactory PRIMITIVE_BLAST_FURNACE_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_BLAST_FURNACE_TILE, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY)
+                    .addEnergyStorage(0,0)
                     .countable()
                     .makesSound()
                     .withRecipe(PRIMITIVE_BLAST_FURNACING)
