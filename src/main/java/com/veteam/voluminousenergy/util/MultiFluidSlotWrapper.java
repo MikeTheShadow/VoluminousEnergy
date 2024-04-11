@@ -8,19 +8,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.List;
 
 public class MultiFluidSlotWrapper implements IFluidHandler {
-
-    HashMap<Integer, VERelationalTank> tankHashMap = new HashMap<>();
     List<VERelationalTank> tanks;
     VETileEntity tileEntity;
 
     public MultiFluidSlotWrapper(List<VERelationalTank> tanks, VETileEntity tileEntity) {
         this.tanks = tanks;
         this.tileEntity = tileEntity;
-        tanks.forEach(m -> tankHashMap.put(m.getSlotNum(), m));
     }
 
     @Override
@@ -31,26 +27,22 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Nonnull
     @Override
     public FluidStack getFluidInTank(int tank) {
-        if (tankHashMap.containsKey(tank)) {
-            VERelationalTank fluidTank = tankHashMap.get(tank);
-            return fluidTank.getTank() == null ? FluidStack.EMPTY : fluidTank.getTank().getFluid();
-        }
-        return FluidStack.EMPTY;
+
+        if(tank < 0 || tank >= tanks.size()) return FluidStack.EMPTY;
+        return tanks.get(tank).getTank().getFluid();
     }
 
     @Override
     public int getTankCapacity(int tank) {
-        if (tankHashMap.containsKey(tank)) {
-            VERelationalTank fluidTank = tankHashMap.get(tank);
-            return fluidTank.getTank() == null ? 0 : fluidTank.getTank().getCapacity();
-        }
-        return 0;
+        if(tank < 0 || tank >= tanks.size()) return 0;
+        return this.tanks.get(tank).getTank().getCapacity();
     }
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        VERelationalTank relationalTank = tankHashMap.get(tank);
-        if (relationalTank.isAllowAny()) return true;
+        VERelationalTank relationalTank = tanks.get(tank);
+        if (relationalTank.isAllowAny() ||
+                (relationalTank.getValidator() != null && relationalTank.getValidator().validateFluid(stack,tileEntity))) return true;
         for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
             if (recipe.getFluidIngredient(relationalTank.getRecipePos()).test(stack)) {
                 return true;
@@ -109,12 +101,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     }
 
     public void addRelationalTank(VERelationalTank tank) {
-        tankHashMap.put(tank.getSlotNum(), tank);
         tanks.add(tank);
     }
 
     public void removeRelationalTank(VERelationalTank tank) {
-        tankHashMap.remove(tank.getSlotNum());
         tanks.remove(tank);
     }
 }

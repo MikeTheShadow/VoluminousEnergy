@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
+import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.AbstractItemStackValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -222,10 +223,15 @@ public class VETileEntityFactory {
         }
     }
 
-    public record FluidInputTank(int recipePos, int capacity) implements TileTank {
+    public record FluidInputTank(int recipePos, int capacity, @Nullable AbstractFluidValidator fluidValidator) implements TileTank {
+
+        public FluidInputTank(int recipePos, int capacity) {
+            this(recipePos, capacity, null);
+        }
+
         @Override
         public VERelationalTank asTank(int id) {
-            return new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.INPUT, "input_tank_" + id + ":input_tank_gui");
+            return new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.INPUT, "input_tank_" + id + ":input_tank_gui",fluidValidator);
         }
     }
 
@@ -236,12 +242,20 @@ public class VETileEntityFactory {
         }
     }
 
+    public record FluidInputOutputTank(int recipePos, int capacity) implements TileTank {
+        @Override
+        public VERelationalTank asTank(int id) {
+            VERelationalTank tank = new VERelationalTank(new FluidTank(capacity), id, recipePos, TankType.BOTH, "both_tank_" + id + ":output_tank_gui");
+            tank.setAllowAny(true);
+            return tank;
+        }
+    }
+
     public interface TileSlot {
         VESlotManager asManager(int id);
     }
 
     public interface TileTank {
-
         VERelationalTank asTank(int id);
     }
 }

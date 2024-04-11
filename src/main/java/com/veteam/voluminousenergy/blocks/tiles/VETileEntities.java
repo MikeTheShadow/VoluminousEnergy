@@ -4,12 +4,15 @@ import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidInputTank;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory.FluidOutputTank;
+import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.BatteryBoxInventoryValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.DimensionalLaserInventoryValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.FurnaceInventoryValidator;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.GasFiredFurnaceInventoryValidator;
+import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.recipe.processor.*;
 import com.veteam.voluminousenergy.tools.Config;
+import net.minecraftforge.fluids.FluidStack;
 
 import static com.veteam.voluminousenergy.recipe.VERecipes.VERecipeTypes.*;
 
@@ -216,7 +219,8 @@ public class VETileEntities {
                     // We have an upgrade slot, so we add an empty energy storage. Less than ideal.
                     .addEnergyStorage(0,0)
                     .addTanks(
-                            new FluidInputTank(0, DEFAULT_TANK_CAPACITY)
+                            new FluidInputTank(0, DEFAULT_TANK_CAPACITY,
+                                    (fluid, tile) -> CombustibleFluidsData.isCombustible(fluid))
                     )
                     .countable()
                     .makesSound()

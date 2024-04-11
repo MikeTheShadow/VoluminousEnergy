@@ -1,17 +1,13 @@
 package com.veteam.voluminousenergy.util;
 
+import com.veteam.voluminousenergy.blocks.tiles.fluids.AbstractFluidValidator;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VERelationalTank {
 
@@ -21,12 +17,13 @@ public class VERelationalTank {
     ItemStack input;
     ItemStack output;
     TankType tankType;
-    List<Fluid> validFluids = new ArrayList<>();
     private boolean sideStatus = false;
     private Direction sideDirection = Direction.DOWN;
     private boolean allowAny = false;
     private boolean ignoreDirection = false;
     private int recipePos;
+    private AbstractFluidValidator validator;
+
     /**
      * nbtName follows the format TANKNAME:ENABLEDNAME
      */
@@ -65,16 +62,20 @@ public class VERelationalTank {
         this.nbt = nbt;
     }
 
+    public VERelationalTank(FluidTank tank, int slotNum, int recipePos, TankType tankType, String nbt, AbstractFluidValidator validator) {
+        this.tank = tank;
+        this.slotNum = slotNum;
+        this.tankType = tankType;
+        this.recipePos = recipePos;
+        this.nbt = nbt;
+        this.validator = validator;
+    }
+
     public VERelationalTank(FluidTank tank, int slotNum, TankType tankType, String nbt) {
         this.tank = tank;
         this.slotNum = slotNum;
         this.tankType = tankType;
         this.nbt = nbt;
-    }
-
-    public void setIOItemstack(ItemStack input, ItemStack output) {
-        this.input = input;
-        this.output = output;
     }
 
     /**
@@ -87,22 +88,6 @@ public class VERelationalTank {
                 && this.getTank().getFluidAmount() + recipe.getOutputFluids().get(id).getAmount() <= this.tank.getCapacity();
     }
 
-    /**
-     * @param recipe The fluid recipe to use
-     * @param id     The recipe ingredient ID to fill. Should be first checked with canInsertFluid separately
-     *               especially if there are multiple outputs
-     */
-    public void fillOutput(VERecipe recipe, int id) {
-
-        FluidStack stack = recipe.getOutputFluid(id);
-
-        if (this.getTank().getFluid().getRawFluid() != stack.getRawFluid()) {
-            this.getTank().setFluid(stack);
-        } else {
-            this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
-        }
-    }
-
     public void fillTank(FluidStack stack) {
         this.getTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
     }
@@ -111,18 +96,6 @@ public class VERelationalTank {
         return this.getTank().fill(stack, IFluidHandler.FluidAction.SIMULATE);
     }
 
-    /**
-     * The id will be located in the Recipe file itself.
-     * To find the id the easiest way is to go to the fromJson in a recipe's serializer.
-     * From there look at the fluidInputList being built and check for the position of
-     * the fluid you're looking to subtract.
-     *
-     * @param recipe The recipe to pull the input from
-     * @param id     The id of the input fluid
-     */
-    public void drainInput(VERecipe recipe, int id) {
-        this.tank.drain(recipe.getFluidIngredients().get(id).getFluids()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
-    }
 
     public boolean isIgnoreDirection() {
         return ignoreDirection;
@@ -140,26 +113,8 @@ public class VERelationalTank {
         return allowAny;
     }
 
-    public List<Fluid> getValidFluids() {
-        return validFluids;
-    }
-
-    @Deprecated
-    public void setValidFluids(List<Fluid> validFluids) {
-        this.validFluids = validFluids;
-    }
-
-    public boolean isFluidValid(Fluid fluid) {
-        if (this.allowAny) return true;
-        return this.validFluids.contains(fluid);
-    }
-
     public TankType getTankType() {
         return tankType;
-    }
-
-    public void setTankType(TankType tankType) {
-        this.tankType = tankType;
     }
 
     public FluidTank getTank() {
@@ -172,10 +127,6 @@ public class VERelationalTank {
 
     public int getSlotNum() {
         return slotNum;
-    }
-
-    public void setSlotNum(int slotNum) {
-        this.slotNum = slotNum;
     }
 
     public ItemStack getInput() {
@@ -222,14 +173,16 @@ public class VERelationalTank {
         return recipePos;
     }
 
+    public AbstractFluidValidator getValidator() {
+        return validator;
+    }
+
     public String getTranslationKey() {
         if (tankType != null) {
             return switch (tankType) {
                 case INPUT -> "tank.voluminousenergy.input_tank";
                 case OUTPUT -> "tank.voluminousenergy.output_tank";
                 case BOTH -> "tank.voluminousenergy.both_tank";
-                default ->
-                        throw new NotImplementedException("Warning! Tank type " + tankType + " does not have a valid key!");
             };
         }
         return "tank.voluminousenergy.null";
@@ -244,9 +197,5 @@ public class VERelationalTank {
         setSideStatus(nbt.getBoolean(getNBTPrefix() + "_enabled"));
         int sideInt = nbt.getInt(getNBTPrefix() + "_direction");
         setSideDirection(IntToDirection.IntegerToDirection(sideInt));
-    }
-
-    public boolean isValidFluidsSet() {
-        return allowAny || !this.validFluids.isEmpty();
     }
 }

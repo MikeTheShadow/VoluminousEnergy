@@ -89,5 +89,4 @@ public class VEItemStackHandler extends ItemStackHandler {
         if (!isItemValid(slot, stack)) return stack;
         return super.insertItem(slot, stack, simulate);
     }
-
 }
