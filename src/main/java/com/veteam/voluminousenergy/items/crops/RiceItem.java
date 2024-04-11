@@ -11,7 +11,7 @@ public class RiceItem extends WaterCropItem {
 
     @Override
     public VEWaterCrop getWaterCrop() {
-        return VEBlocks.RICE_CROP.get();
+        return (VEWaterCrop) VEBlocks.RICE_CROP.get();
     }
 
 }

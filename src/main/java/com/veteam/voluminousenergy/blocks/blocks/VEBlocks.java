@@ -28,27 +28,31 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Mod(VoluminousEnergy.MODID)
 public class VEBlocks {
+
+    public static final List<RegistryWithName> REGISTERED_BLOCKS = new ArrayList<>();
 
     public static final DeferredRegister<Block> VE_BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, VoluminousEnergy.MODID);
     public static final DeferredRegister<BlockEntityType<?>> VE_TILE_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, VoluminousEnergy.MODID);
     public static final DeferredRegister<MenuType<?>> VE_CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, VoluminousEnergy.MODID);
 
     // Shells
-    public static RegistryObject<AluminumShellBlock> ALUMINUM_SHELL = VE_BLOCKS_REGISTRY.register("aluminum_shell", AluminumShellBlock::new);
+    public static RegistryObject<Block> ALUMINUM_SHELL = registerWithBlockItemSupport("aluminum_shell", AluminumShellBlock::new);
 
     // Machine Frames
-    public static RegistryObject<CarbonShieldedAluminumMachineFrame> CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME = VE_BLOCKS_REGISTRY.register("carbon_shielded_aluminum_machine_frame", CarbonShieldedAluminumMachineFrame::new);
+    public static RegistryObject<Block> CARBON_SHIELDED_ALUMINUM_MACHINE_FRAME = registerWithBlockItemSupport("carbon_shielded_aluminum_machine_frame", CarbonShieldedAluminumMachineFrame::new);
 
     // Casings (For multiblocks)
-    public static RegistryObject<AluminumMachineCasingBlock> ALUMINUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("aluminum_machine_casing", AluminumMachineCasingBlock::new);
+    public static RegistryObject<Block> ALUMINUM_MACHINE_CASING_BLOCK = registerWithBlockItemSupport("aluminum_machine_casing", AluminumMachineCasingBlock::new);
 
-    public static RegistryObject<TitaniumMachineCasingBlock> TITANIUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_machine_casing", TitaniumMachineCasingBlock::new);
+    public static RegistryObject<Block> TITANIUM_MACHINE_CASING_BLOCK = registerWithBlockItemSupport("titanium_machine_casing", TitaniumMachineCasingBlock::new);
 
-    public static RegistryObject<SolariumMachineCasingBlock> SOLARIUM_MACHINE_CASING_BLOCK = VE_BLOCKS_REGISTRY.register("solarium_machine_casing", SolariumMachineCasingBlock::new);
+    public static RegistryObject<Block> SOLARIUM_MACHINE_CASING_BLOCK = registerWithBlockItemSupport("solarium_machine_casing", SolariumMachineCasingBlock::new);
 
     //Primitive Blast
     public static final BlockTileMenuRegistry PRIMITIVE_BLAST_FURNACE =
@@ -279,70 +283,70 @@ public class VEBlocks {
 
 
     //Ores
-    public static RegistryObject<SaltpeterOre> SALTPETER_ORE = VE_BLOCKS_REGISTRY.register("saltpeterore", SaltpeterOre::new);
+    public static RegistryObject<Block> SALTPETER_ORE = registerWithBlockItemSupport("saltpeterore", SaltpeterOre::new);
 
-    public static RegistryObject<BauxiteOre> BAUXITE_ORE = VE_BLOCKS_REGISTRY.register("bauxiteore", BauxiteOre::new);
+    public static RegistryObject<Block> BAUXITE_ORE = registerWithBlockItemSupport("bauxiteore", BauxiteOre::new);
 
-    public static RegistryObject<CinnabarOre> CINNABAR_ORE = VE_BLOCKS_REGISTRY.register("cinnabarore", CinnabarOre::new);
+    public static RegistryObject<Block> CINNABAR_ORE = registerWithBlockItemSupport("cinnabarore", CinnabarOre::new);
 
-    public static RegistryObject<RutileOre> RUTILE_ORE = VE_BLOCKS_REGISTRY.register("rutileore", RutileOre::new);
+    public static RegistryObject<Block> RUTILE_ORE = registerWithBlockItemSupport("rutileore", RutileOre::new);
 
-    public static RegistryObject<GalenaOre> GALENA_ORE = VE_BLOCKS_REGISTRY.register("galena_ore", GalenaOre::new);
+    public static RegistryObject<Block> GALENA_ORE = registerWithBlockItemSupport("galena_ore", GalenaOre::new);
 
-    public static RegistryObject<EighzoOre> EIGHZO_ORE = VE_BLOCKS_REGISTRY.register("eighzo_ore", EighzoOre::new);
+    public static RegistryObject<Block> EIGHZO_ORE = registerWithBlockItemSupport("eighzo_ore", EighzoOre::new);
 
     // Deepslate ores
-    public static RegistryObject<DeepslateBauxiteOre> DEEPSLATE_BAUXITE_ORE = VE_BLOCKS_REGISTRY.register("deepslate_bauxite_ore", DeepslateBauxiteOre::new);
+    public static RegistryObject<Block> DEEPSLATE_BAUXITE_ORE = registerWithBlockItemSupport("deepslate_bauxite_ore", DeepslateBauxiteOre::new);
 
-    public static RegistryObject<DeepslateCinnabarOre> DEEPSLATE_CINNABAR_ORE = VE_BLOCKS_REGISTRY.register("deepslate_cinnabar_ore", DeepslateCinnabarOre::new);
+    public static RegistryObject<Block> DEEPSLATE_CINNABAR_ORE = registerWithBlockItemSupport("deepslate_cinnabar_ore", DeepslateCinnabarOre::new);
 
-    public static RegistryObject<DeepslateRutileOre> DEEPSLATE_RUTILE_ORE = VE_BLOCKS_REGISTRY.register("deepslate_rutile_ore", DeepslateRutileOre::new);
+    public static RegistryObject<Block> DEEPSLATE_RUTILE_ORE = registerWithBlockItemSupport("deepslate_rutile_ore", DeepslateRutileOre::new);
 
-    public static RegistryObject<DeepslateGalenaOre> DEEPSLATE_GALENA_ORE = VE_BLOCKS_REGISTRY.register("deepslate_galena_ore", DeepslateGalenaOre::new);
+    public static RegistryObject<Block> DEEPSLATE_GALENA_ORE = registerWithBlockItemSupport("deepslate_galena_ore", DeepslateGalenaOre::new);
 
-    public static RegistryObject<RedSaltpeterOre> RED_SALTPETER_ORE = VE_BLOCKS_REGISTRY.register("red_saltpeter_ore", RedSaltpeterOre::new);
+    public static RegistryObject<Block> RED_SALTPETER_ORE = registerWithBlockItemSupport("red_saltpeter_ore", RedSaltpeterOre::new);
 
     //Crops
     //public static VEWaterCrop WATER_CROP;
 
     //public static VELandCrop LAND_CROP;
 
-    public static RegistryObject<RiceCrop> RICE_CROP = VE_BLOCKS_REGISTRY.register("rice_crop", RiceCrop::new);
+    public static RegistryObject<Block> RICE_CROP = registerWithBlockItemSupport("rice_crop", RiceCrop::new);
 
     // Material Storage Blocks
-    public static RegistryObject<SolariumBlock> SOLARIUM_BLOCK = VE_BLOCKS_REGISTRY.register("solarium_block", SolariumBlock::new);
+    public static RegistryObject<Block> SOLARIUM_BLOCK = registerWithBlockItemSupport("solarium_block", SolariumBlock::new);
 
-    public static RegistryObject<AluminumBlock> ALUMINUM_BLOCK = VE_BLOCKS_REGISTRY.register("aluminum_block", AluminumBlock::new);
+    public static RegistryObject<Block> ALUMINUM_BLOCK = registerWithBlockItemSupport("aluminum_block", AluminumBlock::new);
 
-    public static RegistryObject<CarbonBlock> CARBON_BLOCK = VE_BLOCKS_REGISTRY.register("carbon_block", CarbonBlock::new);
+    public static RegistryObject<Block> CARBON_BLOCK = registerWithBlockItemSupport("carbon_block", CarbonBlock::new);
 
-    public static RegistryObject<EighzoBlock> EIGHZO_BLOCK = VE_BLOCKS_REGISTRY.register("eighzo_block", EighzoBlock::new);
+    public static RegistryObject<Block> EIGHZO_BLOCK = registerWithBlockItemSupport("eighzo_block", EighzoBlock::new);
 
-    public static RegistryObject<NighaliteBlock> NIGHALITE_BLOCK = VE_BLOCKS_REGISTRY.register("nighalite_block", NighaliteBlock::new);
+    public static RegistryObject<Block> NIGHALITE_BLOCK = registerWithBlockItemSupport("nighalite_block", NighaliteBlock::new);
 
-    public static RegistryObject<SaltpeterBlock> SALTPETER_BLOCK = VE_BLOCKS_REGISTRY.register("saltpeter_block", SaltpeterBlock::new);
+    public static RegistryObject<Block> SALTPETER_BLOCK = registerWithBlockItemSupport("saltpeter_block", SaltpeterBlock::new);
 
-    public static RegistryObject<TitaniumBlock> TITANIUM_BLOCK = VE_BLOCKS_REGISTRY.register("titanium_block", TitaniumBlock::new);
+    public static RegistryObject<Block> TITANIUM_BLOCK = registerWithBlockItemSupport("titanium_block", TitaniumBlock::new);
 
-    public static RegistryObject<TungstenBlock> TUNGSTEN_BLOCK = VE_BLOCKS_REGISTRY.register("tungsten_block", TungstenBlock::new);
+    public static RegistryObject<Block> TUNGSTEN_BLOCK = registerWithBlockItemSupport("tungsten_block", TungstenBlock::new);
 
-    public static RegistryObject<TungstenSteelBlock> TUNGSTEN_STEEL_BLOCK = VE_BLOCKS_REGISTRY.register("tungsten_steel_block", TungstenSteelBlock::new);
+    public static RegistryObject<Block> TUNGSTEN_STEEL_BLOCK = registerWithBlockItemSupport("tungsten_steel_block", TungstenSteelBlock::new);
 
     // Raw Material Storage Blocks
-    public static RegistryObject<RawBauxiteBlock> RAW_BAUXITE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bauxite_block", RawBauxiteBlock::new);
+    public static RegistryObject<Block> RAW_BAUXITE_BLOCK = registerWithBlockItemSupport("raw_bauxite_block", RawBauxiteBlock::new);
 
-    public static RegistryObject<RawCinnabarBlock> RAW_CINNABAR_BLOCK = VE_BLOCKS_REGISTRY.register("raw_cinnabar_block", RawCinnabarBlock::new);
+    public static RegistryObject<Block> RAW_CINNABAR_BLOCK = registerWithBlockItemSupport("raw_cinnabar_block", RawCinnabarBlock::new);
 
-    public static RegistryObject<RawEighzoBlock> RAW_EIGHZO_BLOCK = VE_BLOCKS_REGISTRY.register("raw_eighzo_block", RawEighzoBlock::new);
+    public static RegistryObject<Block> RAW_EIGHZO_BLOCK = registerWithBlockItemSupport("raw_eighzo_block", RawEighzoBlock::new);
 
-    public static RegistryObject<RawGalenaBlock> RAW_GALENA_BLOCK = VE_BLOCKS_REGISTRY.register("raw_galena_block", RawGalenaBlock::new);
+    public static RegistryObject<Block> RAW_GALENA_BLOCK = registerWithBlockItemSupport("raw_galena_block", RawGalenaBlock::new);
 
-    public static RegistryObject<RawRutileBlock> RAW_RUTILE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_rutile_block", RawRutileBlock::new);
+    public static RegistryObject<Block> RAW_RUTILE_BLOCK = registerWithBlockItemSupport("raw_rutile_block", RawRutileBlock::new);
 
     @Deprecated
-    public static RegistryObject<RawBoneBlock> RAW_BONE_BLOCK = VE_BLOCKS_REGISTRY.register("raw_bone_block", RawBoneBlock::new); // Unused
+    public static RegistryObject<Block> RAW_BONE_BLOCK = registerWithBlockItemSupport("raw_bone_block", RawBoneBlock::new); // Unused
 
-    public static RegistryObject<PressureLadder> PRESSURE_LADDER = VE_BLOCKS_REGISTRY.register("pressure_ladder", PressureLadder::new);
+    public static RegistryObject<Block> PRESSURE_LADDER = registerWithBlockItemSupport("pressure_ladder", PressureLadder::new);
 
     public static class BlockTileMenuRegistry {
 
@@ -351,7 +355,7 @@ public class VEBlocks {
         RegistryObject<MenuType<VEContainer>> container;
 
         public BlockTileMenuRegistry(String name, Supplier<Block> blockSupplier, Supplier<VETileEntityFactory> tileEntityFactory, Supplier<VEContainerFactory> containerFactory) {
-            block = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
+            block = registerWithBlockItemSupport(name, blockSupplier);
             tile = VE_TILE_REGISTRY.register(name,
                     () -> BlockEntityType.Builder.of(tileEntityFactory.get()::create, block.get()).build(null));
             container = VE_CONTAINER_REGISTRY.register(name, () ->
@@ -372,5 +376,13 @@ public class VEBlocks {
         public RegistryObject<MenuType<VEContainer>> container() {
             return this.container;
         }
+    }
+
+    public record RegistryWithName(String name, RegistryObject<Block> block){}
+
+    public static RegistryObject<Block> registerWithBlockItemSupport(String name,Supplier<Block> blockSupplier) {
+        RegistryObject<Block> registryObject = VE_BLOCKS_REGISTRY.register(name,blockSupplier);
+        REGISTERED_BLOCKS.add(new RegistryWithName(name,registryObject));
+        return registryObject;
     }
 }
