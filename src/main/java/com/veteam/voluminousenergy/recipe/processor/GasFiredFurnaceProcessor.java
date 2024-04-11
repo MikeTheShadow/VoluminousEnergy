@@ -29,14 +29,15 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
         int fuelCounter = tile.getData("fuel_counter");
 
         FluidStack fuel = tile.getFluidStackFromTank(0);
+        ItemStack stack = tile.getStackInSlot(2);
 
         // Gas processing
         if (fuelCounter > 0) {
             fuelCounter--;
-        } else if (!fuel.isFluidEqual(FluidStack.EMPTY)) {
+        } else if (!fuel.isFluidEqual(FluidStack.EMPTY) && !stack.isEmpty()) {
             // Drain Input
             tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
-            fuelCounter = 400 * CombustibleFluidsData.getEnergyProduced(fuel);
+            fuelCounter = 400 * CombustibleFluidsData.getEnergyProduced(fuel) / 4;
             VEItemStackHandler inventory = tile.getInventory();
             if (inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
                 fuelCounter = fuelCounter / (inventory.getStackInSlot(4).getCount() ^ 2);

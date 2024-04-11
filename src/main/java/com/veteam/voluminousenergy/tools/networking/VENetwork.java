@@ -61,6 +61,12 @@ public class VENetwork {
                 .encoder(BatteryBoxSendOutPowerPacket::toBytes)
                 .consumerMainThread(BatteryBoxSendOutPowerPacket::handle)
                 .add();
+
+        channel.messageBuilder(ClientBoundFluidDataPacket.class,8)
+                .decoder(ClientBoundFluidDataPacket::fromBytes)
+                .encoder(ClientBoundFluidDataPacket::toBytes)
+                .consumerMainThread(ClientBoundFluidDataPacket::handle)
+                .add();
     }
 
     private VENetwork() {

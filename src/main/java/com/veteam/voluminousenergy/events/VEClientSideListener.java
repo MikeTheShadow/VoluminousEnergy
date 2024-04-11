@@ -46,6 +46,5 @@ public class VEClientSideListener {
         ResourceManager manager = server.getResourceManager();
         CombustibleFluidsData.loadData(manager);
         OxidizerFluidsData.loadData(manager);
-        VoluminousEnergy.LOGGER.info("Finished data processing!");
     }
 }

@@ -24,7 +24,7 @@ import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.REGISTRY_CO
 public class CombustibleFluidsData {
 
     static final List<VERecipeCodecs.RegistryFluidValue> rawData = new ArrayList<>();
-    static final HashMap<Fluid, Integer> combustibleFluidData = new HashMap<>();
+    static HashMap<Fluid, Integer> combustibleFluidData = new HashMap<>();
 
     public static void loadData(ResourceManager manager) {
         resetCache();
@@ -75,6 +75,15 @@ public class CombustibleFluidsData {
                 combustibleFluidData.put(fluid, (int) rawItem.value());
             }
         }
+    }
+
+    public static HashMap<Fluid, Integer> getDataForNetworkTransfer() {
+        buildCache();
+        return combustibleFluidData;
+    }
+
+    public static void updateFromPacket(HashMap<Fluid, Integer> data) {
+        combustibleFluidData = data;
     }
 
     private static void resetCache() {

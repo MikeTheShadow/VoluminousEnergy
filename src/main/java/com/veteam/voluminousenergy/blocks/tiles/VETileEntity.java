@@ -211,6 +211,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 1);
     }
 
+    public int getEnergyCostMultiplier() {
+        return this.consumptionMultiplier(this.energy.getConsumption(),this.energy.getUpgradeSlotId());
+    }
+
     /**
      * This is for internal use only. Call this outside at your own peril
      * @param processTime The base time it takes to process

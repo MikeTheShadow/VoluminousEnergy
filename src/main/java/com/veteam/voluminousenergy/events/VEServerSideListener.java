@@ -5,8 +5,11 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.recipe.VERecipe;
+import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.tools.networking.packets.ClientBoundFluidDataPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +18,7 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.DEDICATED_SERVER)
 public class VEServerSideListener {
@@ -23,15 +27,16 @@ public class VEServerSideListener {
     public static void onDataPackSync(OnDatapackSyncEvent event) {
 
         MinecraftServer server;
+        ServerPlayer player = event.getPlayer();
         // When event.getPlayer() != null it's a player joining, so we check to make sure it's a group reload
-        if (event.getPlayer() == null) {
-            server = event.getPlayer().getServer();
-            VERecipe.updateCache();
-        } else {
-            server = event.getPlayerList().getServer();
+        if (event.getPlayer() != null) {
+            updateOnePlayer(event.getPlayer());
+            return;
         }
-
+        server = event.getPlayerList().getServer();
+        VERecipe.updateCache();
         doDataProcess(server);
+        updateAllPlayers();
     }
 
     @SubscribeEvent
@@ -43,13 +48,26 @@ public class VEServerSideListener {
     }
 
     /**
-     * Register our data processors here for the server
+     * Register our data processors here for the server.
+     * Whenever a user joins we must first sync
+     *
      * @param server The minecraft server to process with
      */
     private static void doDataProcess(MinecraftServer server) {
         ResourceManager manager = server.getResourceManager();
         CombustibleFluidsData.loadData(manager);
         OxidizerFluidsData.loadData(manager);
-        VoluminousEnergy.LOGGER.info("Finished data processing!");
+    }
+
+    private static void updateAllPlayers() {
+        ClientBoundFluidDataPacket
+                packet = new ClientBoundFluidDataPacket(CombustibleFluidsData.getDataForNetworkTransfer(),OxidizerFluidsData.getDataForNetworkTransfer());
+        VENetwork.channel.send(packet, PacketDistributor.ALL.noArg());
+    }
+
+    private static void updateOnePlayer(ServerPlayer player) {
+        ClientBoundFluidDataPacket
+                packet = new ClientBoundFluidDataPacket(CombustibleFluidsData.getDataForNetworkTransfer(),OxidizerFluidsData.getDataForNetworkTransfer());
+        VENetwork.channel.send(packet, player.connection.getConnection());
     }
 }

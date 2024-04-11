@@ -24,7 +24,7 @@ import static com.veteam.voluminousenergy.util.recipe.VERecipeCodecs.REGISTRY_OX
 public class OxidizerFluidsData {
 
     static final List<VERecipeCodecs.RegistryFluidValue> rawData = new ArrayList<>();
-    static final HashMap<Fluid, Float> oxidizerFluidData = new HashMap<>();
+    static HashMap<Fluid, Float> oxidizerFluidData = new HashMap<>();
 
     public static void loadData(ResourceManager manager) {
         resetCache();
@@ -74,6 +74,15 @@ public class OxidizerFluidsData {
                 oxidizerFluidData.put(fluid, rawItem.value());
             }
         }
+    }
+
+    public static HashMap<Fluid, Float> getDataForNetworkTransfer() {
+        buildCache();
+        return oxidizerFluidData;
+    }
+
+    public static void updateFromPacket(HashMap<Fluid, Float> data) {
+        oxidizerFluidData = data;
     }
 
     private static void resetCache() {
