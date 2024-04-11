@@ -80,6 +80,6 @@ public class HydroponicIncubatorRecipe extends VERNGRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get());
+        return new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR.block().get());
     }
 }

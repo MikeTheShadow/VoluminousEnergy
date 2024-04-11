@@ -34,6 +34,6 @@ public class StirlingGeneratorBlock extends VEFaceableMachineBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.STIRLING_GENERATOR_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.STIRLING_GENERATOR.tile().get());
     }
 }

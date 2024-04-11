@@ -80,7 +80,7 @@ public class ElectrolyzerRecipe extends VERNGRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get());
+        return new ItemStack(VEBlocks.ELECTROLYZER.block().get());
     }
 
 }

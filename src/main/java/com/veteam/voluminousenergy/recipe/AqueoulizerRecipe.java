@@ -73,7 +73,7 @@ public class AqueoulizerRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get());
+        return new ItemStack(VEBlocks.AQUEOULIZER.block().get());
     }
 
     @Override

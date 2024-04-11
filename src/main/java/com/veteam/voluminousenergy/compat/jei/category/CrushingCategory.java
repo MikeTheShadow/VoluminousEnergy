@@ -39,7 +39,7 @@ public class CrushingCategory implements IRecipeCategory<CrusherRecipe> {
     public CrushingCategory(IGuiHelper guiHelper) {
         // 68, 12 | 40, 65 -> 10 px added for chance
         background = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 68, 12, 40, 70).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CRUSHER_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.CRUSHER.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();
         arrow = guiHelper.drawableBuilder(CrusherScreen.getGUI(), 176, 0, 17, 24).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, false);
     }

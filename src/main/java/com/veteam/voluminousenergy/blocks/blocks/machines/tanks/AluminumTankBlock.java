@@ -1,8 +1,8 @@
 package com.veteam.voluminousenergy.blocks.blocks.machines.tanks;
 
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
-import com.veteam.voluminousenergy.blocks.tiles.tank.AluminumTankTile;
-import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
@@ -33,21 +33,21 @@ public class AluminumTankBlock extends TankBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new AluminumTankTile(pos, state);
+        return VETileEntities.ALUMINUM_TANK_FACTORY.create(pos, state);
     }
 
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends AluminumTankTile> tile) {
-        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, TankTile::serverTick);
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> passedBlockEntity, BlockEntityType<? extends VETileEntity> tile) {
+        return level.isClientSide ? null : createTickerHelper(passedBlockEntity, tile, VETileEntity::serverTick);
     }
 
-    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends AluminumTankTile> tile, BlockEntityTicker<E> serverTick) {
+    public static <T extends BlockEntity, E extends BlockEntity> BlockEntityTicker<T> createTickerHelper(BlockEntityType<T> blockEntityType, BlockEntityType<? extends VETileEntity> tile, BlockEntityTicker<E> serverTick) {
         return blockEntityType == tile ? (BlockEntityTicker<T>) serverTick : null;
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.ALUMINUM_TANK.tile().get());
     }
 
     @Override

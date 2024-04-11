@@ -87,7 +87,7 @@ public class SawmillRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.SAWMILL_BLOCK.get());
+        return new ItemStack(VEBlocks.SAWMILL.block().get());
     }
 
     public boolean isLogRecipe() {

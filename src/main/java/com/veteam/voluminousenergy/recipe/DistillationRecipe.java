@@ -73,7 +73,7 @@ public class DistillationRecipe extends VERNGRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get());
+        return new ItemStack(VEBlocks.DISTILLATION_UNIT.block().get());
     }
 
     @Override

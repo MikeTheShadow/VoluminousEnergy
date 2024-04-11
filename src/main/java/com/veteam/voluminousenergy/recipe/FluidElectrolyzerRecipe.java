@@ -75,6 +75,6 @@ public class FluidElectrolyzerRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK.get());
+        return new ItemStack(VEBlocks.FLUID_ELECTROLYZER.block().get());
     }
 }

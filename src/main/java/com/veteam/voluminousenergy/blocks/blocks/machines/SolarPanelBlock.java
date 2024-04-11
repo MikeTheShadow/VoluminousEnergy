@@ -35,6 +35,6 @@ public class SolarPanelBlock extends VEFaceableMachineBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.SOLAR_PANEL_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.SOLAR_PANEL.tile().get());
     }
 }

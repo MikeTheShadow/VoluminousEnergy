@@ -47,7 +47,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 52, 5, 120, 64).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.COMBUSTION_GENERATOR.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 

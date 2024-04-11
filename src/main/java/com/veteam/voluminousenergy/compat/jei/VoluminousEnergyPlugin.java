@@ -116,7 +116,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         registration.addIngredientInfo(new FluidStack(VEFluids.COMPRESSED_AIR_REG.get(), 1000), ForgeTypes.FLUID_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_fluid_info"));
 
         List<ItemStack> compressedAirInfo = List.of(
-                new ItemStack(VEBlocks.AIR_COMPRESSOR_BLOCK.get().asItem()),
+                new ItemStack(VEBlocks.AIR_COMPRESSOR.block().get().asItem()),
                 new ItemStack(VEFluids.COMPRESSED_AIR_BUCKET_REG.get())
         );
         registration.addIngredientInfo(compressedAirInfo, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.air_compressor_item_info"));
@@ -141,7 +141,7 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         ArrayList<ItemStack> fluidScannerDimensionalLaserInfo = new ArrayList<>();
         fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.FLUID_SCANNER.get()));
         fluidScannerDimensionalLaserInfo.add(new ItemStack(VEItems.RFID_CHIP.get()));
-        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()));
+        fluidScannerDimensionalLaserInfo.add(new ItemStack(VEBlocks.DIMENSIONAL_LASER.block().get()));
         registration.addIngredientInfo(fluidScannerDimensionalLaserInfo, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.fluid_scanner_info"));
 
     }
@@ -183,18 +183,18 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CRUSHER_CONTAINER.get(), CrushingCategory.RECIPE_TYPE, 0, 1, VEContainers.CRUSHER_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.ELECTROLYZER_CONTAINER.get(), ElectrolyzingCategory.RECIPE_TYPE, 0, 2, VEContainers.ELECTROLYZER_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.COMPRESSOR_CONTAINER.get(), CompressingCategory.RECIPE_TYPE, 0, 1, VEContainers.COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.STIRLING_GENERATOR_CONTAINER.get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2, VEContainers.AQUEOULIZER_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE_CONTAINER.get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL_CONTAINER.get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.getNumberOfSlots(), 36);
-        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CRUSHER.container().get(), CrushingCategory.RECIPE_TYPE, 0, 1, VEContainers.CRUSHER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.ELECTROLYZER.container().get(), ElectrolyzingCategory.RECIPE_TYPE, 0, 2, VEContainers.ELECTROLYZER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.COMPRESSOR.container().get(), CompressingCategory.RECIPE_TYPE, 0, 1, VEContainers.COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_STIRLING_GENERATOR.container().get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.PRIMITIVE_STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.STIRLING_GENERATOR.container().get(), StirlingCategory.RECIPE_TYPE, 0, 1, VEContainers.STIRLING_GENERATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.AQUEOULIZER.container().get(), AqueoulizingCategory.RECIPE_TYPE, 3, 2, VEContainers.AQUEOULIZER_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.CENTRIFUGAL_SEPARATOR.container().get(), CentrifugalSeparationCategory.RECIPE_TYPE, 0, 2, VEContainers.CENTRIFUGAL_SEPARATOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.IMPLOSION_COMPRESSOR.container().get(), ImplosionCompressionCategory.RECIPE_TYPE, 0, 2, VEContainers.IMPLOSION_COMPRESSOR_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.BLAST_FURNACE.container().get(), IndustrialBlastingCategory.RECIPE_TYPE, 2, 3, VEContainers.BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(ToolingStationContainer.class, VEBlocks.TOOLING_STATION.container().get(), ToolingCategory.RECIPE_TYPE, 3, 2, ToolingStationContainer.NUMBER_OF_SLOTS, 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.SAWMILL.container().get(), SawmillCategory.RECIPE_TYPE, 0, 3, VEContainers.SAWMILL_FACTORY.getNumberOfSlots(), 36);
+        registration.addRecipeTransferHandler(VEContainer.class, VEBlocks.PRIMITIVE_BLAST_FURNACE.container().get(), PrimitiveBlastingCategory.RECIPE_TYPE, 0, 2, VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY.getNumberOfSlots(), 36);
         // TODO: Transfer helper for the Fluid Electrolyzer
         // TODO: Fluid Mixer
         // TODO: Hydroponic Incubator
@@ -203,26 +203,26 @@ public class VoluminousEnergyPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER_BLOCK.get()).copy(), CrushingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER_BLOCK.get()).copy(), ElectrolyzingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get()).copy(), CompressingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK.get()).copy(), CentrifugalAgitationCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER_BLOCK.get()).copy(), AqueoulizingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get()).copy(), StirlingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_BLOCK.get()).copy(), StirlingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR_BLOCK.get()).copy(), CombustionCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT_BLOCK.get()).copy(), DistillingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE_BLOCK.get()).copy(), RecipeTypes.SMELTING, RecipeTypes.BLASTING, CombustionCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE_BLOCK.get()).copy(), RecipeTypes.SMELTING, RecipeTypes.BLASTING);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get()).copy(), CentrifugalSeparationCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR_BLOCK.get()).copy(), ImplosionCompressionCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get()).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get()).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL_BLOCK.get()).copy(), SawmillCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER_BLOCK.get()).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get()).copy(), FluidMixingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get()).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR_BLOCK.get()).copy(), HydroponicIncubatorCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get()).copy(), DimensionalLasingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CRUSHER.block().get()).copy(), CrushingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTROLYZER.block().get()).copy(), ElectrolyzingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMPRESSOR.block().get()).copy(), CompressingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR.block().get()).copy(), CentrifugalAgitationCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.AQUEOULIZER.block().get()).copy(), AqueoulizingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.STIRLING_GENERATOR.block().get()).copy(), StirlingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_STIRLING_GENERATOR.block().get()).copy(), StirlingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.COMBUSTION_GENERATOR.block().get()).copy(), CombustionCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DISTILLATION_UNIT.block().get()).copy(), DistillingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.GAS_FIRED_FURNACE.block().get()).copy(), RecipeTypes.SMELTING, RecipeTypes.BLASTING, CombustionCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.ELECTRIC_FURNACE.block().get()).copy(), RecipeTypes.SMELTING, RecipeTypes.BLASTING);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR.block().get()).copy(), CentrifugalSeparationCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.IMPLOSION_COMPRESSOR.block().get()).copy(), ImplosionCompressionCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.BLAST_FURNACE.block().get()).copy(), IndustrialBlastingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.TOOLING_STATION.block().get()).copy(), ToolingCategory.RECIPE_TYPE, CombustionCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.SAWMILL.block().get()).copy(), SawmillCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_ELECTROLYZER.block().get()).copy(), FluidElectrolyzingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.FLUID_MIXER.block().get()).copy(), FluidMixingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get()).copy(), PrimitiveBlastingCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.HYDROPONIC_INCUBATOR.block().get()).copy(), HydroponicIncubatorCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(VEBlocks.DIMENSIONAL_LASER.block().get()).copy(), DimensionalLasingCategory.RECIPE_TYPE);
     }
 }

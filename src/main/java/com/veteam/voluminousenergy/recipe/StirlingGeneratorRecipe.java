@@ -71,7 +71,7 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get());
+        return new ItemStack(VEBlocks.STIRLING_GENERATOR.block().get());
     }
 
     @Override

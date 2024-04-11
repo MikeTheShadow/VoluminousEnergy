@@ -2,9 +2,9 @@ package com.veteam.voluminousenergy.blocks.screens.tank;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.screens.VEContainerScreen;
-import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
@@ -25,15 +25,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class TankScreen extends VEContainerScreen<TankContainer> {
-    private TankTile tileEntity;
+public class TankScreen extends VEContainerScreen<VEContainer> {
+    private VETileEntity tileEntity;
     private final ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/tank_gui.png");
     private static final ResourceLocation GUI_TOOLS = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/guitools.png");
 
 
-    public TankScreen(TankContainer screenContainer, Inventory inv, Component titleIn) {
+    public TankScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        tileEntity = (TankTile) screenContainer.getTileEntity();
+        tileEntity = screenContainer.getTileEntity();
         screenContainer.setScreen(this);
     }
 
@@ -70,9 +70,9 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
     @Override
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) {
-            int amount = tileEntity.getTank().getTank().getFluid().getAmount();
-            String name = tileEntity.getTank().getTank().getFluid().getTranslationKey();
-            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
+            int amount = tileEntity.getRelationalTank(0).getTank().getFluid().getAmount();
+            String name = tileEntity.getRelationalTank(0).getTank().getFluid().getTranslationKey();
+            matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getRelationalTank(0).getTank().getCapacity()), mouseX, mouseY);
         }
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
@@ -90,7 +90,7 @@ public class TankScreen extends VEContainerScreen<TankContainer> {
         if (tileEntity != null) {
             // Tank render
             try {
-                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getTank().getTank(), tileEntity.getTankCapacity(), i + 93, j + 18, 0, 12, 50);
+                VERender.renderGuiTank(tileEntity.getLevel(), tileEntity.getBlockPos(), tileEntity.getRelationalTank(0).getTank(), tileEntity.getRelationalTank(0).getTank().getCapacity(), i + 93, j + 18, 0, 12, 50);
             } catch (Exception e) {
             }
 

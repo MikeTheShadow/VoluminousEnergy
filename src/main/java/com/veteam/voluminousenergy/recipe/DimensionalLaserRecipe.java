@@ -255,6 +255,6 @@ public class DimensionalLaserRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.DIMENSIONAL_LASER_BLOCK.get());
+        return new ItemStack(VEBlocks.DIMENSIONAL_LASER.block().get());
     }
 }

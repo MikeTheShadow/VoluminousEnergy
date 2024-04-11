@@ -88,7 +88,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.BLAST_FURNACE_BLOCK.get());
+        return new ItemStack(VEBlocks.BLAST_FURNACE.block().get());
     }
 
     public void setMinimumHeat(int minimumHeat) {

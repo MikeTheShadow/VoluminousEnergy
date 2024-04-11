@@ -156,7 +156,7 @@ public class ToolingRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.TOOLING_STATION_BLOCK.get());
+        return new ItemStack(VEBlocks.TOOLING_STATION.block().get());
     }
 
     public ArrayList<Item> getBits() {

@@ -12,38 +12,38 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void init() {
-        MenuScreens.register(VEBlocks.PRIMITIVE_BLAST_FURNACE_CONTAINER.get(), PrimitiveBlastFurnaceScreen::new);
-        MenuScreens.register(VEBlocks.PRIMITIVE_STIRLING_GENERATOR_CONTAINER.get(), PrimitiveStirlingGeneratorScreen::new);
-        MenuScreens.register(VEBlocks.CRUSHER_CONTAINER.get(), CrusherScreen::new);
-        MenuScreens.register(VEBlocks.ELECTROLYZER_CONTAINER.get(), ElectrolyzerScreen::new);
-        MenuScreens.register(VEBlocks.CENTRIFUGAL_AGITATOR_CONTAINER.get(), CentrifugalAgitatorScreen::new);
-        MenuScreens.register(VEBlocks.COMPRESSOR_CONTAINER.get(), CompressorScreen::new);
-        MenuScreens.register(VEBlocks.STIRLING_GENERATOR_CONTAINER.get(), StirlingGeneratorScreen::new);
-        MenuScreens.register(VEBlocks.COMBUSTION_GENERATOR_CONTAINER.get(), CombustionGeneratorScreen::new);
-        MenuScreens.register(VEBlocks.AQUEOULIZER_CONTAINER.get(), AqueoulizerScreen::new);
-        MenuScreens.register(VEBlocks.AIR_COMPRESSOR_CONTAINER.get(), AirCompressorScreen::new);
-        MenuScreens.register(VEBlocks.DISTILLATION_UNIT_CONTAINER.get(), DistillationUnitScreen::new);
-        MenuScreens.register(VEBlocks.PUMP_CONTAINER.get(), PumpScreen::new);
-        MenuScreens.register(VEBlocks.GAS_FIRED_FURNACE_CONTAINER.get(), GasFiredFurnaceScreen::new);
-        MenuScreens.register(VEBlocks.ELECTRIC_FURNACE_CONTAINER.get(), ElectricFurnaceScreen::new);
-        MenuScreens.register(VEBlocks.BATTERY_BOX_CONTAINER.get(), BatteryBoxScreen::new);
-        MenuScreens.register(VEBlocks.PRIMITIVE_SOLAR_PANEL_CONTAINER.get(), PrimitiveSolarPanelScreen::new);
-        MenuScreens.register(VEBlocks.SOLAR_PANEL_CONTAINER.get(), SolarPanelScreen::new);
-        MenuScreens.register(VEBlocks.CENTRIFUGAL_SEPARATOR_CONTAINER.get(), CentrifugalSeparatorScreen::new);
-        MenuScreens.register(VEBlocks.IMPLOSION_COMPRESSOR_CONTAINER.get(), ImplosionCompressorScreen::new);
-        MenuScreens.register(VEBlocks.BLAST_FURNACE_CONTAINER.get(), BlastFurnaceScreen::new);
-        MenuScreens.register(VEBlocks.TOOLING_STATION_CONTAINER.get(), ToolingStationScreen::new);
-        MenuScreens.register(VEBlocks.SAWMILL_CONTAINER.get(), SawmillScreen::new);
-        MenuScreens.register(VEBlocks.ALUMINUM_TANK_CONTAINER.get(), AluminumTankScreen::new);
-        MenuScreens.register(VEBlocks.TITANIUM_TANK_CONTAINER.get(), TitaniumTankScreen::new);
-        MenuScreens.register(VEBlocks.NETHERITE_TANK_CONTAINER.get(), NetheriteTankScreen::new);
-        MenuScreens.register(VEBlocks.NIGHALITE_TANK_CONTAINER.get(), NighaliteTankScreen::new);
-        MenuScreens.register(VEBlocks.EIGHZO_TANK_CONTAINER.get(), EighzoTankScreen::new);
-        MenuScreens.register(VEBlocks.SOLARIUM_TANK_CONTAINER.get(), SolariumTankScreen::new);
-        MenuScreens.register(VEBlocks.DIMENSIONAL_LASER_CONTAINER.get(), DimensionalLaserScreen::new);
-        MenuScreens.register(VEBlocks.FLUID_ELECTROLYZER_CONTAINER.get(), FluidElectrolyzerScreen::new);
-        MenuScreens.register(VEBlocks.FLUID_MIXER_CONTAINER.get(), FluidMixerScreen::new);
-        MenuScreens.register(VEBlocks.HYDROPONIC_INCUBATOR_CONTAINER.get(), HydroponicIncubatorScreen::new);
+        MenuScreens.register(VEBlocks.PRIMITIVE_BLAST_FURNACE.container().get(), PrimitiveBlastFurnaceScreen::new);
+        MenuScreens.register(VEBlocks.PRIMITIVE_STIRLING_GENERATOR.container().get(), PrimitiveStirlingGeneratorScreen::new);
+        MenuScreens.register(VEBlocks.CRUSHER.container().get(), CrusherScreen::new);
+        MenuScreens.register(VEBlocks.ELECTROLYZER.container().get(), ElectrolyzerScreen::new);
+        MenuScreens.register(VEBlocks.CENTRIFUGAL_AGITATOR.container().get(), CentrifugalAgitatorScreen::new);
+        MenuScreens.register(VEBlocks.COMPRESSOR.container().get(), CompressorScreen::new);
+        MenuScreens.register(VEBlocks.STIRLING_GENERATOR.container().get(), StirlingGeneratorScreen::new);
+        MenuScreens.register(VEBlocks.COMBUSTION_GENERATOR.container().get(), CombustionGeneratorScreen::new);
+        MenuScreens.register(VEBlocks.AQUEOULIZER.container().get(), AqueoulizerScreen::new);
+        MenuScreens.register(VEBlocks.AIR_COMPRESSOR.container().get(), AirCompressorScreen::new);
+        MenuScreens.register(VEBlocks.DISTILLATION_UNIT.container().get(), DistillationUnitScreen::new);
+        MenuScreens.register(VEBlocks.PUMP.container().get(), PumpScreen::new);
+        MenuScreens.register(VEBlocks.GAS_FIRED_FURNACE.container().get(), GasFiredFurnaceScreen::new);
+        MenuScreens.register(VEBlocks.ELECTRIC_FURNACE.container().get(), ElectricFurnaceScreen::new);
+        MenuScreens.register(VEBlocks.BATTERY_BOX.container().get(), BatteryBoxScreen::new);
+        MenuScreens.register(VEBlocks.PRIMITIVE_SOLAR_PANEL.container().get(), PrimitiveSolarPanelScreen::new);
+        MenuScreens.register(VEBlocks.SOLAR_PANEL.container().get(), SolarPanelScreen::new);
+        MenuScreens.register(VEBlocks.CENTRIFUGAL_SEPARATOR.container().get(), CentrifugalSeparatorScreen::new);
+        MenuScreens.register(VEBlocks.IMPLOSION_COMPRESSOR.container().get(), ImplosionCompressorScreen::new);
+        MenuScreens.register(VEBlocks.BLAST_FURNACE.container().get(), BlastFurnaceScreen::new);
+        MenuScreens.register(VEBlocks.TOOLING_STATION.container().get(), ToolingStationScreen::new);
+        MenuScreens.register(VEBlocks.SAWMILL.container().get(), SawmillScreen::new);
+        MenuScreens.register(VEBlocks.ALUMINUM_TANK.container().get(), AluminumTankScreen::new);
+        MenuScreens.register(VEBlocks.TITANIUM_TANK.container().get(), TitaniumTankScreen::new);
+        MenuScreens.register(VEBlocks.NETHERITE_TANK.container().get(), NetheriteTankScreen::new);
+        MenuScreens.register(VEBlocks.NIGHALITE_TANK.container().get(), NighaliteTankScreen::new);
+        MenuScreens.register(VEBlocks.EIGHZO_TANK.container().get(), EighzoTankScreen::new);
+        MenuScreens.register(VEBlocks.SOLARIUM_TANK.container().get(), SolariumTankScreen::new);
+        MenuScreens.register(VEBlocks.DIMENSIONAL_LASER.container().get(), DimensionalLaserScreen::new);
+        MenuScreens.register(VEBlocks.FLUID_ELECTROLYZER.container().get(), FluidElectrolyzerScreen::new);
+        MenuScreens.register(VEBlocks.FLUID_MIXER.container().get(), FluidMixerScreen::new);
+        MenuScreens.register(VEBlocks.HYDROPONIC_INCUBATOR.container().get(), HydroponicIncubatorScreen::new);
     }
 
     @Override

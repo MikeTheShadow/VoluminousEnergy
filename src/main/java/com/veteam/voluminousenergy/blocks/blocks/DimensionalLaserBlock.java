@@ -43,7 +43,7 @@ public class DimensionalLaserBlock extends VEFaceableMachineBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.DIMENSIONAL_LASER_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.DIMENSIONAL_LASER.tile().get());
     }
 
     @Override

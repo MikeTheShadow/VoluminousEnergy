@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.blocks.tiles.tank.TankTile;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,7 +56,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
         for (VERelationalTank tank : tanks) {
             if (tank.getTankType() == TankType.OUTPUT) continue;
             if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
-                if (!tank.getSideStatus() && !(tileEntity instanceof TankTile)) return 0;
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
@@ -88,7 +86,6 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         for (VERelationalTank tank : tanks) {
-            if (!tank.getSideStatus() && !(tileEntity instanceof TankTile)) continue;
             if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
                 if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
             }

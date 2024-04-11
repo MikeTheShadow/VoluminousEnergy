@@ -1,6 +1,6 @@
 package com.veteam.voluminousenergy.blocks.screens.tank;
 
-import com.veteam.voluminousenergy.blocks.containers.tank.TankContainer;
+import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class EighzoTankScreen extends TankScreen {
-    public EighzoTankScreen(TankContainer screenContainer, Inventory inv, Component titleIn) {
+    public EighzoTankScreen(VEContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
     }
 

@@ -54,7 +54,7 @@ public class ToolingStationBlock extends FaceableBlock implements EntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTicker(level, blockEntityType, VEBlocks.TOOLING_STATION_TILE.get());
+        return createTicker(level, blockEntityType, VEBlocks.TOOLING_STATION.tile().get());
     }
 
     @Override

@@ -75,6 +75,6 @@ public class FluidMixerRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.FLUID_MIXER_BLOCK.get());
+        return new ItemStack(VEBlocks.FLUID_MIXER.block().get());
     }
 }

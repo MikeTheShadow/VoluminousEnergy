@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.blocks.containers;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEBucketSlot;
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import com.veteam.voluminousenergy.items.tools.multitool.CombustionMultitool;
@@ -22,14 +21,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.TOOLING_STATION_CONTAINER;
+import static com.veteam.voluminousenergy.blocks.blocks.VEBlocks.TOOLING_STATION;
 
 public class ToolingStationContainer extends VEContainer {
 
     public static final int NUMBER_OF_SLOTS = 6;
 
     public ToolingStationContainer(int id, Level world, BlockPos pos, Inventory inventory, Player player) {
-        super(TOOLING_STATION_CONTAINER.get(), id, world, pos, inventory, player, VEBlocks.TOOLING_STATION_BLOCK.get());
+        super(TOOLING_STATION.container().get(), id, world, pos, inventory, player, TOOLING_STATION.block().get());
     }
 
     @Nonnull

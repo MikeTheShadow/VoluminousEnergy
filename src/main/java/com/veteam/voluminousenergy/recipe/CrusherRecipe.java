@@ -78,7 +78,7 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.CRUSHER_BLOCK.get());
+        return new ItemStack(VEBlocks.CRUSHER.block().get());
     }
 
 }

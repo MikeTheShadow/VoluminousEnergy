@@ -37,7 +37,7 @@ public class StirlingCategory implements IRecipeCategory<StirlingGeneratorRecipe
         // 68, 12 | 40, 65 -> 10 px added for chance
         ResourceLocation GUI = new ResourceLocation(VoluminousEnergy.MODID, "textures/gui/jei/combustion_generator.png");
         background = guiHelper.drawableBuilder(GUI, 68, 12, 40, 44).build();
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.STIRLING_GENERATOR_BLOCK.get()));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(VEBlocks.STIRLING_GENERATOR.block().get()));
         slotDrawable = guiHelper.getSlotDrawable();
     }
 

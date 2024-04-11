@@ -69,7 +69,7 @@ public class ToolingStationTile extends VETileEntity {
     }
 
     public ToolingStationTile(BlockPos pos, BlockState state) {
-        super(VEBlocks.TOOLING_STATION_TILE.get(), pos, state, null);
+        super(VEBlocks.TOOLING_STATION.tile().get(), pos, state, null);
     }
 
     VERecipe fuelRecipe;

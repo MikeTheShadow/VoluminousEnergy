@@ -174,7 +174,7 @@ public class VoluminousEnergy {
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER_TILE.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER.tile().get(), LaserBlockEntityRenderer::new);
     }
 
     private void setupWhenLoadingComplete(final FMLLoadCompleteEvent event) {
@@ -196,7 +196,7 @@ public class VoluminousEnergy {
         @SubscribeEvent
         public static void RegisterClientOnSetupEvent(FMLClientSetupEvent event) {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
-            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL_BLOCK.get(), RenderType.cutout()));
+            event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
         }
 

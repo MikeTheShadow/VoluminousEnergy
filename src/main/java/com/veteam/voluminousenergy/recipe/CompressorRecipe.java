@@ -74,6 +74,6 @@ public class CompressorRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.COMPRESSOR_BLOCK.get());
+        return new ItemStack(VEBlocks.COMPRESSOR.block().get());
     }
 }

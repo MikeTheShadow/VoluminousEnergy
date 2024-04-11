@@ -71,7 +71,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR_BLOCK.get());
+        return new ItemStack(VEBlocks.CENTRIFUGAL_AGITATOR.block().get());
     }
 
     @Override

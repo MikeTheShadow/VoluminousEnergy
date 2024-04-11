@@ -82,6 +82,6 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR_BLOCK.get());
+        return new ItemStack(VEBlocks.CENTRIFUGAL_SEPARATOR.block().get());
     }
 }

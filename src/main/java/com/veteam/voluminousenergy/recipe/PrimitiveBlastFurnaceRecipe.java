@@ -76,7 +76,7 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     @Override
     public @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE_BLOCK.get());
+        return new ItemStack(VEBlocks.PRIMITIVE_BLAST_FURNACE.block().get());
     }
 
 }
