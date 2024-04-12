@@ -27,7 +27,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class PressureLadder extends LadderBlock {
@@ -64,7 +66,7 @@ public class PressureLadder extends LadderBlock {
 
     // Pressure plate methods
     protected int getPressedTime() {
-        return 20;
+        return 60;
     }
 
     public boolean isPossibleToRespawnInThis() {
@@ -113,104 +115,75 @@ public class PressureLadder extends LadderBlock {
     }
 
 
-    @Override
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
-        Player player = serverLevel.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2, EntitySelector.NO_SPECTATORS);
-        if ((player == null || player.isSpectator()) && blockState.getValue(POWERED)) {
-            VoluminousEnergy.LOGGER.info("Pressure Ladder active with no player! Might be jammed! Deactivating to unjam!");
-            powerOff(serverLevel, blockState, blockPos, player);
+    public void tick(@NotNull BlockState blockState, @NotNull ServerLevel serverLevel, @NotNull BlockPos blockPos, @NotNull RandomSource randomSource) {
+        int i = this.getSignalForState(blockState);
+        if (i > 0) {
+            this.checkPressed(null, serverLevel, blockPos, blockState, i);
         }
+
     }
 
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
         if (!level.isClientSide) {
-            if (entity instanceof LivingEntity) {
-                // Calculate float differences from entity entering the ladder (double) to the actual blockPos (int)
-                // NOTE: blockPos is the VERY TOP of the block (ie ceil rounded)
-                double deltaX = entity.getX() - blockPos.getX();
-                double deltaY = entity.getY() - blockPos.getY();
-                double deltaZ = entity.getZ() - blockPos.getZ();
-
-                // Vertical (Y) checks
-                if (((deltaY > 0.91F) || (deltaY < -0.92F)) && blockState.getValue(POWERED)) { // If entity too high or low, deactivate
-                    powerOff(level, blockState, blockPos, entity);
-                } else if (((deltaY > -0.90F) && (deltaY < 0.9F)) && !blockState.getValue(POWERED)) { // If between target delta values, activate
-                    powerOn(level, blockState, blockPos, entity);
-                }
-
-                // If entity too far to the sides, deactivate
-                if ((deltaZ > 0.9F || deltaZ < -0.9F) || (deltaX > 0.9F || deltaX < -0.9F) && blockState.getValue(POWERED)) {
-                    powerOff(level, blockState, blockPos, entity);
-                }
-
+            int i = this.getSignalForState(blockState);
+            if (i == 0) {
+                this.checkPressed(entity, level, blockPos, blockState, i);
             }
+
         }
     }
 
-    private void powerOff(Level level, BlockState blockState, BlockPos blockPos, Entity entity) {
-        BlockState newState = blockState.setValue(POWERED, false);
-        this.setSignalForState(newState, 0);
-        level.setBlock(blockPos, newState, 3);
-        level.setBlocksDirty(blockPos, blockState, newState);
-        this.updateNeighbours(level, blockPos);
+    private void checkPressed(@Nullable Entity entity, Level level, BlockPos blockPos, BlockState blockState, int strength) {
+        int i = this.getSignalStrength(level, blockPos);
+        boolean flag = strength > 0;
+        boolean flag1 = i > 0;
+        if (strength != i) {
+            BlockState blockstate = this.setSignalForState(blockState, i);
+            level.setBlock(blockPos, blockstate, 2);
+            this.updateNeighbours(level, blockPos);
+            level.setBlocksDirty(blockPos, blockState, blockstate);
+        }
 
-        // Play sound
-        this.playOffSound(level, blockPos);
-        level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, blockPos);
+        if (!flag1 && flag) {
+            this.playOffSound(level, blockPos);
+            level.gameEvent(entity, GameEvent.BLOCK_DEACTIVATE, blockPos);
+        } else if (flag1 && !flag) {
+            this.playOffSound(level, blockPos);
+            level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
+        }
+
+        if (flag1) {
+            level.scheduleTick(new BlockPos(blockPos), this, this.getPressedTime());
+        }
+
     }
 
-    private void powerOn(Level level, BlockState blockState, BlockPos blockPos, Entity entity) {
-        BlockState newState = blockState.setValue(POWERED, true);
-        this.setSignalForState(newState, 15);
-        level.setBlock(blockPos, newState, 3);
-        level.setBlocksDirty(blockPos, blockState, newState);
-        this.updateNeighbours(level, blockPos);
-
-        // Play sound
-        this.playOnSound(level, blockPos);
-        level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, blockPos);
-    }
-
-
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean flag) {
-        if (!flag && !blockState.is(blockState1.getBlock())) {
+    public void onRemove(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState state, boolean b) {
+        if (!b && !blockState.is(state.getBlock())) {
             if (this.getSignalForState(blockState) > 0) {
                 this.updateNeighbours(level, blockPos);
             }
-
-            super.onRemove(blockState, level, blockPos, blockState1, flag);
+            super.onRemove(blockState, level, blockPos, state, b);
         }
     }
 
-    protected void updateNeighbours(Level level, BlockPos pos) {
-        level.updateNeighborsAt(pos, this);
-        level.updateNeighborsAt(pos.below(), this);
-        level.updateNeighborsAt(pos.above(), this);
-        level.updateNeighborsAt(pos.east(), this);
-        level.updateNeighborsAt(pos.west(), this);
-        level.updateNeighborsAt(pos.north(), this);
-        level.updateNeighborsAt(pos.south(), this);
+    protected void updateNeighbours(Level p_49292_, BlockPos p_49293_) {
+        p_49292_.updateNeighborsAt(p_49293_, this);
+        p_49292_.updateNeighborsAt(p_49293_.below(), this);
     }
 
-    @Override
-    public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
+    public int getSignal(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull Direction direction) {
         return this.getSignalForState(blockState);
     }
 
-    @Override
-    public int getDirectSignal(BlockState blockState, BlockGetter blockGetter, BlockPos pos, Direction direction) {
-        return direction == Direction.UP ? this.getSignalForState(blockState) : 0;
+    public int getDirectSignal(BlockState p_49346_, BlockGetter p_49347_, BlockPos p_49348_, Direction p_49349_) {
+        return p_49349_ == Direction.UP ? this.getSignalForState(p_49346_) : 0;
     }
 
-    @Override
-    public boolean isSignalSource(BlockState blockState) {
+    public boolean isSignalSource(BlockState p_49351_) {
         return true;
     }
 
-//    @Override
-//    public PushReaction getPistonPushReaction(BlockState blockState) {
-//        return PushReaction.DESTROY;
-//    }
 
     // Voluminous Energy 1.19 port
     public void setRegistryName(String registryName) {

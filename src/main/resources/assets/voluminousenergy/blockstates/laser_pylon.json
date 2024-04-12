@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "voluminousenergy:block/laser_pylon"
+    },
+    "facing=south": {
+      "model": "voluminousenergy:block/laser_pylon",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "voluminousenergy:block/laser_pylon",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "voluminousenergy:block/laser_pylon",
+      "y": 90
+    }
+  }
+}

@@ -12,6 +12,7 @@ import com.veteam.voluminousenergy.blocks.blocks.ores.deepslate.DeepslateRutileO
 import com.veteam.voluminousenergy.blocks.blocks.ores.red_sand.RedSaltpeterOre;
 import com.veteam.voluminousenergy.blocks.blocks.storage.materials.*;
 import com.veteam.voluminousenergy.blocks.blocks.storage.raw.*;
+import com.veteam.voluminousenergy.blocks.blocks.util.FaceableBlock;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.containers.VEContainerFactory;
 import com.veteam.voluminousenergy.blocks.containers.VEContainers;
@@ -21,7 +22,9 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -281,6 +284,18 @@ public class VEBlocks {
                     () -> VETileEntities.SOLARIUM_TANK_FACTORY,
                     () -> VEContainers.SOLARIUM_TANK_FACTORY);
 
+    // Dimensional Laser Stuff
+
+    public static RegistryObject<Block> DIMENSIONAL_LASER_PYLON = registerWithBlockItemSupport("laser_pylon", () -> new FaceableBlock(
+                    BlockBehaviour.Properties.of()
+                            .sound(SoundType.METAL)
+                            .strength(2.0f)
+                            .lightLevel(l -> 0)
+                            .requiresCorrectToolForDrops()
+                            .noOcclusion()
+                    , "laser_pylon") {
+            }
+    );
 
     //Ores
     public static RegistryObject<Block> SALTPETER_ORE = registerWithBlockItemSupport("saltpeterore", SaltpeterOre::new);
@@ -378,11 +393,12 @@ public class VEBlocks {
         }
     }
 
-    public record RegistryWithName(String name, RegistryObject<Block> block){}
+    public record RegistryWithName(String name, RegistryObject<Block> block) {
+    }
 
-    public static RegistryObject<Block> registerWithBlockItemSupport(String name,Supplier<Block> blockSupplier) {
-        RegistryObject<Block> registryObject = VE_BLOCKS_REGISTRY.register(name,blockSupplier);
-        REGISTERED_BLOCKS.add(new RegistryWithName(name,registryObject));
+    public static RegistryObject<Block> registerWithBlockItemSupport(String name, Supplier<Block> blockSupplier) {
+        RegistryObject<Block> registryObject = VE_BLOCKS_REGISTRY.register(name, blockSupplier);
+        REGISTERED_BLOCKS.add(new RegistryWithName(name, registryObject));
         return registryObject;
     }
 }

@@ -19,6 +19,11 @@ public class FaceableBlock extends VEBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, Boolean.FALSE));
     }
 
+    public FaceableBlock(Properties properties, String rName) {
+        super(properties, rName);
+        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, Boolean.FALSE));
+    }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
         return this.defaultBlockState().setValue(FACING, blockPlaceContext.getHorizontalDirection().getOpposite());
