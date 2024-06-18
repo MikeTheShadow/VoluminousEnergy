@@ -11,7 +11,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -48,7 +48,7 @@ public class Biofuel {
     }
 
     public static final FluidType BIOFUEL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
-            .adjacentPathType(BlockPathTypes.WATER)
+            .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)
             .canExtinguish(false)

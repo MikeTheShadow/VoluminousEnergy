@@ -6,9 +6,9 @@
 <big> An energy focused tech mod for Minecraft 1.20+ </big>
 
 ## NOTES FOR DEVELOPERS/MODDERS:
-Please Target `1.20-exp-next` if your changes are intended for the next major release (likely 0.5).
+Please Target `1.20.4-exp` if your changes are intended for the next major release (likely 0.5).
 
-Please Target `1.20-exp` if your changes are intended for the current stable release (0.4), but only affects 1.20. This branch will occationally merged downstream to `1.20-exp-next`
+Please Target `1.20.6-exp` if your changes are intended for the current (0.5) development, but only affects 1.20.6.
  
 Please Target `1.18.2-exp-next` if your changes are intended for 0.4 across all Minecraft versions. 
  

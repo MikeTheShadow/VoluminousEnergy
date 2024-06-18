@@ -12,7 +12,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -49,7 +49,7 @@ public class CrudeOil {
     }
 
     public static final FluidType CRUDE_OIL_FLUID_TYPE = new VEFluidType(FluidType.Properties.create()
-            .adjacentPathType(BlockPathTypes.WATER)
+            .adjacentPathType(PathType.WATER)
             .canConvertToSource(false)
             .canDrown(true)
             .canExtinguish(false)
@@ -67,7 +67,7 @@ public class CrudeOil {
             .supportsBoating(false)
             .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL_LAVA)
             .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)
-            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.GENERIC_EXPLODE),
+            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.GENERIC_EXPLODE.value()),
             CRUDE_OIL_STILL_TEXTURE,
             CRUDE_OIL_FLOWING_TEXTURE
     );

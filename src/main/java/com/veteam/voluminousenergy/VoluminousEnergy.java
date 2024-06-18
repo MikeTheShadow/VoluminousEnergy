@@ -41,7 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -122,8 +122,10 @@ public class VoluminousEnergy {
 //        VELoot.registerLoot(modEventBus);
 
         // Config Files to load
-        getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
+        String configDir = FMLConfig.defaultConfigPath();
+
+//        getOrCreateDirectory(FMLConfig.P().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
+//        Config.loadConfig(Config.COMMON_CONFIG, FMLConfig..CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
         //Config.loadConfig(Config.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("voluminousenergy-client.toml"));
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_BUILDER.build(), VoluminousEnergy.MODID + "/" + VoluminousEnergy.MODID + "-client.toml");
 
