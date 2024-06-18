@@ -14,6 +14,7 @@ import com.veteam.voluminousenergy.util.*;
 import com.veteam.voluminousenergy.util.tiles.CapabilityMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -33,15 +34,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +49,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
@@ -92,8 +92,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         ItemStackHandler handler = getInventoryHandler();
         if (input.getItem() instanceof BucketItem && input.getItem() != Items.BUCKET) {
             if ((output.getItem() == Items.BUCKET && output.getCount() < 16) || checkOutputSlotForEmptyOrBucket(output)) {
-                Fluid fluid = ((BucketItem) input.getItem()).getFluid();
-                if (inputTank.isEmpty() || inputTank.getFluid().isFluidEqual(new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
+                Fluid fluid = ((BucketItem) input.getItem()).content;
+
+                if (inputTank.isEmpty() || FluidStack.isSameFluidSameComponents(inputTank.getFluid(),new FluidStack(fluid, 1000)) && inputTank.getFluidAmount() + 1000 <= inputTank.getTankCapacity(0)) {
                     inputTank.fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     handler.extractItem(slot1, 1, false);
                     handler.insertItem(slot2, new ItemStack(Items.BUCKET, 1), false);
@@ -111,7 +112,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         FluidTank outputTank = tank.getTank();
         ItemStackHandler handler = getInventoryHandler();
         if (inputSlot.getItem() == Items.BUCKET && outputTank.getFluidAmount() >= 1000 && inputSlot.getCount() > 0 && outputSlot.copy() == ItemStack.EMPTY) {
-            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getRawFluid().getBucket(), 1);
+
+            ItemStack bucketStack = new ItemStack(outputTank.getFluid().getFluid().getBucket(), 1);
             outputTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             handler.extractItem(slot1, 1, false);
             handler.insertItem(slot2, bucketStack, false);
@@ -275,9 +277,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registry) {
         CompoundTag compoundTag = new CompoundTag();
-        this.saveAdditional(compoundTag);
+        this.saveAdditional(compoundTag,registry);
         return compoundTag;
     }
 
@@ -287,13 +289,13 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * @param tag CompoundTag
      */
     @Override
-    public void load(CompoundTag tag) {
+    public void loadAdditional(CompoundTag tag,@NotNull HolderLookup.Provider registry) {
         CompoundTag inv = tag.getCompound("inv");
 
         ItemStackHandler handler = getInventoryHandler();
 
         if (handler != null) {
-            handler.deserializeNBT(inv);
+            handler.deserializeNBT(registry,inv);
         }
         if (energy != null) energy.deserializeNBT(tag);
 
@@ -311,7 +313,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = tag.getCompound(relationalTank.getTankName());
-            relationalTank.getTank().readFromNBT(compoundTag);
+            relationalTank.getTank().readFromNBT(registry,compoundTag);
             relationalTank.readGuiProperties(tag);
         }
 
@@ -319,7 +321,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             this.sendsOutPower = tag.getBoolean("sends_out_power");
         }
 
-        super.load(tag);
+        super.loadAdditional(tag, registry);
     }
 
     /**
@@ -329,10 +331,10 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * @param tag CompoundTag
      */
     @Override
-    public void saveAdditional(@NotNull CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registry) {
         ItemStackHandler handler = getInventoryHandler();
         if (handler != null) {
-            CompoundTag compound = ((INBTSerializable<CompoundTag>) handler).serializeNBT();
+            CompoundTag compound =  handler.serializeNBT(registry);
             tag.put("inv", compound);
         }
 
@@ -352,14 +354,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
             CompoundTag compoundTag = new CompoundTag();
-            relationalTank.getTank().writeToNBT(compoundTag);
+            relationalTank.getTank().writeToNBT(registry,compoundTag);
             tag.put(relationalTank.getTankName(), compoundTag);
             relationalTank.writeGuiProperties(tag);
         }
 
         tag.putBoolean("sends_out_power", sendsOutPower);
 
-        super.saveAdditional(tag);
+        super.saveAdditional(tag,registry);
     }
 
     @Override
@@ -442,25 +444,12 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     CapabilityMap capabilityMap = null;
 
-    /**
-     * This handles items,energy and fluids. Handling fluids could be moved to VETileEntity
-     *
-     * @param cap  Base capability
-     * @param side Base Direction
-     * @param <T>  T the type of capability
-     * @return A LazyOptional of Optional of type T matching the capability passed into this
-     */
-    @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 
-        if(this.sendsOutPower && cap == ForgeCapabilities.ENERGY) return LazyOptional.empty();
-
-        ItemStackHandler inventory = getInventoryHandler();
-        List<VESlotManager> itemManagers = getSlotManagers();
-        if (capabilityMap == null) {
-            capabilityMap = new CapabilityMap(inventory, itemManagers, getRelationalTanks(), energy, this);
+    public CapabilityMap getCapabilityMap() {
+        if(this.capabilityMap == null) {
+            capabilityMap = new CapabilityMap(inventory,getSlotManagers(),getRelationalTanks(),energy, this);
         }
-        return this.capabilityMap.getCapability(cap, side, this);
+        return this.capabilityMap;
     }
 
     /**

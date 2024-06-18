@@ -8,10 +8,11 @@ import com.veteam.voluminousenergy.util.MultiFluidSlotWrapper;
 import com.veteam.voluminousenergy.util.MultiSlotWrapper;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +27,12 @@ public class CapabilityMap {
     private final HashMap<Direction, MultiFluidSlotWrapper> fluidMap = new HashMap<>();
     @Nullable
     private final ItemStackHandler inventory;
-    private final LazyOptional<VEEnergyStorage> energyStorage;
+    @Nullable
+    private final VEEnergyStorage energyStorage;
 
-    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<VERelationalTank> tanks, VEEnergyStorage energy, @Nullable VETileEntity tileEntity) {
+    public CapabilityMap(@Nullable ItemStackHandler inventory, List<VESlotManager> managerList, List<VERelationalTank> tanks,@Nullable VEEnergyStorage energy, @Nullable VETileEntity tileEntity) {
         this.inventory = inventory;
-        this.energyStorage = energy == null ? LazyOptional.empty() : LazyOptional.of(() -> energy);
+        this.energyStorage = energy;
         for (Direction direction : Direction.values()) {
             if (inventory != null) itemMap.put(direction, new MultiSlotWrapper(inventory, new ArrayList<>()));
             if (tileEntity != null) fluidMap.put(direction, new MultiFluidSlotWrapper(new ArrayList<>(), tileEntity));
@@ -63,27 +65,27 @@ public class CapabilityMap {
         fluidMap.get(direction).addRelationalTank(tank);
     }
 
+    @Nullable
+    public IItemHandler getItemStackHandler(@Nullable Direction side, BlockEntity tileEntity) {
+        if (side == null) return this.inventory;
 
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side, VETileEntity tileEntity) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return this.energyStorage.cast();
-        }
-        if (side == null) {
-            if (cap == ForgeCapabilities.ITEM_HANDLER) {
-                return this.inventory == null ? LazyOptional.empty() : LazyOptional.of(() -> this.inventory).cast();
-            }
-        } else {
-            Direction normalizedSide = CapabilityMap.normalizeDirection(side, tileEntity);
-            if (cap == ForgeCapabilities.ITEM_HANDLER) {
-                return inventory == null ? LazyOptional.empty() : LazyOptional.of(() -> this.itemMap.get(normalizedSide)).cast();
-            } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-                return LazyOptional.of(() -> this.fluidMap.get(normalizedSide)).cast();
-            }
-        }
-        return LazyOptional.empty();
+        Direction normalizedSide = CapabilityMap.normalizeDirection(side, tileEntity);
+        return this.itemMap.get(normalizedSide);
     }
 
-    public static Direction normalizeDirection(Direction direction, VETileEntity tileEntity) {
+    @Nullable
+    public IEnergyStorage getEnergyStorage() {
+        return this.energyStorage;
+    }
+
+    @Nullable
+    public IFluidHandler getFluidHandler(@Nullable Direction side, BlockEntity tileEntity) {
+        if(side == null) return null;
+        Direction normalizedSide = CapabilityMap.normalizeDirection(side, tileEntity);
+        return this.fluidMap.get(normalizedSide);
+    }
+
+    public static Direction normalizeDirection(Direction direction, BlockEntity tileEntity) {
         Direction currentDirection = tileEntity.getBlockState().getValue(BlockStateProperties.FACING);
         int directionInt = direction.get3DDataValue();
         if (directionInt == 0 || directionInt == 1) return direction;

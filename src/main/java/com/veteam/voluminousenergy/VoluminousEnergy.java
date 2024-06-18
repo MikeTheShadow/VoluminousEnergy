@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy;
 
 import com.veteam.voluminousenergy.achievements.triggers.VECriteriaTriggers;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
+import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.client.renderers.entity.LaserBlockEntityRenderer;
 import com.veteam.voluminousenergy.datagen.VEGlobalLootModifierData;
 import com.veteam.voluminousenergy.datagen.VETagDataGenerator;
@@ -26,18 +27,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -55,7 +60,7 @@ import java.util.concurrent.CompletableFuture;
 public class VoluminousEnergy {
     public static final String MODID = "voluminousenergy";
 
-    public static final IProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static final IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
     public static boolean JEI_LOADED = false;
@@ -163,6 +168,7 @@ public class VoluminousEnergy {
         //VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
         proxy.init();
+
         VENetwork.init();
 
         //Register triggers
@@ -176,6 +182,34 @@ public class VoluminousEnergy {
         //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for(VEBlocks.RegistryWithName b : VEBlocks.REGISTERED_BLOCKS) {
+
+            Block block = b.block().get();
+
+            if (b.hasInventory()) {
+                event.registerBlock(
+                        Capabilities.ItemHandler.BLOCK,
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getItemStackHandler(side,be),
+                        block);
+            }
+
+            if (b.hasEnergy()) {
+                event.registerBlock(
+                        Capabilities.EnergyStorage.BLOCK,
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getEnergyStorage(),
+                        block);
+            }
+
+            if (b.hasFluids()) {
+                event.registerBlock(
+                        Capabilities.FluidHandler.BLOCK,
+                        (level, pos, state, be, side) -> ((VETileEntity) be).getCapabilityMap().getFluidHandler(side,be),
+                        block);
+            }
+        }
+    }
+
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(VEBlocks.DIMENSIONAL_LASER.tile().get(), LaserBlockEntityRenderer::new);
     }
@@ -185,7 +219,7 @@ public class VoluminousEnergy {
 
     public static MinecraftServer server;
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
     public static class RegisterEvents {
         @SubscribeEvent
         public static void onRegistry(final RegisterEvent blockRegistryEvent) {
@@ -193,7 +227,7 @@ public class VoluminousEnergy {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = VoluminousEnergy.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     public static class ClientRegister {
 
         @SubscribeEvent
@@ -205,7 +239,7 @@ public class VoluminousEnergy {
 
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
     public static class OnDatagenEvent {
 
         @SubscribeEvent
