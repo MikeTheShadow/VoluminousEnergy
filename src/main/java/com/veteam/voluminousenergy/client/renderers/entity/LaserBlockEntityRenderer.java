@@ -47,7 +47,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
     public void renderBeaconBeam(VETileEntity tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
 
-        int buildTick = tile.getData("build_tick");
+        int staticBuildTick = tile.getData("build_tick");
+        int buildTick = staticBuildTick;
         boolean fullyBuilt = buildTick == 1000;
         boolean firstStageBuilt = buildTick >= 400;
 
@@ -58,8 +59,8 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         if (!firstStageBuilt) {
             height = 1;
         }
+        SoundManager manager = Minecraft.getInstance().getSoundManager();
         if (buildTick == 0) {
-            SoundManager manager = Minecraft.getInstance().getSoundManager();
             manager.stop(VESounds.ENERGY_BEAM_ACTIVATE.getLocation(), SoundSource.BLOCKS);
         }
 
@@ -89,6 +90,44 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         poseStack.popPose();
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
+
+        float pylonBeamHeight = 4.5f;
+        float xzPos = 3.4f;
+        float yHeight = -1.85f;
+
+        // The 4 laser beams
+        if (staticBuildTick > 50) {
+            poseStack.pushPose();
+            poseStack.translate(xzPos, yHeight, 0);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            poseStack.popPose();
+        }
+        if(staticBuildTick > 150) {
+            poseStack.pushPose();
+            poseStack.translate(0, yHeight, -xzPos);
+            poseStack.mulPose(Axis.XP.rotationDegrees(45.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            poseStack.popPose();
+        }
+        if(staticBuildTick > 250) {
+            poseStack.pushPose();
+            poseStack.translate(-xzPos, yHeight, 0);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(135.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            poseStack.popPose();
+        }
+        if(staticBuildTick > 350) {
+            poseStack.pushPose();
+            poseStack.translate(0, yHeight, xzPos);
+            poseStack.mulPose(Axis.XP.rotationDegrees(135.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            renderPart(poseStack, multiBufferSource.getBuffer(RenderType.energySwirl(BEAM_RESOURCE_LOCATION, 0, 0)), 5, 5, 5, 1.0F, totalHeight, -pylonBeamHeight, 0.0F, static02F, static02F, 0.0F, f9, 0.0F, 0.0F, f12, f16, f15);
+            poseStack.popPose();
+        }
 
         if (!firstStageBuilt) {
             poseStack.popPose();
@@ -249,7 +288,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             };
 
-    private static void renderPart(PoseStack poseStack, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float static0P3F, int totalHeight, int height, float f6, float f7, float nfloat1, float f8, float nfloat2, float nfloat3, float nfloat4, float nfloat5, float f16, float f15) {
+    private static void renderPart(PoseStack poseStack, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float static0P3F, int totalHeight, float height, float f6, float f7, float nfloat1, float f8, float nfloat2, float nfloat3, float nfloat4, float nfloat5, float f16, float f15) {
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
         Matrix3f matrix3f = pose.normal();
@@ -259,15 +298,15 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         renderQuad(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat2, nfloat3, f6, f7, (float) 0.0, (float) 1.0, f16, f15);
     }
 
-    private static void renderQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, int totalHeight, int height, float point1x, float point1z, float point2x, float point2z, float patternRepeatHorizontalPositive, float patternRepeatHorizontalNegative, float patternLocationYNegative, float patternLocationYNegative2) {
+    private static void renderQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, int totalHeight, float height, float point1x, float point1z, float point2x, float point2z, float patternRepeatHorizontalPositive, float patternRepeatHorizontalNegative, float patternLocationYNegative, float patternLocationYNegative2) {
         addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative);
         addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative2);
         addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative2);
         addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative);
     }
 
-    private static void addVertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, int heightOrTotalHeight, float xPos, float zPos, float patternRepeat, float patternRepeat2) {
-        vertexConsumer.vertex(matrix4f, xPos, (float) heightOrTotalHeight, zPos).color(beaconColorR, beaconColorG, beaconColorB, staticOP3F).uv(patternRepeat, patternRepeat2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void addVertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, float heightOrTotalHeight, float xPos, float zPos, float patternRepeat, float patternRepeat2) {
+        vertexConsumer.vertex(matrix4f, xPos, heightOrTotalHeight, zPos).color(beaconColorR, beaconColorG, beaconColorB, staticOP3F).uv(patternRepeat, patternRepeat2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     static int scale = 4;
