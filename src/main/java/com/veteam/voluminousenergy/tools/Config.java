@@ -3,19 +3,19 @@ package com.veteam.voluminousenergy.tools;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.nio.file.Path;
 
 @EventBusSubscriber(modid = VoluminousEnergy.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
 
-    public static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+    public static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 
-    public static ForgeConfigSpec COMMON_CONFIG;
-    public static ForgeConfigSpec CLIENT_CONFIG;
+    public static ModConfigSpec COMMON_CONFIG;
+    public static ModConfigSpec CLIENT_CONFIG;
 
     // COMMON Config variables and categories
     public static final String CATEGORY_GENERAL = "General";
@@ -55,180 +55,180 @@ public class Config {
     public static final String SUBCATEGORY_GALENA = "Galena Ore Settings";
 
     // World Feature Settings
-    public static ForgeConfigSpec.BooleanValue WORLD_GEN_LOGGING;
+    public static ModConfigSpec.BooleanValue WORLD_GEN_LOGGING;
 
     // Climate Spawn Settings
-    public static ForgeConfigSpec.BooleanValue PUNCH_HOLES_IN_CLIMATE_SPAWNS;
-    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER;
-    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING;
-    public static ForgeConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER;
+    public static ModConfigSpec.BooleanValue PUNCH_HOLES_IN_CLIMATE_SPAWNS;
+    public static ModConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_MULTIPLIER;
+    public static ModConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_BOUNDING;
+    public static ModConfigSpec.IntValue CLIMATE_SPAWNS_HOLE_PUNCH_RNG_MUST_BE_LARGER;
 
     // Food Settings
-    public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
-    public static ForgeConfigSpec.FloatValue COOKED_RICE_SATURATION;
-    public static ForgeConfigSpec.FloatValue RICE_TICK_CHANCE;
+    public static ModConfigSpec.IntValue COOKED_RICE_NUTRITION;
+    public static ModConfigSpec.DoubleValue COOKED_RICE_SATURATION;
+    public static ModConfigSpec.DoubleValue RICE_TICK_CHANCE;
 
     // Ore Settings
 
     // GALENA ORE
-    public static ForgeConfigSpec.IntValue GALENA_ORE_BLOCK_LIGHT_LEVEL;
+    public static ModConfigSpec.IntValue GALENA_ORE_BLOCK_LIGHT_LEVEL;
 
     // Ore Deposit
-    public static ForgeConfigSpec.BooleanValue PREVENT_SURFACE_ORE_DEPOSITS;
+    public static ModConfigSpec.BooleanValue PREVENT_SURFACE_ORE_DEPOSITS;
 
     // General Settings
-    public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
-    public static ForgeConfigSpec.FloatValue ACID_DAMAGE;
-    public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
-    public static ForgeConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
-    public static ForgeConfigSpec.DoubleValue SOLARIUM_SHEATH_REGENERATION_CHANCE;
-    public static ForgeConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
+    public static ModConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
+    public static ModConfigSpec.DoubleValue ACID_DAMAGE;
+    public static ModConfigSpec.IntValue ACID_FIRE_DURATION;
+    public static ModConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
+    public static ModConfigSpec.DoubleValue SOLARIUM_SHEATH_REGENERATION_CHANCE;
+    public static ModConfigSpec.IntValue DECREMENT_SPEED_ON_NO_POWER;
 
     // Primitive Stirling Generator Variables
-    public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
-    public static ForgeConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
+    public static ModConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_GENERATE;
+    public static ModConfigSpec.IntValue PRIMITIVE_STIRLING_GENERATOR_SEND;
 
     // Crusher Variables
-    public static ForgeConfigSpec.IntValue CRUSHER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue CRUSHER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue CRUSHER_TRANSFER;
+    public static ModConfigSpec.IntValue CRUSHER_MAX_POWER;
+    public static ModConfigSpec.IntValue CRUSHER_POWER_USAGE;
+    public static ModConfigSpec.IntValue CRUSHER_TRANSFER;
 
     // Electrolyzer Variables
-    public static ForgeConfigSpec.IntValue ELECTROLYZER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue ELECTROLYZER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue ELECTROLYZER_TRANSFER;
+    public static ModConfigSpec.IntValue ELECTROLYZER_MAX_POWER;
+    public static ModConfigSpec.IntValue ELECTROLYZER_POWER_USAGE;
+    public static ModConfigSpec.IntValue ELECTROLYZER_TRANSFER;
 
     // Centrifugal Agitator Variables
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_AGITATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_AGITATOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_AGITATOR_TRANSFER;
 
     // Compressor Variables
-    public static ForgeConfigSpec.IntValue COMPRESSOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue COMPRESSOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue COMPRESSOR_TRANSFER;
+    public static ModConfigSpec.IntValue COMPRESSOR_MAX_POWER;
+    public static ModConfigSpec.IntValue COMPRESSOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue COMPRESSOR_TRANSFER;
 
     // Stirling Generator Variables
-    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
-    public static ForgeConfigSpec.IntValue STIRLING_GENERATOR_SEND;
+    public static ModConfigSpec.IntValue STIRLING_GENERATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue STIRLING_GENERATOR_GENERATE;
+    public static ModConfigSpec.IntValue STIRLING_GENERATOR_SEND;
 
     // Combustion Generator Variables
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
-    public static ForgeConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
-    public static ForgeConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
+    public static ModConfigSpec.IntValue COMBUSTION_GENERATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue COMBUSTION_GENERATOR_SEND;
+    public static ModConfigSpec.BooleanValue COMBUSTION_GENERATOR_BALANCED_MODE;
+    public static ModConfigSpec.IntValue COMBUSTION_GENERATOR_FIXED_TICK_TIME;
 
     // Aqueoulizer Variables
-    public static ForgeConfigSpec.IntValue AQUEOULIZER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue AQUEOULIZER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue AQUEOULIZER_TRANSFER;
+    public static ModConfigSpec.IntValue AQUEOULIZER_MAX_POWER;
+    public static ModConfigSpec.IntValue AQUEOULIZER_POWER_USAGE;
+    public static ModConfigSpec.IntValue AQUEOULIZER_TRANSFER;
 
     // Air Compressor Variables
-    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue AIR_COMPRESSOR_TRANSFER;
+    public static ModConfigSpec.IntValue AIR_COMPRESSOR_MAX_POWER;
+    public static ModConfigSpec.IntValue AIR_COMPRESSOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue AIR_COMPRESSOR_TRANSFER;
 
     // Distillation Unit Variables
-    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_MAX_POWER;
-    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue DISTILLATION_UNIT_TRANSFER;
+    public static ModConfigSpec.IntValue DISTILLATION_UNIT_MAX_POWER;
+    public static ModConfigSpec.IntValue DISTILLATION_UNIT_POWER_USAGE;
+    public static ModConfigSpec.IntValue DISTILLATION_UNIT_TRANSFER;
 
     // Pump Variables
-    public static ForgeConfigSpec.IntValue PUMP_MAX_POWER;
-    public static ForgeConfigSpec.IntValue PUMP_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue PUMP_TRANSFER;
+    public static ModConfigSpec.IntValue PUMP_MAX_POWER;
+    public static ModConfigSpec.IntValue PUMP_POWER_USAGE;
+    public static ModConfigSpec.IntValue PUMP_TRANSFER;
 
     // Electric Furnace Variables
-    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
-    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
+    public static ModConfigSpec.IntValue ELECTRIC_FURNACE_MAX_POWER;
+    public static ModConfigSpec.IntValue ELECTRIC_FURNACE_POWER_USAGE;
+    public static ModConfigSpec.IntValue ELECTRIC_FURNACE_TRANSFER;
 
     // Battery Box Variables
-    public static ForgeConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
-    public static ForgeConfigSpec.IntValue BATTERY_BOX_TRANSFER;
+    public static ModConfigSpec.IntValue BATTERY_BOX_MAX_POWER;
+    public static ModConfigSpec.IntValue BATTERY_BOX_TRANSFER;
 
     // Primitive Solar Panel Variables
-    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
-    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
-    public static ForgeConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
+    public static ModConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_MAX_POWER;
+    public static ModConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_GENERATE;
+    public static ModConfigSpec.IntValue PRIMITIVE_SOLAR_PANEL_SEND;
 
     // Solar Panel Variables
-    public static ForgeConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
-    public static ForgeConfigSpec.IntValue SOLAR_PANEL_GENERATE;
-    public static ForgeConfigSpec.IntValue SOLAR_PANEL_SEND;
+    public static ModConfigSpec.IntValue SOLAR_PANEL_MAX_POWER;
+    public static ModConfigSpec.IntValue SOLAR_PANEL_GENERATE;
+    public static ModConfigSpec.IntValue SOLAR_PANEL_SEND;
 
     // Centrifugal Separator Variables
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue CENTRIFUGAL_SEPARATOR_TRANSFER;
 
     // Implosion Compressor Variables
-    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
+    public static ModConfigSpec.IntValue IMPLOSION_COMPRESSOR_MAX_POWER;
+    public static ModConfigSpec.IntValue IMPLOSION_COMPRESSOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue IMPLOSION_COMPRESSOR_TRANSFER;
 
     // Blast Furnace Variables
-    public static ForgeConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
-    public static ForgeConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
-    public static ForgeConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
+    public static ModConfigSpec.IntValue BLAST_FURNACE_MAX_POWER;
+    public static ModConfigSpec.IntValue BLAST_FURNACE_POWER_USAGE;
+    public static ModConfigSpec.IntValue BLAST_FURNACE_TRANSFER;
+    public static ModConfigSpec.IntValue BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION;
 
     // Sawmill Variables
-    public static ForgeConfigSpec.IntValue SAWMILL_MAX_POWER;
-    public static ForgeConfigSpec.IntValue SAWMILL_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue SAWMILL_TRANSFER;
-    public static ForgeConfigSpec.BooleanValue SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED;
-    public static ForgeConfigSpec.ConfigValue<String> SAWMILL_FLUID_LOCATION;
-    public static ForgeConfigSpec.ConfigValue<String> SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION;
-    public static ForgeConfigSpec.IntValue SAWMILL_FLUID_AMOUNT;
-    public static ForgeConfigSpec.IntValue SAWMILL_SECOND_OUTPUT_COUNT;
-    public static ForgeConfigSpec.IntValue SAWMILL_PROCESSING_TIME;
-    public static ForgeConfigSpec.IntValue SAWMILL_PRIMARY_OUTPUT_COUNT;
-    public static ForgeConfigSpec.IntValue SAWMILL_LOG_CONSUMPTION_RATE;
+    public static ModConfigSpec.IntValue SAWMILL_MAX_POWER;
+    public static ModConfigSpec.IntValue SAWMILL_POWER_USAGE;
+    public static ModConfigSpec.IntValue SAWMILL_TRANSFER;
+    public static ModConfigSpec.BooleanValue SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED;
+    public static ModConfigSpec.ConfigValue<String> SAWMILL_FLUID_LOCATION;
+    public static ModConfigSpec.ConfigValue<String> SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION;
+    public static ModConfigSpec.IntValue SAWMILL_FLUID_AMOUNT;
+    public static ModConfigSpec.IntValue SAWMILL_SECOND_OUTPUT_COUNT;
+    public static ModConfigSpec.IntValue SAWMILL_PROCESSING_TIME;
+    public static ModConfigSpec.IntValue SAWMILL_PRIMARY_OUTPUT_COUNT;
+    public static ModConfigSpec.IntValue SAWMILL_LOG_CONSUMPTION_RATE;
 
     // Tooling Station Variables
-    public static ForgeConfigSpec.IntValue TOOLING_STATION_MAX_POWER;
-    public static ForgeConfigSpec.IntValue TOOLING_STATION_TRANSFER;
+    public static ModConfigSpec.IntValue TOOLING_STATION_MAX_POWER;
+    public static ModConfigSpec.IntValue TOOLING_STATION_TRANSFER;
 
     // Fluid Electrolyzer Variables
-    public static ForgeConfigSpec.IntValue FLUID_ELECTROLYZER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue FLUID_ELECTROLYZER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue FLUID_ELECTROLYZER_TRANSFER;
+    public static ModConfigSpec.IntValue FLUID_ELECTROLYZER_MAX_POWER;
+    public static ModConfigSpec.IntValue FLUID_ELECTROLYZER_POWER_USAGE;
+    public static ModConfigSpec.IntValue FLUID_ELECTROLYZER_TRANSFER;
 
     // Fluid Mixer Variables
-    public static ForgeConfigSpec.IntValue FLUID_MIXER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue FLUID_MIXER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue FLUID_MIXER_TRANSFER;
+    public static ModConfigSpec.IntValue FLUID_MIXER_MAX_POWER;
+    public static ModConfigSpec.IntValue FLUID_MIXER_POWER_USAGE;
+    public static ModConfigSpec.IntValue FLUID_MIXER_TRANSFER;
 
     // Hydroponic Incubator Variables
-    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_MAX_POWER;
-    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue HYDROPONIC_INCUBATOR_TRANSFER;
+    public static ModConfigSpec.IntValue HYDROPONIC_INCUBATOR_MAX_POWER;
+    public static ModConfigSpec.IntValue HYDROPONIC_INCUBATOR_POWER_USAGE;
+    public static ModConfigSpec.IntValue HYDROPONIC_INCUBATOR_TRANSFER;
 
     // Dimensional Laser Variables
-    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_MAX_POWER;
-    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_POWER_USAGE;
-    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_TRANSFER;
-    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_PROCESS_TIME;
-    public static ForgeConfigSpec.IntValue DIMENSIONAL_LASER_FLUID_RATE;
+    public static ModConfigSpec.IntValue DIMENSIONAL_LASER_MAX_POWER;
+    public static ModConfigSpec.IntValue DIMENSIONAL_LASER_POWER_USAGE;
+    public static ModConfigSpec.IntValue DIMENSIONAL_LASER_TRANSFER;
+    public static ModConfigSpec.IntValue DIMENSIONAL_LASER_PROCESS_TIME;
+    public static ModConfigSpec.IntValue DIMENSIONAL_LASER_FLUID_RATE;
 
     // Tank variables
-    public static ForgeConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
-    public static ForgeConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
-    public static ForgeConfigSpec.IntValue NIGHALITE_TANK_CAPACITY;
-    public static ForgeConfigSpec.IntValue NETHERITE_TANK_CAPACITY;
-    public static ForgeConfigSpec.IntValue TITANIUM_TANK_CAPACITY;
-    public static ForgeConfigSpec.IntValue ALUMINUM_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue SOLARIUM_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue EIGHZO_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue NIGHALITE_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue NETHERITE_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue TITANIUM_TANK_CAPACITY;
+    public static ModConfigSpec.IntValue ALUMINUM_TANK_CAPACITY;
 
 
     // CLIENT CONFIG Variables
-    public static ForgeConfigSpec.BooleanValue USE_BIOME_WATER_COLOUR;
-    public static ForgeConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
-    public static ForgeConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
-    public static ForgeConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
-    public static ForgeConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
+    public static ModConfigSpec.BooleanValue USE_BIOME_WATER_COLOUR;
+    public static ModConfigSpec.BooleanValue SHORTEN_ITEM_TOOLTIP_VALUES;
+    public static ModConfigSpec.BooleanValue SHORTEN_POWER_BAR_VALUES;
+    public static ModConfigSpec.BooleanValue SHORTEN_TANK_GUI_VALUES;
+    public static ModConfigSpec.BooleanValue PLAY_MACHINE_SOUNDS;
 
     static {
         buildCommonConfig();
@@ -715,7 +715,7 @@ public class Config {
         CLIENT_BUILDER.pop();
     }
 
-    public static void loadConfig(ForgeConfigSpec spec, Path path){
+    public static void loadConfig(ModConfigSpec spec, Path path){
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()

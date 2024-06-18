@@ -26,22 +26,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.MinecraftServer;
-import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeConfig;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.eventbus.api.IEventBus;
-import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.DistExecutor;
-import net.neoforged.neoforge.fml.ModList;
-import net.neoforged.neoforge.fml.ModLoadingContext;
-import net.neoforged.neoforge.fml.common.Mod;
-import net.neoforged.neoforge.fml.config.ModConfig;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.fml.loading.FMLConfig;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,14 +65,14 @@ public class VoluminousEnergy {
         voluminousEnergy.init();
     }
 
-    public void init() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
+    public VoluminousEnergy(IEventBus modEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupWhenLoadingComplete);
-        MinecraftForge.EVENT_BUS.register(this);
+        modEventBus.addListener(this::setup);
+        modEventBus.addListener(this::setupWhenLoadingComplete);
+        NeoForge.EVENT_BUS.register(this);
 
-        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+//        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         /** Deferred registration **/
         // Recipes
@@ -122,7 +117,7 @@ public class VoluminousEnergy {
 //        VELoot.registerLoot(modEventBus);
 
         // Config Files to load
-        String configDir = FMLConfig.defaultConfigPath();
+        String configDir = NeoForgeConfig.defaultConfigPath();
 
 //        getOrCreateDirectory(FMLConfig.P().resolve(VoluminousEnergy.MODID), VoluminousEnergy.MODID); // TODO: Get Or Create Directory
 //        Config.loadConfig(Config.COMMON_CONFIG, FMLConfig..CONFIGDIR.get().resolve(VoluminousEnergy.MODID + "-common.toml"));
