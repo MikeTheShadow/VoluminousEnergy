@@ -66,7 +66,7 @@ public class AirCompressorScreen extends VEContainerScreen<VEContainer> {
         }
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
-            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }

@@ -80,19 +80,19 @@ public class FluidMixerScreen extends VEContainerScreen<VEContainer> {
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // First Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(109, 18, 12, 50, mouseX, mouseY)) { // Second input Tank
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
-            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(1).getHoverName();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(159, 18, 12, 50, mouseX, mouseY)) { // Second Output Tank
             int amount = tileEntity.getFluidStackFromTank(2).getAmount();
-            String name = tileEntity.getFluidStackFromTank(2).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(2).getHoverName();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 

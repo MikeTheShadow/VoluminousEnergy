@@ -60,7 +60,7 @@ public class SlotDirectionButton extends VEIOButton {
             matrixStack.blit(texture, getX(), getY(), 0, 186, this.width, this.height);
         }
 
-        Component textComponent = TextUtil.slotNameWithDirection(slotManager.getTranslationKey(), slotManager.getDirection(), slotManager.getSlotNum());
+        Component textComponent = TextUtil.slotNameWithDirection(slotManager.getHoverName(), slotManager.getDirection(), slotManager.getSlotNum());
         matrixStack.drawCenteredString(Minecraft.getInstance().font, textComponent.getString(), (getX()) + 48, (getY()) + 5, 0xffffff);
     }
 

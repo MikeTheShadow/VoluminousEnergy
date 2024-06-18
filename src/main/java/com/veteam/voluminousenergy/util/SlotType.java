@@ -19,7 +19,7 @@ public enum SlotType {
         this.isFluidBucketIORelated = isFluidBucketIORelated;
     }
 
-    public String getTranslationKey() {
+    public String getHoverName() {
         return translationKey;
     }
 

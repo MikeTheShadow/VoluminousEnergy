@@ -43,7 +43,7 @@ public class CombustionMultitool extends Multitool {
         itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
             FluidStack fluidStack = fluid.getFluidInTank(0).copy();
             tooltip.add(
-                    TextUtil.translateString(fluidStack.getTranslationKey()).copy()
+                    TextUtil.translateString(fluidStack.getHoverName()).copy()
                             .append(": "
                                     + NumberUtil.formatNumber(fluidStack.getAmount())
                                     + " mB / "

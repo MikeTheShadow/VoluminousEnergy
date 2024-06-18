@@ -74,13 +74,13 @@ public class CombustionGeneratorScreen extends VEContainerScreen<VEContainer> {
         }
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
-            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 
         if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Fuel Tank
-            String name = tileEntity.getFluidStackFromTank(1).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(1).getHoverName();
             int amount = tileEntity.getFluidStackFromTank(1).getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }

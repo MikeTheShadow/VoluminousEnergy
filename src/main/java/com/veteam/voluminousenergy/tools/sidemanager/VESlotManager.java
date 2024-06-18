@@ -75,8 +75,8 @@ public class VESlotManager {
         return slot;
     }
 
-    public String getTranslationKey() {
-        return slotType.getTranslationKey();
+    public String getHoverName() {
+        return slotType.getHoverName();
     }
 
     public String getNbtName() {

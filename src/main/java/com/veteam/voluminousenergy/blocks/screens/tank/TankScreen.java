@@ -71,7 +71,7 @@ public class TankScreen extends VEContainerScreen<VEContainer> {
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) {
             int amount = tileEntity.getRelationalTank(0).getTank().getFluid().getAmount();
-            String name = tileEntity.getRelationalTank(0).getTank().getFluid().getTranslationKey();
+            String name = tileEntity.getRelationalTank(0).getTank().getFluid().getHoverName().getString();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getRelationalTank(0).getTank().getCapacity()), mouseX, mouseY);
         }
 

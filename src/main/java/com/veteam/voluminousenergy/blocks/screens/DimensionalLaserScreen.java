@@ -126,7 +126,7 @@ public class DimensionalLaserScreen extends VEContainerScreen<VEContainer> {
 
         if (isHovering(119, 18, 12, 50, mouseX, mouseY)) { // Tank
             int amount = this.getTank().getFluidAmount();
-            String name = this.getFluidStackFromTank().getTranslationKey();
+            String name = this.getFluidStackFromTank().getHoverName();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 

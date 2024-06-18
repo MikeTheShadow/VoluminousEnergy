@@ -82,7 +82,7 @@ public class PumpScreen extends VEContainerScreen<VEContainer> {
 
         if (isHovering(93, 18, 12, 50, mouseX, mouseY)) { // Oxidizer Tank
             FluidStack stack = tileEntity.getRelationalTank(0).getTank().getFluid();
-            String name = stack.getTranslationKey();
+            String name = stack.getHoverName().getString();
             int amount = stack.getAmount();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }

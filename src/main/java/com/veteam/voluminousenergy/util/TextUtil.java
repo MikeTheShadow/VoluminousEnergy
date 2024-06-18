@@ -110,7 +110,7 @@ public class TextUtil {
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(FluidStack fluidStack) {
-        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getTranslationKey(), fluidStack.getAmount());
+        return fluidNameAndAmountWithUnitsAndColours(fluidStack.getHoverName(), fluidStack.getAmount());
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(SingleChunkFluid singleChunkFluid) {
@@ -118,7 +118,7 @@ public class TextUtil {
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(Fluid fluid, int amount) {
-        return fluidNameAndAmountWithUnitsAndColours(new FluidStack(fluid, amount).getTranslationKey(), amount);
+        return fluidNameAndAmountWithUnitsAndColours(new FluidStack(fluid, amount).getHoverName(), amount);
     }
 
     public static Component fluidNameAndAmountWithUnitsAndColours(String fluidTranslationKey, int amount) {

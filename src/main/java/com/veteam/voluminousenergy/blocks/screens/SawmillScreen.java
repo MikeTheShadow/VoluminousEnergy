@@ -72,7 +72,7 @@ public class SawmillScreen extends VEContainerScreen<VEContainer> {
 
         if (isHovering(138, 18, 12, 50, mouseX, mouseY)) { // Output Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getTranslationKey();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 

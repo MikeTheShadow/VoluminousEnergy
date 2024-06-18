@@ -177,7 +177,7 @@ public class VERelationalTank {
         return validator;
     }
 
-    public String getTranslationKey() {
+    public String getHoverName() {
         if (tankType != null) {
             return switch (tankType) {
                 case INPUT -> "tank.voluminousenergy.input_tank";
