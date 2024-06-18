@@ -72,6 +72,19 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+repositories {
+    maven {
+        // location of the maven that hosts JEI files since January 2023
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+}
+
 dependencies {
     // Specify the version of Minecraft to use.
     // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
@@ -83,10 +96,11 @@ dependencies {
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    // compile against the JEI API but do not include it at runtime
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    localRunRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
@@ -139,16 +153,6 @@ publishing {
     repositories {
         maven {
             url "file://${project.projectDir}/repo"
-        }
-        maven {
-            // location of the maven that hosts JEI files since January 2023
-            name = "JaredsMaven"
-            url = "https://maven.blamejared.com/"
-        }
-        maven {
-            // location of a maven mirror for JEI files, as a fallback
-            name = "ModMaven"
-            url = "https://modmaven.dev"
         }
     }
 }
