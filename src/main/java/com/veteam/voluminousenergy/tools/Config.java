@@ -65,8 +65,8 @@ public class Config {
 
     // Food Settings
     public static ForgeConfigSpec.IntValue COOKED_RICE_NUTRITION;
-    public static ForgeConfigSpec.DoubleValue COOKED_RICE_SATURATION;
-    public static ForgeConfigSpec.DoubleValue RICE_TICK_CHANCE;
+    public static ForgeConfigSpec.FloatValue COOKED_RICE_SATURATION;
+    public static ForgeConfigSpec.FloatValue RICE_TICK_CHANCE;
 
     // Ore Settings
 
@@ -78,7 +78,7 @@ public class Config {
 
     // General Settings
     public static ForgeConfigSpec.BooleanValue ALLOW_EXTRACTION_FROM_INPUT_TANKS;
-    public static ForgeConfigSpec.DoubleValue ACID_DAMAGE;
+    public static ForgeConfigSpec.FloatValue ACID_DAMAGE;
     public static ForgeConfigSpec.IntValue ACID_FIRE_DURATION;
     public static ForgeConfigSpec.IntValue SOLARIUM_PROTECTIVE_SHEATH_HITS;
     public static ForgeConfigSpec.DoubleValue SOLARIUM_SHEATH_REGENERATION_CHANCE;
