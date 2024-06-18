@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.util.recipe;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.stream.Stream;
 

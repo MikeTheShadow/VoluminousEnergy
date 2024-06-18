@@ -8,7 +8,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSlotPairPa
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class BatteryBoxSlotPairButton extends VEIOButton {
 

@@ -6,7 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.extensions.IForgeBlock;
+import net.neoforged.neoforge.common.extensions.IForgeBlock;
 
 public class VEOreBlock extends VEBlock implements IForgeBlock {
     public VEOreBlock(BlockBehaviour.Properties properties) {

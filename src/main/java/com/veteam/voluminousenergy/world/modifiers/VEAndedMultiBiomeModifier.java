@@ -13,9 +13,9 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;

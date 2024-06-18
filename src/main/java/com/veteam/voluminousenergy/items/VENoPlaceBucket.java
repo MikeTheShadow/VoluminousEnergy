@@ -23,7 +23,7 @@ public class VENoPlaceBucket extends BucketItem {
     }
 
     @Override
-    public net.minecraftforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable net.minecraft.nbt.CompoundTag nbt) {
-        return new net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
+    public net.neoforged.neoforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable net.minecraft.nbt.CompoundTag nbt) {
+        return new net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
     }
 }

@@ -17,9 +17,9 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;

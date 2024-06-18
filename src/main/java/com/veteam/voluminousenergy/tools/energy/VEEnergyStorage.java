@@ -3,8 +3,8 @@ package com.veteam.voluminousenergy.tools.energy;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.energy.EnergyStorage;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 
 public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<Tag> {

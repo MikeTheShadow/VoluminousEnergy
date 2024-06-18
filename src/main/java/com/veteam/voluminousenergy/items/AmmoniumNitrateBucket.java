@@ -31,8 +31,8 @@ public class AmmoniumNitrateBucket extends BucketItem {
     }
 
     @Override
-    public net.minecraftforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable net.minecraft.nbt.CompoundTag nbt) {
-        return new net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
+    public net.neoforged.neoforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable net.minecraft.nbt.CompoundTag nbt) {
+        return new net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
     }
 
     public InteractionResult useOn(UseOnContext context) {
@@ -75,7 +75,7 @@ public class AmmoniumNitrateBucket extends BucketItem {
     // Derived from applyBonemeal
     public static boolean applyFert(ItemStack itemStack, Level level, BlockPos pos, net.minecraft.world.entity.player.Player player) {
         BlockState blockstate = level.getBlockState(pos);
-        int hook = net.minecraftforge.event.ForgeEventFactory.onApplyBonemeal(player, level, pos, blockstate, itemStack);
+        int hook = net.neoforged.neoforge.event.ForgeEventFactory.onApplyBonemeal(player, level, pos, blockstate, itemStack);
         if (hook != 0) return hook > 0;
         if (blockstate.getBlock() instanceof BonemealableBlock) {
             Block block = blockstate.getBlock();

@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.event.network.CustomPayloadEvent;
 
 import java.util.UUID;
 

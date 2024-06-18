@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.util.recipe;
 
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
  * Due to potential modification of already-existing objects

@@ -6,8 +6,8 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

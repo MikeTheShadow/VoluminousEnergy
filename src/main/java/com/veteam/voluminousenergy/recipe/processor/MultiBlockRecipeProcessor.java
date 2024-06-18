@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 public class MultiBlockRecipeProcessor extends BasicProcessor {
 

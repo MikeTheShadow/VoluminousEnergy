@@ -9,7 +9,7 @@ import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPow
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class BatteryBoxSendOutPowerButton extends VEIOButton {
 

@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolAction;
 
 import java.util.Set;
 
@@ -58,6 +58,6 @@ public class TrimmerBit extends MultitoolBit {
     @Override
     public boolean isCorrectToolForDrops(BlockState blockState) {
         return (blockState.is(Blocks.COBWEB) || blockState.is(Blocks.REDSTONE_WIRE) || blockState.is(Blocks.TRIPWIRE))
-                && net.minecraftforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
+                && net.neoforged.neoforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
     }
 }

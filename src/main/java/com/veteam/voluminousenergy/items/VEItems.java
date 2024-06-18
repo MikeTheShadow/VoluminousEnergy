@@ -31,9 +31,9 @@ import com.veteam.voluminousenergy.items.tools.RFIDChip;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.items.upgrades.QuartzMultiplier;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 public class VEItems {
     public static final DeferredRegister<Item> VE_ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, VoluminousEnergy.MODID);

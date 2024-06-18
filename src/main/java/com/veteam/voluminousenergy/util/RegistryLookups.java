@@ -8,8 +8,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class RegistryLookups {
 
@@ -55,6 +55,6 @@ public class RegistryLookups {
     }
 
     public static ResourceLocation lookupFluidType(FluidType fluidType) {
-        return ForgeRegistries.FLUID_TYPES.get().getKey(fluidType);
+        return NeoForgeRegistries.FLUID_TYPES.getKey(fluidType);
     }
 }

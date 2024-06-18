@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolAction;
 
 import java.util.Set;
 import java.util.UUID;
@@ -59,12 +59,12 @@ public class MultitoolBit {
         return this.defaultModifiers;
     }
 
-    public boolean canPerformAction(net.minecraftforge.common.ToolAction action) {
+    public boolean canPerformAction(net.neoforged.neoforge.common.ToolAction action) {
         return this.action.contains(action);
     }
 
     public boolean isCorrectToolForDrops(BlockState blockState) {
         return blockState.is(this.mineableBlocks)
-                && net.minecraftforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
+                && net.neoforged.neoforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
     }
 }

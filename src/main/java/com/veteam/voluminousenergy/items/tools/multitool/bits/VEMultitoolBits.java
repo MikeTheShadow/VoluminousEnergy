@@ -3,7 +3,7 @@ package com.veteam.voluminousenergy.items.tools.multitool.bits;
 import com.veteam.voluminousenergy.items.tools.VETools;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Tiers;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ToolActions;
 
 public class VEMultitoolBits {
 

@@ -10,8 +10,8 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.util.VERelationalTank;
 import net.minecraft.sounds.SoundSource;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 
 public class CombustionGeneratorProcessor extends BasicProcessor {

@@ -3,9 +3,9 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 

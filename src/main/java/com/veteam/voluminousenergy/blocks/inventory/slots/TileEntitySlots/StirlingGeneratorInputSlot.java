@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.blocks.inventory.slots.TileEntitySlots;
 
 import com.veteam.voluminousenergy.blocks.inventory.slots.VEInsertSlot;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class StirlingGeneratorInputSlot extends VEInsertSlot {
     public Level world;

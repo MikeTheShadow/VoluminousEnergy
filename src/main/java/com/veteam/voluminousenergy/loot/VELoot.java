@@ -6,10 +6,10 @@ import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.List;
 

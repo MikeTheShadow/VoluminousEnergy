@@ -12,9 +12,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
 
 public class Diesel {
     public static final ResourceLocation DIESEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/diesel_still");

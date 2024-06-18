@@ -4,9 +4,9 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
 import io.netty.util.AttributeKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.ChannelBuilder;
-import net.minecraftforge.network.ForgePacketHandler;
-import net.minecraftforge.network.SimpleChannel;
+import net.neoforged.neoforge.network.ChannelBuilder;
+import net.neoforged.neoforge.network.ForgePacketHandler;
+import net.neoforged.neoforge.network.SimpleChannel;
 
 public class VENetwork {
     public static final ResourceLocation CHANNEL_ID = new ResourceLocation(VoluminousEnergy.MODID, "network");

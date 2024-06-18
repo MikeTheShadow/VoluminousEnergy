@@ -7,8 +7,8 @@ import com.veteam.voluminousenergy.recipe.parser.AbstractRecipeParser.SlotAndRec
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;

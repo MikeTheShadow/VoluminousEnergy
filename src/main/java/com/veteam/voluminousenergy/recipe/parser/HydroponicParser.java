@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.recipe.parser.AbstractRecipeParser.SlotAndRecipePos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Random;
 

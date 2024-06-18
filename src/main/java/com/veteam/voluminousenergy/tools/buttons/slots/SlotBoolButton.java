@@ -9,9 +9,9 @@ import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.neoforge.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 public class SlotBoolButton extends VEIOButton {

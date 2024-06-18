@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 

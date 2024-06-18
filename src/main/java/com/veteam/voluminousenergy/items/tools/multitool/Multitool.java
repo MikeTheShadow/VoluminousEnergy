@@ -19,7 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
+    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ToolAction toolAction) {
         return this.bit != null ? this.bit.canPerformAction(toolAction) : false;
     }
 
@@ -157,7 +157,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
     // Trimmer Multitool stuff
     @Override
     public net.minecraft.world.InteractionResult interactLivingEntity(ItemStack stack, net.minecraft.world.entity.player.Player playerIn, LivingEntity entity, net.minecraft.world.InteractionHand hand) {
-        if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.minecraftforge.common.IForgeShearable target) {
+        if (this.bit != null && this.bit instanceof TrimmerBit && entity instanceof net.neoforged.neoforge.common.IForgeShearable target) {
             if (entity.level().isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
             BlockPos pos = new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
             if (target.isShearable(stack, entity.level(), pos)) {

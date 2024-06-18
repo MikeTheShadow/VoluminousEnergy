@@ -3,8 +3,8 @@ package com.veteam.voluminousenergy.tools;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.fml.common.Mod.EventBusSubscriber;
 
 import java.nio.file.Path;
 

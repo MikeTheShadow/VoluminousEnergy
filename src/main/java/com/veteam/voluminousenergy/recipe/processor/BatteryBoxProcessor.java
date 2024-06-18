@@ -6,8 +6,8 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class BatteryBoxProcessor implements AbstractRecipeProcessor {
 

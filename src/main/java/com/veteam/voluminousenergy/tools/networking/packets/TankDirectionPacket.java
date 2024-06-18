@@ -7,8 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkDirection;
 
 public class TankDirectionPacket {
     private int direction;
