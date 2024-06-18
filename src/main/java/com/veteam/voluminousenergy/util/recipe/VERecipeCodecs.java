@@ -5,8 +5,10 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -17,51 +19,56 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class VERecipeCodecs {
-    private static final Codec<Item> ITEM_NONAIR_CODEC = ExtraCodecs.validate(BuiltInRegistries.ITEM.byNameCodec(), (instance) -> {
-        return instance == Items.AIR ? DataResult.error(() -> {
-            return "Crafting result must not be minecraft:air";
-        }) : DataResult.success(instance);
-    });
+    public static final Codec<Holder<Item>> ITEM_NONAIR_CODEC = BuiltInRegistries.ITEM
+            .holderByNameCodec()
+            .validate(
+                    p_330100_ -> p_330100_.is(Items.AIR.builtInRegistryHolder())
+                            ? DataResult.error(() -> "Item must not be minecraft:air")
+                            : DataResult.success(p_330100_)
+            );
 
-    public static final Codec<RegistryIngredient> VE_LAZY_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
-                        .forGetter(RegistryIngredient::tag),
-                ExtraCodecs.strictOptionalField(Codec.STRING, "item", "")
-                        .forGetter(RegistryIngredient::item),
-                ExtraCodecs.strictOptionalField(Codec.INT, "count", 1)
-                        .forGetter((ingredient) -> 1)
-        ).apply(instance, RegistryIngredient::new);
-    });
+    public static final Codec<RegistryIngredient> VE_LAZY_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.STRING.optionalFieldOf("tag", "").forGetter(t -> t.tag),
+            Codec.STRING.optionalFieldOf("item", "").forGetter(t -> t.item),
+            Codec.INT.fieldOf("count").forGetter(t -> t.count)
+    ).apply(instance, RegistryIngredient::new));
 
     public record RegistryIngredient(String tag, String item, int count) {
         public Ingredient getIngredient() {
 
             if (!tag.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(tag, ':');
-                TagKey<Item> tag = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), res);
+                TagKey<Item> tag = TagKey.create(Registries.ITEM, res);
                 HolderSet<Item> holderSet = BuiltInRegistries.ITEM.getOrCreateTag(tag);
                 AtomicReference<ArrayList<ItemStack>> itemSet = new AtomicReference<>(new ArrayList<>());
                 holderSet.stream().forEach(itemHolder -> {
                     itemSet.get().add(new ItemStack(itemHolder.value(), this.count));
                 });
+
+                if (holderSet.size() == 0) {
+                    throw new IllegalStateException("Holder size is zero for tag "
+                            + tag.location() + "! This likely means that there are no items in the registry with that tag!");
+                }
+
                 return Ingredient.of(itemSet.get().stream());
             } else if (!item.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(item, ':');
-                Item single = ForgeRegistries.ITEMS.getValue(res);
-                if (single == null) {
-                    throw new IllegalStateException("Invalid recipe ingredient object: " + item + " | " + tag);
+
+                boolean containsItem = BuiltInRegistries.ITEM.containsKey(res);
+
+                if (!containsItem) {
+                    throw new IllegalStateException("Invalid recipe ingredient object: " + item + " | " + tag + " does not exist!");
                 }
+
+                Item single = BuiltInRegistries.ITEM.get(res);
                 ItemStack stack = new ItemStack(single, this.count);
                 return Ingredient.of(stack);
             } else {
@@ -70,92 +77,62 @@ public class VERecipeCodecs {
         }
     }
 
-    public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItem),
-                ExtraCodecs.strictOptionalField(Codec.INT, "count", 1)
-                        .forGetter(ItemStack::getCount)).apply(instance, ItemStack::new);
-    });
+    public static final Codec<ItemStack> VE_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) ->
+            instance.group(ITEM_NONAIR_CODEC.fieldOf("item").forGetter(ItemStack::getItemHolder),
+                    Codec.INT.fieldOf("count")
+                            .forGetter(ItemStack::getCount)).apply(instance, ItemStack::new));
 
     public static final Codec<VEChancedItemWithCount> VE_CHANCED_OUTPUT_ITEM_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             ITEM_NONAIR_CODEC.fieldOf("item").forGetter(VEChancedItemWithCount::item),
-            ExtraCodecs.strictOptionalField(Codec.INT, "count", 1).forGetter(VEChancedItemWithCount::count),
-            ExtraCodecs.strictOptionalField(Codec.FLOAT, "chance", 1.0F).forGetter(VEChancedItemWithCount::chance)
+            Codec.INT.fieldOf("count").forGetter(VEChancedItemWithCount::count),
+            Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(VEChancedItemWithCount::chance)
     ).apply(instance, VEChancedItemWithCount::new));
 
-    public static final Codec<Fluid> FLUID_NONAIR_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(), (p_297750_) -> {
-        return p_297750_ == Fluids.EMPTY ? DataResult.error(() -> {
-            return "Crafting result must not be fluid:empty";
-        }) : DataResult.success(p_297750_);
-    });
+    public static final Codec<Fluid> FLUID_NONAIR_CODEC = BuiltInRegistries.FLUID.byNameCodec().validate((fluid)
+            -> fluid == Fluids.EMPTY ? DataResult.error(() -> "Crafting result must not be fluid:empty") : DataResult.success(fluid));
 
-    public static final Codec<RegistryFluidIngredient> VE_FLUID_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
-                        .forGetter(RegistryFluidIngredient::tag),
-                ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
-                        .forGetter(RegistryFluidIngredient::fluid),
-                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1000)
-                        .forGetter((ingredient) -> 1)
-        ).apply(instance, RegistryFluidIngredient::new);
-    });
+    public static final Codec<RegistryFluidIngredient> VE_FLUID_INGREDIENT_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.STRING.optionalFieldOf("tag", "")
+                    .forGetter(RegistryFluidIngredient::tag),
+            Codec.STRING.optionalFieldOf("fluid", "")
+                    .forGetter(RegistryFluidIngredient::fluid),
+            Codec.INT.fieldOf("amount")
+                    .forGetter((ingredient) -> 1)
+    ).apply(instance, RegistryFluidIngredient::new));
 
-    public static final Codec<FloatPair> VE_MIN_MAX_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                ExtraCodecs.strictOptionalField(Codec.FLOAT, "minimum", 0.0F)
-                        .forGetter(FloatPair::min),
-                ExtraCodecs.strictOptionalField(Codec.FLOAT, "maximum", 0.0F)
-                        .forGetter(FloatPair::max)
-        ).apply(instance, FloatPair::new);
-    });
+    public static final Codec<FloatPair> VE_MIN_MAX_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.FLOAT.fieldOf("minimum").forGetter(FloatPair::min),
+            Codec.FLOAT.fieldOf("maximum").forGetter(FloatPair::max)
+    ).apply(instance, FloatPair::new));
 
-    public static final Codec<FluidMinMax> VE_MIN_MAX_FLUID_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidMinMax::fluid),
-                ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0)
-                        .forGetter(FluidMinMax::min),
-                ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0)
-                        .forGetter(FluidMinMax::max)
-        ).apply(instance, FluidMinMax::new);
-    });
+    public static final Codec<FluidMinMax> VE_MIN_MAX_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidMinMax::fluid),
+            Codec.INT.fieldOf("minimum").forGetter(FluidMinMax::min),
+            Codec.INT.fieldOf("maximum").forGetter(FluidMinMax::max)
+    ).apply(instance, FluidMinMax::new));
 
-    public static final Codec<IntPair> VE_MIN_MAX_INT_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0)
-                        .forGetter(IntPair::min),
-                ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0)
-                        .forGetter(IntPair::max)
-        ).apply(instance, IntPair::new);
-    });
+    public static final Codec<IntPair> VE_MIN_MAX_INT_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.INT.fieldOf("minimum").forGetter(IntPair::min),
+            Codec.INT.fieldOf("maximum").forGetter(IntPair::max)
+    ).apply(instance, IntPair::new));
 
-    public static final Codec<ClimateData> VE_CLIMATE_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "continentalness", new FloatPair(0, 0))
-                        .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "erosion", new FloatPair(0, 0))
-                        .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "humidity", new FloatPair(0, 0))
-                        .forGetter(ClimateData::continentalness),
-                ExtraCodecs.strictOptionalField(VE_MIN_MAX_CODEC, "temperature", new FloatPair(0, 0))
-                        .forGetter(ClimateData::continentalness)
-        ).apply(instance, ClimateData::new);
-    });
+    public static final Codec<ClimateData> VE_CLIMATE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            VE_MIN_MAX_CODEC.fieldOf("continentalness").forGetter(ClimateData::continentalness),
+            VE_MIN_MAX_CODEC.fieldOf("erosion").forGetter(ClimateData::continentalness),
+            VE_MIN_MAX_CODEC.fieldOf("humidity").forGetter(ClimateData::continentalness),
+            VE_MIN_MAX_CODEC.fieldOf("temperature").forGetter(ClimateData::continentalness)
+    ).apply(instance, ClimateData::new));
 
     public static final Codec<RegistryFluidValue> REGISTRY_COMBUSTION_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
-                    .forGetter(RegistryFluidValue::tag),
-            ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
-                    .forGetter(RegistryFluidValue::fluid),
-            ExtraCodecs.strictOptionalField(Codec.FLOAT, "energy_per_tick", 0f)
-                    .forGetter((ingredient) -> 1f)
+            Codec.STRING.optionalFieldOf("tag", "").forGetter(RegistryFluidValue::tag),
+            Codec.STRING.optionalFieldOf("fluid", "").forGetter(RegistryFluidValue::fluid),
+            Codec.FLOAT.fieldOf("energy_per_tick").forGetter((ingredient) -> 1f)
     ).apply(instance, RegistryFluidValue::new));
 
     public static final Codec<RegistryFluidValue> REGISTRY_OXIDIZER_FLUID_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            ExtraCodecs.strictOptionalField(Codec.STRING, "tag", "")
-                    .forGetter(RegistryFluidValue::tag),
-            ExtraCodecs.strictOptionalField(Codec.STRING, "fluid", "")
-                    .forGetter(RegistryFluidValue::fluid),
-            ExtraCodecs.strictOptionalField(Codec.FLOAT, "multiplier", 0f)
-                    .forGetter((ingredient) -> 1f)
+            Codec.STRING.optionalFieldOf("tag", "").forGetter(RegistryFluidValue::tag),
+            Codec.STRING.optionalFieldOf("fluid", "").forGetter(RegistryFluidValue::fluid),
+            Codec.FLOAT.fieldOf("multiplier").forGetter((ingredient) -> 1f)
     ).apply(instance, RegistryFluidValue::new));
 
     public record FloatPair(float min, float max) {
@@ -176,19 +153,25 @@ public class VERecipeCodecs {
 
             if (!tag.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(tag, ':');
-                TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), res);
+                TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
                 HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
                 AtomicReference<ArrayList<FluidStack>> fluidSet = new AtomicReference<>(new ArrayList<>());
+
+                if (holderSet.size() == 0) {
+                    throw new IllegalStateException("No values found for tag "
+                            + tag + ". Make sure that there are fluids with that tag in the registry.");
+                }
+
                 holderSet.stream().forEach(itemHolder -> {
                     fluidSet.get().add(new FluidStack(itemHolder.value(), amount));
                 });
                 return FluidIngredient.of(fluidSet.get().stream());
             } else if (!fluid.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(fluid, ':');
-                Fluid single = ForgeRegistries.FLUIDS.getValue(res);
-                if (single == null) {
-                    throw new IllegalStateException("Invalid recipe fluid ingredient object: " + fluid);
+                if (!BuiltInRegistries.FLUID.containsKey(res)) {
+                    throw new IllegalStateException("Unable to get fluid ingredient: " + fluid);
                 }
+                Fluid single = BuiltInRegistries.FLUID.get(res);
                 FluidStack stack = new FluidStack(single, amount);
                 return FluidIngredient.of(stack);
             } else {
@@ -202,18 +185,19 @@ public class VERecipeCodecs {
 
             if (!tag.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(tag, ':');
-                TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), res);
+                TagKey<Fluid> tag = TagKey.create(Registries.FLUID, res);
                 HolderSet<Fluid> holderSet = BuiltInRegistries.FLUID.getOrCreateTag(tag);
                 AtomicReference<HashSet<Fluid>> fluidSet = new AtomicReference<>(new HashSet<>());
                 holderSet.stream().forEach(itemHolder -> fluidSet.get().add(itemHolder.value()));
-                return new FluidSetWithValue(fluidSet.get(),value);
+                return new FluidSetWithValue(fluidSet.get(), value);
             } else if (!fluid.isBlank()) {
                 ResourceLocation res = ResourceLocation.of(fluid, ':');
-                Fluid single = ForgeRegistries.FLUIDS.getValue(res);
-                if (single == null) {
-                    throw new IllegalStateException("Invalid recipe fluid ingredient object: " + fluid);
+
+                if (!BuiltInRegistries.FLUID.containsKey(res)) {
+                    throw new IllegalStateException("Unable to get fluid ingredient: " + fluid + ". Please validate it exists!");
                 }
-                return new FluidSetWithValue(Set.of(single),value);
+                Fluid single = BuiltInRegistries.FLUID.get(res);
+                return new FluidSetWithValue(Set.of(single), value);
             } else {
                 throw new IllegalStateException("Recipe missing fluid/tag JSON syntax!");
             }
@@ -224,22 +208,21 @@ public class VERecipeCodecs {
         public Set<Fluid> fluids;
         public float value;
 
-        public FluidSetWithValue(Set<Fluid> fluids,float value) {
+        public FluidSetWithValue(Set<Fluid> fluids, float value) {
             this.fluids = fluids;
             this.value = value;
         }
 
     }
 
-    public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidStack::getFluid),
-                ExtraCodecs.strictOptionalField(Codec.INT, "amount", 1)
-                        .forGetter(FluidStack::getAmount)).apply(instance, FluidStack::new);
-    });
+    public static final Codec<FluidStack> VE_OUTPUT_FLUID_CODEC = RecordCodecBuilder.create((instance) ->
+            instance.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter(FluidStack::getFluid),
+                    Codec.INT.fieldOf("amount")
+                            .forGetter(FluidStack::getAmount)).apply(instance, FluidStack::new));
 
     public static final Codec<VERecipeExperience> VE_EXPERIENCE_RANGE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-            ExtraCodecs.strictOptionalField(Codec.INT, "minimum", 0).forGetter(VERecipeExperience::minimum),
-            ExtraCodecs.strictOptionalField(Codec.INT, "maximum", 0).forGetter(VERecipeExperience::maximum)
+            Codec.INT.fieldOf("minimum").forGetter(VERecipeExperience::minimum),
+            Codec.INT.fieldOf("maximum").forGetter(VERecipeExperience::maximum)
     ).apply(instance, VERecipeExperience::new));
 
     private static JsonElement getBadItemElement() {
@@ -248,7 +231,7 @@ public class VERecipeCodecs {
         return jsonObject;
     }
 
-    public record VEChancedItemWithCount(Item item, int count, float chance) {
+    public record VEChancedItemWithCount(Holder<Item> item, int count, float chance) {
         public ItemStack getAsItemStack() {
             return new ItemStack(item, count);
         }
