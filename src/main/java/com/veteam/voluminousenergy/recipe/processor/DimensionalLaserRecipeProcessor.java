@@ -11,6 +11,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -39,7 +40,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 
         int buildTick = tile.getData("build_tick");
         if (buildTick != 1000) {
-
+            tile.setChanged();
             if(buildTick == 999) {
                 int x = tile.getBlockPos().getX();
                 int y = tile.getBlockPos().getY();
@@ -47,6 +48,14 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
                 for (ServerPlayer serverplayer : tile.getLevel().getEntitiesOfClass(ServerPlayer.class, (new AABB(x, y, z, x, y - 4, z)).inflate(50.0D, 50.0D, 50.0D))) {
                     VECriteriaTriggers.CONSTRUCT_DIMENSIONAL_LASER_TRIGGER.trigger(serverplayer, 3);
                 }
+            }
+
+            // Pylon audio
+            switch (buildTick) {
+                case 50,
+                     150,
+                     250,
+                     350 -> tile.getLevel().playSound(null, tile.getBlockPos(), SoundEvents.BEACON_ACTIVATE , SoundSource.BLOCKS, 1.0F, 1.0F);
             }
 
             if (buildTick == 1) {
@@ -69,14 +78,15 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
                     lightningBolt.setVisualOnly(true);
                     lightningBolt.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
                     tile.getLevel().addFreshEntity(lightningBolt);
-
                 }
             }
+
 //            if (!tile.canConsumeEnergy()) {
 //                buildTick = 0;
 //            } else {
 //                tile.consumeEnergy();
 //            }
+            tile.setChanged();
             tile.setData("build_tick", buildTick + 1);
             return;
         }
@@ -139,8 +149,8 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         lastReading = true;
         // Tweak box based on direction -- This is the search range to ensure this is a valid multiblock before operation
         for (final BlockPos blockPos : BlockPos.betweenClosed(
-                tile.getBlockPos().offset(-1, -3, -1),
-                tile.getBlockPos().offset(1, -1, 1))) {
+                tile.getBlockPos().offset(0, -3, 0),
+                tile.getBlockPos().offset(0, -1, 0))) {
 
             final BlockState blockState = tile.getLevel().getBlockState(blockPos);
 
