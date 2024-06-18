@@ -64,7 +64,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
     protected void renderTooltip(GuiGraphics matrixStack, int mouseX, int mouseY) {
         if (isHovering(31, 18, 12, 49, mouseX, mouseY)) {
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         } else if (!VoluminousEnergy.JEI_LOADED && isHovering(getFuelTooltipArea(), mouseX, mouseY)) {
             matrixStack.renderComponentTooltip(this.font, getFuelTooltips(), mouseX, mouseY);

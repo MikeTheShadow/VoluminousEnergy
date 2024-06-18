@@ -76,7 +76,7 @@ public class HydroponicIncubatorScreen extends VEContainerScreen<VEContainer> {
 
         if (isHovering(61, 18, 12, 50, mouseX, mouseY)) { // Input Tank
             int amount = tileEntity.getFluidStackFromTank(0).getAmount();
-            String name = tileEntity.getFluidStackFromTank(0).getHoverName();
+            String name = tileEntity.getFluidStackFromTank(0).getHoverName().getString();
             matrixStack.renderTooltip(this.font, TextUtil.tankTooltip(name, amount, tileEntity.getTankCapacity()), mouseX, mouseY);
         }
 

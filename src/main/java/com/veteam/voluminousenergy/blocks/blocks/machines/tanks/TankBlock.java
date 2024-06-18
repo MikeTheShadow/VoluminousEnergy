@@ -65,7 +65,7 @@ public class TankBlock extends FaceableBlock {
 
         if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
             tooltip.add(
-                    TextUtil.translateString(fluid.getHoverName()).copy()
+                    TextUtil.translateString(fluid.getHoverName().getString()).copy()
                             .append(": ")
                             .append(NumberUtil.numberToString4Fluids(fluid.getAmount()))
                             .append(" / ")
@@ -74,7 +74,7 @@ public class TankBlock extends FaceableBlock {
         } else {
             String amount = String.format("%s mB", DECIMAL_FORMAT.format(fluid.getAmount()));
             String capacity = String.format("%s mB", DECIMAL_FORMAT.format(tankCapacity));
-            tooltip.add(TextUtil.translateString(fluid.getHoverName()).copy().append(": " + amount + " / " + capacity));
+            tooltip.add(TextUtil.translateString(fluid.getHoverName().getString()).copy().append(": " + amount + " / " + capacity));
         }
     }
 
