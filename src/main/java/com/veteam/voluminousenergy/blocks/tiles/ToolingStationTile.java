@@ -23,7 +23,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -76,79 +75,79 @@ public class ToolingStationTile extends VETileEntity {
 
     @Override
     public void tick() {
-        updateClients();
-        processFluidIO();
-        validateRecipe();
-        ItemStack mainTool = inventory.getStackInSlot(2); // This will act like a POINTER, not a clone
-        ItemStack toolBit = inventory.getStackInSlot(3).copy(); // this is where the bit would be put into
-        ItemStack toolBase = inventory.getStackInSlot(4).copy(); // this is where the base of the tool would be put into
-
-        if (fuelRecipe != null) {
-            // Logic for refueling the base
-            if (!mainTool.isEmpty()) {
-                mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-                    FluidStack itemFluid = fluid.getFluidInTank(0);
-                    FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
-                    int tankCapacity = fluid.getTankCapacity(0);
-
-                    if (itemFluid.getAmount() < tankCapacity && (itemFluid.isFluidEqual(toolingStationFluid) || itemFluid.isEmpty())) {
-                        int toTransfer;
-
-                        if (!itemFluid.isEmpty()) {
-                            toTransfer = Math.min(toolingStationFluid.getAmount(), itemFluid.getAmount()); // Which amount is smaller
-                            toTransfer = Math.min(toTransfer, (tankCapacity - itemFluid.getAmount())); // Previous value versus the delta between the tankCapacity in the item and the current fluid amount
-                        } else { // Clean slate, check only against the tank capacity
-                            toTransfer = Math.min(toolingStationFluid.getAmount(), tankCapacity);
-                        }
-
-                        if (toTransfer > 0) {
-                            // Drain the fluid from the Tooling Station
-                            this.fuelTank.getTank().drain(toTransfer, IFluidHandler.FluidAction.EXECUTE);
-                            toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
-                            // Fill the item
-                            fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
-                            // Fill the fluid in the base as well
-                            inventory.getStackInSlot(4).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
-                                    .ifPresent(baseFluid -> baseFluid.fill(toolingStationFluid, IFluidHandler.FluidAction.EXECUTE));
-                        }
-                    }
-                });
-            }
-        }
-
-        if (mainTool.isEmpty() && inventory.getStackInSlot(2).isEmpty()) {
-            if (!toolBit.isEmpty() && !toolBase.isEmpty()) {
-                ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromBitAndBase(level, toolBit.copy(), toolBase.copy());
-                if (toolingRecipe != null) {
-                    ItemStack craftedTool = new ItemStack(toolingRecipe.getResult(0).getItem(), 1);
-
-                    // Fill the crafted Multitool with fluid from the emptyMultitool
-                    craftedTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(
-                            fluidTool -> toolBase.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidBase -> {
-                                FluidStack baseFluid = fluidBase.getFluidInTank(0).copy();
-                                fluidTool.fill(baseFluid, IFluidHandler.FluidAction.EXECUTE);
-                            }));
-
-                    inventory.setStackInSlot(2, craftedTool);
-                }
-            }
-        } else if (!mainTool.isEmpty() && toolBase.isEmpty() && toolBit.isEmpty()) {
-            ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromResult(level, mainTool.copy());
-            if (toolingRecipe != null) {
-                inventory.setStackInSlot(3, new ItemStack(toolingRecipe.getBits().get(0)));
-                ItemStack baseStack = new ItemStack(toolingRecipe.getBases().get(0));
-
-                // Fill the base with the same fluid as the mainTool
-                baseStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(baseFluid ->
-                        mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(toolFluid -> {
-                            FluidStack fluidTool = toolFluid.getFluidInTank(0).copy();
-                            baseFluid.fill(fluidTool, IFluidHandler.FluidAction.EXECUTE);
-                        }));
-
-                inventory.setStackInSlot(4, baseStack);
-                inventory.setStackInSlot(2, mainTool.copy());
-            }
-        }
+//        updateClients();
+//        processFluidIO();
+//        validateRecipe();
+//        ItemStack mainTool = inventory.getStackInSlot(2); // This will act like a POINTER, not a clone
+//        ItemStack toolBit = inventory.getStackInSlot(3).copy(); // this is where the bit would be put into
+//        ItemStack toolBase = inventory.getStackInSlot(4).copy(); // this is where the base of the tool would be put into
+//
+//        if (fuelRecipe != null) {
+//            // Logic for refueling the base
+//            if (!mainTool.isEmpty()) {
+//                mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
+//                    FluidStack itemFluid = fluid.getFluidInTank(0);
+//                    FluidStack toolingStationFluid = this.fuelTank.getTank().getFluid().copy();
+//                    int tankCapacity = fluid.getTankCapacity(0);
+//
+//                    if (itemFluid.getAmount() < tankCapacity && (itemFluid.isFluidEqual(toolingStationFluid) || itemFluid.isEmpty())) {
+//                        int toTransfer;
+//
+//                        if (!itemFluid.isEmpty()) {
+//                            toTransfer = Math.min(toolingStationFluid.getAmount(), itemFluid.getAmount()); // Which amount is smaller
+//                            toTransfer = Math.min(toTransfer, (tankCapacity - itemFluid.getAmount())); // Previous value versus the delta between the tankCapacity in the item and the current fluid amount
+//                        } else { // Clean slate, check only against the tank capacity
+//                            toTransfer = Math.min(toolingStationFluid.getAmount(), tankCapacity);
+//                        }
+//
+//                        if (toTransfer > 0) {
+//                            // Drain the fluid from the Tooling Station
+//                            this.fuelTank.getTank().drain(toTransfer, IFluidHandler.FluidAction.EXECUTE);
+//                            toolingStationFluid.setAmount(toTransfer); // Set the fluid that is going to go into the item
+//                            // Fill the item
+//                            fluid.fill(toolingStationFluid.copy(), IFluidHandler.FluidAction.EXECUTE);
+//                            // Fill the fluid in the base as well
+//                            inventory.getStackInSlot(4).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
+//                                    .ifPresent(baseFluid -> baseFluid.fill(toolingStationFluid, IFluidHandler.FluidAction.EXECUTE));
+//                        }
+//                    }
+//                });
+//            }
+//        }
+//
+//        if (mainTool.isEmpty() && inventory.getStackInSlot(2).isEmpty()) {
+//            if (!toolBit.isEmpty() && !toolBase.isEmpty()) {
+//                ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromBitAndBase(level, toolBit.copy(), toolBase.copy());
+//                if (toolingRecipe != null) {
+//                    ItemStack craftedTool = new ItemStack(toolingRecipe.getResult(0).getItem(), 1);
+//
+//                    // Fill the crafted Multitool with fluid from the emptyMultitool
+//                    craftedTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(
+//                            fluidTool -> toolBase.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidBase -> {
+//                                FluidStack baseFluid = fluidBase.getFluidInTank(0).copy();
+//                                fluidTool.fill(baseFluid, IFluidHandler.FluidAction.EXECUTE);
+//                            }));
+//
+//                    inventory.setStackInSlot(2, craftedTool);
+//                }
+//            }
+//        } else if (!mainTool.isEmpty() && toolBase.isEmpty() && toolBit.isEmpty()) {
+//            ToolingRecipe toolingRecipe = RecipeUtil.getToolingRecipeFromResult(level, mainTool.copy());
+//            if (toolingRecipe != null) {
+//                inventory.setStackInSlot(3, new ItemStack(toolingRecipe.getBits().get(0)));
+//                ItemStack baseStack = new ItemStack(toolingRecipe.getBases().get(0));
+//
+//                // Fill the base with the same fluid as the mainTool
+//                baseStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(baseFluid ->
+//                        mainTool.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(toolFluid -> {
+//                            FluidStack fluidTool = toolFluid.getFluidInTank(0).copy();
+//                            baseFluid.fill(fluidTool, IFluidHandler.FluidAction.EXECUTE);
+//                        }));
+//
+//                inventory.setStackInSlot(4, baseStack);
+//                inventory.setStackInSlot(2, mainTool.copy());
+//            }
+//        }
     }
 
     @Override
@@ -184,19 +183,19 @@ public class ToolingStationTile extends VETileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (slot == 0) {
-                    if (stack.getItem() instanceof BucketItem bucketItem && !bucketItem.getFluid().isSame(Fluids.EMPTY)) {
-                        return (isCombustibleFuel(bucketItem.getFluid()));
-                    }
-                    return stack.getItem() instanceof BucketItem;
-                } else if (slot == 1) {
-                    return stack.getItem() instanceof BucketItem;
-                }
-                if (slot == 2)
-                    return stack.getItem() instanceof Multitool && stack.getItem() != VEMultitools.EMPTY_MULTITOOL.get(); // TODO: Remove Multitool base?
-                if (slot == 3) return stack.getItem() instanceof BitItem;
-                if (slot == 4)
-                    return (stack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()); // TODO: Remove Multitool base?
+//                if (slot == 0) {
+//                    if (stack.getItem() instanceof BucketItem bucketItem && !bucketItem.getFluid().isSame(Fluids.EMPTY)) {
+//                        return (isCombustibleFuel(bucketItem.getFluid()));
+//                    }
+//                    return stack.getItem() instanceof BucketItem;
+//                } else if (slot == 1) {
+//                    return stack.getItem() instanceof BucketItem;
+//                }
+//                if (slot == 2)
+//                    return stack.getItem() instanceof Multitool && stack.getItem() != VEMultitools.EMPTY_MULTITOOL.get(); // TODO: Remove Multitool base?
+//                if (slot == 3) return stack.getItem() instanceof BitItem;
+//                if (slot == 4)
+//                    return (stack.getItem() == VEMultitools.EMPTY_MULTITOOL.get()); // TODO: Remove Multitool base?
                 return false;
             }
 

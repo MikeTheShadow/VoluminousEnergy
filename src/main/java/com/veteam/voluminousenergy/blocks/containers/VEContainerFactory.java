@@ -13,16 +13,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class VEContainerFactory {
-    private RegistryObject<MenuType<VEContainer>> menuTypeRegistryObject;
-    private RegistryObject<Block> block;
+    private Supplier<MenuType<VEContainer>> menuTypeRegistryObject;
+    private Supplier<Block> block;
     private final List<Slot> slots = new ArrayList<>();
     private final List<TileSlot> tileSlots = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class VEContainerFactory {
                         continue;
                     }
                     if (i == this.tileEntity.getSlotManagers().size()) {
-                        VoluminousEnergy.LOGGER.error("Unable to properly create " + menuTypeRegistryObject.getId() + ". The VEContainerFactory tried to process more slots than were available.");
+                        VoluminousEnergy.LOGGER.error("Unable to properly create " + menuTypeRegistryObject.get() + ". The VEContainerFactory tried to process more slots than were available.");
                         break;
                     }
                     SlotType slotType = this.tileEntity.getSlotManagers().get(i).getSlotType();
@@ -76,7 +76,7 @@ public class VEContainerFactory {
 
         private VEContainerFactory factory;
 
-        public VEContainerFactoryBuilder create(RegistryObject<MenuType<VEContainer>> menuRegistry, RegistryObject<Block> blockRegistry) {
+        public VEContainerFactoryBuilder create(Supplier<MenuType<VEContainer>> menuRegistry, Supplier<Block> blockRegistry) {
             this.factory = new VEContainerFactory();
             this.factory.menuTypeRegistryObject = menuRegistry;
             this.factory.block = blockRegistry;

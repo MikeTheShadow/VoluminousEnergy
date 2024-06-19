@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.DistillationRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -89,11 +89,11 @@ public class DistillingCategory implements IRecipeCategory<DistillationRecipe> {
                                   IIngredientAcceptor itemOutputAcceptor) {
 
         // Input
-        fluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
+        fluidInputAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
         // Output
-        firstFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
-        secondFluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
+        firstFluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluid(1));
 
         ItemStack itemStackResult = recipe.getResult(0).copy();
         itemStackResult.setCount(recipe.getResult(0).getCount());

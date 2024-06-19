@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.FluidMixerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -85,10 +85,10 @@ public class FluidMixingCategory implements IRecipeCategory<FluidMixerRecipe> {
                                   IIngredientAcceptor secondFluidInputAcceptor,
                                   IIngredientAcceptor outputFluidAccepetor) {
 
-        firstFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
+        firstFluidInputAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()));
 
-        secondFluidInputAcceptor.addIngredients(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(1).getFluids()));
-        outputFluidAccepetor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
+        secondFluidInputAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(1).getFluids()));
+        outputFluidAccepetor.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluid(0));
     }
 
     @Override

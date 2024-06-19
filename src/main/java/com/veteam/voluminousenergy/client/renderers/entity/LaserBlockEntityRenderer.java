@@ -19,8 +19,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.api.distmarker.Dist;
-import net.neoforged.neoforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -292,21 +292,21 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
         PoseStack.Pose pose = poseStack.last();
         Matrix4f matrix4f = pose.pose();
         Matrix3f matrix3f = pose.normal();
-        renderQuad(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, f6, f7, nfloat1, f8, (float) 0.0, (float) 1.0, f16, f15);
-        renderQuad(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat4, nfloat5, nfloat2, nfloat3, (float) 0.0, (float) 1.0, f16, f15);
-        renderQuad(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat1, f8, nfloat4, nfloat5, (float) 0.0, (float) 1.0, f16, f15);
-        renderQuad(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat2, nfloat3, f6, f7, (float) 0.0, (float) 1.0, f16, f15);
+        renderQuad(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, f6, f7, nfloat1, f8, (float) 0.0, (float) 1.0, f16, f15);
+        renderQuad(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat4, nfloat5, nfloat2, nfloat3, (float) 0.0, (float) 1.0, f16, f15);
+        renderQuad(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat1, f8, nfloat4, nfloat5, (float) 0.0, (float) 1.0, f16, f15);
+        renderQuad(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, static0P3F, totalHeight, height, nfloat2, nfloat3, f6, f7, (float) 0.0, (float) 1.0, f16, f15);
     }
 
-    private static void renderQuad(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, int totalHeight, float height, float point1x, float point1z, float point2x, float point2z, float patternRepeatHorizontalPositive, float patternRepeatHorizontalNegative, float patternLocationYNegative, float patternLocationYNegative2) {
-        addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative);
-        addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative2);
-        addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative2);
-        addVertex(matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative);
+    private static void renderQuad(PoseStack.Pose pose, Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, int totalHeight, float height, float point1x, float point1z, float point2x, float point2z, float patternRepeatHorizontalPositive, float patternRepeatHorizontalNegative, float patternLocationYNegative, float patternLocationYNegative2) {
+        addVertex(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative);
+        addVertex(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point1x, point1z, patternRepeatHorizontalNegative, patternLocationYNegative2);
+        addVertex(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, totalHeight, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative2);
+        addVertex(pose, matrix4f, matrix3f, vertexConsumer, beaconColorR, beaconColorG, beaconColorB, staticOP3F, height, point2x, point2z, patternRepeatHorizontalPositive, patternLocationYNegative);
     }
 
-    private static void addVertex(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, float heightOrTotalHeight, float xPos, float zPos, float patternRepeat, float patternRepeat2) {
-        vertexConsumer.vertex(matrix4f, xPos, heightOrTotalHeight, zPos).color(beaconColorR, beaconColorG, beaconColorB, staticOP3F).uv(patternRepeat, patternRepeat2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void addVertex(PoseStack.Pose pose, Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer vertexConsumer, float beaconColorR, float beaconColorG, float beaconColorB, float staticOP3F, float heightOrTotalHeight, float xPos, float zPos, float patternRepeat, float patternRepeat2) {
+        vertexConsumer.vertex(matrix4f, xPos, heightOrTotalHeight, zPos).color(beaconColorR, beaconColorG, beaconColorB, staticOP3F).uv(patternRepeat, patternRepeat2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(pose, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     static int scale = 4;

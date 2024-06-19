@@ -128,11 +128,11 @@ public class FluidIngredient {
         return BuiltInRegistries.FLUID.getId(fluidStack.getFluid());
     }
 
-    public final void toNetwork(FriendlyByteBuf p_43924_) {
+    public final void toNetwork(RegistryFriendlyByteBuf p_43924_) {
         write(p_43924_, this);
     }
 
-    public static void write(FriendlyByteBuf buffer, FluidIngredient ingredient) {
+    public static void write(RegistryFriendlyByteBuf buffer, FluidIngredient ingredient) {
         VEFluidIngredientSerializer serializer = ingredient.getSerializer();
         serializer.write(buffer, ingredient);
     }
@@ -189,11 +189,11 @@ public class FluidIngredient {
         return fromValues(Stream.of(new FluidIngredient.TagValue(key, amount)));
     }
 
-    public static FluidIngredient fromNetwork(FriendlyByteBuf byteBuf) {
+    public static FluidIngredient fromNetwork(RegistryFriendlyByteBuf byteBuf) {
         var size = byteBuf.readVarInt();
         VEFluidIngredientSerializer serializer = VEFluidIngredientSerializer.INSTANCE;
         if (size == -1) return serializer.parse(byteBuf);
-        FluidStack stack = FluidStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) byteBuf);
+        FluidStack stack = FluidStack.STREAM_CODEC.decode(byteBuf);
         return fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(stack, stack.getAmount(), stack.getFluid())).limit(size));
     }
 

@@ -6,6 +6,8 @@ import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -16,8 +18,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -38,25 +41,26 @@ public class CombustionMultitool extends Multitool {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-        if (ForgeCapabilities.FLUID_HANDLER_ITEM == null) return; // sanity check
-        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-            FluidStack fluidStack = fluid.getFluidInTank(0).copy();
-            tooltip.add(
-                    TextUtil.translateString(fluidStack.getHoverName()).copy()
-                            .append(": "
-                                    + NumberUtil.formatNumber(fluidStack.getAmount())
-                                    + " mB / "
-                                    + NumberUtil.formatNumber(this.TANK_CAPACITY)
-                                    + " mB"
-                            )
-            );
-            if (itemStack.getTag() != null) {
-                tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
-                        .append(": " + NumberUtil.formatNumber(itemStack.getTag().getInt("energy")))
-                );
-            }
-        });
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+
+        IEnergyStorage energyStorage = itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+
+        if (energyStorage == null || fluidHandler == null) {
+            return;
+        }
+        FluidStack fluidStack = fluidHandler.getFluidInTank(0).copy();
+        tooltip.add(
+                TextUtil.translateString(fluidStack.getHoverName().getString()).copy()
+                        .append(": "
+                                + NumberUtil.formatNumber(fluidStack.getAmount())
+                                + " mB / "
+                                + NumberUtil.formatNumber(this.TANK_CAPACITY)
+                                + " mB"
+                        )
+        );
+        tooltip.add(TextUtil.translateString("text.voluminousenergy.energy").copy()
+                .append(": " + NumberUtil.formatNumber(energyStorage.getEnergyStored())));
     }
 
     @Override
@@ -66,29 +70,14 @@ public class CombustionMultitool extends Multitool {
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-        AtomicInteger fluidInTank = new AtomicInteger(0);
-        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-            FluidStack fluidStack = fluid.getFluidInTank(0).copy();
-            fluidInTank.set(fluidStack.getAmount());
-        });
-
-        return (int) Math.round(13 * (fluidInTank.get() / (double) this.TANK_CAPACITY));
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return (int) Math.round(13 * (fluidHandler.getFluidInTank(0).getAmount() / (double) this.TANK_CAPACITY));
     }
 
     @Override
     public int getBarColor(ItemStack itemStack) {
-        AtomicReference<Float> ratio = new AtomicReference<>(0F);
-        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-            ratio.set(fluid.getFluidInTank(0).getAmount() / (float) this.TANK_CAPACITY);
-        });
-        return Mth.hsvToRgb(ratio.get() / 3.0F, 1.0F, 1.0F);
-    }
-
-    // This should initialize the FluidHandler and also allow one to get the fluidHandler from this item
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundTag nbt) {
-        return new FluidHandlerItemStack(itemStack, this.TANK_CAPACITY);
+        IFluidHandler fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        return Mth.hsvToRgb(fluidHandler.getFluidInTank(0).getAmount() / 3.0F, 1.0F, 1.0F);
     }
 
     /* THIS IS FOR DAMAGE
@@ -97,24 +86,32 @@ public class CombustionMultitool extends Multitool {
      */
 
     @Override
-    public void setDamage(ItemStack stack, int damage) { // I don't think this fires
-        CompoundTag tag = stack.getTag();
+    public void setDamage(ItemStack stack, int damage) {
 
-        if (tag == null) return;
-        int usesLeftUntilRefuel = tag.getInt("energy");
+        Integer damageComponent = stack.get(DataComponents.DAMAGE);
+        if (damageComponent == null) return;
+
+        IEnergyStorage energyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+
+        if (energyStorage == null || fluidHandler == null) {
+            return;
+        }
+
+        int usesLeftUntilRefuel = energyStorage.getEnergyStored();
         if (usesLeftUntilRefuel < 1) {
-            AtomicInteger volumetricEnergy = new AtomicInteger(0);
-            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-                FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (!itemFluid.isEmpty() && isCombustibleFuel(itemFluid.getRawFluid())) {
-                    if (fluid.getFluidInTank(0).getAmount() > 50) {
-                        fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
-                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid()) / 50);
-                    }
+            int volumetricEnergy = 0;
+            FluidStack itemFluid = fluidHandler.getFluidInTank(0).copy();
+            if (!itemFluid.isEmpty() && isCombustibleFuel(itemFluid.getFluid())) {
+                if (fluidHandler.getFluidInTank(0).getAmount() > 50) {
+                    fluidHandler.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                    //volumetricEnergy.set(CombustionGeneratorFuelRecipe.rawFluidWithVolumetricEnergy.getOrDefault(fluid.getFluidInTank(0).getRawFluid(), 0)/50);
+                    volumetricEnergy = getVolumetricEnergyFromFluid(fluidHandler.getFluidInTank(0).getFluid()) / 50;
                 }
-            });
-            stack.getOrCreateTag().putInt("energy", volumetricEnergy.get()); // Resets the energy tag
+            }
+
+            energyStorage.extractEnergy(energyStorage.getEnergyStored(),false);
+            energyStorage.receiveEnergy(volumetricEnergy,false);
         }
     }
 

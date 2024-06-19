@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.recipe.IndustrialBlastingRecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -16,6 +15,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -102,7 +102,7 @@ public class IndustrialBlastingCategory implements IRecipeCategory<IndustrialBla
         for (Fluid fluid : recipe.getHotEnoughFluids()) {
             hotEnoughFluidStacks.add(new FluidStack(fluid, Config.BLAST_FURNACE_HEAT_SOURCE_CONSUMPTION.get()));
         }
-        heatFluidAcceptor.addIngredients(ForgeTypes.FLUID_STACK, hotEnoughFluidStacks);
+        heatFluidAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, hotEnoughFluidStacks);
 
         // Output
         ItemStack resultStack = recipe.getResult(0).copy();

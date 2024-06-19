@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.DimensionalLaserRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -105,7 +105,7 @@ public class DimensionalLasingCategory implements IRecipeCategory<DimensionalLas
     }
 
     public void ingredientHandler(DimensionalLaserRecipe recipe, IIngredientAcceptor fluidOutputAcceptor) {
-        fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(recipe.getFluidClimateSpawn().getFluid(), 1000));
+        fluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(recipe.getFluidClimateSpawn().getFluid(), 1000));
     }
 
     @Override

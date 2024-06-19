@@ -1,11 +1,11 @@
 package com.veteam.voluminousenergy.persistence;
 
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class ChunkFluid {
         while (compoundTag.contains("SCF_" + i)) {
             SingleChunkFluid singleChunkFluid =
                     new SingleChunkFluid(
-                            ForgeRegistries.FLUIDS.getValue(new ResourceLocation(compoundTag.getString("SCF_" + i)))
+                            BuiltInRegistries.FLUID.get(new ResourceLocation(compoundTag.getString("SCF_" + i)))
                             , compoundTag.getInt("FS_" + i));
             this.chunkFluidList.add(singleChunkFluid);
             i++;

@@ -8,7 +8,6 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -16,18 +15,19 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             AtomicReference<ArrayList<ItemStack>> atomicPlankStacks = new AtomicReference<>(new ArrayList<>());
 
             // Calculate Logs and Planks based on registry
-            ForgeRegistries.ITEMS.getValues().parallelStream().forEach(registeredItem -> {
+            BuiltInRegistries.ITEM.stream().forEach(registeredItem -> {
                 if (RegistryLookups.lookupItem(registeredItem).getPath().contains("log")) {
                     atomicLogStacks.get().add(new ItemStack(registeredItem, Config.SAWMILL_LOG_CONSUMPTION_RATE.get()));
                 } else if (RegistryLookups.lookupItem(registeredItem).getPath().contains("plank")) {
@@ -109,16 +109,18 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
 
             // Secondary Output
             ResourceLocation secondOutputItemResourceLocation = new ResourceLocation(Config.SAWMILL_SECOND_OUTPUT_RESOURCE_LOCATION.get());
-            Item secondOutput = ForgeRegistries.ITEMS.getValue(secondOutputItemResourceLocation);
-            if (secondOutput != null) {
+
+            if (BuiltInRegistries.ITEM.containsKey(secondOutputItemResourceLocation)) {
+                Item secondOutput = BuiltInRegistries.ITEM.get(secondOutputItemResourceLocation);
                 secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(secondOutput, Config.SAWMILL_SECOND_OUTPUT_COUNT.get()));
             }
 
             // Fluid Output
             ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
-            Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(fluidLocation);
-            if (outputFluid != null) {
-                fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
+
+            if (BuiltInRegistries.FLUID.containsKey(fluidLocation)) {
+                Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
+                fluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
             }
         } else if (!recipe.isLogRecipe()) {
             // Primary Input (Typically logs)
@@ -134,7 +136,7 @@ public class SawmillCategory implements IRecipeCategory<SawmillRecipe> {
             secondaryItemOutputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, secondOutputStack);
 
             // Fluid Output
-            fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, recipe.getOutputFluid(0).copy());
+            fluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluid(0).copy());
         }
 
     }

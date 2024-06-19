@@ -7,18 +7,17 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
 import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
-import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -100,7 +99,7 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
         slotDrawable.draw(matrixStack, 17, 35); // Fuel fluid
         slotDrawable.draw(matrixStack, 85, 35); // Oxidizer fluid
 
-        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(ForgeTypes.FLUID_STACK);
+        Optional<FluidStack> oxiStack = slotsView.getSlotViews(RecipeIngredientRole.CATALYST).get(0).getDisplayedIngredient(NeoForgeTypes.FLUID_STACK);
 
         if (oxiStack.isPresent()) {
 
@@ -147,8 +146,8 @@ public class CombustionCategory implements IRecipeCategory<CombustionGeneratorRe
                                   IIngredientAcceptor oxidizerAcceptor) {
 
         List<FluidStack> inputList = new ArrayList<>(Arrays.asList(recipe.getFluidIngredient(0).getFluids()));
-        fuelAcceptor.addIngredients(ForgeTypes.FLUID_STACK, inputList);
-        oxidizerAcceptor.addIngredients(ForgeTypes.FLUID_STACK,
+        fuelAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK, inputList);
+        oxidizerAcceptor.addIngredients(NeoForgeTypes.FLUID_STACK,
                 OxidizerFluidsData.getAllOxidizerFluids().stream().map(f -> new FluidStack(f,250)).toList());
     }
 

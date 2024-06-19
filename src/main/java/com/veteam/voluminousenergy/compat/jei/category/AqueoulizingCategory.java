@@ -7,7 +7,6 @@ import com.veteam.voluminousenergy.compat.jei.VoluminousEnergyPlugin;
 import com.veteam.voluminousenergy.recipe.AqueoulizerRecipe;
 import com.veteam.voluminousenergy.util.TextUtil;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -91,10 +91,10 @@ public class AqueoulizingCategory implements IRecipeCategory<AqueoulizerRecipe> 
         // INPUT
         itemInputAcceptor.addIngredient(VanillaTypes.ITEM_STACK, List.of(recipe.getIngredient(0).getItems()).get(0));
 
-        fluidInputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()).get(0));
+        fluidInputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidIngredient(0).getFluids()).get(0));
 
         // OUTPUT
-        fluidOutputAcceptor.addIngredient(ForgeTypes.FLUID_STACK, Collections.singletonList(recipe.getOutputFluid(0)).get(0));
+        fluidOutputAcceptor.addIngredient(NeoForgeTypes.FLUID_STACK, Collections.singletonList(recipe.getOutputFluid(0)).get(0));
     }
 
     @Override

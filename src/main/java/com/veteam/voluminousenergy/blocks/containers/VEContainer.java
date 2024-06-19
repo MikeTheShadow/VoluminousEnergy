@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -49,8 +48,11 @@ public abstract class VEContainer extends AbstractContainerMenu {
         this.block = block;
         this.access = ContainerLevelAccess.create(this.tileEntity.getLevel(), this.tileEntity.getBlockPos());
         this.world = world;
+
         // we add slots to GUI here
-        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(this::addSlotsToGUI);
+        if(tileEntity.getInventory() != null) {
+            this.addSlotsToGUI(tileEntity.getInventoryHandler());
+        }
 
         // layout player inventory slots here
         layoutPlayerInventorySlots();
@@ -112,7 +114,8 @@ public abstract class VEContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return tileEntity.getCapability(ForgeCapabilities.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        VEEnergyStorage storage = tileEntity.getEnergy();
+        return storage == null ? 0 : tileEntity.getEnergy().getEnergyStored();
     }
 
     public int powerScreen(int px) {
@@ -265,7 +268,7 @@ public abstract class VEContainer extends AbstractContainerMenu {
                 } else {
                     isInput = true;
                 }
-                if (slotId != currentPos && isInput && !itemInSlot.isEmpty() && ItemStack.isSameItemSameTags(stackToMove, itemInSlot)) {
+                if (slotId != currentPos && isInput && !itemInSlot.isEmpty() && ItemStack.isSameItemSameComponents(stackToMove, itemInSlot)) {
                     int j = itemInSlot.getCount() + stackToMove.getCount();
                     int maxSize = Math.min(slot.getMaxStackSize(), stackToMove.getMaxStackSize());
                     if (j <= maxSize) {
