@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class CompressedAir {
     public static final ResourceLocation COMPRESSED_AIR_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/compressed_air_still");
@@ -28,22 +28,22 @@ public class CompressedAir {
     public static Item COMPRESSED_AIR_BUCKET;
 
     public static FlowingFluid CompressedAirFluid() {
-        COMPRESSED_AIR = new ForgeFlowingFluid.Source(CompressedAir.properties);
+        COMPRESSED_AIR = new BaseFlowingFluid.Source(CompressedAir.properties);
         return COMPRESSED_AIR;
     }
 
     public static FlowingFluid FlowingCompressedAirFluid() {
-        FLOWING_COMPRESSED_AIR = new ForgeFlowingFluid.Flowing(CompressedAir.properties);
+        FLOWING_COMPRESSED_AIR = new BaseFlowingFluid.Flowing(CompressedAir.properties);
         return FLOWING_COMPRESSED_AIR;
     }
 
     public static VEFlowingFluidBlock FlowingCompressedAirBlock() {
-        COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(() -> COMPRESSED_AIR, stdProp);
+        COMPRESSED_AIR_BLOCK = new VEFlowingFluidBlock(COMPRESSED_AIR, stdProp);
         return COMPRESSED_AIR_BLOCK;
     }
 
     public static Item CompressedAirBucket() {
-        COMPRESSED_AIR_BUCKET = new BucketItem(() -> COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        COMPRESSED_AIR_BUCKET = new BucketItem(COMPRESSED_AIR, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return COMPRESSED_AIR_BUCKET;
     }
 
@@ -70,6 +70,6 @@ public class CompressedAir {
             COMPRESSED_AIR_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> COMPRESSED_AIR_FLUID_TYPE, () -> COMPRESSED_AIR, () -> FLOWING_COMPRESSED_AIR)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> COMPRESSED_AIR_FLUID_TYPE, () -> COMPRESSED_AIR, () -> FLOWING_COMPRESSED_AIR)
             .block(() -> COMPRESSED_AIR_BLOCK).bucket(() -> COMPRESSED_AIR_BUCKET);
 }

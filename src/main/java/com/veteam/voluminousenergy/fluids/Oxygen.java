@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Oxygen {
     public static final ResourceLocation OXYGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/oxygen_still");
@@ -38,12 +38,12 @@ public class Oxygen {
     }
 
     public static VEFlowingFluidBlock FlowingOxygenBlock() {
-        OXYGEN_BLOCK = new VEFlowingFluidBlock(() -> OXYGEN, stdProp);
+        OXYGEN_BLOCK = new VEFlowingFluidBlock(OXYGEN, stdProp);
         return OXYGEN_BLOCK;
     }
 
     public static Item OxygenBucket() {
-        OXYGEN_BUCKET = new BucketItem(() -> OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        OXYGEN_BUCKET = new BucketItem(OXYGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return OXYGEN_BUCKET;
     }
 
@@ -69,6 +69,6 @@ public class Oxygen {
             OXYGEN_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> OXYGEN_FLUID_TYPE, () -> OXYGEN, () -> FLOWING_OXYGEN)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> OXYGEN_FLUID_TYPE, () -> OXYGEN, () -> FLOWING_OXYGEN)
             .block(() -> OXYGEN_BLOCK).bucket(() -> OXYGEN_BUCKET);
 }

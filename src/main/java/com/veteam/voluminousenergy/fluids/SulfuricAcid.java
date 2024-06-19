@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class SulfuricAcid {
     public static final ResourceLocation SULFURIC_ACID_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/sulfuric_acid_still");
@@ -28,22 +28,22 @@ public class SulfuricAcid {
     public static Item SULFURIC_ACID_BUCKET;
 
     public static FlowingFluid SulfuricAcidFluid() {
-        SULFURIC_ACID = new ForgeFlowingFluid.Source(SulfuricAcid.properties);
+        SULFURIC_ACID = new BaseFlowingFluid.Source(SulfuricAcid.properties);
         return SULFURIC_ACID;
     }
 
     public static FlowingFluid FlowingSulfuricAcidFluid() {
-        FLOWING_SULFURIC_ACID = new ForgeFlowingFluid.Flowing(SulfuricAcid.properties);
+        FLOWING_SULFURIC_ACID = new BaseFlowingFluid.Flowing(SulfuricAcid.properties);
         return FLOWING_SULFURIC_ACID;
     }
 
     public static AcidFlowingFluidBlock FlowingSulfuricAcidBlock() {
-        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(() -> SULFURIC_ACID, stdProp);
+        SULFURIC_ACID_BLOCK = new AcidFlowingFluidBlock(SULFURIC_ACID, stdProp);
         return SULFURIC_ACID_BLOCK;
     }
 
     public static Item SulfuricAcidBucket() {
-        SULFURIC_ACID_BUCKET = new BucketItem(() -> SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        SULFURIC_ACID_BUCKET = new BucketItem(SULFURIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return SULFURIC_ACID_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class SulfuricAcid {
             SULFURIC_ACID_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> SULFURIC_ACID_FLUID_TYPE, () -> SULFURIC_ACID, () -> FLOWING_SULFURIC_ACID)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> SULFURIC_ACID_FLUID_TYPE, () -> SULFURIC_ACID, () -> FLOWING_SULFURIC_ACID)
             .block(() -> SULFURIC_ACID_BLOCK).bucket(() -> SULFURIC_ACID_BUCKET);
 
 }

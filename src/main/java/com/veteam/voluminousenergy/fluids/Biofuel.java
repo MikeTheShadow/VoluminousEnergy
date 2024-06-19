@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Biofuel {
     public static final ResourceLocation BIOFUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/biofuel_still");
@@ -28,22 +28,22 @@ public class Biofuel {
     public static Item BIOFUEL_BUCKET;
 
     public static FlowingFluid BiofuelFluid() {
-        BIOFUEL = new ForgeFlowingFluid.Source(Biofuel.properties);
+        BIOFUEL = new BaseFlowingFluid.Source(Biofuel.properties);
         return BIOFUEL;
     }
 
     public static FlowingFluid FlowingBiofuelFluid() {
-        FLOWING_BIOFUEL = new ForgeFlowingFluid.Flowing(Biofuel.properties);
+        FLOWING_BIOFUEL = new BaseFlowingFluid.Flowing(Biofuel.properties);
         return FLOWING_BIOFUEL;
     }
 
     public static VEFlowingFluidBlock FlowingBiofuelBlock() {
-        BIOFUEL_BLOCK = new VEFlowingFluidBlock(() -> BIOFUEL, stdProp);
+        BIOFUEL_BLOCK = new VEFlowingFluidBlock(BIOFUEL, stdProp);
         return BIOFUEL_BLOCK;
     }
 
     public static Item BiofuelBucket() {
-        BIOFUEL_BUCKET = new BucketItem(() -> BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        BIOFUEL_BUCKET = new BucketItem(BIOFUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return BIOFUEL_BUCKET;
     }
 
@@ -69,7 +69,7 @@ public class Biofuel {
             BIOFUEL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> BIOFUEL_FLUID_TYPE, () -> BIOFUEL, () -> FLOWING_BIOFUEL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> BIOFUEL_FLUID_TYPE, () -> BIOFUEL, () -> FLOWING_BIOFUEL)
             .block(() -> BIOFUEL_BLOCK).bucket(() -> BIOFUEL_BUCKET);
 }
 

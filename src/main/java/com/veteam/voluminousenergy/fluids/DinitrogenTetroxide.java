@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class DinitrogenTetroxide {
     public static final ResourceLocation DINITROGEN_TETROXIDE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/dinitrogen_tetroxide_still");
@@ -28,22 +28,22 @@ public class DinitrogenTetroxide {
     public static Item DINITROGEN_TETROXIDE_BUCKET;
 
     public static FlowingFluid DinitrogenTetroxideFluid() {
-        DINITROGEN_TETROXIDE = new ForgeFlowingFluid.Source(DinitrogenTetroxide.properties);
+        DINITROGEN_TETROXIDE = new BaseFlowingFluid.Source(DinitrogenTetroxide.properties);
         return DINITROGEN_TETROXIDE;
     }
 
     public static FlowingFluid FlowingDinitrogenTetroxideFluid() {
-        FLOWING_DINITROGEN_TETROXIDE = new ForgeFlowingFluid.Flowing(DinitrogenTetroxide.properties);
+        FLOWING_DINITROGEN_TETROXIDE = new BaseFlowingFluid.Flowing(DinitrogenTetroxide.properties);
         return FLOWING_DINITROGEN_TETROXIDE;
     }
 
     public static VEFlowingFluidBlock FlowingDinitrogenTetroxideBlock() {
-        DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(() -> DINITROGEN_TETROXIDE, stdProp);
+        DINITROGEN_TETROXIDE_BLOCK = new VEFlowingFluidBlock(DINITROGEN_TETROXIDE, stdProp);
         return DINITROGEN_TETROXIDE_BLOCK;
     }
 
     public static Item DinitrogenTetroxideBucket() {
-        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(() -> DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        DINITROGEN_TETROXIDE_BUCKET = new BucketItem(DINITROGEN_TETROXIDE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return DINITROGEN_TETROXIDE_BUCKET;
     }
 
@@ -70,6 +70,6 @@ public class DinitrogenTetroxide {
             DINITROGEN_TETROXIDE_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> DINITROGEN_TETROXIDE_FLUID_TYPE, () -> DINITROGEN_TETROXIDE, () -> FLOWING_DINITROGEN_TETROXIDE)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> DINITROGEN_TETROXIDE_FLUID_TYPE, () -> DINITROGEN_TETROXIDE, () -> FLOWING_DINITROGEN_TETROXIDE)
             .block(() -> DINITROGEN_TETROXIDE_BLOCK).bucket(() -> DINITROGEN_TETROXIDE_BUCKET);
 }

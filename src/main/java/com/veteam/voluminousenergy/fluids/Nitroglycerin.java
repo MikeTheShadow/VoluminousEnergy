@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Nitroglycerin {
     public static final ResourceLocation NITROGLYCERIN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitroglycerin_still");
@@ -28,22 +28,22 @@ public class Nitroglycerin {
     public static Item NITROGLYCERIN_BUCKET;
 
     public static FlowingFluid NitroglycerinFluid() {
-        NITROGLYCERIN = new ForgeFlowingFluid.Source(Nitroglycerin.properties);
+        NITROGLYCERIN = new BaseFlowingFluid.Source(Nitroglycerin.properties);
         return NITROGLYCERIN;
     }
 
     public static FlowingFluid FlowingNitroglycerinFluid() {
-        FLOWING_NITROGLYCERIN = new ForgeFlowingFluid.Flowing(Nitroglycerin.properties);
+        FLOWING_NITROGLYCERIN = new BaseFlowingFluid.Flowing(Nitroglycerin.properties);
         return FLOWING_NITROGLYCERIN;
     }
 
     public static VEFlowingFluidBlock FlowingNitroglycerinBlock() {
-        NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(() -> NITROGLYCERIN, stdProp);
+        NITROGLYCERIN_BLOCK = new VEFlowingFluidBlock(NITROGLYCERIN, stdProp);
         return NITROGLYCERIN_BLOCK;
     }
 
     public static Item NitroglycerinBucket() {
-        NITROGLYCERIN_BUCKET = new BucketItem(() -> NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NITROGLYCERIN_BUCKET = new BucketItem(NITROGLYCERIN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGLYCERIN_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class Nitroglycerin {
             NITROGLYCERIN_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> NITROGLYCERIN_FLUID_TYPE, () -> NITROGLYCERIN, () -> FLOWING_NITROGLYCERIN)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> NITROGLYCERIN_FLUID_TYPE, () -> NITROGLYCERIN, () -> FLOWING_NITROGLYCERIN)
             .block(() -> NITROGLYCERIN_BLOCK).bucket(() -> NITROGLYCERIN_BUCKET);
 }
 

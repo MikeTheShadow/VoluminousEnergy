@@ -20,11 +20,11 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 import java.util.Map;
 
-public class VEFlowingGasFluid extends ForgeFlowingFluid {
+public class VEFlowingGasFluid extends BaseFlowingFluid {
     private final int flowWidth;
     // DANGER
     public static final BooleanProperty FALLING = BlockStateProperties.FALLING;

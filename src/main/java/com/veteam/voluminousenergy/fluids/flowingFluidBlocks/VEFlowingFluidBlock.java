@@ -10,13 +10,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.function.Supplier;
-
 public class VEFlowingFluidBlock extends LiquidBlock {
     private byte check = 0;
 
-    public VEFlowingFluidBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
-        super(supplier, properties);
+    public VEFlowingFluidBlock(FlowingFluid flowingFluid, Properties properties) {
+        super(flowingFluid, properties);
     }
 
     @Override

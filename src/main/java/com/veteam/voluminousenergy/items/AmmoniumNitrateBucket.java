@@ -26,8 +26,8 @@ import java.util.function.Supplier;
 
 
 public class AmmoniumNitrateBucket extends BucketItem {
-    public AmmoniumNitrateBucket(Supplier<? extends Fluid> fluidSupplier, Properties properties) {
-        super(fluidSupplier, properties);
+    public AmmoniumNitrateBucket(Fluid fluid, Properties properties) {
+        super(fluid, properties);
     }
 
     @Override

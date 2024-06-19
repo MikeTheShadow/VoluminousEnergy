@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Treethanol {
     public static final ResourceLocation TREETHANOL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/treethanol_still");
@@ -28,22 +28,22 @@ public class Treethanol {
     public static Item TREETHANOL_BUCKET;
 
     public static FlowingFluid TreethanolFluid() {
-        TREETHANOL = new ForgeFlowingFluid.Source(Treethanol.properties);
+        TREETHANOL = new BaseFlowingFluid.Source(Treethanol.properties);
         return TREETHANOL;
     }
 
     public static FlowingFluid FlowingTreethanolFluid() {
-        FLOWING_TREETHANOL = new ForgeFlowingFluid.Flowing(Treethanol.properties);
+        FLOWING_TREETHANOL = new BaseFlowingFluid.Flowing(Treethanol.properties);
         return FLOWING_TREETHANOL;
     }
 
     public static VEFlowingFluidBlock FlowingTreethanolBlock() {
-        TREETHANOL_BLOCK = new VEFlowingFluidBlock(() -> TREETHANOL, stdProp);
+        TREETHANOL_BLOCK = new VEFlowingFluidBlock(TREETHANOL, stdProp);
         return TREETHANOL_BLOCK;
     }
 
     public static Item TreethanolBucket() {
-        TREETHANOL_BUCKET = new BucketItem(() -> TREETHANOL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        TREETHANOL_BUCKET = new BucketItem(TREETHANOL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return TREETHANOL_BUCKET;
     }
 
@@ -69,6 +69,6 @@ public class Treethanol {
             TREETHANOL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> TREETHANOL_FLUID_TYPE, () -> TREETHANOL, () -> FLOWING_TREETHANOL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> TREETHANOL_FLUID_TYPE, () -> TREETHANOL, () -> FLOWING_TREETHANOL)
             .block(() -> TREETHANOL_BLOCK).bucket(() -> TREETHANOL_BUCKET);
 }

@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Nitrogen {
     public static final ResourceLocation NITROGEN_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/nitrogen_still");
@@ -39,12 +39,12 @@ public class Nitrogen {
     }
 
     public static VEFlowingFluidBlock FlowingNitrogenBlock() {
-        NITROGEN_BLOCK = new VEFlowingFluidBlock(() -> NITROGEN, stdProp);
+        NITROGEN_BLOCK = new VEFlowingFluidBlock(NITROGEN, stdProp);
         return NITROGEN_BLOCK;
     }
 
     public static Item NitrogenBucket() {
-        NITROGEN_BUCKET = new BucketItem(() -> NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NITROGEN_BUCKET = new BucketItem(NITROGEN, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NITROGEN_BUCKET;
     }
 
@@ -71,6 +71,6 @@ public class Nitrogen {
             NITROGEN_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> NITROGEN_FLUID_TYPE, () -> NITROGEN, () -> FLOWING_NITROGEN)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> NITROGEN_FLUID_TYPE, () -> NITROGEN, () -> FLOWING_NITROGEN)
             .block(() -> NITROGEN_BLOCK).bucket(() -> NITROGEN_BUCKET);
 }

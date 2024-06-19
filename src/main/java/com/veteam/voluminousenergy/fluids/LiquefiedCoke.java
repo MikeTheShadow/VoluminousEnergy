@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class LiquefiedCoke {
     public static final ResourceLocation LIQUEFIED_COKE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/liquefied_coke_still");
@@ -28,22 +28,22 @@ public class LiquefiedCoke {
     public static Item LIQUEFIED_COKE_BUCKET;
 
     public static FlowingFluid LiquefiedCokeFluid() {
-        LIQUEFIED_COKE = new ForgeFlowingFluid.Source(LiquefiedCoke.properties);
+        LIQUEFIED_COKE = new BaseFlowingFluid.Source(LiquefiedCoke.properties);
         return LIQUEFIED_COKE;
     }
 
     public static FlowingFluid FlowingLiquefiedCokeFluid() {
-        FLOWING_LIQUEFIED_COKE = new ForgeFlowingFluid.Flowing(LiquefiedCoke.properties);
+        FLOWING_LIQUEFIED_COKE = new BaseFlowingFluid.Flowing(LiquefiedCoke.properties);
         return FLOWING_LIQUEFIED_COKE;
     }
 
     public static VEFlowingFluidBlock FlowingLiquefiedCokeBlock() {
-        LIQUEFIED_COKE_BLOCK = new VEFlowingFluidBlock(() -> LIQUEFIED_COKE, stdProp);
+        LIQUEFIED_COKE_BLOCK = new VEFlowingFluidBlock(LIQUEFIED_COKE, stdProp);
         return LIQUEFIED_COKE_BLOCK;
     }
 
     public static Item LiquefiedCokeBucket() {
-        LIQUEFIED_COKE_BUCKET = new BucketItem(() -> LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        LIQUEFIED_COKE_BUCKET = new BucketItem(LIQUEFIED_COKE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return LIQUEFIED_COKE_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class LiquefiedCoke {
             LIQUEFIED_COKE_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> LIQUEFIED_COKE_FLUID_TYPE, () -> LIQUEFIED_COKE, () -> FLOWING_LIQUEFIED_COKE)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> LIQUEFIED_COKE_FLUID_TYPE, () -> LIQUEFIED_COKE, () -> FLOWING_LIQUEFIED_COKE)
             .block(() -> LIQUEFIED_COKE_BLOCK).bucket(() -> LIQUEFIED_COKE_BUCKET);
 }
 

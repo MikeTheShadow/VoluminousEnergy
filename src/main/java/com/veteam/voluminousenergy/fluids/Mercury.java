@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Mercury {
     public static final ResourceLocation MERCURY_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/mercury_still");
@@ -28,22 +28,22 @@ public class Mercury {
     public static Item MERCURY_BUCKET;
 
     public static FlowingFluid MercuryFluid() {
-        MERCURY = new ForgeFlowingFluid.Source(Mercury.properties);
+        MERCURY = new BaseFlowingFluid.Source(Mercury.properties);
         return MERCURY;
     }
 
     public static FlowingFluid FlowingMercuryFluid() {
-        FLOWING_MERCURY = new ForgeFlowingFluid.Flowing(Mercury.properties);
+        FLOWING_MERCURY = new BaseFlowingFluid.Flowing(Mercury.properties);
         return FLOWING_MERCURY;
     }
 
     public static VEFlowingFluidBlock FlowingMercuryBlock() {
-        MERCURY_BLOCK = new VEFlowingFluidBlock(() -> MERCURY, stdProp);
+        MERCURY_BLOCK = new VEFlowingFluidBlock(MERCURY, stdProp);
         return MERCURY_BLOCK;
     }
 
     public static Item MercuryBucket() {
-        MERCURY_BUCKET = new BucketItem(() -> MERCURY, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        MERCURY_BUCKET = new BucketItem(MERCURY, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return MERCURY_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class Mercury {
             MERCURY_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> MERCURY_FLUID_TYPE, () -> MERCURY, () -> FLOWING_MERCURY)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> MERCURY_FLUID_TYPE, () -> MERCURY, () -> FLOWING_MERCURY)
             .block(() -> MERCURY_BLOCK).bucket(() -> MERCURY_BUCKET);
 
 }

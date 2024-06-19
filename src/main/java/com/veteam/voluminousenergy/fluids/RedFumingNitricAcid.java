@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class RedFumingNitricAcid {
     public static final ResourceLocation RFNA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/rfna_still");
@@ -28,22 +28,22 @@ public class RedFumingNitricAcid {
     public static Item RED_FUMING_NITRIC_ACID_BUCKET;
 
     public static FlowingFluid RedFumingNitricAcidFluid() {
-        RED_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Source(RedFumingNitricAcid.properties);
+        RED_FUMING_NITRIC_ACID = new BaseFlowingFluid.Source(RedFumingNitricAcid.properties);
         return RED_FUMING_NITRIC_ACID;
     }
 
     public static FlowingFluid FlowingRedFumingNitricAcidFluid() {
-        FLOWING_RED_FUMING_NITRIC_ACID = new ForgeFlowingFluid.Flowing(RedFumingNitricAcid.properties);
+        FLOWING_RED_FUMING_NITRIC_ACID = new BaseFlowingFluid.Flowing(RedFumingNitricAcid.properties);
         return FLOWING_RED_FUMING_NITRIC_ACID;
     }
 
     public static FumingAcidFlowingFluidBlock FlowingRedFumingNitricAcidBlock() {
-        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(() -> RED_FUMING_NITRIC_ACID, stdProp);
+        RED_FUMING_NITRIC_ACID_BLOCK = new FumingAcidFlowingFluidBlock(RED_FUMING_NITRIC_ACID, stdProp);
         return RED_FUMING_NITRIC_ACID_BLOCK;
     }
 
     public static Item RedFumingNitricAcidBucket() {
-        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(() -> RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        RED_FUMING_NITRIC_ACID_BUCKET = new BucketItem(RED_FUMING_NITRIC_ACID, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return RED_FUMING_NITRIC_ACID_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class RedFumingNitricAcid {
             RFNA_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> RFNA_FLUID_TYPE, () -> RED_FUMING_NITRIC_ACID, () -> FLOWING_RED_FUMING_NITRIC_ACID)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> RFNA_FLUID_TYPE, () -> RED_FUMING_NITRIC_ACID, () -> FLOWING_RED_FUMING_NITRIC_ACID)
             .block(() -> RED_FUMING_NITRIC_ACID_BLOCK).bucket(() -> RED_FUMING_NITRIC_ACID_BUCKET);
 
 }

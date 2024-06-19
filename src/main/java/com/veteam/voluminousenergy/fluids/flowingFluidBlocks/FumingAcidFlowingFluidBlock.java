@@ -6,14 +6,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.neoforged.neoforge.api.distmarker.Dist;
-import net.neoforged.neoforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
 public class FumingAcidFlowingFluidBlock extends AcidFlowingFluidBlock {
-    public FumingAcidFlowingFluidBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
-        super(supplier, properties);
+    public FumingAcidFlowingFluidBlock(FlowingFluid flowingFluid, Properties properties) {
+        super(flowingFluid, properties);
     }
 
     @OnlyIn(Dist.CLIENT)

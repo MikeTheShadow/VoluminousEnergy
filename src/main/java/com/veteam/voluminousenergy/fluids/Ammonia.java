@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Ammonia {
     public static final ResourceLocation AMMONIA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/ammonia_still");
@@ -38,12 +38,12 @@ public class Ammonia {
     }
 
     public static VEFlowingFluidBlock FlowingAmmoniaBlock() {
-        AMMONIA_BLOCK = new VEFlowingFluidBlock(() -> AMMONIA, stdProp);
+        AMMONIA_BLOCK = new VEFlowingFluidBlock(AMMONIA, stdProp);
         return AMMONIA_BLOCK;
     }
 
     public static Item AmmoniaBucket() {
-        AMMONIA_BUCKET = new BucketItem(() -> AMMONIA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        AMMONIA_BUCKET = new BucketItem(AMMONIA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return AMMONIA_BUCKET;
     }
 
@@ -69,6 +69,6 @@ public class Ammonia {
             AMMONIA_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(() -> AMMONIA_FLUID_TYPE, () -> AMMONIA, () -> FLOWING_AMMONIA)
+    public static final BaseFlowingFluid.Properties PROPERTIES = new BaseFlowingFluid.Properties(() -> AMMONIA_FLUID_TYPE, () -> AMMONIA, () -> FLOWING_AMMONIA)
             .block(() -> AMMONIA_BLOCK).bucket(() -> AMMONIA_BUCKET);
 }

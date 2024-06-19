@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class LightFuel {
     public static final ResourceLocation LIGHT_FUEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/light_fuel_still");
@@ -38,12 +38,12 @@ public class LightFuel {
     }
 
     public static VEFlowingFluidBlock FlowingLightFuelBlock() {
-        LIGHT_FUEL_BLOCK = new VEFlowingFluidBlock(() -> LIGHT_FUEL, stdProp);
+        LIGHT_FUEL_BLOCK = new VEFlowingFluidBlock(LIGHT_FUEL, stdProp);
         return LIGHT_FUEL_BLOCK;
     }
 
     public static Item LightFuelBucket() {
-        LIGHT_FUEL_BUCKET = new BucketItem(() -> LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        LIGHT_FUEL_BUCKET = new BucketItem(LIGHT_FUEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return LIGHT_FUEL_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class LightFuel {
             LIGHT_FUEL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> LIGHT_FUEL_FLUID_TYPE, () -> LIGHT_FUEL, () -> FLOWING_LIGHT_FUEL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> LIGHT_FUEL_FLUID_TYPE, () -> LIGHT_FUEL, () -> FLOWING_LIGHT_FUEL)
             .block(() -> LIGHT_FUEL_BLOCK).bucket(() -> LIGHT_FUEL_BUCKET);
 }
 

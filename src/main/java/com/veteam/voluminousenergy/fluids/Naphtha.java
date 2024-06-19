@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Naphtha {
     public static final ResourceLocation NAPHTHA_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/naphtha_still");
@@ -29,22 +29,22 @@ public class Naphtha {
     public static Item NAPHTHA_BUCKET;
 
     public static FlowingFluid NaphthaFluid() {
-        NAPHTHA = new ForgeFlowingFluid.Source(Naphtha.properties);
+        NAPHTHA = new BaseFlowingFluid.Source(Naphtha.properties);
         return NAPHTHA;
     }
 
     public static FlowingFluid FlowingNaphthaFluid() {
-        FLOWING_NAPHTHA = new ForgeFlowingFluid.Flowing(Naphtha.properties);
+        FLOWING_NAPHTHA = new BaseFlowingFluid.Flowing(Naphtha.properties);
         return FLOWING_NAPHTHA;
     }
 
     public static VEFlowingFluidBlock FlowingNaphthaBlock() {
-        NAPHTHA_BLOCK = new VEFlowingFluidBlock(() -> NAPHTHA, stdProp);
+        NAPHTHA_BLOCK = new VEFlowingFluidBlock(NAPHTHA, stdProp);
         return NAPHTHA_BLOCK;
     }
 
     public static Item NaphthaBucket() {
-        NAPHTHA_BUCKET = new BucketItem(() -> NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        NAPHTHA_BUCKET = new BucketItem(NAPHTHA, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return NAPHTHA_BUCKET;
     }
 
@@ -71,6 +71,6 @@ public class Naphtha {
             NAPHTHA_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> NAPHTHA_FLUID_TYPE, () -> NAPHTHA, () -> FLOWING_NAPHTHA)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> NAPHTHA_FLUID_TYPE, () -> NAPHTHA, () -> FLOWING_NAPHTHA)
             .block(() -> NAPHTHA_BLOCK).bucket(() -> NAPHTHA_BUCKET);
 }

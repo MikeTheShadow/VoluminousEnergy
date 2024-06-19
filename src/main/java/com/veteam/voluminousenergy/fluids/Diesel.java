@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Diesel {
     public static final ResourceLocation DIESEL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/diesel_still");
@@ -28,22 +28,22 @@ public class Diesel {
     public static Item DIESEL_BUCKET;
 
     public static FlowingFluid DieselFluid() {
-        DIESEL = new ForgeFlowingFluid.Source(Diesel.properties);
+        DIESEL = new BaseFlowingFluid.Source(Diesel.properties);
         return DIESEL;
     }
 
     public static FlowingFluid FlowingDieselFluid() {
-        FLOWING_DIESEL = new ForgeFlowingFluid.Flowing(Diesel.properties);
+        FLOWING_DIESEL = new BaseFlowingFluid.Flowing(Diesel.properties);
         return FLOWING_DIESEL;
     }
 
     public static VEFlowingFluidBlock FlowingDieselBlock() {
-        DIESEL_BLOCK = new VEFlowingFluidBlock(() -> DIESEL, stdProp);
+        DIESEL_BLOCK = new VEFlowingFluidBlock(DIESEL, stdProp);
         return DIESEL_BLOCK;
     }
 
     public static Item DieselBucket() {
-        DIESEL_BUCKET = new BucketItem(() -> DIESEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        DIESEL_BUCKET = new BucketItem(DIESEL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return DIESEL_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class Diesel {
             DIESEL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> DIESEL_FLUID_TYPE, () -> DIESEL, () -> FLOWING_DIESEL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> DIESEL_FLUID_TYPE, () -> DIESEL, () -> FLOWING_DIESEL)
             .block(() -> DIESEL_BLOCK).bucket(() -> DIESEL_BUCKET);
 }
 

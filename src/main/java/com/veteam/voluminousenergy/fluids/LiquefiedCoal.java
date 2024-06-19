@@ -13,8 +13,8 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
 
 public class LiquefiedCoal {
     public static final ResourceLocation LIQUEFIED_COAL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/liquefied_coal_still");
@@ -28,22 +28,22 @@ public class LiquefiedCoal {
     public static Item LIQUEFIED_COAL_BUCKET;
 
     public static FlowingFluid LiquefiedCoalFluid() {
-        LIQUEFIED_COAL = new ForgeFlowingFluid.Source(LiquefiedCoal.properties);
+        LIQUEFIED_COAL = new BaseFlowingFluid.Source(LiquefiedCoal.properties);
         return LIQUEFIED_COAL;
     }
 
     public static FlowingFluid FlowingLiquefiedCoalFluid() {
-        FLOWING_LIQUEFIED_COAL = new ForgeFlowingFluid.Flowing(LiquefiedCoal.properties);
+        FLOWING_LIQUEFIED_COAL = new BaseFlowingFluid.Flowing(LiquefiedCoal.properties);
         return FLOWING_LIQUEFIED_COAL;
     }
 
     public static VEFlowingFluidBlock FlowingLiquefiedCoalBlock() {
-        LIQUEFIED_COAL_BLOCK = new VEFlowingFluidBlock(() -> LIQUEFIED_COAL, stdProp);
+        LIQUEFIED_COAL_BLOCK = new VEFlowingFluidBlock(LIQUEFIED_COAL, stdProp);
         return LIQUEFIED_COAL_BLOCK;
     }
 
     public static Item LiquefiedCoalBucket() {
-        LIQUEFIED_COAL_BUCKET = new BucketItem(() -> LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        LIQUEFIED_COAL_BUCKET = new BucketItem(LIQUEFIED_COAL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return LIQUEFIED_COAL_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class LiquefiedCoal {
             LIQUEFIED_COAL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> LIQUEFIED_COAL_FLUID_TYPE, () -> LIQUEFIED_COAL, () -> FLOWING_LIQUEFIED_COAL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> LIQUEFIED_COAL_FLUID_TYPE, () -> LIQUEFIED_COAL, () -> FLOWING_LIQUEFIED_COAL)
             .block(() -> LIQUEFIED_COAL_BLOCK).bucket(() -> LIQUEFIED_COAL_BUCKET);
 }
 

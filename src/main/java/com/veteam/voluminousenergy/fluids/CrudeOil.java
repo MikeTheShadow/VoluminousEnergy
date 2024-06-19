@@ -15,7 +15,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class CrudeOil {
     public static final ResourceLocation CRUDE_OIL_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/crude_oil_still");
@@ -34,17 +34,17 @@ public class CrudeOil {
     }
 
     public static FlowingFluid FlowingCrudeOilFluid() {
-        FLOWING_CRUDE_OIL = new ForgeFlowingFluid.Flowing(CrudeOil.properties);
+        FLOWING_CRUDE_OIL = new BaseFlowingFluid.Flowing(CrudeOil.properties);
         return FLOWING_CRUDE_OIL;
     }
 
     public static CrudeOilFlowingFluidBlock FlowingCrudeOilBlock() { // Create a custom block here for block modifications
-        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(() -> CRUDE_OIL, stdProp);
+        CRUDE_OIL_BLOCK = new CrudeOilFlowingFluidBlock(CRUDE_OIL, stdProp);
         return CRUDE_OIL_BLOCK;
     }
 
     public static Item CrudeOilBucket() {
-        CRUDE_OIL_BUCKET = new BucketItem(() -> CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        CRUDE_OIL_BUCKET = new BucketItem(CRUDE_OIL, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return CRUDE_OIL_BUCKET;
     }
 
@@ -72,6 +72,6 @@ public class CrudeOil {
             CRUDE_OIL_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> CRUDE_OIL_FLUID_TYPE, () -> CRUDE_OIL, () -> FLOWING_CRUDE_OIL)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> CRUDE_OIL_FLUID_TYPE, () -> CRUDE_OIL, () -> FLOWING_CRUDE_OIL)
             .block(() -> CRUDE_OIL_BLOCK).bucket(() -> CRUDE_OIL_BUCKET);
 }

@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
 public class Gasoline {
     public static final ResourceLocation GASOLINE_STILL_TEXTURE = new ResourceLocation(VoluminousEnergy.MODID, "block/fluids/gasoline_still");
@@ -28,22 +28,22 @@ public class Gasoline {
     public static Item GASOLINE_BUCKET;
 
     public static FlowingFluid GasolineFluid() {
-        GASOLINE = new ForgeFlowingFluid.Source(Gasoline.properties);
+        GASOLINE = new BaseFlowingFluid.Source(Gasoline.properties);
         return GASOLINE;
     }
 
     public static FlowingFluid FlowingGasolineFluid() {
-        FLOWING_GASOLINE = new ForgeFlowingFluid.Flowing(Gasoline.properties);
+        FLOWING_GASOLINE = new BaseFlowingFluid.Flowing(Gasoline.properties);
         return FLOWING_GASOLINE;
     }
 
     public static VEFlowingFluidBlock FlowingGasolineBlock() {
-        GASOLINE_BLOCK = new VEFlowingFluidBlock(() -> GASOLINE, stdProp);
+        GASOLINE_BLOCK = new VEFlowingFluidBlock(GASOLINE, stdProp);
         return GASOLINE_BLOCK;
     }
 
     public static Item GasolineBucket() {
-        GASOLINE_BUCKET = new BucketItem(() -> GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+        GASOLINE_BUCKET = new BucketItem(GASOLINE, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
         return GASOLINE_BUCKET;
     }
 
@@ -70,7 +70,7 @@ public class Gasoline {
             GASOLINE_FLOWING_TEXTURE
     );
 
-    public static final ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> GASOLINE_FLUID_TYPE, () -> GASOLINE, () -> FLOWING_GASOLINE)
+    public static final BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(() -> GASOLINE_FLUID_TYPE, () -> GASOLINE, () -> FLOWING_GASOLINE)
             .block(() -> GASOLINE_BLOCK).bucket(() -> GASOLINE_BUCKET);
 }
 

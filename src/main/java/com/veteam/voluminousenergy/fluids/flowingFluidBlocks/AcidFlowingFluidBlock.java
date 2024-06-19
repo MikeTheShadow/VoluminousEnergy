@@ -10,11 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
-import java.util.function.Supplier;
-
 public class AcidFlowingFluidBlock extends VEFlowingFluidBlock {
-    public AcidFlowingFluidBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
-        super(supplier, properties);
+    public AcidFlowingFluidBlock(FlowingFluid flowingFluid, Properties properties) {
+        super(flowingFluid, properties);
     }
 
     @Override
