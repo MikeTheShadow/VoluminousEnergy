@@ -60,14 +60,16 @@ public class VEServerSideListener {
     }
 
     private static void updateAllPlayers() {
-        ClientBoundFluidDataPacket
-                packet = new ClientBoundFluidDataPacket(CombustibleFluidsData.getDataForNetworkTransfer(),OxidizerFluidsData.getDataForNetworkTransfer());
-        VENetwork.channel.send(packet, PacketDistributor.ALL.noArg());
+        PacketDistributor.sendToAllPlayers(
+                new ClientBoundFluidDataPacket.ClientBoundFluidDataPayload(
+                        CombustibleFluidsData.getDataForNetworkTransfer(),
+                        OxidizerFluidsData.getDataForNetworkTransfer()));
     }
 
     private static void updateOnePlayer(ServerPlayer player) {
-        ClientBoundFluidDataPacket
-                packet = new ClientBoundFluidDataPacket(CombustibleFluidsData.getDataForNetworkTransfer(),OxidizerFluidsData.getDataForNetworkTransfer());
-        VENetwork.channel.send(packet, player.connection.getConnection());
+        PacketDistributor.sendToPlayer(player,
+                new ClientBoundFluidDataPacket.ClientBoundFluidDataPayload(
+                        CombustibleFluidsData.getDataForNetworkTransfer(),
+                        OxidizerFluidsData.getDataForNetworkTransfer()));
     }
 }

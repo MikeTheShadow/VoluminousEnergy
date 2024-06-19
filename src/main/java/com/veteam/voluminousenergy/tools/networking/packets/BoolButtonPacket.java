@@ -1,75 +1,54 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class BoolButtonPacket {
-    private boolean status;
-    private int slotId;
 
-    public BoolButtonPacket() {
-        // Do nothing
-    }
+    public record BoolButtonPayload(boolean status, int slotId) implements CustomPacketPayload {
 
-    public BoolButtonPacket(boolean updatedStatus, int slot) {
-        this.status = updatedStatus;
-        this.slotId = slot;
-    }
+        public static final Type<BoolButtonPayload> TYPE = new Type<>(new ResourceLocation(MODID,"bool_button"));
 
-    public static BoolButtonPacket fromBytes(FriendlyByteBuf buffer) {
-        BoolButtonPacket packet = new BoolButtonPacket();
-        packet.status = buffer.readBoolean();
-        packet.slotId = buffer.readInt();
-        return packet;
-    }
+        public static final StreamCodec<FriendlyByteBuf,BoolButtonPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                BoolButtonPayload::status,
+                ByteBufCodecs.INT,
+                BoolButtonPayload::slotId,
+                BoolButtonPayload::new);
 
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.status);
-        buffer.writeInt(this.slotId);
-    }
-
-    public static void handle(BoolButtonPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT:
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
-
     }
 
-    public static void handlePacket(BoolButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+    public static void handle(BoolButtonPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
+
+    public static void handlePacket(BoolButtonPayload packet, AbstractContainerMenu openContainer) {
         if (openContainer != null) {
-
             if (openContainer instanceof VEContainer VEContainer) {
-                if (onServer) {
-                    BlockEntity tileEntity = VEContainer.getTileEntity();
-                    if (tileEntity instanceof VETileEntity VETileEntity) {
-                        VETileEntity.updatePacketFromGui(packet.status, packet.slotId);
-                        VETileEntity.setChanged();
-                    }
-                } else {
-                    VEContainer.updateStatusButton(packet.status, packet.slotId);
+
+                BlockEntity tileEntity = VEContainer.getTileEntity();
+                if (tileEntity instanceof VETileEntity VETileEntity) {
+                    VETileEntity.updatePacketFromGui(packet.status(), packet.slotId());
+                    VETileEntity.setChanged();
                 }
-            } else {
-                VoluminousEnergy.LOGGER.warn("BoolButtonPacket: Not a valid container.");
+                VEContainer.updateStatusButton(packet.status(), packet.slotId());
             }
-        } else {
-            VoluminousEnergy.LOGGER.warn("BoolButtonPacket: The container is null");
         }
     }
-
 }

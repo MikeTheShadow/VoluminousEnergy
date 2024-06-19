@@ -1,76 +1,24 @@
 package com.veteam.voluminousenergy.tools.networking;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.networking.packets.*;
-import io.netty.util.AttributeKey;
-import net.minecraft.resources.ResourceLocation;
+import com.veteam.voluminousenergy.tools.networking.packets.BatteryBoxSendOutPowerPacket.BatteryBoxSendOutPowerPayload;
+import com.veteam.voluminousenergy.tools.networking.packets.BoolButtonPacket.BoolButtonPayload;
+import com.veteam.voluminousenergy.tools.networking.packets.ClientBoundFluidDataPacket.ClientBoundFluidDataPayload;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket.DirectionButtonPayload;
+import com.veteam.voluminousenergy.tools.networking.packets.TankBoolPacket.TankBoolPacketPayload;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket.TankDirectionPayload;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class VENetwork {
-    public static final ResourceLocation CHANNEL_ID = new ResourceLocation(VoluminousEnergy.MODID, "network");
 
-    public static final AttributeKey<ForgePacketHandler> CONTEXT = AttributeKey.newInstance(CHANNEL_ID.toString());
-
-    public static SimpleChannel channel;
-
-    static {
-        channel = ChannelBuilder.named(CHANNEL_ID)
-                .networkProtocolVersion(1)
-                .simpleChannel();
-
-        channel.messageBuilder(BoolButtonPacket.class, 1)
-                .decoder(BoolButtonPacket::fromBytes)
-                .encoder(BoolButtonPacket::toBytes)
-                .consumerMainThread(BoolButtonPacket::handle)
-                .add();
-
-        channel.messageBuilder(DirectionButtonPacket.class, 2)
-                .decoder(DirectionButtonPacket::fromBytes)
-                .encoder(DirectionButtonPacket::toBytes)
-                .consumerMainThread(DirectionButtonPacket::handle)
-                .add();
-
-        channel.messageBuilder(UuidPacket.class, 3)
-                .decoder(UuidPacket::fromBytes)
-                .encoder(UuidPacket::toBytes)
-                .consumerMainThread(UuidPacket::handle)
-                .add();
-
-        channel.messageBuilder(TankBoolPacket.class, 4)
-                .decoder(TankBoolPacket::fromBytes)
-                .encoder(TankBoolPacket::toBytes)
-                .consumerMainThread(TankBoolPacket::handle)
-                .add();
-
-        channel.messageBuilder(TankDirectionPacket.class, 5)
-                .decoder(TankDirectionPacket::fromBytes)
-                .encoder(TankDirectionPacket::toBytes)
-                .consumerMainThread(TankDirectionPacket::handle)
-                .add();
-
-        channel.messageBuilder(BatteryBoxSlotPairPacket.class, 6)
-                .decoder(BatteryBoxSlotPairPacket::fromBytes)
-                .encoder(BatteryBoxSlotPairPacket::toBytes)
-                .consumerMainThread(BatteryBoxSlotPairPacket::handle)
-                .add();
-
-        channel.messageBuilder(BatteryBoxSendOutPowerPacket.class, 7)
-                .decoder(BatteryBoxSendOutPowerPacket::fromBytes)
-                .encoder(BatteryBoxSendOutPowerPacket::toBytes)
-                .consumerMainThread(BatteryBoxSendOutPowerPacket::handle)
-                .add();
-
-        channel.messageBuilder(ClientBoundFluidDataPacket.class,8)
-                .decoder(ClientBoundFluidDataPacket::fromBytes)
-                .encoder(ClientBoundFluidDataPacket::toBytes)
-                .consumerMainThread(ClientBoundFluidDataPacket::handle)
-                .add();
-    }
-
-    private VENetwork() {
-
-    }
-
-    public static void init() {
-
+    public static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar("ve_1");
+        registrar.playBidirectional(BoolButtonPayload.TYPE, BoolButtonPayload.STREAM_CODEC,BoolButtonPacket::handle);
+        registrar.playBidirectional(DirectionButtonPayload.TYPE, DirectionButtonPayload.STREAM_CODEC,DirectionButtonPacket::handle);
+        registrar.playToServer(TankBoolPacketPayload.TYPE, TankBoolPacketPayload.STREAM_CODEC,TankBoolPacket::handle);
+        registrar.playToServer(TankDirectionPayload.TYPE, TankDirectionPayload.STREAM_CODEC,TankDirectionPacket::handle);
+        registrar.playToServer(BatteryBoxSendOutPowerPayload.TYPE, BatteryBoxSendOutPowerPayload.STREAM_CODEC,BatteryBoxSendOutPowerPacket::handle);
+        registrar.playToClient(ClientBoundFluidDataPayload.TYPE, ClientBoundFluidDataPayload.STREAM_CODEC,ClientBoundFluidDataPacket::handle);
     }
 }

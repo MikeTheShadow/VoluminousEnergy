@@ -3,62 +3,50 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class BatteryBoxSlotPairPacket {
-    private boolean status;
-    private int id;
 
-    public BatteryBoxSlotPairPacket() {
-        // Do nothing
-    }
+    public record BatteryBoxSlotPairPayload(boolean status, int slotId) implements CustomPacketPayload {
 
-    public BatteryBoxSlotPairPacket(boolean status, int id) {
-        this.status = status;
-        this.id = id;
-    }
+        public static final Type<BatteryBoxSlotPairPayload> TYPE = new Type<>(new ResourceLocation(MODID, "battery_slot_pair"));
 
-    public static BatteryBoxSlotPairPacket fromBytes(FriendlyByteBuf buffer) {
-        BatteryBoxSlotPairPacket packet = new BatteryBoxSlotPairPacket();
-        packet.status = buffer.readBoolean();
-        packet.id = buffer.readInt();
-        return packet;
-    }
+        public static final StreamCodec<FriendlyByteBuf, BatteryBoxSlotPairPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                BatteryBoxSlotPairPayload::status,
+                ByteBufCodecs.INT,
+                BatteryBoxSlotPairPayload::slotId,
+                BatteryBoxSlotPairPayload::new);
 
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.status);
-        buffer.writeInt(this.id);
-    }
-
-    public static void handle(BatteryBoxSlotPairPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT: // Packet is being sent to client
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
     }
 
-    public static void handlePacket(BatteryBoxSlotPairPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+    public static void handle(BatteryBoxSlotPairPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
+
+    public static void handlePacket(BatteryBoxSlotPairPayload packet, AbstractContainerMenu openContainer) {
         if (openContainer != null) {
             if (openContainer instanceof VEContainer batteryBoxContainer) {
-                if (onServer) {
                     BlockEntity tileEntity = batteryBoxContainer.getTileEntity();
 //                    if (tileEntity instanceof BatteryBoxTile batteryBoxTile) {
 //                        batteryBoxTile.updateSlotPair(packet.status, packet.id);
 //                        batteryBoxTile.setChanged();
 //                    }
                 }
-            }
         }
     }
 }

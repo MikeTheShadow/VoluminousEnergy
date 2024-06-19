@@ -3,72 +3,52 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class DirectionButtonPacket {
-    private int direction;
-    private int slotId;
 
-    public DirectionButtonPacket() {
-        // Do nothing
-    }
+    public record DirectionButtonPayload(int direction, int slotId) implements CustomPacketPayload {
 
-    public DirectionButtonPacket(int updatedDirection, int slot) {
-        this.direction = updatedDirection;
-        this.slotId = slot;
-    }
+        public static final Type<DirectionButtonPayload> TYPE = new Type<>(new ResourceLocation(MODID, "direction_button"));
 
-    public static DirectionButtonPacket fromBytes(FriendlyByteBuf buffer) {
-        DirectionButtonPacket packet = new DirectionButtonPacket();
-        packet.direction = buffer.readInt();
-        packet.slotId = buffer.readInt();
-        return packet;
-    }
+        public static final StreamCodec<FriendlyByteBuf, DirectionButtonPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT,
+                DirectionButtonPayload::direction,
+                ByteBufCodecs.INT,
+                DirectionButtonPayload::slotId,
+                DirectionButtonPayload::new);
 
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeInt(this.direction);
-        buffer.writeInt(this.slotId);
-    }
-
-    public static void handle(DirectionButtonPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT:
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
-
     }
 
-    public static void handlePacket(DirectionButtonPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
+    public static void handle(DirectionButtonPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
 
-        if (openContainer != null) {
-            if (openContainer instanceof VEContainer VEContainer) {
-                if (onServer) {
-                    BlockEntity tileEntity = VEContainer.getTileEntity();
-                    if (tileEntity instanceof VETileEntity VETileEntity) {
-                        VETileEntity.updatePacketFromGui(packet.direction, packet.slotId);
-                        VETileEntity.setChanged();
-                    }
-                } else {
-                    VEContainer.updateDirectionButton(packet.direction, packet.slotId);
-                }
-            } else {
-                VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container." + openContainer.getClass().getName());
+    public static void handlePacket(DirectionButtonPayload packet, AbstractContainerMenu openContainer) {
+        if (openContainer instanceof VEContainer VEContainer) {
+            BlockEntity tileEntity = VEContainer.getTileEntity();
+            if (tileEntity instanceof VETileEntity VETileEntity) {
+                VETileEntity.updatePacketFromGui(packet.direction, packet.slotId);
+                VETileEntity.setChanged();
             }
+            VEContainer.updateDirectionButton(packet.direction, packet.slotId);
         } else {
-            VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: The container is null.");
+            VoluminousEnergy.LOGGER.warn("DirectionButtonPacket: Not a valid container." + openContainer.getClass().getName());
         }
     }
 }

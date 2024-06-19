@@ -132,6 +132,7 @@ public class VoluminousEnergy {
 
 
         modEventBus.addListener(this::registerRenderers); // Register renderer for Dimensional Laser
+        modEventBus.addListener(VENetwork::onPayloadRegister); // Register network packets
 
         JEI_LOADED = ModList.get().isLoaded("jei");
     }
@@ -161,7 +162,6 @@ public class VoluminousEnergy {
 
     private void setup(final FMLCommonSetupEvent event) {
         setup.init();
-        VENetwork.init();
 
         //Register triggers
         VECriteriaTriggers.init();

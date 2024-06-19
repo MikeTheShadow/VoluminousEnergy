@@ -170,10 +170,10 @@ public abstract class VEContainerScreen<T extends AbstractContainerMenu> extends
         }
     }
 
+    // If things broke it was this
     @Deprecated
     public void informTileOfIOButton(boolean connection) {
         UUID uuid = Minecraft.getInstance().player.getUUID();
-        VENetwork.channel.send(new UuidPacket(uuid, connection), PacketDistributor.SERVER.noArg());
     }
 
     protected boolean isHovering(Rect2i rect, double x, double y) {

@@ -2,60 +2,46 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class BatteryBoxSendOutPowerPacket {
-    private boolean status;
 
-    public BatteryBoxSendOutPowerPacket() {
-        // Do nothing
-    }
+    public record BatteryBoxSendOutPowerPayload(boolean status) implements CustomPacketPayload {
 
-    public BatteryBoxSendOutPowerPacket(boolean status) {
-        this.status = status;
-    }
+        public static final Type<BatteryBoxSendOutPowerPayload> TYPE = new Type<>(new ResourceLocation(MODID, "battery_box_send_out_power"));
 
-    public static BatteryBoxSendOutPowerPacket fromBytes(FriendlyByteBuf buffer) {
-        BatteryBoxSendOutPowerPacket packet = new BatteryBoxSendOutPowerPacket();
-        packet.status = buffer.readBoolean();
-        return packet;
-    }
+        public static final StreamCodec<FriendlyByteBuf, BatteryBoxSendOutPowerPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                BatteryBoxSendOutPowerPayload::status,
+                BatteryBoxSendOutPowerPayload::new);
 
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.status);
-    }
-
-    public static void handle(BatteryBoxSendOutPowerPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT: // Packet is being sent to client
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
     }
 
-    public static void handlePacket(BatteryBoxSendOutPowerPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
-        if (openContainer != null) {
-            if (openContainer instanceof VEContainer container) {
-                if (onServer) {
-                    BlockEntity tileEntity = container.getTileEntity();
-                    if(tileEntity instanceof VETileEntity tile) {
-                        tile.setSendsOutPower(packet.status);
-                    }
-                } else {
-                    container.updateSendOutPowerButton(packet.status);
-                }
+    public static void handle(BatteryBoxSendOutPowerPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
+
+    public static void handlePacket(BatteryBoxSendOutPowerPayload packet, AbstractContainerMenu openContainer) {
+        if (openContainer instanceof VEContainer container) {
+            BlockEntity tileEntity = container.getTileEntity();
+            if (tileEntity instanceof VETileEntity tile) {
+                tile.setSendsOutPower(packet.status());
+                tile.setChanged();
             }
         }
     }

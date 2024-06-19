@@ -1,76 +1,99 @@
 package com.veteam.voluminousenergy.tools.networking.packets;
+
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.items.data.OxidizerFluidsData;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 /**
  * Update the client(s) with server-side fluid information.
  */
 public class ClientBoundFluidDataPacket {
 
-    final HashMap<Fluid, Integer> combustibleFluids;
-    final HashMap<Fluid, Float> oxidizerFluids;
+    private static final StreamCodec<RegistryFriendlyByteBuf, Holder<Fluid>> FLUID_STREAM_CODEC = ByteBufCodecs.holderRegistry(Registries.FLUID);
 
-    public ClientBoundFluidDataPacket(HashMap<Fluid, Integer> combustibleFluids, HashMap<Fluid, Float> oxidizerFluids) {
-        this.combustibleFluids = combustibleFluids;
-        this.oxidizerFluids = oxidizerFluids;
-    }
+    public record ClientBoundFluidDataPayload(HashMap<Fluid, Integer> combustibleFluids,
+                                              HashMap<Fluid, Float> oxidizerFluids) implements CustomPacketPayload {
 
+        public static final Type<ClientBoundFluidDataPayload> TYPE = new Type<>(new ResourceLocation(MODID, "client_fluid_data"));
 
-    /**
-     * We write a size and then the data to make it easier to decode it
-     * @param buffer The friendly buffer
-     */
-    public void toBytes(FriendlyByteBuf buffer) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundFluidDataPayload> STREAM_CODEC = StreamCodec.composite(
+                FLUID_INT_HASH_MAP_STREAM_CODEC,
+                ClientBoundFluidDataPayload::combustibleFluids,
+                FLUID_FLOAT_HASH_MAP_STREAM_CODEC,
+                ClientBoundFluidDataPayload::oxidizerFluids,
+                ClientBoundFluidDataPayload::new);
 
-        var combustibleSet =  CombustibleFluidsData.getDataForNetworkTransfer().entrySet();
-        buffer.writeInt(combustibleSet.size());
-        for(var data: combustibleSet) {
-            buffer.writeRegistryId(ForgeRegistries.FLUIDS, data.getKey());
-            buffer.writeVarInt(data.getValue());
-        }
-
-        var oxidizerSet = OxidizerFluidsData.getDataForNetworkTransfer().entrySet();
-        buffer.writeInt(oxidizerSet.size());
-        for(var data : oxidizerSet) {
-            buffer.writeRegistryId(ForgeRegistries.FLUIDS, data.getKey());
-            buffer.writeFloat(data.getValue());
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
     }
 
-    public static ClientBoundFluidDataPacket fromBytes(FriendlyByteBuf buffer) {
-        HashMap<Fluid, Integer> combustibleFluids = new HashMap<>();
-        HashMap<Fluid, Float> oxidizerFluids = new HashMap<>();
-        int combustibleSize = buffer.readInt();
-        for(int i = 0;i < combustibleSize; i++) {
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(buffer.readRegistryId());
-            combustibleFluids.put(fluid, buffer.readVarInt());
-        }
-        int oxidizerSize = buffer.readInt();
-        for(int i = 0;i < oxidizerSize; i++) {
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(buffer.readRegistryId());
-            oxidizerFluids.put(fluid, buffer.readFloat());
-        }
-        return new ClientBoundFluidDataPacket(combustibleFluids, oxidizerFluids);
+    public static void handle(ClientBoundFluidDataPayload packet, IPayloadContext contextSupplier) {
+        CombustibleFluidsData.updateFromPacket(packet.combustibleFluids());
+        OxidizerFluidsData.updateFromPacket(packet.oxidizerFluids());
     }
 
-    public static void handle(ClientBoundFluidDataPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT: // Packet is received on client
-                CombustibleFluidsData.updateFromPacket(packet.combustibleFluids);
-                OxidizerFluidsData.updateFromPacket(packet.oxidizerFluids);
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                throw new IllegalStateException("ClientBoundFluidDataPacket must only be sent to clients!");
-        }
-    }
+    private static final StreamCodec<RegistryFriendlyByteBuf, HashMap<Fluid, Float>> FLUID_FLOAT_HASH_MAP_STREAM_CODEC = new StreamCodec<>() {
+        public @NotNull HashMap<Fluid, Float> decode(@NotNull RegistryFriendlyByteBuf buffer) {
 
+            int totalEntries = ByteBufCodecs.INT.decode(buffer);
+            HashMap<Fluid, Float> fluids = new HashMap<>();
+
+            for(int i = 0; i < totalEntries; i++) {
+                Holder<Fluid> fluidHolder = FLUID_STREAM_CODEC.decode(buffer);
+                float value = ByteBufCodecs.FLOAT.decode(buffer);
+                fluids.put(fluidHolder.value(),value);
+            }
+            return fluids;
+        }
+
+        public void encode(@NotNull RegistryFriendlyByteBuf buffer, HashMap<Fluid, Float> map) {
+            ByteBufCodecs.INT.encode(buffer, map.size());
+            for (Map.Entry<Fluid, Float> entry : map.entrySet()) {
+                // builtInRegistryHolder is deprecated but used by Fluidstack#getFluidHolder(). So check that if this breaks
+                FLUID_STREAM_CODEC.encode(buffer, entry.getKey().builtInRegistryHolder());
+                ByteBufCodecs.FLOAT.encode(buffer, entry.getValue());
+            }
+        }
+    };
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, HashMap<Fluid, Integer>> FLUID_INT_HASH_MAP_STREAM_CODEC = new StreamCodec<>() {
+
+        public @NotNull HashMap<Fluid, Integer> decode(@NotNull RegistryFriendlyByteBuf buffer) {
+
+            int totalEntries = ByteBufCodecs.INT.decode(buffer);
+            HashMap<Fluid, Integer> fluids = new HashMap<>();
+
+            for(int i = 0; i < totalEntries; i++) {
+                Holder<Fluid> fluidHolder = FLUID_STREAM_CODEC.decode(buffer);
+                int value = ByteBufCodecs.INT.decode(buffer);
+                fluids.put(fluidHolder.value(),value);
+            }
+            return fluids;
+        }
+
+        public void encode(@NotNull RegistryFriendlyByteBuf buffer, HashMap<Fluid, Integer> map) {
+            ByteBufCodecs.INT.encode(buffer, map.size());
+            for (Map.Entry<Fluid, Integer> entry : map.entrySet()) {
+                // builtInRegistryHolder is deprecated but used by Fluidstack#getFluidHolder(). So check that if this breaks
+                FLUID_STREAM_CODEC.encode(buffer, entry.getKey().builtInRegistryHolder());
+                ByteBufCodecs.INT.encode(buffer, entry.getValue());
+            }
+        }
+    };
 }

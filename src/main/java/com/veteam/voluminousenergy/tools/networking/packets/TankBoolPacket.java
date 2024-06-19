@@ -5,70 +5,48 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class TankBoolPacket {
-    private boolean status;
-    private int id;
 
-    public TankBoolPacket() {
-        // Do nothing
-    }
+    public record TankBoolPacketPayload(boolean status, int tankId) implements CustomPacketPayload {
 
-    public TankBoolPacket(boolean updatedStatus, int id) {
-        this.status = updatedStatus;
-        this.id = id;
-    }
+        public static final Type<TankBoolPacketPayload> TYPE = new Type<>(new ResourceLocation(MODID, "tank_bool"));
 
-    public static TankBoolPacket fromBytes(FriendlyByteBuf buffer) {
-        TankBoolPacket packet = new TankBoolPacket();
-        packet.status = buffer.readBoolean();
-        packet.id = buffer.readInt();
-        return packet;
-    }
+        public static final StreamCodec<FriendlyByteBuf, TankBoolPacketPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                TankBoolPacketPayload::status,
+                ByteBufCodecs.INT,
+                TankBoolPacketPayload::tankId,
+                TankBoolPacketPayload::new);
 
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(this.status);
-        buffer.writeInt(this.id);
-    }
-
-    public static void handle(TankBoolPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT:
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
-
     }
 
-    public static void handlePacket(TankBoolPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
-        if (openContainer != null) {
+    public static void handle(TankBoolPacketPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
 
-            if (openContainer instanceof VEContainer VEContainer) {
-                if (onServer) {
-                    BlockEntity tileEntity = VEContainer.getTileEntity();
-                    if (tileEntity instanceof VETileEntity VETileEntity) {
-                        VETileEntity.updateTankPacketFromGui(packet.status, packet.id);
-                        VETileEntity.setChanged();
-                    }
-                } else {
-                    //voluminousContainer.updateStatusTank(packet.status, packet.id);
-                }
-            } else {
-                VoluminousEnergy.LOGGER.warn("TankBoolPacket: Not a valid container.");
+    public static void handlePacket(TankBoolPacketPayload packet, AbstractContainerMenu openContainer) {
+        if (openContainer instanceof VEContainer VEContainer) {
+            BlockEntity tileEntity = VEContainer.getTileEntity();
+            if (tileEntity instanceof VETileEntity VETileEntity) {
+                VETileEntity.updateTankPacketFromGui(packet.status(), packet.tankId());
+                VETileEntity.setChanged();
             }
-        } else {
-            VoluminousEnergy.LOGGER.warn("TankBoolPacket The container is null");
         }
     }
 }

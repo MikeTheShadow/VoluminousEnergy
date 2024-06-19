@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.DirectionButtonPacket.DirectionButtonPayload;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
@@ -70,6 +71,7 @@ public class SlotDirectionButton extends VEIOButton {
         cycle();
 //        this.slotManager.setDirection(direction);
         VENetwork.channel.send(new DirectionButtonPacket(this.getDirection().get3DDataValue(), this.getAssociatedSlotId()), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToAllPlayers(new DirectionButtonPayload(this.getDirection().get3DDataValue(),this.getAssociatedSlotId()));
     }
 
     public Direction getDirection() {

@@ -3,72 +3,50 @@ package com.veteam.voluminousenergy.tools.networking.packets;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.event.network.CustomPayloadEvent;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
+import static com.veteam.voluminousenergy.VoluminousEnergy.MODID;
 
 public class TankDirectionPacket {
-    private int direction;
-    private int tankId;
+    public record TankDirectionPayload(int direction, int tankId) implements CustomPacketPayload {
 
-    public TankDirectionPacket() {
-        // Do nothing
-    }
+        public static final Type<TankDirectionPayload> TYPE = new Type<>(new ResourceLocation(MODID, "tank_direction"));
 
-    public TankDirectionPacket(int updatedDirection, int id) {
-        this.direction = updatedDirection;
-        this.tankId = id;
-    }
+        public static final StreamCodec<FriendlyByteBuf, TankDirectionPayload> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT,
+                TankDirectionPayload::direction,
+                ByteBufCodecs.INT,
+                TankDirectionPayload::tankId,
+                TankDirectionPayload::new);
 
-    public static TankDirectionPacket fromBytes(FriendlyByteBuf buffer) {
-        TankDirectionPacket packet = new TankDirectionPacket();
-        packet.direction = buffer.readInt();
-        packet.tankId = buffer.readInt();
-        return packet;
-    }
-
-    public void toBytes(FriendlyByteBuf buffer) {
-        buffer.writeInt(this.direction);
-        buffer.writeInt(this.tankId);
-    }
-
-    public static void handle(TankDirectionPacket packet, CustomPayloadEvent.Context contextSupplier) {
-        NetworkDirection packetDirection = contextSupplier.getDirection();
-        switch (packetDirection) {
-            case PLAY_TO_CLIENT:
-                AbstractContainerMenu clientContainer = Minecraft.getInstance().player.containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, clientContainer, false));
-                contextSupplier.setPacketHandled(true);
-                break;
-            default:
-                AbstractContainerMenu serverContainer = (contextSupplier.getSender()).containerMenu;
-                contextSupplier.enqueueWork(() -> handlePacket(packet, serverContainer, true));
-                contextSupplier.setPacketHandled(true);
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
         }
-
     }
 
-    public static void handlePacket(TankDirectionPacket packet, AbstractContainerMenu openContainer, boolean onServer) {
-        if (openContainer != null) {
+    public static void handle(TankDirectionPayload packet, IPayloadContext contextSupplier) {
+        AbstractContainerMenu container = contextSupplier.player().containerMenu;
+        handlePacket(packet, container);
+    }
 
-            if (openContainer instanceof VEContainer VEContainer) {
-                if (onServer) {
-                    BlockEntity tileEntity = VEContainer.getTileEntity();
-                    if (tileEntity instanceof VETileEntity VETileEntity) {
-                        VETileEntity.updateTankPacketFromGui(packet.direction, packet.tankId);
-                        VETileEntity.setChanged();
-                    }
-                } else {
-                    //voluminousContainer.updateDirectionTank(packet.direction, packet.tankId);
-                }
-            } else {
-                VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
+    public static void handlePacket(TankDirectionPayload packet, AbstractContainerMenu openContainer) {
+        if (openContainer instanceof VEContainer VEContainer) {
+            BlockEntity tileEntity = VEContainer.getTileEntity();
+            if (tileEntity instanceof VETileEntity VETileEntity) {
+                VETileEntity.updateTankPacketFromGui(packet.direction(), packet.tankId());
+                VETileEntity.setChanged();
             }
         } else {
-            VoluminousEnergy.LOGGER.warn("TankDirectionPacket: The container is null.");
+            VoluminousEnergy.LOGGER.warn("TankDirectionPacket: Not a valid container.");
         }
     }
 }
