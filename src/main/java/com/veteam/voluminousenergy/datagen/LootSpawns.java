@@ -1,12 +1,13 @@
 package com.veteam.voluminousenergy.datagen;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.List;
 
 public class LootSpawns {
-    public static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
+    public static final List<ResourceKey<LootTable>> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
             BuiltInLootTables.BASTION_BRIDGE,
             BuiltInLootTables.END_CITY_TREASURE,
             BuiltInLootTables.SIMPLE_DUNGEON,
@@ -33,7 +34,7 @@ public class LootSpawns {
             BuiltInLootTables.UNDERWATER_RUIN_SMALL
     );
 
-    public static final List<ResourceLocation> SHEEP_THAT_DROP_ANIMAL_FAT = List.of(
+    public static final List<ResourceKey<LootTable>> SHEEP_THAT_DROP_ANIMAL_FAT = List.of(
             BuiltInLootTables.SHEEP_WHITE,
             BuiltInLootTables.SHEEP_ORANGE,
             BuiltInLootTables.SHEEP_MAGENTA,

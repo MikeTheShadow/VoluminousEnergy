@@ -4,8 +4,11 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
 import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
@@ -13,10 +16,12 @@ import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
 
-    public VEGlobalLootModifierData(PackOutput packOutput) {
-        super(packOutput, VoluminousEnergy.MODID);
+    public VEGlobalLootModifierData(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> provider) {
+        super(packOutput, provider, VoluminousEnergy.MODID);
     }
 
     @Override
@@ -32,13 +37,13 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
 
     private void mysteriousMultiplierModifierProvider(LootItemCondition lootCondition) {
 
-        for (ResourceLocation resourceLocation : LootSpawns.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
-            String lootTableString = "mysterious_multiplier/" + resourceLocation.getPath();
+        for (ResourceKey<LootTable> lootTabe : LootSpawns.SPAWN_MYSTERIOUS_MULTIPLIERS_IN) {
+            String lootTableString = "mysterious_multiplier/" + lootTabe.location();
 
             add(lootTableString,
                     new MysteriousMultiplierModifier(new LootItemCondition[]{
                             lootCondition,
-                            LootTableIdCondition.builder(resourceLocation).build()
+                            LootTableIdCondition.builder(lootTabe.location()).build()
                     })
             );
         }
@@ -49,12 +54,12 @@ public class VEGlobalLootModifierData extends GlobalLootModifierProvider {
         String lootTableString = "animal_fat/";
 
         // Sheep
-        for (ResourceLocation resourceLocation : LootSpawns.SHEEP_THAT_DROP_ANIMAL_FAT) {
+        for (ResourceKey<LootTable> lootTable : LootSpawns.SHEEP_THAT_DROP_ANIMAL_FAT) {
 
-            add(lootTableString + resourceLocation.getPath(),
+            add(lootTableString + lootTable.location(),
                     new AnimalFatLootModifier(new LootItemCondition[]{
                             lootCondition,
-                            LootTableIdCondition.builder(resourceLocation).build()
+                            LootTableIdCondition.builder(lootTable.location()).build()
                     }, VEItems.ANIMAL_FAT.get(), 0, 2)
             );
         }

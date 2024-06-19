@@ -250,7 +250,7 @@ public class VoluminousEnergy {
 
             if (event.includeServer()) {
                 dataGenerator.addProvider(true, new VETagDataGenerator(dataGenerator.getPackOutput(), lookupProvider, event.getExistingFileHelper()));
-                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput()));
+                dataGenerator.addProvider(true, new VEGlobalLootModifierData(dataGenerator.getPackOutput(), lookupProvider));
             }
         }
     }
