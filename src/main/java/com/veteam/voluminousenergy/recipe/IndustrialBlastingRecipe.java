@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
@@ -9,14 +10,16 @@ import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -37,32 +40,40 @@ public class IndustrialBlastingRecipe extends VERecipe {
 
         public static final Codec<IndustrialBlastingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                ItemStack.ITEM_WITH_COUNT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("minimum_heat_kelvin").forGetter(IndustrialBlastingRecipe::getMinimumHeat)
         ).apply(instance, IndustrialBlastingRecipe::new));
 
         private static final IngredientSerializerHelper<IndustrialBlastingRecipe> helper = new IngredientSerializerHelper<>();
 
-        @Nullable
         @Override
-        public IndustrialBlastingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
-            recipe.setMinimumHeat(buffer.readInt());
-            return helper.fromNetwork(recipe, buffer);
+        public @NotNull MapCodec<IndustrialBlastingRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<IndustrialBlastingRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, IndustrialBlastingRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull IndustrialBlastingRecipe recipe) {
+                    buf.writeInt(recipe.getMinimumHeat());
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public IndustrialBlastingRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    IndustrialBlastingRecipe recipe = new IndustrialBlastingRecipe();
+                    recipe.setMinimumHeat(buffer.readInt());
+                    return helper.fromNetwork(recipe, buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull IndustrialBlastingRecipe recipe) {
-            buffer.writeInt(recipe.getMinimumHeat());
-            helper.toNetwork(buffer, recipe);
-        }
     };
+
 
     private int minimumHeat;
     private static List<Fluid> hotEnoughFluids;
@@ -103,7 +114,7 @@ public class IndustrialBlastingRecipe extends VERecipe {
     public List<Fluid> getHotEnoughFluids() {
         HashSet<Fluid> fluidHashSet = new HashSet<>();
         if (hotEnoughFluids == null) {
-            for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
+            for (Fluid fluid : BuiltInRegistries.FLUID) {
                 if (fluid.getFluidType().getTemperature() > minimumHeat)
                     fluidHashSet.add(fluid);
             }

@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.RNGBasicParser;
@@ -8,6 +9,8 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -44,22 +47,30 @@ public class DistillationRecipe extends VERNGRecipe {
 
         private static final FluidSerializerHelper<DistillationRecipe> helper = new FluidSerializerHelper<>();
 
-        @Nullable
         @Override
-        public DistillationRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new DistillationRecipe(), buffer);
+        public @NotNull MapCodec<DistillationRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<DistillationRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, DistillationRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull DistillationRecipe recipe) {
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public DistillationRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    return helper.fromNetwork(new DistillationRecipe(), buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull DistillationRecipe recipe) {
-            helper.toNetwork(buffer, recipe);
-        }
     };
+
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {

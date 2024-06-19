@@ -1,19 +1,20 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class AqueoulizerRecipe extends VERecipe {
@@ -41,23 +42,30 @@ public class AqueoulizerRecipe extends VERecipe {
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
         ).apply(instance, AqueoulizerRecipe::new));
 
-        private static final FluidSerializerHelper helper = new FluidSerializerHelper();
+        private static final FluidSerializerHelper<AqueoulizerRecipe> helper = new FluidSerializerHelper<>();
 
-        @Nullable
         @Override
-        public AqueoulizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return (AqueoulizerRecipe) helper.fromNetwork(new AqueoulizerRecipe(), buffer);
+        public @NotNull MapCodec<AqueoulizerRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<AqueoulizerRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, AqueoulizerRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull AqueoulizerRecipe recipe) {
+                    helper.toNetwork(buf,recipe);
+                }
+
+                @Override
+                @NotNull
+                public AqueoulizerRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    return helper.fromNetwork(new AqueoulizerRecipe(),buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull AqueoulizerRecipe recipe) {
-            helper.toNetwork(buffer, recipe);
-        }
     };
 
 

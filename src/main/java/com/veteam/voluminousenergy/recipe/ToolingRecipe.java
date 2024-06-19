@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.items.tools.multitool.Multitool;
@@ -9,6 +10,8 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -65,71 +68,69 @@ public class ToolingRecipe extends VERecipe {
         });
     }
 
-    // TODO fix me and make me right!
     public static final RecipeSerializer<ToolingRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         public static final Codec<ToolingRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
-                ItemStack.ITEM_WITH_COUNT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results)
+                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results)
         ).apply(instance, ToolingRecipe::new));
 
         private static final IngredientSerializerHelper<ToolingRecipe> helper = new IngredientSerializerHelper<>();
 
-        @Nullable
         @Override
-        public ToolingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-
-            ArrayList<Item> bitItems = new ArrayList<>();
-            ArrayList<Item> baseItems = new ArrayList<>();
-
-            int bitsToRead = buffer.readInt();
-            for (int i = 0; i < bitsToRead; i++) {
-                bitItems.add(buffer.readItem().getItem());
-            }
-
-            int basesToRead = buffer.readInt();
-            for (int i = 0; i < basesToRead; i++) {
-                baseItems.add(buffer.readItem().getItem());
-            }
-
-            ToolingRecipe toolingRecipe = new ToolingRecipe();
-
-            toolingRecipe.bits = Lazy.of(() -> bitItems);
-            toolingRecipe.bases = Lazy.of(() -> baseItems);
-
-            return helper.fromNetwork(toolingRecipe, buffer);
+        public @NotNull MapCodec<ToolingRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<ToolingRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, ToolingRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull ToolingRecipe recipe) {
+                    ArrayList<Item> bitItems = recipe.bits.get();
+                    ArrayList<Item> baseItems = recipe.bases.get();
+
+                    // Write bits to network
+                    buf.writeInt(bitItems.size());
+                    for (Item bitItem : bitItems) {
+                        ItemStack.STREAM_CODEC.encode(buf,new ItemStack(bitItem,1));
+                    }
+
+                    // Write bases to network
+                    buf.writeInt(baseItems.size());
+                    for (Item baseItem : baseItems) {
+                        ItemStack.STREAM_CODEC.encode(buf,new ItemStack(baseItem,1));
+                    }
+
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public ToolingRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    ArrayList<Item> bitItems = new ArrayList<>();
+                    ArrayList<Item> baseItems = new ArrayList<>();
+
+                    int bitsToRead = buffer.readInt();
+                    for (int i = 0; i < bitsToRead; i++) {
+                        bitItems.add(ItemStack.STREAM_CODEC.decode(buffer).getItem());
+                    }
+
+                    int basesToRead = buffer.readInt();
+                    for (int i = 0; i < basesToRead; i++) {
+                        baseItems.add(ItemStack.STREAM_CODEC.decode(buffer).getItem());
+                    }
+
+                    ToolingRecipe toolingRecipe = new ToolingRecipe();
+                    toolingRecipe.bits = Lazy.of(() -> bitItems);
+                    toolingRecipe.bases = Lazy.of(() -> baseItems);
+
+                    return helper.fromNetwork(toolingRecipe, buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ToolingRecipe recipe) {
-
-            ArrayList<Item> bitItems = recipe.bits.get();
-            ArrayList<Item> baseItems = recipe.bases.get();
-
-            int bitLength = bitItems.size();
-            int baseLength = baseItems.size();
-
-            // Write bits to network
-            buffer.writeInt(bitLength);
-
-            for (Item bitItem : bitItems) {
-                buffer.writeItem(new ItemStack(bitItem));
-            }
-
-            // Write bases to network
-            buffer.writeInt(baseLength);
-
-            for (Item baseItem : baseItems) {
-                buffer.writeItem(new ItemStack(baseItem));
-            }
-
-            helper.toNetwork(buffer, recipe);
-        }
     };
 
     @Override

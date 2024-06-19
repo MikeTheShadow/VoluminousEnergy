@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class VETileEntityFactory {
     private List<TileTank> tanks = new ArrayList<>();
-    private RegistryObject<RecipeType<VERecipe>> recipeType;
-    private final RegistryObject<BlockEntityType<VETileEntity>> tileRegistry;
+    private Supplier<RecipeType<VERecipe>> recipeType;
+    private final Supplier<BlockEntityType<VETileEntity>> tileRegistry;
     private final VEContainerFactory containerFactory;
     private VEEnergyStorage storage;
     private boolean infiniteRender = false;
@@ -46,7 +46,7 @@ public class VETileEntityFactory {
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
-    public VETileEntityFactory(RegistryObject<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
+    public VETileEntityFactory(Supplier<BlockEntityType<VETileEntity>> tileRegistry, VEContainerFactory containerFactory) {
         this.tileRegistry = tileRegistry;
         this.containerFactory = containerFactory;
     }
@@ -64,22 +64,24 @@ public class VETileEntityFactory {
                 return containerFactory.create(id, level, worldPosition, playerInventory, player);
             }
 
-            @Override
-            public AABB getRenderBoundingBox() {
-                if (infiniteRender) {
-                    return INFINITE_EXTENT_AABB;
-                } else {
-                    AABB cbb = null;
-                    try {
-                        VoxelShape collisionShape = state.getCollisionShape(this.getLevel(), pos);
-                        if (!collisionShape.isEmpty())
-                            cbb = collisionShape.bounds().move(pos);
-                    } catch (Exception e) {
-                        cbb = AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
-                    }
-                    return cbb;
-                }
-            }
+
+
+//            @Override
+//            public AABB getRenderBoundingBox() {
+//                if (infiniteRender) {
+//                    return INFINITE_EXTENT_AABB;
+//                } else {
+//                    AABB cbb = null;
+//                    try {
+//                        VoxelShape collisionShape = state.getCollisionShape(this.getLevel(), pos);
+//                        if (!collisionShape.isEmpty())
+//                            cbb = collisionShape.bounds().move(pos);
+//                    } catch (Exception e) {
+//                        cbb = AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
+//                    }
+//                    return cbb;
+//                }
+//            }
         };
 
         // Add our tanks and slots
@@ -115,7 +117,7 @@ public class VETileEntityFactory {
         return newTile;
     }
 
-    public VETileEntityFactory withRecipe(RegistryObject<RecipeType<VERecipe>> recipe) {
+    public VETileEntityFactory withRecipe(Supplier<RecipeType<VERecipe>> recipe) {
         this.recipeType = recipe;
         return this;
     }

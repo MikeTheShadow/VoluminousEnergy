@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
@@ -70,11 +71,6 @@ public abstract class VERecipe implements Recipe<Container> {
         throw new NotImplementedException("Class: " + this.getClass().getName() + " missing matches() impl.");
     }
 
-    @Override
-    public @NotNull ItemStack assemble(@NotNull Container inv, @NotNull RegistryAccess registryAccess) {
-        return this.assemble(inv);
-    }
-
     public ItemStack assemble(Container inv) {
         return ItemStack.EMPTY;
     }
@@ -82,11 +78,6 @@ public abstract class VERecipe implements Recipe<Container> {
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return true;
-    }
-
-    @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return new ItemStack(Items.BUCKET, 1);
     }
 
     public ItemStack getResult(int id) {
@@ -118,6 +109,16 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     @Override
+    public @NotNull ItemStack assemble(@NotNull Container pCraftingContainer,@NotNull HolderLookup.Provider registries) {
+        throw new NotImplementedException("Unable to call assemble on recipe because it has been unimplemented!");
+    }
+
+    @Override
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider pRegistries) {
+        throw new NotImplementedException("Unable to call getResultItem on recipe because it has been unimplemented!");
+    }
+
+    @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         throw new NotImplementedException("Missing serializer impl for " + this.getClass().getName());
     }
@@ -126,8 +127,8 @@ public abstract class VERecipe implements Recipe<Container> {
         throw new NotImplementedException("Matches is not impl'd for: " + this.getClass().getName());
     }
 
+    // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
     public int getResultCount(int slot) {
-        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
         if (slot >= this.getResults().size()) {
             return 0;
         }

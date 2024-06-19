@@ -4,7 +4,7 @@ import com.veteam.voluminousenergy.recipe.VERNGExperienceRecipe;
 import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -15,13 +15,13 @@ import java.util.List;
 public class IngredientSerializerHelper<T extends VERecipe> {
 
     @Nullable
-    public T fromNetwork(T recipe, FriendlyByteBuf buffer) {
+    public T fromNetwork(T recipe, RegistryFriendlyByteBuf buffer) {
 
         // Read ingredients
         int ingredientSize = buffer.readInt();
         NonNullList<Ingredient> ingredients = NonNullList.create();
         for (int i = 0; i < ingredientSize; i++) {
-            ingredients.add(Ingredient.fromNetwork(buffer));
+            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
         }
         recipe.setIngredients(ingredients);
 
@@ -29,7 +29,7 @@ public class IngredientSerializerHelper<T extends VERecipe> {
         int outputItemSize = buffer.readInt();
         List<ItemStack> outputItems = new ArrayList<>();
         for (int i = 0; i < outputItemSize; i++) {
-            outputItems.add(buffer.readItem());
+            outputItems.add(ItemStack.STREAM_CODEC.decode(buffer));
         }
         recipe.setResults(outputItems);
 
@@ -53,15 +53,15 @@ public class IngredientSerializerHelper<T extends VERecipe> {
         return recipe;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer, T recipe) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
         buffer.writeInt(recipe.getIngredients().size());
         for (Ingredient ingredient : recipe.getIngredients()) {
-            ingredient.toNetwork(buffer);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer,ingredient);
         }
 
         buffer.writeInt(recipe.getResults().size());
         for (ItemStack stack : recipe.getResults()) {
-            buffer.writeItemStack(stack, true);
+            ItemStack.STREAM_CODEC.encode(buffer,stack);
         }
 
         buffer.writeInt(recipe.getProcessTime());

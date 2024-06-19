@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.RNGBasicParser;
@@ -8,6 +9,8 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -43,22 +46,30 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
         private static final IngredientSerializerHelper<CrusherRecipe> helper = new IngredientSerializerHelper<>();
 
-        @Nullable
         @Override
-        public CrusherRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new CrusherRecipe(), buffer);
+        public @NotNull MapCodec<CrusherRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<CrusherRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, CrusherRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CrusherRecipe recipe) {
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public CrusherRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    return helper.fromNetwork(new CrusherRecipe(), buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CrusherRecipe recipe) {
-            helper.toNetwork(buffer, recipe);
-        }
     };
+
 
 
     @Override

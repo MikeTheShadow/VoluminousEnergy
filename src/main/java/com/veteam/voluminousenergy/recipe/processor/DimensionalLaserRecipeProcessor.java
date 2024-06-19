@@ -21,16 +21,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import static com.veteam.voluminousenergy.blocks.tiles.VETileEntity.DEFAULT_TANK_CAPACITY;
 
 public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 
 
-    public DimensionalLaserRecipeProcessor(RegistryObject<? extends Block> block) {
+    public DimensionalLaserRecipeProcessor(Supplier<? extends Block> block) {
         super(block);
     }
 

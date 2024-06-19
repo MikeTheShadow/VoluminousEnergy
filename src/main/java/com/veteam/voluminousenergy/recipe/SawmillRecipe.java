@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
@@ -8,7 +9,10 @@ import com.veteam.voluminousenergy.recipe.parser.SawmillParser;
 import com.veteam.voluminousenergy.recipe.serializer.FluidSerializerHelper;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -16,7 +20,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -48,30 +51,36 @@ public class SawmillRecipe extends VERecipe {
         public static final Codec<SawmillRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
-                ItemStack.ITEM_WITH_COUNT_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
+                VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.BOOL.fieldOf("is_log_recipe").forGetter(SawmillRecipe::isLogRecipe)
         ).apply(instance, SawmillRecipe::new));
 
         private static final FluidSerializerHelper<SawmillRecipe> helper = new FluidSerializerHelper<>();
 
-        @Nullable
         @Override
-        public SawmillRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            SawmillRecipe recipe = new SawmillRecipe();
-            recipe.isLogRecipe = buffer.readBoolean();
-            return helper.fromNetwork(new SawmillRecipe(), buffer);
+        public @NotNull MapCodec<SawmillRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<SawmillRecipe> codec() {
-            return VE_RECIPE_CODEC;
-        }
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, SawmillRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull SawmillRecipe recipe) {
+                    buf.writeBoolean(recipe.isLogRecipe());
+                    helper.toNetwork(buf, recipe);
+                }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull SawmillRecipe recipe) {
-            buffer.writeBoolean(recipe.isLogRecipe);
-            helper.toNetwork(buffer, recipe);
+                @Override
+                @NotNull
+                public SawmillRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    SawmillRecipe recipe = new SawmillRecipe();
+                    recipe.setLogRecipe(buffer.readBoolean());
+                    return helper.fromNetwork(recipe, buffer);
+                }
+            };
         }
     };
 
@@ -94,11 +103,15 @@ public class SawmillRecipe extends VERecipe {
         return isLogRecipe;
     }
 
+    public void setLogRecipe(boolean logRecipe) {
+        isLogRecipe = logRecipe;
+    }
+
     @Override
     public List<FluidStack> getOutputFluids() {
         if (this.isLogRecipe && Config.SAWMILL_ALLOW_NON_SAWMILL_RECIPE_LOGS_TO_BE_SAWED.get()) {
             ResourceLocation fluidLocation = new ResourceLocation(Config.SAWMILL_FLUID_LOCATION.get());
-            Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(fluidLocation);
+            Fluid outputFluid = BuiltInRegistries.FLUID.get(fluidLocation);
             return List.of(new FluidStack(outputFluid, Config.SAWMILL_FLUID_AMOUNT.get()));
         }
         return super.getOutputFluids();

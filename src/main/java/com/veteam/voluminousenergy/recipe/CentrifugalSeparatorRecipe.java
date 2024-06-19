@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.RNGBasicParser;
@@ -8,6 +9,8 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -47,22 +50,30 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
         private static final IngredientSerializerHelper<CentrifugalSeparatorRecipe> helper = new IngredientSerializerHelper<>();
 
-        @Nullable
         @Override
-        public CentrifugalSeparatorRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new CentrifugalSeparatorRecipe(), buffer);
+        public @NotNull MapCodec<CentrifugalSeparatorRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<CentrifugalSeparatorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, CentrifugalSeparatorRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CentrifugalSeparatorRecipe recipe) {
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public CentrifugalSeparatorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    return helper.fromNetwork(new CentrifugalSeparatorRecipe(), buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CentrifugalSeparatorRecipe recipe) {
-            helper.toNetwork(buffer, recipe);
-        }
     };
+
 
 
     @Override

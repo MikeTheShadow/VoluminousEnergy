@@ -5,9 +5,9 @@ import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -102,7 +102,7 @@ public class SawmillParser extends BasicParser {
     }
 
     void buildCache() {
-        ForgeRegistries.ITEMS.getValues().forEach(registeredItem -> {
+        BuiltInRegistries.ITEM.forEach(registeredItem -> {
             String path = RegistryLookups.lookupItem(registeredItem).getPath();
             if (path.startsWith("stripped_")) return;
             if (path.endsWith("_log")) {

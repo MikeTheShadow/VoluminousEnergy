@@ -1,12 +1,15 @@
 package com.veteam.voluminousenergy.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.blocks.blocks.VEBlocks;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.recipe.serializer.IngredientSerializerHelper;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -40,22 +43,30 @@ public class CompressorRecipe extends VERecipe {
 
         private static final IngredientSerializerHelper<CompressorRecipe> helper = new IngredientSerializerHelper<>();
 
-        @Nullable
         @Override
-        public CompressorRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-            return helper.fromNetwork(new CompressorRecipe(), buffer);
+        public @NotNull MapCodec<CompressorRecipe> codec() {
+            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
         }
 
         @Override
-        public @NotNull Codec<CompressorRecipe> codec() {
-            return VE_RECIPE_CODEC;
+        @NotNull
+        public StreamCodec<RegistryFriendlyByteBuf, CompressorRecipe> streamCodec() {
+            return new StreamCodec<>() {
+                @Override
+                public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull CompressorRecipe recipe) {
+                    helper.toNetwork(buf, recipe);
+                }
+
+                @Override
+                @NotNull
+                public CompressorRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                    return helper.fromNetwork(new CompressorRecipe(), buffer);
+                }
+            };
         }
 
-        @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CompressorRecipe recipe) {
-            helper.toNetwork(buffer, recipe);
-        }
     };
+
 
     @Override
     public @NotNull RecipeSerializer<? extends VERecipe> getSerializer() {

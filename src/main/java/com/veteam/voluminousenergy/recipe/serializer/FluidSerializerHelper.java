@@ -4,24 +4,24 @@ import com.veteam.voluminousenergy.recipe.VERNGRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FluidSerializerHelper<T extends VERecipe> {
 
-    @Nullable
-    public T fromNetwork(T recipe, FriendlyByteBuf buffer) {
+    @NotNull
+    public T fromNetwork(T recipe, RegistryFriendlyByteBuf buffer) {
         // Read ingredients
         int ingredientSize = buffer.readInt();
         NonNullList<Ingredient> ingredients = NonNullList.create();
         for (int i = 0; i < ingredientSize; i++) {
-            ingredients.add(Ingredient.fromNetwork(buffer));
+            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
         }
         recipe.setIngredients(ingredients);
 
@@ -36,14 +36,14 @@ public class FluidSerializerHelper<T extends VERecipe> {
         int outputItemSize = buffer.readInt();
         List<ItemStack> outputItems = new ArrayList<>();
         for (int i = 0; i < outputItemSize; i++) {
-            outputItems.add(buffer.readItem());
+            outputItems.add(ItemStack.STREAM_CODEC.decode(buffer));
         }
         recipe.setResults(outputItems);
 
         int outputFluidSize = buffer.readInt();
         List<FluidStack> outputFluids = new ArrayList<>();
         for (int i = 0; i < outputFluidSize; i++) {
-            outputFluids.add(buffer.readFluidStack());
+            outputFluids.add(FluidStack.STREAM_CODEC.decode(buffer));
         }
         recipe.setFluidOutputList(outputFluids);
 
@@ -62,10 +62,10 @@ public class FluidSerializerHelper<T extends VERecipe> {
         return recipe;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer, T recipe) {
+    public void toNetwork(RegistryFriendlyByteBuf buffer, T recipe) {
         buffer.writeInt(recipe.getIngredients().size());
         for (Ingredient ingredient : recipe.getIngredients()) {
-            ingredient.toNetwork(buffer);
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer,ingredient);
         }
 
         buffer.writeInt(recipe.getFluidIngredients().size());
@@ -76,12 +76,12 @@ public class FluidSerializerHelper<T extends VERecipe> {
 
         buffer.writeInt(recipe.getResults().size());
         for (ItemStack stack : recipe.getResults()) {
-            buffer.writeItemStack(stack, true);
+            ItemStack.STREAM_CODEC.encode(buffer, stack);
         }
 
         buffer.writeInt(recipe.getOutputFluids().size());
         for (FluidStack stack : recipe.getOutputFluids()) {
-            buffer.writeFluidStack(stack);
+            FluidStack.STREAM_CODEC.encode(buffer, stack);
         }
 
         buffer.writeInt(recipe.getProcessTime());

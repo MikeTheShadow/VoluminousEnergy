@@ -5,14 +5,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public class MultiBlockRecipeProcessor extends BasicProcessor {
 
-    private RegistryObject<? extends Block> blockRegistry;
+    private final Supplier<? extends Block> blockRegistry;
     private Block block;
 
-    public MultiBlockRecipeProcessor(RegistryObject<? extends Block> block) {
+    public MultiBlockRecipeProcessor(Supplier<? extends Block> block) {
         this.blockRegistry = block;
     }
 

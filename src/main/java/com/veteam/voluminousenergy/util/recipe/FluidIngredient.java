@@ -13,13 +13,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -48,9 +48,6 @@ public class FluidIngredient {
     @Nullable
     private IntList stackingIds;
     private int invalidationCounter;
-
-    public static final Codec<FluidIngredient> CODEC = codec(true);
-    public static final Codec<FluidIngredient> CODEC_NONEMPTY = codec(false);
 
     public FluidIngredient(FluidIngredient ingredient) {
         values = ingredient.values;
@@ -89,7 +86,7 @@ public class FluidIngredient {
             return inputFluid.isEmpty();
         } else {
             for (FluidStack stack : this.getFluids()) {
-                if (stack.isFluidEqual(inputFluid)) {
+                if (stack.is(inputFluid.getFluid())) {
                     return true;
                 }
             }
@@ -184,9 +181,8 @@ public class FluidIngredient {
     }
 
     public static FluidIngredient of(Stream<FluidStack> p_43922_) {
-        return fromValues(p_43922_.filter((p_43944_) -> {
-            return !p_43944_.isEmpty();
-        }).map(m -> new FluidValue(m, m.getAmount(), m.getFluid())));
+        return fromValues(p_43922_.filter((p_43944_)
+                -> !p_43944_.isEmpty()).map(m -> new FluidValue(m, m.getAmount(), m.getFluid())));
     }
 
     public static FluidIngredient of(TagKey<Fluid> key, int amount) {
@@ -197,84 +193,8 @@ public class FluidIngredient {
         var size = byteBuf.readVarInt();
         VEFluidIngredientSerializer serializer = VEFluidIngredientSerializer.INSTANCE;
         if (size == -1) return serializer.parse(byteBuf);
-        FluidStack stack = byteBuf.readFluidStack();
+        FluidStack stack = FluidStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) byteBuf);
         return fromValues(Stream.generate(() -> new FluidIngredient.FluidValue(stack, stack.getAmount(), stack.getFluid())).limit(size));
-    }
-
-    public static FluidIngredient fromJson(@Nullable JsonObject json) {
-        return fromJson(json, true);
-    }
-
-    public static FluidIngredient fromJson(@Nullable JsonObject jsonObject, boolean allowEmpty) {
-
-        if (jsonObject == null) throw new IllegalStateException("Recipe has null object!");
-
-        ResourceLocation fluidTagLocation;
-
-        boolean isTag = false;
-
-        if (jsonObject.has("fluid")) {
-            fluidTagLocation = ResourceLocation.of(jsonObject.get("fluid").getAsString(), ':');
-        } else if (jsonObject.has("tag")) {
-            isTag = true;
-            fluidTagLocation = ResourceLocation.of(jsonObject.get("tag").getAsString(), ':');
-        } else {
-            throw new IllegalStateException("Recipe missing fluid tag!");
-        }
-        if (!jsonObject.has("amount")) throw new IllegalStateException("Recipe missing amount!");
-
-        if (!isTag) {
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidTagLocation);
-            if (fluid == null) {
-                throw new IllegalStateException("Fluid does not exist for a recipe!");
-            }
-            return FluidIngredient.of(new FluidStack(fluid, jsonObject.get("amount").getAsInt()));
-        }
-
-        TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
-
-        return FluidIngredient.of(tag, jsonObject.get("amount").getAsInt());
-    }
-
-    // Only use this is if the amount object is not present in the passed in jsonObject
-    public static FluidIngredient fromJsonNoAmount(@Nullable JsonObject jsonObject, int rawAmount) {
-
-        if (jsonObject == null) throw new IllegalStateException("Recipe has null object!");
-
-        ResourceLocation fluidTagLocation;
-
-        if (jsonObject.has("fluid")) {
-            fluidTagLocation = ResourceLocation.of(jsonObject.get("fluid").getAsString(), ':');
-        } else if (jsonObject.has("tag")) {
-            fluidTagLocation = ResourceLocation.of(jsonObject.get("tag").getAsString(), ':');
-        } else {
-            throw new IllegalStateException("Recipe missing fluid tag!");
-        }
-
-        TagKey<Fluid> tag = TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), fluidTagLocation);
-
-        return FluidIngredient.of(tag, rawAmount);
-    }
-
-    private static Codec<FluidIngredient> codec(boolean p_298496_) {
-        Codec<FluidIngredient.Value[]> codec = Codec.list(FluidIngredient.Value.CODEC).comapFlatMap((p_296902_) -> {
-            return !p_298496_ && p_296902_.isEmpty() ? DataResult.error(() -> {
-                return "Item array cannot be empty, at least one item must be defined";
-            }) : DataResult.success(p_296902_.toArray(new FluidIngredient.Value[0]));
-        }, List::of);
-        return ExtraCodecs.either(codec, FluidIngredient.Value.CODEC).flatComapMap((p_296900_) -> {
-            return p_296900_.map(FluidIngredient::new, (p_296903_) -> {
-                return new FluidIngredient(new FluidIngredient.Value[]{p_296903_});
-            });
-        }, (p_296899_) -> {
-            if (p_296899_.values.length == 1) {
-                return DataResult.success(Either.right(p_296899_.values[0]));
-            } else {
-                return p_296899_.values.length == 0 && !p_298496_ ? DataResult.error(() -> {
-                    return "Item array cannot be empty, at least one item must be defined";
-                }) : DataResult.success(Either.left(p_296899_.values));
-            }
-        });
     }
 
     public record FluidValue(FluidStack stack, int amount, Fluid fluid) implements FluidIngredient.Value {
@@ -283,17 +203,16 @@ public class FluidIngredient {
             return new FluidValue(new FluidStack(fluid, amount), amount, fluid);
         }
 
-        static final Codec<FluidValue> CODEC = RecordCodecBuilder.create((p_300421_) -> {
-            return p_300421_.group(FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter((fluid) -> fluid.fluid),
-                    ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter((amount) -> amount.amount)
-            ).apply(p_300421_, FluidValue::fromAmounts);
-        });
+        static final Codec<FluidValue> CODEC = RecordCodecBuilder.create((p_300421_) -> p_300421_.group(
+                FLUID_NONAIR_CODEC.fieldOf("fluid").forGetter((fluid) -> fluid.fluid),
+                ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter((amount) -> amount.amount)
+        ).apply(p_300421_, FluidValue::fromAmounts));
 
         public boolean equals(Object obj) {
             if (!(obj instanceof FluidValue otherFluid)) {
                 return false;
             } else {
-                return otherFluid.stack.isFluidStackIdentical(this.stack);
+                return otherFluid.stack.is(this.stack.getFluid());
             }
         }
 
@@ -302,7 +221,7 @@ public class FluidIngredient {
         }
     }
 
-    //Merges several vanilla Ingredients together. As a quirk of how the json is structured, we can't tell if its a single Ingredient type or multiple so we split per item and re-merge here.
+    //Merges several vanilla Ingredients together. As a quirk of how the json is structured, we can't tell if it's a single Ingredient type or multiple so we split per item and re-merge here.
     //Only public for internal use, so we can access a private field in here.
     public static FluidIngredient merge(Collection<FluidIngredient> parts) {
         return fromValues(parts.stream().flatMap(i -> Arrays.stream(i.values)));
@@ -312,7 +231,7 @@ public class FluidIngredient {
         static final Codec<FluidIngredient.TagValue> CODEC = RecordCodecBuilder.create((p_300241_) -> {
             return p_300241_.group(TagKey.codec(Registries.FLUID).fieldOf("tag").forGetter((p_301340_) -> {
                         return p_301340_.tag;
-                    }), ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter((amount) -> amount.amount)
+                    }), ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter((amount) -> amount.amount)
             ).apply(p_300241_, FluidIngredient.TagValue::new);
         });
 
@@ -340,13 +259,9 @@ public class FluidIngredient {
     }
 
     public interface Value {
-        Codec<FluidIngredient.Value> CODEC = ExtraCodecs.xor(FluidValue.CODEC, FluidIngredient.TagValue.CODEC).xmap((p_300070_) -> {
-            return p_300070_.map((p_301348_) -> {
-                return p_301348_;
-            }, (p_298354_) -> {
-                return p_298354_;
-            });
-        }, (p_299608_) -> {
+        Codec<FluidIngredient.Value> CODEC =
+                Codec.xor(FluidValue.CODEC, FluidIngredient.TagValue.CODEC)
+                        .xmap((p_300070_) -> p_300070_.map((p_301348_) -> p_301348_, (p_298354_) -> p_298354_), (p_299608_) -> {
             if (p_299608_ instanceof FluidIngredient.TagValue ingredient$tagvalue) {
                 return Either.right(ingredient$tagvalue);
             } else if (p_299608_ instanceof FluidValue ingredient$itemvalue) {
