@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.tools.buttons.VEIOButton;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
 import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket;
+import com.veteam.voluminousenergy.tools.networking.packets.TankDirectionPacket.TankDirectionPayload;
 import com.veteam.voluminousenergy.util.IntToDirection;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VERelationalTank;
@@ -80,7 +81,7 @@ public class TankDirectionButton extends VEIOButton {
     public void onPress() {
         if (!render) return;
         cycle();
-        VENetwork.channel.send(new TankDirectionPacket(this.getDirection().get3DDataValue(), this.getId()), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new TankDirectionPayload(this.getDirection().get3DDataValue(), this.getId()));
     }
 
     public Direction getDirection() {

@@ -49,7 +49,7 @@ public class TankBoolButton extends VEIOButton {
     public void onPress() {
         if (!render) return;
         cycle();
-        VENetwork.channel.send(new TankBoolPacket(this.status(), this.getId()), PacketDistributor.SERVER.noArg());
+        PacketDistributor.sendToServer(new TankBoolPacket.TankBoolPacketPayload(this.status(),this.getId()));
     }
 
     public boolean status() {
