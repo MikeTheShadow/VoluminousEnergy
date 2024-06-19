@@ -12,11 +12,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,41 +32,25 @@ public class VEEnergyItem extends VEItem {
     }
 
     public static float getChargeRatio(ItemStack stack) {
-        LazyOptional<IEnergyStorage> energy = stack.getCapability(ForgeCapabilities.ENERGY);
-        if (energy.isPresent()) {
-            IEnergyStorage energyStorage = energy.orElseThrow(IllegalStateException::new);
-            return (float) energyStorage.getEnergyStored() / energyStorage.getMaxEnergyStored();
+        IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (storage != null) {
+            return (float) storage.getEnergyStored() / storage.getMaxEnergyStored();
         }
         return 0;
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundTag nbt) {
-        return new ICapabilityProvider() {
-            @Nonnull
-            @Override
-            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if (cap == ForgeCapabilities.ENERGY) {
-                    return LazyOptional.of(() -> new VEEnergyItemStorage(itemStack, maxEnergy, maxTransfer)).cast();
-                }
-                return LazyOptional.empty();
-            }
-        };
-    }
+    public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
 
-    @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
-        if (ForgeCapabilities.ENERGY == null) return; // sanity check
-        itemStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(e -> {
-            Component textComponent;
-            if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
-                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(e.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(e.getMaxEnergyStored()));
-            } else {
-                textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(e.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(e.getMaxEnergyStored()) + " FE");
-            }
-            tooltip.add(textComponent);
-        });
+        IEnergyStorage storage = itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (storage == null) return;
+        Component textComponent;
+        if (Config.SHORTEN_ITEM_TOOLTIP_VALUES.get()) {
+            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.numberToString4FE(storage.getEnergyStored()) + " / " + NumberUtil.numberToString4FE(storage.getMaxEnergyStored()));
+        } else {
+            textComponent = TextUtil.translateString("text.voluminousenergy.energy").copy().append(": " + NumberUtil.formatNumber(storage.getEnergyStored()) + " FE / " + NumberUtil.formatNumber(storage.getMaxEnergyStored()) + " FE");
+        }
+        tooltip.add(textComponent);
     }
 
     @Override
