@@ -13,9 +13,6 @@ import com.veteam.voluminousenergy.items.tools.VETools;
 import com.veteam.voluminousenergy.items.tools.multitool.VEMultitools;
 import com.veteam.voluminousenergy.loot.VELoot;
 import com.veteam.voluminousenergy.recipe.VERecipes;
-import com.veteam.voluminousenergy.setup.ClientProxy;
-import com.veteam.voluminousenergy.setup.IProxy;
-import com.veteam.voluminousenergy.setup.ServerProxy;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
@@ -44,6 +41,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -59,8 +57,6 @@ import java.util.concurrent.CompletableFuture;
 @Mod(VoluminousEnergy.MODID)
 public class VoluminousEnergy {
     public static final String MODID = "voluminousenergy";
-
-    public static final IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static VESetup setup = new VESetup();
     public static boolean JEI_LOADED = false;
@@ -164,22 +160,11 @@ public class VoluminousEnergy {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        //VEOreGeneration.OreGeneration(); // Setup custom ore generation
-        //VEFeatureGeneration.VEFeatureGenerationSetup(); // Setup feature generation
         setup.init();
-        proxy.init();
-
         VENetwork.init();
 
         //Register triggers
         VECriteriaTriggers.init();
-
-//        event.enqueueWork(() -> {
-//           VEOres.registerConfiguredFeatures();
-//        });
-//        builtinRegisterConfiguredFeatures();
-//        builtinRegisterPlacedFeatures();
-        //VoluminousEnergy.LOGGER.debug("FMLCommonSetupEvent has ran.");
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -235,6 +220,11 @@ public class VoluminousEnergy {
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.RICE_CROP.get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.SAWMILL.block().get(), RenderType.cutout()));
             event.enqueueWork(() -> ItemBlockRenderTypes.setRenderLayer(VEBlocks.PRESSURE_LADDER.get(), RenderType.cutout()));
+        }
+
+        @SubscribeEvent
+        public static void RegisterMenuScreens(RegisterMenuScreensEvent event) {
+            VESetup.registerMenuScreens(event);
         }
 
     }
