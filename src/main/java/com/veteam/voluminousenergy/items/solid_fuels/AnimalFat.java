@@ -3,11 +3,10 @@ package com.veteam.voluminousenergy.items.solid_fuels;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.common.extensions.IForgeItem;
 
 import javax.annotation.Nullable;
 
-public class AnimalFat extends Item implements IForgeItem {
+public class AnimalFat extends Item {
     public AnimalFat() {
         super(new Item.Properties()
                 .stacksTo(64)
