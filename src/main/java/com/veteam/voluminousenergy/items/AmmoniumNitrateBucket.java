@@ -22,17 +22,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 
 public class AmmoniumNitrateBucket extends BucketItem {
     public AmmoniumNitrateBucket(Fluid fluid, Properties properties) {
         super(fluid, properties);
-    }
-
-    @Override
-    public net.neoforged.neoforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable net.minecraft.nbt.CompoundTag nbt) {
-        return new net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper(stack);
     }
 
     public InteractionResult useOn(UseOnContext context) {
@@ -75,8 +69,8 @@ public class AmmoniumNitrateBucket extends BucketItem {
     // Derived from applyBonemeal
     public static boolean applyFert(ItemStack itemStack, Level level, BlockPos pos, net.minecraft.world.entity.player.Player player) {
         BlockState blockstate = level.getBlockState(pos);
-        int hook = net.neoforged.neoforge.event.ForgeEventFactory.onApplyBonemeal(player, level, pos, blockstate, itemStack);
-        if (hook != 0) return hook > 0;
+        var event = net.neoforged.neoforge.event.EventHooks.fireBonemealEvent(player, level, pos, blockstate, itemStack);
+        if (event.isCanceled()) return event.isSuccessful();
         if (blockstate.getBlock() instanceof BonemealableBlock) {
             Block block = blockstate.getBlock();
             BonemealableBlock bonemealableblock = (BonemealableBlock) blockstate.getBlock();
