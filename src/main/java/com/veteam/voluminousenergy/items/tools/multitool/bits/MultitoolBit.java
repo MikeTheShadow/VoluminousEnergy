@@ -34,8 +34,8 @@ public class MultitoolBit {
         this.attackSpeed = attackSpeed;
 
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"), "Tool modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", this.attackSpeed, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE.value(), new AttributeModifier(UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"), "Tool modifier", this.attackDamage, AttributeModifier.Operation.ADD_VALUE));
+        builder.put(Attributes.ATTACK_SPEED.value(), new AttributeModifier(UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"), "Tool modifier", this.attackSpeed, AttributeModifier.Operation.ADD_VALUE));
         this.defaultModifiers = builder.build();
     }
 
@@ -64,7 +64,7 @@ public class MultitoolBit {
     }
 
     public boolean isCorrectToolForDrops(BlockState blockState) {
-        return blockState.is(this.mineableBlocks)
-                && net.neoforged.neoforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
+        return blockState.is(this.mineableBlocks); //TODO fix me
+//                && net.neoforged.neoforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
     }
 }

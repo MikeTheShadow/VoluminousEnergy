@@ -5,9 +5,12 @@ import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEDataComponents.ChunkFluidData;
 import com.veteam.voluminousenergy.util.WorldUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -17,10 +20,12 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,27 +83,19 @@ public class FluidScanner extends Item {
                 for (int slot = 0; slot < inventory.getSlots(); slot++) {
                     ItemStack itemStack = inventory.getStackInSlot(slot);
                     if (itemStack.getItem() instanceof RFIDChip) {
-                        if (itemStack.hasTag()) {
-                            continue;
-                        }
-                        if (itemStack.getOrCreateTag().contains("ve_x")) {
-                            continue;
-                        }
-                        if (!itemStack.getOrCreateTag().contains("ve_x")) {
+
+                        ChunkFluidData data = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
+
+                        if (data == null) {
                             itemStack.setCount(itemStack.getCount() - 1);
                             ItemStack dataStack = new ItemStack(VEItems.RFID_CHIP.get(), 1);
-                            CompoundTag data = dataStack.getOrCreateTag();
-
-                            int x = 0;
-
-                            chunkFluid.save(data);
-
-                            data.putInt("ve_x", chunkAccess.getPos().x);
-                            data.putInt("ve_z", chunkAccess.getPos().z);
-                            dataStack.setTag(data);
+                            data = new ChunkFluidData(chunkAccess.getPos().x,
+                                    chunkAccess.getPos().z, new ArrayList<>());
+                            dataStack.set(VEDataComponents.CHUNK_FLUID_DATA, data);
                             inventory.insertItem(freeSlot, dataStack, false);
-
                             player.sendSystemMessage(TextUtil.translateString(ChatFormatting.GREEN, "text.voluminousenergy.rfid.write_success"));
+                        } else {
+                            continue;
                         }
                         return InteractionResult.sidedSuccess(false);
                     }
@@ -123,38 +120,26 @@ public class FluidScanner extends Item {
         player.sendSystemMessage(Component.nullToEmpty(builder.toString()));
 
         ItemStack hand = useOnContext.getItemInHand();
-
-        CompoundTag tag = hand.getOrCreateTag();
-
-        if (tag.contains("ve_x")) {
-            tag.remove("ve_x");
-            tag.remove("ve_z");
-        }
-        tag.putInt("ve_x", chunkAccess.getPos().x);
-        tag.putInt("ve_z", chunkAccess.getPos().z);
-        fluid.save(tag);
-        hand.setTag(tag);
+        ChunkFluidData data = new ChunkFluidData(chunkAccess.getPos().x,chunkAccess.getPos().z,fluid.getFluids().stream()
+                .map(c -> new FluidStack(c.getFluid(),c.getAmount())).toList());
+        hand.set(VEDataComponents.CHUNK_FLUID_DATA,data);
 
         return InteractionResult.sidedSuccess(false);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
-        CompoundTag tag = itemStack.getOrCreateTag();
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext pContext, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
 
-        if (tag.contains("ve_x")) {
 
-            int x = tag.getInt("ve_x");
-            int z = tag.getInt("ve_z");
+        ChunkFluidData data = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
 
-            ChunkFluid fluid = new ChunkFluid(tag);
-            //componentList.add(Component.nullToEmpty(""));
+        if (data != null) {
+            ChunkFluid fluid = new ChunkFluid(data);
             fluid.getFluids().forEach(f -> componentList.add(TextUtil.fluidNameAndAmountWithUnitsAndColours(f)));
-
-            componentList.add(Component.nullToEmpty("Chunk X: " + x + " | Chunk Z: " + z));
+            componentList.add(Component.nullToEmpty("Chunk X: " + data.x() + " | Chunk Z: " + data.z()));
         }
 
-        super.appendHoverText(itemStack, level, componentList, tooltipFlag);
+        super.appendHoverText(itemStack, pContext, componentList, tooltipFlag);
     }
 
     @Override

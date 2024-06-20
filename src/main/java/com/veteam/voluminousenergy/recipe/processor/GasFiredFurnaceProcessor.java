@@ -7,7 +7,9 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -34,20 +37,19 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
         // Gas processing
         if (fuelCounter > 0) {
             fuelCounter--;
-        } else if (!fuel.isFluidEqual(FluidStack.EMPTY) && !stack.isEmpty()) {
+        } else if (!fuel.is(Fluids.EMPTY) && !stack.isEmpty()) {
             // Drain Input
+
             tile.getRelationalTank(0).getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
             fuelCounter = 400 * CombustibleFluidsData.getEnergyProduced(fuel) / 4;
             VEItemStackHandler inventory = tile.getInventory();
-            if (inventory.getStackInSlot(4).getCount() > 0 && inventory.getStackInSlot(4).getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
-                fuelCounter = fuelCounter / (inventory.getStackInSlot(4).getCount() ^ 2);
-            } else if (!inventory.getStackInSlot(4).isEmpty() && TagUtil.isTaggedMachineUpgradeItem(inventory.getStackInSlot(4))) {
-                ItemStack upgradeStack = inventory.getStackInSlot(4).copy();
-                if (upgradeStack.getTag() != null && !upgradeStack.getTag().isEmpty()) {
-                    float multiplier = upgradeStack.getTag().getFloat("multiplier");
-                    multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
-                    fuelCounter = (int) (fuelCounter * multiplier);
-                }
+            ItemStack upgradeItem = inventory.getStackInSlot(4);
+            if (upgradeItem.getCount() > 0 && upgradeItem.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
+                fuelCounter = fuelCounter / (upgradeItem.getCount() ^ 2);
+            } else if (!upgradeItem.isEmpty() && upgradeItem.has(VEDataComponents.MULTIPLIER_DATA)) {
+                Float multiplier = upgradeItem.get(VEDataComponents.MULTIPLIER_DATA);
+                multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
+                fuelCounter = (int) (fuelCounter * multiplier);
             }
             tile.setData("fuel_length", fuelCounter);
             tile.setChanged();

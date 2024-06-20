@@ -19,7 +19,7 @@ public class GasFiredFurnaceInventoryValidator extends FurnaceInventoryValidator
 
         if (slot == 0) {
             if (stack.getItem() instanceof BucketItem item) {
-                return item.getFluid().isSame(Fluids.EMPTY) || CombustibleFluidsData.isCombustible(item.getFluid());
+                return item.content.isSame(Fluids.EMPTY) || CombustibleFluidsData.isCombustible(item.content);
             }
             return false;
         }

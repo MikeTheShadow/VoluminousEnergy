@@ -63,13 +63,13 @@ public class VEItemStackHandler extends ItemStackHandler {
         if (slot == upgradeSlotLocation) return TagUtil.isTaggedMachineUpgradeItem(stack);
         VESlotManager manager = tileEntity.getSlotManagers().get(slot);
         if (manager.getSlotType() == SlotType.FLUID_INPUT && stack.getItem() instanceof BucketItem bucketItem) {
-            if (bucketItem.getFluid() == Fluids.EMPTY) return true;
+            if (bucketItem.content == Fluids.EMPTY) return true;
             VERelationalTank tank = tileEntity.getRelationalTanks().get(manager.getTankId());
             if (tank.getTankType() == TankType.OUTPUT) {
-                return bucketItem.getFluid().isSame(Fluids.EMPTY);
+                return bucketItem.content.isSame(Fluids.EMPTY);
             }
             for (VERecipe recipe : tileEntity.getPotentialRecipes()) {
-                if (recipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.getFluid(), 1))) {
+                if (recipe.getFluidIngredient(tank.getRecipePos()).test(new FluidStack(bucketItem.content, 1))) {
                     return true;
                 }
             }

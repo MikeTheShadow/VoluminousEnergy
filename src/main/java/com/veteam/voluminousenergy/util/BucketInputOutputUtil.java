@@ -16,10 +16,10 @@ public class BucketInputOutputUtil {
         // Input fluid into the oxidizer tank
         if (oxidizerInput.copy() != ItemStack.EMPTY && oxidizerOutput.copy() == ItemStack.EMPTY) {
             if (oxidizerInput.copy().getItem() instanceof BucketItem && oxidizerInput.getCount() == 1) {
-                Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).getFluid();
+                Fluid fluid = ((BucketItem) oxidizerInput.copy().getItem()).content;
                 if (rawFluidInputList.contains(fluid) && (
                         oxidizerTank.getTank().isEmpty()
-                                || oxidizerTank.getTank().getFluid().isFluidEqual(new FluidStack(fluid, 1000))
+                                || oxidizerTank.getTank().getFluid().is(fluid)
                                 && oxidizerTank.getTank().getFluidAmount() + 1000 <= tankCapacity)) {
                     oxidizerTank.getTank().fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
                     inventory.extractItem(0, 1, false);

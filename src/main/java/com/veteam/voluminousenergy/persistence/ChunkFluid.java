@@ -1,11 +1,14 @@
 package com.veteam.voluminousenergy.persistence;
 
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.VEDataComponents.ChunkFluidData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ public class ChunkFluid {
     private final List<SingleChunkFluid> chunkFluidList = new ArrayList<>();
 
     public ChunkFluid(CompoundTag compoundTag) {
+
         this.chunkPos = new ChunkPos(compoundTag.getInt("CX"), compoundTag.getInt("CZ"));
         int i = 0;
         while (compoundTag.contains("SCF_" + i)) {
@@ -28,6 +32,16 @@ public class ChunkFluid {
         }
     }
 
+    public ChunkFluid(ChunkFluidData data) {
+        this.chunkPos = new ChunkPos(data.x(), data.z());
+        for (FluidStack stack : data.fluids()) {
+            SingleChunkFluid singleChunkFluid =
+                    new SingleChunkFluid(stack.getFluid()
+                            ,stack.getAmount());
+            this.chunkFluidList.add(singleChunkFluid);
+        }
+    }
+
     public ChunkFluid(ChunkPos chunkPos, ArrayList<Pair<Fluid, Integer>> fluidPairs) {
         this.chunkPos = chunkPos;
         for (var value : fluidPairs) {
@@ -35,7 +49,7 @@ public class ChunkFluid {
         }
     }
 
-    public CompoundTag save(CompoundTag compoundTag) {
+    public void save(CompoundTag compoundTag) {
         compoundTag.putInt("CX", this.chunkPos.x);
         compoundTag.putInt("CZ", this.chunkPos.z);
 
@@ -45,7 +59,6 @@ public class ChunkFluid {
             compoundTag.putString("SCF_" + i, RegistryLookups.lookupFluid(fluid.getFluid()).toString());
         }
 
-        return compoundTag;
     }
 
     public ChunkPos getChunkPos() {

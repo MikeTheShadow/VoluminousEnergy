@@ -2,14 +2,15 @@ package com.veteam.voluminousenergy.world.feature;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.world.ores.VEOres;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLACE` as seen in LakeFeature.java
-    public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, VoluminousEnergy.MODID);
+    public static final DeferredRegister<Feature<?>> VE_FEATURE_REGISTRY = DeferredRegister.create(Registries.FEATURE, VoluminousEnergy.MODID);
 //    public static final DeferredRegister<PlacedFeature> VE_PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, VoluminousEnergy.MODID);
 
     /**
@@ -17,12 +18,12 @@ public class VEFeatures { // TODO: Investigate `BlockTags.FEATURES_CANNOT_REPLAC
      **/
 
     // "High Level" Features
-    public static RegistryObject<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(VELakesFeature.Configuration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
-    public static RegistryObject<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(GeyserFeature.Configuration.CODEC)); // Geyser using BlockStateConfiguration
-    public static RegistryObject<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
-    public static RegistryObject<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
-    public static RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, true));
-    public static RegistryObject<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, false));
+    public static Supplier<VELakesFeature> VE_BSC_LAKE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_lake_feature", () -> new VELakesFeature(VELakesFeature.Configuration.CODEC)); // Lake using BlockStateConfiguration. AKA How MC used to do lakes
+    public static Supplier<GeyserFeature> VE_GEYSER_FEATURE = VE_FEATURE_REGISTRY.register("ve_geyser_feature", () -> new GeyserFeature(GeyserFeature.Configuration.CODEC)); // Geyser using BlockStateConfiguration
+    public static Supplier<RiceFeature> VE_RICE_FEATURE = VE_FEATURE_REGISTRY.register("ve_rice_feature", () -> new RiceFeature(BlockStateConfiguration.CODEC)); // Rice crop using BlockStateConfiguration
+    public static Supplier<VEOreDepositFeature> VE_ORE_DEPOSIT_FEATURE = VE_FEATURE_REGISTRY.register("ve_ore_deposit_feature", () -> new VEOreDepositFeature(VEOreDepositFeature.Configuration.CODEC));
+    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_SURFACE_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_surface_lake_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, true));
+    public static Supplier<SurfaceMattersLakesFeature> VE_BSC_LAKE_UNDERGROUND_FEATURE = VE_FEATURE_REGISTRY.register("ve_bsc_underground_lakes_feature", () -> new SurfaceMattersLakesFeature(VELakesFeature.Configuration.CODEC, false));
 
     protected static VEOres.NoPlacement noPlacement = new VEOres.NoPlacement();
 

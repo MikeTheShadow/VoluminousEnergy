@@ -149,7 +149,7 @@ public class BlastFurnaceScreen extends VEContainerScreen<VEContainer> {
     }
 
     public int getTemperatureKelvin(FluidStack stack) {
-        return stack.getRawFluid().getFluidType().getTemperature();
+        return stack.getFluid().getFluidType().getTemperature();
     }
 
     public int getTemperatureCelsius(int kelvin) {
