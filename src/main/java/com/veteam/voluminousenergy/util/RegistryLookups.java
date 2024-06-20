@@ -1,21 +1,20 @@
 package com.veteam.voluminousenergy.util;
 
-import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class RegistryLookups {
 
     // Lookup an item's ResourceLocation
     public static ResourceLocation lookupItem(Item item) {
-        return ForgeRegistries.ITEMS.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     public static ResourceLocation lookupItem(ItemStack itemStack) {
@@ -39,19 +38,19 @@ public class RegistryLookups {
     }
 
     public static ResourceLocation lookupBlockEntityType(BlockEntityType<?> blockEntityType) {
-        return ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(blockEntityType);
+        return BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockEntityType);
     }
 
-    public static ResourceLocation lookupBiome(Biome biome) {
-        return ForgeRegistries.BIOMES.getKey(biome);
-    }
+//    public static ResourceLocation lookupBiome(Biome biome) {
+//        return NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS.getKey(biome);
+//    }
 
-    public static ResourceLocation lookupBiome(Holder<Biome> biomeHolder) {
-        return lookupBiome(biomeHolder.get());
-    }
+//    public static ResourceLocation lookupBiome(Holder<Biome> biomeHolder) {
+//        return lookupBiome(biomeHolder.get());
+//    }
 
     public static ResourceLocation lookupFluid(Fluid fluid) {
-        return ForgeRegistries.FLUIDS.getKey(fluid);
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
     public static ResourceLocation lookupFluidType(FluidType fluidType) {

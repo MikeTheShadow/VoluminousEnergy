@@ -17,10 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,13 +105,15 @@ public class VESetup {
     private static List<ItemStack> assembleItemsFromDeferredRegistry(DeferredRegister<Item> deferredRegister) {
         ArrayList<ItemStack> stackStore = new ArrayList<>();
 
-        for (RegistryObject<Item> itemRegistryObject : deferredRegister.getEntries()) {
+        for (DeferredHolder<Item,? extends Item> itemRegistryObject : deferredRegister.getEntries()) {
             Item item = itemRegistryObject.get();
 
-            if (item instanceof VEEnergyItem veEnergyItem) {
+            if (item instanceof VEEnergyItem) {
                 ItemStack unchargedStack = new ItemStack(item);
                 ItemStack chargedStack = new ItemStack(item);
-                chargedStack.getOrCreateTag().putInt("energy", veEnergyItem.getMaxEnergy());
+
+                IEnergyStorage storage = chargedStack.getCapability(Capabilities.EnergyStorage.ITEM);
+                storage.receiveEnergy(storage.getMaxEnergyStored(),false);
 
                 List<ItemStack> energyItemCollection = List.of(unchargedStack, chargedStack);
                 stackStore.addAll(energyItemCollection);

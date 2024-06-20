@@ -75,7 +75,7 @@ public class VEAndedMultiBiomeModifier implements BiomeModifier {
 
         if (Config.WORLD_GEN_LOGGING.get()) {
             VoluminousEnergy.LOGGER.info("Voluminous Energy has received a successful biome modify event. ");
-            VoluminousEnergy.LOGGER.info("Biome is: " + RegistryLookups.lookupBiome(biome.value()));
+//            VoluminousEnergy.LOGGER.info("Biome is: " + RegistryLookups.lookupBiome(biome.value()));
             VoluminousEnergy.LOGGER.info("Biome Keys of biome in question: ");
             biome.getTagKeys().forEach(key -> System.out.print(key.toString() + ", "));
             VoluminousEnergy.LOGGER.info("\nWhitelisted Keys for this AND rule: ");

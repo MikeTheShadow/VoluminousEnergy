@@ -18,8 +18,8 @@ public record VEOreBiomeModifier(HolderSet<Biome> biomes, Holder<PlacedFeature> 
         if (phase != Phase.ADD) return;
 
         if (Config.WORLD_GEN_LOGGING.get()) {
-            System.out.println("DEBUG: " + RegistryLookups.lookupBiome(biome) + " ACTIVE KEYS:\n"
-                    + biome.getTagKeys().toString());
+//            System.out.println("DEBUG: " + RegistryLookups.lookupBiome(biome) + " ACTIVE KEYS:\n"
+//                    + biome.getTagKeys().toString());
         }
 
         // add a feature to all specified biomes

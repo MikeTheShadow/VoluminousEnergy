@@ -6,7 +6,7 @@ import com.veteam.voluminousenergy.items.batteries.VEEnergyItem;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class BatteryBoxProcessor implements AbstractRecipeProcessor {
@@ -24,16 +24,18 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
 
         ItemStack stack = tile.getStackInSlot(0);
 
-        stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> {
-            VEEnergyStorage storage = tile.getEnergy();
-            if (tile.sendsOutPower()) {
-                if (dischargeItem(stack, itemEnergy, storage))
-                    moveItem(tile);
-            } else {
-                if (chargeItem(stack, itemEnergy, storage))
-                    moveItem(tile);
-            }
-        });
+        IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+
+        if(itemEnergy == null) return;
+
+        VEEnergyStorage storage = tile.getEnergy();
+        if (tile.sendsOutPower()) {
+            if (dischargeItem(stack, itemEnergy, storage))
+                moveItem(tile);
+        } else {
+            if (chargeItem(stack, itemEnergy, storage))
+                moveItem(tile);
+        }
     }
 
     void moveItem(VETileEntity tile) {

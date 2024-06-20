@@ -104,7 +104,7 @@ public class ToolingStationContainer extends VEContainer {
 
                 try {
                     // Handle bucket with fluid
-                    Fluid slotFluid = ((BucketItem) slotStack.getItem()).getFluid();
+                    Fluid slotFluid = ((BucketItem) slotStack.getItem()).content;
 
 //                    if (RecipeUtil.isCombustibleFuel(slotFluid, this.tileEntity.getLevel()) && !moveItemStackTo(slotStack, 0, 1, false)){
 //                        return ItemStack.EMPTY;

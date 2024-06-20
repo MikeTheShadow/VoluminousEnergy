@@ -19,6 +19,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainers;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntities;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntityFactory;
+import com.veteam.voluminousenergy.util.VEClientSide;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -407,7 +408,7 @@ public class VEBlocks {
             container = VE_CONTAINER_REGISTRY.register(name, () ->
                     IMenuTypeExtension.create((id, inv, data) -> {
                         BlockPos pos = data.readBlockPos();
-                        return containerFactory.get().create(id, VoluminousEnergy.proxy.getClientWorld(), pos, inv, VoluminousEnergy.proxy.getClientPlayer());
+                        return containerFactory.get().create(id, VEClientSide.getClientWorld(), pos, inv, VEClientSide.getPlayer());
                     }));
 
         }

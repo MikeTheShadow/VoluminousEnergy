@@ -7,6 +7,8 @@ import com.veteam.voluminousenergy.recipe.StirlingGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.ToolingRecipe;
 import com.veteam.voluminousenergy.recipe.SawmillRecipe;
 import com.veteam.voluminousenergy.util.RegistryLookups;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -19,7 +21,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
@@ -236,14 +237,14 @@ public class RecipeUtil {
     public static FluidStack pullFluidFromJSON(String id, JsonObject json) {
         ResourceLocation bucketResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get(id).getAsJsonObject(), "fluid", "minecraft:empty"), ':');
         int firstAmount = GsonHelper.getAsInt(json.get(id).getAsJsonObject(), "amount", 0);
-        return new FluidStack(Objects.requireNonNull(ForgeRegistries.FLUIDS.getValue(bucketResourceLocation)), firstAmount);
+        return new FluidStack(Objects.requireNonNull(BuiltInRegistries.FLUID.get(bucketResourceLocation)), firstAmount);
     }
 
     public static ItemStack pullItemFromJSON(String id, JsonObject json) {
         ResourceLocation itemResourceLocation = ResourceLocation.of(GsonHelper.getAsString(json.get(id).getAsJsonObject(), "item", "minecraft:empty"), ':');
         int count = GsonHelper.getAsInt(json.get(id).getAsJsonObject(), "amount", 1);
 
-        return new ItemStack(ForgeRegistries.ITEMS.getValue(itemResourceLocation), count);
+        return new ItemStack(BuiltInRegistries.ITEM.get(itemResourceLocation), count);
     }
 
     public static Ingredient modifyIngredientAmounts(Ingredient ingredient, int amounts) {
@@ -266,14 +267,14 @@ public class RecipeUtil {
         }
 
         if (!isTag) {
-            Item item = ForgeRegistries.ITEMS.getValue(location);
+            Item item = BuiltInRegistries.ITEM.get(location);
             if (item == null) {
                 throw new IllegalStateException("Fluid does not exist for a recipe!");
             }
             return Ingredient.of(new ItemStack(item, count));
         }
 
-        TagKey<Item> tag = TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), location);
+        TagKey<Item> tag = TagKey.create(Registries.ITEM, location);
 
         return RecipeUtil.modifyIngredientAmounts(Ingredient.of(tag), count);
     }

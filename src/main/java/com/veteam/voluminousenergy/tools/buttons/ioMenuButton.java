@@ -8,8 +8,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.api.distmarker.Dist;
-import net.neoforged.neoforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static net.minecraft.client.Minecraft.getInstance;
 
