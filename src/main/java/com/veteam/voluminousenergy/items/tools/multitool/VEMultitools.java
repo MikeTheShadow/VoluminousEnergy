@@ -3,14 +3,14 @@ package com.veteam.voluminousenergy.items.tools.multitool;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.BitItem;
 import com.veteam.voluminousenergy.items.tools.multitool.bits.VEMultitoolBits;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
 public class VEMultitools {
-    public static final DeferredRegister<Item> VE_MULTITOOL_ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, VoluminousEnergy.MODID);
+    public static final DeferredRegister<Item> VE_MULTITOOL_ITEM_REGISTRY = DeferredRegister.create(Registries.ITEM, VoluminousEnergy.MODID);
     public static Item.Properties MULTITOOL_PROPERTIES = new Item.Properties().stacksTo(1);
 
     // Multitools
