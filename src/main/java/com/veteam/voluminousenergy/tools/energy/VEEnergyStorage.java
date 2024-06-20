@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.tools.energy;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -42,13 +41,6 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         }
     }
 
-    /*@Override
-    public CompoundTag serializeNBT(){
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("energy", getEnergyStored());
-        return tag;
-    }*/
-
     public void serializeNBT(CompoundTag tag) {
         tag.putInt("energy", getEnergyStored());
         tag.putInt("energy_production", production);
@@ -67,23 +59,12 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
         return new VEEnergyStorage(capacity, maxReceive, production, consumption, upgradeSlotId);
     }
 
-    public void setMaxReceive(int amount) {
-        this.maxReceive = amount;
-    }
-
     public void setConsumption(int consumption) {
         this.consumption = consumption;
     }
 
     public void setProduction(int production) {
         this.production = production;
-    }
-
-    @Override
-    public void deserializeNBT(Tag nbt) {
-        if (!(nbt instanceof IntTag intNbt))
-            throw new IllegalArgumentException("VEEnergyStorage: Cannot deserialize to an instance that isn't the default implementation!");
-        setEnergy(intNbt.getAsInt());
     }
 
     public void setUpgradeSlotId(int upgradeSlotId) {
@@ -96,10 +77,6 @@ public class VEEnergyStorage extends EnergyStorage implements INBTSerializable<T
 
     public int getConsumption() {
         return consumption;
-    }
-
-    public int getMaxTransfer() {
-        return maxReceive;
     }
 
     public int getUpgradeSlotId() {

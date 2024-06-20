@@ -100,7 +100,7 @@ public class BasicParser {
             FluidStack stack = tile.getFluidStackFromTank(pos.tilePos());
             FluidStack result = recipe.getOutputFluid(pos.recipePos());
             if (stack.isEmpty()) continue;
-            if (!stack.isFluidEqual(result) || result.getAmount() + stack.getAmount() > tile.getTankCapacity(pos.tilePos()))
+            if (!stack.is(result.getFluid()) || result.getAmount() + stack.getAmount() > tile.getTankCapacity(pos.tilePos()))
                 return false;
         }
         return true;

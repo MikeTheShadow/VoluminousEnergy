@@ -4,11 +4,10 @@ import com.veteam.voluminousenergy.items.VEItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.common.extensions.IForgeItem;
 
 import javax.annotation.Nullable;
 
-public class Rosin extends VEItem implements IForgeItem {
+public class Rosin extends VEItem {
     public Rosin() {
         super(new Item.Properties()
                 .stacksTo(64)

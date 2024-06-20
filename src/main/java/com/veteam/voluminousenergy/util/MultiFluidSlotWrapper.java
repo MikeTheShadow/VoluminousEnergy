@@ -5,6 +5,7 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.tools.Config;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -52,10 +53,10 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
 
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
+    public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
         for (VERelationalTank tank : tanks) {
             if (tank.getTankType() == TankType.OUTPUT) continue;
-            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.isFluidEqual(tank.getTank().getFluid()))) {
+            if (isFluidValid(tank.getSlotNum(), resource) && (tank.getTank().isEmpty() || resource.is(tank.getTank().getFluid().getFluid()))) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().fill(resource.copy(), action);
             }
@@ -74,7 +75,7 @@ public class MultiFluidSlotWrapper implements IFluidHandler {
             if (!Config.ALLOW_EXTRACTION_FROM_INPUT_TANKS.get()) {
                 if (tank.getTankType() != TankType.OUTPUT && tank.getTankType() != TankType.BOTH) continue;
             }
-            if (resource.isFluidEqual(tank.getTank().getFluid())) {
+            if (resource.is(tank.getTank().getFluid().getFluid())) {
                 if (tank.getTank().getFluid().getAmount() != tank.getTank().getCapacity()) tileEntity.markRecipeDirty();
                 return tank.getTank().drain(resource.copy(), action);
             }

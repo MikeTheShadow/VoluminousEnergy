@@ -13,6 +13,7 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.*;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -132,8 +133,8 @@ public class VoluminousEnergyPlugin implements IModPlugin {
         ArrayList<ItemStack> tieredMysteriousMultipliers = new ArrayList<>();
         for (MysteriousMultiplier.QualityTier tier : MysteriousMultiplier.QUALITY_TIERS) {
             ItemStack multiplier = new ItemStack(VEItems.MYSTERIOUS_MULTIPLIER.get());
-            multiplier.getOrCreateTag().putFloat("multiplier", MysteriousMultiplier.REFERENCE_MULTIPLIER_VALUES.get(tier));
-            multiplier.getOrCreateTag().putBoolean("jei", true);
+            multiplier.set(VEDataComponents.IS_JEI,true);
+            multiplier.set(VEDataComponents.MULTIPLIER_DATA,MysteriousMultiplier.REFERENCE_MULTIPLIER_VALUES.get(tier));
             tieredMysteriousMultipliers.add(multiplier);
         }
         registration.addIngredientInfo(tieredMysteriousMultipliers, VanillaTypes.ITEM_STACK, TextUtil.translateString("jei.voluminousenergy.mysterious_multiplier_info"));

@@ -1,7 +1,9 @@
 package com.veteam.voluminousenergy.items.upgrades;
 
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.Entity;
@@ -9,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -22,14 +25,14 @@ public class MysteriousMultiplier extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @NotNull TooltipContext pContext,@NotNull List<Component> tooltip,@NotNull TooltipFlag flag) {
         Component componentToAdd = TextUtil.translateString("text.voluminousenergy.quality").copy().append(": ");
 
-        if (stack.getTag() == null) {
+        float multiplier = stack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0f);
+
+        if (multiplier == 0) {
             componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.unidentified")).withStyle(ChatFormatting.BOLD);
         } else {
-            float multiplier = stack.getTag().getFloat("multiplier");
-
             if (multiplier >= 0.65F) {
                 componentToAdd = componentToAdd.copy().append(TextUtil.translateString("text.voluminousenergy.quality.basic")).withStyle(ChatFormatting.WHITE);
             } else if (multiplier >= 0.5F) {
@@ -63,8 +66,12 @@ public class MysteriousMultiplier extends Item {
     }
 
     public Component appendInfoForJEI(Component tooltip, ItemStack stack) {
-        if (stack.getTag() != null && stack.getTag().contains("jei") && stack.getTag().contains("multiplier")) {
-            QualityTier tier = getQualityTier(stack.getTag().getFloat("multiplier"));
+
+        boolean isJei = stack.getOrDefault(VEDataComponents.IS_JEI,false);
+        float value = stack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0f);
+
+        if (isJei) {
+            QualityTier tier = getQualityTier(value);
             tooltip = switch (tier) {
                 case NULL -> tooltip.copy();
                 case BASIC -> tooltip.copy().append("1x ~ 0.65x");
@@ -84,12 +91,10 @@ public class MysteriousMultiplier extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
-        if (stack.getTag() == null && !level.isClientSide()) ;
-        else if (level.isClientSide() || !stack.getTag().isEmpty()) return;
-
+    public void inventoryTick(@NotNull ItemStack stack, Level level, @NotNull Entity entity, int num, boolean bool) {
+        if(level.isClientSide || stack.has(VEDataComponents.MULTIPLIER_DATA)) return;
         float multiplier = level.getRandom().nextFloat() * (0.75F - 0.005F) + 0.005F;
-        stack.getOrCreateTag().putFloat("multiplier", multiplier);
+        stack.set(VEDataComponents.MULTIPLIER_DATA,multiplier);
     }
 
 

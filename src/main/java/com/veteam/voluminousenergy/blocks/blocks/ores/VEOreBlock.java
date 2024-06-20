@@ -7,7 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class VEOreBlock extends VEBlock implements IForgeBlock {
+public class VEOreBlock extends VEBlock {
     public VEOreBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }

@@ -45,7 +45,6 @@ public class CombustibleFluidsData {
         }
     }
 
-
     public static boolean isCombustible(FluidStack stack) {
         buildCache();
         return combustibleFluidData.containsKey(stack.getFluid());

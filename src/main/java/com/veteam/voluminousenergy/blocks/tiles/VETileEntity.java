@@ -1,5 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
+import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.TankBlock;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
 import com.veteam.voluminousenergy.blocks.tiles.state.AbstractTileAddon;
 import com.veteam.voluminousenergy.blocks.tiles.state.CustomAddon;
@@ -15,6 +16,7 @@ import com.veteam.voluminousenergy.util.tiles.CapabilityMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -40,7 +42,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
@@ -224,6 +224,9 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
      * @return the new counter int.
      */
     private int calculateCounter(int processTime, ItemStack upgradeStack) {
+
+        float multiplier = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0F);
+
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
@@ -231,15 +234,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             } else {
                 return (-45 * upgradeStack.getCount()) + processTime;
             }
-        } else if (!upgradeStack.isEmpty() && TagUtil.isTaggedMachineUpgradeItem(upgradeStack)) {
-            CompoundTag compound = upgradeStack.getTag();
-            return compound != null ? (int) (processTime * compound.getFloat("multiplier")) : processTime;
+        } else if (multiplier != 0) {
+            return (int) (processTime * multiplier);
         }
         return processTime;
     }
 
     protected int consumptionMultiplier(int consumption, int slot) {
         ItemStack upgradeStack = slot == -1 ? ItemStack.EMPTY : getInventory().getStackInSlot(slot);
+
+        float upgradeMulti = upgradeStack.getOrDefault(VEDataComponents.MULTIPLIER_DATA,0.0f);
+
         if (upgradeStack.getItem() == VEItems.QUARTZ_MULTIPLIER.get()) {
             int count = upgradeStack.getCount();
             if (count == 4) {
@@ -251,11 +256,8 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             } else if (count == 1) {
                 return consumption * 2;
             }
-        } else if (!upgradeStack.isEmpty() && TagUtil.isTaggedMachineUpgradeItem(upgradeStack)) {
-            CompoundTag compound = upgradeStack.getTag();
-            float multiplier = compound != null ? compound.getFloat("multiplier") : 1;
-            MysteriousMultiplier.QualityTier qualityTier = MysteriousMultiplier.getQualityTier(multiplier);
-
+        } else if (upgradeMulti != 0) {
+            MysteriousMultiplier.QualityTier qualityTier = MysteriousMultiplier.getQualityTier(upgradeMulti);
             return (int) switch (qualityTier) {
                 case NULL -> consumption;
                 case BASIC -> consumption * 1.15;
@@ -270,7 +272,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 case LEGENDARY -> consumption * 14;
                 case MYTHIC -> consumption * 16;
             };
-
         }
         return consumption;
     }
@@ -281,6 +282,16 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         CompoundTag compoundTag = new CompoundTag();
         this.saveAdditional(compoundTag,registry);
         return compoundTag;
+    }
+
+    @Override
+    public void setComponents(DataComponentMap pComponents) {
+        super.setComponents(pComponents);
+    }
+
+    @Override
+    public DataComponentMap components() {
+        return super.components();
     }
 
     /**
@@ -524,18 +535,15 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return this.inventory.getStackInSlot(slot);
     }
 
-    /**
+    /*
      * When a data packet is received load it.
-     *
-     * @param net Connection
-     * @param pkt ClientboundBlockEntityDataPacket
      */
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if (energy != null && pkt.getTag() != null && pkt.getTag().contains("energy"))
+    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider) {
+        if (energy != null && pkt.getTag().contains("energy"))
             energy.setEnergy(pkt.getTag().getInt("energy"));
-        this.load(pkt.getTag());
-        super.onDataPacket(net, pkt);
+        this.loadAdditional(pkt.getTag(),lookupProvider);
+        super.onDataPacket(net, pkt,lookupProvider);
     }
 
     public int progressBurnCounterPX(int px) {
