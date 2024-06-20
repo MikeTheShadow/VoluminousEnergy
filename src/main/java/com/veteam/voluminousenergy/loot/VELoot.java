@@ -1,31 +1,30 @@
 package com.veteam.voluminousenergy.loot;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
-import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
 
 public class VELoot {
-    public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> VE_LOOT_MODIFIER_REGISTRY = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, VoluminousEnergy.MODID);
+    public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> VE_LOOT_MODIFIER_REGISTRY = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, VoluminousEnergy.MODID);
 
-    public static RegistryObject<Codec<AnimalFatLootModifier>> ANIMAL_FAT_LOOT_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
-            "animal_fat", AnimalFatLootModifier.CODEC);
-
-    public static RegistryObject<Codec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
-            "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
+    // TODO: MAP CODECS
+//    public static Supplier<Codec<AnimalFatLootModifier>> ANIMAL_FAT_LOOT_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
+//            "animal_fat", AnimalFatLootModifier.CODEC);
+//
+//    public static Supplier<Codec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
+//            "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
 
     private VELoot() {
     }
 
-    public static final List<ResourceLocation> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
+    public static final List<ResourceKey<LootTable>> SPAWN_MYSTERIOUS_MULTIPLIERS_IN = List.of(
             BuiltInLootTables.BASTION_BRIDGE,
             BuiltInLootTables.END_CITY_TREASURE,
             BuiltInLootTables.SIMPLE_DUNGEON,
