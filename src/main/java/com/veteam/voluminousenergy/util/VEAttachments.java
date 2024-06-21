@@ -43,6 +43,6 @@ public class VEAttachments {
                     -> false).serialize(Codec.BOOL).build());
 
     public static final Supplier<AttachmentType<BlastFurnaceData>> BLAST_FURNACE_DATA = ATTACHMENT_TYPE_DEFERRED_REGISTER.register(
-            "counter_length", () -> AttachmentType.builder((iAttachmentHolder)
+            "blast_furnace_data", () -> AttachmentType.builder((iAttachmentHolder)
                     -> new BlastFurnaceData(0,0,0)).serialize(BLAST_FURNACE_CODEC).build());
 }
