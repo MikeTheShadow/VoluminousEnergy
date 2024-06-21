@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.loot.modifiers;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.util.RandomSource;
@@ -16,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class AnimalFatLootModifier extends LootModifier {
-    public static final Supplier<Codec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
-            RecordCodecBuilder.create(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
+    public static final Supplier<MapCodec<AnimalFatLootModifier>> CODEC = Suppliers.memoize(() ->
+            RecordCodecBuilder.mapCodec(animalFatLootModifierInstance -> animalFatLootModifierInstance.group(
                             LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(AnimalFatLootModifier::getLootItemConditions),
                             ItemStack.CODEC.fieldOf("addition").forGetter(AnimalFatLootModifier::getItemStackAddition),
                             Codec.INT.fieldOf("minimum_count").forGetter(AnimalFatLootModifier::getMinAmount),
@@ -64,7 +65,7 @@ public class AnimalFatLootModifier extends LootModifier {
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
+    public MapCodec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 

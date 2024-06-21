@@ -121,6 +121,10 @@ public class TextUtil {
         return fluidNameAndAmountWithUnitsAndColours(new FluidStack(fluid, amount).getHoverName(), amount);
     }
 
+    public static Component fluidNameAndAmountWithUnitsAndColours(Component component, int amount) {
+        return fluidNameAndAmountWithUnitsAndColours(component.getString(), amount);
+    }
+
     public static Component fluidNameAndAmountWithUnitsAndColours(String fluidTranslationKey, int amount) {
         String translateString = TextUtil.translateString(fluidTranslationKey).getString();
 
