@@ -144,7 +144,7 @@ public class Multitool extends VEItem /*implements Vanishable*/ {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState blockState) {
-        return this.bit != null ? this.bit.isCorrectToolForDrops(blockState) : false;
+        return this.bit != null ? this.bit.isCorrectToolForDrops(stack, blockState) : false;
     }
 
     // Trimmer Multitool stuff

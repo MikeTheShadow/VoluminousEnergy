@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
@@ -22,6 +23,25 @@ public class TagUtil {
             fluids.add(holder.value());
         }
         return fluids;
+    }
+
+    public static ArrayList<Block> getBlocksFromTagResourceLocation(ResourceLocation blockTagLocation) {
+        TagKey<Block> blockTagKey = TagKey.create(Registries.BLOCK, blockTagLocation);
+        ArrayList<Block> blocks = new ArrayList<>();
+
+        for (Holder<Block> holder : BuiltInRegistries.BLOCK.getTagOrEmpty(blockTagKey)) {
+            blocks.add(holder.value());
+        }
+        return blocks;
+    }
+
+    public static ArrayList<Block> getBlocksFromTagKey(TagKey<Block> blockTagKey) {
+        ArrayList<Block> blocks = new ArrayList<>();
+
+        for (Holder<Block> holder : BuiltInRegistries.BLOCK.getTagOrEmpty(blockTagKey)) {
+            blocks.add(holder.value());
+        }
+        return blocks;
     }
 
     public static ArrayList<Fluid> getFluidListFromTagResourceLocation(ResourceLocation fluidTagLocation) {
