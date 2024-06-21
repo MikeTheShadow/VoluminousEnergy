@@ -64,8 +64,6 @@ public class VoluminousEnergy {
     public static final Logger LOGGER = LogManager.getLogger();
 
     static {
-        System.out.println("Hello World!");
-        LOGGER.info("Hello World!");
         VoluminousEnergy voluminousEnergy = new VoluminousEnergy();
         voluminousEnergy.init();
     }
