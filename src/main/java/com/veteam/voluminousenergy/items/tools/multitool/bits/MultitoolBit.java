@@ -2,6 +2,7 @@ package com.veteam.voluminousenergy.items.tools.multitool.bits;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
@@ -63,8 +65,14 @@ public class MultitoolBit {
         return this.action.contains(action);
     }
 
-    public boolean isCorrectToolForDrops(BlockState blockState) {
-        return blockState.is(this.mineableBlocks); //TODO fix me
-//                && net.neoforged.neoforge.common.TierSortingRegistry.isCorrectTierForDrops(this.tier, blockState);
+    public boolean isCorrectToolForDrops(ItemStack itemStack, BlockState blockState) {
+        Tool tool = itemStack.get(DataComponents.TOOL);
+        boolean toolValid = true;
+
+        if (tool != null) {
+            toolValid = tool.isCorrectForDrops(blockState);
+        }
+
+        return blockState.is(this.mineableBlocks) && toolValid;
     }
 }
