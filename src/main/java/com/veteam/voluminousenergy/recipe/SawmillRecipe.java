@@ -22,7 +22,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class SawmillRecipe extends VERecipe {
@@ -48,7 +47,7 @@ public class SawmillRecipe extends VERecipe {
 
     private static final RecipeSerializer<SawmillRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<SawmillRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<SawmillRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
@@ -60,7 +59,7 @@ public class SawmillRecipe extends VERecipe {
 
         @Override
         public @NotNull MapCodec<SawmillRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

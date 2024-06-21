@@ -37,7 +37,7 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
     public static final RecipeSerializer<CrusherRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CrusherRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<CrusherRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
@@ -48,7 +48,7 @@ public class CrusherRecipe extends VERNGExperienceRecipe {
 
         @Override
         public @NotNull MapCodec<CrusherRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

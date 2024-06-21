@@ -52,7 +52,7 @@ public class DimensionalLaserRecipe extends VERecipe {
 
     public static final RecipeSerializer<DimensionalLaserRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<DimensionalLaserRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_MIN_MAX_FLUID_CODEC.fieldOf("region_fluid").forGetter((getter) -> getter.fluidMinMax),
                 VERecipeCodecs.VE_CLIMATE_CODEC.fieldOf("climate").forGetter((getter) -> getter.climateData)
         ).apply(instance, DimensionalLaserRecipe::new));
@@ -61,7 +61,7 @@ public class DimensionalLaserRecipe extends VERecipe {
 
         @Override
         public @NotNull MapCodec<DimensionalLaserRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

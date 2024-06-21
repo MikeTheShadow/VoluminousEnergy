@@ -1,6 +1,7 @@
 package com.veteam.voluminousenergy.world.modifiers;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.RegistryLookups;
 import net.minecraft.core.Holder;
@@ -29,7 +30,7 @@ public record VEOreBiomeModifier(HolderSet<Biome> biomes, Holder<PlacedFeature> 
     }
 
     @Override
-    public Codec<? extends BiomeModifier> codec() {
+    public MapCodec<? extends BiomeModifier> codec() {
         return VEModifiers.VE_ORE_BIOME_MODIFIER.get();
     }
 }

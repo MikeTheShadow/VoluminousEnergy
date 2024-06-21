@@ -42,7 +42,7 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
     public static final RecipeSerializer<CentrifugalSeparatorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CentrifugalSeparatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<CentrifugalSeparatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_CHANCED_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.itemResultsWithChance),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
@@ -52,7 +52,7 @@ public class CentrifugalSeparatorRecipe extends VERNGRecipe {
 
         @Override
         public @NotNull MapCodec<CentrifugalSeparatorRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

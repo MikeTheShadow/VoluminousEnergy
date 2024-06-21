@@ -34,7 +34,7 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
     public static final RecipeSerializer<StirlingGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<StirlingGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<StirlingGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime),
                 Codec.INT.fieldOf("energy_per_tick").forGetter((getter) -> getter.processTime)
@@ -44,7 +44,7 @@ public class StirlingGeneratorRecipe extends VEEnergyRecipe {
 
         @Override
         public @NotNull MapCodec<StirlingGeneratorRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

@@ -35,7 +35,7 @@ public class CompressorRecipe extends VERecipe {
 
     public static final RecipeSerializer<CompressorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<CompressorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
@@ -45,7 +45,7 @@ public class CompressorRecipe extends VERecipe {
 
         @Override
         public @NotNull MapCodec<CompressorRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

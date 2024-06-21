@@ -37,17 +37,17 @@ public class PrimitiveBlastFurnaceRecipe extends VERecipe {
 
     public static final RecipeSerializer<PrimitiveBlastFurnaceRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Lazy<Codec<PrimitiveBlastFurnaceRecipe>> VE_RECIPE_CODEC = Lazy.of(() -> RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<PrimitiveBlastFurnaceRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_LAZY_INGREDIENT_CODEC.listOf().fieldOf("ingredients").forGetter((getter) -> getter.registryIngredients),
                 VERecipeCodecs.VE_OUTPUT_ITEM_CODEC.listOf().fieldOf("item_results").forGetter((getter) -> getter.results),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
-        ).apply(instance, PrimitiveBlastFurnaceRecipe::new)));
+        ).apply(instance, PrimitiveBlastFurnaceRecipe::new));
 
         private static final IngredientSerializerHelper<PrimitiveBlastFurnaceRecipe> helper = new IngredientSerializerHelper<>();
 
         @Override
         public @NotNull MapCodec<PrimitiveBlastFurnaceRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC.get());
+            return VE_RECIPE_CODEC;
         }
 
         @Override

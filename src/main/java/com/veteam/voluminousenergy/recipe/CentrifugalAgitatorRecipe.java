@@ -37,7 +37,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
     public static final RecipeSerializer<CentrifugalAgitatorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CentrifugalAgitatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<CentrifugalAgitatorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients),
                 VERecipeCodecs.VE_OUTPUT_FLUID_CODEC.listOf().fieldOf("fluid_results").forGetter((getter) -> getter.fluidOutputList),
                 Codec.INT.fieldOf("process_time").forGetter((getter) -> getter.processTime)
@@ -47,7 +47,7 @@ public class CentrifugalAgitatorRecipe extends VERecipe {
 
         @Override
         public @NotNull MapCodec<CentrifugalAgitatorRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override

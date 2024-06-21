@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class VELandCrop extends BushBlock implements BonemealableBlock {
 
@@ -97,9 +98,9 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
 
     // Action on use
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public @NotNull InteractionResult useWithoutItem(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if (age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)) {
+        if (age < 2 && player.getItemInHand(player.getUsedItemHand()).is(Items.BONE_MEAL)) {
             return InteractionResult.PASS;
         } else if (age > 1) {
             popResource(world, pos, new ItemStack(Items.WHEAT_SEEDS, 1));
@@ -107,7 +108,7 @@ public class VELandCrop extends BushBlock implements BonemealableBlock {
             world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.AGE_2, 0)); // may not work
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return super.use(state, world, pos, player, handIn, hit);
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
 
     // Voluminous Energy 1.19 port

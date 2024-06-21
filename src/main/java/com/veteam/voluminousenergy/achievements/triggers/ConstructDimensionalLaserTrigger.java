@@ -35,14 +35,12 @@ public class ConstructDimensionalLaserTrigger extends SimpleCriterionTrigger<Con
         });
     }
 
-    public static record TriggerInstance(Optional<ContextAwarePredicate> player,
-                                         MinMaxBounds.Ints level) implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create((p_312562_) -> {
-            return p_312562_.group(ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player")
-                            .forGetter(TriggerInstance::player),
-                    ExtraCodecs.strictOptionalField(MinMaxBounds.Ints.CODEC, "level",
-                            MinMaxBounds.Ints.ANY).forGetter(TriggerInstance::level)).apply(p_312562_, TriggerInstance::new);
-        });
+    public record TriggerInstance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints level) implements SimpleCriterionTrigger.SimpleInstance {
+        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create((p_312562_) ->
+                p_312562_.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player")
+                        .forGetter(TriggerInstance::player),
+                MinMaxBounds.Ints.CODEC.optionalFieldOf("level", MinMaxBounds.Ints.ANY)
+                        .forGetter(TriggerInstance::level)).apply(p_312562_, TriggerInstance::new));
 
         public TriggerInstance(Optional<ContextAwarePredicate> player, MinMaxBounds.Ints level) {
             this.player = player;

@@ -29,6 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -185,9 +186,9 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
 
     // Action on use
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public @NotNull InteractionResult useWithoutItem(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         int age = state.getValue(BlockStateProperties.AGE_2);
-        if (age < 2 && player.getItemInHand(handIn).is(Items.BONE_MEAL)) {
+        if (age < 2 && player.getItemInHand(player.getUsedItemHand()).is(Items.BONE_MEAL)) {
             return InteractionResult.PASS;
         } else if (age > 1 && world.getBlockState(pos.above()).getBlock() != this.defaultBlockState().getBlock()) { // Make sure the player isn't targetting the bottom
             popResource(world, pos, new ItemStack(cropItem(), 1));
@@ -196,7 +197,7 @@ public class VEWaterCrop extends BushBlock implements BonemealableBlock, SimpleW
             place(world, pos, 18); // Place the crop in it's initial state
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return super.use(state, world, pos, player, handIn, hit);
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
 
     // Voluminous Energy 1.19 port

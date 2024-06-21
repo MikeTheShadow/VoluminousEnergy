@@ -34,7 +34,7 @@ public class CombustionGeneratorRecipe extends VERecipe {
 
     public static final RecipeSerializer<CombustionGeneratorRecipe> SERIALIZER = new RecipeSerializer<>() {
 
-        public static final Codec<CombustionGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+        public static final MapCodec<CombustionGeneratorRecipe> VE_RECIPE_CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 VERecipeCodecs.VE_FLUID_INGREDIENT_CODEC.listOf().fieldOf("fluid_ingredients").forGetter((getter) -> getter.registryFluidIngredients)
         ).apply(instance, CombustionGeneratorRecipe::new));
 
@@ -42,7 +42,7 @@ public class CombustionGeneratorRecipe extends VERecipe {
 
         @Override
         public @NotNull MapCodec<CombustionGeneratorRecipe> codec() {
-            return MapCodec.assumeMapUnsafe(VE_RECIPE_CODEC);
+            return VE_RECIPE_CODEC;
         }
 
         @Override
