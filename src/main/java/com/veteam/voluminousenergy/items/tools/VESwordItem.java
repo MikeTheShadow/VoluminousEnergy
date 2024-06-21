@@ -2,7 +2,7 @@ package com.veteam.voluminousenergy.items.tools;
 
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.ToolUtil;
-import net.minecraft.nbt.CompoundTag;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -17,32 +17,31 @@ import java.util.List;
 import static net.minecraft.util.Mth.abs;
 
 public class VESwordItem extends SwordItem {
-    public VESwordItem(Tier p_i48460_1_, int p_i48460_2_, float p_i48460_3_, Properties p_i48460_4_) {
-        super(p_i48460_1_, p_i48460_2_, p_i48460_3_, p_i48460_4_);
+    public VESwordItem(Tier tier, Properties properties) {
+        super(tier, properties);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         ToolUtil.SolariumTooltipAppend(stack, tooltip);
-        super.appendHoverText(stack, world, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        CompoundTag tag = stack.getTag();
+        Integer solariumBonus = stack.get(VEDataComponents.SOLARIUM_DURABILITY_BONUS);
 
-        if (tag == null) {
-            stack.getOrCreateTag().putInt("bonus", Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get());
+        if (solariumBonus == null) {
+            stack.set(VEDataComponents.SOLARIUM_DURABILITY_BONUS, Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get());
             return;
         }
 
-        if (tag.getInt("bonus") > 0) {
-            int bonus = tag.getInt("bonus");
-            if (bonus >= damage) {
-                stack.getOrCreateTag().putInt("bonus", (bonus - damage));
+        if (solariumBonus > 0) {
+            if (solariumBonus >= damage) {
+                stack.set(VEDataComponents.SOLARIUM_DURABILITY_BONUS, (solariumBonus - damage));
             } else {
-                int difference = damage - bonus;
-                stack.getOrCreateTag().putInt("bonus", difference);
+                int difference = damage - solariumBonus;
+                stack.set(VEDataComponents.SOLARIUM_DURABILITY_BONUS, difference);
                 super.setDamage(stack, difference);
             }
         } else {
@@ -52,9 +51,9 @@ public class VESwordItem extends SwordItem {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int num, boolean bool) {
-        if (stack.getTag() == null || level.isClientSide()) return;
+        if (level.isClientSide() || !stack.has(VEDataComponents.SOLARIUM_DURABILITY_BONUS) ) return;
 
-        int bonus = stack.getTag().getInt("bonus");
+        int bonus = stack.get(VEDataComponents.SOLARIUM_DURABILITY_BONUS);
 
         if (level.canSeeSky(entity.getOnPos().above(2)) && bonus < Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()) {
 
@@ -63,7 +62,7 @@ public class VESwordItem extends SwordItem {
                 return; // Inversed due to returning (not executing) if condition is true
 
             bonus++;
-            stack.getTag().putInt("bonus", Math.min(bonus, Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()));
+            stack.set(VEDataComponents.SOLARIUM_DURABILITY_BONUS, Math.min(bonus, Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get()));
         }
     }
 }

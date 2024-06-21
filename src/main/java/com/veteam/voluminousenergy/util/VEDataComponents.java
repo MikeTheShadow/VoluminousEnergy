@@ -3,7 +3,6 @@ package com.veteam.voluminousenergy.util;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.core.component.DataComponentType;
@@ -23,6 +22,8 @@ public class VEDataComponents {
 
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_DEFERRED_REGISTER
             = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, VoluminousEnergy.MODID);
+
+    // DATA COMPONENTS
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidStack>> FLUID_STACK_DATA =
             DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("fluid_stack_data",
@@ -53,6 +54,26 @@ public class VEDataComponents {
                                 .build();
                     }
             );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SOLARIUM_DURABILITY_BONUS =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("solarium_durability_bonus",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .networkSynchronized(ByteBufCodecs.INT)
+                                .build();
+                    });
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MECHANICAL_ENERGY =
+            DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("mechanical_energy",
+                    () -> {
+                        DataComponentType.Builder<Integer> stackBuilder = DataComponentType.builder();
+                        return stackBuilder.persistent(Codec.INT)
+                                .networkSynchronized(ByteBufCodecs.INT)
+                                .build();
+                    });
+
+    // SPECIAL CASES BELOW
 
     public static final Codec<ChunkFluidData> CHUNK_FLUID_CODEC = RecordCodecBuilder.create(instance ->
             instance.group(

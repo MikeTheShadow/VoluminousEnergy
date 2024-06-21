@@ -6,31 +6,25 @@ import com.veteam.voluminousenergy.recipe.CombustionGeneratorRecipe;
 import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.util.NumberUtil;
 import com.veteam.voluminousenergy.util.TextUtil;
-import net.minecraft.core.component.DataComponentType;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 public class CombustionMultitool extends Multitool {
 
@@ -116,45 +110,43 @@ public class CombustionMultitool extends Multitool {
     }
 
     @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-        CompoundTag tag = stack.getTag();
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Runnable onBroken) {
+        Integer usesLeftUntilRefuel = stack.get(VEDataComponents.MECHANICAL_ENERGY);
 
-        if (tag == null && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
+        if (usesLeftUntilRefuel == null && stack.getCapability(Capabilities.FluidHandler.ITEM) != null) {
             AtomicInteger volumetricEnergy = new AtomicInteger();
-            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-                FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
 
-                if (isCombustibleFuel(itemFluid.getRawFluid())) {
-                    if (fluid.getFluidInTank(0).getAmount() > 50) {
-                        fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid()) / 50);
-                        stack.getOrCreateTag().putInt("damage", volumetricEnergy.get()); // does nothing
-                    }
+            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+
+            if (isCombustibleFuel(itemFluid.getFluid())) {
+                if (fluid.getFluidInTank(0).getAmount() > 50) {
+                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
+                    stack.set(DataComponents.DAMAGE, volumetricEnergy.get());// does nothing
                 }
-
-            });
+            }
             return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1;
-        } else if (tag == null) {
+        } else if (usesLeftUntilRefuel == null) {
             return 0; // Technically this should never occur
         }
 
-        int usesLeftUntilRefuel = tag.getInt("energy");
         if (usesLeftUntilRefuel > 1) {
-            stack.getTag().putInt("energy", (usesLeftUntilRefuel - amount));
+            stack.set(VEDataComponents.MECHANICAL_ENERGY, (usesLeftUntilRefuel - amount));
             return -1;
         } else if (usesLeftUntilRefuel <= 1) {
             AtomicInteger volumetricEnergy = new AtomicInteger(0);
-            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-                FluidStack itemFluid = fluid.getFluidInTank(0).copy();
-                if (isCombustibleFuel(itemFluid.getRawFluid())) {
-                    if (fluid.getFluidInTank(0).getAmount() >= 50) {
-                        fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid()) / 50);
-                    }
-                }
+            IFluidHandlerItem fluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
 
-            });
-            stack.getOrCreateTag().putInt("energy", volumetricEnergy.get()); //  THIS RESETS THE ENERGY
+            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+            if (isCombustibleFuel(itemFluid.getFluid())) {
+                if (fluid.getFluidInTank(0).getAmount() >= 50) {
+                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                    volumetricEnergy.set(getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid()) / 50);
+                }
+            }
+
+            stack.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy.get()); //  THIS RESETS THE ENERGY
             return -(volumetricEnergy.get()) > 0 ? -(volumetricEnergy.get()) : -1; // CANNOT 0 or + result will destroy item
         }
 
@@ -172,33 +164,35 @@ public class CombustionMultitool extends Multitool {
     }
 
     public void onDestroyed(ItemStack itemStack) { // Doesn't seem to work, but should never fire with current design
-        itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> {
-            FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+        var fluid = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
 
-            if (isCombustibleFuel(itemFluid.getRawFluid())) {
-                if (fluid.getFluidInTank(0).getAmount() > 50) {
-                    fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    int volumetricEnergy = getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getRawFluid());
-                    itemFluid.getOrCreateTag().putInt("energy", volumetricEnergy);
-                }
+        FluidStack itemFluid = fluid.getFluidInTank(0).copy();
+
+        if (isCombustibleFuel(itemFluid.getFluid())) {
+            if (fluid.getFluidInTank(0).getAmount() > 50) {
+                fluid.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                int volumetricEnergy = getVolumetricEnergyFromFluid(fluid.getFluidInTank(0).getFluid());
+                itemFluid.set(VEDataComponents.MECHANICAL_ENERGY, volumetricEnergy);
             }
-        });
+        }
     }
 
 
+    @Override
     public boolean isDamaged(ItemStack stack) {
         return stack.getDamageValue() > 0;
     }
 
     @Override
     public float getDestroySpeed(ItemStack itemStack, BlockState blockStateToMine) {
-        CompoundTag tag = itemStack.getTag();
-        if (tag != null) {
-            if (tag.getInt("energy") > 1) {
+        Integer mechanicalEnergy = itemStack.get(VEDataComponents.MECHANICAL_ENERGY);
+        if (mechanicalEnergy != null) {
+            if (mechanicalEnergy > 1) {
                 return super.getDestroySpeed(itemStack, blockStateToMine);
             } else {
                 AtomicBoolean notEmpty = new AtomicBoolean(false);
-                itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluid -> notEmpty.set(!fluid.getFluidInTank(0).isEmpty()));
+                var fluid = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+                notEmpty.set(!fluid.getFluidInTank(0).isEmpty());
                 if (notEmpty.get()) {
                     return super.getDestroySpeed(itemStack, blockStateToMine);
                 }
