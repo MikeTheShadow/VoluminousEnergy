@@ -7,6 +7,8 @@ import com.veteam.voluminousenergy.recipe.parser.BasicParser;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.VEAttachments;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.sounds.SoundSource;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -44,23 +46,29 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         VEEnergyStorage energy = tile.getEnergy();
 
         if (energy == null) throw new NotImplementedException("Missing energy impl for " + tile.getDisplayName());
-        int counter = tile.getData("counter");
+
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
+        int length = counterLength.length();
+
 
         if (counter > 0) {
             if (energy.getEnergyStored() + energy.getProduction() <= energy.getCapacity() || allowOverflow) {
-                tile.setData("counter", --counter);
+                counter--;
+                tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter,length));
                 energy.addEnergy(energy.getProduction());
             }
 
             if (Config.PLAY_MACHINE_SOUNDS.get()) {
-                int sound_tick = tile.getData("sound_tick");
+                int sound_tick = tile.getData(VEAttachments.SOUND_TICK);
                 if (++sound_tick == 19) {
                     sound_tick = 0;
                     tile.getLevel().playSound(null,
                             tile.getBlockPos(),
                             VESounds.GENERAL_MACHINE_NOISE,
                             SoundSource.BLOCKS, 1.0F, 1.0F);
-                    tile.setData("sound_tick", sound_tick);
+                    tile.setData(VEAttachments.SOUND_TICK, sound_tick);
                 }
             }
             tile.setChanged();
@@ -72,10 +80,8 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
                 if (tile.getEnergy().isFullyCharged()) return;
                 // Since we're a generator we want to subtract the amounts at the start rather than at the end
                 veEnergyRecipe.getParser().completeRecipe(tile);
-
-                tile.setData("counter", veEnergyRecipe.getProcessTime());
                 tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
-                tile.setData("length", veEnergyRecipe.getProcessTime());
+                tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(veEnergyRecipe.getProcessTime(),veEnergyRecipe.getProcessTime()));
                 tile.setSelectedRecipe(null);
                 tile.setChanged();
             } else {

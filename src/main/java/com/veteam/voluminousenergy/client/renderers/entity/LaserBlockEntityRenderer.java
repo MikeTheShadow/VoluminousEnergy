@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -47,7 +48,7 @@ public class LaserBlockEntityRenderer implements BlockEntityRenderer<VETileEntit
 
     public void renderBeaconBeam(VETileEntity tile, PoseStack poseStack, MultiBufferSource multiBufferSource, float p_112188_, long gameTime, int totalHeight, int beaconListSize, float[] beaconColor, int height) {
 
-        int staticBuildTick = tile.getData("build_tick");
+        int staticBuildTick = tile.getData(VEAttachments.BUILD_TICK);
         int buildTick = staticBuildTick;
         boolean fullyBuilt = buildTick == 1000;
         boolean firstStageBuilt = buildTick >= 400;

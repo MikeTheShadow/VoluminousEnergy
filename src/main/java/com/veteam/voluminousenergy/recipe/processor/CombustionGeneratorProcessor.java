@@ -8,7 +8,9 @@ import com.veteam.voluminousenergy.recipe.VERecipe;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VERelationalTank;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.sounds.SoundSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -38,7 +40,11 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
     @Override
     public void processRecipe(VETileEntity tile) {
         VERecipe recipe = tile.getSelectedRecipe();
-        int counter = tile.getData("counter");
+
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
+        int length = counterLength.length();
         VEEnergyStorage storage = tile.getEnergy();
         if (storage.getEnergyStored() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
             return;
@@ -46,14 +52,14 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
         if (counter > 0) {
             counter--;
             storage.addEnergy(storage.getProduction());
-            int soundTick = tile.getData("sound_tick");
+            int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19) {
                 soundTick = 0;
                 if (Config.PLAY_MACHINE_SOUNDS.get()) {
                     tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
             }
-            tile.setData("sound_tick", soundTick);
+            tile.setData(VEAttachments.SOUND_TICK, soundTick);
             tile.setChanged();
         } else if (recipe != null) {
             FluidStack fuel = tile.getFluidStackFromTank(0);
@@ -65,7 +71,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             int powerGeneration = CombustibleFluidsData.getEnergyProduced(fuel);
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
 
-            if(fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
+            if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
                 return;
             }
 
@@ -81,14 +87,13 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             int production = (int) (powerGeneration * multiplier);
 
             VoluminousEnergy.LOGGER.info("Setting production to: " + production);
-
             storage.setProduction(production);
-            tile.setData("length",counter);
+            length = counter;
             tile.setChanged();
         } else {
             storage.setProduction(0);
         }
-        tile.setData("counter", counter);
+        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, length));
     }
 
 }

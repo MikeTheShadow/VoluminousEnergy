@@ -20,14 +20,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -40,9 +37,6 @@ public class VETileEntityFactory {
     private VEEnergyStorage storage;
     private boolean infiniteRender = false;
     private AbstractItemStackValidator validator = null;
-
-    private final HashMap<String, Integer> dataMap = new HashMap<>();
-    private final HashMap<String, CompoundTag> tagMap = new HashMap<>();
     private AbstractRecipeProcessor processor;
     private boolean sendsOutPower = false;
 
@@ -89,9 +83,6 @@ public class VETileEntityFactory {
         newTile.addSlots(containerFactory.getTileSlotsAsManagers());
         index.set(0);
         newTile.addTanks(tanks.stream().map(t -> t.asTank(index.getAndIncrement())).toList());
-        // Populate the data map
-        newTile.dataMap.putAll(dataMap);
-        newTile.tagMap.putAll(tagMap);
 
         // Set energy before the slot count otherwise we'll run into issues with the data slot
         if (storage != null)
@@ -134,34 +125,8 @@ public class VETileEntityFactory {
         return this;
     }
 
-    public VETileEntityFactory countable() {
-        this.dataMap.put("counter", 0);
-        this.dataMap.put("length", 0);
-        return this;
-    }
-
-    public VETileEntityFactory isMultiBlock() {
-        this.dataMap.put("multiblock_complete", 0);
-        return this;
-    }
-
-    public VETileEntityFactory addDataFlag(String flag) {
-        this.dataMap.put(flag, 0);
-        return this;
-    }
-
-    public VETileEntityFactory includeSoundTick() {
-        this.dataMap.put("sound_tick", 0);
-        return this;
-    }
-
     public VETileEntityFactory addTanks(TileTank... tanks) {
         this.tanks = List.of(tanks);
-        return this;
-    }
-
-    public VETileEntityFactory makesSound() {
-        this.dataMap.put("sound_tick", 0);
         return this;
     }
 
@@ -175,18 +140,8 @@ public class VETileEntityFactory {
         return this;
     }
 
-    public VETileEntityFactory withInfiniteRender() {
-        infiniteRender = true;
-        return this;
-    }
-
     public VETileEntityFactory withCustomInventoryValidator(AbstractItemStackValidator validator) {
         this.validator = validator;
-        return this;
-    }
-
-    public VETileEntityFactory addSavableTag(String tagId) {
-        this.tagMap.put(tagId,new CompoundTag());
         return this;
     }
 

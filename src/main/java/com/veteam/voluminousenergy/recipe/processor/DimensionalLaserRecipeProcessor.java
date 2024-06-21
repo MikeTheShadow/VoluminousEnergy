@@ -8,8 +8,11 @@ import com.veteam.voluminousenergy.persistence.ChunkFluids;
 import com.veteam.voluminousenergy.persistence.SingleChunkFluid;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VEAttachments;
+import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.records.ChunkFluidData;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +41,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
     public void processRecipe(VETileEntity tile) {
         if (!isMultiBlockValid(tile)) return;
 
-        int buildTick = tile.getData("build_tick");
+        int buildTick = tile.getData(VEAttachments.BUILD_TICK);
         if (buildTick != 1000) {
             tile.setChanged();
             if(buildTick == 999) {
@@ -87,26 +90,23 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 //                tile.consumeEnergy();
 //            }
             tile.setChanged();
-            tile.setData("build_tick", buildTick + 1);
+            tile.setData(VEAttachments.BUILD_TICK, buildTick + 1);
             return;
         }
 
         if (!tile.canConsumeEnergy()) return;
         ItemStack stack = tile.getStackInSlot(2);
-        if (stack.isEmpty()) {
+
+        ChunkFluidData data = stack.get(VEDataComponents.CHUNK_FLUID_DATA);
+        if (data == null) {
             tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
             return;
         }
 
-        CompoundTag tag = stack.getOrCreateTag();
-
-        int x = tag.getInt("ve_x");
-        int z = tag.getInt("ve_z");
-
-        ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(x, z));
+        ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(data.x(), data.z()));
 
         if (fluid == null) {
-            VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: " + x + " | " + z);
+            VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: " + data.x() + " | " + data.z());
             return;
         }
 
@@ -118,7 +118,9 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         boolean canFill = tile.getRelationalTank(0).testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
         if (!canFill) return;
 
-        int counter = tile.getData("counter");
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
 
         if (counter == 1) {
             counter--;
@@ -132,8 +134,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         } else {
             counter = tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
         }
-        tile.setData("counter", counter);
-
+        tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter,counterLength.length()));
     }
 
     private int counter = 0;

@@ -9,6 +9,7 @@ import com.veteam.voluminousenergy.tools.buttons.slots.SlotBoolButton;
 import com.veteam.voluminousenergy.tools.buttons.slots.SlotDirectionButton;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
@@ -102,7 +103,7 @@ public class PrimitiveBlastFurnaceScreen extends VEContainerScreen<VEContainer> 
     public List<Component> getTooltips() {
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData("counter")));
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData(VEAttachments.COUNTER_LENGTH).counter()));
     }
 
     @Override

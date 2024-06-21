@@ -4,6 +4,8 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VEAttachments;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
@@ -31,7 +33,12 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
         if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(1))) {
             return;
         }
-        int counter = tile.getData("counter");
+
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
+        int length = counterLength.length();
+
         if (counter == 1) {
             counter--;
             tile.getInventory().extractItem(0, 1, false);
@@ -39,18 +46,18 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
             tile.getInventory().insertItem(1, output, false);
         } else if (counter > 0) {
             counter--;
-            int soundTick = tile.getData("sound_tick");
+            int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19) {
                 soundTick = 0;
                 if (Config.PLAY_MACHINE_SOUNDS.get()) {
                     tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
             }
-            tile.setData("sound_tick", soundTick);
+            tile.setData(VEAttachments.SOUND_TICK, soundTick);
         } else {
             counter = tile.updateCounter(200);
         }
-        tile.setData("counter", counter);
+        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter,length));
         tile.setChanged();
     }
 
@@ -72,9 +79,7 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
             tile.setChanged();
             return;
         } else furnaceRecipe = null;
-
-        tile.setData("counter", 0);
-        tile.setData("length", 0);
+        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(0,0));
         tile.setChanged();
     }
 

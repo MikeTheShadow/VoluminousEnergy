@@ -1,9 +1,6 @@
 package com.veteam.voluminousenergy.blocks.tiles;
 
-import com.veteam.voluminousenergy.blocks.blocks.machines.tanks.TankBlock;
 import com.veteam.voluminousenergy.blocks.tiles.inventory.VEItemStackHandler;
-import com.veteam.voluminousenergy.blocks.tiles.state.AbstractTileAddon;
-import com.veteam.voluminousenergy.blocks.tiles.state.CustomAddon;
 import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.upgrades.MysteriousMultiplier;
 import com.veteam.voluminousenergy.recipe.VERecipe;
@@ -12,6 +9,7 @@ import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.energy.VEEnergyStorage;
 import com.veteam.voluminousenergy.tools.sidemanager.VESlotManager;
 import com.veteam.voluminousenergy.util.*;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import com.veteam.voluminousenergy.util.tiles.CapabilityMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,8 +34,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -60,9 +56,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
     final List<VERelationalTank> tanks = new ArrayList<>();
     final List<VESlotManager> managers = new ArrayList<>();
-    final HashMap<String, Integer> dataMap = new HashMap<>();
-    final HashMap<String,CompoundTag> tagMap = new HashMap<>();
-    final HashMap<CustomAddon, AbstractTileAddon> stateManager = new HashMap<>();
     AbstractRecipeProcessor recipeProcessor;
     boolean sendsOutPower;
 
@@ -310,14 +303,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         }
         if (energy != null) energy.deserializeNBT(tag);
 
-        for (var entry : dataMap.entrySet()) {
-            dataMap.put(entry.getKey(), tag.getInt(entry.getKey()));
-        }
-
-        for(var entry : tagMap.entrySet()) {
-            tagMap.put(entry.getKey(), tag.getCompound(entry.getKey()));
-        }
-
         for (VESlotManager manager : getSlotManagers()) {
             manager.read(tag);
         }
@@ -353,14 +338,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
 
         for (VESlotManager manager : getSlotManagers()) {
             manager.write(tag);
-        }
-
-        for (var entry : dataMap.entrySet()) {
-            tag.putInt(entry.getKey(), entry.getValue());
-        }
-
-        for(var entry: tagMap.entrySet()) {
-            tag.put(entry.getKey(),  entry.getValue());
         }
 
         for (VERelationalTank relationalTank : getRelationalTanks()) {
@@ -547,8 +524,11 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public int progressBurnCounterPX(int px) {
-        int counter = dataMap.get("counter");
-        int length = dataMap.get("length");
+
+        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
+        int length = counterLength.length();
         if (counter != 0 && length != 0) return (px * (((counter * 100) / length))) / 100;
         return 0;
     }
@@ -559,15 +539,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public int progressProcessingCounterPX(int px) {
-        int counter = dataMap.get("counter");
-        int length = dataMap.get("length");
+        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
+        int counter = counterLength.counter();
+        int length = counterLength.length();
         if (counter != 0 && length != 0) return (px * (100 - ((counter * 100) / length))) / 100;
         return 0;
     }
 
     public int progressCounterPercent() {
-        int counter = dataMap.get("counter");
-        int length = dataMap.get("length");
+        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
+        int counter = counterLength.counter();
+        int length = counterLength.length();
         if (length != 0) {
             return (int) (100 - (((float) counter / (float) length) * 100));
         } else {
@@ -584,7 +566,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
     }
 
     public int ticksLeft() {
-        return dataMap.get("counter");
+        return this.getData(VEAttachments.COUNTER_LENGTH).counter();
     }
 
     @Nullable
@@ -647,23 +629,6 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         return isRecipeDirty;
     }
 
-    public int getData(String key) {
-        return this.dataMap.getOrDefault(key, -1);
-    }
-
-    public void setData(String key, int value) {
-        this.dataMap.put(key, value);
-    }
-
-    @NotNull
-    public CompoundTag getCompoundTag(String key) {
-        return this.tagMap.getOrDefault(key,null);
-    }
-
-    public void setCompoundTag(@NotNull String key,@NotNull CompoundTag value) {
-        this.tagMap.put(key, value);
-    }
-
     public void setRecipeDirty(boolean dirty) {
         this.isRecipeDirty = dirty;
     }
@@ -713,9 +678,14 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
             newLength = this.calculateCounter(recipe.getProcessTime(), ItemStack.EMPTY);
         }
 
-        double ratio = (double) this.getData("length") / (double) newLength;
-        this.setData("length", newLength);
-        this.setData("counter", (int) (this.getData("counter") / ratio));
+        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
+
+
+        double ratio = (double) counterLength.length() / (double) newLength;
+
+        CounterLength newCounter = new CounterLength((int) (counterLength.counter() / ratio),newLength);
+        this.setData(VEAttachments.COUNTER_LENGTH, newCounter);
+        this.setChanged();
         return newLength;
     }
 
@@ -734,18 +704,17 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
         } else {
             newLength = this.calculateCounter(defaultProcessTime, ItemStack.EMPTY);
         }
-        double ratio = (double) this.getData("length") / (double) newLength;
-        this.setData("length", newLength);
 
-        int ratioedCounter = (int) (this.getData("counter") / ratio);
+        CounterLength counterLength = this.getData(VEAttachments.COUNTER_LENGTH);
 
-        this.setData("counter", ratioedCounter == 0 ? newLength : ratioedCounter);
+        double ratio = (double) counterLength.length() / (double) newLength;
+
+
+        int ratioedCounter = (int) (counterLength.counter() / ratio);
+
+        CounterLength newCounter = new CounterLength(ratioedCounter == 0 ? newLength : ratioedCounter, newLength);
+        this.setData(VEAttachments.COUNTER_LENGTH, newCounter);
         this.setChanged();
         return newLength;
-    }
-
-    @Nullable
-    public AbstractTileAddon getCustomAddon(CustomAddon addon) {
-        return this.stateManager.get(addon);
     }
 }

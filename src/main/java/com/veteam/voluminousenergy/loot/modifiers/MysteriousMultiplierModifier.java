@@ -1,7 +1,7 @@
 package com.veteam.voluminousenergy.loot.modifiers;
 
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.items.VEItems;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -19,8 +19,8 @@ import java.util.function.Supplier;
 
 public class MysteriousMultiplierModifier extends LootModifier implements LootItemFunction {
 
-    public static final Supplier<Codec<MysteriousMultiplierModifier>> CODEC = Suppliers.memoize(() ->
-            RecordCodecBuilder.create(instance -> instance.group(
+    public static final Supplier<MapCodec<MysteriousMultiplierModifier>> CODEC = Suppliers.memoize(() ->
+            RecordCodecBuilder.mapCodec(instance -> instance.group(
                             LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(MysteriousMultiplierModifier::getLootItemConditions)
                     ).apply(instance, MysteriousMultiplierModifier::new)
             ));
@@ -50,7 +50,7 @@ public class MysteriousMultiplierModifier extends LootModifier implements LootIt
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
+    public MapCodec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 

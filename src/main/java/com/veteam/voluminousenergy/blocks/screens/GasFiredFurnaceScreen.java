@@ -6,6 +6,7 @@ import com.veteam.voluminousenergy.blocks.containers.VEContainer;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.tools.VERender;
 import com.veteam.voluminousenergy.util.TextUtil;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
@@ -82,8 +83,8 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
     public List<Component> getFuelTooltips() {
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_burned").getString() + ": " +
-                        tileEntity.progressCounterPercent(tileEntity.getData("fuel_counter"),tileEntity.getData("fuel_length")) + "%"),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData("fuel_counter")));
+                        tileEntity.progressCounterPercent(tileEntity.getData(VEAttachments.FUEL_COUNTER_LENGTH).counter(),tileEntity.getData(VEAttachments.FUEL_COUNTER_LENGTH).length()) + "%"),
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData(VEAttachments.FUEL_COUNTER_LENGTH).counter()));
     }
 
     public Rect2i getCounterTooltipArea() {
@@ -93,7 +94,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
     public List<Component> getCounterTooltips() {
         return Arrays.asList(
                 Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.percent_complete").getString() + ": " + tileEntity.progressCounterPercent() + "%"),
-                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData("counter")));
+                Component.nullToEmpty(TextUtil.translateString("text.voluminousenergy.ticks_left").getString() + ": " + tileEntity.getData(VEAttachments.COUNTER_LENGTH).counter()));
     }
 
     @Override
@@ -108,7 +109,7 @@ public class GasFiredFurnaceScreen extends VEContainerScreen<VEContainer> {
         if (tileEntity != null) {
             int progress = tileEntity.progressProcessingCounterPX(9);
             int fuelProgress = tileEntity.progressBurnCounterPX(
-                    flameHeight,tileEntity.getData("fuel_counter"),tileEntity.getData("fuel_length"));
+                    flameHeight,tileEntity.getData(VEAttachments.FUEL_COUNTER_LENGTH).counter(),tileEntity.getData(VEAttachments.FUEL_COUNTER_LENGTH).length());
 
             /*Note for this.blit below:
                 p_blit_1_ = starting x for blit on screen

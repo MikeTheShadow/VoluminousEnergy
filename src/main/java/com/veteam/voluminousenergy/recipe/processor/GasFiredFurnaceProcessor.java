@@ -7,7 +7,9 @@ import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.util.TagUtil;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundSource;
@@ -29,7 +31,11 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
 
     @Override
     public void processRecipe(VETileEntity tile) {
-        int fuelCounter = tile.getData("fuel_counter");
+
+        CounterLength fuelCounterLength = tile.getData(VEAttachments.FUEL_COUNTER_LENGTH);
+
+        int fuelCounter = fuelCounterLength.counter();
+        int fuelLength = fuelCounterLength.length();
 
         FluidStack fuel = tile.getFluidStackFromTank(0);
         ItemStack stack = tile.getStackInSlot(2);
@@ -51,12 +57,12 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
                 multiplier = multiplier / 0.5F > 1 ? 1 : multiplier / 0.5F;
                 fuelCounter = (int) (fuelCounter * multiplier);
             }
-            tile.setData("fuel_length", fuelCounter);
+            fuelLength = fuelCounter;
             tile.setChanged();
         } else {
             return;
         }
-        tile.setData("fuel_counter", fuelCounter);
+        tile.setData(VEAttachments.FUEL_COUNTER_LENGTH,new CounterLength(fuelCounter,fuelLength));
         if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
         else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
     }
@@ -65,7 +71,12 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
         if (!canInsertIntoResult(recipe, tile.getLevel().registryAccess(), tile.getStackInSlot(3))) {
             return;
         }
-        int counter = tile.getData("counter");
+
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+
+        int counter = counterLength.counter();
+        int length = counterLength.length();
+
         if (counter == 1) {
             counter--;
             tile.getInventory().extractItem(2, 1, false);
@@ -73,18 +84,18 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             tile.getInventory().insertItem(3, output, false);
         } else if (counter > 0) {
             counter--;
-            int soundTick = tile.getData("sound_tick");
+            int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19) {
                 soundTick = 0;
                 if (Config.PLAY_MACHINE_SOUNDS.get()) {
                     tile.getLevel().playSound(null, tile.getBlockPos(), VESounds.GENERAL_MACHINE_NOISE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
             }
-            tile.setData("sound_tick", soundTick);
+            tile.setData(VEAttachments.SOUND_TICK, soundTick);
         } else {
             counter = tile.updateCounter(200);
         }
-        tile.setData("counter", counter);
+        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter,length));
         tile.setChanged();
     }
 
@@ -107,8 +118,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             return;
         } else furnaceRecipe = null;
 
-        tile.setData("counter", 0);
-        tile.setData("length", 0);
+        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(0,0));
         tile.setChanged();
     }
 

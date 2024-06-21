@@ -1,8 +1,7 @@
 package com.veteam.voluminousenergy.persistence;
 
 import com.veteam.voluminousenergy.util.RegistryLookups;
-import com.veteam.voluminousenergy.util.VEDataComponents;
-import com.veteam.voluminousenergy.util.VEDataComponents.ChunkFluidData;
+import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

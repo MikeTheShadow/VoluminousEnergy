@@ -4,6 +4,7 @@ import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.persistence.ChunkFluid;
 import com.veteam.voluminousenergy.util.TextUtil;
 import com.veteam.voluminousenergy.util.VEDataComponents;
+import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +29,7 @@ public class RFIDChip extends Item {
     public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext pContext, @NotNull List<Component> componentList, @NotNull TooltipFlag tooltipFlag) {
 
 
-        VEDataComponents.ChunkFluidData chunkFluidData = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
+        ChunkFluidData chunkFluidData = itemStack.get(VEDataComponents.CHUNK_FLUID_DATA);
 
         if (chunkFluidData != null) {
 

@@ -1,19 +1,23 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VERelationalTank;
-import net.minecraft.nbt.CompoundTag;
+import com.veteam.voluminousenergy.util.records.FluidPumpData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import java.util.Optional;
 
 import static com.veteam.voluminousenergy.blocks.tiles.VETileEntity.DEFAULT_TANK_CAPACITY;
 
@@ -22,6 +26,8 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     int lX;
     int lY;
     int lZ;
+    boolean init = false;
+    Fluid pumpingFluid;
 
     @Override
     public void validateRecipe(VETileEntity tile) {
@@ -30,11 +36,40 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     @Override
     public void processRecipe(VETileEntity tile) {
 
-        if (!tile.canConsumeEnergy()) return;
+        if (!init) {
+            init = true;
 
-        lX = tile.getData("lx");
-        lY = tile.getData("ly");
-        lZ = tile.getData("lz");
+            Optional<FluidPumpData> data = tile.getExistingData(VEAttachments.FLUID_PUMP);
+
+            if (data.isEmpty()) {
+                BlockPos pos = tile.getBlockPos();
+                BlockPos below = pos.below();
+                FluidState state = tile.getLevel().getBlockState(below).getFluidState();
+                Fluid fluid = state.getType();
+
+                if (fluid == Fluids.EMPTY) {
+                    return;
+                }
+                FluidPumpData newData = new FluidPumpData(below.getX(), below.getY(), below.getZ(), fluid);
+                tile.setData(VEAttachments.FLUID_PUMP, newData);
+                this.pumpingFluid = fluid;
+                this.lX = below.getX();
+                this.lY = below.getY();
+                this.lZ = below.getZ();
+            } else {
+                FluidPumpData fluidPumpData = data.get();
+                this.pumpingFluid = fluidPumpData.fluid();
+                this.lX = fluidPumpData.x();
+                this.lY = fluidPumpData.y();
+                this.lZ = fluidPumpData.z();
+            }
+        }
+
+        if (pumpingFluid == null) {
+            return;
+        }
+
+        if (!tile.canConsumeEnergy()) return;
 
         VERelationalTank fluidTank = tile.getRelationalTank(0);
 
@@ -47,54 +82,25 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             }
             tile.setChanged();
 
-            int soundTick = tile.getData("sound_tick");
+            int soundTick = tile.getData(VEAttachments.SOUND_TICK);
             if (++soundTick == 19) {
                 soundTick = 0;
                 if (Config.PLAY_MACHINE_SOUNDS.get()) {
                     tile.getLevel().playSound(null,
                             tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
+                tile.setData(VEAttachments.SOUND_TICK, soundTick);
             }
-            tile.setData("sound_tick", soundTick);
-            tile.setData("lx", lX);
-            tile.setData("ly", lY);
-            tile.setData("lz", lZ);
-            tile.setChanged();
         }
     }
 
     public boolean fluidPumpMethod(VETileEntity tile) {
-        CompoundTag fluidTag = tile.getCompoundTag("selected_fluid");
-        Fluid pumpingFluid = null;
-        if (fluidTag.isEmpty()) {
-            BlockState block = tile.getLevel().getBlockState(tile.getBlockPos().offset(0, -1, 0));
-            if (!block.getFluidState().is(Fluids.EMPTY)) {
-                pumpingFluid = block.getFluidState().getType();
-
-                CompoundTag tag = new CompoundTag();
-                new FluidStack(pumpingFluid, 1).writeToNBT(tag);
-                tile.setCompoundTag("selected_fluid", tag);
-                lX = -22;
-                lY = -1;
-                lZ = -22;
-                tile.setData("lx", lX);
-                tile.setData("ly", lY);
-                tile.setData("lz", lZ);
-            }
-        } else {
-            pumpingFluid = FluidStack.loadFluidStackFromNBT(fluidTag).getFluid();
-        }
-        if (pumpingFluid == null) {
-            VoluminousEnergy.LOGGER.info("Pumping fluid is null!");
-            return false;
-        }
-
         Level level = tile.getLevel();
         if (lX < 22) {
             lX++;
             BlockState state = level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ));
             if (pumpingFluid.isSame(state.getFluidState().getType())) {
-                addFluidToTank(tile,pumpingFluid);
+                addFluidToTank(tile, pumpingFluid);
                 return true;
             }
 
@@ -102,7 +108,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             lZ++;
             lX = -22;
             if (pumpingFluid.isSame(level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
-                addFluidToTank(tile,pumpingFluid);
+                addFluidToTank(tile, pumpingFluid);
                 return true;
             }
         } else if (tile.getBlockPos().offset(0, lY, 0).getY() > level.dimensionType().minY()) {
@@ -110,7 +116,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
             lX = -22;
             lZ = -22;
             if (pumpingFluid.isSame(level.getBlockState(tile.getBlockPos().offset(lX, lY, lZ)).getFluidState().getType())) {
-                addFluidToTank(tile,pumpingFluid);
+                addFluidToTank(tile, pumpingFluid);
                 return true;
             }
         }
@@ -118,10 +124,12 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     }
 
 
-    void addFluidToTank(VETileEntity tile,Fluid fluid) {
+    void addFluidToTank(VETileEntity tile, Fluid fluid) {
         tile.getLevel().setBlockAndUpdate(tile.getBlockPos().offset(lX, lY, lZ), Blocks.AIR.defaultBlockState());
         tile.consumeEnergy();
         tile.getRelationalTank(0).getTank()
                 .fill(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+        tile.setData(VEAttachments.FLUID_PUMP, new FluidPumpData(lX, lY, lZ, fluid));
+        tile.setChanged();
     }
 }

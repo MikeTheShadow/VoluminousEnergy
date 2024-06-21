@@ -4,7 +4,9 @@ import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.fluids.VEFluids;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
+import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VERelationalTank;
+import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -18,9 +20,10 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
     public void processRecipe(VETileEntity tile) {
         if (!tile.canConsumeEnergy()) return;
 
-        int soundTick = tile.getData("sound_tick");
+        int soundTick = tile.getData(VEAttachments.SOUND_TICK);
 
-        int counter = tile.getData("counter");
+        CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
+        int counter = counterLength.counter();
 
         if (counter <= 0) {
             // Check blocks around the Air Compressor to see if it's air
@@ -53,14 +56,14 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
                         level.playSound(null, tile.getBlockPos(), VESounds.AIR_COMPRESSOR, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }
                 }
-                tile.setData("sound_tick", soundTick);
+                tile.setData(VEAttachments.SOUND_TICK, soundTick);
                 counter = tile.updateCounter(20);
                 tile.setChanged();
             }
         } else {
             --counter;
         }
-        tile.setData("counter", --counter);
+        tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(--counter,counterLength.length()));
     }
 
     // We don't need to validate the recipe because it doesn't have one.

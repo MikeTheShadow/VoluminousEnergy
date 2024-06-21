@@ -1,22 +1,20 @@
 package com.veteam.voluminousenergy.util;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.veteam.voluminousenergy.VoluminousEnergy;
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
+import com.veteam.voluminousenergy.util.records.ChunkFluidData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+
+import static com.veteam.voluminousenergy.util.VECodecs.CHUNK_FLUID_CODEC;
+import static com.veteam.voluminousenergy.util.VECodecs.CHUNK_FLUID_STREAM_CODEC;
 
 public class VEDataComponents {
 
@@ -73,58 +71,7 @@ public class VEDataComponents {
                                 .build();
                     });
 
-    // SPECIAL CASES BELOW
-
-    public static final Codec<ChunkFluidData> CHUNK_FLUID_CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    Codec.INT.fieldOf("x").forGetter(ChunkFluidData::x),
-                    Codec.INT.fieldOf("z").forGetter(ChunkFluidData::z),
-                    FluidStack.CODEC.listOf().fieldOf("fluids").forGetter(ChunkFluidData::fluids)
-            ).apply(instance, ChunkFluidData::new)
-    );
-
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, List<FluidStack>> FLUID_STACK_LIST_STREAM_CODEC = new StreamCodec<>() {
-
-        @Override
-        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull List<FluidStack> fluidStacks) {
-
-            int total = fluidStacks.size();
-            buf.writeVarInt(total);
-
-            for (FluidStack fluidStack : fluidStacks) {
-
-                if (fluidStack.isEmpty())
-                    throw new EncoderException("Empty FluidStack not allowed for chunk fluid!");
-
-                FluidStack.OPTIONAL_STREAM_CODEC.encode(buf, fluidStack);
-            }
-        }
-
-        @Override
-        public @NotNull List<FluidStack> decode(@NotNull RegistryFriendlyByteBuf buf) {
-
-            int total = buf.readVarInt();
-            List<FluidStack> stacks = new ArrayList<>();
-
-            for (int i = 0; i < total; i++) {
-                FluidStack stack = FluidStack.OPTIONAL_STREAM_CODEC.decode(buf);
-                if (stack.isEmpty())
-                    throw new DecoderException("Empty FluidStack not allowed");
-                stacks.add(stack);
-            }
-            return stacks;
-        }
-    };
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, ChunkFluidData> CHUNK_FLUID_STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, ChunkFluidData::x,
-            ByteBufCodecs.INT, ChunkFluidData::z,
-            FLUID_STACK_LIST_STREAM_CODEC, ChunkFluidData::fluids,
-            ChunkFluidData::new
-    );
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ChunkFluidData>> CHUNK_FLUID_DATA =
+    public static final Supplier<DataComponentType<ChunkFluidData>> CHUNK_FLUID_DATA =
             DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register("chunk_fluid_data",
                     () -> {
                         DataComponentType.Builder<ChunkFluidData> stackBuilder = DataComponentType.builder();
@@ -133,8 +80,4 @@ public class VEDataComponents {
                                 .build();
                     }
             );
-
-    public record ChunkFluidData(int x, int z, List<FluidStack> fluids) {
-
-    }
 }

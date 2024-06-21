@@ -22,8 +22,6 @@ public class VETileEntities {
                             Config.AIR_COMPRESSOR_TRANSFER.get(),
                             Config.AIR_COMPRESSOR_POWER_USAGE.get()
                     )
-                    .countable()
-                    .makesSound()
                     .withCustomRecipeProcessing(new AirCompressorProcessor());
 
     public static final VETileEntityFactory AQUEOULIZER_TILE_FACTORY =
@@ -34,8 +32,6 @@ public class VETileEntities {
                             Config.AQUEOULIZER_POWER_USAGE.get())
                     .addTanks(new FluidInputTank(0, DEFAULT_TANK_CAPACITY),
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY))
-                    .countable()
-                    .makesSound()
                     .withRecipe(AQUEOULIZING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -56,11 +52,6 @@ public class VETileEntities {
                     .addTanks(
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .addDataFlag("temperature_kelvin")
-                    .addDataFlag("temperature_celsius")
-                    .addDataFlag("temperature_fahrenheit")
-                    .makesSound()
                     .withRecipe(INDUSTRIAL_BLASTING)
                     .withCustomRecipeProcessing(new MultiBlockRecipeProcessor(VEBlocks.TITANIUM_MACHINE_CASING_BLOCK));
 
@@ -75,8 +66,6 @@ public class VETileEntities {
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY),
                             new FluidOutputTank(1, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(CENTRIFUGAL_AGITATING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -86,8 +75,6 @@ public class VETileEntities {
                             Config.CENTRIFUGAL_SEPARATOR_MAX_POWER.get(),
                             Config.CENTRIFUGAL_SEPARATOR_TRANSFER.get(),
                             Config.CENTRIFUGAL_SEPARATOR_POWER_USAGE.get())
-                    .countable()
-                    .makesSound()
                     .withRecipe(CENTRIFUGAL_SEPARATION)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -99,8 +86,6 @@ public class VETileEntities {
                     .addTanks(
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY),
                             new FluidInputTank(1, DEFAULT_TANK_CAPACITY))
-                    .countable()
-                    .makesSound()
                     .sendsOutPower()
                     .withRecipe(FUEL_COMBUSTION)
                     .withCustomRecipeProcessing(new CombustionGeneratorProcessor());
@@ -111,8 +96,6 @@ public class VETileEntities {
                             Config.COMPRESSOR_MAX_POWER.get(),
                             Config.COMPRESSOR_TRANSFER.get(),
                             Config.COMPRESSOR_POWER_USAGE.get())
-                    .countable()
-                    .makesSound()
                     .withRecipe(COMPRESSING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -122,8 +105,6 @@ public class VETileEntities {
                             Config.CRUSHER_MAX_POWER.get(),
                             Config.CRUSHER_TRANSFER.get(),
                             Config.CRUSHER_POWER_USAGE.get())
-                    .countable()
-                    .makesSound()
                     .withRecipe(CRUSHING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -136,11 +117,7 @@ public class VETileEntities {
                     .addTanks(
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
-                    .addDataFlag("build_tick")
                     .withRecipe(DIMENSIONAL_LASING)
-                    .withInfiniteRender()
                     .withCustomInventoryValidator(new DimensionalLaserInventoryValidator())
                     .withCustomRecipeProcessing(new DimensionalLaserRecipeProcessor(VEBlocks.SOLARIUM_MACHINE_CASING_BLOCK));
 
@@ -155,8 +132,6 @@ public class VETileEntities {
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY),
                             new FluidOutputTank(1, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(DISTILLING)
                     .withCustomRecipeProcessing(new MultiBlockRecipeProcessor(VEBlocks.ALUMINUM_MACHINE_CASING_BLOCK));
 
@@ -165,8 +140,6 @@ public class VETileEntities {
                     .addEnergyStorageWithConsumption(Config.ELECTROLYZER_MAX_POWER.get(),
                             Config.ELECTRIC_FURNACE_TRANSFER.get(),
                             Config.ELECTRIC_FURNACE_POWER_USAGE.get())
-                    .countable()
-                    .makesSound()
                     .withCustomInventoryValidator(new FurnaceInventoryValidator())
                     .withCustomRecipeProcessing(new ElectricFurnaceProcessor());
 
@@ -175,8 +148,6 @@ public class VETileEntities {
                     .addEnergyStorageWithConsumption(Config.ELECTROLYZER_MAX_POWER.get(),
                             Config.ELECTRIC_FURNACE_TRANSFER.get(),
                             Config.ELECTRIC_FURNACE_POWER_USAGE.get())
-                    .countable()
-                    .makesSound()
                     .withRecipe(ELECTROLYZING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -187,8 +158,6 @@ public class VETileEntities {
                             Config.FLUID_ELECTROLYZER_TRANSFER.get(),
                             Config.FLUID_ELECTROLYZER_POWER_USAGE.get()
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(ELECTROLYZING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -204,23 +173,17 @@ public class VETileEntities {
                             new FluidInputTank(1, DEFAULT_TANK_CAPACITY),
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(FLUID_MIXING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory GAS_FIRED_FURNACE =
             new VETileEntityFactory(VEBlocks.GAS_FIRED_FURNACE.tile(), VEContainers.GAS_FIRED_FURNACE_FACTORY)
                     // We have an upgrade slot, so we add an empty energy storage. Less than ideal.
-                    .addEnergyStorage(0,0)
+                    .addEnergyStorage(0, 0)
                     .addTanks(
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY,
                                     (fluid, tile) -> CombustibleFluidsData.isCombustible(fluid))
                     )
-                    .countable()
-                    .makesSound()
-                    .addDataFlag("fuel_length")
-                    .addDataFlag("fuel_counter")
                     .withCustomInventoryValidator(new GasFiredFurnaceInventoryValidator())
                     .withCustomRecipeProcessing(new GasFiredFurnaceProcessor());
 
@@ -234,8 +197,6 @@ public class VETileEntities {
                     .addTanks(
                             new FluidInputTank(0, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(HYDROPONIC_INCUBATING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -246,16 +207,13 @@ public class VETileEntities {
                             Config.IMPLOSION_COMPRESSOR_TRANSFER.get(),
                             Config.IMPLOSION_COMPRESSOR_POWER_USAGE.get()
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(IMPLOSION_COMPRESSING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
     public static final VETileEntityFactory PRIMITIVE_BLAST_FURNACE_FACTORY =
             new VETileEntityFactory(VEBlocks.PRIMITIVE_BLAST_FURNACE.tile(), VEContainers.PRIMITIVE_BLAST_FURNACE_FACTORY)
-                    .addEnergyStorage(0,0)
-                    .countable()
-                    .makesSound()
+                    .addEnergyStorage(0, 0)
+
                     .withRecipe(PRIMITIVE_BLAST_FURNACING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -282,8 +240,7 @@ public class VETileEntities {
                     .addEnergyStorage(
                             Config.PRIMITIVE_STIRLING_GENERATOR_MAX_POWER.get(),
                             Config.PRIMITIVE_STIRLING_GENERATOR_SEND.get())
-                    .countable()
-                    .makesSound()
+
                     .sendsOutPower()
                     .withRecipe(STIRLING)
                     .withCustomRecipeProcessing(new GeneratorProcessor(true, 4));
@@ -295,13 +252,7 @@ public class VETileEntities {
                             Config.PUMP_TRANSFER.get()
                     )
                     .addTanks(new FluidOutputTank(0, DEFAULT_TANK_CAPACITY))
-                    .countable()
-                    .addDataFlag("lx")
-                    .addDataFlag("ly")
-                    .addDataFlag("lz")
-                    .addSavableTag("selected_fluid")
-                    .withCustomRecipeProcessing(new PumpTileProcessor())
-                    .makesSound();
+                    .withCustomRecipeProcessing(new PumpTileProcessor());
 
     public static final VETileEntityFactory SAWMILL_FACTORY =
             new VETileEntityFactory(VEBlocks.SAWMILL.tile(), VEContainers.SAWMILL_FACTORY)
@@ -311,8 +262,6 @@ public class VETileEntities {
                     ).addTanks(
                             new FluidOutputTank(0, DEFAULT_TANK_CAPACITY)
                     )
-                    .countable()
-                    .makesSound()
                     .withRecipe(SAWMILLING)
                     .withCustomRecipeProcessing(new BasicProcessor());
 
@@ -323,7 +272,6 @@ public class VETileEntities {
                             Config.STIRLING_GENERATOR_SEND.get()
                     )
                     .sendsOutPower()
-                    .countable()
                     .withRecipe(STIRLING)
                     .withCustomRecipeProcessing(new GeneratorProcessor());
 
@@ -335,32 +283,32 @@ public class VETileEntities {
 
     // Tanks
     public static final VETileEntityFactory ALUMINUM_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.ALUMINUM_TANK.tile(),VEContainers.ALUMINUM_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.ALUMINUM_TANK.tile(), VEContainers.ALUMINUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.ALUMINUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.ALUMINUM_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory EIGHZO_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.EIGHZO_TANK.tile(),VEContainers.EIGHZO_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.EIGHZO_TANK.tile(), VEContainers.EIGHZO_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.EIGHZO_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.EIGHZO_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory NETHERITE_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.NETHERITE_TANK.tile(),VEContainers.NETHERITE_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.NETHERITE_TANK.tile(), VEContainers.NETHERITE_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.NETHERITE_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.NETHERITE_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory NIGHALITE_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.NIGHALITE_TANK.tile(),VEContainers.NIGHALITE_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.NIGHALITE_TANK.tile(), VEContainers.NIGHALITE_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.NIGHALITE_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.NIGHALITE_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory SOLARIUM_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.SOLARIUM_TANK.tile(),VEContainers.SOLARIUM_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.SOLARIUM_TANK.tile(), VEContainers.SOLARIUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.SOLARIUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.SOLARIUM_TANK_CAPACITY.get() * 1000));
 
     public static final VETileEntityFactory TITANIUM_TANK_FACTORY =
-            new VETileEntityFactory(VEBlocks.TITANIUM_TANK.tile(),VEContainers.TITANIUM_TANK_FACTORY)
+            new VETileEntityFactory(VEBlocks.TITANIUM_TANK.tile(), VEContainers.TITANIUM_TANK_FACTORY)
                     .withCustomInventoryValidator(new TankInventoryValidator())
-                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0,Config.TITANIUM_TANK_CAPACITY.get() * 1000));
+                    .addTanks(new VETileEntityFactory.FluidInputOutputTank(0, Config.TITANIUM_TANK_CAPACITY.get() * 1000));
 }

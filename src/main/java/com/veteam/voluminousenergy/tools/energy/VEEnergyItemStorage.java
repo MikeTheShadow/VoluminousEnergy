@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.tools.energy;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class VEEnergyItemStorage extends VEEnergyStorage {
     private final ItemStack itemStack;
@@ -31,10 +33,13 @@ public class VEEnergyItemStorage extends VEEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return this.itemStack.getOrCreateTag().getInt("energy");
+        return this.itemStack.getCapability(Capabilities.EnergyStorage.ITEM).getEnergyStored();
     }
 
     private void writeEnergy(int amount) {
-        this.itemStack.getOrCreateTag().putInt("energy", amount);
+        IEnergyStorage energyStorage = this.itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        int stored = energyStorage.getEnergyStored();
+        energyStorage.extractEnergy(stored,false);
+        energyStorage.receiveEnergy(amount,false);
     }
 }
