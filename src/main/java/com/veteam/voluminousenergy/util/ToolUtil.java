@@ -1,7 +1,6 @@
 package com.veteam.voluminousenergy.util;
 
 import com.veteam.voluminousenergy.tools.Config;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,14 +9,15 @@ import java.util.List;
 public class ToolUtil {
 
     public static void SolariumTooltipAppend(ItemStack stack, List<Component> tooltip) {
-        int bonus = 0;
-        CompoundTag tag = stack.getTag();
+        int bonus;
 
-        if (tag == null) {
+        Integer bonusDurability = stack.get(VEDataComponents.SOLARIUM_DURABILITY_BONUS);
+
+        if (bonusDurability == null) {
             bonus = Config.SOLARIUM_PROTECTIVE_SHEATH_HITS.get();
-            stack.getOrCreateTag().putInt("bonus", bonus);
+            stack.set(VEDataComponents.SOLARIUM_DURABILITY_BONUS,bonus);
         } else {
-            bonus = tag.getInt("bonus");
+            bonus = bonusDurability;
         }
 
         Component translatedComponent = TextUtil.translateString("text.voluminousenergy.protective_sheath");
