@@ -16,6 +16,8 @@ import com.veteam.voluminousenergy.recipe.VERecipes;
 import com.veteam.voluminousenergy.setup.VESetup;
 import com.veteam.voluminousenergy.tools.Config;
 import com.veteam.voluminousenergy.tools.networking.VENetwork;
+import com.veteam.voluminousenergy.util.VEAttachments;
+import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.world.feature.VEFeatures;
 import com.veteam.voluminousenergy.world.modifiers.VEModifiers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -80,6 +82,9 @@ public class VoluminousEnergy {
         // Recipes
         VERecipes.VE_RECIPE_SERIALIZERS_REGISTRY.register(modEventBus);
         VERecipes.VERecipeTypes.VE_RECIPE_TYPES_REGISTRY.register(modEventBus);
+        VEDataComponents.DATA_COMPONENT_TYPE_DEFERRED_REGISTER.register(modEventBus);
+        VEAttachments.ATTACHMENT_TYPE_DEFERRED_REGISTER.register(modEventBus);
+
 
         // Register fluids and respective items/blocks (differed)
         VEFluids.VE_FLUIDS.register(modEventBus);

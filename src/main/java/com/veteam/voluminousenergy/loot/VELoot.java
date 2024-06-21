@@ -2,6 +2,8 @@ package com.veteam.voluminousenergy.loot;
 
 import com.mojang.serialization.MapCodec;
 import com.veteam.voluminousenergy.VoluminousEnergy;
+import com.veteam.voluminousenergy.loot.modifiers.AnimalFatLootModifier;
+import com.veteam.voluminousenergy.loot.modifiers.MysteriousMultiplierModifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -10,16 +12,16 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class VELoot {
     public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> VE_LOOT_MODIFIER_REGISTRY = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, VoluminousEnergy.MODID);
 
-    // TODO: MAP CODECS
-//    public static Supplier<Codec<AnimalFatLootModifier>> ANIMAL_FAT_LOOT_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
-//            "animal_fat", AnimalFatLootModifier.CODEC);
-//
-//    public static Supplier<Codec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
-//            "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
+    public static Supplier<MapCodec<AnimalFatLootModifier>> ANIMAL_FAT_LOOT_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
+            "animal_fat", AnimalFatLootModifier.CODEC);
+
+    public static Supplier<MapCodec<MysteriousMultiplierModifier>> MYSTERIOUS_MULTIPLIER_MODIFIER_CODEC = VE_LOOT_MODIFIER_REGISTRY.register(
+            "mysterious_multiplier", MysteriousMultiplierModifier.CODEC);
 
     private VELoot() {
     }
