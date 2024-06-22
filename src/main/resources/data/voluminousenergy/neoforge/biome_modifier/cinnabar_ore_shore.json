@@ -1,12 +1,12 @@
 {
   "type": "voluminousenergy:anded_biome_modifier",
-  "whitelisted_biomes": "forge:is_shore/overworld",
+  "whitelisted_biomes": "c:is_shore/overworld",
   "blacklisted_biomes": "",
-  "feature": "voluminousenergy:bauxite_ore_blob",
+  "feature": "voluminousenergy:cinnabar_ore_blob",
   "triangular_placement": true,
-  "count": 8,
+  "count": 2,
   "bottom_anchor": 62,
   "top_anchor": 92,
-  "rarity": 0,
+  "rarity": 1,
   "generation_step": "underground_ores"
 }
