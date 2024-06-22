@@ -2,23 +2,20 @@ package com.veteam.voluminousenergy.recipe;
 
 import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
-import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.recipe.parser.BasicParser;
+import com.veteam.voluminousenergy.util.VEClientSide;
 import com.veteam.voluminousenergy.util.recipe.FluidIngredient;
 import com.veteam.voluminousenergy.util.recipe.VERecipeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +42,12 @@ public abstract class VERecipe implements Recipe<Container> {
 
     }
 
+    /*
+        In single player worlds both the constructor and packet are fired. This bool
+        prevents the method from being called if the constructor is called
+     */
+    private static boolean isServerSide = false;
+
     public VERecipe(List<VERecipeCodecs.RegistryIngredient> ingredients, List<VERecipeCodecs.RegistryFluidIngredient> fluidIngredients, List<FluidStack> fluidResults, List<ItemStack> results, int processTime) {
         this.results = results;
         registryFluidIngredients = fluidIngredients;
@@ -52,7 +55,7 @@ public abstract class VERecipe implements Recipe<Container> {
         this.processTime = processTime;
         this.registryIngredients = NonNullList.create();
         this.registryIngredients.addAll(ingredients);
-
+        isServerSide = true;
         VERecipe recipe = this;
         if (newCache.containsKey(this.getType())) {
             newCache.get(this.getType()).add(this);
@@ -64,7 +67,6 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public Ingredient getIngredient(int id) {
-        // Sometimes recipes define less that what a machine can pull in (not utilizing all input slots). Therefore, return Empty Ingredient when querying beyond input length
         return id < this.getIngredients().size() ? getIngredients().get(id) : Ingredient.EMPTY;
     }
 
@@ -83,7 +85,6 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public ItemStack getResult(int id) {
-        // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
         if (id >= this.getResults().size()) {
             return ItemStack.EMPTY;
         }
@@ -129,7 +130,6 @@ public abstract class VERecipe implements Recipe<Container> {
         throw new NotImplementedException("Matches is not impl'd for: " + this.getClass().getName());
     }
 
-    // Sometimes recipes define less that what a machine can put out (not utilizing all output slots). Therefore, return ItemStack when querying beyond result length
     public int getResultCount(int slot) {
         if (slot >= this.getResults().size()) {
             return 0;
@@ -221,7 +221,7 @@ public abstract class VERecipe implements Recipe<Container> {
     }
 
     public static void addRecipeToCacheClient(VERecipe recipe) {
-        if (newCache.isEmpty()) VoluminousEnergy.LOGGER.info("Building Recipe cache!");
+        if(isServerSide) return;
         if (newCache.containsKey(recipe.getType())) {
             newCache.get(recipe.getType()).add(recipe);
         } else {

@@ -20,13 +20,13 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
 
         ItemStack stack = tile.getStackInSlot(0);
 
         IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
 
-        if(itemEnergy == null) return;
+        if(itemEnergy == null) return false;
 
         VEEnergyStorage storage = tile.getEnergy();
         if (tile.sendsOutPower()) {
@@ -36,6 +36,7 @@ public class BatteryBoxProcessor implements AbstractRecipeProcessor {
             if (chargeItem(stack, itemEnergy, storage))
                 moveItem(tile);
         }
+        return true;
     }
 
     void moveItem(VETileEntity tile) {

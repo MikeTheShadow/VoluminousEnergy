@@ -38,7 +38,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
         VERecipe recipe = tile.getSelectedRecipe();
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
@@ -47,7 +47,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
         int length = counterLength.length();
         VEEnergyStorage storage = tile.getEnergy();
         if (storage.getEnergyStored() + storage.getProduction() > Config.COMBUSTION_GENERATOR_MAX_POWER.get())
-            return;
+            return false;
 
         if (counter > 0) {
             counter--;
@@ -72,7 +72,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             float multiplier = OxidizerFluidsData.getOxidizerMultiplier(oxi);
 
             if (fuelTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT || oxiTank.getTank().getFluidAmount() < COMBUSTION_GENERATOR_CONSUMPTION_AMOUNT) {
-                return;
+                return false;
             }
 
             fuelTank.getTank().drain(250, IFluidHandler.FluidAction.EXECUTE);
@@ -94,6 +94,7 @@ public class CombustionGeneratorProcessor extends BasicProcessor {
             storage.setProduction(0);
         }
         tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter, length));
+        return true;
     }
 
 }

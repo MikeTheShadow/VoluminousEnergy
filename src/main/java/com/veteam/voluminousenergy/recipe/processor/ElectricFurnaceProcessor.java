@@ -1,6 +1,5 @@
 package com.veteam.voluminousenergy.recipe.processor;
 
-import com.veteam.voluminousenergy.VoluminousEnergy;
 import com.veteam.voluminousenergy.blocks.tiles.VETileEntity;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
@@ -22,11 +21,12 @@ public class ElectricFurnaceProcessor implements AbstractRecipeProcessor {
     private BlastingRecipe blastingRecipe;
 
     @Override
-    public void processRecipe(VETileEntity tile) {
-        if (!tile.canConsumeEnergy()) return;
+    public boolean processRecipe(VETileEntity tile) {
+        if (!tile.canConsumeEnergy()) return false;
 
         if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
         else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
+        return true;
     }
 
     void processForRecipe(Recipe<?> recipe, VETileEntity tile) {

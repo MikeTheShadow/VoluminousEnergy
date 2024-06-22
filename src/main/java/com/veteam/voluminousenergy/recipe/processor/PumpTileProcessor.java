@@ -34,7 +34,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
 
         if (!init) {
             init = true;
@@ -48,7 +48,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
                 Fluid fluid = state.getType();
 
                 if (fluid == Fluids.EMPTY) {
-                    return;
+                    return false;
                 }
                 FluidPumpData newData = new FluidPumpData(below.getX(), below.getY(), below.getZ(), fluid);
                 tile.setData(VEAttachments.FLUID_PUMP, newData);
@@ -66,10 +66,10 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
         }
 
         if (pumpingFluid == null) {
-            return;
+            return false;
         }
 
-        if (!tile.canConsumeEnergy()) return;
+        if (!tile.canConsumeEnergy()) return false;
 
         VERelationalTank fluidTank = tile.getRelationalTank(0);
 
@@ -92,6 +92,7 @@ public class PumpTileProcessor implements AbstractRecipeProcessor {
                 tile.setData(VEAttachments.SOUND_TICK, soundTick);
             }
         }
+        return true;
     }
 
     public boolean fluidPumpMethod(VETileEntity tile) {

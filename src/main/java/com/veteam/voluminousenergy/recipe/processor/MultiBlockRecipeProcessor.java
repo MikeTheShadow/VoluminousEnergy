@@ -23,9 +23,9 @@ public class MultiBlockRecipeProcessor extends BasicProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
-        if (!isMultiBlockValid(tile)) return;
-        super.processRecipe(tile);
+    public boolean processRecipe(VETileEntity tile) {
+        if (!isMultiBlockValid(tile)) return false;
+        return super.processRecipe(tile);
     }
 
     private int counter = 0;

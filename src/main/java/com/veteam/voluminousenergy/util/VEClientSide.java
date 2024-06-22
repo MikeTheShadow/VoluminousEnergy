@@ -1,19 +1,19 @@
 package com.veteam.voluminousenergy.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class VEClientSide {
 
-    public static ClientLevel getClientWorld() {
+    public static Level getClientWorld() {
         return Minecraft.getInstance().level;
     }
 
-    public static LocalPlayer getPlayer() {
+    public static Player getPlayer() {
         return Minecraft.getInstance().player;
     }
 

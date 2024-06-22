@@ -6,12 +6,10 @@ import com.veteam.voluminousenergy.items.VEItems;
 import com.veteam.voluminousenergy.items.data.CombustibleFluidsData;
 import com.veteam.voluminousenergy.sounds.VESounds;
 import com.veteam.voluminousenergy.tools.Config;
-import com.veteam.voluminousenergy.util.TagUtil;
 import com.veteam.voluminousenergy.util.VEAttachments;
 import com.veteam.voluminousenergy.util.VEDataComponents;
 import com.veteam.voluminousenergy.util.records.CounterLength;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +28,7 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
     private BlastingRecipe blastingRecipe;
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
 
         CounterLength fuelCounterLength = tile.getData(VEAttachments.FUEL_COUNTER_LENGTH);
 
@@ -60,11 +58,12 @@ public class GasFiredFurnaceProcessor implements AbstractRecipeProcessor {
             fuelLength = fuelCounter;
             tile.setChanged();
         } else {
-            return;
+            return false;
         }
         tile.setData(VEAttachments.FUEL_COUNTER_LENGTH,new CounterLength(fuelCounter,fuelLength));
         if (blastingRecipe != null) processForRecipe(blastingRecipe, tile);
         else if (furnaceRecipe != null) processForRecipe(furnaceRecipe, tile);
+        return true;
     }
 
     void processForRecipe(Recipe<?> recipe, VETileEntity tile) {

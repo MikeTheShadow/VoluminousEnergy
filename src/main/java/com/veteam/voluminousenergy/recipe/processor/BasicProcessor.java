@@ -44,9 +44,9 @@ public class BasicProcessor implements AbstractRecipeProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
-        if (tile.getSelectedRecipe() == null) return;
-        if (!tile.canConsumeEnergy()) return;
+    public boolean processRecipe(VETileEntity tile) {
+        if (tile.getSelectedRecipe() == null) return false;
+        if (!tile.canConsumeEnergy()) return false;
         VERecipe recipe = tile.getSelectedRecipe();
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
@@ -54,7 +54,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
 
         if (counter == 1) {
             BasicParser parser = recipe.getParser();
-            if (!parser.canCompleteRecipe(tile)) return;
+            if (!parser.canCompleteRecipe(tile)) return false;
             parser.completeRecipe(tile);
             tile.markRecipeDirty();
             tile.markFluidInputDirty();
@@ -69,6 +69,7 @@ public class BasicProcessor implements AbstractRecipeProcessor {
         }
         tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(counter - 1,counterLength.length()));
         tile.consumeEnergy();
+        return true;
     }
 
 }

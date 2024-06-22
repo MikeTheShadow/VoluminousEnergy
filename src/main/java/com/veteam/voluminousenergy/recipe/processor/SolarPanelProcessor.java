@@ -18,11 +18,13 @@ public class SolarPanelProcessor implements AbstractRecipeProcessor{
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
 
         int generation = (int) (generationAmount * solarIntensity(tile.getLevel()));
+        if(generation <= 0) return false;
         tile.getEnergy().setProduction(generation);
         tile.getEnergy().addEnergy(generation);
+        return true;
     }
 
     /**

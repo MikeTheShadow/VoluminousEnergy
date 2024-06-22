@@ -28,8 +28,8 @@ public class VEServerSideListener {
         MinecraftServer server;
         ServerPlayer player = event.getPlayer();
         // When event.getPlayer() != null it's a player joining, so we check to make sure it's a group reload
-        if (event.getPlayer() != null) {
-            updateOnePlayer(event.getPlayer());
+        if (player != null) {
+            updateOnePlayer(player);
             return;
         }
         server = event.getPlayerList().getServer();

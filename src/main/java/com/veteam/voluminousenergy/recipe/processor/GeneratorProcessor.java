@@ -42,7 +42,7 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
+    public boolean processRecipe(VETileEntity tile) {
         VEEnergyStorage energy = tile.getEnergy();
 
         if (energy == null) throw new NotImplementedException("Missing energy impl for " + tile.getDisplayName());
@@ -75,9 +75,9 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
         } else if (counter == 0) {
             if (tile.getSelectedRecipe() instanceof VEEnergyRecipe veEnergyRecipe) {
                 BasicParser parser = veEnergyRecipe.getParser();
-                if (!parser.canCompleteRecipe(tile)) return;
+                if (!parser.canCompleteRecipe(tile)) return false;
                 // Check to see if the energy produced will overflow the tile
-                if (tile.getEnergy().isFullyCharged()) return;
+                if (tile.getEnergy().isFullyCharged()) return false;
                 // Since we're a generator we want to subtract the amounts at the start rather than at the end
                 veEnergyRecipe.getParser().completeRecipe(tile);
                 tile.getEnergy().setProduction(veEnergyRecipe.getEnergyPerTick() / divisor);
@@ -88,6 +88,7 @@ public class GeneratorProcessor implements AbstractRecipeProcessor {
                 tile.getEnergy().setProduction(0);
             }
         }
+        return true;
     }
 
 }

@@ -17,8 +17,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 public class AirCompressorProcessor implements AbstractRecipeProcessor {
 
     @Override
-    public void processRecipe(VETileEntity tile) {
-        if (!tile.canConsumeEnergy()) return;
+    public boolean processRecipe(VETileEntity tile) {
+        if (!tile.canConsumeEnergy()) return false;
 
         int soundTick = tile.getData(VEAttachments.SOUND_TICK);
 
@@ -64,6 +64,7 @@ public class AirCompressorProcessor implements AbstractRecipeProcessor {
             --counter;
         }
         tile.setData(VEAttachments.COUNTER_LENGTH,new CounterLength(--counter,counterLength.length()));
+        return true;
     }
 
     // We don't need to validate the recipe because it doesn't have one.

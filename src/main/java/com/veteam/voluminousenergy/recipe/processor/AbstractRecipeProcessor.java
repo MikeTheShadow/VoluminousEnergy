@@ -23,8 +23,9 @@ public interface AbstractRecipeProcessor {
      * method of validating state).
      *
      * @param tile The tile to process the recipe for
+     * @return
      */
-    void processRecipe(VETileEntity tile);
+    boolean processRecipe(VETileEntity tile);
 
 
 

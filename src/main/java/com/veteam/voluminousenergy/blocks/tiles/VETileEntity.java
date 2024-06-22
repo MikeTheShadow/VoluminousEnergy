@@ -190,7 +190,7 @@ public abstract class VETileEntity extends BlockEntity implements MenuProvider {
                 recipeProcessor.validateRecipe(this);
                 this.isRecipeDirty = false;
             }
-            recipeProcessor.processRecipe(this);
+            if(recipeProcessor.processRecipe(this)) this.setChanged();
         }
         if (this.sendsOutPower) sendOutPower();
     }

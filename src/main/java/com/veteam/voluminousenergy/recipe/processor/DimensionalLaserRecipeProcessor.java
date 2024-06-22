@@ -38,8 +38,8 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
     }
 
     @Override
-    public void processRecipe(VETileEntity tile) {
-        if (!isMultiBlockValid(tile)) return;
+    public boolean processRecipe(VETileEntity tile) {
+        if (!isMultiBlockValid(tile)) return false;
 
         int buildTick = tile.getData(VEAttachments.BUILD_TICK);
         if (buildTick != 1000) {
@@ -91,23 +91,23 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
 //            }
             tile.setChanged();
             tile.setData(VEAttachments.BUILD_TICK, buildTick + 1);
-            return;
+            return false;
         }
 
-        if (!tile.canConsumeEnergy()) return;
+        if (!tile.canConsumeEnergy()) return false;
         ItemStack stack = tile.getStackInSlot(2);
 
         ChunkFluidData data = stack.get(VEDataComponents.CHUNK_FLUID_DATA);
         if (data == null) {
             tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
-            return;
+            return false;
         }
 
         ChunkFluid fluid = ChunkFluids.getInstance().getChunkFluid(new ChunkPos(data.x(), data.z()));
 
         if (fluid == null) {
             VoluminousEnergy.LOGGER.error("Unable to find chunk fluid for what appears to be a scanned chunk: " + data.x() + " | " + data.z());
-            return;
+            return false;
         }
 
         // If we ever need to validate a selected fluid we do so here.
@@ -116,7 +116,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
         int amount = Math.min(singleChunkFluid.getAmount(), DEFAULT_TANK_CAPACITY - currentFluid.getAmount());
 
         boolean canFill = tile.getRelationalTank(0).testFillTank(new FluidStack(singleChunkFluid.getFluid(), amount)) > 0;
-        if (!canFill) return;
+        if (!canFill) return canFill;
 
         CounterLength counterLength = tile.getData(VEAttachments.COUNTER_LENGTH);
 
@@ -135,6 +135,7 @@ public class DimensionalLaserRecipeProcessor extends MultiBlockRecipeProcessor {
             counter = tile.updateCounter(Config.DIMENSIONAL_LASER_PROCESS_TIME.get());
         }
         tile.setData(VEAttachments.COUNTER_LENGTH, new CounterLength(counter,counterLength.length()));
+        return true;
     }
 
     private int counter = 0;
